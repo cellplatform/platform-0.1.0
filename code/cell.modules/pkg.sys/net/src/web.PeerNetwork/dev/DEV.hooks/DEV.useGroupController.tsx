@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { takeUntil } from 'rxjs/operators';
 
 import { PeerNetwork, t } from '../DEV.common';

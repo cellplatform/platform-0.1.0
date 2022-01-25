@@ -11,14 +11,12 @@ export type DevScreensizeProps = {
 
 export const DevScreensize: React.FC<DevScreensizeProps> = (props) => {
   const bus = props.bus as t.EventBus<t.DevEvent>;
-  const netbus = props.bus as t.PeerNetbus<t.DevEvent>;
 
   const baseRef = useRef<HTMLDivElement>(null);
   const [model, setModel] = useState<t.DevModel | undefined>();
 
   useEffect(() => {
     const events = DevEvents(bus);
-    const local$ = events.$;
 
     const update = async () => {
       const model = await events.model.get();

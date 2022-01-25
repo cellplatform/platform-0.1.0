@@ -28,8 +28,8 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
   const baseRef = useRef<HTMLDivElement>(null);
 
   const local = useLocalController({ bus });
-  const group = useGroupController({ bus, netbus });
-  const screens = useGroupScreensize({ kind: 'root', ref: baseRef, netbus, bus });
+  useGroupController({ bus, netbus });
+  useGroupScreensize({ kind: 'root', ref: baseRef, netbus, bus });
 
   const styles = {
     base: css({

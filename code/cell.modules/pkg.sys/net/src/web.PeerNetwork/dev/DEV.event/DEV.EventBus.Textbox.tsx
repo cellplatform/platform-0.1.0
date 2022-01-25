@@ -1,5 +1,5 @@
+import React, { useState } from 'react';
 import { color } from '@platform/css';
-import React, { useEffect, useState } from 'react';
 
 import { COLORS, css, Icons, Textbox } from '../DEV.common';
 
@@ -13,8 +13,8 @@ export const DevEventBusTextbox: React.FC<DevEventBusTextboxProps> = (props) => 
     textbox: css({ MarginX: 20, fontSize: 12, marginBottom: 10 }),
   };
 
-  const [filter, setFilter] = useState<string>('');
-  const [message, setMessage] = useState<string>('');
+  const [filter, setFilter] = useState('');
+  const [message, setMessage] = useState('');
 
   const broadcast = () => {
     if (props.onBroadcast) {

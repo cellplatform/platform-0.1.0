@@ -1,4 +1,3 @@
-import { defaultValue } from '@platform/util.value';
 import React, { useState, useRef } from 'react';
 import { useClickWithin, useClickOutside } from '@platform/react';
 

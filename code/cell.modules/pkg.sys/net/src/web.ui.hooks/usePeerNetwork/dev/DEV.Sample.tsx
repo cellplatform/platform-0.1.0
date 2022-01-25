@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { ObjectView } from 'sys.ui.dev';
-import { color, css, CssValue, t } from '../common';
+
 import { usePeerNetwork } from '..';
+import { css, CssValue, t } from '../common';
 
 export type DevSampleProps = {
   bus: t.EventBus<any>;

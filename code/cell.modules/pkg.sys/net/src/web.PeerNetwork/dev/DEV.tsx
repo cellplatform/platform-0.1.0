@@ -169,9 +169,6 @@ export const actions = DevActions<Ctx>()
   })
 
   .init(async (e) => {
-    const { ctx } = e;
-    const { events, self, signal } = ctx;
-
     console.log('NET/INIT', toObject(e.ctx));
   })
 
@@ -207,7 +204,7 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Layout');
 
-    e.boolean('fullscreen', (e) => {
+    e.boolean('load as fullscreen', (e) => {
       const flags = e.ctx.toFlags();
       if (e.changing) flags.isLayoutFullscreen = e.changing.next;
       const value = flags.isLayoutFullscreen;

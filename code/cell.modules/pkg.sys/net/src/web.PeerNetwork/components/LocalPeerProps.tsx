@@ -23,7 +23,7 @@ export const LocalPeerProps: React.FC<LocalPeerPropsProps> = (props) => {
   const title = props.title === null ? undefined : props.title ?? 'Network';
 
   const [connectTo, setConnectTo] = useState<string>('');
-  const [count, setCount] = useState<number>(0);
+  const [, setCount] = useState<number>(0);
   const redraw = () => setCount((prev) => prev + 1);
 
   useEffect(() => {

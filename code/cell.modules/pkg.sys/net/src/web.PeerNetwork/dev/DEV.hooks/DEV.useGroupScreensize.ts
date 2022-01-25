@@ -17,10 +17,6 @@ export function useGroupScreensize(args: {
 }) {
   const { ref, kind } = args;
   const local = args.bus as t.EventBus<t.DevEvent>;
-  const network = args.netbus as t.PeerNetbus<t.DevEvent>;
-  const self = network.self;
-  const source = self;
-
   const resize = useResizeObserver(args.ref);
 
   useEffect(() => {
@@ -51,14 +47,13 @@ export function Controller(args: {
   kind: t.DevLayoutSize['kind'];
   parentResize$: Observable<void>;
 }) {
-  const { ref, kind, parentResize$ } = args;
+  const { ref, kind } = args;
   const local = args.bus as t.EventBus<t.DevEvent>;
   const network = args.netbus as t.PeerNetbus<t.DevEvent>;
   const self = network.self;
   const source = self;
 
   const events = DevEvents(local);
-  const local$ = events.$;
   const network$ = network.$.pipe(takeUntil(events.dispose$));
   const resize$ = args.parentResize$.pipe(takeUntil(events.dispose$));
 

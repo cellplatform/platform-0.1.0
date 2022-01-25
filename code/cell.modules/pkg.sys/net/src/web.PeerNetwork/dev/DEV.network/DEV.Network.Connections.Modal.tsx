@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect } from 'react';
 import { filter, map } from 'rxjs/operators';
 
 import { COLORS, PeerNetwork, t, css, color, Icons, Button } from '../DEV.common';

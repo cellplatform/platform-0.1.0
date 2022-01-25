@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { color, css, CssValue, filesize, rx, slug, Spinner, t, time } from '../DEV.common';
+import { color, css, CssValue, filesize, rx, slug, Spinner, t } from '../DEV.common';
 
 export type DevImagePasteboardProps = {
   bus: t.EventBus<any>;
