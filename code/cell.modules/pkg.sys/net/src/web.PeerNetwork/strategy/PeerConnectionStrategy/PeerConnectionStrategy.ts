@@ -8,6 +8,10 @@ import { EnsureClosedStrategy } from './EnsureClosedStrategy';
 export function PeerConnectionStrategy(args: {
   bus: t.EventBus<any>;
   netbus: t.PeerNetbus<any>;
+
+  // Default enabled state.
+  autoPurgeOnClose?: boolean;
+  ensureClosed?: boolean;
 }): t.PeerConnectionStrategy {
   const { netbus } = args;
   const bus = args.bus as t.EventBus<t.PeerEvent>;
@@ -29,8 +33,8 @@ export function PeerConnectionStrategy(args: {
     dispose,
 
     // Enabled state.
-    autoPurgeOnClose: true,
-    ensureClosed: true,
+    autoPurgeOnClose: args.autoPurgeOnClose ?? true,
+    ensureClosed: args.ensureClosed ?? true,
   };
 
   return strategy;

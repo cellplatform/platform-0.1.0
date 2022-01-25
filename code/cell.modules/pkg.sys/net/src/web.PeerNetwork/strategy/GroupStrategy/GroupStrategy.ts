@@ -7,6 +7,7 @@ import { GroupConnectionsStrategy } from './GroupConnectionsStrategy';
 export function GroupStrategy(args: {
   bus: t.EventBus<any>;
   netbus: t.PeerNetbus<any>;
+  connections?: boolean; // Default enabled state.
 }): t.GroupStrategy {
   const { bus, netbus } = args;
 
@@ -31,7 +32,7 @@ export function GroupStrategy(args: {
     },
 
     // Enabled state.
-    connections: true,
+    connections: args.connections ?? true,
   };
 
   return strategy;
