@@ -1,6 +1,6 @@
 import React from 'react';
 import { DevActions, Test } from 'sys.ui.dev';
-import { TestSuiteRunResponse, TestSuiteModel } from 'sys.ui.dev/lib/types';
+import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 import { RepoLink } from './ui/RepoLink';
 
 type CtxRunTests = () => Promise<TestSuiteRunResponse>;

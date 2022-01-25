@@ -20,7 +20,6 @@ const NS = {
  * Flag filters for event namespaces.
  */
 const is = {
-  event: rx.isEvent,
   base: (e: t.Event) => is.peer.base(e) || is.group.base(e) || is.fs.base(e),
   peer: {
     base: isMatchHandler(NS.peer.base),
@@ -48,7 +47,7 @@ export const PeerEventNamespace = {
  * [Helpers]
  */
 function isMatch(e: t.Event, ...prefixes: string[]) {
-  return prefixes.some((prefix) => e.type.startsWith(prefix));
+  return rx.isEvent(e) && prefixes.some((prefix) => e.type.startsWith(prefix));
 }
 
 function isMatchHandler(...prefixes: string[]) {
