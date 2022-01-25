@@ -19,31 +19,7 @@ type Ctx = {
  */
 export const actions = DevActions<Ctx>()
   .namespace('UnitTests')
-  .context((e) => {
-    if (e.prev) return e.prev;
-
-    const run = async (bundle: TestSuiteModel) => {
-      const results = await bundle.run();
-      e.change.ctx((ctx) => (ctx.results = results));
-      return results;
-    };
-
-    const tests: Ctx['tests'] = {
-      async Automerge() {
-        return run(await Test.bundle(import('../../../web.Automerge/Automerge.lib.TEST')));
-      },
-      async AutomergeDoc() {
-        return run(await Test.bundle(import('../../../web.Automerge/AutomergeDoc.TEST')));
-      },
-      async CrdtBus() {
-        return run(await Test.bundle(import('../../../web.CrdtBus/TEST')));
-      },
-    };
-
-    const ctx: Ctx = { tests };
-
-    return ctx;
-  })
+  .context((e) => e.prev ?? {})
 
   .init(async (e) => {
     const run = async (input: Promise<any>) => {
