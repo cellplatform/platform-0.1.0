@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react';
 import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 
 import { R, t } from '../common';
-import { PeerEvents, GroupEvents } from '../event';
-
-type Action = 'update';
+import { PeerEvents, GroupEvents } from '../../web.PeerNetwork.events';
 
 /**
  * Manages listening to the network to determine the group peers

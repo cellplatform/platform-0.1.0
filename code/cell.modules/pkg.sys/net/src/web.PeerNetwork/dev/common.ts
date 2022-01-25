@@ -5,6 +5,7 @@ export { PeerNetbus } from '../../web.PeerNetbus';
 
 export * from './common.libs';
 export * from '../common';
+export * from '../../web.PeerNetwork.events';
 
 export { PeerNetwork } from '..';
 

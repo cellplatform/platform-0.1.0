@@ -1,4 +1,4 @@
-import { expect, t } from '../../test';
+import { expect } from '../test';
 import { PeerEventNamespace } from './PeerEvents.ns';
 
 describe('Events Namespace', () => {
