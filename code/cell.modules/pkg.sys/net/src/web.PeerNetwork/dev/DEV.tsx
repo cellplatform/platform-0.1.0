@@ -10,18 +10,18 @@ import {
   Icons,
   isLocalhost,
   MediaStream,
-  PeerNetwork,
   PeerNetbus,
+  PeerNetwork,
   QueryString,
   rx,
   t,
   TARGET_NAME,
   time,
-} from './common';
+} from './DEV.common';
+import { EventBridge } from './DEV.event';
+import { DevGroupSeed, GroupSeed } from './DEV.layouts';
 import { DevProps } from './DEV.Props';
 import { DevRootLayout } from './DEV.Root';
-import { EventBridge } from './event';
-import { DevGroupSeed, GroupSeed } from './layouts';
 
 type O = Record<string, unknown>;
 

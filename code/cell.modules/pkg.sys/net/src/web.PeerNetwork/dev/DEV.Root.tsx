@@ -1,9 +1,9 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { ObjectView } from 'sys.ui.dev';
 
 import { useLocalPeer } from '../hooks';
-import { COLORS, css, CssValue, t, useDragTarget } from './common';
-import { DevNetwork } from './network';
+import { COLORS, css, CssValue, t, useDragTarget } from './DEV.common';
+import { DevNetwork } from './DEV.network';
 
 export type DevRootLayoutProps = {
   bus: t.EventBus<any>;
