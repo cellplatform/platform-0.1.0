@@ -6,7 +6,7 @@ export type PeerConnectionUriString = string;
 /**
  * Parsed URI Objects
  */
-export type PeerUri = PeerUriObject | PeerConnectionUriObject;
+export type PeerUri = PeerUriObject | PeerUriConnectionObject;
 
 export type PeerUriObject = {
   ok: boolean;
@@ -15,7 +15,7 @@ export type PeerUriObject = {
   errors: string[];
 };
 
-export type PeerConnectionUriObject = {
+export type PeerUriConnectionObject = {
   ok: boolean;
   type: 'connection';
   kind: t.PeerConnectionKind;

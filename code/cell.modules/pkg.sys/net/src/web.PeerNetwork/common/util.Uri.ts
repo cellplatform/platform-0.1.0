@@ -52,7 +52,7 @@ export const UriUtil = {
       return `conn:${type}:${peer.trim()}.${StringUtil.formatConnectionId(id)}`;
     },
 
-    parse(input: any, options: { throw?: boolean } = {}): t.PeerConnectionUriObject | undefined {
+    parse(input: any, options: { throw?: boolean } = {}): t.PeerUriConnectionObject | undefined {
       const value = toString(input);
 
       const throwError = (errors: string[] = []) => {
@@ -72,7 +72,7 @@ export const UriUtil = {
       const peer = (id[0] || '') as t.PeerId;
       const connection = (id[1] || '') as t.PeerConnectionId;
 
-      const uri: t.PeerConnectionUriObject = {
+      const uri: t.PeerUriConnectionObject = {
         ok: true,
         type: 'connection',
         kind,
