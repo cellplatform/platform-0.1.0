@@ -3,7 +3,15 @@ export { Observable } from 'rxjs';
 /**
  * @platform
  */
-export { PartialDeep, EventBus, JsonMap, Event, FireEvent, Disposable } from '@platform/types';
+export {
+  PartialDeep,
+  EventBus,
+  JsonMap,
+  Event,
+  FireEvent,
+  Disposable,
+  NpmPackageJson,
+} from '@platform/types';
 export { IStateObject, IStateObjectWritable } from '@platform/state.types';
 export { CssEdgesInput } from '@platform/css/lib/types';
 export { NetworkBus, NetworkBusFilter, NetworkPump, Fs } from '@platform/cell.types';

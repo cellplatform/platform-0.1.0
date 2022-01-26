@@ -70,7 +70,7 @@ const FILESYSTEM_ID = 'dev.net.fs';
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('PeerNetwork')
+  .namespace('ui.PeerNetwork')
 
   .context((e) => {
     if (e.prev) return e.prev;
