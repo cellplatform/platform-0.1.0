@@ -466,7 +466,7 @@ export const actions = DevActions<Ctx>()
         label: {
           topLeft: 'Mesh',
           topRight: elLabelRight,
-          bottomLeft: `bus/instance: "${(bus as any)._instance}"`,
+          bottomLeft: `bus/instance: "${rx.bus.instance(bus)}"`,
           bottomRight: `filesystem: "${FILESYSTEM_ID}"`,
         },
         position: [60, 60, 70, 60],

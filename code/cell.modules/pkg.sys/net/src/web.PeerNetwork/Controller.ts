@@ -42,11 +42,12 @@ export function Controller(args: { bus: t.EventBus<any> }): t.PeerController {
   /**
    * Monitor network connectivity.
    */
-  const handleOnlineStatusChanged = (e: Event) => {
-    Object.keys(refs.self).forEach((ref) => {
+  const handleOnlineStatusChanged = () => {
+    Object.keys(refs.self).forEach((self) => {
+      const isOnline = navigator.onLine;
       bus.fire({
         type: 'sys.net/peer/local/online:changed',
-        payload: { self: ref, isOnline: navigator.onLine },
+        payload: { self, isOnline },
       });
     });
   };
