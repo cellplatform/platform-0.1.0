@@ -50,7 +50,7 @@ type CtxDebugFlags = {
 type CtxEvents = {
   peer: t.PeerEvents;
   group: t.GroupEvents;
-  media: ReturnType<typeof MediaStream.Events>;
+  media: t.MediaStreamEvents;
   runtime: t.WebRuntimeEvents;
 };
 
