@@ -2,20 +2,21 @@ import { firstValueFrom, Subject, of, timeout } from 'rxjs';
 import { take, filter, takeUntil, map, catchError } from 'rxjs/operators';
 import { cuid, rx, t, slug } from '../common';
 
-import { PeerEventNamespace as ns } from './PeerEvents.ns';
-export { ns };
+import { PeerEventNamespace } from './PeerEvents.ns';
+
+type Milliseconds = number;
 
 /**
  * Helpers for working with the events model for a [PeerNetwork].
  */
-export function PeerEvents(eventbus: t.EventBus<any>) {
+export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
   const bus = rx.busAsType<t.PeerEvent>(eventbus);
 
   const bus$ = bus.$.pipe(
     takeUntil(dispose$),
-    filter(ns.is.peer.base),
+    filter(PeerEventNamespace.is.peer.base),
     map((e) => e as t.PeerEvent),
   );
 
@@ -25,7 +26,10 @@ export function PeerEvents(eventbus: t.EventBus<any>) {
   const create = (signal: string, id?: t.PeerId) => {
     const self = id || cuid();
     const res = firstValueFrom(created(self).$);
-    bus.fire({ type: 'sys.net/peer/local/init:req', payload: { self, signal } });
+    bus.fire({
+      type: 'sys.net/peer/local/init:req',
+      payload: { self, signal },
+    });
     return res;
   };
 
@@ -71,21 +75,21 @@ export function PeerEvents(eventbus: t.EventBus<any>) {
    * PURGE
    */
   const Purge = (self: t.PeerId) => {
-    const purge$ = rx
+    const req$ = rx
       .payload<t.PeerLocalPurgeReqEvent>(bus$, 'sys.net/peer/local/purge:req')
       .pipe(filter((e) => e.self === self));
-    const purged$ = rx
+    const res$ = rx
       .payload<t.PeerLocalPurgeResEvent>(bus$, 'sys.net/peer/local/purge:res')
       .pipe(filter((e) => e.self === self));
 
     const fire = (select?: t.PeerLocalPurgeReq['select']) => {
       const tx = slug();
-      const res = firstValueFrom(purged$.pipe(filter((e) => e.tx === tx)));
+      const res = firstValueFrom(res$.pipe(filter((e) => e.tx === tx)));
       bus.fire({ type: 'sys.net/peer/local/purge:req', payload: { self, tx, select } });
       return res;
     };
 
-    return { self, purge$, purged$, fire };
+    return { self, req$, res$, fire };
   };
 
   /**
@@ -149,7 +153,7 @@ export function PeerEvents(eventbus: t.EventBus<any>) {
       .pipe(filter((e) => e.self === self));
 
     const open = {
-      async data(options: { isReliable?: boolean; parent?: t.PeerConnectionId } = {}) {
+      data(options: { isReliable?: boolean; parent?: t.PeerConnectionId } = {}) {
         const { isReliable, parent } = options;
         const tx = slug();
         const res = firstValueFrom(connected$.pipe(filter((e) => e.tx === tx)));
@@ -161,7 +165,7 @@ export function PeerEvents(eventbus: t.EventBus<any>) {
       },
 
       media(
-        kind: t.PeerNetworkConnectMediaReq['kind'],
+        kind: t.PeerConnectMediaReq['kind'],
         options: { constraints?: t.PeerMediaConstraints; parent?: t.PeerConnectionId } = {},
       ) {
         const { constraints, parent } = options;
@@ -175,12 +179,12 @@ export function PeerEvents(eventbus: t.EventBus<any>) {
       },
     };
 
-    const close = (id: t.PeerConnectionId) => {
+    const close = (connection: t.PeerConnectionId) => {
       const tx = slug();
       const res = firstValueFrom(disconnected$.pipe(filter((e) => e.tx === tx)));
       bus.fire({
         type: 'sys.net/peer/conn/disconnect:req',
-        payload: { self, tx, remote, connection: id },
+        payload: { self, tx, remote, connection },
       });
       return res;
     };
@@ -252,7 +256,7 @@ export function PeerEvents(eventbus: t.EventBus<any>) {
     exists: {
       req$: rx.payload<t.PeerRemoteExistsReqEvent>(bus$, 'sys.net/peer/remote/exists:req'),
       res$: rx.payload<t.PeerRemoteExistsResEvent>(bus$, 'sys.net/peer/remote/exists:res'),
-      async get(args: { self: t.PeerId; remote: t.PeerId; timeout?: number }) {
+      async get(args: { self: t.PeerId; remote: t.PeerId; timeout?: Milliseconds }) {
         const { self, remote } = args;
         const tx = slug();
         const msecs = args.timeout ?? 10000;
@@ -288,7 +292,7 @@ export function PeerEvents(eventbus: t.EventBus<any>) {
     dispose,
     dispose$: dispose$.pipe(take(1)),
 
-    ns,
+    is: PeerEventNamespace.is,
     $: bus$,
 
     create,

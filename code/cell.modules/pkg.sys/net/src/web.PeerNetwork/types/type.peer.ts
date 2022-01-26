@@ -31,3 +31,10 @@ export type PeerFilterArgs = {
   peer: t.PeerId;
   connection: { id: t.PeerConnectionId; kind: t.PeerConnectionKind };
 };
+
+/**
+ * PeerNetwork Controller
+ */
+export type PeerController = t.Disposable & {
+  events: t.PeerEvents;
+};

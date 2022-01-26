@@ -19,12 +19,12 @@ import { PeerEvents } from '../web.PeerNetwork.events';
 import { MemoryRefs, SelfRef } from './Refs';
 import { Status } from './Status';
 
-type ConnectionKind = t.PeerNetworkConnectRes['kind'];
+type ConnectionKind = t.PeerConnectRes['kind'];
 
 /**
  * EventBus contoller for a WebRTC [Peer] connection.
  */
-export function Controller(args: { bus: t.EventBus<any> }) {
+export function Controller(args: { bus: t.EventBus<any> }): t.PeerController {
   const bus = args.bus as t.EventBus<t.PeerEvent>;
   const events = PeerEvents(bus);
   const { $, dispose$ } = events;
@@ -58,7 +58,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
    */
   const completeConnection = (
     kind: ConnectionKind,
-    direction: t.PeerNetworkConnectRes['direction'],
+    direction: t.PeerConnectRes['direction'],
     self: SelfRef,
     conn: PeerJS.DataConnection | PeerJS.MediaConnection,
     tx?: string,
@@ -285,7 +285,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       const userAgent = navigator.userAgent;
       const parent = e.parent;
 
-      const fire = (payload?: Partial<t.PeerNetworkConnectRes>) => {
+      const fire = (payload?: Partial<t.PeerConnectRes>) => {
         const existing = Boolean(payload?.existing);
         bus.fire({
           type: 'sys.net/peer/conn/connect:res',
@@ -416,7 +416,7 @@ export function Controller(args: { bus: t.EventBus<any> }) {
       const selfRef = refs.self[e.self];
       const tx = e.tx || slug();
 
-      const fire = (payload?: Partial<t.PeerNetworkDisconnectRes>) => {
+      const fire = (payload?: Partial<t.PeerDisconnectRes>) => {
         const connection = e.connection;
         bus.fire({
           type: 'sys.net/peer/conn/disconnect:res',
@@ -509,5 +509,6 @@ export function Controller(args: { bus: t.EventBus<any> }) {
   return {
     dispose$,
     dispose,
+    events,
   };
 }

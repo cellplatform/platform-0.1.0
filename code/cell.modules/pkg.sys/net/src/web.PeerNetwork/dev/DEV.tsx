@@ -48,8 +48,8 @@ type CtxDebugFlags = {
 };
 
 type CtxEvents = {
-  peer: t.PeerNetworkEvents;
-  group: t.GroupEvents;
+  peer: t.PeerEvents;
+  group: t.GroupNetworkEvents;
   media: ReturnType<typeof MediaStream.Events>;
   runtime: t.WebRuntimeEvents;
 };
@@ -78,9 +78,9 @@ export const actions = DevActions<Ctx>()
     const self = cuid();
     const bus = rx.bus<t.PeerEvent | t.DevEvent>();
 
-    EventBridge.startEventBridge({ bus, self });
     PeerNetwork.Controller({ bus });
     MediaStream.Controller({ bus });
+    EventBridge.startEventBridge({ bus, self });
 
     const netbus = PeerNetbus({ bus, self });
     const runtime = WebRuntime.Bus.Controller({ bus, netbus });

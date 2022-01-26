@@ -14,9 +14,9 @@ export type PeerConnectionEvent =
  */
 export type PeerConnectReqEvent = {
   type: 'sys.net/peer/conn/connect:req';
-  payload: PeerNetworkConnectReq;
+  payload: PeerConnectReq;
 };
-export type PeerNetworkConnectReq = PeerNetworkConnectDataReq | PeerNetworkConnectMediaReq;
+export type PeerConnectReq = PeerConnectDataReq | PeerConnectMediaReq;
 
 type ConnectBase = {
   self: t.PeerId;
@@ -26,11 +26,11 @@ type ConnectBase = {
   tx?: string;
 };
 
-export type PeerNetworkConnectDataReq = ConnectBase & {
+export type PeerConnectDataReq = ConnectBase & {
   kind: t.PeerConnectionKindData;
   isReliable?: boolean;
 };
-export type PeerNetworkConnectMediaReq = ConnectBase & {
+export type PeerConnectMediaReq = ConnectBase & {
   kind: t.PeerConnectionKindMedia;
   constraints?: t.PeerMediaConstraints;
   timeout?: number;
@@ -41,9 +41,9 @@ export type PeerNetworkConnectMediaReq = ConnectBase & {
  */
 export type PeerConnectResEvent = {
   type: 'sys.net/peer/conn/connect:res';
-  payload: PeerNetworkConnectRes;
+  payload: PeerConnectRes;
 };
-export type PeerNetworkConnectRes = {
+export type PeerConnectRes = {
   self: t.PeerId;
   remote: t.PeerId;
   existing: boolean;
@@ -59,9 +59,9 @@ export type PeerNetworkConnectRes = {
  */
 export type PeerDisconnectReqEvent = {
   type: 'sys.net/peer/conn/disconnect:req';
-  payload: PeerNetworkDisconnectReq;
+  payload: PeerDisconnectReq;
 };
-export type PeerNetworkDisconnectReq = {
+export type PeerDisconnectReq = {
   self: t.PeerId;
   remote: t.PeerId;
   connection: t.PeerConnectionId;
@@ -76,9 +76,9 @@ export type PeerNetworkDisconnectReq = {
  */
 export type PeerDisconnectResEvent = {
   type: 'sys.net/peer/conn/disconnect:res';
-  payload: PeerNetworkDisconnectRes;
+  payload: PeerDisconnectRes;
 };
-export type PeerNetworkDisconnectRes = {
+export type PeerDisconnectRes = {
   self: t.PeerId;
   connection?: t.PeerConnectionId;
   error?: t.PeerError;

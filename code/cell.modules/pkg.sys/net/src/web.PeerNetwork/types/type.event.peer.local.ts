@@ -33,9 +33,9 @@ export type PeerLocalCreateReq = {
  */
 export type PeerLocalInitResEvent = {
   type: 'sys.net/peer/local/init:res';
-  payload: PeerLocalCreateRes;
+  payload: PeerLocalInitRes;
 };
-export type PeerLocalCreateRes = {
+export type PeerLocalInitRes = {
   self: t.PeerId;
   createdAt: number;
   signal: t.PeerSignallingEndpoint;

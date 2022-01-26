@@ -7,7 +7,7 @@ import { t } from '../common';
  */
 export function AutoPergeStrategy(args: {
   netbus: t.PeerNetbus<any>;
-  events: t.PeerNetworkEvents;
+  events: t.PeerEvents;
   isEnabled: () => boolean;
 }) {
   const { events } = args;

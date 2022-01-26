@@ -8,7 +8,7 @@ import { slug, t, WebRuntime, UriUtil } from '../common';
  */
 export async function GroupConnectionsStrategy(args: {
   netbus: t.PeerNetbus<t.GroupEvent>;
-  events: { group: t.GroupEvents; peer: t.PeerNetworkEvents };
+  events: { group: t.GroupNetworkEvents; peer: t.PeerEvents };
   isEnabled: () => boolean;
 }) {
   const { netbus, events } = args;

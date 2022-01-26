@@ -1,6 +1,6 @@
 import { PeerJS, t, StringUtil, UriUtil } from './common';
 
-type ConnectionKind = t.PeerNetworkConnectRes['kind'];
+type ConnectionKind = t.PeerConnectRes['kind'];
 
 export type SelfRef = {
   id: t.PeerId;

@@ -8,7 +8,7 @@ import { rx, t } from '../common';
  */
 export function EnsureClosedStrategy(args: {
   netbus: t.PeerNetbus<any>;
-  events: t.PeerNetworkEvents;
+  events: t.PeerEvents;
   isEnabled: () => boolean;
 }) {
   const { events } = args;
