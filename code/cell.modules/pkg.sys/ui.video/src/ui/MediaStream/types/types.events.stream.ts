@@ -1,8 +1,8 @@
 import { t } from './common';
 
 export type MediaStreamEvent =
-  | MediaStreamStatusRequestEvent
-  | MediaStreamStatusResponseEvent
+  | MediaStreamStatusReqEvent
+  | MediaStreamStatusResEvent
   | MediaStreamStartEvent
   | MediaStreamStartedEvent
   | MediaStreamStopEvent
@@ -12,20 +12,20 @@ export type MediaStreamEvent =
 /**
  * Fires to retrieve the status of a media stream.
  */
-export type MediaStreamStatusRequestEvent = {
+export type MediaStreamStatusReqEvent = {
   type: 'MediaStream/status:req';
-  payload: MediaStreamStatusRequest;
+  payload: MediaStreamStatusReq;
 };
-export type MediaStreamStatusRequest = { ref: string };
+export type MediaStreamStatusReq = { ref: string };
 
 /**
  * Fires to retrieve the status of a media stream.
  */
-export type MediaStreamStatusResponseEvent = {
+export type MediaStreamStatusResEvent = {
   type: 'MediaStream/status:res';
-  payload: MediaStreamStatusResponse;
+  payload: MediaStreamStatusRes;
 };
-export type MediaStreamStatusResponse = {
+export type MediaStreamStatusRes = {
   ref: string;
   stream?: t.MediaStreamStatus;
 };

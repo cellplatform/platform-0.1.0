@@ -1,23 +1,21 @@
 import { t } from './common';
 
-export type MediaStreamsEvent =
-  | t.MediaStreamsStatusRequestEvent
-  | t.MediaStreamsStatusResponseEvent;
+export type MediaStreamsEvent = t.MediaStreamsStatusReqEvent | t.MediaStreamsStatusResEvent;
 
 /**
  * PLURAL Fires to retrieve the status of all streams.
  */
-export type MediaStreamsStatusRequestEvent = {
+export type MediaStreamsStatusReqEvent = {
   type: 'MediaStreams/status:req';
-  payload: MediaStreamsStatusRequest;
+  payload: MediaStreamsStatusReq;
 };
-export type MediaStreamsStatusRequest = { kind?: t.MediaStreamKind };
+export type MediaStreamsStatusReq = { kind?: t.MediaStreamKind };
 
 /**
  * PLURAL Fires to retrieve the status of all streams.
  */
-export type MediaStreamsStatusResponseEvent = {
+export type MediaStreamsStatusResEvent = {
   type: 'MediaStreams/status:res';
-  payload: MediaStreamsStatusResponse;
+  payload: MediaStreamsStatusRes;
 };
-export type MediaStreamsStatusResponse = { streams: t.MediaStreamStatus[] };
+export type MediaStreamsStatusRes = { streams: t.MediaStreamStatus[] };

@@ -42,7 +42,7 @@ export function MediaStreamController(args: { bus: t.EventBus<any> }) {
   /**
    * STATUS
    */
-  rx.payload<t.MediaStreamStatusRequestEvent>($, 'MediaStream/status:req')
+  rx.payload<t.MediaStreamStatusReqEvent>($, 'MediaStream/status:req')
     .pipe()
     .subscribe((e) => {
       const { ref } = e;
@@ -61,7 +61,7 @@ export function MediaStreamController(args: { bus: t.EventBus<any> }) {
       });
     });
 
-  rx.payload<t.MediaStreamsStatusRequestEvent>($, 'MediaStreams/status:req')
+  rx.payload<t.MediaStreamsStatusReqEvent>($, 'MediaStreams/status:req')
     .pipe()
     .subscribe((e) => {
       const streams = Object.keys(refs)
