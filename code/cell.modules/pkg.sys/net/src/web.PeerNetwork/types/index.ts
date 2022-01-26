@@ -9,6 +9,7 @@ export * from './type.event.peer.data';
 export * from './type.event.peer.remote';
 
 export * from './type.events.api.peer';
+export * from './type.events.api.group';
 
 export * from './type.strategy';
 export * from './type.group';

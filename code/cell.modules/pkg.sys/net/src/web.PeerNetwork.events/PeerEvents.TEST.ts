@@ -1,20 +1,11 @@
 import { expect } from 'chai';
-import { PeerEventNamespace } from './PeerEvents.ns';
+import { EventNamespace } from './EventNamespace';
 import { Test } from 'sys.ui.dev';
-import { rx } from '../common';
-import { PeerEvents } from './PeerEvents';
 
 export default Test.describe('PeerEvents', (e) => {
   e.describe('is', (e) => {
     const payload = {};
-    const { is } = PeerEventNamespace;
-
-    e.it('is exposed from events object', () => {
-      const bus = rx.bus();
-      const events = PeerEvents(bus);
-      expect(events.is.base({ type: 'foo', payload })).to.eql(false);
-      expect(events.is.base({ type: 'sys.net/peer', payload })).to.eql(true);
-    });
+    const { is } = EventNamespace;
 
     e.it('is.base (generic)', () => {
       expect(is.base({ type: 'foo', payload })).to.eql(false);

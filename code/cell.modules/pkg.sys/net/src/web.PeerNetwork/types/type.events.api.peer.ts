@@ -2,28 +2,11 @@ import { t } from './common';
 
 type Milliseconds = number;
 
-export type PeerEventNamespace = {
-  base(input: any): boolean;
-  peer: {
-    base(input: any): boolean;
-    data(input: any): boolean;
-    connection(input: any): boolean;
-    local(input: any): boolean;
-  };
-  group: {
-    base(input: any): boolean;
-  };
-  fs: {
-    base(input: any): boolean;
-  };
-};
-
 /**
- * Event API for interacting with network peers.
+ * Event API for interacting with a network.
  */
 export type PeerEvents = t.Disposable & {
   $: t.Observable<t.PeerEvent>;
-  is: PeerEventNamespace;
 
   create(signal: string, self?: t.PeerId): Promise<t.PeerLocalInitRes>;
   created(self: t.PeerId): {

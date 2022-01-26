@@ -38,10 +38,7 @@ const is = {
 /**
  * Event namespace index and helpers.
  */
-export const PeerEventNamespace = {
-  ...NS,
-  is,
-};
+export const EventNamespace = { ...NS, is };
 
 /**
  * [Helpers]

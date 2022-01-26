@@ -2,7 +2,7 @@ import { firstValueFrom, Subject, of, timeout } from 'rxjs';
 import { take, filter, takeUntil, map, catchError } from 'rxjs/operators';
 import { cuid, rx, t, slug } from '../common';
 
-import { PeerEventNamespace } from './PeerEvents.ns';
+import { EventNamespace } from './EventNamespace';
 
 type Milliseconds = number;
 
@@ -16,7 +16,7 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
 
   const bus$ = bus.$.pipe(
     takeUntil(dispose$),
-    filter(PeerEventNamespace.is.peer.base),
+    filter(EventNamespace.is.peer.base),
     map((e) => e as t.PeerEvent),
   );
 
@@ -291,8 +291,6 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
   return {
     dispose,
     dispose$: dispose$.pipe(take(1)),
-
-    is: PeerEventNamespace.is,
     $: bus$,
 
     create,
