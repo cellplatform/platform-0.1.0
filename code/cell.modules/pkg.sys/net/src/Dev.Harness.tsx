@@ -7,6 +7,7 @@ const imports = {
   ModuleInfo: import('./web.ui/ModuleInfo/dev/DEV'),
   PeerNetwork: import('./web.PeerNetwork/dev/DEV'),
   PeerNetworkHook: import('./web.ui.hooks/usePeerNetwork/dev/DEV'),
+  LocalPeerProps: import('./web.ui/LocalPeerProps/dev/DEV'),
   UnitTests: import('./web.ui/dev/DEV.UnitTests'),
 };
 

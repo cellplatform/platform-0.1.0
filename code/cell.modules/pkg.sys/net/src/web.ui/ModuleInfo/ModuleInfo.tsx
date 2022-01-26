@@ -1,5 +1,5 @@
 import React from 'react';
-import { color, css, CssValue, t, PropList, PropListItem, pkg } from '../../common';
+import { css, CssValue, t, PropList, PropListItem, pkg } from '../../common';
 
 import * as m from './types';
 import { ModuleInfoConstants } from './constants';
