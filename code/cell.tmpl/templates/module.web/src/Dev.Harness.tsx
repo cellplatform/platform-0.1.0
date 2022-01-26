@@ -3,8 +3,8 @@ import { Harness } from 'sys.ui.dev';
 import { t } from './common';
 
 const imports = {
-  UnitTests: import('./web.ui/dev/DEV.UnitTests'),
   ModuleInfo: import('./web.ui/ModuleInfo/dev/DEV'),
+  UnitTests: import('./web.ui/dev/DEV.UnitTests'),
 };
 
 /**
