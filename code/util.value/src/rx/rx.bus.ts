@@ -19,6 +19,7 @@ type BusFactory = <T extends E = E>(input?: Subject<any> | t.EventBus<any>) => t
 type Bus = BusFactory & {
   isBus(input: any): boolean;
   asType<T extends E>(bus: t.EventBus<any>): t.EventBus<T>;
+  instance(bus: t.EventBus<any>): string;
   clone: BusClone;
 };
 
@@ -54,6 +55,13 @@ const factory: BusFactory = <T extends E = E>(input?: Subject<any> | t.EventBus<
 
   return res;
 };
+
+/**
+ * Read the "_instance" hidden ID from the bus.
+ */
+function instance(bus: t.EventBus<any>) {
+  return ((bus ?? {}) as any)._instance ?? '';
+}
 
 /**
  * Create a live clone of an event-bus.
@@ -131,5 +139,6 @@ function clone<T extends E = E>(
  */
 (factory as any).isBus = isBus;
 (factory as any).asType = busAsType;
+(factory as any).instance = instance;
 (factory as any).clone = clone;
 export const bus = factory as Bus;
