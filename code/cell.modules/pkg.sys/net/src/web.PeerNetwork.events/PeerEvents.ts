@@ -46,7 +46,7 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
   /**
    * STATUS
    */
-  const Status = (self: t.PeerId) => {
+  const status = (self: t.PeerId) => {
     const req$ = rx
       .payload<t.PeerLocalStatusReqEvent>(bus$, 'sys.net/peer/local/status:req')
       .pipe(filter((e) => e.self === self));
@@ -74,7 +74,7 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
   /**
    * PURGE
    */
-  const Purge = (self: t.PeerId) => {
+  const purge = (self: t.PeerId) => {
     const req$ = rx
       .payload<t.PeerLocalPurgeReqEvent>(bus$, 'sys.net/peer/local/purge:req')
       .pipe(filter((e) => e.self === self));
@@ -95,7 +95,7 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
   /**
    * LOCAL: Media
    */
-  const Media = (self: t.PeerId) => {
+  const media = (self: t.PeerId) => {
     const req$ = rx
       .payload<t.PeerLocalMediaReqEvent>(bus$, 'sys.net/peer/local/media:req')
       .pipe(filter((e) => e.self === self));
@@ -143,7 +143,7 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
   /**
    * CONNECT (Outgoing)
    */
-  const Connection = (self: t.PeerId, remote: t.PeerId) => {
+  const connection = (self: t.PeerId, remote: t.PeerId) => {
     const connected$ = rx
       .payload<t.PeerConnectResEvent>(bus$, 'sys.net/peer/conn/connect:res')
       .pipe(filter((e) => e.self === self && e.remote === remote));
@@ -195,7 +195,7 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
   /**
    * Connections
    */
-  const Connections = (self: t.PeerId) => {
+  const connections = (self: t.PeerId) => {
     const connect = {
       req$: rx
         .payload<t.PeerConnectReqEvent>(bus$, 'sys.net/peer/conn/connect:req')
@@ -221,7 +221,7 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
   /**
    * Data stream
    */
-  const Data = (self: t.PeerId) => {
+  const data = (self: t.PeerId) => {
     const out = {
       req$: rx
         .payload<t.PeerDataOutReqEvent>(bus$, 'sys.net/peer/data/out:req')
@@ -252,16 +252,16 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
   /**
    * Investigate remote peers
    */
-  const Remote = {
+  const remote = {
     exists: {
       req$: rx.payload<t.PeerRemoteExistsReqEvent>(bus$, 'sys.net/peer/remote/exists:req'),
       res$: rx.payload<t.PeerRemoteExistsResEvent>(bus$, 'sys.net/peer/remote/exists:res'),
       async get(args: { self: t.PeerId; remote: t.PeerId; timeout?: Milliseconds }) {
-        const { self, remote } = args;
+        const { self } = args;
         const tx = slug();
         const msecs = args.timeout ?? 10000;
         const first = firstValueFrom(
-          Remote.exists.res$.pipe(
+          remote.exists.res$.pipe(
             filter((e) => e.tx === tx),
             timeout(msecs),
             catchError(() => of(`[remote.exists] timed out after ${msecs} msecs`)),
@@ -270,7 +270,7 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
 
         bus.fire({
           type: 'sys.net/peer/remote/exists:req',
-          payload: { tx, self, remote },
+          payload: { tx, self, remote: args.remote },
         });
 
         const res = await first;
@@ -279,7 +279,7 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
         const fail: t.PeerRemoteExistsRes = {
           tx,
           self,
-          remote,
+          remote: args.remote,
           exists: false,
           error: res,
         };
@@ -289,18 +289,18 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
   };
 
   return {
+    $: bus$,
     dispose,
     dispose$: dispose$.pipe(take(1)),
-    $: bus$,
 
     create,
     created,
-    status: Status,
-    purge: Purge,
-    media: Media,
-    connection: Connection,
-    connections: Connections,
-    data: Data,
-    remote: Remote,
+    status,
+    purge,
+    media,
+    connection,
+    connections,
+    data,
+    remote,
   };
 }

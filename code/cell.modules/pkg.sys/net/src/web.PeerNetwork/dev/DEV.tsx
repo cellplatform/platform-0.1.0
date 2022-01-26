@@ -49,7 +49,7 @@ type CtxDebugFlags = {
 
 type CtxEvents = {
   peer: t.PeerEvents;
-  group: t.GroupNetworkEvents;
+  group: t.GroupEvents;
   media: ReturnType<typeof MediaStream.Events>;
   runtime: t.WebRuntimeEvents;
 };
@@ -215,7 +215,7 @@ export const actions = DevActions<Ctx>()
     });
 
     e.button('debug (group)', async (e) => {
-      const res = await e.ctx.events?.group.connections().get();
+      const res = await e.ctx.events?.group.connections.get();
 
       console.group('🌳 Group');
       console.log('local', res?.local);

@@ -16,9 +16,9 @@ export type GroupEvent =
  */
 export type GroupEnsureConnectionClosedEvent = {
   type: 'sys.net/group/conn/ensure:closed';
-  payload: NetGroupEnsureConnectionClosed;
+  payload: GroupEnsureConnectionClosed;
 };
-export type NetGroupEnsureConnectionClosed = {
+export type GroupEnsureConnectionClosed = {
   source: t.PeerId;
   connection: t.PeerConnectionId;
 };
@@ -28,9 +28,9 @@ export type NetGroupEnsureConnectionClosed = {
  */
 export type GroupConnectionsReqEvent = {
   type: 'sys.net/group/connections:req';
-  payload: NetGroupConnectionsReq;
+  payload: GroupConnectionsReq;
 };
-export type NetGroupConnectionsReq = {
+export type GroupConnectionsReq = {
   source: t.PeerId;
   targets?: t.PeerId[];
   tx?: string;
@@ -38,9 +38,9 @@ export type NetGroupConnectionsReq = {
 
 export type GroupConnectionsResEvent = {
   type: 'sys.net/group/connections:res';
-  payload: NetGroupConnectionsRes;
+  payload: GroupConnectionsRes;
 };
-export type NetGroupConnectionsRes = {
+export type GroupConnectionsRes = {
   source: t.PeerId;
   tx: string;
   peers: t.GroupPeer[];
@@ -51,9 +51,9 @@ export type NetGroupConnectionsRes = {
  */
 export type GroupRefreshEvent = {
   type: 'sys.net/group/refresh';
-  payload: NetGroupRefresh;
+  payload: GroupRefresh;
 };
-export type NetGroupRefresh = {
+export type GroupRefresh = {
   source: t.PeerId;
 };
 
@@ -62,9 +62,9 @@ export type NetGroupRefresh = {
  */
 export type GroupConnectEvent = {
   type: 'sys.net/group/connect';
-  payload: NetGroupConnect;
+  payload: GroupConnect;
 };
-export type NetGroupConnect = {
+export type GroupConnect = {
   source: t.PeerId;
   target: { peer: t.PeerId; kind: t.PeerConnectionKind };
 };
@@ -72,11 +72,11 @@ export type NetGroupConnect = {
 /**
  * Fired to tell the group of a peers screen size.
  */
-export type NetGroupPeerScreenEvent = {
+export type GroupPeerScreenEvent = {
   type: 'sys.net/group/peer/screen';
-  payload: PeerScreen;
+  payload: GroupPeerScreen;
 };
-export type PeerScreen = {
+export type GroupPeerScreen = {
   self: t.PeerId;
   size: { width: number; height: number };
 };

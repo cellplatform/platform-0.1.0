@@ -8,14 +8,14 @@ import { slug, t, WebRuntime, UriUtil } from '../common';
  */
 export async function GroupConnectionsStrategy(args: {
   netbus: t.PeerNetbus<t.GroupEvent>;
-  events: { group: t.GroupNetworkEvents; peer: t.PeerEvents };
+  events: { group: t.GroupEvents; peer: t.PeerEvents };
   isEnabled: () => boolean;
 }) {
   const { netbus, events } = args;
   const module = { name: WebRuntime.module.name, version: WebRuntime.module.version };
   const self = netbus.self;
-  const req$ = events.group.connections().req$.pipe(filter(() => args.isEnabled()));
-  const res$ = events.group.connections().res$.pipe(filter(() => args.isEnabled()));
+  const req$ = events.group.connections.req$.pipe(filter(() => args.isEnabled()));
+  const res$ = events.group.connections.res$.pipe(filter(() => args.isEnabled()));
 
   const toConnectionUri = (input: string) => UriUtil.connection.parse(input, { throw: true });
 
@@ -73,40 +73,37 @@ export async function GroupConnectionsStrategy(args: {
   /**
    * Listen for connect instructions.
    */
-  events.group
-    .connect()
-    .$.pipe()
-    .subscribe(async (e) => {
-      console.log('connect', e);
+  events.group.connect.$.pipe().subscribe(async (e) => {
+    console.log('connect', e);
 
-      const { kind } = e.target;
+    const { kind } = e.target;
 
-      /**
-       * TODO 🐷
-       * - clearn up
-       * - don't auto start video by default
-       */
-      console.log('clean up');
+    /**
+     * TODO 🐷
+     * - clearn up
+     * - don't auto start video by default
+     */
+    console.log('clean up');
 
-      // const events = PeerNetwork.Events(bus);
-      const remote = e.target.peer;
-      const open = events.peer.connection(self, remote).open;
+    // const events = PeerNetwork.Events(bus);
+    const remote = e.target.peer;
+    const open = events.peer.connection(self, remote).open;
 
-      if (kind === 'data') {
-        const exists = netbus.connections
-          .filter((conn) => conn.kind === 'data')
-          .some((conn) => conn.peer.remote.id === remote);
-        if (exists) return;
+    if (kind === 'data') {
+      const exists = netbus.connections
+        .filter((conn) => conn.kind === 'data')
+        .some((conn) => conn.peer.remote.id === remote);
+      if (exists) return;
 
-        const res = await open.data();
-        console.log('open/data:', res);
+      const res = await open.data();
+      console.log('open/data:', res);
 
-        // open.media('media/video', { parent: res.connection?.id });
-      }
-      if (kind === 'media/screen' || kind === 'media/video') {
-        // const parent = self.
-        const res = await open.media(kind, {});
-        console.log('open/media:', res);
-      }
-    });
+      // open.media('media/video', { parent: res.connection?.id });
+    }
+    if (kind === 'media/screen' || kind === 'media/video') {
+      // const parent = self.
+      const res = await open.media(kind, {});
+      console.log('open/media:', res);
+    }
+  });
 }
