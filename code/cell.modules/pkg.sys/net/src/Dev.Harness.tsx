@@ -5,10 +5,10 @@ import { t } from './common';
 
 const imports = {
   ModuleInfo: import('./web.ui/ModuleInfo/dev/DEV'),
-  PeerNetwork: import('./web.PeerNetwork/dev/DEV'),
-  PeerNetworkHook: import('./web.ui.hooks/usePeerNetwork/dev/DEV'),
   LocalPeerProps: import('./web.ui/LocalPeerProps/dev/DEV'),
+  Networks: import('./web.ui.hooks/usePeerNetwork/dev/DEV'),
   UnitTests: import('./web.ui/dev/DEV.UnitTests'),
+  SamplePeerNetwork: import('./web.PeerNetwork/dev/DEV'),
 };
 
 /**
