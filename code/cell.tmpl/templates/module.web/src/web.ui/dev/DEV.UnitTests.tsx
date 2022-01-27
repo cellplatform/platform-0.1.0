@@ -2,14 +2,11 @@ import React from 'react';
 import { DevActions, Test } from 'sys.ui.dev';
 import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
-type CtxRunTests = () => Promise<TestSuiteRunResponse>;
-
-type Ctx = {
-  results?: TestSuiteRunResponse;
-  tests?: {
-    Sample: CtxRunTests;
-  };
+const Imports = {
+  Sample: import('./Sample.TEST'),
 };
+
+type Ctx = { results?: TestSuiteRunResponse };
 
 /**
  * Actions
@@ -19,23 +16,21 @@ export const actions = DevActions<Ctx>()
   .context((e) => e.prev ?? {})
 
   .init(async (e) => {
-    const run = async (input: Promise<any>) => {
-      const res = (e.ctx.results = await Test.run(input));
-      e.redraw();
-      return res;
-    };
-
-    const tests = (e.ctx.tests = {
-      Sample: () => run(import('./Sample.TEST')),
-    });
-
-    await tests.Sample(); // Auto-run on load.
+    e.ctx.results = await Test.run(Object.values(Imports));
   })
 
   .items((e) => {
     e.title('Run Tests');
 
-    e.button('run: Sample', (e) => e.ctx.tests?.Sample());
+    e.button('all', async (e) => {
+      e.ctx.results = await Test.run(Object.values(Imports));
+    });
+
+    e.hr(1, 0.1);
+
+    Object.keys(Imports).forEach((key) => {
+      e.button(`run: ${key}`, async (e) => (e.ctx.results = await Test.run(Imports[key])));
+    });
 
     e.hr();
   })
