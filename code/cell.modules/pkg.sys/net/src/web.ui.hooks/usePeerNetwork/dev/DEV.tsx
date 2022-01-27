@@ -5,43 +5,11 @@ import { cuid, PeerNetwork, t, WebRuntime, rx } from './DEV.common';
 import { DevSample, DevSampleProps } from './DEV.Sample';
 
 type Ctx = {
-  networks: t.DevNetwork[];
+  networks: t.PeerNetwork[];
 };
 
 const DEFAULT = {
   signal: 'rtc.cellfs.com',
-};
-
-type Domain = string;
-
-const start = async (args: {
-  bus: t.EventBus;
-  signal: Domain;
-  self?: t.PeerId;
-}): Promise<t.DevNetwork> => {
-  const { bus, signal } = args;
-  const self = args.self ?? cuid();
-
-  const peer = PeerNetwork.Controller({ bus });
-  const netbus = PeerNetwork.Netbus({ bus, self });
-  const runtime = WebRuntime.Bus.Controller({ bus, netbus });
-
-  const events = {
-    peer: PeerNetwork.PeerEvents(bus),
-    group: PeerNetwork.GroupEvents(netbus),
-    runtime: runtime.events,
-  };
-
-  const dispose = () => {
-    peer.dispose();
-    runtime.dispose();
-    events.peer.dispose();
-    events.group.dispose();
-    events.runtime.dispose();
-  };
-
-  await events.peer.create(signal, self);
-  return { self, bus, netbus, events, dispose };
 };
 
 /**
@@ -65,7 +33,7 @@ export const actions = DevActions<Ctx>()
     e.button('add network', async (e) => {
       const bus = rx.bus();
       const signal = DEFAULT.signal;
-      const network = await start({ bus, signal });
+      const network = await PeerNetwork.start({ bus, signal });
       e.ctx.networks.push(network);
     });
 

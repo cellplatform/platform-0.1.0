@@ -3,8 +3,7 @@ import { color, css, CssValue, t, Card } from './DEV.common';
 import { DevSampleNetwork } from './DEV.Sample.Network';
 
 export type DevSampleProps = {
-  networks: t.DevNetwork[];
-
+  networks: t.PeerNetwork[];
   style?: CssValue;
 };
 

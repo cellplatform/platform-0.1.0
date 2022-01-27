@@ -50,7 +50,7 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    // e.render(<LocalPeerProps {...props} />);
+    e.render(props && <LocalPeerProps {...props} />);
   });
 
 export default actions;

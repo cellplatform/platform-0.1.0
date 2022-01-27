@@ -14,8 +14,8 @@ import {
   time,
   WebRuntime,
   DEFAULT,
-} from './common';
-import { PeerEvents } from '../web.PeerNetwork.events';
+} from '../common';
+import { PeerEvents } from '../../web.PeerNetwork.events';
 import { MemoryRefs, SelfRef } from './Refs';
 import { Status } from './Status';
 

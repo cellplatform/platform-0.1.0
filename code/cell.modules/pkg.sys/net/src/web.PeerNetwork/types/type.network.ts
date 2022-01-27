@@ -1,8 +1,9 @@
-import * as t from '../../../common/types';
+import { t } from './common';
 
-export * from '../../../common/types';
-
-export type DevNetwork = {
+/**
+ * Represents a running [PeerNetwork] instance.
+ */
+export type PeerNetwork = {
   dispose(): void;
   self: t.PeerId;
   bus: t.EventBus;

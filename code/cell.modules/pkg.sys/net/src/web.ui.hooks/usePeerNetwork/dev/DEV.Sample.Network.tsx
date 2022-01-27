@@ -5,7 +5,7 @@ import { usePeerNetwork } from '..';
 import { css, CssValue, t, useLocalPeer, LocalPeerProps, Card } from './DEV.common';
 
 export type DevSampleNetworkProps = {
-  network: t.DevNetwork;
+  network: t.PeerNetwork;
   style?: CssValue;
 };
 

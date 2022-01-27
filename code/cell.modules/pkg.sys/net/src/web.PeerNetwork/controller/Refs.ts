@@ -1,4 +1,4 @@
-import { PeerJS, t, StringUtil, UriUtil } from './common';
+import { PeerJS, t, StringUtil, UriUtil } from '../common';
 
 type ConnectionKind = t.PeerConnectRes['kind'];
 

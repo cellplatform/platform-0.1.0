@@ -15,3 +15,4 @@ export * from './type.strategy';
 export * from './type.group';
 
 export * from './type.uri';
+export * from './type.network';

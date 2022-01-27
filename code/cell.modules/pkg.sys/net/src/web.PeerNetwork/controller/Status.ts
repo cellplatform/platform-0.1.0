@@ -1,4 +1,4 @@
-import { deleteUndefined, PeerJS, t } from './common';
+import { deleteUndefined, PeerJS, t } from '../common';
 import { ConnectionRef, SelfRef } from './Refs';
 
 export const Status = {

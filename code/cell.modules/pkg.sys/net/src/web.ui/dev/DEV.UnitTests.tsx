@@ -2,17 +2,15 @@ import React from 'react';
 import { DevActions, Test } from 'sys.ui.dev';
 import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
-type CtxRunTests = () => Promise<TestSuiteRunResponse>;
-
-type Ctx = {
-  results?: TestSuiteRunResponse;
-  tests?: {
-    PeerNetbus: CtxRunTests;
-    PeerEvents: CtxRunTests;
-    PeerStrategy: CtxRunTests;
-    PeerNetworkUri: CtxRunTests;
-  };
+const Imports = {
+  PeerNetwork: import('../../web.PeerNetwork/PeerNetwork.TEST'),
+  PeerNetworkUri: import('../../web.PeerNetwork/common/util.Uri.TEST'),
+  PeerNetbus: import('../../web.PeerNetbus/PeerNetbus.TEST'),
+  PeerEvents: import('../../web.PeerNetwork.events/PeerEvents.TEST'),
+  PeerStrategy: import('../../web.PeerNetwork/strategy/PeerStrategy/PeerStrategy.TEST'),
 };
+
+type Ctx = { results?: TestSuiteRunResponse };
 
 /**
  * Actions
@@ -22,34 +20,22 @@ export const actions = DevActions<Ctx>()
   .context((e) => e.prev ?? {})
 
   .init(async (e) => {
-    const run = async (input: Promise<any>) => {
-      const res = (e.ctx.results = await Test.run(input));
-      e.redraw();
-      return res;
-    };
-
-    const tests = (e.ctx.tests = {
-      PeerNetbus: () => run(import('../../web.PeerNetbus/PeerNetbus.TEST')),
-      PeerEvents: () => run(import('../../web.PeerNetwork.events/PeerEvents.TEST')),
-      PeerStrategy: () =>
-        run(import('../../web.PeerNetwork/strategy/PeerStrategy/PeerStrategy.TEST')),
-      PeerNetworkUri: () => run(import('../../web.PeerNetwork/common/util.Uri.TEST')),
-    });
-
-    // Auto-run on load.
-    // await tests.PeerNetbus();
-    await tests.PeerEvents();
-    // await tests.PeerStrategy();
-    // await tests.PeerNetworkUri();
+    // e.ctx.results = await Test.run(Object.values(Imports));
+    e.ctx.results = await Test.run(Imports.PeerNetwork);
   })
 
   .items((e) => {
     e.title('Run Tests');
 
-    e.button('run: PeerNetbus', (e) => e.ctx.tests?.PeerNetbus());
-    e.button('run: PeerEvents', (e) => e.ctx.tests?.PeerEvents());
-    e.button('run: PeerStrategy', (e) => e.ctx.tests?.PeerStrategy());
-    e.button('run: PeerNetwork URI', (e) => e.ctx.tests?.PeerNetworkUri());
+    e.button('all', async (e) => {
+      e.ctx.results = await Test.run(Object.values(Imports));
+    });
+
+    e.hr(1, 0.1);
+
+    Object.keys(Imports).forEach((key) => {
+      e.button(`run: ${key}`, async (e) => (e.ctx.results = await Test.run(Imports[key])));
+    });
 
     e.hr();
   })
