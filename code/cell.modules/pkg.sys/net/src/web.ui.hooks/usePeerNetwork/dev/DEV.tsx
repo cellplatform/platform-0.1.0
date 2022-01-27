@@ -16,7 +16,7 @@ const DEFAULT = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('usePeerNetwork')
+  .namespace('hook.usePeerNetwork')
   .context((e) => {
     if (e.prev) return e.prev;
     const ctx: Ctx = { networks: [] };

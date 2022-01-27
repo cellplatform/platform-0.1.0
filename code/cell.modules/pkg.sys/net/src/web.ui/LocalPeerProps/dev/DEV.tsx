@@ -2,8 +2,15 @@ import React from 'react';
 import { toObject, DevActions } from 'sys.ui.dev';
 import { LocalPeerProps, LocalPeerPropsProps } from '..';
 import { t, cuid, rx } from '../../common';
+import { PeerNetwork } from '../../..';
 
-type Ctx = { props?: LocalPeerPropsProps };
+type Ctx = {
+  network?: t.PeerNetwork;
+  props?: LocalPeerPropsProps;
+  flags: {
+    newConnections: boolean;
+  };
+};
 
 /**
  * Actions
@@ -14,30 +21,37 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const ctx: Ctx = {
-      // bus: rx.bus(),
-      // self: { id: cuid() },
+      flags: { newConnections: true },
     };
-
     return ctx;
   })
 
   .init(async (e) => {
     const { ctx, bus } = e;
 
-    // const id = cuid();
-    // ctx.props.bus = toObject(bus) as t.EventBus;
+    const signal = 'rtc.cellfs.com';
+    const network = (ctx.network = await PeerNetwork.start({ bus, signal }));
+    const { self } = network;
 
-    // ctx.props = { bus, self: {} };
+    const status = (await network.events.peer.status(self).get()).peer;
+    if (status) {
+      ctx.props = { bus, self: { id: self, status } };
+    }
   })
 
   .items((e) => {
     e.title('Dev');
 
+    e.boolean('newConnections', (e) => {
+      if (e.changing) e.ctx.flags.newConnections = e.changing.next;
+      e.boolean.current = e.ctx.flags.newConnections;
+    });
+
     e.hr();
   })
 
   .subject((e) => {
-    const { props } = e.ctx;
+    const { props, flags } = e.ctx;
 
     e.settings({
       host: { background: -0.04 },
@@ -50,7 +64,7 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    e.render(props && <LocalPeerProps {...props} />);
+    e.render(props && <LocalPeerProps {...props} newConnections={flags.newConnections} />);
   });
 
 export default actions;
