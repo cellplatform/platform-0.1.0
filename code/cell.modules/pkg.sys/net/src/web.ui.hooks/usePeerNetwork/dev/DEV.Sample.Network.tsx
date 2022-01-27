@@ -41,7 +41,7 @@ export const DevSampleNetwork: React.FC<DevSampleNetworkProps> = (props) => {
         {status && <LocalPeerProps bus={bus} self={{ id: self, status }} newConnections={true} />}
       </div>
       <div>
-        <ObjectView name={'peer'} data={peer} fontSize={12} />
+        <ObjectView name={'peer'} data={peer} fontSize={11} />
       </div>
     </Card>
   );
