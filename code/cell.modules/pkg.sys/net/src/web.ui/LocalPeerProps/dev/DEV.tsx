@@ -1,5 +1,5 @@
 import React from 'react';
-import { toObject, DevActions } from 'sys.ui.dev';
+import { toObject, DevActions, lorem } from 'sys.ui.dev';
 import { LocalPeerProps, LocalPeerPropsProps } from '..';
 import { t, cuid, rx } from '../../common';
 import { PeerNetwork } from '../../..';
@@ -7,9 +7,8 @@ import { PeerNetwork } from '../../..';
 type Ctx = {
   network?: t.PeerNetwork;
   props?: LocalPeerPropsProps;
-  flags: {
-    newConnections: boolean;
-  };
+  newConnections: boolean;
+  title?: string | null;
 };
 
 /**
@@ -21,7 +20,7 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const ctx: Ctx = {
-      flags: { newConnections: true },
+      newConnections: true,
     };
     return ctx;
   })
@@ -40,31 +39,45 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('Dev');
+    e.title('LocalPeerProps');
+
+    e.select((config) => {
+      config
+        .title('title')
+        .initial('default')
+        .view('buttons')
+        .items(['default', 'custom', 'custom (long)', 'none (null)'])
+        .pipe((e) => {
+          const current = e.select.current[0].value; // NB: always first.
+
+          if (current === 'default') e.ctx.title = undefined;
+          if (current === 'custom') e.ctx.title = 'My Title';
+          if (current === 'custom (long)') e.ctx.title = lorem.toString();
+          if (current === 'none (null)') e.ctx.title = null;
+        });
+    });
 
     e.boolean('newConnections', (e) => {
-      if (e.changing) e.ctx.flags.newConnections = e.changing.next;
-      e.boolean.current = e.ctx.flags.newConnections;
+      if (e.changing) e.ctx.newConnections = e.changing.next;
+      e.boolean.current = e.ctx.newConnections;
     });
 
     e.hr();
   })
 
   .subject((e) => {
-    const { props, flags } = e.ctx;
+    const { props } = e.ctx;
 
     e.settings({
       host: { background: -0.04 },
-      layout: {
-        label: '<LocalPeerProps>',
-        // position: [150, 80],
-        // border: -0.1,
-        cropmarks: -0.2,
-        // background: 1,
-      },
+      layout: { cropmarks: -0.2 },
     });
 
-    e.render(props && <LocalPeerProps {...props} newConnections={flags.newConnections} />);
+    if (props) {
+      e.render(
+        <LocalPeerProps {...props} newConnections={e.ctx.newConnections} title={e.ctx.title} />,
+      );
+    }
   });
 
 export default actions;
