@@ -1,5 +1,6 @@
 import React from 'react';
 import { Harness } from 'sys.ui.dev';
+import { t } from '../common';
 
 const imports = {
   useDragTarget: import('sys.ui.primitives/lib/hooks/useDragTarget/dev/DEV'),
