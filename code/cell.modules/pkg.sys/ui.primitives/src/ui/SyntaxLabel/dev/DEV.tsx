@@ -76,6 +76,8 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    const props = e.ctx.props;
+    const { inlineBlock } = props;
     const { repeat, monospace } = e.ctx.debug;
 
     e.settings({
@@ -93,15 +95,17 @@ export const actions = DevActions<Ctx>()
         fontSize: 16,
       }),
       multi: css({
-        marginRight: 8,
+        marginRight: inlineBlock ? 8 : 0,
         ':last-child': { marginRight: 0 },
       }),
     };
 
-    if (repeat === 1) e.render(<SyntaxLabel {...e.ctx.props} style={styles.base} />);
+    if (repeat === 1) e.render(<SyntaxLabel {...props} style={styles.base} />);
     if (repeat > 1) {
-      const elements = Array.from({ length: repeat }).map((v, i) => {
-        return <SyntaxLabel key={i} {...e.ctx.props} style={css(styles.base, styles.multi)} />;
+      const length = repeat;
+      const elements = Array.from({ length }).map((v, i) => {
+        const style = css(styles.base, styles.multi);
+        return <SyntaxLabel key={i} {...props} style={style} />;
       });
 
       e.render(<div>{elements}</div>);

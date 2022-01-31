@@ -44,7 +44,7 @@ export const actions = DevActions<Ctx>()
   })
 
   .init(async (e) => {
-    const { ctx, bus } = e;
+    const { ctx } = e;
     Array.from({ length: 3 }).forEach(() => CtxUtil.addItem(ctx));
   })
 
