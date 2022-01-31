@@ -1,10 +1,12 @@
 import React from 'react';
 import { Harness } from 'sys.ui.dev';
+import { t } from './common';
 
 const imports = {
   useDragTarget: import('./hooks/useDragTarget/dev/DEV'),
 
   Antechamber: import('./ui/Antechamber/dev/DEV'),
+  BulletList: import('./ui/BulletList/dev/DEV'),
   DotTabstrip: import('./ui/DotTabstrip/dev/DEV'),
   Zoom: import('./ui/Zoom/DEV'),
   PropList: import('./ui/PropList/dev/DEV'),
@@ -35,10 +37,24 @@ const imports = {
 
   Tree: import('./ui/Tree/dev/DEV'),
   StackPanel: import('./ui/StackPanel/dev/DEV'),
+  SyntaxLabel: import('./ui/SyntaxLabel/dev/DEV'),
 };
 
-const dev = new URL(location.href).searchParams.get('dev');
+/**
+ * UI Harness (Dev)
+ */
+type Props = { bus?: t.EventBus };
 
-export const DevHarness: React.FC = () => (
-  <Harness actions={Object.values(imports)} initial={dev} />
-);
+export const DevHarness: React.FC<Props> = (props) => {
+  const url = new URL(location.href);
+  return (
+    <Harness
+      bus={props.bus}
+      actions={Object.values(imports)}
+      initial={url.searchParams.get('dev')}
+      showActions={url.hostname === 'localhost'}
+    />
+  );
+};
+
+export default DevHarness;
