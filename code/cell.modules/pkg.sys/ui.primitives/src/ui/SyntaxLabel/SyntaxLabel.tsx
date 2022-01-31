@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t, style } from '../../common';
-import * as k from './types';
+import React, { useMemo } from 'react';
 
+import { css, CssValue, style, t } from '../../common';
 import { DefaultTokenizer } from './Tokenizer';
+import * as k from './types';
 
 export type SyntaxLabelProps = {
   text?: string;
@@ -17,8 +17,8 @@ export type SyntaxLabelProps = {
  * Label that provides common syntax highlighting.
  */
 export const SyntaxLabel: React.FC<SyntaxLabelProps> = (props) => {
-  const { inlineBlock = true, tokenizer = DefaultTokenizer } = props;
-  const tokens = tokenizer(props.text ?? '').parts;
+  const { text = '', inlineBlock = true, tokenizer = DefaultTokenizer } = props;
+  const tokens = useMemo(() => tokenizer(text).parts, [tokenizer, text]);
 
   /**
    * [Render]
@@ -29,12 +29,11 @@ export const SyntaxLabel: React.FC<SyntaxLabelProps> = (props) => {
       ...style.toPadding(props.padding),
       ...style.toMargins(props.margin),
     }),
-    token: css({}),
   };
 
   const elements = tokens.map((token, i) => {
     return (
-      <span key={i} {...styles.token} style={{ color: token.color }}>
+      <span key={i} style={{ color: token.color }}>
         {token.text}
       </span>
     );

@@ -9,6 +9,8 @@ export const DefaultTokenizer: k.SyntaxLabelTokenizer = (text) => {
   const parts: k.SyntaxLabelToken[] = [];
   let wordBuffer = '';
 
+  console.log('-------------------------------------------');
+
   const pushWord = () => {
     if (wordBuffer.length === 0) return;
     parts.push({ text: wordBuffer, color: COLORS.CYAN });
@@ -21,7 +23,6 @@ export const DefaultTokenizer: k.SyntaxLabelTokenizer = (text) => {
     const current = next();
     const char = current.char;
     done = current.isComplete;
-
     if (typeof char === 'string') {
       if (current.isBrace) {
         pushWord();
