@@ -1,7 +1,6 @@
 import React from 'react';
 import { ObjectView } from 'sys.ui.dev';
 
-import { usePeerNetwork } from '..';
 import { css, CssValue, t, useLocalPeer, LocalPeerCard, Card } from './DEV.common';
 
 export type DevSampleNetworkProps = {
@@ -13,8 +12,6 @@ export const DevSampleNetwork: React.FC<DevSampleNetworkProps> = (props) => {
   const { network } = props;
   const { bus } = network;
   const self = network.netbus.self;
-
-  const net = usePeerNetwork({ bus }); // TEMP 🐷
 
   const peer = useLocalPeer({ self, bus });
   const status = peer.status;

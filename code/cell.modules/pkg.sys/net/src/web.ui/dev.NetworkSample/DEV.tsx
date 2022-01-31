@@ -1,8 +1,8 @@
 import React from 'react';
-import { DevActions, toObject } from 'sys.ui.dev';
+import { DevActions } from 'sys.ui.dev';
 
-import { cuid, PeerNetwork, t, WebRuntime, rx } from './DEV.common';
-import { DevSample, DevSampleProps } from './DEV.Sample';
+import { PeerNetwork, rx, t } from './DEV.common';
+import { DevSample } from './DEV.Sample';
 
 type Ctx = {
   networks: t.PeerNetwork[];
@@ -16,7 +16,7 @@ const DEFAULT = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('debug.Networks')
+  .namespace('dev.Networks')
   .context((e) => {
     if (e.prev) return e.prev;
     const ctx: Ctx = { networks: [] };
