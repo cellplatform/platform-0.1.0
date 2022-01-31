@@ -1,12 +1,12 @@
 import React from 'react';
 import { toObject, DevActions, lorem } from 'sys.ui.dev';
-import { LocalPeerProps, LocalPeerPropsProps } from '..';
+import { LocalPeerCard, LocalPeerCardProps } from '..';
 import { t, cuid, rx } from '../../common';
 import { PeerNetwork } from '../../..';
 
 type Ctx = {
   network?: t.PeerNetwork;
-  props?: LocalPeerPropsProps;
+  props?: LocalPeerCardProps;
   newConnections: boolean;
   title?: string | null;
 };
@@ -15,7 +15,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.LocalPeerProps')
+  .namespace('ui.LocalPeerCard')
   .context((e) => {
     if (e.prev) return e.prev;
 
@@ -30,16 +30,22 @@ export const actions = DevActions<Ctx>()
 
     const signal = 'rtc.cellfs.com';
     const network = (ctx.network = await PeerNetwork.start({ bus, signal }));
-    const { self } = network;
+    const { self } = network.netbus;
+
+    // network.netbus.
 
     const status = (await network.events.peer.status(self).get()).peer;
     if (status) {
-      ctx.props = { bus, self: { id: self, status } };
+      ctx.props = {
+        bus,
+        self: { id: self, status },
+        showAsCard: true,
+      };
     }
   })
 
   .items((e) => {
-    e.title('LocalPeerProps');
+    e.title('Props');
 
     e.select((config) => {
       config
@@ -63,6 +69,16 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr();
+    e.title('Debug');
+
+    e.boolean('asCard', (e) => {
+      if (e.changing) {
+        (e.ctx.props as LocalPeerCardProps).showAsCard = e.changing.next;
+      }
+      e.boolean.current = e.ctx.props?.showAsCard;
+    });
+
+    e.hr();
   })
 
   .subject((e) => {
@@ -75,7 +91,7 @@ export const actions = DevActions<Ctx>()
 
     if (props) {
       e.render(
-        <LocalPeerProps {...props} newConnections={e.ctx.newConnections} title={e.ctx.title} />,
+        <LocalPeerCard {...props} newConnections={e.ctx.newConnections} title={e.ctx.title} />,
       );
     }
   });

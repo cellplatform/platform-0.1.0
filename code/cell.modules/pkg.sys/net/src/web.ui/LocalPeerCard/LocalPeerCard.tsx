@@ -3,23 +3,42 @@ import { interval, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { PeerEvents } from '../../web.PeerNetwork.events';
-import { color, COLORS, css, CssValue, Hr, Icons, PropList, t, Textbox, time } from '../common';
+import {
+  color,
+  COLORS,
+  css,
+  CssValue,
+  Hr,
+  Icons,
+  PropList,
+  t,
+  Textbox,
+  time,
+  Card,
+} from '../common';
 
 type NewConnectionOptions = { isReliable?: boolean; autoStartVideo?: boolean };
 
-export type LocalPeerPropsProps = {
+export type LocalPeerCardProps = {
   bus: t.EventBus<any>;
   self: { id: t.PeerId; status: t.PeerStatus };
   title?: string | null;
   newConnections?: boolean | NewConnectionOptions;
+  showAsCard?: boolean;
   style?: CssValue;
 };
 
 /**
+ * TODO 🐷
+ * - rename to [LocalPeerCard]
+ * - make elements choosable (in order).  See [ModuleInfo]
+ */
+
+/**
  * A property list of the local network Peer.
  */
-export const LocalPeerProps: React.FC<LocalPeerPropsProps> = (props) => {
-  const { bus, self, newConnections = false } = props;
+export const LocalPeerCard: React.FC<LocalPeerCardProps> = (props) => {
+  const { bus, self, newConnections = false, showAsCard = false } = props;
   const title = props.title === null ? undefined : props.title ?? 'Network';
 
   const [connectTo, setConnectTo] = useState<string>('');
@@ -79,6 +98,11 @@ export const LocalPeerProps: React.FC<LocalPeerPropsProps> = (props) => {
       maxWidth: width.max,
       minWidth: width.min,
     }),
+    card: css({
+      PaddingX: 25,
+      paddingTop: 20,
+      paddingBottom: 15,
+    }),
   };
 
   const elConnect = newConnections && (
@@ -107,7 +131,7 @@ export const LocalPeerProps: React.FC<LocalPeerPropsProps> = (props) => {
     />
   );
 
-  return (
+  const elBody = (
     <div {...css(styles.base, props.style)}>
       <PropList
         title={title}
@@ -119,13 +143,15 @@ export const LocalPeerProps: React.FC<LocalPeerPropsProps> = (props) => {
       {elConnect}
     </div>
   );
+
+  return showAsCard ? <Card style={styles.card}>{elBody}</Card> : elBody;
 };
 
 /**
  * [Helpers]
  */
 
-const toNetworkItems = (props: LocalPeerPropsProps): t.PropListItem[] => {
+const toNetworkItems = (props: LocalPeerCardProps): t.PropListItem[] => {
   const { self } = props;
   if (!self?.status) return [];
 
@@ -153,7 +179,7 @@ const toNetworkItems = (props: LocalPeerPropsProps): t.PropListItem[] => {
   return [
     { label: 'local peer', value: { data: status.id, clipboard: true } },
     { label: `signal server`, value: elSignal },
-    { label: 'alive', value: status.isOnline ? age : 'no' },
+    { label: 'lifespan', value: status.isOnline ? age : 'no' },
     { label: `connections`, value: status.connections.length },
   ];
 };

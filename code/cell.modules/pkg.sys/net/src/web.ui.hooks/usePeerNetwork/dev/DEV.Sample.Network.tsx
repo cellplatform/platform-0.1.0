@@ -2,7 +2,7 @@ import React from 'react';
 import { ObjectView } from 'sys.ui.dev';
 
 import { usePeerNetwork } from '..';
-import { css, CssValue, t, useLocalPeer, LocalPeerProps, Card } from './DEV.common';
+import { css, CssValue, t, useLocalPeer, LocalPeerCard, Card } from './DEV.common';
 
 export type DevSampleNetworkProps = {
   network: t.PeerNetwork;
@@ -11,7 +11,8 @@ export type DevSampleNetworkProps = {
 
 export const DevSampleNetwork: React.FC<DevSampleNetworkProps> = (props) => {
   const { network } = props;
-  const { self, bus } = network;
+  const { bus } = network;
+  const self = network.netbus.self;
 
   const net = usePeerNetwork({ bus }); // TEMP 🐷
 
@@ -38,7 +39,7 @@ export const DevSampleNetwork: React.FC<DevSampleNetworkProps> = (props) => {
   return (
     <Card style={css(styles.base, props.style)}>
       <div {...styles.peerProps}>
-        {status && <LocalPeerProps bus={bus} self={{ id: self, status }} newConnections={true} />}
+        {status && <LocalPeerCard bus={bus} self={{ id: self, status }} newConnections={true} />}
       </div>
       <div>
         <ObjectView name={'peer'} data={peer} fontSize={11} />

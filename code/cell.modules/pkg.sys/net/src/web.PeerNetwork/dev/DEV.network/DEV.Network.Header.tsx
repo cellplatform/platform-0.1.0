@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { css, CssValue, LocalPeerProps, t } from '../DEV.common';
+import { css, CssValue, LocalPeerCard, t } from '../DEV.common';
 import { DevVideo } from '../DEV.media';
 
 export type DevNetworkHeaderProps = {
@@ -63,7 +63,7 @@ export const DevNetworkHeader: React.FC<DevNetworkHeaderProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.left}>
-        <LocalPeerProps
+        <LocalPeerCard
           self={{ id: self.id, status: self.status }}
           bus={bus}
           newConnections={{ isReliable: true, autoStartVideo: true }}

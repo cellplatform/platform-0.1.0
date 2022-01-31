@@ -16,7 +16,7 @@ const DEFAULT = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('hook.usePeerNetwork')
+  .namespace('debug.Networks')
   .context((e) => {
     if (e.prev) return e.prev;
     const ctx: Ctx = { networks: [] };
@@ -35,6 +35,11 @@ export const actions = DevActions<Ctx>()
       const signal = DEFAULT.signal;
       const network = await PeerNetwork.start({ bus, signal });
       e.ctx.networks.push(network);
+    });
+
+    e.button('clear', (e) => {
+      e.ctx.networks.forEach((net) => net.dispose());
+      e.ctx.networks = [];
     });
 
     e.hr();

@@ -6,7 +6,7 @@ import { PeerEvents, GroupEvents } from '../web.PeerNetwork.events';
 type DomainEndpoint = string;
 
 type Args = {
-  bus: t.EventBus;
+  bus: t.EventBus<any>;
   signal: DomainEndpoint;
   self?: t.PeerId;
 };
@@ -37,7 +37,6 @@ export async function start(args: Args): Promise<t.PeerNetwork> {
   };
 
   const api: t.PeerNetwork = {
-    self,
     bus,
     netbus,
     events,

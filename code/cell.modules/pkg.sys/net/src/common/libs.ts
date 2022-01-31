@@ -31,3 +31,4 @@ export { NetworkBus } from '@platform/cell.runtime/lib/NetworkBus';
 export { Filesystem } from 'sys.fs';
 export { WebRuntime } from 'sys.runtime.web';
 export { PropList, PropListItem } from 'sys.ui.primitives/lib/ui/PropList';
+export { Card } from 'sys.ui.primitives/lib/ui/Card';

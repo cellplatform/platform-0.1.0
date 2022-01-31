@@ -5,7 +5,7 @@ import { t } from './common';
 
 const imports = {
   ModuleInfo: import('./web.ui/ModuleInfo/dev/DEV'),
-  LocalPeerProps: import('./web.ui/LocalPeerProps/dev/DEV'),
+  LocalPeerCard: import('./web.ui/LocalPeerCard/dev/DEV'),
   Networks: import('./web.ui.hooks/usePeerNetwork/dev/DEV'),
   UnitTests: import('./web.ui/dev/DEV.UnitTests'),
   SamplePeerNetwork: import('./web.PeerNetwork/dev/DEV'),

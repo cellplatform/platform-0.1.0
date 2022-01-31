@@ -5,9 +5,8 @@ import { t } from './common';
  */
 export type PeerNetwork = {
   dispose(): void;
-  self: t.PeerId;
   bus: t.EventBus;
-  netbus: t.NetworkBus;
+  netbus: t.PeerNetbus;
   events: {
     peer: t.PeerEvents;
     group: t.GroupEvents;
