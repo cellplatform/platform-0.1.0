@@ -9,8 +9,6 @@ export const DefaultTokenizer: k.SyntaxLabelTokenizer = (text) => {
   const parts: k.SyntaxLabelToken[] = [];
   let wordBuffer = '';
 
-  console.log('-------------------------------------------');
-
   const pushWord = () => {
     if (wordBuffer.length === 0) return;
     parts.push({ text: wordBuffer, color: COLORS.CYAN });
