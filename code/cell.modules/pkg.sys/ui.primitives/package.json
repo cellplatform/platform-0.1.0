@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.primitives",
-  "version": "0.0.101",
+  "version": "0.0.102",
   "sideEffects": false,
   "compiler": {
     "port": 3036
@@ -10,7 +10,7 @@
     "dev": "cell.compiler dev --no-exports $@",
     "lint": "ts lint $@",
     "build": "ts build --no-esm $@",
-    "bundle": "cell.compiler bundle $@",
+    "bundle": "cell.compiler bundle --bump $@",
     "watch": "cell.compiler watch $@",
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
