@@ -282,7 +282,7 @@ export const actions = DevActions<Ctx>()
         .items(['Chocolate', 'Strawberry', 'Vanilla'])
         // .clearable(true)
         .pipe((e) => {
-          //
+          const current = e.select.current[0]; // NB: always first.
         });
     });
 

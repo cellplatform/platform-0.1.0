@@ -20,6 +20,6 @@ export type ActionHandlerSettings<
 > = (settings: A) => T;
 export type ActionHandlerSettingsArgs = {
   host?: t.Host | null;
-  layout?: t.HostedLayout | null;
-  actions?: t.HostedActions | null;
+  layout?: t.HostedLayout | null | false;
+  actions?: t.HostedActions | null | false;
 };
