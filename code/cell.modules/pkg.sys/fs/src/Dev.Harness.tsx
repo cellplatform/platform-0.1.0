@@ -10,7 +10,21 @@ const imports = {
   FsIndexedDb: import('./web.ui/FsBus.IndexedDb/dev/DEV'),
 };
 
-const dev = new URL(location.href).searchParams.get('dev');
-export const DevHarness: React.FC = () => (
-  <Harness actions={Object.values(imports)} initial={dev} />
-);
+/**
+ * UI Harness (Dev)
+ */
+type Props = { bus?: t.EventBus };
+
+export const DevHarness: React.FC<Props> = (props) => {
+  const url = new URL(location.href);
+  return (
+    <Harness
+      bus={props.bus}
+      actions={Object.values(imports)}
+      initial={url.searchParams.get('dev')}
+      showActions={true}
+    />
+  );
+};
+
+export default DevHarness;

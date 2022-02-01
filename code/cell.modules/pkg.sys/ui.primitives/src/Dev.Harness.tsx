@@ -52,7 +52,7 @@ export const DevHarness: React.FC<Props> = (props) => {
       bus={props.bus}
       actions={Object.values(imports)}
       initial={url.searchParams.get('dev')}
-      showActions={url.hostname === 'localhost'}
+      showActions={true}
     />
   );
 };
