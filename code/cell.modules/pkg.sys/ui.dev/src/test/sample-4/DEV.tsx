@@ -24,7 +24,7 @@ export const actions = DevActions<Ctx>()
     e.select((config) => {
       config
         .view('buttons')
-        .title('foo')
+        .title(`foo *bold* <T> {P}`)
         .items([0, 1, 2])
         .initial(config.ctx.value)
         .pipe((e) => {

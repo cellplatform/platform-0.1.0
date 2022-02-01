@@ -16,5 +16,6 @@ export const LayoutTitle: React.FC<LayoutTitleProps> = (props) => {
       marginLeft: 12,
     }),
   };
+
   return <Markdown style={css(styles.base, props.style)}>{props.children}</Markdown>;
 };
