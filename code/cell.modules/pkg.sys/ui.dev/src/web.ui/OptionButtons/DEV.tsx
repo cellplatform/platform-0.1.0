@@ -76,10 +76,12 @@ export const actions = DevActions<Ctx>()
 
     const SampleRadios: React.FC<P> = (props) => {
       const [selected, setSelected] = useState<number | undefined>();
+
       useEffect(() => {
         const selected = Array.isArray(props.selected) ? props.selected[0] : props.selected;
         setSelected(selected);
       }, [props.selected]);
+
       return (
         <Radios
           style={{ flex: 1 }}

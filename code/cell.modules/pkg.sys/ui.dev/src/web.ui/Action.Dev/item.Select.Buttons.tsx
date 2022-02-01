@@ -6,7 +6,11 @@ import { Button } from '../Primitives';
 import { Radios, Checkboxes } from '../OptionButtons';
 import { Layout, LayoutTitle } from './Layout';
 
-export type SelectButtonsProps = { namespace: string; bus: t.EventBus; item: t.ActionSelect };
+export type SelectButtonsProps = {
+  namespace: string;
+  bus: t.EventBus;
+  item: t.ActionSelect;
+};
 
 export const SelectButtons: React.FC<SelectButtonsProps> = (props) => {
   const { namespace, item } = props;

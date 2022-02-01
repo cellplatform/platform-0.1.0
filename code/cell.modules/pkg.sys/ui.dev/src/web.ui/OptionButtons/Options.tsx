@@ -65,6 +65,7 @@ export const Checkboxes: React.FC<CheckboxesProps> = (props) => {
     const isSelected = selected.some((item) => R.equals(item, option));
     const isLastSelection = isSelected && selected.length === 1;
     const canDeselect = isClearable ? true : !isLastSelection;
+
     return (
       <OptionButton
         key={`chk-${index}`}
