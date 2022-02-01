@@ -8,11 +8,7 @@ export const Markdown: React.FC<MarkdownProps> = (props) => {
   const children = useMemo(() => {
     const content = props.children;
     if (typeof content !== 'string') return content;
-
-    const text = escapeBraces(content);
-    console.log('text', text);
-
-    return M.toHtmlSync(text);
+    return M.toHtmlSync(escapeBraces(content));
   }, [props.children]);
 
   if (typeof children !== 'string') {
