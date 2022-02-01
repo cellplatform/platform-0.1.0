@@ -35,6 +35,7 @@ export const actions = DevActions<Ctx>()
         orientation: 'vertical',
         bulletRenderer: sampleBulletRendererFactory(getRenderCtx),
         bodyRenderer: sampleBodyRendererFactory(getRenderCtx),
+        debug: { border: false },
       },
       renderCtx: {
         bulletKind: 'Lines',
@@ -76,7 +77,21 @@ export const actions = DevActions<Ctx>()
         });
     });
 
+    e.hr();
+  })
+
+  .items((e) => {
     e.title('Debug');
+
+    e.boolean('border', (e) => {
+      if (e.changing) {
+        const debug = e.ctx.props.debug || (e.ctx.props.debug = {});
+        debug.border = e.changing.next;
+      }
+      e.boolean.current = e.ctx.props.debug?.border ?? false;
+    });
+
+    e.hr(1, 0.1);
 
     e.select((config) => {
       config
@@ -99,6 +114,8 @@ export const actions = DevActions<Ctx>()
           if (e.changing) e.ctx.renderCtx.bodyKind = e.changing?.next[0].value;
         });
     });
+
+    e.hr(1, 0.1);
 
     e.select((config) => {
       config

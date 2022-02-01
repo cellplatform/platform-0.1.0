@@ -9,6 +9,7 @@ export type BulletListProps = {
   bulletRenderer: k.BulletRenderer;
   bodyRenderer: k.BulletRenderer;
   style?: CssValue;
+  debug?: { border?: boolean };
 };
 
 export const BulletList: React.FC<BulletListProps> = (props) => {
@@ -32,6 +33,7 @@ export const BulletList: React.FC<BulletListProps> = (props) => {
         bulletEdge={bulletEdge}
         bulletRenderer={props.bulletRenderer}
         bodyRenderer={props.bodyRenderer}
+        debug={props.debug}
       />
     );
   });
