@@ -1,5 +1,5 @@
 import React from 'react';
-import { color, css, CssValue, t, k } from './common';
+import { css, CssValue, k } from './common';
 
 export type BulletListItemProps = {
   data: any;

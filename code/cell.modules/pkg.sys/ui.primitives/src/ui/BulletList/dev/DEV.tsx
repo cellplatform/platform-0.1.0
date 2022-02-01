@@ -2,7 +2,6 @@ import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 
 import { BulletList, BulletListProps } from '..';
-import { k } from '../common';
 import { RenderCtx, sampleBodyRendererFactory, sampleBulletRendererFactory } from './DEV.renderers';
 
 type D = { msg: string };
@@ -34,14 +33,13 @@ export const actions = DevActions<Ctx>()
       props: {
         bulletEdge: 'near',
         orientation: 'vertical',
-        // orientation: 'horizontal',
         bulletRenderer: sampleBulletRendererFactory(getRenderCtx),
         bodyRenderer: sampleBodyRendererFactory(getRenderCtx),
       },
       renderCtx: {
         bulletKind: 'Lines',
         bodyKind: 'Card',
-        radius: 15,
+        connectorRadius: 15,
       },
     };
 
@@ -63,8 +61,7 @@ export const actions = DevActions<Ctx>()
         .initial(config.ctx.props.orientation)
         .view('buttons')
         .pipe((e) => {
-          const current = e.select.current[0];
-          if (e.changing) e.ctx.props.orientation = current.value;
+          if (e.changing) e.ctx.props.orientation = e.changing?.next[0].value;
         });
     });
 
@@ -75,9 +72,7 @@ export const actions = DevActions<Ctx>()
         .initial(config.ctx.props.bulletEdge)
         .items(['near', 'far'])
         .pipe((e) => {
-          const current = e.select.current[0];
-          const edge = current.value as k.BulletEdge;
-          if (e.changing) e.ctx.props.bulletEdge = edge;
+          if (e.changing) e.ctx.props.bulletEdge = e.changing?.next[0].value;
         });
     });
 
@@ -86,37 +81,33 @@ export const actions = DevActions<Ctx>()
     e.select((config) => {
       config
         .view('buttons')
-        .title('bullet (Kind)')
+        .title('bullet <Kind>')
         .items(['Lines', 'Dot'])
         .initial(config.ctx.renderCtx.bulletKind)
         .pipe((e) => {
-          const current = e.select.current[0];
-          if (e.changing) e.ctx.renderCtx.bulletKind = current.value;
+          if (e.changing) e.ctx.renderCtx.bulletKind = e.changing?.next[0].value;
         });
     });
 
     e.select((config) => {
       config
         .view('buttons')
-        .title('body (Kind)')
+        .title('body <Kind>')
         .items(['Card', 'Vanilla'])
         .initial(config.ctx.renderCtx.bodyKind)
         .pipe((e) => {
-          const current = e.select.current[0];
-          if (e.changing) e.ctx.renderCtx.bodyKind = current.value;
+          if (e.changing) e.ctx.renderCtx.bodyKind = e.changing?.next[0].value;
         });
     });
 
     e.select((config) => {
-      console.log('config.ctx.renderCtx.radius', config.ctx.renderCtx.radius);
       config
         .view('buttons')
         .title('radius')
         .items([0, 10, 15, 20])
-        .initial(config.ctx.renderCtx.radius)
+        .initial(config.ctx.renderCtx.connectorRadius)
         .pipe((e) => {
-          const current = e.select.current[0];
-          if (e.changing) e.ctx.renderCtx.radius = current.value;
+          if (e.changing) e.ctx.renderCtx.connectorRadius = e.changing?.next[0].value;
         });
     });
 

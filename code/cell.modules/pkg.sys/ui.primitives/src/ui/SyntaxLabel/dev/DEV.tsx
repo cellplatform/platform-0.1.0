@@ -62,8 +62,7 @@ export const actions = DevActions<Ctx>()
         .items([1, 2, 3])
         .initial(config.ctx.debug.repeat)
         .pipe((e) => {
-          const current = e.select.current[0];
-          if (e.changing) e.ctx.debug.repeat = current.value;
+          if (e.changing) e.ctx.debug.repeat = e.changing?.next[0].value;
         });
     });
 

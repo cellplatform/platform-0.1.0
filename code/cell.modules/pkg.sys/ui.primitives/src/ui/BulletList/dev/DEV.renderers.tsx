@@ -7,28 +7,8 @@ import { Renderer, ConnectorLinesProps } from '../renderers';
 export type RenderCtx = {
   bulletKind: 'Lines' | 'Dot';
   bodyKind: 'Card' | 'Vanilla';
-  radius?: number; // NB: Border-radius on <ConnectorLines>.
+  connectorRadius?: number;
 };
-
-/**
- * A factory that produces a function for rendering bullets
- * Produces :=>
- *              <ConnectorLines>
- */
-export function connectorLinesRendererFactory(getCtx: () => RenderCtx) {
-  const fn: k.BulletRenderer = (e) => {
-    const ctx = getCtx();
-    const radius = ctx.radius;
-    const props: ConnectorLinesProps = { ...e, radius };
-
-    // NB: Same bullet connector with custom modifications.
-    if (e.index === 1 && e.total > 2) props.borderColor = COLORS.CYAN;
-
-    return <Renderer.Bullet.ConnectorLines.Component {...props} />;
-  };
-
-  return fn;
-}
 
 /**
  * A factory that produces a function for rendering bullets
@@ -40,8 +20,13 @@ export function sampleBulletRendererFactory(getCtx: () => RenderCtx) {
     const kind = ctx.bulletKind;
 
     if (kind === 'Lines') {
-      const renderer = connectorLinesRendererFactory(getCtx);
-      return renderer(e);
+      const radius = ctx.connectorRadius;
+      const props: ConnectorLinesProps = { ...e, radius };
+
+      // NB: Same bullet connector with sample modification.
+      if (e.index === 1 && e.total > 2) props.borderColor = COLORS.CYAN;
+
+      return <Renderer.Bullet.ConnectorLines.Component {...props} />;
     }
 
     if (kind === 'Dot') {
@@ -50,6 +35,7 @@ export function sampleBulletRendererFactory(getCtx: () => RenderCtx) {
 
     return <div>{`Bullet Renderer Not Found: "${ctx.bulletKind}"`}</div>;
   };
+
   return fn;
 }
 

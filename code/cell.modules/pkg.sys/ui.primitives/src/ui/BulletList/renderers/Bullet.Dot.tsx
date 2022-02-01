@@ -13,6 +13,7 @@ export const BulletDot: React.FC<BulletDotProps> = (props) => {
     dot: css({
       Size: 15,
       borderRadius: '100%',
+      border: `solid 1px ${color.format(-0.1)}`,
       backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
     }),
   };
