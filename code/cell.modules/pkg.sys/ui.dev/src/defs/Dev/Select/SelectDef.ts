@@ -46,7 +46,7 @@ export const SelectDef: t.ActionDef<T> = {
           const { ctx, item, host, layout, env, actions } = Handler.params.payload<T>(id, draft);
 
           if (ctx && item) {
-            if (!item.isInitialized && item.initial) {
+            if (!item.isInitialized && item.initial !== undefined) {
               item.current = SelectUtil.toInitial(item);
             }
 
