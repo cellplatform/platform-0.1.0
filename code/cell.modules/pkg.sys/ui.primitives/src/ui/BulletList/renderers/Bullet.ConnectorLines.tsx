@@ -1,7 +1,7 @@
 import React from 'react';
 import { color, css, CssValue, k } from '../common';
 
-export type BulletConnectorLinesProps = k.BulletProps & {
+export type BulletConnectorLinesProps = k.BulletItemProps & {
   radius?: number;
   borderWidth?: number;
   borderStyle?: 'solid' | 'dashed';
@@ -12,7 +12,7 @@ export type BulletConnectorLinesProps = k.BulletProps & {
 export const BulletConnectorLines: React.FC<BulletConnectorLinesProps> = (props) => {
   const {
     is,
-    edge,
+    bulletEdge,
     index,
     total,
     radius,
@@ -33,8 +33,8 @@ export const BulletConnectorLines: React.FC<BulletConnectorLinesProps> = (props)
       base: css({
         flex: 1,
         border,
-        borderRight: is.vertical && edge === 'near' && 'none',
-        borderLeft: is.vertical && edge === 'far' && 'none',
+        borderRight: is.vertical && bulletEdge === 'near' && 'none',
+        borderLeft: is.vertical && bulletEdge === 'far' && 'none',
       }),
       top: css({
         borderBottom: 'none',
@@ -46,17 +46,17 @@ export const BulletConnectorLines: React.FC<BulletConnectorLinesProps> = (props)
       }),
       spacer: css({ flex: 1 }),
       topRadius: hasRadius && {
-        borderRadius: edge === 'near' ? [radius, 0, 0, 0] : [0, radius, 0, 0],
+        borderRadius: bulletEdge === 'near' ? [radius, 0, 0, 0] : [0, radius, 0, 0],
       },
       bottomRadius: hasRadius && {
-        borderRadius: edge === 'near' ? [0, 0, 0, radius] : [0, 0, radius, 0],
+        borderRadius: bulletEdge === 'near' ? [0, 0, 0, radius] : [0, 0, radius, 0],
       },
     },
     middle: {
       line: css({ borderTop: border }),
       spacer: css({
-        borderRight: edge === 'far' && border,
-        borderLeft: edge === 'near' && border,
+        borderRight: bulletEdge === 'far' && border,
+        borderLeft: bulletEdge === 'near' && border,
         flex: 1,
       }),
     },
@@ -87,6 +87,4 @@ export const BulletConnectorLines: React.FC<BulletConnectorLinesProps> = (props)
       <div {...styles.middle.spacer} />
     </div>
   );
-
-  return <div {...css(styles.base, props.style)}></div>;
 };

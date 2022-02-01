@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { color, css, CssValue, t, k } from '../common';
 
-export type BulletDotProps = k.BulletProps & { style?: CssValue };
+export type BulletDotProps = k.BulletItemProps & { style?: CssValue };
 
 export const BulletDot: React.FC<BulletDotProps> = (props) => {
   const styles = {

@@ -13,7 +13,7 @@ export {
 
 const BodyDebug = {
   Component: Debug,
-  render: (e: k.BulletProps) => <Debug {...e} />,
+  render: (e: k.BulletItemProps) => <Debug {...e} />,
 };
 
 export const Renderer = {
@@ -26,7 +26,7 @@ export const Renderer = {
      */
     ConnectorLines: {
       Component: BulletConnectorLines,
-      render: (e: k.BulletProps) => <BulletConnectorLines {...e} />,
+      render: (e: k.BulletItemProps) => <BulletConnectorLines {...e} />,
     },
 
     /**
@@ -34,7 +34,7 @@ export const Renderer = {
      */
     Dot: {
       Component: BulletDot,
-      render: (e: k.BulletProps) => <BulletDot {...e} />,
+      render: (e: k.BulletItemProps) => <BulletDot {...e} />,
     },
   },
 

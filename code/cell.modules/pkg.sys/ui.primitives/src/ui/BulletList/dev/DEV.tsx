@@ -3,6 +3,7 @@ import { DevActions } from 'sys.ui.dev';
 
 import { BulletList, BulletListProps } from '..';
 import { RenderCtx, sampleBodyRendererFactory, sampleBulletRendererFactory } from './DEV.renderers';
+import { k } from '../common';
 
 type D = { msg: string };
 
@@ -12,10 +13,14 @@ type Ctx = {
 };
 
 const CtxUtil = {
-  addItem(ctx: Ctx) {
+  addItem(ctx: Ctx, options: { spacing?: number } = {}) {
+    const { spacing } = options;
     const items = ctx.props.items || (ctx.props.items = []);
+
     const data: D = { msg: `item-${items.length}` };
-    items.push(data);
+    const item: k.BulletItem<D> = { data, spacing };
+
+    items.push(item);
   },
 };
 
@@ -28,19 +33,23 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const getRenderCtx = () => e.current?.renderCtx as RenderCtx;
+    const renderer = {
+      bullet: sampleBulletRendererFactory(getRenderCtx),
+      body: sampleBodyRendererFactory(getRenderCtx),
+    };
 
     const ctx: Ctx = {
       props: {
         bulletEdge: 'near',
         orientation: 'vertical',
-        bulletRenderer: sampleBulletRendererFactory(getRenderCtx),
-        bodyRenderer: sampleBodyRendererFactory(getRenderCtx),
-        debug: { border: false },
+        renderer,
+        spacing: 10,
+        debug: { border: true },
       },
       renderCtx: {
         bulletKind: 'Lines',
         bodyKind: 'Card',
-        connectorRadius: 15,
+        connectorRadius: 20,
       },
     };
 
@@ -91,7 +100,20 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.props.debug?.border ?? false;
     });
 
+    e.select((config) => {
+      config
+        .view('buttons')
+        .title('spacing')
+        .items([0, 5, 10, 20])
+        .initial(config.ctx.props.spacing)
+        .pipe((e) => {
+          if (e.changing) e.ctx.props.spacing = e.changing?.next[0].value;
+        });
+    });
+
     e.hr(1, 0.1);
+
+    e.title('Bullet');
 
     e.select((config) => {
       config
@@ -107,24 +129,25 @@ export const actions = DevActions<Ctx>()
     e.select((config) => {
       config
         .view('buttons')
+        .title('radius (connector lines)')
+        .items([0, 10, 20])
+        .initial(config.ctx.renderCtx.connectorRadius)
+        .pipe((e) => {
+          if (e.changing) e.ctx.renderCtx.connectorRadius = e.changing?.next[0].value;
+        });
+    });
+
+    e.hr(1, 0.1);
+    e.title('Body');
+
+    e.select((config) => {
+      config
+        .view('buttons')
         .title('body <Kind>')
         .items(['Card', 'Vanilla'])
         .initial(config.ctx.renderCtx.bodyKind)
         .pipe((e) => {
           if (e.changing) e.ctx.renderCtx.bodyKind = e.changing?.next[0].value;
-        });
-    });
-
-    e.hr(1, 0.1);
-
-    e.select((config) => {
-      config
-        .view('buttons')
-        .title('radius')
-        .items([0, 10, 15, 20])
-        .initial(config.ctx.renderCtx.connectorRadius)
-        .pipe((e) => {
-          if (e.changing) e.ctx.renderCtx.connectorRadius = e.changing?.next[0].value;
         });
     });
 
@@ -134,8 +157,10 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Items');
 
-    e.button('add', (e) => CtxUtil.addItem(e.ctx));
     e.button('clear', (e) => (e.ctx.props.items = []));
+    e.hr(1, 0.1);
+    e.button('add', (e) => CtxUtil.addItem(e.ctx));
+    e.button('add (with spacing)', (e) => CtxUtil.addItem(e.ctx, { spacing: 30 }));
 
     e.hr();
   })

@@ -15,7 +15,7 @@ export type RenderCtx = {
  * based on an input "type" flag.
  */
 export function sampleBulletRendererFactory(getCtx: () => RenderCtx) {
-  const fn: k.BulletRenderer = (e) => {
+  const fn: k.BulletItemRenderer = (e) => {
     const ctx = getCtx();
     const kind = ctx.bulletKind;
 
@@ -44,18 +44,13 @@ export function sampleBulletRendererFactory(getCtx: () => RenderCtx) {
  * based on an input "type" flag.
  */
 export function sampleBodyRendererFactory(getCtx: () => RenderCtx) {
-  const fn: k.BulletRenderer = (e) => {
+  const fn: k.BulletItemRenderer = (e) => {
     const ctx = getCtx();
     const kind = ctx.bodyKind;
     const is = e.is;
 
     const styles = {
-      base: css({
-        marginTop: is.vertical && !is.first && 5,
-        marginBottom: is.vertical && !is.last && 5,
-        marginLeft: is.horizontal && !is.first && 5,
-        marginRight: is.horizontal && !is.last && 5,
-      }),
+      // base: css({}),
       sample: {
         card: css({ PaddingX: 30, PaddingY: 12 }),
         vanilla: css({ PaddingX: 6 }),
@@ -70,11 +65,11 @@ export function sampleBodyRendererFactory(getCtx: () => RenderCtx) {
     const elComponent = <SyntaxLabel text={'<Component>'} style={styles.component} />;
 
     if (kind === 'Vanilla') {
-      return <div {...css(styles.base, styles.sample.vanilla)}>{elComponent}</div>;
+      return <div {...styles.sample.vanilla}>{elComponent}</div>;
     }
 
     if (kind === 'Card') {
-      return <Card style={css(styles.base, styles.sample.card)}>{elComponent}</Card>;
+      return <Card style={styles.sample.card}>{elComponent}</Card>;
     }
 
     return <div>{`Body Renderer Not Found: "${kind}"`}</div>;

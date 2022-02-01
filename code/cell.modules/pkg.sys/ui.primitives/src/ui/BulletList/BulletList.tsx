@@ -3,11 +3,11 @@ import { css, CssValue, t, k } from './common';
 import { BulletListItem } from './BulletList.Item';
 
 export type BulletListProps = {
-  items?: any[];
+  renderer: { bullet: k.BulletItemRenderer; body: k.BulletItemRenderer };
+  items?: k.BulletItem[];
   orientation?: k.BulletOrientation;
   bulletEdge?: k.BulletEdge;
-  bulletRenderer: k.BulletRenderer;
-  bodyRenderer: k.BulletRenderer;
+  spacing?: number;
   style?: CssValue;
   debug?: { border?: boolean };
 };
@@ -23,16 +23,17 @@ export const BulletList: React.FC<BulletListProps> = (props) => {
   };
 
   const elItems = items.map((item, i) => {
+    const spacing = typeof item.spacing === 'number' ? item.spacing : props.spacing ?? 0;
     return (
       <BulletListItem
         key={`bullet.${i}`}
         index={i}
         total={items.length}
-        data={item}
+        item={item}
         orientation={orientation}
         bulletEdge={bulletEdge}
-        bulletRenderer={props.bulletRenderer}
-        bodyRenderer={props.bodyRenderer}
+        spacing={spacing}
+        renderer={props.renderer}
         debug={props.debug}
       />
     );
