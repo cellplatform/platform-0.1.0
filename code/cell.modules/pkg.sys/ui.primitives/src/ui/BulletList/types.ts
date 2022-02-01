@@ -1,15 +1,9 @@
 export type BulletOrientation = 'vertical' | 'horizontal';
 export type BulletEdge = 'near' | 'far';
 
-export type BulletItem<T = any> = {
+export type BulletRenderer = (e: BulletProps) => JSX.Element | null;
+export type BulletProps<T = any> = {
   data: T;
-  renderBullet: BulletRender;
-  renderBody: BulletRender;
-};
-
-export type BulletRender = (e: BulletRenderArgs) => JSX.Element | null;
-
-export type BulletRenderArgs = {
   orientation: BulletOrientation;
   edge: BulletEdge;
   index: number;
@@ -17,11 +11,8 @@ export type BulletRenderArgs = {
   is: {
     first: boolean;
     last: boolean;
+    edge: boolean;
     vertical: boolean;
     horizontal: boolean;
-    bulletNear: boolean;
-    bulletFar: boolean;
   };
 };
-
-export type BulletRenderFactory<Ctx> = (getCtx: () => Ctx) => BulletItem;

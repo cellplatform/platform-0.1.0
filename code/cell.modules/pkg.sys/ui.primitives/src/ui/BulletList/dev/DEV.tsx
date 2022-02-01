@@ -1,21 +1,22 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
+
 import { BulletList, BulletListProps } from '..';
-import { k, css, color, COLORS } from '../common';
-import { Card } from '../../Card';
-import { renderFactory, CtxRender } from './DEV.render';
+import { k } from '../common';
+import { RenderCtx, sampleBodyRendererFactory, sampleBulletRendererFactory } from './DEV.renderers';
+
+type D = { msg: string };
 
 type Ctx = {
   props: BulletListProps;
-  renderCtx: CtxRender;
-  getRenderCtx(): CtxRender;
+  renderCtx: RenderCtx;
 };
 
 const CtxUtil = {
   addItem(ctx: Ctx) {
     const items = ctx.props.items || (ctx.props.items = []);
-    const item = renderFactory(ctx.getRenderCtx);
-    items.push(item);
+    const data: D = { msg: `item-${items.length}` };
+    items.push(data);
   },
 };
 
@@ -27,19 +28,23 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
+    const getRenderCtx = () => e.current?.renderCtx as RenderCtx;
+
     const ctx: Ctx = {
       props: {
+        bulletEdge: 'near',
         orientation: 'vertical',
-        edge: 'near',
+        // orientation: 'horizontal',
+        bulletRenderer: sampleBulletRendererFactory(getRenderCtx),
+        bodyRenderer: sampleBodyRendererFactory(getRenderCtx),
       },
       renderCtx: {
-        bodySample: 'Card',
-      },
-
-      getRenderCtx() {
-        return e.current?.renderCtx as CtxRender;
+        bulletKind: 'Lines',
+        bodyKind: 'Card',
+        radius: 15,
       },
     };
+
     return ctx;
   })
 
@@ -67,12 +72,12 @@ export const actions = DevActions<Ctx>()
       config
         .view('buttons')
         .title('bulletEdge')
-        .initial(config.ctx.props.edge)
-        .items(['bullet:body', 'body:bullet'])
+        .initial(config.ctx.props.bulletEdge)
+        .items(['near', 'far'])
         .pipe((e) => {
           const current = e.select.current[0];
           const edge = current.value as k.BulletEdge;
-          if (e.changing) e.ctx.props.edge = edge;
+          if (e.changing) e.ctx.props.bulletEdge = edge;
         });
     });
 
@@ -81,12 +86,37 @@ export const actions = DevActions<Ctx>()
     e.select((config) => {
       config
         .view('buttons')
-        .title('body sample')
-        .items(['Card', 'Vanilla'])
-        .initial(config.ctx.renderCtx.bodySample)
+        .title('bullet (Kind)')
+        .items(['Lines', 'Dot'])
+        .initial(config.ctx.renderCtx.bulletKind)
         .pipe((e) => {
           const current = e.select.current[0];
-          if (e.changing) e.ctx.renderCtx.bodySample = current.value;
+          if (e.changing) e.ctx.renderCtx.bulletKind = current.value;
+        });
+    });
+
+    e.select((config) => {
+      config
+        .view('buttons')
+        .title('body (Kind)')
+        .items(['Card', 'Vanilla'])
+        .initial(config.ctx.renderCtx.bodyKind)
+        .pipe((e) => {
+          const current = e.select.current[0];
+          if (e.changing) e.ctx.renderCtx.bodyKind = current.value;
+        });
+    });
+
+    e.select((config) => {
+      console.log('config.ctx.renderCtx.radius', config.ctx.renderCtx.radius);
+      config
+        .view('buttons')
+        .title('radius')
+        .items([0, 10, 15, 20])
+        .initial(config.ctx.renderCtx.radius)
+        .pipe((e) => {
+          const current = e.select.current[0];
+          if (e.changing) e.ctx.renderCtx.radius = current.value;
         });
     });
 
@@ -111,10 +141,9 @@ export const actions = DevActions<Ctx>()
       layout: total > 0 && {
         label: {
           topLeft: '<BulletList>',
-          bottomRight: `Body/Sample:"${e.ctx.renderCtx.bodySample}"`,
+          bottomRight: `Body/Sample:"${e.ctx.renderCtx.bodyKind}"`,
         },
         cropmarks: -0.2,
-        border: -0.06,
       },
     });
 

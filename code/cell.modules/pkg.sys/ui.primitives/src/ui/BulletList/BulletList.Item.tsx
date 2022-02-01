@@ -1,20 +1,23 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { color, css, CssValue, t, k } from './common';
 
 export type BulletListItemProps = {
-  item: k.BulletItem;
+  data: any;
   orientation: k.BulletOrientation;
   bulletEdge: k.BulletEdge;
   index: number;
   total: number;
+  bulletRenderer: k.BulletRenderer;
+  bodyRenderer: k.BulletRenderer;
   style?: CssValue;
 };
 
 export const BulletListItem: React.FC<BulletListItemProps> = (props) => {
-  const { item, orientation, bulletEdge, index, total } = props;
+  const { data, orientation, bulletEdge, index, total, bulletRenderer, bodyRenderer } = props;
   const invertedOrientation = orientation === 'horizontal' ? 'vertical' : 'horizontal';
 
-  const args: k.BulletRenderArgs = {
+  const args: k.BulletProps = {
+    data,
     orientation,
     edge: bulletEdge,
     index,
@@ -22,10 +25,9 @@ export const BulletListItem: React.FC<BulletListItemProps> = (props) => {
     is: {
       first: index === 0,
       last: index === total - 1,
+      edge: index === 0 || index === total - 1,
       vertical: orientation === 'vertical',
       horizontal: orientation === 'horizontal',
-      bulletNear: bulletEdge === 'near',
-      bulletFar: bulletEdge === 'far',
     },
   };
 
@@ -38,8 +40,8 @@ export const BulletListItem: React.FC<BulletListItemProps> = (props) => {
     }),
   };
 
-  const elBullet = item.renderBullet(args);
-  const elBody = item.renderBody(args);
+  const elBullet = bulletRenderer(args) ?? <div />;
+  const elBody = bodyRenderer(args) ?? <div />;
 
   return (
     <div {...css(styles.base, props.style)}>

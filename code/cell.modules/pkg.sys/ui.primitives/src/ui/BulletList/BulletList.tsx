@@ -1,36 +1,37 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t, k } from './common';
+import React from 'react';
+import { css, CssValue, t, k } from './common';
 import { BulletListItem } from './BulletList.Item';
 
 export type BulletListProps = {
-  items?: k.BulletItem[];
+  items?: any[];
   orientation?: k.BulletOrientation;
-  edge?: k.BulletEdge; // TODO 🐷 - move to renderer?
+  bulletEdge?: k.BulletEdge;
+  bulletRenderer: k.BulletRenderer;
+  bodyRenderer: k.BulletRenderer;
   style?: CssValue;
 };
 
 export const BulletList: React.FC<BulletListProps> = (props) => {
-  const { orientation = 'vertical', edge = 'near', items = [] } = props;
-  const total = items.length;
+  const { orientation = 'vertical', bulletEdge = 'near', items = [] } = props;
 
   /**
    * [Render]
    */
   const styles = {
-    base: css({
-      Flex: `${orientation}-stretch-stretch`,
-    }),
+    base: css({ Flex: `${orientation}-stretch-stretch` }),
   };
 
   const elItems = items.map((item, i) => {
     return (
       <BulletListItem
         key={`bullet.${i}`}
-        item={item}
-        orientation={orientation}
-        bulletEdge={edge}
         index={i}
-        total={total}
+        total={items.length}
+        data={item}
+        orientation={orientation}
+        bulletEdge={bulletEdge}
+        bulletRenderer={props.bulletRenderer}
+        bodyRenderer={props.bodyRenderer}
       />
     );
   });

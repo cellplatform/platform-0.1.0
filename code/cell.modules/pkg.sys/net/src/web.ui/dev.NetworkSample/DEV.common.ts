@@ -1,5 +1,5 @@
 export * from '../common';
-export { PeerNetwork } from '../../..';
+export { PeerNetwork } from '../..';
 
 export { useLocalPeer } from '../../web.ui.hooks';
 export { LocalPeerCard } from '../LocalPeerCard';
