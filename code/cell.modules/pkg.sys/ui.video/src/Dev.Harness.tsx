@@ -1,5 +1,6 @@
 import React from 'react';
 import { Harness } from 'sys.ui.dev';
+import { t } from './common';
 
 const imports = {
   MediaStream: import('./ui/MediaStream/dev/DEV'),

@@ -7,8 +7,5 @@ export * from './Translate';
 export * from './Is';
 export * from './rx';
 
-import { WebRuntime } from './libs';
-export const bundle = WebRuntime.bundle;
-
 export const DEFAULT = constants.DEFAULT;
 export const COLORS = constants.COLORS;

@@ -1,4 +1,3 @@
-import { bundle } from '../../common';
 import { loader } from '@monaco-editor/react';
 
 export * from './configure.language';

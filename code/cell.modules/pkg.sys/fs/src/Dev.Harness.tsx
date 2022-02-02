@@ -1,5 +1,6 @@
 import React from 'react';
 import { Harness } from 'sys.ui.dev';
+import { t } from './web/common';
 
 const imports = {
   ModuleInfo: import('./web.ui/ModuleInfo/dev/DEV'),
