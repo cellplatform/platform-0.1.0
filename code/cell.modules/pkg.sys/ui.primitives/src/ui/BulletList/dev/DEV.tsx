@@ -4,14 +4,12 @@ import { DevActions } from 'sys.ui.dev';
 import { BulletList, BulletListProps } from '..';
 import { RenderCtx, sampleBodyRendererFactory, sampleBulletRendererFactory } from './DEV.renderers';
 import { k } from '../common';
-import { SampleGrid } from './DEV.sample.grid.tmp';
 
 type D = { msg: string };
 
 type Ctx = {
   props: BulletListProps;
   renderCtx: RenderCtx;
-  sampleGrid: boolean; // TEMP 🐷
 };
 
 const CtxUtil = {
@@ -41,7 +39,6 @@ export const actions = DevActions<Ctx>()
     };
 
     const ctx: Ctx = {
-      sampleGrid: false, // TEMP 🐷
       props: {
         bulletEdge: 'near',
         orientation: 'vertical',
@@ -66,11 +63,6 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.boolean('sample grid (css)', (e) => {
-      if (e.changing) e.ctx.sampleGrid = e.changing.next;
-      e.boolean.current = e.ctx.sampleGrid;
-    });
-
     e.title('Props');
 
     e.select((config) => {
@@ -200,15 +192,7 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    const sampleGrid = e.ctx.sampleGrid;
-
-    if (sampleGrid) {
-      e.render(<SampleGrid />);
-    }
-
-    if (!sampleGrid) {
-      e.render(items.length > 0 && <BulletList {...e.ctx.props} style={{}} />);
-    }
+    e.render(items.length > 0 && <BulletList {...e.ctx.props} style={{}} />);
   });
 
 export default actions;

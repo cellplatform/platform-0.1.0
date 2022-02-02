@@ -1,5 +1,5 @@
 import React from 'react';
-import { css, CssValue, t, k } from './common';
+import { css, CssValue, k } from './common';
 import { BulletListItem } from './BulletList.Item';
 
 type Pixels = number;
