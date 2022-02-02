@@ -2,7 +2,7 @@ import React from 'react';
 import { k, css, COLORS } from '../common';
 import { Card } from '../../Card';
 import { SyntaxLabel } from '../../SyntaxLabel';
-import { Renderer, ConnectorLinesProps } from '../renderers';
+import { Renderer, BulletConnectorLinesProps } from '../renderers';
 
 export type RenderCtx = {
   bulletKind: 'Lines' | 'Dot';
@@ -21,7 +21,7 @@ export function sampleBulletRendererFactory(getCtx: () => RenderCtx) {
 
     if (kind === 'Lines') {
       const radius = ctx.connectorRadius;
-      const props: ConnectorLinesProps = { ...e, radius };
+      const props: BulletConnectorLinesProps = { ...e, radius };
 
       // NB: Same bullet connector with sample modification.
       if (e.index === 1 && e.total > 2 && e.kind !== 'Spacing') {
