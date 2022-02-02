@@ -8,8 +8,8 @@ export type BulletItem<T = any> = {
   spacing?: number;
 };
 
-export type BulletItemRenderer = (e: BulletItemProps) => JSX.Element | null;
-export type BulletItemProps<T = any> = {
+export type BulletItemRenderer = (e: BulletItemArgs) => JSX.Element | null | undefined;
+export type BulletItemArgs<T = any> = {
   kind: 'Default' | 'Spacing';
   index: number;
   total: number;

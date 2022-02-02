@@ -5,7 +5,7 @@ import { BulletListItem } from './BulletList.Item';
 type Pixels = number;
 
 export type BulletListProps = {
-  renderer: { bullet: k.BulletItemRenderer; body: k.BulletItemRenderer };
+  renderers: { bullet: k.BulletItemRenderer; body: k.BulletItemRenderer };
   items?: k.BulletItem[];
   orientation?: k.BulletOrientation;
   bulletEdge?: k.BulletEdge;
@@ -37,7 +37,7 @@ export const BulletList: React.FC<BulletListProps> = (props) => {
         bulletEdge={bulletEdge}
         bulletSize={bulletSize}
         spacing={spacing}
-        renderer={props.renderer}
+        renderers={props.renderers}
         debug={props.debug}
       />
     );

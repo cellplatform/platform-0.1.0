@@ -17,7 +17,7 @@ const CtxUtil = {
     const { spacing } = options;
     const items = ctx.props.items || (ctx.props.items = []);
 
-    const data: D = { msg: `item-${items.length}` };
+    const data: D = { msg: `item-${items.length + 1}` };
     const item: k.BulletItem<D> = { data, spacing };
 
     items.push(item);
@@ -42,7 +42,7 @@ export const actions = DevActions<Ctx>()
       props: {
         bulletEdge: 'near',
         orientation: 'vertical',
-        renderer,
+        renderers: renderer,
         spacing: 10,
         bulletSize: 60,
         debug: { border: true },
@@ -131,7 +131,7 @@ export const actions = DevActions<Ctx>()
       config
         .view('buttons')
         .title('bullet <Kind>')
-        .items(['Lines', 'Dot'])
+        .items(['Lines', 'Dot', { label: 'undefined (use default)', value: undefined }])
         .initial(config.ctx.renderCtx.bulletKind)
         .pipe((e) => {
           if (e.changing) e.ctx.renderCtx.bulletKind = e.changing?.next[0].value;
@@ -156,7 +156,7 @@ export const actions = DevActions<Ctx>()
       config
         .view('buttons')
         .title('body <Kind>')
-        .items(['Card', 'Vanilla'])
+        .items(['Card', 'Vanilla', { label: 'undefined (use default)', value: undefined }])
         .initial(config.ctx.renderCtx.bodyKind)
         .pipe((e) => {
           if (e.changing) e.ctx.renderCtx.bodyKind = e.changing?.next[0].value;
@@ -169,10 +169,20 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Items');
 
-    e.button('clear', (e) => (e.ctx.props.items = []));
-    e.hr(1, 0.1);
     e.button('add', (e) => CtxUtil.addItem(e.ctx));
     e.button('add (with spacing)', (e) => CtxUtil.addItem(e.ctx, { spacing: 30 }));
+
+    e.hr(1, 0.1);
+
+    e.button('clear', (e) => (e.ctx.props.items = []));
+    e.button('remove: first', (e) => {
+      const items = e.ctx.props.items || [];
+      e.ctx.props.items = items?.slice(0, items.length - 1);
+    });
+    e.button('remove: last', (e) => {
+      const items = e.ctx.props.items || [];
+      e.ctx.props.items = items?.slice(0, items.length - 1);
+    });
 
     e.hr();
   })

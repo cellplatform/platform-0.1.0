@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { k } from '../common';
-import { Debug } from './Body.Debug';
+import { BodyDefault } from './Body.Default';
 
 /**
  * Body renderers.
@@ -12,7 +12,7 @@ export const BodyRenderers = {
    * used as the default view if no renderer is provided.
    */
   Debug: {
-    Component: Debug,
-    render: (e: k.BulletItemProps) => <Debug {...e} />,
+    Component: BodyDefault,
+    render: (e: k.BulletItemArgs) => <BodyDefault {...e} />,
   },
 };

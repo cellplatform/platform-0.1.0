@@ -1,7 +1,7 @@
 import React from 'react';
 import { color, css, k } from '../common';
 
-export type BulletConnectorLinesProps = k.BulletItemProps & {
+export type BulletConnectorLinesProps = k.BulletItemArgs & {
   radius?: number;
   borderWidth?: number;
   borderStyle?: 'solid' | 'dashed';

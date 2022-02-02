@@ -6,7 +6,7 @@ import { Renderer, BulletConnectorLinesProps } from '../renderers';
 
 export type RenderCtx = {
   bulletKind: 'Lines' | 'Dot';
-  bodyKind: 'Card' | 'Vanilla';
+  bodyKind: 'Card' | 'Vanilla' | undefined;
   connectorRadius?: number;
 };
 
@@ -17,9 +17,9 @@ export type RenderCtx = {
 export function sampleBulletRendererFactory(getCtx: () => RenderCtx) {
   const fn: k.BulletItemRenderer = (e) => {
     const ctx = getCtx();
-    const kind = ctx.bulletKind;
+    const bulletKind = ctx.bulletKind;
 
-    if (kind === 'Lines') {
+    if (bulletKind === 'Lines') {
       const radius = ctx.connectorRadius;
       const props: BulletConnectorLinesProps = { ...e, radius };
 
@@ -31,11 +31,12 @@ export function sampleBulletRendererFactory(getCtx: () => RenderCtx) {
       return <Renderer.Bullet.ConnectorLines.Component {...props} />;
     }
 
-    if (kind === 'Dot') {
+    if (bulletKind === 'Dot') {
       return <Renderer.Bullet.Dot.Component {...e} />;
     }
 
-    return <div>{`Bullet Renderer Not Found: "${ctx.bulletKind}"`}</div>;
+    // Not found.
+    return undefined; // NB: The "default" [Renderer.Renderer] will be used.
   };
 
   return fn;
@@ -48,7 +49,7 @@ export function sampleBulletRendererFactory(getCtx: () => RenderCtx) {
 export function sampleBodyRendererFactory(getCtx: () => RenderCtx) {
   const fn: k.BulletItemRenderer = (e) => {
     const ctx = getCtx();
-    const kind = ctx.bodyKind;
+    const bodyKind = ctx.bodyKind;
 
     if (e.kind === 'Spacing') return null;
 
@@ -57,24 +58,21 @@ export function sampleBodyRendererFactory(getCtx: () => RenderCtx) {
         card: css({ PaddingX: 30, PaddingY: 12 }),
         vanilla: css({ PaddingX: 6 }),
       },
-      component: css({
-        fontFamily: 'monospace',
-        fontWeight: 'bold',
-        fontSize: 16,
-      }),
+      component: css({ fontFamily: 'monospace', fontWeight: 'bold', fontSize: 16 }),
     };
 
     const elComponent = <SyntaxLabel text={'<Component>'} style={styles.component} />;
 
-    if (kind === 'Vanilla') {
+    if (bodyKind === 'Vanilla') {
       return <div {...styles.sample.vanilla}>{elComponent}</div>;
     }
 
-    if (kind === 'Card') {
+    if (bodyKind === 'Card') {
       return <Card style={styles.sample.card}>{elComponent}</Card>;
     }
 
-    return <div>{`Body Renderer Not Found: "${kind}"`}</div>;
+    // Not found.
+    return undefined; // NB: The "default" [Renderer.Body] will be used.
   };
 
   return fn;
