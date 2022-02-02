@@ -20,16 +20,17 @@ export type BulletListItemProps = {
   orientation: k.BulletOrientation;
   bulletEdge: k.BulletEdge;
   bulletSize: Pixels; // Offset size of the bullet row/column.
-  spacing: number;
+  spacing: k.BulletSpacing;
   renderers: R;
   style?: CssValue;
   debug?: { border?: boolean };
 };
 
 export const BulletListItem: React.FC<BulletListItemProps> = (props) => {
-  const { item, orientation, index, total, renderers, spacing, debug = {} } = props;
+  const { item, orientation, index, total, renderers, debug = {} } = props;
   const { data } = item;
   const invertedOrientation = orientation === 'horizontal' ? 'vertical' : 'horizontal';
+  const spacing = formatSpacing(props.spacing);
 
   const is: k.BulletItemArgs['is'] = {
     empty: total === 0,
@@ -39,7 +40,7 @@ export const BulletListItem: React.FC<BulletListItemProps> = (props) => {
     edge: index === 0 || index === total - 1,
     vertical: orientation === 'vertical',
     horizontal: orientation === 'horizontal',
-    spacing: false,
+    spacer: false,
     bullet: { near: props.bulletEdge === 'near', far: props.bulletEdge === 'far' },
   };
   const args: k.BulletItemArgs = {
@@ -74,30 +75,42 @@ export const BulletListItem: React.FC<BulletListItemProps> = (props) => {
       outer: css({ flex: 1 }),
     },
 
-    spacer: {
-      outer: css({
-        Flex: `${invertedOrientation}-stretch-stretch`,
-        display: 'flex',
-        position: 'relative',
-        height: is.vertical ? spacing : undefined,
-        width: is.horizontal ? spacing : undefined,
-      }),
-    },
-
     debug: css({
       borderTop: is.vertical && debugBorder,
       borderBottom: is.vertical && is.last && debugBorder,
-
       borderLeft: is.horizontal && debugBorder,
       borderRight: is.horizontal && is.last && debugBorder,
     }),
   };
 
-  const renderContent = (e: k.BulletItemArgs) => {
-    const parts = renderParts(e, renderers);
+  const renderContent = (args: k.BulletItemArgs) => {
+    const parts = renderParts(args, renderers);
     const elBullet = <div {...styles.bullet.outer}>{parts.bullet}</div>;
     const elBody = <div {...styles.body.outer}>{parts.body}</div>;
     return placeInOrder(args.bullet.edge, elBullet, elBody);
+  };
+
+  const renderSpacer = (args: k.BulletItemArgs, edge: 'before' | 'after', offset: Pixels) => {
+    if (offset === 0) return null;
+
+    const styles = {
+      base: css({
+        position: 'relative',
+        display: 'flex',
+        Flex: `${invertedOrientation}-stretch-stretch`,
+        height: is.vertical ? offset : undefined,
+        width: is.horizontal ? offset : undefined,
+      }),
+      debug: css({
+        borderTop: is.vertical && debugBorder,
+        borderBottom: is.vertical && is.last && edge === 'after' && debugBorder,
+        borderLeft: is.horizontal && debugBorder,
+        borderRight: is.horizontal && is.last && edge === 'after' && debugBorder,
+      }),
+    };
+
+    const e: k.BulletItemArgs = { ...args, kind: 'Spacing', is: { ...is, spacer: true } };
+    return <div {...css(styles.base, styles.debug)}>{renderContent(e)}</div>;
   };
 
   /**
@@ -108,25 +121,17 @@ export const BulletListItem: React.FC<BulletListItemProps> = (props) => {
   /**
    * Spacer rendering.
    */
-  const elSpacer = (() => {
-    if (spacing === 0 || is.last) return null;
-
-    const e: k.BulletItemArgs = {
-      ...args,
-      kind: 'Spacing',
-      is: { ...is, spacing: true },
-    };
-
-    return <div {...css(styles.spacer.outer, styles.debug)}>{renderContent(e)}</div>;
-  })();
+  const elSpacerBefore = !is.first && renderSpacer(args, 'before', spacing.before);
+  const elSpacerAfter = !is.last && renderSpacer(args, 'after', spacing.after);
 
   /**
    * Component.
    */
   return (
     <div {...css(styles.base, props.style)}>
+      {elSpacerBefore}
       {elMain}
-      {elSpacer}
+      {elSpacerAfter}
     </div>
   );
 };
@@ -171,4 +176,9 @@ function renderParts(e: k.BulletItemArgs, renderers: R) {
     bullet: renderPart(e, renderers.bullet, DEFAULT_RENDERER.bullet),
     body: renderPart(e, renderers.body, DEFAULT_RENDERER.body),
   };
+}
+
+function formatSpacing(input: k.BulletSpacing): Required<k.BulletSpacing> {
+  const { before = 0, after = 0 } = input;
+  return { before, after };
 }

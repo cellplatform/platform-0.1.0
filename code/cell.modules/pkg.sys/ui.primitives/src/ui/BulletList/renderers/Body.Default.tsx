@@ -9,10 +9,9 @@ export type BodyDefaultProps = k.BulletItemArgs & { style?: CssValue };
 export const BodyDefault: React.FC<BodyDefaultProps> = (props) => {
   const { kind, index, total, data, orientation, bullet, spacing } = props;
 
-  const obj = {
-    meta: { kind, index, total, orientation, bullet, spacing },
-    data,
-  };
+  // Sample data view.
+  const meta = { kind, index, total, orientation, bullet, spacing };
+  const obj = { meta, data };
 
   /**
    * [Render]

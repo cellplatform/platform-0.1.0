@@ -87,7 +87,7 @@ export const BulletConnectorLines: React.FC<BulletConnectorLinesProps> = (props)
     }),
   };
 
-  if (is.spacing) {
+  if (is.spacer) {
     return <div {...styles.spacer}></div>;
   }
 

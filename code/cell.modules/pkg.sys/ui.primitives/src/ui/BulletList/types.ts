@@ -5,8 +5,10 @@ export type BulletEdge = 'near' | 'far';
 
 export type BulletItem<T = any> = {
   data: T;
-  spacing?: number;
+  spacing?: BulletSpacing;
 };
+
+export type BulletSpacing = { before?: Pixels; after?: Pixels };
 
 export type BulletItemRenderer = (e: BulletItemArgs) => JSX.Element | null | undefined;
 export type BulletItemArgs<T = any> = {
@@ -16,7 +18,7 @@ export type BulletItemArgs<T = any> = {
   data: T;
   orientation: BulletOrientation;
   bullet: { edge: BulletEdge; size: Pixels };
-  spacing: number;
+  spacing: BulletSpacing;
   is: {
     empty: boolean;
     single: boolean;
@@ -25,7 +27,7 @@ export type BulletItemArgs<T = any> = {
     edge: boolean;
     vertical: boolean;
     horizontal: boolean;
-    spacing: boolean;
+    spacer: boolean;
     bullet: { near: boolean; far: boolean };
   };
 };

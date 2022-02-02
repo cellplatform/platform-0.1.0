@@ -13,7 +13,7 @@ type Ctx = {
 };
 
 const CtxUtil = {
-  addItem(ctx: Ctx, options: { spacing?: number } = {}) {
+  addItem(ctx: Ctx, options: { spacing?: k.BulletSpacing } = {}) {
     const { spacing } = options;
     const items = ctx.props.items || (ctx.props.items = []);
 
@@ -117,7 +117,7 @@ export const actions = DevActions<Ctx>()
         .view('buttons')
         .title('spacing')
         .items([0, 5, 10, 20])
-        .initial(config.ctx.props.spacing)
+        .initial(config.ctx.props.spacing as number)
         .pipe((e) => {
           if (e.changing) e.ctx.props.spacing = e.changing?.next[0].value;
         });
@@ -170,7 +170,12 @@ export const actions = DevActions<Ctx>()
     e.title('Items');
 
     e.button('add', (e) => CtxUtil.addItem(e.ctx));
-    e.button('add (with spacing)', (e) => CtxUtil.addItem(e.ctx, { spacing: 30 }));
+    e.button('add (spacing: { before })', (e) => {
+      CtxUtil.addItem(e.ctx, { spacing: { before: 30 } });
+    });
+    e.button('add (spacing: { after })', (e) => {
+      CtxUtil.addItem(e.ctx, { spacing: { after: 30 } });
+    });
 
     e.hr(1, 0.1);
 

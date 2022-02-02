@@ -10,13 +10,21 @@ export type BulletListProps = {
   orientation?: k.BulletOrientation;
   bulletEdge?: k.BulletEdge;
   bulletSize: Pixels; // Offset size of the bullet row/column.
-  spacing?: number;
+  spacing?: number | k.BulletSpacing; // Number (defaults to) => { before }
   style?: CssValue;
   debug?: { border?: boolean };
 };
 
 export const BulletList: React.FC<BulletListProps> = (props) => {
   const { orientation = 'vertical', bulletEdge = 'near', bulletSize = 15, items = [] } = props;
+
+  const toSpacing = (itemSpacing?: k.BulletSpacing): k.BulletSpacing => {
+    if (typeof itemSpacing === 'object') return itemSpacing;
+
+    const prop = props.spacing;
+    if (typeof prop === 'number') return { before: prop, after: 0 };
+    return typeof prop === 'object' ? prop : { before: 0, after: 0 };
+  };
 
   /**
    * [Render]
@@ -26,7 +34,6 @@ export const BulletList: React.FC<BulletListProps> = (props) => {
   };
 
   const elItems = items.map((item, i) => {
-    const spacing = typeof item.spacing === 'number' ? item.spacing : props.spacing ?? 0;
     return (
       <BulletListItem
         key={`bullet.${i}`}
@@ -36,7 +43,7 @@ export const BulletList: React.FC<BulletListProps> = (props) => {
         orientation={orientation}
         bulletEdge={bulletEdge}
         bulletSize={bulletSize}
-        spacing={spacing}
+        spacing={toSpacing(item.spacing)}
         renderers={props.renderers}
         debug={props.debug}
       />
