@@ -90,9 +90,6 @@ export const BulletListItem: React.FC<BulletListItemProps> = (props) => {
 
       borderLeft: is.horizontal && debugBorder,
       borderRight: is.horizontal && is.last && debugBorder,
-      // border: debugBorder,
-      // borderBottom: is.vertical && is.last ? undefined : 'none',
-      // borderRight: is.horizontal && is.last ? undefined : 'none',
     }),
   };
 

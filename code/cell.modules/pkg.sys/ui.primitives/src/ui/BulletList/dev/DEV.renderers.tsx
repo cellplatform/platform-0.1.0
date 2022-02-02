@@ -56,7 +56,7 @@ export function sampleBodyRendererFactory(getCtx: () => RenderCtx) {
     const styles = {
       sample: {
         card: css({ PaddingX: 30, PaddingY: 12 }),
-        vanilla: css({ PaddingX: 6 }),
+        vanilla: css({ PaddingX: 6, PaddingY: 2 }),
       },
       component: css({ fontFamily: 'monospace', fontWeight: 'bold', fontSize: 16 }),
     };
