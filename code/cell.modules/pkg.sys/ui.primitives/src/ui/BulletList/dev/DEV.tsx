@@ -4,12 +4,14 @@ import { DevActions } from 'sys.ui.dev';
 import { BulletList, BulletListProps } from '..';
 import { RenderCtx, sampleBodyRendererFactory, sampleBulletRendererFactory } from './DEV.renderers';
 import { k } from '../common';
+import { SampleGrid } from './DEV.sample.grid.tmp';
 
 type D = { msg: string };
 
 type Ctx = {
   props: BulletListProps;
   renderCtx: RenderCtx;
+  sampleGrid: boolean; // TEMP 🐷
 };
 
 const CtxUtil = {
@@ -39,11 +41,13 @@ export const actions = DevActions<Ctx>()
     };
 
     const ctx: Ctx = {
+      sampleGrid: false, // TEMP 🐷
       props: {
         bulletEdge: 'near',
         orientation: 'vertical',
         renderer,
         spacing: 10,
+        bulletSize: 60,
         debug: { border: true },
       },
       renderCtx: {
@@ -62,6 +66,11 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
+    e.boolean('sample grid (css)', (e) => {
+      if (e.changing) e.ctx.sampleGrid = e.changing.next;
+      e.boolean.current = e.ctx.sampleGrid;
+    });
+
     e.title('Props');
 
     e.select((config) => {
@@ -83,6 +92,17 @@ export const actions = DevActions<Ctx>()
         .items(['near', 'far'])
         .pipe((e) => {
           if (e.changing) e.ctx.props.bulletEdge = e.changing?.next[0].value;
+        });
+    });
+
+    e.select((config) => {
+      config
+        .view('buttons')
+        .title('bulletSize')
+        .items([15, 30, 60])
+        .initial(config.ctx.props.bulletSize)
+        .pipe((e) => {
+          if (e.changing) e.ctx.props.bulletSize = e.changing?.next[0].value;
         });
     });
 
@@ -129,8 +149,8 @@ export const actions = DevActions<Ctx>()
     e.select((config) => {
       config
         .view('buttons')
-        .title('radius (connector lines)')
-        .items([0, 10, 20])
+        .title('connector lines: radius')
+        .items([0, 20])
         .initial(config.ctx.renderCtx.connectorRadius)
         .pipe((e) => {
           if (e.changing) e.ctx.renderCtx.connectorRadius = e.changing?.next[0].value;
@@ -180,7 +200,15 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    e.render(items.length > 0 && <BulletList {...e.ctx.props} style={{}} />);
+    const sampleGrid = e.ctx.sampleGrid;
+
+    if (sampleGrid) {
+      e.render(<SampleGrid />);
+    }
+
+    if (!sampleGrid) {
+      e.render(items.length > 0 && <BulletList {...e.ctx.props} style={{}} />);
+    }
   });
 
 export default actions;

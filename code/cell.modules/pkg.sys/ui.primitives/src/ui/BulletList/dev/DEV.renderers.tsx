@@ -24,7 +24,9 @@ export function sampleBulletRendererFactory(getCtx: () => RenderCtx) {
       const props: ConnectorLinesProps = { ...e, radius };
 
       // NB: Same bullet connector with sample modification.
-      if (e.index === 1 && e.total > 2) props.borderColor = COLORS.CYAN;
+      if (e.index === 1 && e.total > 2 && e.kind !== 'Spacing') {
+        props.borderColor = COLORS.CYAN;
+      }
 
       return <Renderer.Bullet.ConnectorLines.Component {...props} />;
     }
@@ -47,10 +49,10 @@ export function sampleBodyRendererFactory(getCtx: () => RenderCtx) {
   const fn: k.BulletItemRenderer = (e) => {
     const ctx = getCtx();
     const kind = ctx.bodyKind;
-    const is = e.is;
+
+    if (e.kind === 'Spacing') return null;
 
     const styles = {
-      // base: css({}),
       sample: {
         card: css({ PaddingX: 30, PaddingY: 12 }),
         vanilla: css({ PaddingX: 6 }),

@@ -2,18 +2,21 @@ import React from 'react';
 import { css, CssValue, t, k } from './common';
 import { BulletListItem } from './BulletList.Item';
 
+type Pixels = number;
+
 export type BulletListProps = {
   renderer: { bullet: k.BulletItemRenderer; body: k.BulletItemRenderer };
   items?: k.BulletItem[];
   orientation?: k.BulletOrientation;
   bulletEdge?: k.BulletEdge;
+  bulletSize: Pixels; // Offset size of the bullet row/column.
   spacing?: number;
   style?: CssValue;
   debug?: { border?: boolean };
 };
 
 export const BulletList: React.FC<BulletListProps> = (props) => {
-  const { orientation = 'vertical', bulletEdge = 'near', items = [] } = props;
+  const { orientation = 'vertical', bulletEdge = 'near', bulletSize = 15, items = [] } = props;
 
   /**
    * [Render]
@@ -32,6 +35,7 @@ export const BulletList: React.FC<BulletListProps> = (props) => {
         item={item}
         orientation={orientation}
         bulletEdge={bulletEdge}
+        bulletSize={bulletSize}
         spacing={spacing}
         renderer={props.renderer}
         debug={props.debug}

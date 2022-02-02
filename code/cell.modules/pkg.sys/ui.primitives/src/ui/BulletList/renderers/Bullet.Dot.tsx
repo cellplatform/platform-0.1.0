@@ -6,9 +6,9 @@ export type BulletDotProps = k.BulletItemProps & { style?: CssValue };
 export const BulletDot: React.FC<BulletDotProps> = (props) => {
   const styles = {
     base: css({
-      position: 'relative',
-      paddingRight: 8,
+      flex: 1,
       Flex: 'center-center',
+      position: 'relative',
     }),
     dot: css({
       Size: 15,

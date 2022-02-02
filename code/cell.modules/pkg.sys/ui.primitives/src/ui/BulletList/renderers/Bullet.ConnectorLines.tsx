@@ -1,87 +1,126 @@
 import React from 'react';
-import { color, css, CssValue, k } from '../common';
+import { color, css, k } from '../common';
 
 export type BulletConnectorLinesProps = k.BulletItemProps & {
   radius?: number;
   borderWidth?: number;
   borderStyle?: 'solid' | 'dashed';
   borderColor?: number | string;
-  style?: CssValue;
 };
 
 export const BulletConnectorLines: React.FC<BulletConnectorLinesProps> = (props) => {
   const {
     is,
-    bulletEdge,
-    index,
     total,
     radius,
     borderWidth = 5,
     borderStyle = 'solid',
     borderColor = -0.1,
+    orientation,
   } = props;
+
   const border = `${borderStyle} ${borderWidth}px ${color.format(borderColor)}`;
   const hasRadius = typeof radius === 'number' && total > 1;
 
   const styles = {
-    base: css({
-      Flex: 'vertical-stretch-stretch',
-      minWidth: is.vertical && 60,
-      minHeight: is.horizontal && 60,
-    }),
+    base: css({ flex: 1, Flex: `${orientation}-stretch-stretch`, position: 'relative' }),
+    fill: css({ flex: 1 }),
     edge: {
-      base: css({
-        flex: 1,
-        border,
-        borderRight: is.vertical && bulletEdge === 'near' && 'none',
-        borderLeft: is.vertical && bulletEdge === 'far' && 'none',
-      }),
-      top: css({
-        borderBottom: 'none',
-        borderLeftWidth: total < 2 ? 0 : borderWidth,
-        borderRightWidth: total < 2 ? 0 : borderWidth,
-      }),
-      bottom: css({
-        borderTop: 'none',
-      }),
-      spacer: css({ flex: 1 }),
-      topRadius: hasRadius && {
-        borderRadius: bulletEdge === 'near' ? [radius, 0, 0, 0] : [0, radius, 0, 0],
+      vertical: {
+        first: css({
+          flex: 1,
+          borderTop: border,
+          borderLeft: is.bullet.near && border,
+          borderRight: is.bullet.far && border,
+          borderRadius: hasRadius && is.bullet.near ? [radius, 0, 0, 0] : [0, radius, 0, 0],
+        }),
+        last: css({
+          flex: 1,
+          borderBottom: border,
+          borderLeft: is.bullet.near && border,
+          borderRight: is.bullet.far && border,
+          borderRadius: hasRadius && is.bullet.near ? [0, 0, 0, radius] : [0, 0, radius, 0],
+        }),
       },
-      bottomRadius: hasRadius && {
-        borderRadius: bulletEdge === 'near' ? [0, 0, 0, radius] : [0, 0, radius, 0],
+
+      horizontal: {
+        first: css({
+          flex: 1,
+          borderLeft: border,
+          borderTop: is.bullet.near && border,
+          borderBottom: is.bullet.far && border,
+          borderRadius: hasRadius && is.bullet.near ? [radius, 0, 0, 0] : [0, 0, 0, radius],
+        }),
+        last: css({
+          flex: 1,
+          borderRight: border,
+          borderTop: is.bullet.near && border,
+          borderBottom: is.bullet.far && border,
+          borderRadius: hasRadius && is.bullet.near ? [0, radius, 0, 0] : [0, 0, radius, 0],
+        }),
       },
     },
+
     middle: {
-      line: css({ borderTop: border }),
+      line: css({
+        borderTop: is.vertical && border,
+        borderLeft: is.horizontal && border,
+      }),
       spacer: css({
-        borderRight: bulletEdge === 'far' && border,
-        borderLeft: bulletEdge === 'near' && border,
         flex: 1,
+        borderLeft: is.vertical && is.bullet.near && border,
+        borderRight: is.vertical && is.bullet.far && border,
+        borderTop: is.horizontal && is.bullet.near && border,
+        borderBottom: is.horizontal && is.bullet.far && border,
       }),
     },
+
+    spacer: css({
+      position: 'relative',
+      flex: 1,
+
+      borderLeft: is.vertical && is.bullet.near ? border : undefined,
+      borderRight: is.vertical && is.bullet.far ? border : undefined,
+
+      borderTop: is.horizontal && is.bullet.near ? border : undefined,
+      borderBottom: is.horizontal && is.bullet.far ? border : undefined,
+    }),
   };
+
+  if (is.spacing) {
+    return <div {...styles.spacer}></div>;
+  }
 
   if (is.first) {
     return (
-      <div {...css(styles.base, props.style)}>
-        <div {...styles.edge.spacer} />
-        <div {...css(styles.edge.base, styles.edge.top, styles.edge.topRadius)} />
+      <div {...styles.base}>
+        <div {...styles.fill} />
+        <div
+          {...css(
+            is.vertical && styles.edge.vertical.first,
+            is.horizontal && styles.edge.horizontal.first,
+          )}
+        />
       </div>
     );
   }
 
   if (is.last) {
     return (
-      <div {...css(styles.base, props.style)}>
-        <div {...css(styles.edge.base, styles.edge.bottom, styles.edge.bottomRadius)} />
-        <div {...styles.edge.spacer} />
+      <div {...styles.base}>
+        <div
+          {...css(
+            is.vertical && styles.edge.vertical.last,
+            is.horizontal && styles.edge.horizontal.last,
+          )}
+        />
+        <div {...styles.fill} />
       </div>
     );
   }
 
   return (
-    <div {...css(styles.base, props.style)}>
+    <div {...styles.base}>
       <div {...styles.middle.spacer} />
       <div {...css(styles.middle.line)} />
       <div {...styles.middle.spacer} />
