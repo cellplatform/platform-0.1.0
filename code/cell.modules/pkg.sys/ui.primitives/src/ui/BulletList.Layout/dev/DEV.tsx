@@ -176,6 +176,9 @@ export const actions = DevActions<Ctx>()
     e.button('add (spacing: { after })', (e) => {
       CtxUtil.addItem(e.ctx, { spacing: { after: 30 } });
     });
+    e.button('add (spacing: { before, after })', (e) => {
+      CtxUtil.addItem(e.ctx, { spacing: { before: 15, after: 30 } });
+    });
 
     e.hr(1, 0.1);
 
@@ -199,11 +202,11 @@ export const actions = DevActions<Ctx>()
     e.settings({
       host: { background: -0.04 },
       layout: total > 0 && {
+        cropmarks: -0.2,
         label: {
           topLeft: '<BulletList>',
           bottomRight: `Body/Sample:"${e.ctx.renderCtx.bodyKind}"`,
         },
-        cropmarks: -0.2,
       },
     });
 
