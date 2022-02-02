@@ -23,6 +23,8 @@ export const BulletListItem: React.FC<BulletListItemProps> = (props) => {
   const invertedOrientation = orientation === 'horizontal' ? 'vertical' : 'horizontal';
 
   const is: k.BulletItemProps['is'] = {
+    empty: total === 0,
+    single: total === 1,
     first: index === 0,
     last: index === total - 1,
     edge: index === 0 || index === total - 1,

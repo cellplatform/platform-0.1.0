@@ -4,6 +4,11 @@ import { color, css, CssValue, t, k } from '../common';
 export type BulletDotProps = k.BulletItemProps & { style?: CssValue };
 
 export const BulletDot: React.FC<BulletDotProps> = (props) => {
+  if (props.kind === 'Spacing') return null;
+
+  /**
+   * [Render]
+   */
   const styles = {
     base: css({
       flex: 1,

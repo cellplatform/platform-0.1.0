@@ -18,6 +18,8 @@ export type BulletItemProps<T = any> = {
   bullet: { edge: BulletEdge; size: Pixels };
   spacing: number;
   is: {
+    empty: boolean;
+    single: boolean;
     first: boolean;
     last: boolean;
     edge: boolean;
