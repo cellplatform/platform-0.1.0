@@ -1,6 +1,6 @@
 type Pixels = number;
 
-export type BulletOrientation = 'vertical' | 'horizontal';
+export type BulletOrientation = 'x' | 'y'; // x:horizontal, y:vertical
 export type BulletEdge = 'near' | 'far';
 
 export type BulletItem<T = any> = {

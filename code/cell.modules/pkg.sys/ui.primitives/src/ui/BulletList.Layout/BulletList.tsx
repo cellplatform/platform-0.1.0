@@ -1,6 +1,7 @@
 import React from 'react';
 import { css, CssValue, k } from './common';
 import { BulletListItem } from './BulletList.Item';
+import { Util } from './util';
 
 type Pixels = number;
 
@@ -16,7 +17,7 @@ export type BulletListProps = {
 };
 
 export const BulletList: React.FC<BulletListProps> = (props) => {
-  const { orientation = 'vertical', bulletEdge = 'near', bulletSize = 15, items = [] } = props;
+  const { orientation = 'y', bulletEdge = 'near', bulletSize = 15, items = [] } = props;
 
   const toSpacing = (itemSpacing?: k.BulletSpacing): k.BulletSpacing => {
     if (typeof itemSpacing === 'object') return itemSpacing;
@@ -30,7 +31,7 @@ export const BulletList: React.FC<BulletListProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({ Flex: `${orientation}-stretch-stretch` }),
+    base: css({ Flex: `${Util.toFlexOrientation(orientation)}-stretch-stretch` }),
   };
 
   const elItems = items.map((item, i) => {

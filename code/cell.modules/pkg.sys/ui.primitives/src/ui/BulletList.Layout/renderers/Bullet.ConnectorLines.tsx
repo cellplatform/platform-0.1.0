@@ -1,5 +1,6 @@
 import React from 'react';
 import { color, css, k } from '../common';
+import { Util } from '../util';
 
 export type BulletConnectorLinesProps = k.BulletItemArgs & {
   radius?: number;
@@ -23,7 +24,11 @@ export const BulletConnectorLines: React.FC<BulletConnectorLinesProps> = (props)
   const hasRadius = typeof radius === 'number' && total > 1;
 
   const styles = {
-    base: css({ flex: 1, Flex: `${orientation}-stretch-stretch`, position: 'relative' }),
+    base: css({
+      flex: 1,
+      Flex: `${Util.toFlexOrientation(orientation)}-stretch-stretch`,
+      position: 'relative',
+    }),
     fill: css({ flex: 1 }),
     edge: {
       vertical: {

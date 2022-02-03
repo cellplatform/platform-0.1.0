@@ -1,6 +1,7 @@
 import React from 'react';
 import { css, CssValue, k, color } from './common';
 import { Renderer } from './renderers';
+import { Util } from './util';
 
 type Pixels = number;
 type R = {
@@ -29,7 +30,6 @@ export type BulletListItemProps = {
 export const BulletListItem: React.FC<BulletListItemProps> = (props) => {
   const { item, orientation, index, total, renderers, debug = {} } = props;
   const { data } = item;
-  const invertedOrientation = orientation === 'horizontal' ? 'vertical' : 'horizontal';
   const spacing = formatSpacing(props.spacing);
 
   const is: k.BulletItemArgs['is'] = {
@@ -38,8 +38,8 @@ export const BulletListItem: React.FC<BulletListItemProps> = (props) => {
     first: index === 0,
     last: index === total - 1,
     edge: index === 0 || index === total - 1,
-    vertical: orientation === 'vertical',
-    horizontal: orientation === 'horizontal',
+    horizontal: orientation === 'x',
+    vertical: orientation === 'y',
     spacer: false,
     bullet: { near: props.bulletEdge === 'near', far: props.bulletEdge === 'far' },
   };
@@ -59,8 +59,8 @@ export const BulletListItem: React.FC<BulletListItemProps> = (props) => {
    */
   const debugBorder = debug.border ? `solid 1px ${color.format(-0.06)}` : undefined;
   const styles = {
-    base: css({ Flex: `${orientation}-stretch-stretch` }),
-    main: css({ Flex: `${invertedOrientation}-stretch-stretch` }),
+    base: css({ Flex: `${Util.toFlexOrientation(orientation)}-stretch-stretch` }),
+    main: css({ Flex: `${Util.toFlexOrientation(orientation, { invert: true })}-stretch-stretch` }),
 
     bullet: {
       outer: css({
@@ -97,7 +97,7 @@ export const BulletListItem: React.FC<BulletListItemProps> = (props) => {
       base: css({
         position: 'relative',
         display: 'flex',
-        Flex: `${invertedOrientation}-stretch-stretch`,
+        Flex: `${Util.toFlexOrientation(orientation, { invert: true })}-stretch-stretch`,
         height: is.vertical ? offset : undefined,
         width: is.horizontal ? offset : undefined,
       }),

@@ -41,7 +41,7 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       props: {
         bulletEdge: 'near',
-        orientation: 'vertical',
+        orientation: 'y',
         renderers: renderer,
         spacing: 10,
         bulletSize: 60,
@@ -68,7 +68,10 @@ export const actions = DevActions<Ctx>()
     e.select((config) => {
       config
         .title('orientation')
-        .items(['vertical', 'horizontal'])
+        .items([
+          { label: 'x (horizontal)', value: 'x' },
+          { label: 'y (vertical)', value: 'y' },
+        ])
         .initial(config.ctx.props.orientation)
         .view('buttons')
         .pipe((e) => {
