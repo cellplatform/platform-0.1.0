@@ -1,7 +1,6 @@
 import React from 'react';
-import { BulletList } from 'sys.ui.primitives/lib/ui/BulletList';
 
-import { css, CssValue, t } from '../../common';
+import { BulletList, css, CssValue, t } from '../../common';
 import { DocCard } from './DEV.DocCard';
 import { SimpleDoc } from './DEV.types';
 

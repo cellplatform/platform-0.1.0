@@ -18,3 +18,4 @@ export { rx, slug, cuid, time } from '@platform/util.value';
 export { Filesystem } from 'sys.fs';
 export { WebRuntime } from 'sys.runtime.web';
 export { PropList, PropListItem } from 'sys.ui.primitives/lib/ui/PropList';
+export { BulletList } from 'sys.ui.primitives/lib/ui/BulletList';
