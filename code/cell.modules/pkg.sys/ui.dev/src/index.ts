@@ -1,3 +1,5 @@
+export { expect } from 'chai';
+
 export { ActionsFactory } from './api/Actions';
 export { DevActions } from './factory';
 

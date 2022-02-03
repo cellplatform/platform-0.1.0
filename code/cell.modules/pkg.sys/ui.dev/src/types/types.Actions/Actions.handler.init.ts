@@ -7,4 +7,5 @@ export type ActionHandlerInit<C> = (args: t.ActionHandlerInitArgs<C>) => Promise
 export type ActionHandlerInitArgs<C> = {
   bus: t.EventBus<any>;
   ctx: C;
+  redraw(): void;
 };

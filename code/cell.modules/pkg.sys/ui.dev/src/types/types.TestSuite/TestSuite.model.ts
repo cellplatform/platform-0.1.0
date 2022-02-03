@@ -15,6 +15,8 @@ export type Test = {
   describe: TestSuiteDescribe;
   bundle(items: BundleImport | BundleImport[]): Promise<TestSuiteModel>;
   bundle(description: string, items: BundleImport | BundleImport[]): Promise<TestSuiteModel>;
+  run(items: BundleImport | BundleImport[]): Promise<TestSuiteRunResponse>;
+  run(description: string, items: BundleImport | BundleImport[]): Promise<TestSuiteRunResponse>;
 };
 
 /**

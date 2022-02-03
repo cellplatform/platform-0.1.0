@@ -10,7 +10,6 @@ import {
   Icons,
   MediaStream,
   PeerNetbus,
-  PeerNetwork,
   rx,
   t,
   TARGET_NAME,
@@ -19,6 +18,7 @@ import {
 import { EventBridge } from './DEV.event';
 import { DevProps } from './DEV.Props';
 import { DevRootLayout } from './DEV.Root';
+import { PeerNetwork } from '../../';
 
 type O = Record<string, unknown>;
 
@@ -48,9 +48,9 @@ type CtxDebugFlags = {
 };
 
 type CtxEvents = {
-  peer: t.PeerNetworkEvents;
+  peer: t.PeerEvents;
   group: t.GroupEvents;
-  media: ReturnType<typeof MediaStream.Events>;
+  media: t.MediaStreamEvents;
   runtime: t.WebRuntimeEvents;
 };
 
@@ -64,23 +64,27 @@ const showLayout = (ctx: Ctx, kind: t.DevGroupLayout['kind'], props?: O) => {
   });
 };
 
-const FILESYSTEM_ID = 'dev.net.fs';
+const DEFAULT = {
+  signal: 'rtc.cellfs.com',
+  fs: 'dev.net.fs',
+};
 
 /**
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('PeerNetwork')
+  .namespace('Sample')
 
   .context((e) => {
     if (e.prev) return e.prev;
 
+    const { signal } = DEFAULT;
     const self = cuid();
     const bus = rx.bus<t.PeerEvent | t.DevEvent>();
 
-    EventBridge.startEventBridge({ bus, self });
     PeerNetwork.Controller({ bus });
     MediaStream.Controller({ bus });
+    EventBridge.startEventBridge({ bus, self });
 
     const netbus = PeerNetbus({ bus, self });
     const runtime = WebRuntime.Bus.Controller({ bus, netbus });
@@ -97,7 +101,6 @@ export const actions = DevActions<Ctx>()
       group: PeerNetwork.GroupStrategy({ bus, netbus }),
     };
 
-    const signal = 'rtc.cellfs.com';
     const init = () => {
       events.media.start(EventBridge.videoRef(self)).video();
       events.peer.create(signal, self);
@@ -128,7 +131,7 @@ export const actions = DevActions<Ctx>()
     /**
      * Filesystem (networked).
      */
-    const filesystem = Filesystem.IndexedDb.create({ bus, id: FILESYSTEM_ID });
+    const filesystem = Filesystem.IndexedDb.create({ bus, id: DEFAULT.fs });
     (async () => {
       const fs = await filesystem;
       const id = fs.id;
@@ -152,6 +155,16 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     console.log('NET/INIT', toObject(e.ctx));
+
+    const { bus } = e;
+    const { signal } = DEFAULT;
+
+    /**
+     * TODO 🐷
+     * - replace config below with [net]
+     */
+    const net = await PeerNetwork.start({ bus, signal });
+    console.log('🐷🐷🐷🐷 TODO // net:', net);
   })
 
   .items((e) => {
@@ -169,7 +182,7 @@ export const actions = DevActions<Ctx>()
         <WebRuntime.ui.ManifestSelectorStateful
           bus={ctx.bus}
           style={{ MarginX: 30, MarginY: 20 }}
-          history={{ fs: FILESYSTEM_ID }}
+          history={{ fs: DEFAULT.fs }}
           onExportClick={(e) => {
             ctx.events?.runtime.useModule.fire({
               target: TARGET_NAME,
@@ -215,7 +228,7 @@ export const actions = DevActions<Ctx>()
     });
 
     e.button('debug (group)', async (e) => {
-      const res = await e.ctx.events?.group.connections().get();
+      const res = await e.ctx.events?.group.connections.get();
 
       console.group('🌳 Group');
       console.log('local', res?.local);
@@ -466,8 +479,8 @@ export const actions = DevActions<Ctx>()
         label: {
           topLeft: 'Mesh',
           topRight: elLabelRight,
-          bottomLeft: `bus/instance: "${(bus as any)._instance}"`,
-          bottomRight: `filesystem: "${FILESYSTEM_ID}"`,
+          bottomLeft: `bus/instance: "${rx.bus.instance(bus)}"`,
+          bottomRight: `filesystem: "${DEFAULT.fs}"`,
         },
         position: [60, 60, 70, 60],
         border: -0.1,

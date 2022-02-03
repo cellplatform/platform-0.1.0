@@ -5,8 +5,8 @@ import { t } from './common';
 
 const imports = {
   ModuleInfo: import('./web.ui/ModuleInfo/dev/DEV'),
-  UnitTests: import('./web.ui/dev/UnitTests/DEV.UnitTests'),
   Sample: import('./web.ui/dev/Sample/DEV'),
+  UnitTests: import('./web.ui/dev/UnitTests/DEV.UnitTests'),
 };
 
 /**
@@ -22,7 +22,7 @@ export const DevHarness: React.FC<Props> = (props) => {
       bus={props.bus}
       actions={Object.values(imports)}
       initial={url.searchParams.get('dev')}
-      showActions={url.hostname === 'localhost'}
+      showActions={true}
     />
   );
 };

@@ -3,8 +3,8 @@ import { Harness } from 'sys.ui.dev';
 import { t } from './common';
 
 const imports = {
-  UnitTests: import('./web.ui/dev/DEV.UnitTests'),
   ModuleInfo: import('./web.ui/ModuleInfo/dev/DEV'),
+  UnitTests: import('./web.ui/dev/DEV.UnitTests'),
 };
 
 /**
@@ -19,7 +19,7 @@ export const DevHarness: React.FC<Props> = (props) => {
       bus={props.bus}
       actions={Object.values(imports)}
       initial={url.searchParams.get('dev')}
-      showActions={url.hostname === 'localhost'}
+      showActions={true}
     />
   );
 };

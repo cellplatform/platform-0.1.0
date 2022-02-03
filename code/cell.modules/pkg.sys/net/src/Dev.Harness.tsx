@@ -4,9 +4,11 @@ import { Harness } from 'sys.ui.dev';
 import { t } from './common';
 
 const imports = {
-  PeerNetwork: import('./web.PeerNetwork/dev/DEV'),
-  PeerNetworkHook: import('./web.ui.hooks/usePeerNetwork/dev/DEV'),
+  ModuleInfo: import('./web.ui/ModuleInfo/dev/DEV'),
+  LocalPeerCard: import('./web.ui/LocalPeerCard/dev/DEV'),
+  Networks: import('./web.ui/dev.NetworkSample/DEV'),
   UnitTests: import('./web.ui/dev/DEV.UnitTests'),
+  SamplePeerNetwork: import('./web.PeerNetwork/dev/DEV'),
 };
 
 /**

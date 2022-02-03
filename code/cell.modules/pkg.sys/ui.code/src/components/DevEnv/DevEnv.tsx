@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t, m, COLORS } from './common';
+import React, { useState } from 'react';
+import { css, CssValue, t, m, COLORS } from './common';
 import { Icons } from '../Icons';
 import {} from 'sys.ui.dev';
 
-import { Test } from 'sys.ui.dev/lib/ui/TestSuite';
+import { Test } from 'sys.ui.dev/lib/web.ui/TestSuite';
 import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
 import { CodeEditor } from '../CodeEditor';

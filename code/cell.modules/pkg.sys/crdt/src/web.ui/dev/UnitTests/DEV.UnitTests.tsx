@@ -1,13 +1,13 @@
 import React from 'react';
 import { DevActions, Test } from 'sys.ui.dev';
-import { TestSuiteRunResponse, TestSuiteModel } from 'sys.ui.dev/lib/types';
+import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 import { RepoLink } from './ui/RepoLink';
 
 type CtxRunTests = () => Promise<TestSuiteRunResponse>;
 
 type Ctx = {
   results?: TestSuiteRunResponse;
-  tests: {
+  tests?: {
     Automerge: CtxRunTests;
     AutomergeDoc: CtxRunTests;
     CrdtBus: CtxRunTests;
@@ -19,39 +19,25 @@ type Ctx = {
  */
 export const actions = DevActions<Ctx>()
   .namespace('UnitTests')
-  .context((e) => {
-    if (e.prev) return e.prev;
-
-    const run = async (bundle: TestSuiteModel) => {
-      const results = await bundle.run();
-      e.change.ctx((ctx) => (ctx.results = results));
-      return results;
-    };
-
-    const tests: Ctx['tests'] = {
-      async Automerge() {
-        return run(await Test.bundle(import('../../../web.Automerge/Automerge.lib.TEST')));
-      },
-      async AutomergeDoc() {
-        return run(await Test.bundle(import('../../../web.Automerge/AutomergeDoc.TEST')));
-      },
-      async CrdtBus() {
-        return run(await Test.bundle(import('../../../web.CrdtBus/TEST')));
-      },
-    };
-
-    const ctx: Ctx = { tests };
-
-    return ctx;
-  })
+  .context((e) => e.prev ?? {})
 
   .init(async (e) => {
-    const { tests } = e.ctx;
+    const run = async (input: Promise<any>) => {
+      const res = (e.ctx.results = await Test.run(input));
+      e.redraw();
+      return res;
+    };
+
+    const tests = (e.ctx.tests = {
+      Automerge: () => run(import('../../../web.Automerge/Automerge.lib.TEST')),
+      AutomergeDoc: () => run(import('../../../web.Automerge/AutomergeDoc.TEST')),
+      CrdtBus: () => run(import('../../../web.CrdtBus/TEST')),
+    });
 
     // Auto-run on load.
-    // tests.Automerge();
-    // tests.AutomergeDoc();
-    tests.CrdtBus();
+    // await tests.Automerge();
+    // await tests.AutomergeDoc();
+    await tests.CrdtBus();
   })
 
   .items((e) => {
@@ -62,9 +48,9 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.1);
 
-    e.button('run: Automerge (baseline)', (e) => e.ctx.tests.Automerge());
-    e.button('run: AutomergeDoc (helpers)', (e) => e.ctx.tests.AutomergeDoc());
-    e.button('run: CrdtBus', (e) => e.ctx.tests.CrdtBus());
+    e.button('run: Automerge (baseline)', (e) => e.ctx.tests?.Automerge());
+    e.button('run: AutomergeDoc (helpers)', (e) => e.ctx.tests?.AutomergeDoc());
+    e.button('run: CrdtBus', (e) => e.ctx.tests?.CrdtBus());
 
     e.hr();
   })

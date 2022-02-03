@@ -1,7 +1,8 @@
 import { IStateObjectWritable } from '@platform/state.types';
-import * as t from '../common/types';
+import * as t from '../../common/types';
 
-export * from '../common/types';
+export { MediaStreamEvents } from 'sys.ui.video/lib/types';
+export * from '../../common/types';
 
 type O = Record<string, unknown>;
 export type DevModalTarget = 'fullscreen' | 'body';

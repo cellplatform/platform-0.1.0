@@ -72,7 +72,7 @@ export function ActionsController(args: {
         const ctx = model.state.ctx.current;
 
         // Invoke the initialization function.
-        await init({ bus, ctx });
+        await init({ bus, ctx, redraw });
         redraw();
       },
     },

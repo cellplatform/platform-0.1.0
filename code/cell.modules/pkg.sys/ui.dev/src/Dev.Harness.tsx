@@ -7,6 +7,7 @@ const imports = {
   sample1: import('./test/sample-1/DEV'),
   sample2: import('./test/sample-2/DEV'),
   sample3: import('./test/sample-3/DEV'),
+  sample4: import('./test/sample-4/DEV'),
 
   Harness: import('./web.ui/Harness/DEV'),
   Textbox: import('./web.ui/Textbox/DEV'),
@@ -27,7 +28,7 @@ export const DevHarness: React.FC<Props> = (props) => {
       bus={props.bus}
       actions={Object.values(imports)}
       initial={url.searchParams.get('dev')}
-      showActions={url.hostname === 'localhost'}
+      showActions={true}
     />
   );
 };

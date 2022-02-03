@@ -143,7 +143,7 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
 
           const group = PeerNetwork.GroupEvents(netbus);
           const id = connection.peer.remote.id;
-          group.connect().fire(id, remote, 'data');
+          group.connect.fire(id, remote, 'data');
           group.dispose();
 
           const isConnectedLocally = local.connections

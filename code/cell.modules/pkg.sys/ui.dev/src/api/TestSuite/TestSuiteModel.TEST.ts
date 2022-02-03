@@ -1,7 +1,6 @@
 import { Test } from '.';
 import { expect, t, time } from '../../test';
 import { Is } from './common';
-import { Constraints } from './helpers/Constraints';
 import { Tree } from './helpers/Tree';
 import { TestModel } from './TestModel';
 
@@ -591,6 +590,60 @@ describe('TestSuiteModel', () => {
       expect(bundle2.state.description).to.eql((await root2).default.state.description); // NB: Root name taken from single bundle.
       expect(bundle3.state.description).to.eql('MySuite-1'); // NB: Custom name.
       expect(bundle4.state.description).to.eql('MySuite-2');
+    });
+  });
+
+  describe('Test.run', () => {
+    it('nothing [<empty>]', async () => {
+      const res = await Test.run([]);
+      expect(res.ok).to.eql(true);
+      expect(res.description).to.eql('Tests');
+      expect(res.tests).to.eql([]);
+      expect(res.children).to.eql([]);
+    });
+
+    it('TestSuite {objects}', async () => {
+      const root1 = Test.describe('1', (e) => e.it('1.1'));
+      const root2 = Test.describe('2', (e) => e.it('2.1'));
+
+      const test = async (res: t.TestSuiteRunResponse) => {
+        expect(res.ok).to.eql(true);
+        expect(res.description).to.eql('Tests');
+        expect(res.tests).to.eql([]);
+        expect(res.children.length).to.eql(2);
+        expect(res.children[0].tests[0].description).to.eql('1.1');
+        expect(res.children[1].tests[0].description).to.eql('2.1');
+      };
+
+      await test(await Test.run([root1, root2]));
+      await test(await Test.run(await Test.bundle([root1, root2])));
+    });
+
+    it('dynamic imports("...")', async () => {
+      const root1 = import('./test.samples/One.TEST');
+      const root2 = import('./test.samples/Two.TEST');
+
+      const res = await Test.run([root1, root2]);
+      expect(res.ok).to.eql(true);
+      expect(res.description).to.eql('Tests');
+
+      expect(res.children[0].tests[0].description).to.eql('one.foo');
+      expect(res.children[1].tests[0].description).to.eql('two.foo');
+    });
+
+    it('mixed import (dynamic/static) with explicit root "description"', async () => {
+      const root1 = Test.describe('One');
+      const root2 = import('./test.samples/Two.TEST');
+
+      const res = await Test.run('MySuite', [root1, root2]);
+      expect(res.ok).to.eql(true);
+      expect(res.description).to.eql('MySuite');
+
+      expect(res.children[0].description).to.eql('One');
+      expect(res.children[1].description).to.eql('Two');
+
+      expect(res.children[0].tests).to.eql([]);
+      expect(res.children[1].tests[0].description).to.eql('two.foo');
     });
   });
 });

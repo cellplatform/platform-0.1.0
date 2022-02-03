@@ -236,7 +236,7 @@ export const actions = DevActions<Ctx>()
     e.title('Select');
     e.select((config) =>
       config
-        .title('My dropdown title:')
+        .title('My dropdown title <T>:')
         .label('select single')
         .items(['one', { label: 'two', value: { count: 2 } }, 3])
         .initial(3)
@@ -282,7 +282,7 @@ export const actions = DevActions<Ctx>()
         .items(['Chocolate', 'Strawberry', 'Vanilla'])
         // .clearable(true)
         .pipe((e) => {
-          //
+          const current = e.select.current[0]; // NB: always first.
         });
     });
 

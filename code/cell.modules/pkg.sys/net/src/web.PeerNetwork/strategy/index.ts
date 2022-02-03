@@ -1,2 +1,2 @@
 export * from './PeerStrategy';
-export * from './PeerGroupStrategy';
+export * from './GroupStrategy';

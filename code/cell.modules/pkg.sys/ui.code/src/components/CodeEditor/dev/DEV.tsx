@@ -1,10 +1,10 @@
 import React from 'react';
 import { debounceTime } from 'rxjs/operators';
-import { DevActions, ObjectView, toObject } from 'sys.ui.dev';
+import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { CodeEditor as CodeEditorView, CodeEditorProps } from '..';
 import { CodeEditor } from '../../../api';
-import { bundle, constants, Filesystem, rx, t, deleteUndefined } from '../../../common';
+import { constants, Filesystem, rx, t, deleteUndefined } from '../../../common';
 
 type Ctx = {
   bus: t.EventBus;
@@ -215,16 +215,21 @@ export const actions = DevActions<Ctx>()
    * Type Libraries.
    */
   .items((e) => {
+    const resolvePath = (input: string) => {
+      console.log('TODO / resolve path', input); // TODO 🐷
+      return input;
+    };
+
     e.title('Type Libraries');
     e.button('clear', (e) => e.ctx.global.libs.clear());
     e.button('load: lib.es', async (e) => {
-      const url = bundle.path(PATH.STATIC.TYPES.ES);
+      const url = resolvePath(PATH.STATIC.TYPES.ES);
       const res = await e.ctx.global.libs.load(url);
       console.log('res', res);
     });
     e.button('load: env', async (e) => {
-      const url = bundle.path('static/types.d/inner/env.d.txt');
-      // const url = bundle.path('dist/web/types.d/env.d.txt');
+      const url = resolvePath('static/types.d/inner/env.d.txt');
+      // const url = toPath('dist/web/types.d/env.d.txt');
 
       console.log('url', url);
 
@@ -232,8 +237,8 @@ export const actions = DevActions<Ctx>()
       console.log('res', res);
     });
     e.button('load: rxjs', async (e) => {
-      const url = bundle.path('static/types.d/rxjs');
-      // const url = bundle.path('dist/web/types.d/env.d.txt');
+      const url = resolvePath('static/types.d/rxjs');
+      // const url = toPath('dist/web/types.d/env.d.txt');
 
       console.log('url', url);
 

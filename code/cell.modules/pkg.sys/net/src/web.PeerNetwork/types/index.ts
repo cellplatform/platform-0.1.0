@@ -1,9 +1,18 @@
-export * from './types';
-export * from './types.status';
-export * from './types.uri';
+export * from './type.peer';
+export * from './type.peer.connection';
 
-export * from './types.events.peer';
-export * from './types.events.group';
+export * from './type.event.peer';
+export * from './type.event.group';
+export * from './type.event.peer.local';
+export * from './type.event.peer.conn';
+export * from './type.event.peer.data';
+export * from './type.event.peer.remote';
 
-export * from './types.strategy';
-export * from './types.group';
+export * from './type.events.api.peer';
+export * from './type.events.api.group';
+
+export * from './type.strategy';
+export * from './type.group';
+
+export * from './type.uri';
+export * from './type.network';

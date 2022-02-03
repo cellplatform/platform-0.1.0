@@ -1,13 +1,14 @@
-import { expect, t, cuid, rx } from '../../../test';
+import { expect } from 'chai';
+import { Test } from 'sys.ui.dev';
 import { PeerStrategy } from '.';
-import { PeerNetbus } from '../common';
+import { PeerNetbus, cuid, rx, t } from '../common';
 
-describe('PeerStrategy', () => {
+export default Test.describe('PeerStrategy', (e) => {
   const self = cuid();
   const bus = rx.bus<t.PeerEvent>();
   const netbus = PeerNetbus({ self, bus });
 
-  it('dispose', () => {
+  e.it('dispose', () => {
     const strategy = PeerStrategy({ bus, netbus });
 
     const fire = { root: 0, connection: 0 };
@@ -24,13 +25,13 @@ describe('PeerStrategy', () => {
     expect(fire.connection).to.eql(1);
   });
 
-  describe('Connection', () => {
-    it('default:true - autoPurgeOnClose', () => {
+  e.describe('Connection', (e) => {
+    e.it('default:true - autoPurgeOnClose', () => {
       const connection = PeerStrategy({ bus, netbus }).connection;
       expect(connection.autoPurgeOnClose).to.eql(true);
     });
 
-    it('default:true - ensureClosed', () => {
+    e.it('default:true - ensureClosed', () => {
       const connection = PeerStrategy({ bus, netbus }).connection;
       expect(connection.ensureClosed).to.eql(true);
     });

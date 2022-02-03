@@ -20,7 +20,7 @@ export function useGroupState(args: { bus: t.EventBus<any>; netbus: t.PeerNetbus
     const group = GroupEvents(netbus);
 
     const updateStatus = async () => {
-      const status = await group.connections().get();
+      const status = await group.connections.get();
       setStatus(status);
     };
 
@@ -29,7 +29,7 @@ export function useGroupState(args: { bus: t.EventBus<any>; netbus: t.PeerNetbus
       .changed$.pipe(distinctUntilChanged((prev, next) => R.equals(ids(prev.peer), ids(next.peer))))
       .subscribe((e) => updateStatus());
 
-    group.refresh().$.pipe(debounceTime(30)).subscribe(updateStatus);
+    group.refresh.$.pipe(debounceTime(30)).subscribe(updateStatus);
     updateStatus();
 
     return () => {

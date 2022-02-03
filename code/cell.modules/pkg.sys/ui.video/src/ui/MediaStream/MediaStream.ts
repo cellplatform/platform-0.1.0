@@ -8,6 +8,7 @@ export * from './types';
 
 export const MediaStream = {
   Events: MediaStreamEvents,
+
   Controller: MediaStreamController,
   RecordController: MediaStreamRecordController,
 

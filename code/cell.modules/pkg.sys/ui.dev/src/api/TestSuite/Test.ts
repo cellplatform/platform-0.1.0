@@ -37,6 +37,14 @@ export const Test: t.Test = {
       return root.merge(...suites);
     }
   },
+
+  /**
+   * Bundle and run a set of tests.
+   */
+  async run(...args: any[]) {
+    const bundle = await Test.bundle.apply(null, args as any);
+    return bundle.run();
+  },
 };
 
 /**

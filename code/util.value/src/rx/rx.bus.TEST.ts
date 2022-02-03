@@ -62,6 +62,13 @@ describe('rx.bus', () => {
       expect(_instance.length).to.greaterThan('bus.'.length);
     });
 
+    it('rx.bus.instance(...)', () => {
+      const bus = rx.bus();
+      const _instance = (bus as any)._instance as string;
+      expect(rx.bus.instance(bus)).to.eql(_instance);
+      expect(rx.bus.instance({} as any)).to.eql('');
+    });
+
     it('create: new observable (no param, no type)', () => {
       const bus = rx.bus();
 

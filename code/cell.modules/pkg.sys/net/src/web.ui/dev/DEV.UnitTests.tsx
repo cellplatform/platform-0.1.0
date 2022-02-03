@@ -1,45 +1,41 @@
 import React from 'react';
 import { DevActions, Test } from 'sys.ui.dev';
-import { TestSuiteRunResponse, TestSuiteModel } from 'sys.ui.dev/lib/types';
+import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
-type CtxRunTests = () => Promise<TestSuiteRunResponse>;
-
-type Ctx = {
-  results?: TestSuiteRunResponse;
-  tests: { PeerNetbus: CtxRunTests };
+const Imports = {
+  PeerNetwork: import('../../web.PeerNetwork/PeerNetwork.TEST'),
+  PeerNetworkUri: import('../../web.PeerNetwork/common/util.Uri.TEST'),
+  PeerNetbus: import('../../web.PeerNetbus/PeerNetbus.TEST'),
+  PeerEvents: import('../../web.PeerNetwork.events/PeerEvents.TEST'),
+  PeerStrategy: import('../../web.PeerNetwork/strategy/PeerStrategy/PeerStrategy.TEST'),
 };
+
+type Ctx = { results?: TestSuiteRunResponse };
 
 /**
  * Actions
  */
 export const actions = DevActions<Ctx>()
   .namespace('UnitTests')
-  .context((e) => {
-    if (e.prev) return e.prev;
+  .context((e) => e.prev ?? {})
 
-    const run = async (bundle: TestSuiteModel) => {
-      const results = await bundle.run();
-      e.change.ctx((ctx) => (ctx.results = results));
-      return results;
-    };
-
-    const tests: Ctx['tests'] = {
-      async PeerNetbus() {
-        return run(await Test.bundle(import('../../web.PeerNetbus/PeerNetbus.TEST')));
-      },
-    };
-
-    const ctx: Ctx = { tests };
-
-    tests.PeerNetbus(); // Auto-run on load.
-
-    return ctx;
+  .init(async (e) => {
+    e.ctx.results = await Test.run(Object.values(Imports));
+    // e.ctx.results = await Test.run(Imports.PeerNetwork);
   })
 
   .items((e) => {
     e.title('Run Tests');
 
-    e.button('run: PeerNetbus', (e) => e.ctx.tests.PeerNetbus());
+    e.button('all', async (e) => {
+      e.ctx.results = await Test.run(Object.values(Imports));
+    });
+
+    e.hr(1, 0.1);
+
+    Object.keys(Imports).forEach((key) => {
+      e.button(`run: ${key}`, async (e) => (e.ctx.results = await Test.run(Imports[key])));
+    });
 
     e.hr();
   })

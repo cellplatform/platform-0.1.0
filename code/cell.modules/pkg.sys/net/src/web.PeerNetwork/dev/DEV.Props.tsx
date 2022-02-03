@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { css, CssValue, LocalPeerProps, t, useLocalPeer } from './DEV.common';
+import { css, CssValue, LocalPeerCard, t, useLocalPeer } from './DEV.common';
 
 export type DevPropsProps = {
   self: t.PeerId;
@@ -28,7 +28,7 @@ export const DevProps: React.FC<DevPropsProps> = (props) => {
   };
 
   const elLocalPeer = status && (
-    <LocalPeerProps
+    <LocalPeerCard
       self={{ id: self, status }}
       bus={bus}
       newConnections={{ isReliable: true, autoStartVideo: false }}

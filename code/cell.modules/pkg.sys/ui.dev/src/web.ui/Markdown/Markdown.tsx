@@ -5,10 +5,11 @@ import { constants, css, CssValue, Markdown as M } from '../../common';
 export type MarkdownProps = { style?: CssValue };
 
 export const Markdown: React.FC<MarkdownProps> = (props) => {
-  const children = useMemo(
-    () => (typeof props.children === 'string' ? M.toHtmlSync(props.children) : props.children),
-    [props.children],
-  );
+  const children = useMemo(() => {
+    const content = props.children;
+    if (typeof content !== 'string') return content;
+    return M.toHtmlSync(escapeBraces(content));
+  }, [props.children]);
 
   if (typeof children !== 'string') {
     return <div {...css(props.style)}>{children}</div>;
@@ -22,3 +23,13 @@ export const Markdown: React.FC<MarkdownProps> = (props) => {
     />
   );
 };
+
+/**
+ * [Helpers]
+ */
+
+function escapeBraces(text: string) {
+  // NB: Escape opening to a <HTML> element so the markdown parser
+  //     treats it as a character, not as HTML to be ignored.
+  return text.replace(/\</g, '\\<');
+}

@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 
 import { Svg } from '..';
 import { COLORS, css } from '../../../common';
-import Image from './images/svg.sample.svg';
+import Image from '../../../../static/images/sample/svg.sample.svg';
 
 export type SampleProps = { color: 'dark' | 'blue'; width: number };
 

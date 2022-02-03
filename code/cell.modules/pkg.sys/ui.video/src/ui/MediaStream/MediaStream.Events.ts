@@ -6,7 +6,7 @@ import { rx, slug, t } from '../../common';
 /**
  * Helpers for working with <VideoStream> events.
  */
-export function MediaStreamEvents(eventbus: t.EventBus<any>) {
+export function MediaStreamEvents(eventbus: t.EventBus<any>): t.MediaStreamEvents {
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
   const bus = eventbus as t.EventBus<
@@ -77,39 +77,39 @@ export function MediaStreamEvents(eventbus: t.EventBus<any>) {
    * STATUS
    */
   const status = (ref: string) => {
-    const request$ = rx
-      .payload<t.MediaStreamStatusRequestEvent>(event$, 'MediaStream/status:req')
+    const req$ = rx
+      .payload<t.MediaStreamStatusReqEvent>(event$, 'MediaStream/status:req')
       .pipe(filter((e) => e.ref === ref));
 
-    const response$ = rx
-      .payload<t.MediaStreamStatusResponseEvent>(event$, 'MediaStream/status:res')
+    const res$ = rx
+      .payload<t.MediaStreamStatusResEvent>(event$, 'MediaStream/status:res')
       .pipe(filter((e) => e.ref === ref));
 
     const get = () => {
-      const res = firstValueFrom(response$);
+      const res = firstValueFrom(res$);
       bus.fire({ type: 'MediaStream/status:req', payload: { ref } });
       return res;
     };
 
-    return { ref, get, request$, response$ };
+    return { ref, get, req$, res$ };
   };
 
   const all = {
     status() {
-      const request$ = rx
-        .payload<t.MediaStreamsStatusRequestEvent>(event$, 'MediaStreams/status:req')
+      const req$ = rx
+        .payload<t.MediaStreamsStatusReqEvent>(event$, 'MediaStreams/status:req')
         .pipe();
-      const response$ = rx
-        .payload<t.MediaStreamsStatusResponseEvent>(event$, 'MediaStreams/status:res')
+      const res$ = rx
+        .payload<t.MediaStreamsStatusResEvent>(event$, 'MediaStreams/status:res')
         .pipe();
 
       const get = (kind?: t.MediaStreamKind) => {
-        const res = firstValueFrom(response$);
+        const res = firstValueFrom(res$);
         bus.fire({ type: 'MediaStreams/status:req', payload: { kind } });
         return res;
       };
 
-      return { get, request$, response$ };
+      return { get, req$, res$ };
     },
   };
 
@@ -187,17 +187,21 @@ export function MediaStreamEvents(eventbus: t.EventBus<any>) {
     return {
       ref,
       status,
+
       start,
       start$,
       started$,
-      interrupt$,
-      interrupted$,
-      interrupt,
-      pause,
-      resume,
+
       stop,
       stop$,
       stopped$,
+
+      interrupt$,
+      interrupted$,
+      interrupt,
+
+      pause,
+      resume,
     };
   };
 
@@ -209,7 +213,7 @@ export function MediaStreamEvents(eventbus: t.EventBus<any>) {
     stop,
     stopped,
     status,
-    all,
     record,
+    all,
   };
 }
