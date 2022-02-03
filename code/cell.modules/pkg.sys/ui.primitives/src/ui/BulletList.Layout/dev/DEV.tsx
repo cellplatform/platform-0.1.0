@@ -52,6 +52,7 @@ export const actions = DevActions<Ctx>()
         bulletKind: 'Lines',
         bodyKind: 'Card',
         connectorRadius: 20,
+        connectorLineWidth: 5,
       },
     };
 
@@ -162,11 +163,22 @@ export const actions = DevActions<Ctx>()
     e.select((config) => {
       config
         .view('buttons')
-        .title('connector lines: radius')
+        .title('ConnectorLines: radius')
         .items([0, 20])
         .initial(config.ctx.renderCtx.connectorRadius)
         .pipe((e) => {
           if (e.changing) e.ctx.renderCtx.connectorRadius = e.changing?.next[0].value;
+        });
+    });
+
+    e.select((config) => {
+      config
+        .view('buttons')
+        .title('ConnectorLines: lineWidth')
+        .items([3, 5, 10])
+        .initial(config.ctx.renderCtx.connectorLineWidth)
+        .pipe((e) => {
+          if (e.changing) e.ctx.renderCtx.connectorLineWidth = e.changing?.next[0].value;
         });
     });
 

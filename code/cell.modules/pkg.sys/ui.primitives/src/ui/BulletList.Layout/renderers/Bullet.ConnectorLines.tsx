@@ -4,7 +4,7 @@ import { color, css, k } from '../common';
 export type BulletConnectorLinesProps = k.BulletItemArgs & {
   radius?: number;
   lineWidth?: number;
-  lineStyle?: 'solid' | 'dashed';
+  lineStyle?: 'solid' | 'dashed' | 'dotted' | 'double';
   lineColor?: number | string;
 };
 

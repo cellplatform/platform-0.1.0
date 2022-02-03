@@ -8,6 +8,7 @@ export type RenderCtx = {
   bulletKind: 'Lines' | 'Dot';
   bodyKind: 'Card' | 'Vanilla' | undefined;
   connectorRadius?: number;
+  connectorLineWidth?: number;
 };
 
 /**
@@ -21,7 +22,8 @@ export function sampleBulletRendererFactory(getCtx: () => RenderCtx) {
 
     if (bulletKind === 'Lines') {
       const radius = ctx.connectorRadius;
-      const props: BulletConnectorLinesProps = { ...e, radius };
+      const lineWidth = ctx.connectorLineWidth;
+      const props: BulletConnectorLinesProps = { ...e, radius, lineWidth };
 
       // NB: Same bullet connector with sample modification.
       if (e.index === 1 && e.total > 2 && e.kind !== 'Spacing') {
