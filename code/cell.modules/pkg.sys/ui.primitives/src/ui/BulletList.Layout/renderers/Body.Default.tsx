@@ -9,6 +9,8 @@ export type BodyDefaultProps = k.BulletItemArgs & { style?: CssValue };
 export const BodyDefault: React.FC<BodyDefaultProps> = (props) => {
   const { kind, index, total, data, orientation, bullet, spacing } = props;
 
+  if (kind === 'Spacing') return null;
+
   // Sample data view.
   const meta = { kind, index, total, orientation, bullet, spacing };
   const obj = { meta, data };
@@ -24,7 +26,7 @@ export const BodyDefault: React.FC<BodyDefaultProps> = (props) => {
       PaddingY: 10,
     }),
     count: css({
-      Absolute: [2, 3, null, null],
+      Absolute: [2, 5, null, null],
       fontSize: 10,
       opacity: 0.3,
     }),

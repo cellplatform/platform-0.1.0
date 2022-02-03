@@ -1,14 +1,14 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 
-import { BulletList, BulletListProps } from '..';
+import { BulletListLayout, BulletListLayoutProps } from '..';
 import { RenderCtx, sampleBodyRendererFactory, sampleBulletRendererFactory } from './DEV.renderers';
 import { k } from '../common';
 
 type D = { msg: string };
 
 type Ctx = {
-  props: BulletListProps;
+  props: BulletListLayoutProps;
   renderCtx: RenderCtx;
 };
 
@@ -21,6 +21,7 @@ const CtxUtil = {
     const item: k.BulletItem<D> = { data, spacing };
 
     items.push(item);
+    return item;
   },
 };
 
@@ -40,11 +41,11 @@ export const actions = DevActions<Ctx>()
 
     const ctx: Ctx = {
       props: {
-        bulletEdge: 'near',
         orientation: 'y',
+        bullet: { edge: 'near', size: 60 },
         renderers: renderer,
         spacing: 10,
-        bulletSize: 60,
+
         debug: { border: true },
       },
       renderCtx: {
@@ -59,7 +60,18 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx } = e;
-    Array.from({ length: 3 }).forEach(() => CtxUtil.addItem(ctx));
+    Array.from({ length: 3 }).forEach((_, i) => {
+      const item = CtxUtil.addItem(ctx);
+
+      if (i === 0) {
+        // TEMP 🐷
+        item.child = {
+          south: (e) => <div>Hello</div>,
+        };
+      }
+
+      console.log('item', item);
+    });
   })
 
   .items((e) => {
@@ -82,22 +94,28 @@ export const actions = DevActions<Ctx>()
     e.select((config) => {
       config
         .view('buttons')
-        .title('bulletEdge')
-        .initial(config.ctx.props.bulletEdge)
+        .title('bullet.edge')
+        .initial(config.ctx.props.bullet?.edge)
         .items(['near', 'far'])
         .pipe((e) => {
-          if (e.changing) e.ctx.props.bulletEdge = e.changing?.next[0].value;
+          if (e.changing) {
+            const bullet = e.ctx.props.bullet || (e.ctx.props.bullet = {});
+            bullet.edge = e.changing?.next[0].value;
+          }
         });
     });
 
     e.select((config) => {
       config
         .view('buttons')
-        .title('bulletSize')
+        .title('bullet.size')
         .items([15, 30, 60])
-        .initial(config.ctx.props.bulletSize)
+        .initial(config.ctx.props.bullet?.size)
         .pipe((e) => {
-          if (e.changing) e.ctx.props.bulletSize = e.changing?.next[0].value;
+          if (e.changing) {
+            const bullet = e.ctx.props.bullet || (e.ctx.props.bullet = {});
+            bullet.size = e.changing?.next[0].value;
+          }
         });
     });
 
@@ -213,7 +231,7 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    e.render(items.length > 0 && <BulletList {...e.ctx.props} style={{}} />);
+    e.render(items.length > 0 && <BulletListLayout {...e.ctx.props} style={{}} />);
   });
 
 export default actions;

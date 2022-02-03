@@ -2,13 +2,18 @@ type Pixels = number;
 
 export type BulletOrientation = 'x' | 'y'; // x:horizontal, y:vertical
 export type BulletEdge = 'near' | 'far';
+export type BulletSpacing = { before?: Pixels; after?: Pixels };
 
 export type BulletItem<T = any> = {
   data: T;
   spacing?: BulletSpacing;
+  child?: {
+    north?: BulletItemRenderer;
+    south?: BulletItemRenderer;
+    east?: BulletItemRenderer;
+    west?: BulletItemRenderer;
+  };
 };
-
-export type BulletSpacing = { before?: Pixels; after?: Pixels };
 
 export type BulletItemRenderer = (e: BulletItemArgs) => JSX.Element | null | undefined;
 export type BulletItemArgs<T = any> = {

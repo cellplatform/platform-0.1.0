@@ -1,6 +1,6 @@
 import React from 'react';
 import { css, CssValue, k, color } from './common';
-import { Renderer } from './renderers';
+import { Renderers } from './renderers';
 import { Util } from './util';
 
 type Pixels = number;
@@ -10,11 +10,11 @@ type R = {
 };
 
 const DEFAULT_RENDERER: R = {
-  bullet: Renderer.Bullet.ConnectorLines.render,
-  body: Renderer.Body.Debug.render,
+  bullet: Renderers.Bullet.ConnectorLines.render,
+  body: Renderers.Body.Debug.render,
 };
 
-export type BulletListItemProps = {
+export type BulletListLayoutItemProps = {
   index: number;
   total: number;
   item: k.BulletItem;
@@ -27,7 +27,7 @@ export type BulletListItemProps = {
   debug?: { border?: boolean };
 };
 
-export const BulletListItem: React.FC<BulletListItemProps> = (props) => {
+export const BulletListLayoutItem: React.FC<BulletListLayoutItemProps> = (props) => {
   const { item, orientation, index, total, renderers, debug = {} } = props;
   const { data } = item;
   const spacing = formatSpacing(props.spacing);
@@ -43,6 +43,7 @@ export const BulletListItem: React.FC<BulletListItemProps> = (props) => {
     spacer: false,
     bullet: { near: props.bulletEdge === 'near', far: props.bulletEdge === 'far' },
   };
+
   const args: k.BulletItemArgs = {
     kind: 'Default',
     index,
@@ -83,7 +84,7 @@ export const BulletListItem: React.FC<BulletListItemProps> = (props) => {
     }),
   };
 
-  const renderContent = (args: k.BulletItemArgs) => {
+  const renderContent: k.BulletItemRenderer = (args: k.BulletItemArgs) => {
     const parts = renderParts(args, renderers);
     const elBullet = <div {...styles.bullet.outer}>{parts.bullet}</div>;
     const elBody = <div {...styles.body.outer}>{parts.body}</div>;
@@ -109,7 +110,12 @@ export const BulletListItem: React.FC<BulletListItemProps> = (props) => {
       }),
     };
 
-    const e: k.BulletItemArgs = { ...args, kind: 'Spacing', is: { ...is, spacer: true } };
+    const e: k.BulletItemArgs = {
+      ...args,
+      kind: 'Spacing',
+      is: { ...is, spacer: true },
+    };
+
     return <div {...css(styles.base, styles.debug)}>{renderContent(e)}</div>;
   };
 
@@ -121,17 +127,19 @@ export const BulletListItem: React.FC<BulletListItemProps> = (props) => {
   /**
    * Spacer rendering.
    */
-  const elSpacerBefore = !is.first && renderSpacer(args, 'before', spacing.before);
-  const elSpacerAfter = !is.last && renderSpacer(args, 'after', spacing.after);
+  const elSpacer = {
+    before: !is.first && renderSpacer(args, 'before', spacing.before),
+    after: !is.last && renderSpacer(args, 'after', spacing.after),
+  };
 
   /**
    * Component.
    */
   return (
     <div {...css(styles.base, props.style)}>
-      {elSpacerBefore}
+      {elSpacer.before}
       {elMain}
-      {elSpacerAfter}
+      {elSpacer.after}
     </div>
   );
 };

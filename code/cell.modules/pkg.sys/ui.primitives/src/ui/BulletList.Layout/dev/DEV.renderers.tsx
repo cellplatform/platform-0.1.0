@@ -2,7 +2,7 @@ import React from 'react';
 import { k, css, COLORS } from '../common';
 import { Card } from '../../Card';
 import { SyntaxLabel } from '../../SyntaxLabel';
-import { Renderer, BulletConnectorLinesProps } from '../renderers';
+import { Renderers, BulletConnectorLinesProps } from '../renderers';
 
 export type RenderCtx = {
   bulletKind: 'Lines' | 'Dot';
@@ -28,11 +28,11 @@ export function sampleBulletRendererFactory(getCtx: () => RenderCtx) {
         props.borderColor = COLORS.CYAN;
       }
 
-      return <Renderer.Bullet.ConnectorLines.Component {...props} />;
+      return <Renderers.Bullet.ConnectorLines.Component {...props} />;
     }
 
     if (bulletKind === 'Dot') {
-      return <Renderer.Bullet.Dot.Component {...e} />;
+      return <Renderers.Bullet.Dot.Component {...e} />;
     }
 
     // Not found.
