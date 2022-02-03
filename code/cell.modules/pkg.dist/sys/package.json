@@ -13,12 +13,13 @@
     "test": "ts test $@",
     "lint": "ts lint $@",
     "build": "ts build --no-esm $@",
+    "build.all": "sh script.sh/build.all.sh",
     "bundle": "cell.compiler bundle --bump $@",
     "watch": "cell.compiler watch $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
-    "deploy": "ts-node -T script.ts/deploy.vercel"
+    "deploy": "ts-node -T script.ts/deploy.vercel.run"
   },
   "dependencies": {},
   "devDependencies": {
