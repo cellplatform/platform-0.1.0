@@ -38,7 +38,7 @@ export const HostLayout: React.FC<HostLayoutProps> = (props) => {
     body: css({
       Absolute: 0,
       boxSizing: 'border-box',
-      Flex: `${orientation === 'y' ? 'vertical' : 'horizontal'}-center-center`,
+      Flex: `${orientation}-center-center`,
       WebkitAppRegion: 'drag', // NB: Window draggable within electron.
     }),
     fullscreen: {
