@@ -28,11 +28,11 @@ export function sampleBulletRendererFactory(getCtx: () => RenderCtx) {
         props.borderColor = COLORS.CYAN;
       }
 
-      return <Renderers.Bullet.ConnectorLines.Component {...props} />;
+      return <Renderers.Bullet.ConnectorLines {...props} />;
     }
 
     if (bulletKind === 'Dot') {
-      return <Renderers.Bullet.Dot.Component {...e} />;
+      return <Renderers.Bullet.Dot {...e} />;
     }
 
     // Not found.
@@ -72,8 +72,7 @@ export function sampleBodyRendererFactory(getCtx: () => RenderCtx) {
     }
 
     // Not found.
-    // return undefined; // NB: The "default" [Renderer.Body] will be used.
-    return <Renderers.Body.Debug.Component {...e} minWidth={250} />;
+    return <Renderers.Body.Default {...e} minWidth={250} />; // NB: same as returning [undefined].
   };
 
   return fn;

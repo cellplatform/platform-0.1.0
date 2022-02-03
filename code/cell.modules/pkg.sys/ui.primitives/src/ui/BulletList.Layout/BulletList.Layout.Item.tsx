@@ -10,8 +10,8 @@ type R = {
 };
 
 const DEFAULT_RENDERER: R = {
-  bullet: Renderers.Bullet.ConnectorLines.render,
-  body: Renderers.Body.Debug.render,
+  bullet: Renderers.asRenderer(Renderers.Bullet.ConnectorLines),
+  body: Renderers.asRenderer(Renderers.Body.Default),
 };
 
 export type BulletListLayoutItemProps = {
