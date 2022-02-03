@@ -144,9 +144,9 @@ export const actions = DevActions<Ctx>()
         });
     });
 
-    e.hr(1, 0.1);
+    e.hr();
 
-    e.title('Bullet');
+    e.title('Plugin Renderer: Bullet');
 
     e.select((config) => {
       config
@@ -171,7 +171,7 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr(1, 0.1);
-    e.title('Body');
+    e.title('Plugin Renderer: Body');
 
     e.select((config) => {
       config

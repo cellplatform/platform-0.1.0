@@ -133,6 +133,25 @@ export const BulletListLayoutItem: React.FC<BulletListLayoutItemProps> = (props)
   };
 
   /**
+   * 🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳
+   *
+   *                      EXTENSION Entry Point
+   *
+   * 🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳
+   *
+   *    To add rendered elements above/below ("near" | "far") the
+   *    item <Body>:
+   *
+   *    - 🌳 Expose a renderer within the <Body> section of the <Spacer> item above.
+   *    - 🌳 Allow the height/width of the <Spacer> to be determined by the offset
+   *         size of the rendered [JSX.Element]
+   *    - 🌳 Surface as a flexible renderer property on the [{Item}].
+   *
+   *
+   * 🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳
+   */
+
+  /**
    * Component.
    */
   return (

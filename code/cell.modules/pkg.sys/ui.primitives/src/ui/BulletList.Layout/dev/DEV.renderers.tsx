@@ -72,7 +72,8 @@ export function sampleBodyRendererFactory(getCtx: () => RenderCtx) {
     }
 
     // Not found.
-    return undefined; // NB: The "default" [Renderer.Body] will be used.
+    // return undefined; // NB: The "default" [Renderer.Body] will be used.
+    return <Renderers.Body.Debug.Component {...e} minWidth={250} />;
   };
 
   return fn;
