@@ -28,9 +28,7 @@ export const DevSampleNetwork: React.FC<DevSampleNetworkProps> = (props) => {
       marginBottom: 20,
       ':last-child': { marginBottom: 0 },
     }),
-    peerProps: css({
-      marginRight: 30,
-    }),
+    peerProps: css({ marginRight: 30 }),
   };
 
   return (
