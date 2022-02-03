@@ -25,7 +25,7 @@ export function sampleBulletRendererFactory(getCtx: () => RenderCtx) {
 
       // NB: Same bullet connector with sample modification.
       if (e.index === 1 && e.total > 2 && e.kind !== 'Spacing') {
-        props.borderColor = COLORS.CYAN;
+        props.lineColor = COLORS.CYAN;
       }
 
       return <Renderers.Bullet.ConnectorLines {...props} />;

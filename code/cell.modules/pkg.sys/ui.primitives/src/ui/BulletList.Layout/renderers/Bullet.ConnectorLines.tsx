@@ -3,9 +3,9 @@ import { color, css, k } from '../common';
 
 export type BulletConnectorLinesProps = k.BulletItemArgs & {
   radius?: number;
-  borderWidth?: number;
-  borderStyle?: 'solid' | 'dashed';
-  borderColor?: number | string;
+  lineWidth?: number;
+  lineStyle?: 'solid' | 'dashed';
+  lineColor?: number | string;
 };
 
 export const BulletConnectorLines: React.FC<BulletConnectorLinesProps> = (props) => {
@@ -13,9 +13,9 @@ export const BulletConnectorLines: React.FC<BulletConnectorLinesProps> = (props)
     is,
     total,
     radius,
-    borderWidth = 5,
-    borderStyle = 'solid',
-    borderColor = -0.1,
+    lineWidth: borderWidth = 5,
+    lineStyle: borderStyle = 'solid',
+    lineColor: borderColor = -0.1,
     orientation,
   } = props;
 
