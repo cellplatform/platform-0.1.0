@@ -40,8 +40,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
       items={items}
       renderers={{
         bullet: (e) => {
-          const ConnectorLines = BulletList.Renderers.Bullet.ConnectorLines.Component;
-          return <ConnectorLines {...e} radius={25} />;
+          return <BulletList.Renderers.Bullet.ConnectorLines {...e} radius={25} />;
         },
         body: (e) => {
           if (e.kind !== 'Default') return;
