@@ -1,18 +1,18 @@
 import * as React from 'react';
 
-import { css, CssValue, defaultValue, formatColor, t, constants, color } from '../../common';
+import { css, CssValue, defaultValue, formatColor, t, constants } from '../../common';
 import { Subject, SubjectCropmark } from './Subject';
 import { Icons } from '../Icons';
 import { Button } from '../Primitives';
 
-export type HostFullscreen = { value: boolean; onClick?: (e: { current: boolean }) => void };
+export type ActionsVisible = { value: boolean; onClick?: (e: { current: boolean }) => void };
 
 export type HostLayoutProps = {
   env: t.ActionsModelEnv;
   host?: t.Host;
   subject?: t.ActionSubject<any>;
   actionsOnEdge: 'left' | 'right';
-  fullscreen?: HostFullscreen;
+  actionsVisible?: ActionsVisible;
   style?: CssValue;
 };
 
@@ -20,7 +20,7 @@ export type HostLayoutProps = {
  * A content container providing layout options for testing.
  */
 export const HostLayout: React.FC<HostLayoutProps> = (props) => {
-  const { subject, host, fullscreen, actionsOnEdge } = props;
+  const { subject, host, actionsVisible, actionsOnEdge } = props;
   const items = subject?.items || [];
   const orientation = defaultValue(host?.orientation, 'y');
   const spacing = Math.max(0, defaultValue(host?.spacing, 60));
@@ -38,25 +38,29 @@ export const HostLayout: React.FC<HostLayoutProps> = (props) => {
     body: css({
       Absolute: 0,
       boxSizing: 'border-box',
-      Flex: `${orientation === 'y' ? 'vertical' : 'horizontal'}-center-center`,
+      Flex: `${orientation}-center-center`,
       WebkitAppRegion: 'drag', // NB: Window draggable within electron.
     }),
     fullscreen: {
-      button: css({ Absolute: [3, 8, null, null] }),
+      button: css({ Absolute: [4, 7, null, null] }),
     },
+    flipX: css({ transform: 'scaleX(-1)' }),
   };
 
-  const isFullscreen = fullscreen?.value === true;
-  const elFullscreenButton = fullscreen !== undefined && (
+  const showActions = actionsVisible?.value === true;
+  const elActionsPanelIcon = (
+    <Icons.Sidebar
+      color={labelColor}
+      style={actionsOnEdge === 'right' ? styles.flipX : undefined}
+      opacity={showActions ? 0.8 : 0.3}
+    />
+  );
+  const elActionsPanelButton = actionsVisible !== undefined && (
     <Button
       style={styles.fullscreen.button}
-      onClick={() => {
-        const { onClick } = fullscreen;
-        if (onClick) onClick({ current: fullscreen.value });
-      }}
+      onClick={() => actionsVisible?.onClick?.({ current: actionsVisible.value })}
     >
-      {!isFullscreen && <Icons.Fullscreen.Enter color={labelColor} />}
-      {isFullscreen && <Icons.Fullscreen.Exit color={labelColor} />}
+      {elActionsPanelIcon}
     </Button>
   );
 
@@ -90,7 +94,7 @@ export const HostLayout: React.FC<HostLayoutProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)} className={constants.CSS.HOST}>
       <div {...styles.body}>{elContent}</div>
-      {elFullscreenButton}
+      {elActionsPanelButton}
     </div>
   );
 };

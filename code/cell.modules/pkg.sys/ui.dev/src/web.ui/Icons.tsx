@@ -1,13 +1,16 @@
 import { Icon } from '@platform/ui.icon';
+import { BiExtension, BiSidebar } from 'react-icons/bi';
 import { FiBox } from 'react-icons/fi';
 import {
   MdCheck,
   MdClose,
+  MdDoNotDisturb,
   MdExpandMore,
-  MdSend,
+  MdExtension,
   MdFullscreen,
   MdFullscreenExit,
-  MdDoNotDisturb,
+  MdKeyboardCapslock,
+  MdSend,
 } from 'react-icons/md';
 import {
   VscChecklist,
@@ -33,4 +36,7 @@ export const Icons = {
   Skip: icon(MdDoNotDisturb),
   Chevron: { Down: icon(MdExpandMore) },
   Fullscreen: { Enter: icon(MdFullscreen), Exit: icon(MdFullscreenExit) },
+  Compose: { Solid: icon(MdExtension), Outline: icon(BiExtension) },
+  Keyboard: { CapsLock: icon(MdKeyboardCapslock) },
+  Sidebar: icon(BiSidebar),
 };

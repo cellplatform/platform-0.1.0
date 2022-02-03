@@ -227,7 +227,9 @@ function formatFlexPosition(key: string, value: string, target: t.CssProps) {
 
   tokens.map((token) => {
     const tokenIsOneOf = (options: string[]) => options.includes(token);
-    if (direction == null && tokenIsOneOf(['horizontal', 'vertical'])) {
+    if (direction == null && tokenIsOneOf(['horizontal', 'vertical', 'x', 'y'])) {
+      if (token === 'x') token = 'horizontal';
+      if (token === 'y') token = 'vertical';
       direction = token === 'vertical' ? 'column' : 'row'; // eslint-disable-line
       return;
     }

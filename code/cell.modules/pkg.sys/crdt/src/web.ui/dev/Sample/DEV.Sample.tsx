@@ -1,11 +1,8 @@
 import React from 'react';
-import { BulletList } from 'sys.ui.primitives/lib/ui/BulletList';
 
-import { css, CssValue, t } from '../../common';
+import { BulletList, css, CssValue, t } from '../../common';
 import { DocCard } from './DEV.DocCard';
 import { SimpleDoc } from './DEV.types';
-
-const ConnectorLines = BulletList.Renderers.Bullet.ConnectorLines.Component;
 
 export type SampleProps = {
   docs?: t.CrdtDocEvents<SimpleDoc>[];
@@ -30,7 +27,7 @@ export const Sample: React.FC<SampleProps> = (props) => {
       spacing={20}
       items={docs.map((doc) => ({ data: doc }))}
       renderers={{
-        bullet: (e) => <ConnectorLines {...e} radius={25} />,
+        bullet: (e) => <BulletList.Renderers.Bullet.ConnectorLines {...e} radius={25} />,
         body: (e) => (e.kind === 'Default' ? <DocCard doc={e.data} /> : undefined),
       }}
     />

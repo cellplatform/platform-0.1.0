@@ -9,7 +9,7 @@ const token = process.env.VERCEL_TEST_TOKEN;
  *    https://www.npmjs.com/package/path-to-regexp
  *
  */
-async function deploy(team: string, project: string, alias: string) {
+export async function deploy(team: string, project: string, alias: string) {
   const deployment = Vercel.Deploy({ token, dir: 'dist/web', team, project });
   await deployment.ensureProject(project);
 
@@ -40,6 +40,3 @@ async function deploy(team: string, project: string, alias: string) {
 
   return { status, name };
 }
-
-// DEV
-deploy('tdb', 'tmp', 'tmp.db.team');

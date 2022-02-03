@@ -111,7 +111,7 @@ export const Harness: React.FC<HarnessProps> = (props) => {
         actions={selected}
         style={styles.host}
         actionsOnEdge={actionsEdge}
-        fullscreen={
+        actionsVisible={
           showActions === undefined
             ? undefined
             : { value: showActions, onClick: handleFullscreenClick }

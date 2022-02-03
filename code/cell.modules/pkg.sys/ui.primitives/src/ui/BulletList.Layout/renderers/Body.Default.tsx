@@ -4,10 +4,14 @@ import { Card } from '../../Card';
 import { ObjectView } from '../../ObjectView';
 import { css, CssValue, k } from '../common';
 
-export type BodyDefaultProps = k.BulletItemArgs & { style?: CssValue };
+export type BodyDefaultProps = k.BulletItemArgs & {
+  width?: string | number;
+  minWidth?: string | number;
+  style?: CssValue;
+};
 
 export const BodyDefault: React.FC<BodyDefaultProps> = (props) => {
-  const { kind, index, total, data, orientation, bullet, spacing } = props;
+  const { kind, index, total, data, orientation, bullet, spacing, width, minWidth } = props;
 
   if (kind === 'Spacing') return null;
 
@@ -19,7 +23,7 @@ export const BodyDefault: React.FC<BodyDefaultProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({}),
+    base: css({ position: 'relative', width, minWidth }),
     card: css({
       paddingLeft: 15,
       paddingRight: 20,
@@ -28,14 +32,19 @@ export const BodyDefault: React.FC<BodyDefaultProps> = (props) => {
     count: css({
       Absolute: [2, 5, null, null],
       fontSize: 10,
-      opacity: 0.3,
+      opacity: 0.2,
     }),
   };
 
   return (
     <div {...css(styles.base, props.style)}>
       <Card style={styles.card}>
-        <ObjectView data={obj} fontSize={10} expandPaths={['$', '$.data']} />
+        <ObjectView
+          name={'t.BulletItemArgs'}
+          data={obj}
+          fontSize={10}
+          expandPaths={['$', '$.data']}
+        />
         <div {...styles.count}>{index + 1}</div>
       </Card>
     </div>

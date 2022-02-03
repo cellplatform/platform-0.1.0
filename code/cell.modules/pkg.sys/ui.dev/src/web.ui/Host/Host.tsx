@@ -2,12 +2,12 @@ import React from 'react';
 
 import { t, CssValue } from '../../common';
 import { useActionsRedraw } from '../../web.ui.hooks';
-import { HostLayout, HostFullscreen } from './HostLayout';
+import { HostLayout, ActionsVisible } from './HostLayout';
 
 export type HostProps = {
   bus: t.EventBus;
   actions?: t.Actions<any>;
-  fullscreen?: HostFullscreen;
+  actionsVisible?: ActionsVisible;
   actionsOnEdge: 'left' | 'right';
   style?: CssValue;
 };
@@ -46,7 +46,7 @@ export const Host: React.FC<HostProps> = (props) => {
       subject={subject}
       host={host}
       actionsOnEdge={props.actionsOnEdge}
-      fullscreen={props.fullscreen}
+      actionsVisible={props.actionsVisible}
     />
   );
 };

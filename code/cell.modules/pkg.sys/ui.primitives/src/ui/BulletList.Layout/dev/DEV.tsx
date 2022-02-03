@@ -52,6 +52,7 @@ export const actions = DevActions<Ctx>()
         bulletKind: 'Lines',
         bodyKind: 'Card',
         connectorRadius: 20,
+        connectorLineWidth: 5,
       },
     };
 
@@ -144,9 +145,9 @@ export const actions = DevActions<Ctx>()
         });
     });
 
-    e.hr(1, 0.1);
+    e.hr();
 
-    e.title('Bullet');
+    e.title('Plugin Renderer: Bullet');
 
     e.select((config) => {
       config
@@ -162,7 +163,7 @@ export const actions = DevActions<Ctx>()
     e.select((config) => {
       config
         .view('buttons')
-        .title('connector lines: radius')
+        .title('ConnectorLines: radius')
         .items([0, 20])
         .initial(config.ctx.renderCtx.connectorRadius)
         .pipe((e) => {
@@ -170,8 +171,19 @@ export const actions = DevActions<Ctx>()
         });
     });
 
+    e.select((config) => {
+      config
+        .view('buttons')
+        .title('ConnectorLines: lineWidth')
+        .items([3, 5, 10])
+        .initial(config.ctx.renderCtx.connectorLineWidth)
+        .pipe((e) => {
+          if (e.changing) e.ctx.renderCtx.connectorLineWidth = e.changing?.next[0].value;
+        });
+    });
+
     e.hr(1, 0.1);
-    e.title('Body');
+    e.title('Plugin Renderer: Body');
 
     e.select((config) => {
       config

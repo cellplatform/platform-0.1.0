@@ -28,21 +28,18 @@ export const HarnessFooter: React.FC<HarnessFooterProps> = (props) => {
       color: color.format(labelColor),
       display: 'flex',
     }),
-    bg: css({
-      Absolute: 0,
-      // backdropFilter: `blur(6px) opacity(0.95)`,
-    }),
+    bg: css({ Absolute: 0 }),
     body: css({
       Absolute: 0,
       Flex: 'horizontal-spaceBetween-center',
-      MarginX: 15,
     }),
     actionsSelector: css({
       position: 'relative',
       pointerEvents: 'auto',
+      marginLeft: 15,
     }),
     module: {
-      base: css({ Flex: 'center-center' }),
+      base: css({ Flex: 'center-center', marginRight: 10 }),
       label: css({ position: 'relative', fontSize: 11, textAlign: 'right' }),
       version: css({ fontSize: 8 }),
     },
@@ -62,15 +59,15 @@ export const HarnessFooter: React.FC<HarnessFooterProps> = (props) => {
 
   const elModule = (
     <div {...styles.module.base} onClick={logRuntime}>
-      <Icons.Package
-        size={22}
-        style={{ marginRight: 4, opacity: 0.7 }}
-        color={color.format(labelColor)}
-      />
       <div {...styles.module.label}>
         <div>{WebRuntime.module.name}</div>
         <div {...styles.module.version}>{WebRuntime.module.version}</div>
       </div>
+      <Icons.Compose.Solid
+        size={24}
+        style={{ marginLeft: 4, opacity: 0.8 }}
+        color={color.format(labelColor)}
+      />
     </div>
   );
 

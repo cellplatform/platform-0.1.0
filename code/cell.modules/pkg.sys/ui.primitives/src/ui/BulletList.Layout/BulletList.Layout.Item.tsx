@@ -1,7 +1,7 @@
 import React from 'react';
-import { css, CssValue, k, color } from './common';
+
+import { color, css, CssValue, k } from './common';
 import { Renderers } from './renderers';
-import { Util } from './util';
 
 type Pixels = number;
 type R = {
@@ -10,8 +10,8 @@ type R = {
 };
 
 const DEFAULT_RENDERER: R = {
-  bullet: Renderers.Bullet.ConnectorLines.render,
-  body: Renderers.Body.Debug.render,
+  bullet: Renderers.asRenderer(Renderers.Bullet.ConnectorLines),
+  body: Renderers.asRenderer(Renderers.Body.Default),
 };
 
 export type BulletListLayoutItemProps = {
@@ -30,7 +30,9 @@ export type BulletListLayoutItemProps = {
 export const BulletListLayoutItem: React.FC<BulletListLayoutItemProps> = (props) => {
   const { item, orientation, index, total, renderers, debug = {} } = props;
   const { data } = item;
+
   const spacing = formatSpacing(props.spacing);
+  const invertedOrientation = orientation === 'x' ? 'y' : 'x';
 
   const is: k.BulletItemArgs['is'] = {
     empty: total === 0,
@@ -60,8 +62,8 @@ export const BulletListLayoutItem: React.FC<BulletListLayoutItemProps> = (props)
    */
   const debugBorder = debug.border ? `solid 1px ${color.format(-0.06)}` : undefined;
   const styles = {
-    base: css({ Flex: `${Util.toFlexOrientation(orientation)}-stretch-stretch` }),
-    main: css({ Flex: `${Util.toFlexOrientation(orientation, { invert: true })}-stretch-stretch` }),
+    base: css({ Flex: `${orientation}-stretch-stretch` }),
+    main: css({ Flex: `${invertedOrientation}-stretch-stretch` }),
 
     bullet: {
       outer: css({
@@ -98,7 +100,7 @@ export const BulletListLayoutItem: React.FC<BulletListLayoutItemProps> = (props)
       base: css({
         position: 'relative',
         display: 'flex',
-        Flex: `${Util.toFlexOrientation(orientation, { invert: true })}-stretch-stretch`,
+        Flex: `${invertedOrientation}-stretch-stretch`,
         height: is.vertical ? offset : undefined,
         width: is.horizontal ? offset : undefined,
       }),
@@ -131,6 +133,25 @@ export const BulletListLayoutItem: React.FC<BulletListLayoutItemProps> = (props)
     before: !is.first && renderSpacer(args, 'before', spacing.before),
     after: !is.last && renderSpacer(args, 'after', spacing.after),
   };
+
+  /**
+   * 🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳
+   *
+   *                      EXTENSION Entry Point
+   *
+   * 🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳
+   *
+   *    To add rendered elements above/below ("near" | "far") the
+   *    item <Body>:
+   *
+   *    - 🌳 Expose a renderer within the <Body> section of the <Spacer> item above.
+   *    - 🌳 Allow the height/width of the <Spacer> to be determined by the offset
+   *         size of the rendered [JSX.Element]
+   *    - 🌳 Surface as a flexible renderer property on the [{Item}].
+   *
+   *
+   * 🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳
+   */
 
   /**
    * Component.

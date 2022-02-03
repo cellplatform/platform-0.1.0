@@ -8,6 +8,7 @@ export type RenderCtx = {
   bulletKind: 'Lines' | 'Dot';
   bodyKind: 'Card' | 'Vanilla' | undefined;
   connectorRadius?: number;
+  connectorLineWidth?: number;
 };
 
 /**
@@ -21,18 +22,19 @@ export function sampleBulletRendererFactory(getCtx: () => RenderCtx) {
 
     if (bulletKind === 'Lines') {
       const radius = ctx.connectorRadius;
-      const props: BulletConnectorLinesProps = { ...e, radius };
+      const lineWidth = ctx.connectorLineWidth;
+      const props: BulletConnectorLinesProps = { ...e, radius, lineWidth };
 
       // NB: Same bullet connector with sample modification.
       if (e.index === 1 && e.total > 2 && e.kind !== 'Spacing') {
-        props.borderColor = COLORS.CYAN;
+        props.lineColor = COLORS.CYAN;
       }
 
-      return <Renderers.Bullet.ConnectorLines.Component {...props} />;
+      return <Renderers.Bullet.ConnectorLines {...props} />;
     }
 
     if (bulletKind === 'Dot') {
-      return <Renderers.Bullet.Dot.Component {...e} />;
+      return <Renderers.Bullet.Dot {...e} />;
     }
 
     // Not found.
@@ -72,7 +74,7 @@ export function sampleBodyRendererFactory(getCtx: () => RenderCtx) {
     }
 
     // Not found.
-    return undefined; // NB: The "default" [Renderer.Body] will be used.
+    return <Renderers.Body.Default {...e} minWidth={250} />; // NB: same as returning [undefined].
   };
 
   return fn;
