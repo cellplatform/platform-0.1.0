@@ -1,7 +1,6 @@
 import React from 'react';
 import { css, CssValue, k } from './common';
 import { BulletListLayoutItem } from './BulletList.Layout.Item';
-import { Util } from './util';
 import { Renderers } from './renderers';
 
 type Pixels = number;
@@ -35,7 +34,7 @@ export const BulletListLayout: React.FC<BulletListLayoutProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({ Flex: `${Util.toFlexOrientation(orientation)}-stretch-stretch` }),
+    base: css({ Flex: `${orientation}-stretch-stretch` }),
   };
 
   const elItems = items.map((item, i) => {
