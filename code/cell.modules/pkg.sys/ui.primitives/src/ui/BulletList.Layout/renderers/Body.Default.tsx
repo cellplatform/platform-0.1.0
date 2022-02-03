@@ -7,6 +7,7 @@ import { css, CssValue, k } from '../common';
 export type BodyDefaultProps = k.BulletItemArgs & {
   width?: string | number;
   minWidth?: string | number;
+  expandPaths?: string[];
   style?: CssValue;
 };
 
@@ -43,7 +44,7 @@ export const BodyDefault: React.FC<BodyDefaultProps> = (props) => {
           name={'t.BulletItemArgs'}
           data={obj}
           fontSize={10}
-          expandPaths={['$', '$.data']}
+          expandPaths={props.expandPaths ?? ['$', '$.data']}
         />
         <div {...styles.count}>{index + 1}</div>
       </Card>
