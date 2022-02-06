@@ -158,7 +158,7 @@ const toNetworkItems = (props: LocalPeerCardProps): t.PropListItem[] => {
   const status = self.status;
   const signal = status.signal;
   const elapsed = time.elapsed(status.createdAt || -1);
-  const age = elapsed.sec < 60 ? 'less than a minute' : elapsed.toString();
+  const lifetime = elapsed.sec < 60 ? 'less than a minute' : elapsed.toString();
 
   const styles = {
     signal: {
@@ -179,7 +179,7 @@ const toNetworkItems = (props: LocalPeerCardProps): t.PropListItem[] => {
   return [
     { label: 'local peer', value: { data: status.id, clipboard: true } },
     { label: `signal server`, value: elSignal },
-    { label: 'lifespan', value: status.isOnline ? age : 'no' },
+    { label: 'lifetime', value: status.isOnline ? lifetime : 'no' },
     { label: `connections`, value: status.connections.length },
   ];
 };
