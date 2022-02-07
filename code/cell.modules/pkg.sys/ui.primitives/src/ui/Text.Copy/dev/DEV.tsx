@@ -10,7 +10,7 @@ type Ctx = {
   debug: {
     text: string;
     repeat: number;
-    clipboard: { handler?: TextCopyEventHandler; use: boolean };
+    clipboard: { handler?: TextCopyEventHandler; use: boolean; message: boolean };
     icon: { edge: Required<TextCopyIcon['edge']>; use: boolean; offset: number };
   };
 };
@@ -23,15 +23,11 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
     const ctx: Ctx = {
-      props: {
-        icon: {
-          element: <Icons.Copy size={14} color={-0.7} />,
-        },
-      },
+      props: {},
       debug: {
         text: 'my text',
         repeat: 1,
-        clipboard: { use: true },
+        clipboard: { use: true, message: true },
         icon: { edge: 'E', use: true, offset: 2 },
       },
     };
@@ -94,10 +90,15 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Debug');
 
-    e.boolean('copyToClipboard', (e) => {
+    e.boolean('onCopy (handler)', (e) => {
       if (e.changing) e.ctx.debug.clipboard.use = e.changing.next;
       e.boolean.current = e.ctx.debug.clipboard.use;
       CopyToClipboard.update(e.ctx);
+    });
+
+    e.boolean('show copy message', (e) => {
+      if (e.changing) e.ctx.debug.clipboard.message = e.changing.next;
+      e.boolean.current = e.ctx.debug.clipboard.message;
     });
 
     e.select((config) => {
@@ -171,6 +172,8 @@ const CopyToClipboard = {
     return (e) => {
       const ctx = getCtx();
       e.copy(ctx.debug.text);
+
+      if (ctx.debug.clipboard.message) e.message('Copied');
     };
   },
   update(ctx: Ctx) {
@@ -188,8 +191,7 @@ const Icon = {
           edge,
           offset,
           element() {
-            // NB: or simple element reference, rather than function.
-            return <Icons.Copy size={14} color={-0.7} />;
+            return <Icons.Copy size={14} color={-0.7} />; // NB: or simple element reference, rather than function.
           },
         };
   },
