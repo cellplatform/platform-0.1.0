@@ -16,6 +16,7 @@ export const PeerLabel: React.FC<PeerLabelProps> = (props) => {
   const styles = {
     base: css({
       Flex: 'x-center-start',
+      color: COLORS.DARK,
     }),
     icon: css({ marginRight: 6 }),
     label: {
@@ -33,7 +34,17 @@ export const PeerLabel: React.FC<PeerLabelProps> = (props) => {
 
   const elLabel = (
     <div>
-      <Text.Copy copyToClipboard={(e) => e.copy(uri)}>
+      <Text.Copy
+        onCopy={(e) => {
+          e.copy(uri);
+          e.message('copied', { opacity: 0.3, blur: 2 });
+        }}
+        icon={{
+          element: <Text.Copy.Icon size={13} />,
+          offset: 3,
+          edge: 'E',
+        }}
+      >
         <span {...styles.label.predicate}>{PREDICATE}:</span>
         <span {...styles.label.value}>{props.id}</span>
       </Text.Copy>
