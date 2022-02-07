@@ -12,6 +12,7 @@ import {
 } from './DEV.common';
 import { PeerLabel } from './DEV.PeerLabel';
 import { DevSampleNetworkTitlebar } from './DEV.Sample.Network.Titlebar';
+import { OpenConnectionInput } from '../OpenConnection.Input';
 
 export type DevSampleNetworkProps = {
   network: t.PeerNetwork;
@@ -30,20 +31,24 @@ export const DevSampleNetwork: React.FC<DevSampleNetworkProps> = (props) => {
   const hasPeers = peers.length > 0;
 
   /**
+   * Initiate a new connection.
+   */
+  const startConnection = (args: { remote: t.PeerId }) => {
+    const isReliable = true;
+    const autoStartVideo = true;
+    const { remote } = args;
+    return LocalPeerCard.connect({ bus, remote, self, isReliable, autoStartVideo });
+  };
+
+  /**
    * [Render]
    */
   const BORDER_HR = `solid 8px ${color.format(-0.05)}`;
   const BORDER_TRACE = `solid 1px ${color.format(-0.03)}`;
   const styles = {
-    base: css({
-      minWidth: 600,
-      minHeight: 240,
-      boxSizing: 'border-box',
-    }),
+    base: css({ minWidth: 600, boxSizing: 'border-box' }),
 
-    main: css({
-      Flex: 'y-stretch-stretch',
-    }),
+    main: css({ Flex: 'y-stretch-stretch' }),
 
     body: {
       base: css({ Flex: 'x-stretch-stretch', paddingTop: 0 }),
@@ -59,10 +64,7 @@ export const DevSampleNetwork: React.FC<DevSampleNetworkProps> = (props) => {
         marginBottom: 8,
         PaddingY: 8,
       }),
-      hr: css({
-        borderTop: BORDER_HR,
-        MarginY: 5,
-      }),
+      hr: css({ borderTop: BORDER_HR, MarginY: 5 }),
     },
 
     empty: css({
@@ -76,12 +78,23 @@ export const DevSampleNetwork: React.FC<DevSampleNetworkProps> = (props) => {
     /**
      * Content
      */
-    peerProps: { base: css({}) },
     peers: { base: css({}) },
     localPeerCard: css({
       marginLeft: 10,
       marginRight: 10,
     }),
+
+    /**
+     * Footer
+     */
+    footer: {
+      base: css({
+        PaddingX: 15,
+        PaddingY: 8,
+        borderTop: `solid 1px ${color.format(-0.08)}`,
+        backgroundColor: color.format(-0.03),
+      }),
+    },
   };
 
   const elTitlebar = <DevSampleNetworkTitlebar />;
@@ -124,7 +137,7 @@ export const DevSampleNetwork: React.FC<DevSampleNetworkProps> = (props) => {
           title={null}
           bus={bus}
           self={self}
-          fields={['PeerId', 'Lifetime', 'Connections.Count', 'Connection.Open']}
+          fields={['PeerId', 'Lifetime']}
           style={styles.localPeerCard}
         />
       )}
@@ -153,10 +166,17 @@ export const DevSampleNetwork: React.FC<DevSampleNetworkProps> = (props) => {
     </div>
   );
 
+  const elFooter = (
+    <div {...styles.footer.base}>
+      <OpenConnectionInput onConnectRequest={startConnection} />
+    </div>
+  );
+
   return (
     <Card style={css(styles.base, props.style)}>
       {elTitlebar}
       {elBody}
+      {elFooter}
     </Card>
   );
 };

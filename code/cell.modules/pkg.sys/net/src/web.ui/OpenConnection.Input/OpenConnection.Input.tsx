@@ -12,6 +12,7 @@ export type OpenConnectionInputProps = {
 };
 
 export const OpenConnectionInput: React.FC<OpenConnectionInputProps> = (props) => {
+  const [pending, setPending] = useState(false);
   const [text, setText] = useState('');
   const input = (text || '').trim();
 
@@ -26,7 +27,10 @@ export const OpenConnectionInput: React.FC<OpenConnectionInputProps> = (props) =
   const elTools = (
     <div {...css({ Flex: 'horizontal-center-center' })}>
       {input && <Icons.Arrow.Forward size={18} opacity={0.5} style={{ marginRight: 4 }} />}
-      <Icons.Antenna size={18} color={input ? COLORS.BLUE : color.alpha(COLORS.DARK, 0.6)} />
+      <Icons.Antenna
+        size={18}
+        color={input && pending ? COLORS.BLUE : color.alpha(COLORS.DARK, 0.6)}
+      />
     </div>
   );
 
@@ -35,14 +39,20 @@ export const OpenConnectionInput: React.FC<OpenConnectionInputProps> = (props) =
       <Textbox
         value={text}
         placeholder={props.placeholder ?? 'open connection'}
-        onChange={(e) => setText(e.to)}
         style={styles.textbox}
         spellCheck={false}
         selectOnFocus={true}
+        onChange={(e) => {
+          setText(e.to);
+          setPending(true);
+        }}
         enter={{
           isEnabled: Boolean(input),
-          handler: () => props.onConnectRequest?.({ remote: text }),
           icon: (e) => elTools,
+          handler() {
+            props.onConnectRequest?.({ remote: text });
+            setPending(false);
+          },
         }}
       />
     </div>

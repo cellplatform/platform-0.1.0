@@ -71,10 +71,7 @@ const View: V = (props) => {
    */
   const styles = {
     base: css({ minWidth: 240 }),
-    textbox: css({
-      marginBottom: 10,
-      marginTop: 15,
-    }),
+    textbox: css({ marginBottom: 10, marginTop: 15 }),
   };
 
   const elConnect = fields.includes('Connection.Open') && (
