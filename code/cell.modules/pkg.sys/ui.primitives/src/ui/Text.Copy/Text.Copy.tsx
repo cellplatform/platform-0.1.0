@@ -5,13 +5,17 @@ import { TextCopyIcon } from './TextCopy.Icon';
 type Milliseconds = number;
 type Pixels = number;
 
+const DEFAULT = {
+  MESSAGE_DELAY: 1000,
+};
+
 export type TextCopyMouseEvent = { isOver: boolean; isDown: boolean };
 export type TextCopyMouseEventHandler = (e: TextCopyMouseEvent) => void;
 
 export type TextCopyEvent = {
   children: React.ReactNode;
   copy(value: string): void;
-  message(value: string | JSX.Element): void;
+  message(value: string | JSX.Element, options?: { delay?: Milliseconds }): void;
 };
 export type TextCopyEventHandler = (e: TextCopyEvent) => void;
 
@@ -28,18 +32,18 @@ export type TextCopyProps = {
   padding?: t.CssEdgesInput;
   downOffset?: Pixels;
   icon?: TextCopyIcon;
-  messageDelay?: Milliseconds;
   style?: CssValue;
   onCopy?: TextCopyEventHandler;
   onMouse?: TextCopyMouseEventHandler;
 };
 
 export const TextCopy: React.FC<TextCopyProps> = (props) => {
-  const { children, inlineBlock = true, downOffset = 1, icon, messageDelay = 1000 } = props;
+  const { children, inlineBlock = true, downOffset = 1, icon } = props;
 
   const [isOver, setOver] = useState(false);
   const [isDown, setDown] = useState(false);
   const [message, setMessage] = useState<undefined | JSX.Element | string>();
+  const [messageDelay, setMessageDelay] = useState<Milliseconds | undefined>();
 
   const isCopyable = Boolean(props.onCopy);
   const hasMessage = message !== undefined;
@@ -50,7 +54,7 @@ export const TextCopy: React.FC<TextCopyProps> = (props) => {
   useEffect(() => {
     let timer: t.TimeDelayPromise | undefined;
     if (message) {
-      timer = time.delay(messageDelay, () => setMessage(undefined));
+      timer = time.delay(messageDelay ?? DEFAULT.MESSAGE_DELAY, resetMessage);
     }
     return () => timer?.cancel();
   }, [message, messageDelay]);
@@ -58,18 +62,29 @@ export const TextCopy: React.FC<TextCopyProps> = (props) => {
   /**
    * [Event Handlers]
    */
+
+  const resetMessage = () => {
+    setMessage(undefined);
+    setMessageDelay(undefined);
+  };
+
   const handleClick = () => {
     if (isCopyable) {
       let value: undefined | string;
       let message: undefined | string | JSX.Element;
+      let messageDelay: undefined | number;
       const e: TextCopyEvent = {
         children,
         copy: (input) => (value = input),
-        message: (input) => (message = input),
+        message(input, options = {}) {
+          message = input;
+          messageDelay = options.delay;
+        },
       };
       props.onCopy?.(e);
       if (typeof value === 'string') copyToClipboard(value);
       if (message !== undefined) setMessage(message);
+      setMessageDelay(messageDelay);
     }
   };
 

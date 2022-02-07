@@ -172,8 +172,7 @@ const CopyToClipboard = {
     return (e) => {
       const ctx = getCtx();
       e.copy(ctx.debug.text);
-
-      if (ctx.debug.clipboard.message) e.message('Copied');
+      if (ctx.debug.clipboard.message) e.message('Copied', { delay: 1200 });
     };
   },
   update(ctx: Ctx) {
@@ -190,8 +189,9 @@ const Icon = {
       : {
           edge,
           offset,
+          // element: <Icons.Copy size={14} color={-0.7} />, // NB: or simple element reference, rather than function.
           element() {
-            return <Icons.Copy size={14} color={-0.7} />; // NB: or simple element reference, rather than function.
+            return <Icons.Copy size={14} color={-0.7} />;
           },
         };
   },
