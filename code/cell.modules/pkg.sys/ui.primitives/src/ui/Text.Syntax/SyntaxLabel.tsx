@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 
-import { css, CssValue, style, t } from '../../common';
+import { css, CssValue, Style, t } from '../../common';
 import { DefaultTokenizer } from './Tokenizer';
 import * as k from './types';
 
-export type SyntaxLabelProps = {
+export type TextSyntaxProps = {
   text?: string;
   style?: CssValue;
   inlineBlock?: boolean;
@@ -16,7 +16,7 @@ export type SyntaxLabelProps = {
 /**
  * Label that provides common syntax highlighting.
  */
-export const SyntaxLabel: React.FC<SyntaxLabelProps> = (props) => {
+export const TextSyntax: React.FC<TextSyntaxProps> = (props) => {
   const { text = '', inlineBlock = true, tokenizer = DefaultTokenizer } = props;
   const tokens = useMemo(() => tokenizer(text).parts, [tokenizer, text]);
 
@@ -26,8 +26,8 @@ export const SyntaxLabel: React.FC<SyntaxLabelProps> = (props) => {
   const styles = {
     base: css({
       display: inlineBlock && 'inline-block',
-      ...style.toPadding(props.padding),
-      ...style.toMargins(props.margin),
+      ...Style.toPadding(props.padding),
+      ...Style.toMargins(props.margin),
     }),
   };
 

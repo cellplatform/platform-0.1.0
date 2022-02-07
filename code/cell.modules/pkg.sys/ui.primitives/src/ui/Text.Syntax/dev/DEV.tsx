@@ -1,10 +1,10 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
-import { SyntaxLabel, SyntaxLabelProps } from '..';
+import { TextSyntax, TextSyntaxProps } from '..';
 import { css } from '../../common';
 
 type Ctx = {
-  props: SyntaxLabelProps;
+  props: TextSyntaxProps;
   debug: { repeat: number; monospace: boolean };
 };
 
@@ -12,7 +12,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.SyntaxLabel')
+  .namespace('ui.Text.Syntax')
   .context((e) => {
     if (e.prev) return e.prev;
     const ctx: Ctx = {
@@ -42,13 +42,11 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Text');
-
     e.button('empty', (e) => (e.ctx.props.text = undefined));
     e.button('<Component>', (e) => (e.ctx.props.text = '<Component>'));
     e.button('{Object}', (e) => (e.ctx.props.text = '{Object}'));
     e.button('{One} <Two>', (e) => (e.ctx.props.text = '{One} <Two>'));
     e.button('"my text"', (e) => (e.ctx.props.text = 'my text'));
-
     e.hr();
   })
 
@@ -99,12 +97,12 @@ export const actions = DevActions<Ctx>()
       }),
     };
 
-    if (repeat === 1) e.render(<SyntaxLabel {...props} style={styles.base} />);
+    if (repeat === 1) e.render(<TextSyntax {...props} style={styles.base} />);
     if (repeat > 1) {
       const length = repeat;
       const elements = Array.from({ length }).map((v, i) => {
         const style = css(styles.base, styles.multi);
-        return <SyntaxLabel key={i} {...props} style={style} />;
+        return <TextSyntax key={i} {...props} style={style} />;
       });
 
       e.render(<div>{elements}</div>);
