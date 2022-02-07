@@ -1,14 +1,14 @@
-import * as m from './types';
+import * as k from './types';
 
 /**
  * Complete list of fields.
  */
-const ALL_FIELDS: m.ModuleInfoFields[] = ['module', 'module.name', 'module.version'];
+const ALL_FIELDS: k.ModuleInfoFields[] = ['Module', 'Module.Name', 'Module.Version'];
 
 /**
  * Default fields and order.
  */
-const DEFAULT_FIELDS: m.ModuleInfoFields[] = ['module.name', 'module.version'];
+const DEFAULT_FIELDS: k.ModuleInfoFields[] = ['Module.Name', 'Module.Version'];
 
 export const DEFAULT = {
   FIELDS: DEFAULT_FIELDS,

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { css, CssValue, t, m, COLORS } from './common';
+import { css, CssValue, t, k, COLORS } from './common';
 import { Icons } from '../Icons';
 import {} from 'sys.ui.dev';
 
@@ -16,7 +16,7 @@ export type DevEnvProps = {
   focusOnLoad?: boolean;
   filename?: string;
   style?: CssValue;
-  onReady?: m.DevEnvReadyHandler;
+  onReady?: k.DevEnvReadyHandler;
 };
 
 export const DevEnv: React.FC<DevEnvProps> = (props) => {

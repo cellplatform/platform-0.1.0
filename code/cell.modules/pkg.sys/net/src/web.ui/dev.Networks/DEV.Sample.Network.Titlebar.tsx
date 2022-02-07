@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 
-import { color, css, CssValue, Icons, COLORS } from './DEV.common';
+import { color, css, CssValue, Icons } from './DEV.common';
 
 export type DevSampleNetworkTitlebarProps = { style?: CssValue };
 

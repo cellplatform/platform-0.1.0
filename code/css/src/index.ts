@@ -9,6 +9,7 @@ export { reset } from './reset';
  */
 import * as api from './style';
 export const style = api as ICssStyle;
+export const Style = style;
 export const css = style.format;
 
 import { color } from './color';

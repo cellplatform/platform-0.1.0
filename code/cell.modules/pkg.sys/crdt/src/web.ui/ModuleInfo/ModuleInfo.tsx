@@ -1,11 +1,11 @@
 import React from 'react';
 import { color, css, CssValue, t, PropList, PropListItem, pkg } from '../../common';
 
-import * as m from './types';
+import * as k from './types';
 import { ModuleInfoConstants } from './constants';
 
 export type ModuleInfoProps = {
-  fields?: m.ModuleInfoFields[];
+  fields?: k.ModuleInfoFields[];
   width?: number;
   minWidth?: number;
   maxWidth?: number;
@@ -19,10 +19,10 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
   const push = (...input: PropListItem[]) => items.push(...input);
 
   fields.forEach((field) => {
-    if (field === 'module') push({ label: 'Module', value: `${pkg.name}@${pkg.version}` });
-    if (field === 'module.name') push({ label: 'Name', value: pkg.name });
-    if (field === 'module.version') items.push({ label: 'Version', value: pkg.version });
-    if (field === 'dataformat') {
+    if (field === 'Module') push({ label: 'Module', value: `${pkg.name}@${pkg.version}` });
+    if (field === 'Module.Name') push({ label: 'Name', value: pkg.name });
+    if (field === 'Module.Version') items.push({ label: 'Version', value: pkg.version });
+    if (field === 'DataFormat') {
       const version = pkg.dependencies?.automerge || 'ERROR';
       push({ label: 'Data Format', value: `automerge@${version}` });
     }

@@ -1,14 +1,20 @@
 import React from 'react';
-import { toObject, DevActions, lorem } from 'sys.ui.dev';
-import { LocalPeerCard, LocalPeerCardProps } from '..';
-import { t, cuid, rx } from '../../common';
+import { DevActions, lorem, ObjectView } from 'sys.ui.dev';
+
+import { LocalPeerCard, LocalPeerCardConstants, LocalPeerCardProps } from '..';
 import { PeerNetwork } from '../../..';
+import { t } from '../../common';
+import * as k from '../types';
 
 type Ctx = {
   network?: t.PeerNetwork;
   props?: LocalPeerCardProps;
-  newConnections: boolean;
   title?: string | null;
+  debug: {
+    cardPadding?: t.CssEdgesInput;
+    showAsCard: boolean;
+  };
+  newConnections: boolean;
 };
 
 /**
@@ -21,6 +27,10 @@ export const actions = DevActions<Ctx>()
 
     const ctx: Ctx = {
       newConnections: true,
+      debug: {
+        cardPadding: undefined,
+        showAsCard: true,
+      },
     };
     return ctx;
   })
@@ -31,8 +41,6 @@ export const actions = DevActions<Ctx>()
     const signal = 'rtc.cellfs.com';
     const network = (ctx.network = await PeerNetwork.start({ bus, signal }));
     const { self } = network.netbus;
-
-    // network.netbus.
 
     const status = (await network.events.peer.status(self).get()).peer;
     if (status) {
@@ -63,6 +71,24 @@ export const actions = DevActions<Ctx>()
         });
     });
 
+    e.hr(1, 0.1);
+
+    e.select((config) =>
+      config
+        .title('fields:')
+        .items(LocalPeerCardConstants.FIELDS)
+        .initial(undefined)
+        .clearable(true)
+        .view('buttons')
+        .multi(true)
+        .pipe((e) => {
+          if (e.changing && e.ctx.props) {
+            const next = e.changing.next.map(({ value }) => value) as k.LocalPeerCardFields[];
+            e.ctx.props.fields = next.length === 0 ? undefined : next;
+          }
+        }),
+    );
+
     e.boolean('newConnections', (e) => {
       if (e.changing) e.ctx.newConnections = e.changing.next;
       e.boolean.current = e.ctx.newConnections;
@@ -71,14 +97,48 @@ export const actions = DevActions<Ctx>()
     e.hr();
     e.title('Debug');
 
-    e.boolean('asCard', (e) => {
-      if (e.changing) {
-        (e.ctx.props as LocalPeerCardProps).showAsCard = e.changing.next;
+    const updateShowAsCard = (ctx: Ctx) => {
+      const props = ctx.props as LocalPeerCardProps;
+      const showAsCard = ctx.debug.showAsCard;
+
+      if (showAsCard === false) {
+        props.showAsCard = showAsCard;
+        return;
       }
-      e.boolean.current = e.ctx.props?.showAsCard;
+
+      const padding = ctx.debug.cardPadding;
+      props.showAsCard = padding === undefined ? true : { padding };
+    };
+
+    e.select((config) => {
+      config
+        .view('buttons')
+        .title('asCard { padding }')
+        .items(['undefined', 'tight', 'loose'])
+        .initial('undefined')
+        .pipe((e) => {
+          if (e.changing) {
+            const value = e.changing?.next[0].value;
+            let padding: t.CssEdgesInput | undefined = undefined;
+            if (value === 'tight') padding = [10, 15];
+            if (value === 'loose') padding = 40;
+            e.ctx.debug.cardPadding = padding;
+          }
+          updateShowAsCard(e.ctx);
+        });
+    });
+
+    e.boolean('asCard', (e) => {
+      if (e.changing) e.ctx.debug.showAsCard = e.changing.next;
+      e.boolean.current = e.ctx.debug.showAsCard;
+      updateShowAsCard(e.ctx);
     });
 
     e.hr();
+
+    e.component((e) => {
+      return <ObjectView name={'props'} data={e.ctx.props} style={{ MarginX: 15 }} fontSize={11} />;
+    });
   })
 
   .subject((e) => {
@@ -91,7 +151,12 @@ export const actions = DevActions<Ctx>()
 
     if (props) {
       e.render(
-        <LocalPeerCard {...props} newConnections={e.ctx.newConnections} title={e.ctx.title} />,
+        <LocalPeerCard
+          {...props}
+          newConnections={e.ctx.newConnections}
+          title={e.ctx.title}
+          style={{ maxWidth: 400 }}
+        />,
       );
     }
   });

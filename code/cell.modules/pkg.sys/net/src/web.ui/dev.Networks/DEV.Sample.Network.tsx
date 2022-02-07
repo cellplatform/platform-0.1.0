@@ -1,16 +1,14 @@
 import React from 'react';
 
 import {
+  BulletList,
+  Card,
+  color,
   css,
   CssValue,
-  COLORS,
+  LocalPeerCard,
   t,
   useLocalPeer,
-  LocalPeerCard,
-  Card,
-  BulletList,
-  color,
-  Icons,
 } from './DEV.common';
 import { PeerLabel } from './DEV.PeerLabel';
 import { DevSampleNetworkTitlebar } from './DEV.Sample.Network.Titlebar';

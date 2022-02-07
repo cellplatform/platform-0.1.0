@@ -1,11 +1,11 @@
 import React from 'react';
 import { color, css, CssValue, t, PropList, PropListItem, pkg } from '../common';
 
-import * as m from './types';
+import * as k from './types';
 import { ModuleInfoConstants } from './constants';
 
 export type ModuleInfoProps = {
-  fields?: m.ModuleInfoFields[];
+  fields?: k.ModuleInfoFields[];
   width?: number;
   minWidth?: number;
   maxWidth?: number;

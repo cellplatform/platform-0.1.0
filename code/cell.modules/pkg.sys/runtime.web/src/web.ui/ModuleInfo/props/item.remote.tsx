@@ -2,14 +2,14 @@ import React from 'react';
 
 import { Button, ManifestUrl, t, value } from '../../common';
 import { ExportLabel } from '../components/ExportLabel';
-import * as m from '../types';
+import * as k from '../types';
 
 type P = t.PropListItem;
 
 export function toRemote(args: {
   manifest: t.ModuleManifest;
   url: t.ManifestUrlParts;
-  onExportClick?: m.ModuleInfoExportClick;
+  onExportClick?: k.ModuleInfoExportClick;
 }) {
   const { manifest, onExportClick } = args;
   const noFiles = manifest.files.length === 0;

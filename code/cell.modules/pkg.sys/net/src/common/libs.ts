@@ -18,7 +18,7 @@ export { UAParser };
  */
 export { events } from '@platform/react';
 export { log } from '@platform/log/lib/client';
-export { css, color, CssValue, formatColor, style } from '@platform/css';
+export { css, color, CssValue, formatColor, Style } from '@platform/css';
 export { useResizeObserver } from '@platform/react';
 export { rx, defaultValue, cuid, time, deleteUndefined, asArray, slug } from '@platform/util.value';
 export { StateObject } from '@platform/state';
