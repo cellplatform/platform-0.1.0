@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { OpenConnectionInput } from '../OpenConnection.Input';
-import { color, css, CssValue, LocalPeerCard, t } from './DEV.common';
+import { color, css, CssValue, LocalPeerCard, t, Icons } from './DEV.common';
 
 export type DevSampleNetworkFooterProps = {
   bus: t.EventBus<any>;
@@ -27,16 +27,28 @@ export const DevSampleNetworkFooter: React.FC<DevSampleNetworkFooterProps> = (pr
    */
   const styles = {
     base: css({
-      PaddingX: 15,
-      PaddingY: 10,
-      backgroundColor: color.format(-0.03),
-      borderTop: `solid 1px ${color.format(-0.12)}`,
-      boxShadow: `inset 0 2px 6px ${color.format(-0.06)}`,
+      PaddingX: 10,
+      paddingTop: 10,
+      paddingBottom: 6,
+      backgroundColor: color.format(-0.02),
+      borderTop: `solid 1px ${color.format(-0.16)}`,
+      boxShadow: `inset 0 2px 6px ${color.format(-0.03)}`,
+    }),
+    body: css({
+      Flex: 'x-stretch-stretch',
+    }),
+    termincalIcon: css({
+      position: 'relative',
+      top: -1,
+      marginRight: 6,
     }),
   };
   return (
     <div {...css(styles.base, props.style)}>
-      <OpenConnectionInput onConnectRequest={startConnection} />
+      <div {...styles.body}>
+        <Icons.Terminal style={styles.termincalIcon} />
+        <OpenConnectionInput onConnectRequest={startConnection} style={{ flex: 1 }} />
+      </div>
     </div>
   );
 };

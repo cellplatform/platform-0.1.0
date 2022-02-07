@@ -71,7 +71,7 @@ export const actions = DevActions<Ctx>()
         cropmarks: -0.2,
         position: [60, null, null, null],
         label: {
-          topLeft: !isEmpty && 'Network (Peer-to-Peer)',
+          topLeft: !isEmpty && 'Peer-to-Peer',
           topRight: !isEmpty && `WebRTC Signal: "${SIGNAL_SERVER}"`,
         },
       },

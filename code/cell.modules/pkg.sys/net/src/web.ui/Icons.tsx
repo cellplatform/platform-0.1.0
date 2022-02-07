@@ -11,12 +11,13 @@ import {
   MdArrowBack,
   MdArrowForward,
   MdFace,
-  MdStorage,
 } from 'react-icons/md';
 import { FiMic, FiMicOff } from 'react-icons/fi';
 import { TiUpload } from 'react-icons/ti';
 import { BiBus } from 'react-icons/bi';
 import { CgDatabase } from 'react-icons/cg';
+import { RiTerminalBoxFill } from 'react-icons/ri';
+import { HiOutlineDatabase } from 'react-icons/hi';
 
 const icon = Icon.renderer;
 
@@ -34,5 +35,7 @@ export const Icons = {
   Upload: { Box: icon(TiUpload) },
   Arrow: { Back: icon(MdArrowBack), Forward: icon(MdArrowForward) },
   Bus: icon(BiBus),
-  Filesystem: icon(CgDatabase),
+  Terminal: icon(RiTerminalBoxFill),
+  Database: icon(HiOutlineDatabase),
+  FsDrives: icon(CgDatabase),
 };

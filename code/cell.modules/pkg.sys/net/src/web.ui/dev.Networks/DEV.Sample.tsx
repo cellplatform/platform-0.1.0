@@ -51,7 +51,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
     <BulletList.Layout
       orientation={'y'}
       bullet={{ edge: 'near', size: 60 }}
-      spacing={30}
+      spacing={50}
       items={items}
       renderers={{
         bullet: (e) => {

@@ -10,7 +10,9 @@ export type DevSampleNetworkTitlebarProps = {
 
 export const DevSampleNetworkTitlebar: React.FC<DevSampleNetworkTitlebarProps> = (props) => {
   const iconSize = 20;
-  const iconOpacity = (enabled: boolean) => (enabled ? 1 : 0.3);
+
+  const DISABLED = 0.4;
+  const ENABLED = 1;
 
   /**
    * [Render]
@@ -28,20 +30,19 @@ export const DevSampleNetworkTitlebar: React.FC<DevSampleNetworkTitlebarProps> =
     icon: css({
       position: 'relative',
       top: 0,
-      marginRight: 15,
+      marginRight: 10,
       ':last-child': { marginRight: 0 },
     }),
   };
   return (
     <div {...css(styles.base, props.style)}>
       <div {...css(styles.title)}>
-        <span>{'Network Interface (Client)'}</span>
+        <span>{'Network Peer'}</span>
       </div>
 
       <div {...styles.icons}>
-        <Icons.Filesystem style={styles.icon} size={iconSize} opacity={iconOpacity(false)} />
-        <Icons.Antenna style={styles.icon} size={iconSize} opacity={iconOpacity(true)} />
-        <Icons.Bus style={styles.icon} size={iconSize} opacity={iconOpacity(false)} />
+        <Icons.Database style={styles.icon} size={iconSize} opacity={ENABLED} />
+        <Icons.Bus style={styles.icon} size={iconSize} opacity={DISABLED} />
       </div>
     </div>
   );

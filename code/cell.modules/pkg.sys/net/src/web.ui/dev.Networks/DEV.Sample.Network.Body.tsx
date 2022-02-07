@@ -22,8 +22,15 @@ export const DevSampleNetworkBody: React.FC<DevSampleNetworkBodyProps> = (props)
   const BORDER_TRACE = `solid 1px ${color.format(-0.03)}`;
 
   const styles = {
-    base: css({ Flex: 'x-stretch-stretch', paddingTop: 0 }),
-    col: css({ flex: 1, Flex: 'y-stretch-stretch', paddingBottom: 15 }),
+    base: css({
+      Flex: 'x-stretch-stretch',
+      paddingTop: 0,
+    }),
+    column: css({
+      flex: 1,
+      Flex: 'y-stretch-stretch',
+      paddingBottom: 30,
+    }),
     divider: css({ width: 20 }),
     trace: css({ borderLeft: BORDER_TRACE, borderRight: BORDER_TRACE }),
     titlebar: css({
@@ -105,14 +112,14 @@ export const DevSampleNetworkBody: React.FC<DevSampleNetworkBodyProps> = (props)
     <div {...css(styles.base, props.style)}>
       {' '}
       {elDiv}
-      <div {...styles.col}>
+      <div {...styles.column}>
         <div {...styles.titlebar}>{'LOCAL'}</div>
         <PeerLabel id={self} style={{ marginLeft: 10, marginBottom: 5 }} />
         <div {...styles.hr}>{}</div>
         {elLocal}
       </div>
       {elDivTraceEdges}
-      <div {...styles.col}>
+      <div {...styles.column}>
         <div {...styles.titlebar}>{'REMOTE'}</div>
         <div {...styles.peers.base}>{elPeersList}</div>
         {elPeersEmpty}

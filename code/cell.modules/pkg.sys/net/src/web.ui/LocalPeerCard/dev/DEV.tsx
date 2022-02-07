@@ -100,28 +100,28 @@ export const actions = DevActions<Ctx>()
       props.showAsCard = padding === undefined ? true : { padding };
     };
 
+    e.boolean('asCard', (e) => {
+      if (e.changing) e.ctx.debug.showAsCard = e.changing.next;
+      e.boolean.current = e.ctx.debug.showAsCard;
+      updateShowAsCard(e.ctx);
+    });
+
     e.select((config) => {
       config
         .view('buttons')
         .title('asCard { padding }')
-        .items(['undefined', 'tight', 'loose'])
-        .initial('undefined')
+        .items(['tight', 'generous', '[undefined]'])
+        .initial('[undefined]')
         .pipe((e) => {
           if (e.changing) {
             const value = e.changing?.next[0].value;
             let padding: t.CssEdgesInput | undefined = undefined;
             if (value === 'tight') padding = [10, 15];
-            if (value === 'loose') padding = 40;
+            if (value === 'generous') padding = 40;
             e.ctx.debug.cardPadding = padding;
           }
           updateShowAsCard(e.ctx);
         });
-    });
-
-    e.boolean('asCard', (e) => {
-      if (e.changing) e.ctx.debug.showAsCard = e.changing.next;
-      e.boolean.current = e.ctx.debug.showAsCard;
-      updateShowAsCard(e.ctx);
     });
 
     e.hr();

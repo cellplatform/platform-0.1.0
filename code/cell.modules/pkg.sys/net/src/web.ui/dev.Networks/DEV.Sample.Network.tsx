@@ -24,15 +24,23 @@ export const DevSampleNetwork: React.FC<DevSampleNetworkProps> = (props) => {
    */
   const styles = {
     base: css({
+      Flex: 'y-stretch-stretch',
       boxSizing: 'border-box',
       minWidth: 600,
+      minHeight: 250,
     }),
   };
 
   return (
     <Card style={css(styles.base, props.style)}>
       <DevSampleNetworkTitlebar bus={bus} self={self} />
-      <DevSampleNetworkBody bus={bus} self={self} peers={peers} status={status} />
+      <DevSampleNetworkBody
+        bus={bus}
+        self={self}
+        peers={peers}
+        status={status}
+        style={{ flex: 1 }}
+      />
       <DevSampleNetworkFooter bus={bus} self={self} />
     </Card>
   );
