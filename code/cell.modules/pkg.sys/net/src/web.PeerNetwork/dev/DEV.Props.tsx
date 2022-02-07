@@ -22,7 +22,7 @@ export const DevProps: React.FC<DevPropsProps> = (props) => {
     <LocalPeerCard
       self={self}
       bus={bus}
-      newConnections={{ isReliable: true, autoStartVideo: false }}
+      openConnectionOptions={{ isReliable: true, autoStartVideo: false }}
     />
   );
 

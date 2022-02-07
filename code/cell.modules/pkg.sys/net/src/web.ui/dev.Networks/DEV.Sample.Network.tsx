@@ -124,8 +124,7 @@ export const DevSampleNetwork: React.FC<DevSampleNetworkProps> = (props) => {
           title={null}
           bus={bus}
           self={self}
-          newConnections={true}
-          fields={['PeerId', 'Lifetime', 'Connections.Count']}
+          fields={['PeerId', 'Lifetime', 'Connections.Count', 'Connection.Open']}
           style={styles.localPeerCard}
         />
       )}

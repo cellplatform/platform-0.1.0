@@ -14,7 +14,6 @@ type Ctx = {
     cardPadding?: t.CssEdgesInput;
     showAsCard: boolean;
   };
-  newConnections: boolean;
 };
 
 /**
@@ -27,7 +26,6 @@ export const actions = DevActions<Ctx>()
 
     const ctx: Ctx = {
       props: {} as any, // Hack 🐷
-      newConnections: true,
       debug: {
         cardPadding: undefined,
         showAsCard: true,
@@ -86,11 +84,6 @@ export const actions = DevActions<Ctx>()
         }),
     );
 
-    e.boolean('newConnections', (e) => {
-      if (e.changing) e.ctx.newConnections = e.changing.next;
-      e.boolean.current = e.ctx.newConnections;
-    });
-
     e.hr();
     e.title('Debug');
 
@@ -147,14 +140,7 @@ export const actions = DevActions<Ctx>()
     });
 
     if (props.bus) {
-      e.render(
-        <LocalPeerCard
-          {...props}
-          newConnections={e.ctx.newConnections}
-          title={e.ctx.title}
-          style={{ maxWidth: 400 }}
-        />,
-      );
+      e.render(<LocalPeerCard {...props} title={e.ctx.title} style={{ maxWidth: 400 }} />);
     }
   });
 

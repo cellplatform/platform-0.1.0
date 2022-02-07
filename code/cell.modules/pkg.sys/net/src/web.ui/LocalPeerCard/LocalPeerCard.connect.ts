@@ -1,17 +1,20 @@
 import { t } from '../common';
 import { PeerEvents } from '../../web.PeerNetwork.events';
 
-/**
- * Initiate a new connection.
- */
-export async function connect(args: {
+export type ConnectArgs = {
   bus: t.EventBus;
   self: t.PeerId;
   remote: t.PeerId;
-
   isReliable?: boolean;
   autoStartVideo?: boolean;
-}) {
+};
+export type Connect = (args: ConnectArgs) => Promise<void>;
+
+/**
+ * Initiate a new connection.
+ */
+
+export const connect: Connect = async (args) => {
   const { self, bus, remote, isReliable, autoStartVideo } = args;
   if (!remote) return;
 
@@ -35,4 +38,4 @@ export async function connect(args: {
 
   // Finish up.
   events.dispose();
-}
+};

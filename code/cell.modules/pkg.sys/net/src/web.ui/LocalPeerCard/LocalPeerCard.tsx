@@ -1,24 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { interval, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+
 import { useLocalPeer } from '../../web.ui.hooks';
-import {
-  Card,
-  COLORS,
-  css,
-  CssValue,
-  Hr,
-  Icons,
-  PropList,
-  PropListItem,
-  Style,
-  t,
-  time,
-} from '../common';
+import { Card, css, CssValue, Hr, PropList, Style, t } from '../common';
 import { OpenConnectionInput } from '../OpenConnection.Input';
 import { LocalPeerCardConstants } from './constants';
+import { connect, Connect } from './LocalPeerCard.connect';
+import { toItems } from './LocalPeerCard.toItems';
 import * as k from './types';
-import { connect } from './LocalPeerCard.connect';
 
 type OpenConnectionOptions = { isReliable?: boolean; autoStartVideo?: boolean };
 
@@ -27,7 +17,7 @@ export type LocalPeerCardProps = {
   self: t.PeerId;
   title?: string | null;
   fields?: k.LocalPeerCardFields[];
-  newConnections?: boolean | OpenConnectionOptions;
+  openConnectionOptions?: OpenConnectionOptions;
   showAsCard?: boolean | { padding?: t.CssEdgesInput };
   style?: CssValue;
 };
@@ -35,11 +25,12 @@ export type LocalPeerCardProps = {
 /**
  * A property list of the local network Peer.
  */
-export const LocalPeerCard: React.FC<LocalPeerCardProps> = (props) => {
+type V = React.FC<LocalPeerCardProps>;
+const View: V = (props) => {
   const {
     bus,
     self,
-    newConnections = false,
+    openConnectionOptions: newConnections = false,
     showAsCard = false,
     fields = LocalPeerCardConstants.DEFAULT.FIELDS,
   } = props;
@@ -79,25 +70,25 @@ export const LocalPeerCard: React.FC<LocalPeerCardProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({}),
+    base: css({ minWidth: 240 }),
     textbox: css({
       marginBottom: 10,
       marginTop: 15,
     }),
   };
 
-  const elConnect = newConnections && (
+  const elConnect = fields.includes('Connection.Open') && (
     <OpenConnectionInput style={styles.textbox} onConnectRequest={startConnection} />
+  );
+
+  const elConnectHr = elConnect && fields.length > 1 && (
+    <Hr thickness={6} opacity={0.05} margin={[5, 0]} />
   );
 
   const elBody = (
     <div {...css(styles.base, props.style)}>
-      <PropList
-        title={title}
-        defaults={{ clipboard: false }}
-        items={toItems(status, fields, props)}
-      />
-      {newConnections && <Hr thickness={6} opacity={0.05} margin={[5, 0]} />}
+      <PropList title={title} defaults={{ clipboard: false }} items={toItems(status, fields)} />
+      {elConnectHr}
       {elConnect}
     </div>
   );
@@ -114,68 +105,8 @@ export const LocalPeerCard: React.FC<LocalPeerCardProps> = (props) => {
 };
 
 /**
- * [Helpers]
+ * Export (API)
  */
-
-const toItems = (
-  status: t.PeerStatus | undefined,
-  fields: k.LocalPeerCardFields[],
-  props: LocalPeerCardProps,
-): t.PropListItem[] => {
-  // const { self } = props;
-
-  // if (local.)
-  if (!status) return [];
-
-  // if (!self?.status) return [];
-
-  // const status = self.status;
-  const signal = status.signal;
-  const elapsed = time.elapsed(status.createdAt || -1);
-  const lifetime = elapsed.sec < 60 ? 'less than a minute' : elapsed.toString();
-
-  const items: PropListItem[] = [];
-  const push = (...input: PropListItem[]) => items.push(...input);
-
-  fields.forEach((field) => {
-    if (field === 'PeerId') {
-      push({
-        label: 'local peer',
-        value: { data: status.id, clipboard: true },
-      });
-    }
-
-    if (field === 'SignalServer') {
-      const styles = {
-        base: css({ Flex: 'horizontal-center-center' }),
-        icon: css({ marginRight: 3 }),
-      };
-      const lock = { size: 14, color: COLORS.DARK, style: styles.icon };
-      push({
-        label: `signal server`,
-        value: (
-          <div {...styles.base}>
-            {signal.secure ? <Icons.Lock.Closed {...lock} /> : <Icons.Lock.No {...lock} />}
-            {signal.host}:{signal.port}
-          </div>
-        ),
-      });
-    }
-
-    if (field === 'Lifetime') {
-      push({
-        label: 'lifetime',
-        value: status.isOnline ? lifetime : 'no',
-      });
-    }
-
-    if (field === 'Connections.Count') {
-      push({
-        label: `connections`,
-        value: status.connections.length,
-      });
-    }
-  });
-
-  return items;
-};
+type C = V & { connect: Connect };
+export const LocalPeerCard: C = View as any;
+LocalPeerCard.connect = connect;
