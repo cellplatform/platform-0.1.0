@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { color, COLORS, css, CssValue, defaultValue, t, style } from '../../common';
+import { COLORS, css, CssValue, defaultValue, t, Style } from '../../common';
 import { PropListItem } from './PropList.Item';
 import { PropListTitle } from './PropList.Title';
 
@@ -39,8 +39,8 @@ export const PropList: React.FC<PropListProps> = (props) => {
       maxWidth: width?.max,
       maxHeight: height?.max,
 
-      ...style.toMargins(props.margin),
-      ...style.toPadding(props.padding),
+      ...Style.toMargins(props.margin),
+      ...Style.toPadding(props.padding),
     }),
     title: css({ marginBottom: 5 }),
   };

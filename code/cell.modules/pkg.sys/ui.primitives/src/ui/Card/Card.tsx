@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { color, css, CssValue, defaultValue, style, t } from '../../common';
+import { color, css, CssValue, defaultValue, Style, t } from '../../common';
 
 export type CardProps = {
   children?: React.ReactNode;
@@ -39,7 +39,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>((props, ref) => 
       border: `solid 1px ${color.format(borderColor)}`,
       borderRadius: defaultValue(props.border?.radius, 4),
       background: color.format(background),
-      boxShadow: style.toShadow(shadow),
+      boxShadow: Style.toShadow(shadow),
 
       width: width?.fixed,
       height: height?.fixed,
@@ -48,8 +48,8 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>((props, ref) => 
       maxWidth: width?.max,
       maxHeight: height?.max,
 
-      ...style.toMargins(props.margin),
-      ...style.toPadding(props.padding),
+      ...Style.toMargins(props.margin),
+      ...Style.toPadding(props.padding),
     }),
   };
 

@@ -14,4 +14,6 @@ export * from './ui/PositioningLayers/types';
 
 export * from './ui/Tree/types';
 export * from './ui/StackPanel/types';
-export * from './ui/SyntaxLabel/types';
+
+export * from './ui/Text.Copy/types';
+export * from './ui/Text.Syntax/types';

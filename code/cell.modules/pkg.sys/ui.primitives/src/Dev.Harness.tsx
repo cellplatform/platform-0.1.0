@@ -37,7 +37,9 @@ const imports = {
 
   Tree: import('./ui/Tree/dev/DEV'),
   StackPanel: import('./ui/StackPanel/dev/DEV'),
-  SyntaxLabel: import('./ui/SyntaxLabel/dev/DEV'),
+
+  TextCopy: import('./ui/Text.Copy/dev/DEV'),
+  TextSyntax: import('./ui/Text.Syntax/dev/DEV'),
 };
 
 /**
