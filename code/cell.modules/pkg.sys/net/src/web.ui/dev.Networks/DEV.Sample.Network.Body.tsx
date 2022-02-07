@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { BulletList, color, css, CssValue, LocalPeerCard, t } from './DEV.common';
-import { PeerLabel } from './DEV.PeerLabel';
+import { PeerLabel } from '../PeerLabel';
 
 export type DevSampleNetworkBodyProps = {
   bus: t.EventBus<any>;

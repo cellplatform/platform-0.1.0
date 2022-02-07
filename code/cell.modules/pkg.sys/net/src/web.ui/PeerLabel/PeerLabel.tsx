@@ -1,14 +1,19 @@
 import React from 'react';
-import { color, css, COLORS, CssValue, t, Icons, Text } from './DEV.common';
+
+import { COLORS, css, CssValue, t, Text } from '../../common';
+import { Icons } from '../Icons';
 
 export type PeerLabelProps = {
-  id: string;
+  id: t.PeerId;
+  isCopyable?: boolean;
   style?: CssValue;
 };
 
 export const PeerLabel: React.FC<PeerLabelProps> = (props) => {
+  const { isCopyable = true } = props;
   const PREDICATE = 'peer';
-  const uri = `${PREDICATE}:${props.id}`;
+  const id = (props.id || '').trim().replace(/^peer\:/, '');
+  const uri = `${PREDICATE}:${id}`;
 
   /**
    * [Render]
@@ -21,8 +26,8 @@ export const PeerLabel: React.FC<PeerLabelProps> = (props) => {
     icon: css({ marginRight: 6 }),
     label: {
       base: css({
+        top: -1,
         position: 'relative',
-        top: -2,
         fontFamily: 'monospace',
         fontSize: 11,
         fontWeight: 600,
@@ -35,10 +40,14 @@ export const PeerLabel: React.FC<PeerLabelProps> = (props) => {
   const elLabel = (
     <div>
       <Text.Copy
-        onCopy={(e) => {
-          e.copy(uri);
-          e.message('copied', { opacity: 0.3, blur: 2 });
-        }}
+        onCopy={
+          isCopyable
+            ? (e) => {
+                e.copy(uri);
+                e.message('copied', { opacity: 0.3, blur: 2 });
+              }
+            : undefined
+        }
         icon={{
           element: <Text.Copy.Icon size={13} />,
           offset: 3,
@@ -46,7 +55,7 @@ export const PeerLabel: React.FC<PeerLabelProps> = (props) => {
         }}
       >
         <span {...styles.label.predicate}>{PREDICATE}:</span>
-        <span {...styles.label.value}>{props.id}</span>
+        <span {...styles.label.value}>{id}</span>
       </Text.Copy>
     </div>
   );
