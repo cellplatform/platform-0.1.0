@@ -64,7 +64,7 @@ export const DevNetworkHeader: React.FC<DevNetworkHeaderProps> = (props) => {
     <div {...css(styles.base, props.style)}>
       <div {...styles.left}>
         <LocalPeerCard
-          self={{ id: self.id, status: self.status }}
+          self={self.id}
           bus={bus}
           newConnections={{ isReliable: true, autoStartVideo: true }}
         />

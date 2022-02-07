@@ -16,8 +16,8 @@ export type UseLocalPeer = {
  * synced as peers interact with the network.
  */
 export function useLocalPeer(args: {
-  self: t.PeerId;
   bus: t.EventBus<any>;
+  self: t.PeerId;
   onChange?: (e: UseLocalPeer) => void;
 }): UseLocalPeer {
   const { self, onChange } = args;

@@ -26,13 +26,8 @@ export const DevSampleNetwork: React.FC<DevSampleNetworkProps> = (props) => {
   const peer = useLocalPeer({ self, bus });
   const status = peer.status;
 
-  const peers =
-    status?.connections.map((conn) => {
-      return conn;
-    }) || [];
+  const peers = status?.connections || [];
   const hasPeers = peers.length > 0;
-
-  console.log('hasPeers', hasPeers);
 
   /**
    * [Render]
@@ -81,12 +76,12 @@ export const DevSampleNetwork: React.FC<DevSampleNetworkProps> = (props) => {
     /**
      * Content
      */
-    peerProps: {
-      base: css({}),
-    },
-    peers: {
-      base: css({}),
-    },
+    peerProps: { base: css({}) },
+    peers: { base: css({}) },
+    localPeerCard: css({
+      marginLeft: 10,
+      marginRight: 10,
+    }),
   };
 
   const elTitlebar = <DevSampleNetworkTitlebar />;
@@ -125,7 +120,14 @@ export const DevSampleNetwork: React.FC<DevSampleNetworkProps> = (props) => {
   const elLocal = (
     <div>
       {status && (
-        <LocalPeerCard title={null} bus={bus} self={{ id: self, status }} newConnections={true} />
+        <LocalPeerCard
+          title={null}
+          bus={bus}
+          self={self}
+          newConnections={true}
+          fields={['PeerId', 'Lifetime', 'Connections.Count']}
+          style={styles.localPeerCard}
+        />
       )}
     </div>
   );

@@ -1,6 +1,6 @@
 {
   "name": "sys.net",
-  "version": "0.0.192",
+  "version": "0.0.194",
   "sideEffects": false,
   "main": "lib/index",
   "compiler": {

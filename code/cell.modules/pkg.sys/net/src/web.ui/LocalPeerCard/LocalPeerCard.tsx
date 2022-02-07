@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { interval, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-
-import { PeerEvents } from '../../web.PeerNetwork.events';
+import { useLocalPeer } from '../../web.ui.hooks';
 import {
   Card,
-  color,
   COLORS,
   css,
   CssValue,
@@ -15,20 +13,21 @@ import {
   PropListItem,
   Style,
   t,
-  Textbox,
   time,
 } from '../common';
+import { OpenConnectionInput } from '../OpenConnection.Input';
 import { LocalPeerCardConstants } from './constants';
 import * as k from './types';
+import { connect } from './LocalPeerCard.connect';
 
-type NewConnectionOptions = { isReliable?: boolean; autoStartVideo?: boolean };
+type OpenConnectionOptions = { isReliable?: boolean; autoStartVideo?: boolean };
 
 export type LocalPeerCardProps = {
   bus: t.EventBus<any>;
-  self: { id: t.PeerId; status: t.PeerStatus };
+  self: t.PeerId;
   title?: string | null;
   fields?: k.LocalPeerCardFields[];
-  newConnections?: boolean | NewConnectionOptions;
+  newConnections?: boolean | OpenConnectionOptions;
   showAsCard?: boolean | { padding?: t.CssEdgesInput };
   style?: CssValue;
 };
@@ -46,9 +45,10 @@ export const LocalPeerCard: React.FC<LocalPeerCardProps> = (props) => {
   } = props;
   const title = props.title === null ? undefined : props.title ?? 'Network';
 
-  const [connectTo, setConnectTo] = useState<string>('');
   const [, setCount] = useState<number>(0);
   const redraw = () => setCount((prev) => prev + 1);
+  const local = useLocalPeer({ bus, self });
+  const status = local.status;
 
   /**
    * [Lifecycle]
@@ -67,32 +67,12 @@ export const LocalPeerCard: React.FC<LocalPeerCardProps> = (props) => {
   /**
    * Initiate a new connection.
    */
-  const startConnection = async (remote: t.PeerId) => {
-    remote = (connectTo || '').trim();
-    if (!remote) return;
-
-    const isConnected = self.status.connections
-      .filter(({ kind }) => kind === 'data')
-      .some(({ peer }) => peer.remote.id === remote);
-    if (isConnected) return; // Already connected.
-
-    // Prepare options.
-    const options: NewConnectionOptions =
-      typeof newConnections === 'object' ? newConnections : { isReliable: true };
+  const startConnection = async (args: { remote: t.PeerId }) => {
+    type O = OpenConnectionOptions;
+    const options: O = typeof newConnections === 'object' ? newConnections : { isReliable: true };
     const { isReliable, autoStartVideo } = options;
-
-    // Invoke the action(s).
-    const events = PeerEvents(bus);
-    const open = events.connection(self.id, remote).open;
-    const res = await open.data({ isReliable });
-
-    if (autoStartVideo && res.connection) {
-      const parent = res.connection.id;
-      await open.media('media/video', { parent });
-    }
-
-    // Finish up.
-    events.dispose();
+    const { remote } = args;
+    connect({ bus, remote, self, isReliable, autoStartVideo });
   };
 
   /**
@@ -101,42 +81,22 @@ export const LocalPeerCard: React.FC<LocalPeerCardProps> = (props) => {
   const styles = {
     base: css({}),
     textbox: css({
-      fontSize: 12,
       marginBottom: 10,
       marginTop: 15,
-      minWidth: 240,
     }),
   };
 
   const elConnect = newConnections && (
-    <Textbox
-      value={connectTo}
-      placeholder={'open connection'}
-      onChange={(e) => setConnectTo(e.to)}
-      style={styles.textbox}
-      spellCheck={false}
-      selectOnFocus={true}
-      enter={{
-        isEnabled: Boolean(connectTo.trim()),
-        handler: () => startConnection(connectTo),
-        icon: (e) => {
-          const input = connectTo.trim();
-          const col = input ? COLORS.BLUE : color.alpha(COLORS.DARK, 0.6);
-          const el = (
-            <div {...css({ Flex: 'horizontal-center-center' })}>
-              {input && <Icons.Arrow.Forward size={18} opacity={0.5} style={{ marginRight: 4 }} />}
-              <Icons.Antenna size={18} color={col} />
-            </div>
-          );
-          return el;
-        },
-      }}
-    />
+    <OpenConnectionInput style={styles.textbox} onConnectRequest={startConnection} />
   );
 
   const elBody = (
     <div {...css(styles.base, props.style)}>
-      <PropList title={title} defaults={{ clipboard: false }} items={toItems(fields, props)} />
+      <PropList
+        title={title}
+        defaults={{ clipboard: false }}
+        items={toItems(status, fields, props)}
+      />
       {newConnections && <Hr thickness={6} opacity={0.05} margin={[5, 0]} />}
       {elConnect}
     </div>
@@ -157,11 +117,19 @@ export const LocalPeerCard: React.FC<LocalPeerCardProps> = (props) => {
  * [Helpers]
  */
 
-const toItems = (fields: k.LocalPeerCardFields[], props: LocalPeerCardProps): t.PropListItem[] => {
-  const { self } = props;
-  if (!self?.status) return [];
+const toItems = (
+  status: t.PeerStatus | undefined,
+  fields: k.LocalPeerCardFields[],
+  props: LocalPeerCardProps,
+): t.PropListItem[] => {
+  // const { self } = props;
 
-  const status = self.status;
+  // if (local.)
+  if (!status) return [];
+
+  // if (!self?.status) return [];
+
+  // const status = self.status;
   const signal = status.signal;
   const elapsed = time.elapsed(status.createdAt || -1);
   const lifetime = elapsed.sec < 60 ? 'less than a minute' : elapsed.toString();

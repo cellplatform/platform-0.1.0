@@ -8,7 +8,7 @@ import * as k from '../types';
 
 type Ctx = {
   network?: t.PeerNetwork;
-  props?: LocalPeerCardProps;
+  props: LocalPeerCardProps;
   title?: string | null;
   debug: {
     cardPadding?: t.CssEdgesInput;
@@ -26,6 +26,7 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const ctx: Ctx = {
+      props: {} as any, // Hack 🐷
       newConnections: true,
       debug: {
         cardPadding: undefined,
@@ -44,11 +45,7 @@ export const actions = DevActions<Ctx>()
 
     const status = (await network.events.peer.status(self).get()).peer;
     if (status) {
-      ctx.props = {
-        bus,
-        self: { id: self, status },
-        showAsCard: true,
-      };
+      ctx.props = { bus, self, showAsCard: true };
     }
   })
 
@@ -62,7 +59,7 @@ export const actions = DevActions<Ctx>()
         .view('buttons')
         .items(['default', 'custom', 'custom (long)', 'none (null)'])
         .pipe((e) => {
-          const current = e.select.current[0].value; // NB: always first.
+          const current = e.select.current[0]?.value; // NB: always first.
 
           if (current === 'default') e.ctx.title = undefined;
           if (current === 'custom') e.ctx.title = 'My Title';
@@ -98,7 +95,7 @@ export const actions = DevActions<Ctx>()
     e.title('Debug');
 
     const updateShowAsCard = (ctx: Ctx) => {
-      const props = ctx.props as LocalPeerCardProps;
+      const props = ctx.props;
       const showAsCard = ctx.debug.showAsCard;
 
       if (showAsCard === false) {
@@ -149,7 +146,7 @@ export const actions = DevActions<Ctx>()
       layout: { cropmarks: -0.2 },
     });
 
-    if (props) {
+    if (props.bus) {
       e.render(
         <LocalPeerCard
           {...props}
