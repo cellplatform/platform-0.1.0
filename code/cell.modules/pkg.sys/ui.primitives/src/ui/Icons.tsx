@@ -1,7 +1,7 @@
 import { Icon } from '@platform/ui.icon';
-import { FiAlertTriangle, FiCopy } from 'react-icons/fi';
+import { FiAlertTriangle } from 'react-icons/fi';
+import { MdFace, MdLock, MdLockOpen, MdQrCode } from 'react-icons/md';
 import { RiFileCopyFill } from 'react-icons/ri';
-import { MdFace, MdLock, MdLockOpen, MdQrCode, MdOutlineContentCopy } from 'react-icons/md';
 
 const icon = Icon.renderer;
 

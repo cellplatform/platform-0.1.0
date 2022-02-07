@@ -6,11 +6,11 @@ import * as k from './types';
 
 export type TextSyntaxProps = {
   text?: string;
-  style?: CssValue;
   inlineBlock?: boolean;
   margin?: t.CssEdgesInput;
   padding?: t.CssEdgesInput;
   tokenizer?: k.SyntaxLabelTokenizer;
+  style?: CssValue;
 };
 
 /**

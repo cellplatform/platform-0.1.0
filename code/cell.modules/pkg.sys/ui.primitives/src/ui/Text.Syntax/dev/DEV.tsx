@@ -73,9 +73,9 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const props = e.ctx.props;
+    const { props, debug } = e.ctx;
     const { inlineBlock } = props;
-    const { repeat, monospace } = e.ctx.debug;
+    const { repeat, monospace } = debug;
 
     e.settings({
       host: { background: -0.04 },
@@ -97,16 +97,12 @@ export const actions = DevActions<Ctx>()
       }),
     };
 
-    if (repeat === 1) e.render(<TextSyntax {...props} style={styles.base} />);
-    if (repeat > 1) {
-      const length = repeat;
-      const elements = Array.from({ length }).map((v, i) => {
-        const style = css(styles.base, styles.multi);
-        return <TextSyntax key={i} {...props} style={style} />;
-      });
+    const elements = Array.from({ length: repeat }).map((v, i) => {
+      const style = css(styles.base, repeat > 1 ? styles.multi : undefined);
+      return <TextSyntax key={i} {...props} style={style} />;
+    });
 
-      e.render(<div>{elements}</div>);
-    }
+    e.render(<div>{elements}</div>);
   });
 
 export default actions;

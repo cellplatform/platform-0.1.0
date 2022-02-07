@@ -1,17 +1,18 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
-import { TextCopyEventHandler, TextCopy, TextCopyProps, TextCopyIcon } from '..';
+import { TextCopy, TextCopyProps } from '..';
 import { css } from '../../common';
 import { Icons } from '../../Icons';
+import * as k from '../types';
 
 type Ctx = {
   props: TextCopyProps;
   debug: {
     text: string;
     repeat: number;
-    clipboard: { handler?: TextCopyEventHandler; use: boolean; message: boolean };
-    icon: { edge: Required<TextCopyIcon['edge']>; use: boolean; offset: number };
+    clipboard: { handler?: k.TextCopyEventHandler; use: boolean; message: boolean };
+    icon: { edge: Required<k.TextCopyIcon['edge']>; use: boolean; offset: number };
   };
 };
 
@@ -25,7 +26,7 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       props: {},
       debug: {
-        text: 'my text',
+        text: 'my text to copy',
         repeat: 1,
         clipboard: { use: true, message: true },
         icon: { edge: 'E', use: true, offset: 2 },
@@ -47,7 +48,7 @@ export const actions = DevActions<Ctx>()
     e.button('<Component>', (e) => (e.ctx.debug.text = '<Component>'));
     e.button('{Object}', (e) => (e.ctx.debug.text = '{Object}'));
     e.button('{One} <Two>', (e) => (e.ctx.debug.text = '{One} <Two>'));
-    e.button('"my text"', (e) => (e.ctx.debug.text = 'my text'));
+    e.button('"my text to copy"', (e) => (e.ctx.debug.text = 'my text to copy'));
     e.hr();
   })
 
@@ -138,27 +139,16 @@ export const actions = DevActions<Ctx>()
       }),
     };
 
-    const text = e.ctx.debug.text;
-
-    if (repeat === 1)
-      e.render(
-        <TextCopy {...props} style={styles.base}>
-          {text}
-        </TextCopy>,
+    const elements = Array.from({ length: repeat }).map((v, i) => {
+      const style = css(styles.base, repeat > 1 ? styles.multi : undefined);
+      return (
+        <TextCopy key={i} {...props} style={style} onMouse={(e) => console.log('onMouse:', e)}>
+          {e.ctx.debug.text}
+        </TextCopy>
       );
-    if (repeat > 1) {
-      const length = repeat;
-      const elements = Array.from({ length }).map((v, i) => {
-        const style = css(styles.base, styles.multi);
-        return (
-          <TextCopy key={i} {...props} style={style}>
-            {text}
-          </TextCopy>
-        );
-      });
+    });
 
-      e.render(<div>{elements}</div>);
-    }
+    e.render(<div>{elements}</div>);
   });
 
 export default actions;
@@ -168,11 +158,13 @@ export default actions;
  */
 
 const CopyToClipboard = {
-  factory(getCtx: () => Ctx): TextCopyEventHandler {
+  factory(getCtx: () => Ctx): k.TextCopyEventHandler {
     return (e) => {
       const ctx = getCtx();
       e.copy(ctx.debug.text);
-      if (ctx.debug.clipboard.message) e.message('Copied', { delay: 1200 });
+      if (ctx.debug.clipboard.message) {
+        e.message('Copied', { delay: 1200, opacity: 0.3, blur: 2 });
+      }
     };
   },
   update(ctx: Ctx) {

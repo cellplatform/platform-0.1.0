@@ -1,5 +1,6 @@
 import React from 'react';
 import { css, CssValue } from '../../common';
+import * as k from './types';
 
 type Edge = 'N' | 'S' | 'W' | 'E';
 type P = number | null;
