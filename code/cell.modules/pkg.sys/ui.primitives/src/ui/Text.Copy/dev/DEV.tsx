@@ -1,13 +1,17 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { TextCopy, TextCopyProps } from '..';
+
+import { TextCopyEventHandler, TextCopy, TextCopyProps, TextCopyIcon } from '..';
 import { css } from '../../common';
+import { Icons } from '../../Icons';
 
 type Ctx = {
   props: TextCopyProps;
   debug: {
     text: string;
     repeat: number;
+    clipboard: { handler?: TextCopyEventHandler; use: boolean };
+    icon: { edge: Required<TextCopyIcon['edge']>; use: boolean; offset: number };
   };
 };
 
@@ -19,16 +23,26 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
     const ctx: Ctx = {
-      props: {},
-      debug: { text: 'my text', repeat: 1 },
+      props: {
+        icon: {
+          element: <Icons.Copy size={14} color={-0.7} />,
+        },
+      },
+      debug: {
+        text: 'my text',
+        repeat: 1,
+        clipboard: { use: true },
+        icon: { edge: 'E', use: true, offset: 2 },
+      },
     };
     return ctx;
   })
 
   .init(async (e) => {
     const { ctx, bus } = e;
-
-    ctx.props.copyToClipboard = (e) => e.copy('foobar');
+    ctx.debug.clipboard.handler = CopyToClipboard.factory(() => e.ctx);
+    CopyToClipboard.update(ctx);
+    Icon.update(ctx);
   })
 
   .items((e) => {
@@ -42,7 +56,49 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
+    e.title('Icon');
+
+    e.boolean('icon', (e) => {
+      if (e.changing) e.ctx.debug.icon.use = e.changing.next;
+      e.boolean.current = e.ctx.debug.icon.use;
+      Icon.update(e.ctx);
+    });
+
+    e.select((config) => {
+      config
+        .view('buttons')
+        .title('{icon.offset}')
+        .items(['0', '2', '6'])
+        .initial(config.ctx.debug.icon.offset.toString())
+        .pipe((e) => {
+          if (e.changing) e.ctx.debug.icon.offset = parseInt(e.changing?.next[0].value, 10);
+          Icon.update(e.ctx);
+        });
+    });
+
+    e.select((config) => {
+      config
+        .view('buttons')
+        .title('{icon.edge}')
+        .items(['N', 'S', 'W', 'E'])
+        .initial(config.ctx.debug.icon.edge)
+        .pipe((e) => {
+          if (e.changing) e.ctx.debug.icon.edge = e.changing?.next[0].value;
+          Icon.update(e.ctx);
+        });
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
     e.title('Debug');
+
+    e.boolean('copyToClipboard', (e) => {
+      if (e.changing) e.ctx.debug.clipboard.use = e.changing.next;
+      e.boolean.current = e.ctx.debug.clipboard.use;
+      CopyToClipboard.update(e.ctx);
+    });
 
     e.select((config) => {
       config
@@ -58,7 +114,8 @@ export const actions = DevActions<Ctx>()
     e.hr();
 
     e.component((e) => {
-      return <ObjectView name={'props'} data={e.ctx.props} style={{ MarginX: 15 }} fontSize={11} />;
+      const data = e.ctx.props;
+      return <ObjectView name={'props'} data={data} style={{ MarginX: 15 }} fontSize={11} />;
     });
   })
 
@@ -104,3 +161,36 @@ export const actions = DevActions<Ctx>()
   });
 
 export default actions;
+
+/**
+ * [Helpers]
+ */
+
+const CopyToClipboard = {
+  factory(getCtx: () => Ctx): TextCopyEventHandler {
+    return (e) => {
+      const ctx = getCtx();
+      e.copy(ctx.debug.text);
+    };
+  },
+  update(ctx: Ctx) {
+    ctx.props.onCopy = ctx.debug.clipboard.use ? ctx.debug.clipboard.handler : undefined;
+  },
+};
+
+const Icon = {
+  update(ctx: Ctx) {
+    const icon = ctx.debug.icon;
+    const { edge, offset } = icon;
+    ctx.props.icon = !icon.use
+      ? undefined
+      : {
+          edge,
+          offset,
+          element() {
+            // NB: or simple element reference, rather than function.
+            return <Icons.Copy size={14} color={-0.7} />;
+          },
+        };
+  },
+};
