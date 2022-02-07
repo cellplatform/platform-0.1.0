@@ -69,10 +69,16 @@ export function ActionsController(args: {
 
         // NB: This will also assign the [ctx.current] value.
         Context.getAndStore(model, { throw: true });
-        const ctx = model.state.ctx.current;
 
         // Invoke the initialization function.
-        await init({ bus, ctx, redraw });
+        await init({
+          redraw,
+          bus,
+          get ctx() {
+            return model.state.ctx.current;
+          },
+        });
+
         redraw();
       },
     },
