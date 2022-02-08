@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { color, BulletList, css, CssValue, t, COLORS, Icons } from './DEV.common';
-import { DevSampleNetwork } from './DEV.Sample.Network';
+import { DevSampleNetwork } from './DEV.Network';
 
 export type DevSampleProps = {
   networks: t.PeerNetwork[];

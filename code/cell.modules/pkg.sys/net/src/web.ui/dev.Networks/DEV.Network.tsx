@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { Card, css, CssValue, t, useLocalPeer } from './DEV.common';
-import { DevSampleNetworkBody } from './DEV.Sample.Network.Body';
-import { DevSampleNetworkFooter } from './DEV.Sample.Network.Footer';
-import { DevSampleNetworkTitlebar } from './DEV.Sample.Network.Titlebar';
+import { DevSampleNetworkBody } from './DEV.Network.Body';
+import { DevSampleNetworkFooter } from './DEV.Network.Footer';
+import { DevSampleNetworkTitlebar } from './DEV.Network.Titlebar';
 
 export type DevSampleNetworkProps = {
   network: t.PeerNetwork;
@@ -27,7 +27,7 @@ export const DevSampleNetwork: React.FC<DevSampleNetworkProps> = (props) => {
       Flex: 'y-stretch-stretch',
       boxSizing: 'border-box',
       minWidth: 600,
-      minHeight: 250,
+      minHeight: 230,
     }),
   };
 

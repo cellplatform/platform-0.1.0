@@ -54,8 +54,9 @@ export const PeerLabel: React.FC<PeerLabelProps> = (props) => {
           edge: 'E',
         }}
       >
-        <span {...styles.label.predicate}>{PREDICATE}:</span>
-        <span {...styles.label.value}>{id}</span>
+        <Text.Syntax text={uri} />
+        {/* <span {...styles.label.predicate}>{PREDICATE}:</span>
+        <span {...styles.label.value}>{id}</span> */}
       </Text.Copy>
     </div>
   );

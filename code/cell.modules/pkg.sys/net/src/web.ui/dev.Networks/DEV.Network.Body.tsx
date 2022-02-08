@@ -29,7 +29,6 @@ export const DevSampleNetworkBody: React.FC<DevSampleNetworkBodyProps> = (props)
     column: css({
       flex: 1,
       Flex: 'y-stretch-stretch',
-      paddingBottom: 30,
     }),
     divider: css({ width: 20 }),
     trace: css({ borderLeft: BORDER_TRACE, borderRight: BORDER_TRACE }),
@@ -45,11 +44,6 @@ export const DevSampleNetworkBody: React.FC<DevSampleNetworkBodyProps> = (props)
     hr: css({ borderTop: BORDER_HR, MarginY: 5 }),
 
     peers: { base: css({}) },
-
-    localPeerCard: css({
-      marginLeft: 10,
-      marginRight: 10,
-    }),
 
     empty: css({
       flex: 1,
@@ -90,33 +84,16 @@ export const DevSampleNetworkBody: React.FC<DevSampleNetworkBodyProps> = (props)
   );
 
   const elPeersEmpty = !hasPeers && <div {...styles.empty}>{'No connected peers.'}</div>;
-
-  const elLocal = (
-    <div>
-      {status && (
-        <LocalPeerCard
-          title={null}
-          bus={bus}
-          self={self}
-          fields={['PeerId', 'Lifetime']}
-          style={styles.localPeerCard}
-        />
-      )}
-    </div>
-  );
-
   const elDiv = <div {...styles.divider} />;
   const elDivTraceEdges = <div {...css(styles.divider, styles.trace)} />;
 
   return (
     <div {...css(styles.base, props.style)}>
-      {' '}
       {elDiv}
       <div {...styles.column}>
         <div {...styles.titlebar}>{'LOCAL'}</div>
         <PeerLabel id={self} style={{ marginLeft: 10, marginBottom: 5 }} />
-        <div {...styles.hr}>{}</div>
-        {elLocal}
+        <div {...styles.hr} />
       </div>
       {elDivTraceEdges}
       <div {...styles.column}>

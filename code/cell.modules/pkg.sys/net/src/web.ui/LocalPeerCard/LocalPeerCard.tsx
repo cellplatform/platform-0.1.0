@@ -6,7 +6,7 @@ import { useLocalPeer } from '../../web.hooks';
 import { Card, css, CssValue, Hr, PropList, Style, t } from '../common';
 import { OpenConnectionInput } from '../OpenConnection.Input';
 import { LocalPeerCardConstants } from './constants';
-import { connect, Connect } from './LocalPeerCard.connect';
+import { Connect, connect } from './LocalPeerCard.connect';
 import { toItems } from './LocalPeerCard.toItems';
 import * as k from './types';
 
