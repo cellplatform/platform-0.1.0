@@ -40,6 +40,8 @@ const imports = {
 
   TextCopy: import('./ui/Text.Copy/dev/DEV'),
   TextSyntax: import('./ui/Text.Syntax/dev/DEV'),
+
+  UnitTests: import('./ui.dev/DEV.UnitTests'),
 };
 
 /**

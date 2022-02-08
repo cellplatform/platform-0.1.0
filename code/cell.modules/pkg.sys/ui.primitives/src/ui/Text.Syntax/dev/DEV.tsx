@@ -42,11 +42,18 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Text');
-    e.button('empty', (e) => (e.ctx.props.text = undefined));
-    e.button('<Component>', (e) => (e.ctx.props.text = '<Component>'));
-    e.button('{Object}', (e) => (e.ctx.props.text = '{Object}'));
-    e.button('{One} <Two>', (e) => (e.ctx.props.text = '{One} <Two>'));
-    e.button('"my text"', (e) => (e.ctx.props.text = 'my text'));
+
+    const add = (text: string, value = text) => {
+      e.button(text, (e) => (e.ctx.props.text = value));
+    };
+
+    add('"" (empty)', '');
+    add('<Component>');
+    add('{Object}');
+    add('my plain text');
+    add('foo:bar');
+    add('{One} <Two> foo:bar');
+
     e.hr();
   })
 

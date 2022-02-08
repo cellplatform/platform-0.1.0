@@ -1,17 +1,24 @@
 import * as k from './types';
-import { COLORS } from '../../common';
+
+type K = k.SyntaxLabelTokenKind;
 
 /**
  * Simple tokenizer that matches <Value> and {Object} braces.
+ *
+ * Ref:
+ *    https://github.com/microsoft/ts-parsec
  */
 export const DefaultTokenizer: k.SyntaxLabelTokenizer = (text) => {
   text = text ?? '';
   const parts: k.SyntaxLabelToken[] = [];
-  let wordBuffer = '';
+  let buffer = '';
 
-  const pushWord = () => {
-    if (wordBuffer.length === 0) return;
-    parts.push({ text: wordBuffer, color: COLORS.CYAN });
+  const push = (kind: K, text: string) => parts.push({ text, kind });
+
+  const pushBuffer = (kind: K) => {
+    if (buffer.length === 0) return;
+    push(kind, buffer);
+    buffer = ''; // NB: reset.
   };
 
   const next = factory(text);
@@ -19,37 +26,41 @@ export const DefaultTokenizer: k.SyntaxLabelTokenizer = (text) => {
 
   while (!done) {
     const current = next();
-    const char = current.char;
-    done = current.isComplete;
-    if (typeof char === 'string') {
-      if (current.isBrace) {
-        pushWord();
-        parts.push({ text: char, color: COLORS.MAGENTA });
-        wordBuffer = ''; // NB: reset.
-      } else {
-        wordBuffer += char;
-      }
+    const { char, is } = current;
+    done = is.complete;
+    if (typeof char !== 'string') continue;
+
+    if (is.brace) {
+      pushBuffer('Word');
+      push('Brace', char);
+    } else if (current.is.colon) {
+      pushBuffer('Predicate');
+      push('Colon', char);
+    } else {
+      buffer += char;
     }
   }
 
-  pushWord(); // Clear buffer in case there were no "brace" characters.
+  pushBuffer('Word'); // Clear buffer in case there were no "brace" characters.
   return { text, parts };
 };
 
 /**
- * [Internal]
+ * [Helpers]
  */
 
 function factory(text: string) {
-  const BRACE = ['<', '>', '{', '}'];
   let index = 0;
-  let isComplete = false;
 
   return () => {
     const char = text[index];
-    const isBrace = BRACE.includes(char);
-    isComplete = index >= text.length - 1;
+    const is = {
+      brace: ['<', '>', '{', '}'].includes(char),
+      colon: char === ':',
+      complete: index >= text.length - 1,
+    };
+
     index++;
-    return { char, index: index - 1, isBrace, isComplete };
+    return { char, index: index - 1, is };
   };
 }

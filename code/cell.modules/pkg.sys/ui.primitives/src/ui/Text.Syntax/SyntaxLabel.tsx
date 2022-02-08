@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 
-import { css, CssValue, Style, t } from '../../common';
+import { css, CssValue, Style, t, COLORS, color } from '../../common';
 import { DefaultTokenizer } from './Tokenizer';
 import * as k from './types';
 
@@ -11,6 +11,13 @@ export type TextSyntaxProps = {
   padding?: t.CssEdgesInput;
   tokenizer?: k.SyntaxLabelTokenizer;
   style?: CssValue;
+};
+
+const SYNTAX_COLORS: k.SyntaxLabelColors = {
+  Brace: COLORS.MAGENTA,
+  Predicate: COLORS.MAGENTA,
+  Word: COLORS.CYAN,
+  Colon: color.alpha(COLORS.DARK, 0.6),
 };
 
 /**
@@ -33,7 +40,7 @@ export const TextSyntax: React.FC<TextSyntaxProps> = (props) => {
 
   const elements = tokens.map((token, i) => {
     return (
-      <span key={i} style={{ color: token.color }}>
+      <span key={i} style={{ color: SYNTAX_COLORS[token.kind] }}>
         {token.text}
       </span>
     );

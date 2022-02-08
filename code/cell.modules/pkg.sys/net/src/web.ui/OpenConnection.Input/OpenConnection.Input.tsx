@@ -50,7 +50,8 @@ export const OpenConnectionInput: React.FC<OpenConnectionInputProps> = (props) =
           isEnabled: Boolean(input),
           icon: (e) => elTools,
           handler() {
-            props.onConnectRequest?.({ remote: text });
+            const remote = text.replace(/^peer\:/, '');
+            props.onConnectRequest?.({ remote });
             setPending(false);
           },
         }}
