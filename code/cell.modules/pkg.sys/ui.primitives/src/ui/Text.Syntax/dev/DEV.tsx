@@ -5,7 +5,7 @@ import { css } from '../../common';
 
 type Ctx = {
   props: TextSyntaxProps;
-  debug: { repeat: number; monospace: boolean };
+  debug: { repeat: number; monospace: boolean; customColors: boolean };
 };
 
 /**
@@ -20,7 +20,7 @@ export const actions = DevActions<Ctx>()
         text: '<Component>',
         inlineBlock: true,
       },
-      debug: { repeat: 1, monospace: true },
+      debug: { repeat: 1, monospace: true, customColors: false },
     };
     return ctx;
   })
@@ -76,20 +76,22 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.debug.monospace;
     });
 
+    e.boolean('customColors', (e) => {
+      if (e.changing) e.ctx.debug.customColors = e.changing.next;
+      e.boolean.current = e.ctx.debug.customColors;
+    });
+
     e.hr();
   })
 
   .subject((e) => {
     const { props, debug } = e.ctx;
     const { inlineBlock } = props;
-    const { repeat, monospace } = debug;
+    const { repeat, monospace, customColors } = debug;
 
     e.settings({
       host: { background: -0.04 },
-      layout: {
-        border: -0.1,
-        cropmarks: -0.2,
-      },
+      layout: { border: -0.1, cropmarks: -0.2 },
     });
 
     const styles = {
@@ -106,7 +108,8 @@ export const actions = DevActions<Ctx>()
 
     const elements = Array.from({ length: repeat }).map((v, i) => {
       const style = css(styles.base, repeat > 1 ? styles.multi : undefined);
-      return <TextSyntax key={i} {...props} style={style} />;
+      const colors = customColors ? { Brace: 'orange' } : undefined;
+      return <TextSyntax key={i} {...props} colors={colors} style={style} />;
     });
 
     e.render(<div>{elements}</div>);

@@ -10,10 +10,11 @@ export type TextSyntaxProps = {
   margin?: t.CssEdgesInput;
   padding?: t.CssEdgesInput;
   tokenizer?: k.SyntaxLabelTokenizer;
+  colors?: Partial<k.SyntaxLabelColors>;
   style?: CssValue;
 };
 
-const SYNTAX_COLORS: k.SyntaxLabelColors = {
+const BASE: k.SyntaxLabelColors = {
   Brace: COLORS.MAGENTA,
   Predicate: COLORS.MAGENTA,
   Word: COLORS.CYAN,
@@ -26,6 +27,8 @@ const SYNTAX_COLORS: k.SyntaxLabelColors = {
 export const TextSyntax: React.FC<TextSyntaxProps> = (props) => {
   const { text = '', inlineBlock = true, tokenizer = DefaultTokenizer } = props;
   const tokens = useMemo(() => tokenizer(text).parts, [tokenizer, text]);
+
+  const colors = { ...BASE, ...props.colors };
 
   /**
    * [Render]
@@ -40,7 +43,7 @@ export const TextSyntax: React.FC<TextSyntaxProps> = (props) => {
 
   const elements = tokens.map((token, i) => {
     return (
-      <span key={i} style={{ color: SYNTAX_COLORS[token.kind] }}>
+      <span key={i} style={{ color: colors[token.kind] }}>
         {token.text}
       </span>
     );
