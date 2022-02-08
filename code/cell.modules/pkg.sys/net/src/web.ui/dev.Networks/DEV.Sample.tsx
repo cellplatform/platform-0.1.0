@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { color, BulletList, css, CssValue, t, COLORS, Icons } from './DEV.common';
-import { DevSampleNetwork } from './DEV.Network';
+import { DevNetwork } from './DEV.Network';
 
 export type DevSampleProps = {
   networks: t.PeerNetwork[];
@@ -77,7 +77,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
         body: (e) => {
           if (e.kind !== 'Default') return;
           const data = e.data as D;
-          return <DevSampleNetwork key={e.index} network={data.network} />;
+          return <DevNetwork key={e.index} network={data.network} />;
         },
       }}
     />

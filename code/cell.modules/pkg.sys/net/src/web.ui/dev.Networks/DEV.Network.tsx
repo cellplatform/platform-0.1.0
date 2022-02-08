@@ -1,16 +1,17 @@
 import React from 'react';
 
 import { Card, css, CssValue, t, useLocalPeer } from './DEV.common';
-import { DevSampleNetworkBody } from './DEV.Network.Body';
-import { DevSampleNetworkFooter } from './DEV.Network.Footer';
-import { DevSampleNetworkTitlebar } from './DEV.Network.Titlebar';
+import { DevNetworkBody } from './DEV.Network.Body';
+import { DevNetworkFooter } from './DEV.Network.Footer';
+import { DevNetworkTitlebar } from './DEV.Network.Titlebar';
+import { DevChildCard } from './DEV.Network.ChildCard';
 
-export type DevSampleNetworkProps = {
+export type DevNetworkProps = {
   network: t.PeerNetwork;
   style?: CssValue;
 };
 
-export const DevSampleNetwork: React.FC<DevSampleNetworkProps> = (props) => {
+export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
   const { network } = props;
   const { bus } = network;
   const self = network.netbus.self;
@@ -24,24 +25,26 @@ export const DevSampleNetwork: React.FC<DevSampleNetworkProps> = (props) => {
    */
   const styles = {
     base: css({
-      Flex: 'y-stretch-stretch',
       boxSizing: 'border-box',
-      minWidth: 600,
-      minHeight: 230,
+      Flex: 'x-stretch-stretch',
     }),
+    card: {
+      root: css({
+        minWidth: 600,
+        minHeight: 300,
+        Flex: 'y-stretch-stretch',
+      }),
+    },
   };
 
   return (
-    <Card style={css(styles.base, props.style)}>
-      <DevSampleNetworkTitlebar bus={bus} self={self} />
-      <DevSampleNetworkBody
-        bus={bus}
-        self={self}
-        peers={peers}
-        status={status}
-        style={{ flex: 1 }}
-      />
-      <DevSampleNetworkFooter bus={bus} self={self} />
-    </Card>
+    <div {...css(styles.base, props.style)}>
+      <Card style={styles.card.root}>
+        <DevNetworkTitlebar bus={bus} self={self} />
+        <DevNetworkBody bus={bus} self={self} peers={peers} status={status} style={{ flex: 1 }} />
+        <DevNetworkFooter bus={bus} self={self} />
+      </Card>
+      <DevChildCard bus={bus} netbus={network.netbus} />
+    </div>
   );
 };

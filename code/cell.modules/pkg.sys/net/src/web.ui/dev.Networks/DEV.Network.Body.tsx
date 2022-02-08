@@ -3,7 +3,7 @@ import React from 'react';
 import { BulletList, color, css, CssValue, LocalPeerCard, t } from './DEV.common';
 import { PeerLabel } from '../PeerLabel';
 
-export type DevSampleNetworkBodyProps = {
+export type DevNetworkBodyProps = {
   bus: t.EventBus<any>;
   self: t.PeerId;
   peers: t.PeerConnectionStatus[];
@@ -11,7 +11,7 @@ export type DevSampleNetworkBodyProps = {
   style?: CssValue;
 };
 
-export const DevSampleNetworkBody: React.FC<DevSampleNetworkBodyProps> = (props) => {
+export const DevNetworkBody: React.FC<DevNetworkBodyProps> = (props) => {
   const { self, bus, peers, status } = props;
   const hasPeers = peers.length > 0;
 
@@ -51,6 +51,7 @@ export const DevSampleNetworkBody: React.FC<DevSampleNetworkBodyProps> = (props)
       fontSize: 12,
       fontStyle: 'italic',
       color: color.format(-0.3),
+      marginBottom: 20,
     }),
   };
 

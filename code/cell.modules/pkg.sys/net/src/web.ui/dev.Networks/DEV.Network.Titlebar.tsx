@@ -2,13 +2,13 @@ import React from 'react';
 
 import { color, css, CssValue, Icons, t } from './DEV.common';
 
-export type DevSampleNetworkTitlebarProps = {
+export type DevNetworkTitlebarProps = {
   bus: t.EventBus<any>;
   self: t.PeerId;
   style?: CssValue;
 };
 
-export const DevSampleNetworkTitlebar: React.FC<DevSampleNetworkTitlebarProps> = (props) => {
+export const DevNetworkTitlebar: React.FC<DevNetworkTitlebarProps> = (props) => {
   const iconSize = 20;
 
   const DISABLED = 0.4;
@@ -42,7 +42,7 @@ export const DevSampleNetworkTitlebar: React.FC<DevSampleNetworkTitlebarProps> =
 
       <div {...styles.icons}>
         <Icons.Database style={styles.icon} size={iconSize} opacity={DISABLED} />
-        <Icons.Bus style={styles.icon} size={iconSize} opacity={DISABLED} />
+        <Icons.Bus style={styles.icon} size={iconSize} opacity={ENABLED} />
       </div>
     </div>
   );

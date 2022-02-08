@@ -3,13 +3,13 @@ import React from 'react';
 import { OpenConnectionInput } from '../OpenConnection.Input';
 import { color, css, CssValue, LocalPeerCard, t, Icons } from './DEV.common';
 
-export type DevSampleNetworkFooterProps = {
+export type DevNetworkFooterProps = {
   bus: t.EventBus<any>;
   self: t.PeerId;
   style?: CssValue;
 };
 
-export const DevSampleNetworkFooter: React.FC<DevSampleNetworkFooterProps> = (props) => {
+export const DevNetworkFooter: React.FC<DevNetworkFooterProps> = (props) => {
   const { bus, self } = props;
 
   /**
