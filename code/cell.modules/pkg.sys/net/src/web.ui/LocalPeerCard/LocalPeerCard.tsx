@@ -83,22 +83,22 @@ const View: V = (props) => {
   );
 
   const elBody = (
-    <div {...css(styles.base, props.style)}>
+    <>
       <PropList title={title} defaults={{ clipboard: false }} items={toItems(status, fields)} />
       {elConnectHr}
       {elConnect}
-    </div>
+    </>
   );
 
   if (showAsCard) {
     const padding =
       typeof showAsCard === 'object'
-        ? css({ ...Style.toPadding(showAsCard.padding) })
-        : css({ Padding: [18, 20, 15, 20] });
-    return <Card style={padding}>{elBody}</Card>;
+        ? { ...Style.toPadding(showAsCard.padding) }
+        : { Padding: [18, 20, 15, 20] };
+    return <Card style={css(styles.base, padding, props.style)}>{elBody}</Card>;
+  } else {
+    return <div {...css(styles.base, props.style)}>{elBody}</div>;
   }
-
-  return elBody;
 };
 
 /**
