@@ -41,7 +41,7 @@ export const DevNetworkTitlebar: React.FC<DevNetworkTitlebarProps> = (props) => 
       </div>
 
       <div {...styles.icons}>
-        <Icons.Database style={styles.icon} size={iconSize} opacity={DISABLED} />
+        <Icons.FsNetworkDrive style={styles.icon} size={iconSize} opacity={DISABLED} />
         <Icons.Bus style={styles.icon} size={iconSize} opacity={ENABLED} />
       </div>
     </div>

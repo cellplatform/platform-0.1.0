@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 
-import { DevEventBusCard } from '../../web.PeerNetwork/dev/DEV.event/DEV.EventBus.Card';
+import { NetbusCard } from '../NetbusCard';
 import { color, COLORS, css, CssValue, t } from './DEV.common';
 
 /**
@@ -45,7 +45,7 @@ export const DevChildCard: React.FC<DevChildCardProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       {elDivider}
-      <DevEventBusCard bus={bus} netbus={netbus} style={styles.card} />
+      <NetbusCard netbus={netbus} style={styles.card} />
     </div>
   );
 };

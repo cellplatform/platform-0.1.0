@@ -1,11 +1,12 @@
 import React from 'react';
 import { DevActions, ObjectView, toObject } from 'sys.ui.dev';
 
-import { PeerNetwork, rx, t } from './DEV.common';
+import { css, PeerNetwork, rx, t } from './DEV.common';
 import { DevSample } from './DEV.Sample';
 
 type Ctx = {
   networks: t.PeerNetwork[];
+  debug: { background: boolean };
 };
 
 const SIGNAL_SERVER = 'rtc.cellfs.com';
@@ -17,7 +18,10 @@ export const actions = DevActions<Ctx>()
   .namespace('dev.Networks')
   .context((e) => {
     if (e.prev) return e.prev;
-    const ctx: Ctx = { networks: [] };
+    const ctx: Ctx = {
+      networks: [],
+      debug: { background: false },
+    };
     return ctx;
   })
 
@@ -53,7 +57,17 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr();
+  })
 
+  .items((e) => {
+    e.title('Debug');
+
+    e.boolean('background', (e) => {
+      if (e.changing) e.ctx.debug.background = e.changing.next;
+      e.boolean.current = e.ctx.debug.background;
+    });
+
+    e.hr();
     e.component((e) => {
       const { networks } = e.ctx;
       const data = { networks };
@@ -62,14 +76,15 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const networks = e.ctx.networks;
+    const { networks, debug } = e.ctx;
     const isEmpty = networks.length === 0;
 
     e.settings({
       host: { background: -0.04 },
       layout: {
         cropmarks: -0.2,
-        position: [60, null, null, null],
+        position: [60, 40, 80, 40],
+        background: debug.background ? 1 : 0,
         label: {
           topLeft: !isEmpty && 'Peer-to-Peer',
           topRight: !isEmpty && `WebRTC Signal: "${SIGNAL_SERVER}"`,
@@ -77,7 +92,22 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    e.render(<DevSample networks={networks} />);
+    /**
+     * [Render]
+     */
+    const styles = {
+      base: css({
+        flex: 1,
+        Scroll: true,
+        Padding: debug.background ? [70, 45] : undefined,
+      }),
+    };
+
+    e.render(
+      <div {...styles.base}>
+        <DevSample networks={networks} />
+      </div>,
+    );
   });
 
 export default actions;

@@ -18,6 +18,7 @@ import { BiBus } from 'react-icons/bi';
 import { CgDatabase } from 'react-icons/cg';
 import { RiTerminalBoxFill } from 'react-icons/ri';
 import { HiOutlineDatabase } from 'react-icons/hi';
+import { GrNetworkDrive } from 'react-icons/gr';
 
 const icon = Icon.renderer;
 
@@ -38,4 +39,5 @@ export const Icons = {
   Terminal: icon(RiTerminalBoxFill),
   Database: icon(HiOutlineDatabase),
   FsDrives: icon(CgDatabase),
+  FsNetworkDrive: icon(GrNetworkDrive),
 };
