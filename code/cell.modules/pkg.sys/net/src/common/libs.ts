@@ -34,3 +34,10 @@ export { PropList, PropListItem } from 'sys.ui.primitives/lib/ui/PropList';
 export { Card } from 'sys.ui.primitives/lib/ui/Card';
 export { BulletList } from 'sys.ui.primitives/lib/ui/BulletList';
 export { Text } from 'sys.ui.primitives/lib/ui/Text';
+
+export {
+  EventStack,
+  useEventBusHistory,
+  EventBusHistory,
+} from 'sys.ui.primitives/lib/ui/Event.Stack';
+export { EventPipe } from 'sys.ui.primitives/lib/ui/Event.Pipe';

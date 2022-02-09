@@ -22,13 +22,6 @@ export {
 } from 'sys.ui.primitives/lib/ui/CardStack';
 
 export {
-  EventStack,
-  useEventBusHistory,
-  EventBusHistory,
-} from 'sys.ui.primitives/lib/ui/Event.Stack';
-export { EventPipe } from 'sys.ui.primitives/lib/ui/Event.Pipe';
-
-export {
   MotionDraggable,
   MotionDraggableEvent,
   MotionDraggableItem,

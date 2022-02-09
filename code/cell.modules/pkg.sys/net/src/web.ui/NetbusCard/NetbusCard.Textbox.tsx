@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { color } from '@platform/css';
 
-import { COLORS, css, Icons, Textbox } from '../DEV.common';
+import { COLORS, css, Textbox } from '../common';
+import { Icons } from '../Icons';
 
 export type DevEventBusTextboxProps = {
   onBroadcast?: (e: { message: string; filter: string }) => void;
