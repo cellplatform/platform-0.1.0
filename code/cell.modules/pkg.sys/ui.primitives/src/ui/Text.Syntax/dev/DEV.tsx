@@ -48,11 +48,12 @@ export const actions = DevActions<Ctx>()
     };
 
     add('"" (empty)', '');
+    add('my plain text');
     add('<Component>');
     add('{Object}');
-    add('my plain text');
+    add('[List]');
     add('foo:bar');
-    add('{One} <Two> foo:bar');
+    add('{One} <Two> foo:bar [List]');
 
     e.hr();
   })

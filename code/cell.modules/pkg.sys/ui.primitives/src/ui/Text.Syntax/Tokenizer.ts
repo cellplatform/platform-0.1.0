@@ -55,7 +55,7 @@ function factory(text: string) {
   return () => {
     const char = text[index];
     const is = {
-      brace: ['<', '>', '{', '}'].includes(char),
+      brace: ['<', '>', '{', '}', '[', ']'].includes(char),
       colon: char === ':',
       complete: index >= text.length - 1,
     };
