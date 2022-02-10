@@ -1,8 +1,10 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { OpenConnectionInput, OpenConnectionInputProps } from '..';
-import { t } from '../../common';
+import { OpenConnectionInput, OpenConnectionInputProps, OpenConnectionInputConstants } from '..';
+import { t, COLORS } from '../../common';
 import { PeerNetwork } from '../../..';
+
+const CONST = OpenConnectionInputConstants;
 
 type Ctx = {
   self: t.PeerId;
@@ -14,12 +16,16 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.OpenConnectionInput')
+  .namespace('ui.OpenConnection.Input')
   .context((e) => {
     if (e.prev) return e.prev;
     const ctx: Ctx = {
-      self: '',
-      props: {},
+      self: '<CUID>',
+      props: {
+        theme: 'Dark',
+        // theme: 'Light',
+        // theme: CONST.DEFAULT.THEME,
+      },
     };
     return ctx;
   })
@@ -36,20 +42,39 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('Dev');
+    e.title('Debug');
+
+    e.select((config) => {
+      config
+        .view('buttons')
+        .title('theme')
+        .items(CONST.THEMES)
+        .initial(config.ctx.props.theme)
+        .pipe((e) => {
+          if (e.changing) e.ctx.props.theme = e.changing?.next[0].value;
+        });
+    });
 
     e.hr();
-
     e.component((e) => {
       return <ObjectView name={'props'} data={e.ctx.props} style={{ MarginX: 15 }} fontSize={11} />;
     });
   })
 
   .subject((e) => {
+    const { theme = CONST.DEFAULT.THEME } = e.ctx.props;
+    const isLight = theme === 'Light';
+
     e.settings({
-      host: { background: -0.04 },
-      layout: { cropmarks: -0.2 },
+      host: {
+        background: isLight ? -0.04 : COLORS.DARK,
+      },
+      layout: {
+        cropmarks: isLight ? -0.2 : 0.2,
+        labelColor: isLight ? -0.5 : 0.8,
+      },
     });
+
     e.render(
       <OpenConnectionInput
         {...e.ctx.props}
