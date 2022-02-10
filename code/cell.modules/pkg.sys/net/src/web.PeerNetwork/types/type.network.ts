@@ -1,5 +1,7 @@
 import { t } from './common';
 
+export type NetworkId = string;
+
 /**
  * Represents a running [PeerNetwork] instance.
  */

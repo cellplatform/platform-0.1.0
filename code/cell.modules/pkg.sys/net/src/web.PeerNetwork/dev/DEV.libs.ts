@@ -10,7 +10,7 @@ export { StateObject } from '@platform/state';
 /**
  * @system
  */
-export { ObjectView, Textbox, Hr, LocalStorage } from 'sys.ui.dev';
+export { ObjectView, Textbox, LocalStorage } from 'sys.ui.dev';
 export { Card, CardProps } from 'sys.ui.primitives/lib/ui/Card';
 export { useDragTarget, Dropped } from 'sys.ui.primitives/lib/hooks/useDragTarget';
 export { PropList, PropListItem } from 'sys.ui.primitives/lib/ui/PropList';
