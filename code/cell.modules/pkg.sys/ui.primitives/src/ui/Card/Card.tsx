@@ -5,9 +5,10 @@ import { color, css, CssValue, defaultValue, Style, t } from '../../common';
 export type CardProps = {
   children?: React.ReactNode;
   background?: number | string;
-  border?: { color?: number | string; radius?: number };
-  padding?: t.CssEdgesInput;
+  showAsCard?: boolean;
+  padding?: t.CssEdgesInput; // NB: padding is dropped if "NOT" showing as card.
   margin?: t.CssEdgesInput;
+  border?: { color?: number | string; radius?: number };
   width?: number | { fixed?: number; min?: number; max?: number };
   height?: number | { fixed?: number; min?: number; max?: number };
   userSelect?: string | boolean;
@@ -23,7 +24,7 @@ export type CardProps = {
 };
 
 export const Card = React.forwardRef<HTMLDivElement, CardProps>((props, ref) => {
-  const background = defaultValue(props.background, 1);
+  const { background = 1, showAsCard = true } = props;
   const borderColor = defaultValue(props.border?.color, -0.2);
 
   const shadow = toShadow(props.shadow);
@@ -36,11 +37,6 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>((props, ref) => 
       boxSizing: 'border-box',
       userSelect: toUserSelect(props.userSelect),
 
-      border: `solid 1px ${color.format(borderColor)}`,
-      borderRadius: defaultValue(props.border?.radius, 4),
-      background: color.format(background),
-      boxShadow: Style.toShadow(shadow),
-
       width: width?.fixed,
       height: height?.fixed,
       minWidth: defaultValue(width?.min, 10),
@@ -49,6 +45,12 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>((props, ref) => 
       maxHeight: height?.max,
 
       ...Style.toMargins(props.margin),
+    }),
+    card: css({
+      border: `solid 1px ${color.format(borderColor)}`,
+      borderRadius: defaultValue(props.border?.radius, 4),
+      background: color.format(background),
+      boxShadow: Style.toShadow(shadow),
       ...Style.toPadding(props.padding),
     }),
   };
@@ -56,7 +58,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>((props, ref) => 
   return (
     <div
       ref={ref}
-      {...css(styles.base, props.style)}
+      {...css(styles.base, showAsCard ? styles.card : undefined, props.style)}
       onDoubleClick={props.onDoubleClick}
       onMouseDown={props.onMouseDown}
       onMouseUp={props.onMouseUp}
