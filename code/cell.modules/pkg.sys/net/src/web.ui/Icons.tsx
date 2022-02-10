@@ -11,6 +11,7 @@ import {
   MdArrowBack,
   MdArrowForward,
   MdFace,
+  MdHelpOutline,
 } from 'react-icons/md';
 import { FiMic, FiMicOff } from 'react-icons/fi';
 import { TiUpload } from 'react-icons/ti';
@@ -19,6 +20,7 @@ import { CgDatabase } from 'react-icons/cg';
 import { RiTerminalBoxFill } from 'react-icons/ri';
 import { HiOutlineDatabase } from 'react-icons/hi';
 import { GrNetworkDrive } from 'react-icons/gr';
+import { FaNetworkWired } from 'react-icons/fa';
 
 const icon = Icon.renderer;
 
@@ -40,4 +42,6 @@ export const Icons = {
   Database: icon(HiOutlineDatabase),
   FsDrives: icon(CgDatabase),
   FsNetworkDrive: icon(GrNetworkDrive),
+  Unknown: icon(MdHelpOutline),
+  Network: icon(FaNetworkWired),
 };
