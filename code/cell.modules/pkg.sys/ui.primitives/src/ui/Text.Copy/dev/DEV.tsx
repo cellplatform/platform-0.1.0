@@ -5,6 +5,11 @@ import { TextCopy, TextCopyProps } from '..';
 import { css } from '../../common';
 import { Icons } from '../../Icons';
 import * as k from '../types';
+import { TextSyntax } from '../../Text.Syntax';
+
+const DEFAULT = {
+  TEXT: 'My <Text> to [copy]!',
+};
 
 type Ctx = {
   props: TextCopyProps;
@@ -26,7 +31,7 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       props: {},
       debug: {
-        text: 'my text to copy',
+        text: DEFAULT.TEXT,
         repeat: 1,
         clipboard: { use: true, message: true },
         icon: { edge: 'E', use: true, offset: 2 },
@@ -48,7 +53,7 @@ export const actions = DevActions<Ctx>()
     e.button('<Component>', (e) => (e.ctx.debug.text = '<Component>'));
     e.button('{Object}', (e) => (e.ctx.debug.text = '{Object}'));
     e.button('{One} <Two>', (e) => (e.ctx.debug.text = '{One} <Two>'));
-    e.button('"my text to copy"', (e) => (e.ctx.debug.text = 'my text to copy'));
+    e.button(DEFAULT.TEXT, (e) => (e.ctx.debug.text = DEFAULT.TEXT));
     e.hr();
   })
 
@@ -90,6 +95,20 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Debug');
+
+    e.select((config) => {
+      config
+        .view('buttons')
+        .title('isCopyable')
+        .items(['undefined', 'false'])
+        .initial((config.ctx.props.isCopyable || 'undefined').toString())
+        .pipe((e) => {
+          if (e.changing) {
+            const next = e.changing?.next[0].value;
+            e.ctx.props.isCopyable = next === 'undefined' ? undefined : false;
+          }
+        });
+    });
 
     e.boolean('onCopy (handler)', (e) => {
       if (e.changing) e.ctx.debug.clipboard.use = e.changing.next;
@@ -143,7 +162,7 @@ export const actions = DevActions<Ctx>()
       const style = css(styles.base, repeat > 1 ? styles.multi : undefined);
       return (
         <TextCopy key={i} {...props} style={style} onMouse={(e) => console.log('onMouse:', e)}>
-          {e.ctx.debug.text}
+          <TextSyntax text={e.ctx.debug.text} />
         </TextCopy>
       );
     });
@@ -163,7 +182,7 @@ const CopyToClipboard = {
       const ctx = getCtx();
       e.copy(ctx.debug.text);
       if (ctx.debug.clipboard.message) {
-        e.message('Copied', { delay: 1200, opacity: 0.3, blur: 2 });
+        e.message('Copied', { delay: 1200, opacity: 0.3, blur: 2, grayscale: 1 });
       }
     };
   },

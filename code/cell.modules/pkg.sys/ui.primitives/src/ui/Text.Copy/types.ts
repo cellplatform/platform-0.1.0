@@ -1,5 +1,6 @@
 type Pixels = number;
 type Milliseconds = number;
+type Percent = number;
 
 /**
  * Fired when a mouse event occurs.
@@ -18,8 +19,9 @@ export type TextCopyEvent = {
 };
 export type TextCopyMessageOptions = {
   delay?: Milliseconds;
-  opacity?: number; // To set the content to while message is showing.
-  blur?: Pixels;
+  opacity?: number; //    To set the content to while message is showing.
+  blur?: Pixels; //       https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/blur()
+  grayscale?: Percent; // https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/grayscale()
 };
 export type TextCopyEventHandler = (e: TextCopyEvent) => void;
 

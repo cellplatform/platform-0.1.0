@@ -6,11 +6,13 @@ import { Icons } from '../Icons';
 
 type Milliseconds = number;
 type Pixels = number;
+type Percent = number;
 type Message = {
   value: JSX.Element | string;
   delay?: Milliseconds;
   opacity?: number;
   blur?: Pixels;
+  grayscale?: Percent;
 };
 
 const DEFAULT = {
@@ -24,6 +26,7 @@ export type TextCopyProps = {
   padding?: t.CssEdgesInput;
   downOffset?: Pixels;
   icon?: k.TextCopyIcon;
+  isCopyable?: boolean;
   style?: CssValue;
   onCopy?: k.TextCopyEventHandler;
   onMouse?: k.TextCopyMouseEventHandler;
@@ -37,7 +40,7 @@ export const View: V = (props) => {
   const [isDown, setDown] = useState(false);
   const [message, setMessage] = useState<undefined | Message>();
 
-  const isCopyable = Boolean(props.onCopy);
+  const isCopyable = props.isCopyable === false ? false : Boolean(props.onCopy);
   const hasMessage = message !== undefined;
 
   /**
@@ -65,8 +68,8 @@ export const View: V = (props) => {
         children,
         copy: (value) => (text = value),
         message(value, options = {}) {
-          const { delay, opacity, blur } = options;
-          message = { value, delay, opacity, blur };
+          const { delay, opacity, blur, grayscale } = options;
+          message = { value, delay, opacity, blur, grayscale };
         },
       };
       props.onCopy?.(e);
@@ -87,6 +90,10 @@ export const View: V = (props) => {
     fireMouse(isDown ? 'Down' : 'Up');
   };
 
+  let filter = '';
+  if (typeof message?.blur === 'number') filter += `blur(${message.blur}px) `;
+  if (typeof message?.grayscale === 'number') filter += `grayscale(${message.grayscale}) `;
+
   /**
    * [Render]
    */
@@ -103,7 +110,7 @@ export const View: V = (props) => {
     body: css({
       position: 'relative',
       opacity: hasMessage ? message.opacity ?? 0 : 1,
-      filter: typeof message?.blur === 'number' ? `blur(${message.blur}px)` : undefined,
+      filter: filter || undefined,
     }),
     message: css({
       Absolute: 0,
