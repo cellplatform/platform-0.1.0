@@ -1,20 +1,33 @@
 import React from 'react';
 
-import { color, BulletList, css, CssValue, t, COLORS, Icons } from './DEV.common';
-import { DevNetwork } from './DEV.Network';
+import { color, BulletList, css, CssValue, t, COLORS, Icons, Text } from './DEV.common';
+import { DevNetwork, DevNetworkView, DevNetworkConstants } from './DEV.Network';
+import { Label } from '../Label';
 
 export type DevSampleProps = {
   networks: t.PeerNetwork[];
+  view?: DevNetworkView;
   style?: CssValue;
 };
 
 export const DevSample: React.FC<DevSampleProps> = (props) => {
-  const { networks = [] } = props;
+  console.log('props', props);
+  const { view = DevNetworkConstants.DEFAULT.VIEW } = props;
+
+  const isCollection = view === 'Collection';
+  const list = props.networks ?? [];
+  const networks = view === 'Collection' ? list : list.slice(0, 1);
 
   type D = { network: t.PeerNetwork };
-
   const isEmpty = networks.length === 0;
   const items = networks.map<{ data: D }>((network) => ({ data: { network } }));
+
+  if (view === 'URI') {
+    /**
+     * TODO 🐷
+     */
+    return <Label.Network id={''} />;
+  }
 
   /**
    * [Render]
@@ -23,12 +36,10 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
     base: css({
       boxSizing: 'border-box',
       minWidth: 450,
+      backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
     }),
     empty: {
-      base: css({
-        minWidth: 660,
-        Flex: 'center-center',
-      }),
+      base: css({ minWidth: 660, Flex: 'center-center' }),
       body: css({
         Flex: 'y-center-center',
         fontSize: 12,
@@ -50,11 +61,13 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
   const elClientCards = (
     <BulletList.Layout
       orientation={'y'}
-      bullet={{ edge: 'near', size: 60 }}
+      bullet={{ edge: 'near', size: isCollection ? 60 : 0 }}
       spacing={50}
       items={items}
       renderers={{
         bullet: (e) => {
+          if (!isCollection) return null;
+
           const data = e.data as D;
           const network = data.network;
 

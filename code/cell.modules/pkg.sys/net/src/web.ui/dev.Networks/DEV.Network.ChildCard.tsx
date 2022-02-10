@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { NetbusCard } from '../NetbusCard';
-import { color, COLORS, css, CssValue, t } from './DEV.common';
+import { color, COLORS, css, CssValue, t, Card } from './DEV.common';
+import { Toolbar } from '../primitives';
 
 /**
  * TODO 🐷
@@ -9,13 +9,18 @@ import { color, COLORS, css, CssValue, t } from './DEV.common';
  */
 
 export type DevChildCardProps = {
+  children?: React.ReactNode;
   bus: t.EventBus<any>;
   netbus: t.PeerNetbus<any>;
+  title?: string | JSX.Element;
   style?: CssValue;
+  width?: number;
+  minWidth?: number;
+  maxWidth?: number;
 };
 
 export const DevChildCard: React.FC<DevChildCardProps> = (props) => {
-  const { bus, netbus } = props;
+  const { bus, netbus, title = 'Untitled', minWidth, maxWidth, width } = props;
 
   /**
    * [Render]
@@ -24,12 +29,23 @@ export const DevChildCard: React.FC<DevChildCardProps> = (props) => {
     base: css({
       position: 'relative',
       Flex: 'x-stretch-stretch',
+      boxSizing: 'border-box',
+      width,
+      minWidth,
+      maxWidth,
     }),
-    card: css({
-      minWidth: 300,
-      flex: 1,
-      display: 'flex',
-    }),
+    titlebar: {
+      label: css({}),
+    },
+    card: css({ flex: 1, Flex: 'y-stretch-stretch' }),
+    main: css({ flex: 1, position: 'relative', Flex: 'y-stretch-stretch' }),
+    body: {
+      base: css({ flex: 1 }),
+      content: css({
+        Padding: [10, 15],
+        Flex: 'y-center-center',
+      }),
+    },
     divider: {
       base: css({ Flex: 'y-center-center', width: 30 }),
       bar: css({ width: '100%', borderTop: `solid 12px ${color.alpha(COLORS.DARK, 0.1)}` }),
@@ -38,14 +54,30 @@ export const DevChildCard: React.FC<DevChildCardProps> = (props) => {
 
   const elDivider = (
     <div {...styles.divider.base}>
-      <div {...styles.divider.bar}></div>
+      <div {...styles.divider.bar} />
     </div>
+  );
+
+  const elMain = (
+    <Card style={styles.card}>
+      <div {...styles.main}>
+        <Toolbar edge={'N'}>
+          <div {...styles.titlebar.label}>{title}</div>
+        </Toolbar>
+        <div {...styles.body.base}>
+          <div {...styles.body.content}>{props.children}</div>
+        </div>
+        <Toolbar edge={'S'}>
+          <div>footer</div>
+        </Toolbar>
+      </div>
+    </Card>
   );
 
   return (
     <div {...css(styles.base, props.style)}>
       {elDivider}
-      <NetbusCard netbus={netbus} style={styles.card} />
+      {elMain}
     </div>
   );
 };

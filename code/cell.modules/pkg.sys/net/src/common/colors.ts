@@ -7,4 +7,5 @@ export const COLORS = {
   CYAN_BLUE: '#00B2FF',
   MAGENTA: '#FE0064',
   PURPLE: '#8F2298',
+  YELLOW: '#FBC72F',
 };

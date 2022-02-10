@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { BulletList, color, css, CssValue, LocalPeerCard, t } from './DEV.common';
-import { PeerLabel } from '../PeerLabel';
+import { BulletList, color, css, CssValue, t } from './DEV.common';
+import { Label } from '../Label';
 
 export type DevNetworkBodyProps = {
   bus: t.EventBus<any>;
@@ -77,7 +77,7 @@ export const DevNetworkBody: React.FC<DevNetworkBodyProps> = (props) => {
           if (e.kind !== 'Default') return;
           const status = e.data as t.PeerConnectionStatus;
           const id = status.peer.remote.id;
-          const el = <PeerLabel id={id} style={{ marginLeft: 3 }} />;
+          const el = <Label.Peer id={id} style={{ marginLeft: 3 }} />;
           return el;
         },
       }}
@@ -93,7 +93,7 @@ export const DevNetworkBody: React.FC<DevNetworkBodyProps> = (props) => {
       {elDiv}
       <div {...styles.column}>
         <div {...styles.titlebar}>{'LOCAL'}</div>
-        <PeerLabel id={self} style={{ marginLeft: 10, marginBottom: 5 }} />
+        <Label.Peer id={self} style={{ marginLeft: 10, marginBottom: 5 }} />
         <div {...styles.hr} />
       </div>
       {elDivTraceEdges}

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { color, css, CssValue, Icons, t } from './DEV.common';
+import { Toolbar } from '../primitives';
 
 export type DevNetworkTitlebarProps = {
   bus: t.EventBus<any>;
@@ -11,21 +12,15 @@ export type DevNetworkTitlebarProps = {
 export const DevNetworkTitlebar: React.FC<DevNetworkTitlebarProps> = (props) => {
   const iconSize = 20;
 
-  const DISABLED = 0.4;
+  const DISABLED = 0.1;
   const ENABLED = 1;
 
   /**
    * [Render]
    */
   const styles = {
-    base: css({
-      boxSizing: 'border-box',
-      Flex: `x-spaceBetween-center`,
-      PaddingY: 8,
-      borderBottom: `solid 1px ${color.format(-0.08)}`,
-      backgroundColor: color.format(-0.03),
-    }),
-    title: css({ marginLeft: 15, color: color.format(-0.6) }),
+    base: css({ paddingLeft: 10 }),
+    title: css({}),
     icons: css({ Flex: 'x-center-center', marginRight: 10 }),
     icon: css({
       position: 'relative',
@@ -34,16 +29,14 @@ export const DevNetworkTitlebar: React.FC<DevNetworkTitlebarProps> = (props) => 
       ':last-child': { marginRight: 0 },
     }),
   };
-  return (
-    <div {...css(styles.base, props.style)}>
-      <div {...css(styles.title)}>
-        <span>{'Network Peer'}</span>
-      </div>
 
+  return (
+    <Toolbar style={css(styles.base, props.style)} edge={'N'}>
+      <div {...css(styles.title)}>{'Network Peer'}</div>
       <div {...styles.icons}>
         <Icons.FsNetworkDrive style={styles.icon} size={iconSize} opacity={DISABLED} />
         <Icons.Bus style={styles.icon} size={iconSize} opacity={ENABLED} />
       </div>
-    </div>
+    </Toolbar>
   );
 };

@@ -2,14 +2,18 @@ import React from 'react';
 import { DevActions, ObjectView, toObject } from 'sys.ui.dev';
 
 import { css, PeerNetwork, rx, t } from './DEV.common';
-import { DevSample } from './DEV.Sample';
+import { DevSample, DevSampleProps } from './DEV.Sample';
+import { DevNetworkConstants } from './DEV.Network';
 
 type Ctx = {
-  networks: t.PeerNetwork[];
+  props: DevSampleProps;
   debug: { background: boolean };
 };
 
-const SIGNAL_SERVER = 'rtc.cellfs.com';
+const DEFAULT = {
+  SIGNAL_SERVER: 'rtc.cellfs.com',
+  VIEW: 'Collection',
+};
 
 /**
  * Actions
@@ -19,7 +23,11 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
     const ctx: Ctx = {
-      networks: [],
+      props: {
+        // view: 'Collection',
+        view: DevNetworkConstants.DEFAULT.VIEW,
+        networks: [],
+      },
       debug: { background: false },
     };
     return ctx;
@@ -28,7 +36,7 @@ export const actions = DevActions<Ctx>()
   .init(async (e) => {
     const { ctx, bus } = e;
 
-    if (ctx.networks.length === 0) {
+    if (ctx.props.networks.length === 0) {
       await addNetwork(ctx);
       await addNetwork(ctx);
     }
@@ -37,21 +45,36 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Network Client');
 
+    e.select((config) => {
+      config
+        .view('buttons')
+        .title('view')
+        .items(DevNetworkConstants.VIEWS)
+        .initial(config.ctx.props.view)
+        .pipe((e) => {
+          if (e.changing) e.ctx.props.view = e.changing?.next[0].value;
+        });
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
     e.button('add', (e) => addNetwork(e.ctx));
 
     e.hr(1, 0.1);
     e.button('clear', (e) => {
       const ctx = e.ctx;
-      ctx.networks.forEach((net) => net.dispose());
-      ctx.networks = [];
+      ctx.props.networks.forEach((net) => net.dispose());
+      ctx.props.networks = [];
     });
 
     e.button('remove (last)', (e) => {
       const ctx = e.ctx;
-      const index = ctx.networks.length - 1;
-      const last = ctx.networks[index];
+      const index = ctx.props.networks.length - 1;
+      const last = ctx.props.networks[index];
       if (last) {
-        ctx.networks = ctx.networks.slice(0, index);
+        ctx.props.networks = ctx.props.networks.slice(0, index);
         last.dispose();
       }
     });
@@ -69,25 +92,30 @@ export const actions = DevActions<Ctx>()
 
     e.hr();
     e.component((e) => {
-      const { networks } = e.ctx;
-      const data = { networks };
-      return <ObjectView name={'state'} data={data} style={{ MarginX: 15 }} />;
+      return (
+        <ObjectView name={'props'} data={e.ctx.props} style={{ MarginX: 15 }} expandPaths={['$']} />
+      );
     });
   })
 
   .subject((e) => {
-    const { networks, debug } = e.ctx;
+    const { debug, props } = e.ctx;
+    const { networks = [] } = props;
     const isEmpty = networks.length === 0;
+
+    const view = props.view ?? DevNetworkConstants.DEFAULT.VIEW;
+    const isCollection = view === 'Collection';
+    const isUri = view === 'URI';
 
     e.settings({
       host: { background: -0.04 },
       layout: {
         cropmarks: -0.2,
-        position: [60, 40, 80, 40],
+        position: isCollection ? [60, 40, 80, 40] : undefined,
         background: debug.background ? 1 : 0,
-        label: {
+        label: !isUri && {
           topLeft: !isEmpty && 'Peer-to-Peer',
-          topRight: !isEmpty && `WebRTC Signal: "${SIGNAL_SERVER}"`,
+          bottomLeft: !isEmpty && `WebRTC Signal: "${DEFAULT.SIGNAL_SERVER}"`,
         },
       },
     });
@@ -98,14 +126,14 @@ export const actions = DevActions<Ctx>()
     const styles = {
       base: css({
         flex: 1,
-        Scroll: true,
+        Scroll: isCollection,
         Padding: debug.background ? [70, 45] : undefined,
       }),
     };
 
     e.render(
       <div {...styles.base}>
-        <DevSample networks={networks} />
+        <DevSample {...props} />
       </div>,
     );
   });
@@ -118,7 +146,7 @@ export default actions;
 
 async function addNetwork(ctx: Ctx) {
   const bus = rx.bus();
-  const signal = SIGNAL_SERVER;
+  const signal = DEFAULT.SIGNAL_SERVER;
   const network = await PeerNetwork.start({ bus, signal });
-  ctx.networks.push(network);
+  ctx.props.networks.push(network);
 }
