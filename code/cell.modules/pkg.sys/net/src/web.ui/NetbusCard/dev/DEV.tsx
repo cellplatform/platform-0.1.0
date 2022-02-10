@@ -6,10 +6,6 @@ import { PeerNetwork } from '../../../web.PeerNetwork';
 
 type Ctx = {
   props: NetbusCardProps;
-  debug: {
-    cardPadding?: t.CssEdgesInput;
-    showAsCard: boolean;
-  };
 };
 
 const SIGNAL_SERVER = 'rtc.cellfs.com';
@@ -23,10 +19,6 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
     const ctx: Ctx = {
       props: {} as any, // Hack 🐷
-      debug: {
-        cardPadding: undefined,
-        showAsCard: true,
-      },
     };
     return ctx;
   })
@@ -38,47 +30,15 @@ export const actions = DevActions<Ctx>()
     const network = await PeerNetwork.start({ bus, signal });
     const { netbus } = network;
 
-    ctx.props.netbus = netbus;
+    ctx.props = { showAsCard: true, netbus };
   })
 
   .items((e) => {
     e.title('Debug');
 
-    const updateShowAsCard = (ctx: Ctx) => {
-      const props = ctx.props;
-      const showAsCard = ctx.debug.showAsCard;
-
-      if (showAsCard === false) {
-        props.showAsCard = showAsCard;
-        return;
-      }
-
-      const padding = ctx.debug.cardPadding;
-      props.showAsCard = padding === undefined ? true : { padding };
-    };
-
     e.boolean('asCard', (e) => {
-      if (e.changing) e.ctx.debug.showAsCard = e.changing.next;
-      e.boolean.current = e.ctx.debug.showAsCard;
-      updateShowAsCard(e.ctx);
-    });
-
-    e.select((config) => {
-      config
-        .view('buttons')
-        .title('asCard { padding }')
-        .items(['tight', 'generous', '[undefined]'])
-        .initial('[undefined]')
-        .pipe((e) => {
-          if (e.changing) {
-            const value = e.changing?.next[0].value;
-            let padding: t.CssEdgesInput | undefined = undefined;
-            if (value === 'tight') padding = [10, 15];
-            if (value === 'generous') padding = 40;
-            e.ctx.debug.cardPadding = padding;
-          }
-          updateShowAsCard(e.ctx);
-        });
+      if (e.changing) e.ctx.props.showAsCard = e.changing.next;
+      e.boolean.current = e.ctx.props.showAsCard;
     });
 
     e.hr();

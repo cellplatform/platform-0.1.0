@@ -3,7 +3,7 @@ import { interval, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { useLocalPeer } from '../../web.hooks';
-import { Card, css, CssValue, Hr, PropList, Style, t } from '../common';
+import { Card, css, CssValue, Hr, PropList, t } from '../common';
 import { OpenConnectionInput } from '../OpenConnection.Input';
 import { LocalPeerCardConstants } from './constants';
 import { Connect, connect } from './LocalPeerCard.connect';
@@ -18,7 +18,7 @@ export type LocalPeerCardProps = {
   title?: string | null;
   fields?: k.LocalPeerCardFields[];
   openConnectionOptions?: OpenConnectionOptions;
-  showAsCard?: boolean | { padding?: t.CssEdgesInput };
+  showAsCard?: boolean;
   style?: CssValue;
 };
 
@@ -31,8 +31,8 @@ const View: V = (props) => {
     bus,
     self,
     openConnectionOptions: newConnections = false,
-    showAsCard = false,
     fields = LocalPeerCardConstants.DEFAULT.FIELDS,
+    showAsCard = false,
   } = props;
   const title = props.title === null ? undefined : props.title ?? 'Network';
 
@@ -90,15 +90,11 @@ const View: V = (props) => {
     </>
   );
 
-  if (showAsCard) {
-    const padding =
-      typeof showAsCard === 'object'
-        ? { ...Style.toPadding(showAsCard.padding) }
-        : { Padding: [18, 20, 15, 20] };
-    return <Card style={css(styles.base, padding, props.style)}>{elBody}</Card>;
-  } else {
-    return <div {...css(styles.base, props.style)}>{elBody}</div>;
-  }
+  return (
+    <Card style={css(styles.base, props.style)} padding={[18, 20, 15, 20]} showAsCard={showAsCard}>
+      {elBody}
+    </Card>
+  );
 };
 
 /**
