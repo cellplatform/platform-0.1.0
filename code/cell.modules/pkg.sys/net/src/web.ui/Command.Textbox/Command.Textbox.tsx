@@ -41,9 +41,8 @@ export const CommandTextbox: React.FC<CommandTextboxProps> = (props) => {
   const isDark = theme === 'Dark';
 
   const COL_BASE = isDark ? COLORS.WHITE : COLORS.DARK;
-  const COL_HIGHLIGHT = isDark ? COLORS.WHITE : COLORS.BLUE;
+  const COL_HIGHLIGHT = isDark ? COLORS.WHITE : COLORS.DARK;
   const COL_ICON = {
-    EMPTY: isInvokable ? COL_HIGHLIGHT : isDark ? COL_BASE : color.alpha(COL_BASE, 0.8),
     PENDING: Boolean(input && !pending) ? COL_HIGHLIGHT : color.alpha(COL_BASE, 0.8),
     TERMINAL: isDark ? COLORS.WHITE : color.alpha(COL_BASE, 0.5),
   };
@@ -88,8 +87,7 @@ export const CommandTextbox: React.FC<CommandTextboxProps> = (props) => {
     <Icons.Terminal color={COL_ICON.TERMINAL} style={styles.left.icon} size={20} />
   );
   const elArrow = <Icons.Arrow.Forward size={20} color={COL_ICON.PENDING} />;
-  const elKeyboard = <Icons.Keyboard size={20} color={COL_ICON.EMPTY} />;
-  const elIcon = input ? elArrow : elKeyboard;
+  const elIcon = input && pending ? elArrow : undefined;
 
   const elRight = (
     <Button isEnabled={isInvokable}>
