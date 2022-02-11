@@ -36,13 +36,17 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Debug');
 
-    e.boolean('asCard', (e) => {
+    e.boolean('showAsCard', (e) => {
       if (e.changing) e.ctx.props.showAsCard = e.changing.next;
       e.boolean.current = e.ctx.props.showAsCard;
     });
 
-    e.hr();
+    e.button('fire', (e) => {
+      const netbus = e.ctx.props.netbus;
+      netbus.fire({ type: 'Foo', payload: { msg: 123 } });
+    });
 
+    e.hr();
     e.component((e) => {
       const data = e.ctx.props;
       return <ObjectView name={'props'} data={data} style={{ MarginX: 15 }} fontSize={11} />;
@@ -55,6 +59,7 @@ export const actions = DevActions<Ctx>()
       layout: {
         label: '<NetbusCard>',
         cropmarks: -0.2,
+        height: 300,
       },
     });
     e.render(<NetbusCard {...e.ctx.props} />);
