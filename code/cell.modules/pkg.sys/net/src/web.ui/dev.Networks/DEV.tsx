@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
-import { DevConstants, css, t, PeerNetwork, rx } from './DEV.common';
+import { color, DevConstants, css, t, PeerNetwork, rx } from './DEV.common';
 import { DevSample, DevSampleProps } from './DEV.Sample';
 
 type Ctx = {
@@ -14,7 +14,7 @@ const DEFAULT = {
   VIEW: 'Collection',
 };
 
-const CHILD_TYPES: t.DevChildKind[] = ['None', 'Netbus', 'Crdt'];
+const CHILD_TYPES: t.DevChildKind[] = ['None', 'Netbus', 'Crdt', 'Filesystem'];
 
 /**
  * Actions
@@ -26,7 +26,8 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       props: {
         // view: DevNetworkConstants.DEFAULT.VIEW,
-        view: 'Singular',
+        // view: 'Collection',
+        view: 'Single',
         child: 'Crdt',
         networks: [],
       },
@@ -109,8 +110,23 @@ export const actions = DevActions<Ctx>()
 
     e.hr();
     e.component((e) => {
+      const obj = (name: string, data: any) => {
+        return <ObjectView name={name} data={data} style={{ MarginX: 15 }} expandPaths={['$']} />;
+      };
+
+      const styles = {
+        div: css({ height: 1, Margin: [15, 0], backgroundColor: 'rgba(255, 0, 0, 0.1)' }),
+      };
+
+      const network = e.ctx.props.view === 'Single' ? e.ctx.props.networks[0] : undefined;
+      const divider = <div {...styles.div} />;
+
       return (
-        <ObjectView name={'props'} data={e.ctx.props} style={{ MarginX: 15 }} expandPaths={['$']} />
+        <div>
+          {obj('props', e.ctx.props)}
+          {network && divider}
+          {network && obj('network[0]', network)}
+        </div>
       );
     });
   })
@@ -129,7 +145,7 @@ export const actions = DevActions<Ctx>()
       layout: {
         cropmarks: -0.2,
         position: isCollection ? [60, 40, 80, 40] : undefined,
-        background: debug.background ? 1 : 0,
+        background: debug.background || isCollection ? -0.1 : 0,
         label: !isUri && {
           topLeft: !isEmpty && 'Peer-to-Peer',
           bottomLeft: !isEmpty && `WebRTC Signal: "${DEFAULT.SIGNAL_SERVER}"`,
@@ -144,7 +160,7 @@ export const actions = DevActions<Ctx>()
       base: css({
         flex: 1,
         Scroll: isCollection,
-        Padding: debug.background ? [70, 45] : undefined,
+        Padding: debug.background || isCollection ? [70, 45] : undefined,
       }),
     };
 

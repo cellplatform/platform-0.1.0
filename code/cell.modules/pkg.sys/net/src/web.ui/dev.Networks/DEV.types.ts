@@ -3,5 +3,5 @@ export * from '../../common/types';
 /**
  * Views
  */
-export type DevViewKind = 'URI' | 'Singular' | 'Collection';
-export type DevChildKind = 'None' | 'Netbus' | 'Crdt';
+export type DevViewKind = 'URI' | 'Single' | 'Collection';
+export type DevChildKind = 'None' | 'Netbus' | 'Crdt' | 'Filesystem';

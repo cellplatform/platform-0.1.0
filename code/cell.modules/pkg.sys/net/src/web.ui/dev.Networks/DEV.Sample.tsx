@@ -1,7 +1,7 @@
 import React from 'react';
-import { NetbusCard } from '../NetbusCard';
 
 import { Label } from '../Label';
+import { NetbusCard } from '../NetbusCard';
 import {
   BulletList,
   color,
@@ -12,8 +12,9 @@ import {
   NetworkCard,
   t,
 } from './DEV.common';
-import { DevEmpty } from './DEV.Empty';
 import { DevCrdtCard } from './DEV.CrdtCard';
+import { DevEmpty } from './DEV.Empty';
+import { DevFsCard } from './DEV.FsCard';
 
 export type DevSampleProps = {
   networks: t.PeerNetwork[];
@@ -84,13 +85,13 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
           const data = e.data as D;
           const { network } = data;
           const { netbus } = network;
-          const styles = {
-            child: css({ flex: 1 }),
-          };
 
+          const style = css({ flex: 1 });
           let elChild: undefined | JSX.Element;
-          if (child === 'Netbus') elChild = <NetbusCard netbus={netbus} style={styles.child} />;
-          if (child === 'Crdt') elChild = <DevCrdtCard netbus={netbus} style={styles.child} />;
+
+          if (child === 'Netbus') elChild = <NetbusCard netbus={netbus} style={style} />;
+          if (child === 'Crdt') elChild = <DevCrdtCard netbus={netbus} style={style} />;
+          if (child === 'Filesystem') elChild = <DevFsCard network={network} style={style} />;
 
           return <NetworkCard key={e.index} network={network} child={elChild} />;
         },

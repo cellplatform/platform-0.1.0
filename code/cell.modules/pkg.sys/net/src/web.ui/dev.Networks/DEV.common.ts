@@ -20,7 +20,7 @@ export { t };
 /**
  * Constants
  */
-export const VIEWS: t.DevViewKind[] = ['URI', 'Singular', 'Collection'];
+export const VIEWS: t.DevViewKind[] = ['URI', 'Single', 'Collection'];
 const VIEW: t.DevViewKind = 'Collection';
 const DEFAULT = { VIEW };
 export const DevConstants = { VIEWS, DEFAULT };
