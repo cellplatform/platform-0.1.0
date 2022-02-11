@@ -13,5 +13,5 @@ export { PeerNetwork } from '../web.PeerNetwork';
  * Constants
  */
 export const TEST = {
-  SIGNAL: 'rtc.cellfs.com', // Test "signal server" connection coordination end-point.
+  SIGNAL: 'rtc.cellfs.com', // WebRTC "signal server" connection coordination end-point.
 };

@@ -44,7 +44,7 @@ export const NetworkCard: React.FC<NetworkCardProps> = (props) => {
     <Card style={styles.rootCard}>
       <CardBody header={elHeader}>
         <NetworkCardBody self={self} bus={bus} peers={peers} status={status} style={styles.fill} />
-        <NetworkCardFooter self={self} bus={bus} netbus={netbus} />
+        <NetworkCardFooter network={network} />
       </CardBody>
     </Card>
   );

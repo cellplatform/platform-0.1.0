@@ -1,5 +1,5 @@
 import React from 'react';
-import { DevActions, ObjectView, TEST, PeerNetwork } from '../../../test';
+import { css, DevActions, ObjectView, TEST, PeerNetwork, COLORS } from '../../../test';
 import { CommandBar, CommandBarProps } from '..';
 
 type Ctx = { props: CommandBarProps };
@@ -23,10 +23,13 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('Dev');
+    e.title('Debug');
+
+    e.button('netbus.fire', (e) => {
+      e.ctx.props.network?.netbus.fire({ type: 'FOO/event', payload: { count: 123 } });
+    });
 
     e.hr();
-
     e.component((e) => {
       const data = e.ctx.props;
       return <ObjectView name={'props'} data={data} style={{ MarginX: 15 }} fontSize={10} />;
@@ -34,17 +37,29 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    const { network } = e.ctx.props;
+
     e.settings({
-      host: { background: -0.04 },
+      host: { background: COLORS.DARK },
       layout: {
         label: '<CommandBar>',
-        position: [150, 80],
+        width: 600,
+        height: 38,
         border: -0.1,
         cropmarks: -0.2,
-        background: 1,
+        labelColor: 0.6,
       },
     });
-    e.render(<CommandBar {...e.ctx.props} />);
+
+    e.render(
+      network && (
+        <CommandBar
+          {...e.ctx.props}
+          style={{ flex: 1 }}
+          onAction={(e) => console.log('onAction:', e)}
+        />
+      ),
+    );
   });
 
 export default actions;

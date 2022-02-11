@@ -5,14 +5,19 @@ import { TextInput, color, COLORS, css, CssValue, Icons, Button, Spinner } from 
  * Types
  */
 export type CommandTextboxTheme = 'Dark' | 'Light';
+
 export type CommandTextboxActionEvent = { text: string };
 export type CommandTextboxActionEventHandler = (e: CommandTextboxActionEvent) => void;
+
+export type CommandTextboxChangeEvent = { text: string };
+export type CommandTextboxChangeEventHandler = (e: CommandTextboxChangeEvent) => void;
 
 export type CommandTextboxProps = {
   placeholder?: string;
   spinner?: boolean;
   theme?: CommandTextboxTheme;
   style?: CssValue;
+  onChange?: CommandTextboxChangeEventHandler;
   onAction?: CommandTextboxActionEventHandler;
 };
 
@@ -109,8 +114,10 @@ export const CommandTextbox: React.FC<CommandTextboxProps> = (props) => {
         spellCheck={false}
         selectOnFocus={true}
         onChange={(e) => {
-          setText(e.to);
+          const text = e.to;
+          setText(text);
           setPending(true);
+          props.onChange?.({ text });
         }}
         onEnter={() => {
           const text = input;
