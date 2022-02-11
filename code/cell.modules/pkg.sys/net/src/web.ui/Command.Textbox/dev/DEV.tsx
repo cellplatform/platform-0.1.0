@@ -22,6 +22,7 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       self: '<CUID>',
       props: {
+        spinner: false,
         theme: 'Dark',
         // theme: 'Light',
         // theme: CONST.DEFAULT.THEME,
@@ -42,7 +43,12 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('Debug');
+    e.title('Props');
+
+    e.boolean('spinner', (e) => {
+      if (e.changing) e.ctx.props.spinner = e.changing.next;
+      e.boolean.current = e.ctx.props.spinner;
+    });
 
     e.select((config) => {
       config
@@ -54,6 +60,12 @@ export const actions = DevActions<Ctx>()
           if (e.changing) e.ctx.props.theme = e.changing?.next[0].value;
         });
     });
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Debug');
 
     e.hr();
     e.component((e) => {
@@ -75,9 +87,7 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    e.render(
-      <CommandTextbox {...e.ctx.props} onAction={(e) => console.log('onConnectRequest', e)} />,
-    );
+    e.render(<CommandTextbox {...e.ctx.props} onAction={(e) => console.log('onAction:', e)} />);
   });
 
 export default actions;

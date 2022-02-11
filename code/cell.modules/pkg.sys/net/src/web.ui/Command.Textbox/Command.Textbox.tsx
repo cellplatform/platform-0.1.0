@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-
-import { TextInput, color, COLORS, css, CssValue, Icons, t, Button } from '../common';
+import { TextInput, color, COLORS, css, CssValue, Icons, Button, Spinner } from '../common';
 
 /**
  * Types
@@ -11,6 +10,7 @@ export type CommandTextboxActionEventHandler = (e: CommandTextboxActionEvent) =>
 
 export type CommandTextboxProps = {
   placeholder?: string;
+  spinner?: boolean;
   theme?: CommandTextboxTheme;
   style?: CssValue;
   onAction?: CommandTextboxActionEventHandler;
@@ -31,7 +31,7 @@ export const OpenConnectionInputConstants = { DEFAULT, THEMES };
  * Component
  */
 export const CommandTextbox: React.FC<CommandTextboxProps> = (props) => {
-  const { theme = 'Light' } = props;
+  const { theme = 'Light', spinner } = props;
 
   const [pending, setPending] = useState(false);
   const [text, setText] = useState('');
@@ -70,6 +70,7 @@ export const CommandTextbox: React.FC<CommandTextboxProps> = (props) => {
       }),
     },
     left: {
+      base: css({}),
       icon: css({ position: 'relative', top: -2, marginRight: 4 }),
     },
     right: {
@@ -83,17 +84,19 @@ export const CommandTextbox: React.FC<CommandTextboxProps> = (props) => {
     },
   };
 
-  const elIconTerminal = (
-    <Icons.Terminal color={COL_ICON.TERMINAL} style={styles.left.icon} size={20} />
+  const elLeft = (
+    <div {...styles.left.base}>
+      <Icons.Terminal color={COL_ICON.TERMINAL} style={styles.left.icon} size={20} />
+    </div>
   );
-  const elArrow = <Icons.Arrow.Forward size={20} color={COL_ICON.PENDING} />;
-  const elIcon = input && pending ? elArrow : undefined;
 
-  const elRight = (
+  const elSpinner = spinner && <Spinner size={22} color={isDark ? COLORS.WHITE : COLORS.DARK} />;
+  const elIcon = input && pending && !elSpinner && (
     <Button isEnabled={isInvokable}>
-      <div {...styles.right.base}>{elIcon}</div>
+      <Icons.Arrow.Forward size={20} color={COL_ICON.PENDING} />
     </Button>
   );
+  const elRight = <div {...styles.right.base}>{elSpinner || elIcon}</div>;
 
   const elTextbox = (
     <div {...styles.textbox.base}>
@@ -120,7 +123,7 @@ export const CommandTextbox: React.FC<CommandTextboxProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
-      {elIconTerminal}
+      {elLeft}
       {elTextbox}
       {elRight}
     </div>

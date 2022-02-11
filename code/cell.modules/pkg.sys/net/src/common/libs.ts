@@ -38,6 +38,7 @@ export { Card } from 'sys.ui.primitives/lib/ui/Card';
 export { BulletList } from 'sys.ui.primitives/lib/ui/BulletList';
 export { Text } from 'sys.ui.primitives/lib/ui/Text';
 export { ObjectView } from 'sys.ui.primitives/lib/ui/ObjectView';
+export { Spinner } from 'sys.ui.primitives/lib/ui.ref/spinner/Spinner';
 
 export {
   EventStack,
