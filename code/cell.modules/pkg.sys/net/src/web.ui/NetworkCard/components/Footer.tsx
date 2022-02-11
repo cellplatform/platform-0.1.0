@@ -43,10 +43,10 @@ export const NetworkCardFooter: React.FC<NetworkCardFooterProps> = (props) => {
    */
   useEffect(() => {
     const dispose$ = new Subject<void>();
-    const change$ = netbus.$.pipe(takeUntil(dispose$));
+    const netbus$ = netbus.$.pipe(takeUntil(dispose$));
 
-    change$.subscribe(() => setRecentlyFired(true));
-    change$.pipe(debounceTime(1500)).subscribe(() => setRecentlyFired(false));
+    netbus$.subscribe(() => setRecentlyFired(true));
+    netbus$.pipe(debounceTime(1500)).subscribe(() => setRecentlyFired(false));
 
     return () => dispose$.next();
   }, []); // eslint-disable-line
@@ -95,7 +95,6 @@ export const NetworkCardFooter: React.FC<NetworkCardFooterProps> = (props) => {
       events={history.events}
       style={styles.right.pipe}
       theme={'Dark'}
-      // traceline={{ offset: 10, opacity: 0.1 }}
       onEventClick={(item) => {
         console.log('event', item.event);
       }}

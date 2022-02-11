@@ -1,14 +1,11 @@
 import React from 'react';
-import { DevActions, ObjectView } from 'sys.ui.dev';
+import { DevActions, ObjectView, TEST } from '../../../test';
 import { NetbusCard, NetbusCardProps } from '..';
-import { t } from '../../common';
 import { PeerNetwork } from '../../../web.PeerNetwork';
 
 type Ctx = {
   props: NetbusCardProps;
 };
-
-const SIGNAL_SERVER = 'rtc.cellfs.com';
 
 /**
  * Actions
@@ -25,11 +22,9 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx, bus } = e;
-
-    const signal = SIGNAL_SERVER;
+    const signal = TEST.SIGNAL;
     const network = await PeerNetwork.start({ bus, signal });
     const { netbus } = network;
-
     ctx.props = { showAsCard: true, netbus };
   })
 

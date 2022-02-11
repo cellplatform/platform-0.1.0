@@ -1,6 +1,6 @@
 import React from 'react';
 import { WebRuntime } from 'sys.runtime.web';
-import { DevActions, LocalStorage, ObjectView, toObject } from 'sys.ui.dev';
+import { DevActions, LocalStorage, ObjectView, toObject, TEST } from '../../test';
 
 import {
   css,
@@ -65,7 +65,7 @@ const showLayout = (ctx: Ctx, kind: t.DevGroupLayout['kind'], props?: O) => {
 };
 
 const DEFAULT = {
-  signal: 'rtc.cellfs.com',
+  signal: TEST.SIGNAL,
   fs: 'dev.net.fs',
 };
 

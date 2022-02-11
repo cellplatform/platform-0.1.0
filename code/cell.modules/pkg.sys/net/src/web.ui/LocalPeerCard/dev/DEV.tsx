@@ -1,5 +1,5 @@
 import React from 'react';
-import { DevActions, lorem, ObjectView } from 'sys.ui.dev';
+import { DevActions, lorem, ObjectView, TEST } from '../../../test';
 
 import { LocalPeerCard, LocalPeerCardConstants, LocalPeerCardProps } from '..';
 import { PeerNetwork } from '../../..';
@@ -29,7 +29,7 @@ export const actions = DevActions<Ctx>()
   .init(async (e) => {
     const { ctx, bus } = e;
 
-    const signal = 'rtc.cellfs.com';
+    const signal = TEST.SIGNAL;
     const network = (ctx.network = await PeerNetwork.start({ bus, signal }));
     const { self } = network.netbus;
 

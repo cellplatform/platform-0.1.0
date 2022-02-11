@@ -1,5 +1,5 @@
 import React from 'react';
-import { DevActions, ObjectView } from 'sys.ui.dev';
+import { DevActions, ObjectView, TEST } from '../../../test';
 import { CommandTextbox, CommandTextboxProps, OpenConnectionInputConstants } from '..';
 import { t, COLORS } from '../../common';
 import { PeerNetwork } from '../../..';
@@ -34,7 +34,7 @@ export const actions = DevActions<Ctx>()
   .init(async (e) => {
     const { ctx, bus } = e;
 
-    const signal = 'rtc.cellfs.com';
+    const signal = TEST.SIGNAL;
     const network = (ctx.network = await PeerNetwork.start({ bus, signal }));
     const { self } = network.netbus;
 

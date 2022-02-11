@@ -1,9 +1,7 @@
-import { expect, Test } from 'sys.ui.dev';
-
+import { expect, Test, cuid, rx, TEST } from '../test';
 import { PeerNetwork } from '.';
-import { cuid, rx } from './common';
 
-const signal = 'rtc.cellfs.com';
+const signal = TEST.SIGNAL;
 
 export default Test.describe('PeerNetwork', (e) => {
   e.describe('start', (e) => {

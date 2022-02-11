@@ -1,5 +1,5 @@
 import React from 'react';
-import { DevActions, ObjectView } from 'sys.ui.dev';
+import { DevActions, ObjectView, TEST } from '../../test';
 
 import { color, DevConstants, css, t, PeerNetwork, rx } from './DEV.common';
 import { DevSample, DevSampleProps } from './DEV.Sample';
@@ -10,7 +10,7 @@ type Ctx = {
 };
 
 const DEFAULT = {
-  SIGNAL_SERVER: 'rtc.cellfs.com',
+  SIGNAL_SERVER: TEST.SIGNAL,
   VIEW: 'Collection',
 };
 
