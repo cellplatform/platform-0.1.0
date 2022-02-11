@@ -4,7 +4,7 @@ import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
 const Imports = {
   PeerNetwork: import('../../web.PeerNetwork/PeerNetwork.TEST'),
-  PeerNetworkUri: import('../../web.PeerNetwork/common/util.Uri.TEST'),
+  PeerNetworkUri: import('../../common/util.Uri.TEST'),
   PeerNetbus: import('../../web.PeerNetbus/PeerNetbus.TEST'),
   PeerEvents: import('../../web.PeerNetwork.events/PeerEvents.TEST'),
   PeerStrategy: import('../../web.PeerNetwork/strategy/PeerStrategy/PeerStrategy.TEST'),
@@ -21,7 +21,7 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     e.ctx.results = await Test.run(Object.values(Imports));
-    // e.ctx.results = await Test.run(Imports.PeerNetwork);
+    // e.ctx.results = await Test.run(Imports.PeerNetworkUri);
   })
 
   .items((e) => {

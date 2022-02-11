@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { OpenConnectionInput } from '../../OpenConnection.Input';
+import { CommandTextbox } from '../../Command.Textbox';
 import {
   color,
   COLORS,
@@ -31,10 +31,10 @@ export const NetworkCardFooter: React.FC<NetworkCardFooterProps> = (props) => {
   /**
    * Initiate a new connection.
    */
-  const startConnection = (args: { remote: t.PeerId }) => {
+  const startConnection = (command: string) => {
     const isReliable = true;
     const autoStartVideo = true;
-    const { remote } = args;
+    const remote = command;
     return LocalPeerCard.connect({ bus, remote, self, isReliable, autoStartVideo });
   };
 
@@ -105,7 +105,7 @@ export const NetworkCardFooter: React.FC<NetworkCardFooterProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.left}>
-        <OpenConnectionInput onConnectRequest={startConnection} theme={'Dark'} />
+        <CommandTextbox onAction={(e) => startConnection(e.text)} theme={'Dark'} />
       </div>
       <div {...styles.right.base}>
         <div {...styles.right.pipe}>{elPipe}</div>

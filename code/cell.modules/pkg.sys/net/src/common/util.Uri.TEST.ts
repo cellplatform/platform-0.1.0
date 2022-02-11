@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { Test } from 'sys.ui.dev';
 import { UriUtil } from '.';
 
-export default Test.describe('PeerNetwork URI', (e) => {
+export default Test.describe('PeerNetworkUri', (e) => {
   e.describe('is', (e) => {
     e.it('is.peer', () => {
       const test = (input: any, expected: boolean) => {
@@ -41,6 +41,23 @@ export default Test.describe('PeerNetwork URI', (e) => {
     e.it('create', () => {
       const res = UriUtil.peer.create('  foo  ');
       expect(res).to.eql('peer:foo');
+    });
+
+    e.it('trimPrefix', () => {
+      const test = (input: any, expected: string) => {
+        const res = UriUtil.peer.trimPrefix(input);
+        expect(res).to.eql(expected);
+      };
+
+      test(undefined, '');
+      test(null, '');
+      test({}, '');
+      test(123, '');
+
+      test('abc', 'abc');
+      test('  abc  ', 'abc');
+      test('peer:abc', 'abc');
+      test('   peer:abc   ', 'abc');
     });
 
     e.describe('parse', (e) => {

@@ -1,39 +1,36 @@
 import React, { useState } from 'react';
 
-import { TextInput, color, COLORS, css, CssValue, Icons, t, Textbox, Button } from '../common';
+import { TextInput, color, COLORS, css, CssValue, Icons, t, Button } from '../common';
 
 /**
  * Types
  */
-export type OpenConnectionInputTheme = 'Dark' | 'Light';
-export type ConnectRequestEvent = { remote: t.PeerId };
-export type ConnectRequestEventHandler = (e: ConnectRequestEvent) => void;
+export type CommandTextboxTheme = 'Dark' | 'Light';
+export type CommandTextboxActionEvent = { text: string };
+export type CommandTextboxActionEventHandler = (e: CommandTextboxActionEvent) => void;
 
-export type OpenConnectionInputProps = {
+export type CommandTextboxProps = {
   placeholder?: string;
-  theme?: OpenConnectionInputTheme;
+  theme?: CommandTextboxTheme;
   style?: CssValue;
-  onConnectRequest?: ConnectRequestEventHandler;
+  onAction?: CommandTextboxActionEventHandler;
 };
 
 /**
  * Constants
  */
-const THEMES: OpenConnectionInputTheme[] = ['Light', 'Dark'];
-const DEFAULT_THEME: OpenConnectionInputTheme = 'Light';
+const THEMES: CommandTextboxTheme[] = ['Light', 'Dark'];
+const DEFAULT_THEME: CommandTextboxTheme = 'Light';
 const DEFAULT = {
   THEME: DEFAULT_THEME,
-  PLACEHOLDER: 'connect to peer',
+  PLACEHOLDER: 'command',
 };
-export const OpenConnectionInputConstants = {
-  DEFAULT,
-  THEMES,
-};
+export const OpenConnectionInputConstants = { DEFAULT, THEMES };
 
 /**
  * Component
  */
-export const OpenConnectionInput: React.FC<OpenConnectionInputProps> = (props) => {
+export const CommandTextbox: React.FC<CommandTextboxProps> = (props) => {
   const { theme = 'Light' } = props;
 
   const [pending, setPending] = useState(false);
@@ -101,30 +98,32 @@ export const OpenConnectionInput: React.FC<OpenConnectionInputProps> = (props) =
   );
 
   const elTextbox = (
-    <TextInput
-      style={styles.textbox.input}
-      value={text}
-      placeholder={props.placeholder ?? DEFAULT.PLACEHOLDER}
-      valueStyle={{ color: COL_TEXT.VALUE, fontSize: 12 }}
-      placeholderStyle={{ italic: true, color: COL_TEXT.PLACEHOLDER }}
-      spellCheck={false}
-      selectOnFocus={true}
-      onChange={(e) => {
-        setText(e.to);
-        setPending(true);
-      }}
-      onEnter={() => {
-        const remote = text.trim().replace(/^peer\:/, '');
-        props.onConnectRequest?.({ remote });
-        setPending(false);
-      }}
-    />
+    <div {...styles.textbox.base}>
+      <TextInput
+        style={styles.textbox.input}
+        value={text}
+        placeholder={props.placeholder ?? DEFAULT.PLACEHOLDER}
+        valueStyle={{ color: COL_TEXT.VALUE, fontSize: 12 }}
+        placeholderStyle={{ italic: true, color: COL_TEXT.PLACEHOLDER }}
+        spellCheck={false}
+        selectOnFocus={true}
+        onChange={(e) => {
+          setText(e.to);
+          setPending(true);
+        }}
+        onEnter={() => {
+          const text = input;
+          if (text) props.onAction?.({ text });
+          setPending(false);
+        }}
+      />
+    </div>
   );
 
   return (
     <div {...css(styles.base, props.style)}>
       {elIconTerminal}
-      <div {...styles.textbox.base}>{elTextbox}</div>
+      {elTextbox}
       {elRight}
     </div>
   );

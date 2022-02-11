@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { useLocalPeer } from '../../web.hooks';
 import { Card, css, CssValue, Hr, PropList, t } from '../common';
-import { OpenConnectionInput } from '../OpenConnection.Input';
+import { CommandTextbox } from '../Command.Textbox';
 import { LocalPeerCardConstants } from './constants';
 import { Connect, connect } from './LocalPeerCard.connect';
 import { toItems } from './LocalPeerCard.toItems';
@@ -58,11 +58,11 @@ const View: V = (props) => {
   /**
    * Initiate a new connection.
    */
-  const startConnection = async (args: { remote: t.PeerId }) => {
+  const startConnection = async (command: string) => {
     type O = OpenConnectionOptions;
     const options: O = typeof newConnections === 'object' ? newConnections : { isReliable: true };
     const { isReliable, autoStartVideo } = options;
-    const { remote } = args;
+    const remote = command;
     connect({ bus, remote, self, isReliable, autoStartVideo });
   };
 
@@ -75,7 +75,11 @@ const View: V = (props) => {
   };
 
   const elConnect = fields.includes('Connection.Open') && (
-    <OpenConnectionInput style={styles.textbox} onConnectRequest={startConnection} />
+    <CommandTextbox
+      style={styles.textbox}
+      placeholder={'open connection'}
+      onAction={(e) => startConnection(e.text)}
+    />
   );
 
   const elConnectHr = elConnect && fields.length > 1 && (

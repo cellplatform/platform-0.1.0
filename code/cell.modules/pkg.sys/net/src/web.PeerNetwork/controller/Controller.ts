@@ -1,21 +1,22 @@
 import { merge } from 'rxjs';
 import { delay, distinctUntilChanged, filter, map, take } from 'rxjs/operators';
 
+import { PeerEvents } from '../../web.PeerNetwork.events';
 import {
+  DEFAULT,
   defaultValue,
+  MediaStreamUtil,
   PeerJS,
   PeerJsUtil,
   R,
   rx,
   slug,
-  MediaStreamUtil,
   StringUtil,
   t,
   time,
   WebRuntime,
-  DEFAULT,
+  UriUtil,
 } from '../common';
-import { PeerEvents } from '../../web.PeerNetwork.events';
 import { MemoryRefs, SelfRef } from './Refs';
 import { Status } from './Status';
 
@@ -279,12 +280,12 @@ export function Controller(args: { bus: t.EventBus<any> }): t.PeerController {
   rx.payload<t.PeerConnectReqEvent>($, 'sys.net/peer/conn/connect:req')
     .pipe(filter((e) => e.direction === 'outgoing'))
     .subscribe(async (e) => {
-      const { remote } = e;
       const self = refs.self[e.self];
       const tx = e.tx || slug();
       const module = { name: WebRuntime.module.name, version: WebRuntime.module.version };
       const userAgent = navigator.userAgent;
       const parent = e.parent;
+      const remote = UriUtil.peer.trimPrefix(e.remote);
 
       const fire = (payload?: Partial<t.PeerConnectRes>) => {
         const existing = Boolean(payload?.existing);

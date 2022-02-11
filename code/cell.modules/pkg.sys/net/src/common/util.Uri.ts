@@ -41,6 +41,10 @@ export const UriUtil = {
 
       return uri;
     },
+
+    trimPrefix(input: any) {
+      return typeof input === 'string' ? input.trim().replace(/^peer\:/, '') : '';
+    },
   },
 
   /**

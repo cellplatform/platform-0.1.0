@@ -8,7 +8,7 @@ const imports = {
   LocalPeerCard: import('./web.ui/LocalPeerCard/dev/DEV'),
   NetbusCard: import('./web.ui/NetbusCard/dev/DEV'),
   Label: import('./web.ui/Label/dev/DEV'),
-  OpenConnectionInput: import('./web.ui/OpenConnection.Input/dev/DEV'),
+  CommandTextbox: import('./web.ui/Command.Textbox/dev/DEV'),
   Networks: import('./web.ui/dev.Networks/DEV'),
   UnitTests: import('./web.ui/dev/DEV.UnitTests'),
   SamplePeerNetwork: import('./web.PeerNetwork/dev/DEV'),

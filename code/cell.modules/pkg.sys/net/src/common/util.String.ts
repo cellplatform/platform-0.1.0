@@ -1,4 +1,3 @@
-import { defaultValue } from '../../common';
 import * as t from './types';
 
 /**
@@ -42,7 +41,7 @@ export const StringUtil = {
 
   truncate(value: string, options: { edge?: number; divider?: string } = {}) {
     const { divider = '...' } = options;
-    const edge = defaultValue(options.edge, 8);
+    const edge = options.edge ?? 8;
     const left = value.substring(0, edge);
     const right = value.substring(value.length - edge);
     return `${left}${divider}${right}`;

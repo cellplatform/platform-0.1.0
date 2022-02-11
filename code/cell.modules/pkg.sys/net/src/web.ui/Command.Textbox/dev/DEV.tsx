@@ -1,6 +1,6 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { OpenConnectionInput, OpenConnectionInputProps, OpenConnectionInputConstants } from '..';
+import { CommandTextbox, CommandTextboxProps, OpenConnectionInputConstants } from '..';
 import { t, COLORS } from '../../common';
 import { PeerNetwork } from '../../..';
 
@@ -9,14 +9,14 @@ const CONST = OpenConnectionInputConstants;
 type Ctx = {
   self: t.PeerId;
   network?: t.PeerNetwork;
-  props: OpenConnectionInputProps;
+  props: CommandTextboxProps;
 };
 
 /**
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.OpenConnection.Input')
+  .namespace('ui.Command.Textbox')
   .context((e) => {
     if (e.prev) return e.prev;
     const ctx: Ctx = {
@@ -76,10 +76,7 @@ export const actions = DevActions<Ctx>()
     });
 
     e.render(
-      <OpenConnectionInput
-        {...e.ctx.props}
-        onConnectRequest={(e) => console.log('onConnectRequest', e)}
-      />,
+      <CommandTextbox {...e.ctx.props} onAction={(e) => console.log('onConnectRequest', e)} />,
     );
   });
 
