@@ -60,6 +60,7 @@ export type PeerEvents = t.Disposable & {
     remote: t.PeerId,
   ): {
     self: t.PeerId;
+    remote: t.PeerId;
     connected$: t.Observable<t.PeerConnectRes>;
     disconnected$: t.Observable<t.PeerDisconnectRes>;
     open: {
@@ -73,6 +74,7 @@ export type PeerEvents = t.Disposable & {
       ): Promise<t.PeerConnectRes>;
     };
     close(connection: t.PeerConnectionId): Promise<t.PeerDisconnectRes>;
+    isConnected(): Promise<boolean>;
   };
 
   connections(self: t.PeerId): {

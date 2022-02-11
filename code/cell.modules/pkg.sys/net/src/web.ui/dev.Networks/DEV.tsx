@@ -26,8 +26,8 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       props: {
         // view: DevNetworkConstants.DEFAULT.VIEW,
-        // view: 'Collection',
-        view: 'Single',
+        view: 'Collection',
+        // view: 'Single',
         child: 'Crdt',
         networks: [],
       },
@@ -43,6 +43,8 @@ export const actions = DevActions<Ctx>()
       await addNetwork(ctx);
       await addNetwork(ctx);
     }
+
+    // await autoConnect(ctx);
   })
 
   .items((e) => {
@@ -102,6 +104,10 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Debug');
+
+    e.button('auto connect', (e) => {
+      autoConnect(e.ctx);
+    });
 
     e.boolean('background', (e) => {
       if (e.changing) e.ctx.debug.background = e.changing.next;
@@ -182,4 +188,15 @@ async function addNetwork(ctx: Ctx) {
   const signal = DEFAULT.SIGNAL_SERVER;
   const network = await PeerNetwork.start({ bus, signal });
   ctx.props.networks.push(network);
+}
+
+async function autoConnect(ctx: Ctx) {
+  const networks = ctx.props.networks;
+  const [a, b] = networks;
+  if (!a || !b) return;
+
+  const conn = a.events.peer.connection(a.netbus.self, b.netbus.self);
+  if (await conn.isConnected()) return;
+
+  await conn.open.data({ isReliable: true });
 }

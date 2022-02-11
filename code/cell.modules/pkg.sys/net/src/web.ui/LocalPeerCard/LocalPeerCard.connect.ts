@@ -19,21 +19,14 @@ export const connect: Connect = async (args) => {
   if (!remote) return;
 
   const events = PeerEvents(bus);
-  const status = (await events.status(self).get()).peer;
-  if (!status) throw new Error(`Status could not be retrieved.`);
-
-  const isConnected = status.connections
-    .filter(({ kind }) => kind === 'data')
-    .some(({ peer }) => peer.remote.id === remote);
-  if (isConnected) return; // Already connected.
+  const conn = events.connection(self, remote);
+  if (await conn.isConnected()) return;
 
   // Invoke the action(s).
-  const open = events.connection(self, remote).open;
-  const res = await open.data({ isReliable });
-
+  const res = await conn.open.data({ isReliable });
   if (autoStartVideo && res.connection) {
     const parent = res.connection.id;
-    await open.media('media/video', { parent });
+    await conn.open.media('media/video', { parent });
   }
 
   // Finish up.
