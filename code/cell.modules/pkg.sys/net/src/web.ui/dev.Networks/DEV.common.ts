@@ -14,12 +14,13 @@ export { PeerNetwork } from '../..';
 
 export { useLocalPeer } from '../../web.hooks';
 export { LocalPeerCard } from '../LocalPeerCard';
+export { CardBody } from '../primitives';
 export { t };
 
 /**
  * Constants
  */
-export const VIEWS: t.DevNetworkView[] = ['URI', 'Singular', 'Collection'];
-const VIEW: t.DevNetworkView = 'Collection';
+export const VIEWS: t.DevViewKind[] = ['URI', 'Singular', 'Collection'];
+const VIEW: t.DevViewKind = 'Collection';
 const DEFAULT = { VIEW };
-export const DevNetworkConstants = { VIEWS, DEFAULT };
+export const DevConstants = { VIEWS, DEFAULT };

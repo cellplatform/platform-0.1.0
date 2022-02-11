@@ -6,8 +6,6 @@ import { Sample, SampleProps } from './DEV.Sample';
 import { SimpleDoc } from './DEV.types';
 import { CrdtBus } from '../../../';
 
-import { BulletListLayout } from 'sys.ui.primitives/lib/ui/BulletList.Layout';
-
 const DEFAULT = {
   DOC: 'myDoc-id',
 };

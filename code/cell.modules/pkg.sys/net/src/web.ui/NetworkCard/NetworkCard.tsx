@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { NetbusCard } from '../NetbusCard';
 import { CardBody } from '../primitives';
 import { Card, css, CssValue, t, useLocalPeer } from './common';
 import { NetworkCardBody } from './components/Body';
@@ -10,11 +9,12 @@ import { NetworkCardTitlebar } from './components/Titlebar';
 
 export type NetworkCardProps = {
   network: t.PeerNetwork;
+  child?: JSX.Element;
   style?: CssValue;
 };
 
 export const NetworkCard: React.FC<NetworkCardProps> = (props) => {
-  const { network } = props;
+  const { network, child } = props;
   const { bus, netbus } = network;
   const self = netbus.self;
 
@@ -37,12 +37,6 @@ export const NetworkCard: React.FC<NetworkCardProps> = (props) => {
 
   const elHeader = <NetworkCardTitlebar bus={bus} self={self} />;
 
-  /**
-   * TODO 🐷
-   * - determine content based on root card's selection state.
-   */
-  const elTMP = <NetbusCard netbus={netbus} style={styles.fill} />;
-
   const elRootCard = (
     <Card style={styles.rootCard}>
       <CardBody header={elHeader}>
@@ -52,7 +46,7 @@ export const NetworkCard: React.FC<NetworkCardProps> = (props) => {
     </Card>
   );
 
-  const elChild = <NetworkCardChild>{elTMP}</NetworkCardChild>;
+  const elChild = child && <NetworkCardChild>{child}</NetworkCardChild>;
 
   return (
     <div {...css(styles.base, props.style)}>

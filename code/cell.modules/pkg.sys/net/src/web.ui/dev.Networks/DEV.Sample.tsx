@@ -1,27 +1,29 @@
 import React from 'react';
+import { NetbusCard } from '../NetbusCard';
 
+import { Label } from '../Label';
 import {
-  NetworkCard,
-  color,
   BulletList,
+  color,
+  COLORS,
   css,
   CssValue,
+  DevConstants,
+  NetworkCard,
   t,
-  COLORS,
-  Icons,
-  DevNetworkConstants,
 } from './DEV.common';
-import { Label } from '../Label';
+import { DevEmpty } from './DEV.Empty';
+import { DevCrdtCard } from './DEV.CrdtCard';
 
 export type DevSampleProps = {
   networks: t.PeerNetwork[];
-  view?: t.DevNetworkView;
+  view?: t.DevViewKind;
+  child?: t.DevChildKind;
   style?: CssValue;
 };
 
 export const DevSample: React.FC<DevSampleProps> = (props) => {
-  console.log('props', props);
-  const { view = DevNetworkConstants.DEFAULT.VIEW } = props;
+  const { view = DevConstants.DEFAULT.VIEW, child } = props;
 
   const isCollection = view === 'Collection';
   const list = props.networks ?? [];
@@ -46,25 +48,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
       boxSizing: 'border-box',
       minWidth: 450,
     }),
-    empty: {
-      base: css({ minWidth: 660, Flex: 'center-center' }),
-      body: css({
-        Flex: 'y-center-center',
-        fontSize: 12,
-        fontStyle: 'italic',
-        opacity: 0.3,
-      }),
-    },
   };
-
-  const elEmpty = isEmpty && (
-    <div {...styles.empty.base}>
-      <div {...styles.empty.body}>
-        <Icons.Antenna size={45} color={color.format(-0.3)} style={{ marginBottom: 6 }} />
-        <div>No networks to display</div>
-      </div>
-    </div>
-  );
 
   const elClientCards = (
     <BulletList.Layout
@@ -98,7 +82,17 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
         body: (e) => {
           if (e.kind !== 'Default') return;
           const data = e.data as D;
-          return <NetworkCard key={e.index} network={data.network} />;
+          const { network } = data;
+          const { netbus } = network;
+          const styles = {
+            child: css({ flex: 1 }),
+          };
+
+          let elChild: undefined | JSX.Element;
+          if (child === 'Netbus') elChild = <NetbusCard netbus={netbus} style={styles.child} />;
+          if (child === 'Crdt') elChild = <DevCrdtCard netbus={netbus} style={styles.child} />;
+
+          return <NetworkCard key={e.index} network={network} child={elChild} />;
         },
       }}
     />
@@ -106,7 +100,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
-      {elEmpty}
+      {isEmpty && <DevEmpty plural={isCollection} />}
       {elClientCards}
     </div>
   );

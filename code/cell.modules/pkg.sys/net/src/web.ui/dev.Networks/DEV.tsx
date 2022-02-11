@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
-import { DevNetworkConstants, css, PeerNetwork, rx } from './DEV.common';
+import { DevConstants, css, t, PeerNetwork, rx } from './DEV.common';
 import { DevSample, DevSampleProps } from './DEV.Sample';
 
 type Ctx = {
@@ -12,8 +12,9 @@ type Ctx = {
 const DEFAULT = {
   SIGNAL_SERVER: 'rtc.cellfs.com',
   VIEW: 'Collection',
-  // VIEW: 'Singular',
 };
+
+const CHILD_TYPES: t.DevChildKind[] = ['None', 'Netbus', 'Crdt'];
 
 /**
  * Actions
@@ -24,9 +25,9 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
     const ctx: Ctx = {
       props: {
-        // view: 'Collection',
-        view: 'Singular',
         // view: DevNetworkConstants.DEFAULT.VIEW,
+        view: 'Singular',
+        child: 'Crdt',
         networks: [],
       },
       debug: { background: false },
@@ -50,10 +51,25 @@ export const actions = DevActions<Ctx>()
       config
         .view('buttons')
         .title('view')
-        .items(DevNetworkConstants.VIEWS)
+        .items(DevConstants.VIEWS)
         .initial(config.ctx.props.view)
         .pipe((e) => {
           if (e.changing) e.ctx.props.view = e.changing?.next[0].value;
+        });
+    });
+
+    e.select((config) => {
+      config
+        .view('buttons')
+        .title('child')
+        .items(CHILD_TYPES)
+        .initial(config.ctx.props.child)
+        .pipe((e) => {
+          if (e.changing) {
+            const next = e.changing?.next[0].value;
+            const value = !next || next === '<undefined>' ? undefined : next;
+            e.ctx.props.child = value;
+          }
         });
     });
 
@@ -104,7 +120,7 @@ export const actions = DevActions<Ctx>()
     const { networks = [] } = props;
     const isEmpty = networks.length === 0;
 
-    const view = props.view ?? DevNetworkConstants.DEFAULT.VIEW;
+    const view = props.view ?? DevConstants.DEFAULT.VIEW;
     const isCollection = view === 'Collection';
     const isUri = view === 'URI';
 
