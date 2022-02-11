@@ -31,7 +31,7 @@ export const LabelLayout: React.FC<LabelLayoutProps> = (props) => {
       fontSize: 11,
       fontWeight: 600,
     }),
-    copied: css({ fontFamily: 'sans-serif' }),
+    copied: css({ fontFamily: 'sans-serif', fontWeight: 400 }),
   };
 
   const elIcon = (
