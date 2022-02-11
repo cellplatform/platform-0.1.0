@@ -1,6 +1,6 @@
 import React from 'react';
-import { DevActions } from 'sys.ui.dev';
-import { EventStackCard, EventStackCardProps } from '.';
+import { DevActions, ObjectView } from 'sys.ui.dev';
+import { EventStackCard, EventStackCardProps } from '..';
 import { t } from '../../common';
 
 type Ctx = { props: EventStackCardProps };
@@ -22,26 +22,9 @@ export const actions = DevActions<Ctx>()
         width: 300,
         isTopCard: true,
         shadow: false,
+        showAsCard: true,
       },
     };
-  })
-
-  .items((e) => {
-    e.title('debug');
-
-    e.boolean('width', (e) => {
-      if (e.changing) e.ctx.props.width = e.changing.next ? 300 : undefined;
-      e.boolean.current = typeof e.ctx.props.width === 'number';
-    });
-
-    e.boolean('height', (e) => {
-      if (e.changing) e.ctx.props.height = e.changing.next ? 250 : undefined;
-      e.boolean.current = typeof e.ctx.props.height === 'number';
-    });
-
-    e.button('increment count', (e) => e.ctx.props.count++);
-
-    e.hr();
   })
 
   .items((e) => {
@@ -63,6 +46,33 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr();
+  })
+
+  .items((e) => {
+    e.title('debug');
+
+    e.boolean('showAsCard', (e) => {
+      if (e.changing) e.ctx.props.showAsCard = e.changing.next;
+      e.boolean.current = e.ctx.props.showAsCard;
+    });
+
+    e.boolean('width', (e) => {
+      if (e.changing) e.ctx.props.width = e.changing.next ? 300 : undefined;
+      e.boolean.current = typeof e.ctx.props.width === 'number';
+    });
+
+    e.boolean('height', (e) => {
+      if (e.changing) e.ctx.props.height = e.changing.next ? 250 : undefined;
+      e.boolean.current = typeof e.ctx.props.height === 'number';
+    });
+
+    e.button('increment count', (e) => e.ctx.props.count++);
+
+    e.hr();
+    e.component((e) => {
+      const data = e.ctx.props;
+      return <ObjectView name={'props'} data={data} style={{ MarginX: 15 }} fontSize={10} />;
+    });
   })
 
   .subject((e) => {
