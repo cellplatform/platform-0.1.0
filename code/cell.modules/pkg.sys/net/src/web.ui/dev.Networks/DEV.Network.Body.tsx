@@ -22,14 +22,8 @@ export const DevNetworkBody: React.FC<DevNetworkBodyProps> = (props) => {
   const BORDER_TRACE = `solid 1px ${color.format(-0.03)}`;
 
   const styles = {
-    base: css({
-      Flex: 'x-stretch-stretch',
-      paddingTop: 0,
-    }),
-    column: css({
-      flex: 1,
-      Flex: 'y-stretch-stretch',
-    }),
+    base: css({ Flex: 'x-stretch-stretch', paddingTop: 0 }),
+    column: css({ flex: 1, Flex: 'y-stretch-stretch' }),
     divider: css({ width: 20 }),
     trace: css({ borderLeft: BORDER_TRACE, borderRight: BORDER_TRACE }),
     titlebar: css({

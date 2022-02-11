@@ -13,6 +13,7 @@ type Ctx = {
 const DEFAULT = {
   SIGNAL_SERVER: 'rtc.cellfs.com',
   VIEW: 'Collection',
+  // VIEW: 'Singular',
 };
 
 /**
@@ -25,7 +26,8 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       props: {
         // view: 'Collection',
-        view: DevNetworkConstants.DEFAULT.VIEW,
+        view: 'Singular',
+        // view: DevNetworkConstants.DEFAULT.VIEW,
         networks: [],
       },
       debug: { background: false },
