@@ -52,7 +52,8 @@ export const CommandTextbox: React.FC<CommandTextboxProps> = (props) => {
     TERMINAL: isDark ? COLORS.WHITE : color.alpha(COL_BASE, 0.5),
   };
   const COL_TEXT = {
-    VALUE: COL_BASE,
+    DEFAULT: color.alpha(COL_BASE, 0.5),
+    PENDING: COL_BASE,
     PLACEHOLDER: isDark ? 0.3 : -0.3,
   };
 
@@ -109,8 +110,14 @@ export const CommandTextbox: React.FC<CommandTextboxProps> = (props) => {
         style={styles.textbox.input}
         value={text}
         placeholder={props.placeholder ?? DEFAULT.PLACEHOLDER}
-        valueStyle={{ color: COL_TEXT.VALUE, fontSize: 12 }}
-        placeholderStyle={{ italic: true, color: COL_TEXT.PLACEHOLDER }}
+        valueStyle={{
+          color: pending ? COL_TEXT.PENDING : COL_TEXT.DEFAULT,
+          fontSize: 12,
+        }}
+        placeholderStyle={{
+          color: COL_TEXT.PLACEHOLDER,
+          italic: true,
+        }}
         spellCheck={false}
         selectOnFocus={true}
         onChange={(e) => {
