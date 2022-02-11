@@ -1,7 +1,8 @@
 import React from 'react';
 import { WebRuntime } from 'sys.runtime.web';
-import { DevActions, LocalStorage, ObjectView, toObject, TEST } from '../../test';
 
+import { PeerNetwork } from '../../';
+import { DevActions, LocalStorage, ObjectView, TEST, toObject } from '../../web.test';
 import {
   css,
   cuid,
@@ -18,7 +19,6 @@ import {
 import { EventBridge } from './DEV.event';
 import { DevProps } from './DEV.Props';
 import { DevRootLayout } from './DEV.Root';
-import { PeerNetwork } from '../../';
 
 type O = Record<string, unknown>;
 

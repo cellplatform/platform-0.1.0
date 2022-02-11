@@ -1,8 +1,8 @@
 import React from 'react';
-import { DevActions, lorem, ObjectView, TEST } from '../../../test';
 
 import { LocalPeerCard, LocalPeerCardConstants, LocalPeerCardProps } from '..';
 import { PeerNetwork } from '../../..';
+import { DevActions, lorem, ObjectView, TEST } from '../../../web.test';
 import { t } from '../../common';
 import * as k from '../types';
 

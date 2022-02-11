@@ -1,6 +1,7 @@
 import React from 'react';
-import { css, DevActions, ObjectView, TEST, PeerNetwork, COLORS } from '../../../test';
+
 import { CommandBar, CommandBarProps } from '..';
+import { COLORS, DevActions, ObjectView, PeerNetwork, TEST } from '../../../web.test';
 
 type Ctx = { props: CommandBarProps };
 

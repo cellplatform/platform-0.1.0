@@ -1,8 +1,9 @@
 import React from 'react';
-import { DevActions, ObjectView, TEST } from '../../../test';
+
 import { CommandTextbox, CommandTextboxProps, OpenConnectionInputConstants } from '..';
-import { t, COLORS } from '../../common';
 import { PeerNetwork } from '../../..';
+import { DevActions, ObjectView, TEST } from '../../../web.test';
+import { COLORS, t } from '../../common';
 
 const CONST = OpenConnectionInputConstants;
 

@@ -1,7 +1,7 @@
 import React from 'react';
-import { DevActions, ObjectView, TEST } from '../../test';
 
-import { color, DevConstants, css, t, PeerNetwork, rx } from './DEV.common';
+import { DevActions, ObjectView, TEST } from '../../web.test';
+import { css, DevConstants, PeerNetwork, rx, t } from './DEV.common';
 import { DevSample, DevSampleProps } from './DEV.Sample';
 
 type Ctx = {
