@@ -15,10 +15,11 @@ export const CardBody: React.FC<CardBodyProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({ position: 'relative', Flex: 'y-stretch-stretch' }),
+    base: css({ position: 'relative', Flex: 'y-stretch-stretch', flex: 1 }),
     body: css({
       flex: 1,
       Scroll: true,
+      Flex: 'y-stretch-stretch',
       ...Style.toPadding(props.padding),
     }),
   };

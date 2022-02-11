@@ -6,6 +6,7 @@ import { DevNetworkFooter } from './DEV.Network.Footer';
 import { DevNetworkTitlebar } from './DEV.Network.Titlebar';
 import { DevChild } from './DEV.Network.Child';
 import { NetbusCard } from '../NetbusCard';
+import { CardBody } from '../primitives';
 
 /**
  * Types
@@ -38,17 +39,16 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({
-      boxSizing: 'border-box',
-      Flex: 'x-stretch-stretch',
-    }),
-    card: css({
-      Flex: 'y-stretch-stretch',
+    base: css({ boxSizing: 'border-box', Flex: 'x-stretch-stretch' }),
+    rootCard: css({
       minWidth: 600,
       minHeight: 300,
+      display: 'flex',
     }),
     fill: css({ flex: 1 }),
   };
+
+  const elHeader = <DevNetworkTitlebar bus={bus} self={self} />;
 
   /**
    * TODO 🐷
@@ -57,10 +57,11 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
   const elTMP = <NetbusCard netbus={network.netbus} style={styles.fill} />;
 
   const elRootCard = (
-    <Card style={styles.card}>
-      <DevNetworkTitlebar bus={bus} self={self} />
-      <DevNetworkBody bus={bus} self={self} peers={peers} status={status} style={{ flex: 1 }} />
-      <DevNetworkFooter bus={bus} self={self} />
+    <Card style={styles.rootCard}>
+      <CardBody header={elHeader}>
+        <DevNetworkBody bus={bus} self={self} peers={peers} status={status} style={styles.fill} />
+        <DevNetworkFooter bus={bus} self={self} />
+      </CardBody>
     </Card>
   );
 

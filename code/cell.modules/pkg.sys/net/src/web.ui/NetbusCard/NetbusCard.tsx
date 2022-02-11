@@ -32,10 +32,9 @@ export const NetbusCard: React.FC<NetbusCardProps> = (props) => {
    */
   const styles = {
     base: css({ minWidth: 300, display: 'flex' }),
-    main: css({ flex: 1 }),
     body: css({ minHeight: 100 }),
     footer: {
-      base: css({ flex: 1, Flex: 'x-center-center', fontSize: 13 }),
+      base: css({ flex: 1, Flex: 'x-center-center', fontSize: 13, PaddingY: 3 }),
       pipe: css({ flex: 1 }),
       total: css({ marginLeft: 8, opacity: 0.7, fontSize: 11 }),
     },
@@ -63,13 +62,13 @@ export const NetbusCard: React.FC<NetbusCardProps> = (props) => {
 
   const elBody = (
     <div {...styles.body}>
-      <ObjectView data={history} fontSize={11} />
+      <ObjectView data={history.events} fontSize={11} />
     </div>
   );
 
   return (
     <Card style={css(styles.base, props.style)} showAsCard={showAsCard}>
-      <CardBody style={styles.main} padding={padding} header={elHeader} footer={elFooter}>
+      <CardBody padding={padding} header={elHeader} footer={elFooter}>
         {elBody}
       </CardBody>
     </Card>

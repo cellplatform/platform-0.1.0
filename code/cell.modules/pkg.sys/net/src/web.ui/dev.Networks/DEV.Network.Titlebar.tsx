@@ -19,9 +19,8 @@ export const DevNetworkTitlebar: React.FC<DevNetworkTitlebarProps> = (props) => 
    * [Render]
    */
   const styles = {
-    base: css({ paddingLeft: 10 }),
-    title: css({}),
-    icons: css({ Flex: 'x-center-center', marginRight: 10 }),
+    title: css({ paddingLeft: 10 }),
+    icons: css({ Flex: 'x-center-center', marginRight: 5 }),
     icon: css({
       position: 'relative',
       top: 0,
@@ -31,12 +30,12 @@ export const DevNetworkTitlebar: React.FC<DevNetworkTitlebarProps> = (props) => 
   };
 
   return (
-    <Toolbar style={css(styles.base, props.style)} edge={'N'}>
+    <>
       <div {...css(styles.title)}>{'Network Peer'}</div>
       <div {...styles.icons}>
         <Icons.FsNetworkDrive style={styles.icon} size={iconSize} opacity={DISABLED} />
         <Icons.Bus style={styles.icon} size={iconSize} opacity={ENABLED} />
       </div>
-    </Toolbar>
+    </>
   );
 };
