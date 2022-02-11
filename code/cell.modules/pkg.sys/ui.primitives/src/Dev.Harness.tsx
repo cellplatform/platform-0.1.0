@@ -23,9 +23,9 @@ const imports = {
   Card: import('./ui/Card/dev/DEV'),
   CardStack: import('./ui/CardStack/dev/DEV'),
 
-  EventCard: import('./ui/Event.Card/DEV'),
-  EventStack: import('./ui/Event.Stack/DEV'),
-  EventPipe: import('./ui/Event.Pipe/DEV'),
+  EventCard: import('./ui/Event.Card/dev/DEV'),
+  EventStack: import('./ui/Event.Stack/dev/DEV'),
+  EventPipe: import('./ui/Event.Pipe/dev/DEV'),
 
   HashChip: import('./ui/HashChip/dev/DEV'),
 
