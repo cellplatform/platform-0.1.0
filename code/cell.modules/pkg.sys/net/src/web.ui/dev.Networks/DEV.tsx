@@ -1,9 +1,8 @@
 import React from 'react';
-import { DevActions, ObjectView, toObject } from 'sys.ui.dev';
+import { DevActions, ObjectView } from 'sys.ui.dev';
 
-import { css, PeerNetwork, rx, t } from './DEV.common';
+import { DevNetworkConstants, css, PeerNetwork, rx } from './DEV.common';
 import { DevSample, DevSampleProps } from './DEV.Sample';
-import { DevNetworkConstants } from './DEV.Network';
 
 type Ctx = {
   props: DevSampleProps;

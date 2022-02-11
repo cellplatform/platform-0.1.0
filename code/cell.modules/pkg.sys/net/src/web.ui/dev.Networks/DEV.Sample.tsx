@@ -1,12 +1,21 @@
 import React from 'react';
 
-import { color, BulletList, css, CssValue, t, COLORS, Icons, Text } from './DEV.common';
-import { DevNetwork, DevNetworkView, DevNetworkConstants } from './DEV.Network';
+import {
+  NetworkCard,
+  color,
+  BulletList,
+  css,
+  CssValue,
+  t,
+  COLORS,
+  Icons,
+  DevNetworkConstants,
+} from './DEV.common';
 import { Label } from '../Label';
 
 export type DevSampleProps = {
   networks: t.PeerNetwork[];
-  view?: DevNetworkView;
+  view?: t.DevNetworkView;
   style?: CssValue;
 };
 
@@ -89,7 +98,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
         body: (e) => {
           if (e.kind !== 'Default') return;
           const data = e.data as D;
-          return <DevNetwork key={e.index} network={data.network} />;
+          return <NetworkCard key={e.index} network={data.network} />;
         },
       }}
     />
