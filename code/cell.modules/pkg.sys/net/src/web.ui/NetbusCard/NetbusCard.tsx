@@ -1,14 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
+
 import {
-  color,
+  Button,
+  Card,
   css,
   CssValue,
-  t,
-  Card,
-  useEventBusHistory,
   EventPipe,
   ObjectView,
-  Button,
+  t,
+  useEventBusHistory,
 } from '../common';
 import { CardBody } from '../primitives';
 
@@ -38,10 +38,7 @@ export const NetbusCard: React.FC<NetbusCardProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({
-      width: 300,
-      display: 'flex',
-    }),
+    base: css({ width: 300, display: 'flex' }),
     body: css({ minHeight: 100 }),
     header: {
       right: css({ fontSize: 12, marginRight: 6 }),
