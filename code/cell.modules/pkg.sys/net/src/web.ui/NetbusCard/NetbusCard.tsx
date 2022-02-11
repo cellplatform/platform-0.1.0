@@ -8,6 +8,7 @@ import {
   useEventBusHistory,
   EventPipe,
   ObjectView,
+  Button,
 } from '../common';
 import { CardBody } from '../primitives';
 
@@ -23,16 +24,28 @@ export const NetbusCard: React.FC<NetbusCardProps> = (props) => {
   const { netbus, padding = [18, 20, 15, 20], showAsCard = true } = props;
 
   const history = useEventBusHistory(netbus);
-
   const total = history.total;
   const totalLabel = total === 1 ? '1 event' : `${total} events`;
+
+  /**
+   * [Handlers]
+   */
+  const fireSampleEvent = () => {
+    netbus.fire({ type: 'FOO/name', payload: { count: 0 } });
+  };
 
   /**
    * [Render]
    */
   const styles = {
-    base: css({ minWidth: 300, display: 'flex' }),
+    base: css({
+      width: 300,
+      display: 'flex',
+    }),
     body: css({ minHeight: 100 }),
+    header: {
+      right: css({ fontSize: 12, marginRight: 6 }),
+    },
     footer: {
       base: css({ flex: 1, Flex: 'x-center-center', fontSize: 13, PaddingY: 3 }),
       pipe: css({ flex: 1 }),
@@ -43,7 +56,9 @@ export const NetbusCard: React.FC<NetbusCardProps> = (props) => {
   const elHeader = (
     <>
       <div>Netbus</div>
-      <div></div>
+      <div {...styles.header.right}>
+        <Button onClick={fireSampleEvent}>Fire</Button>
+      </div>
     </>
   );
 
@@ -62,7 +77,7 @@ export const NetbusCard: React.FC<NetbusCardProps> = (props) => {
 
   const elBody = (
     <div {...styles.body}>
-      <ObjectView data={history.events} fontSize={11} />
+      <ObjectView name={'events'} data={history.events} fontSize={11} />
     </div>
   );
 
