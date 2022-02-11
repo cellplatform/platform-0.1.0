@@ -18,7 +18,7 @@ export const NetworkCardTitlebar: React.FC<NetworkCardTitlebarProps> = (props) =
    * [Render]
    */
   const styles = {
-    title: css({ paddingLeft: 10 }),
+    title: css({ paddingLeft: 5 }),
     icons: css({ Flex: 'x-center-center', marginRight: 5 }),
     icon: css({
       position: 'relative',

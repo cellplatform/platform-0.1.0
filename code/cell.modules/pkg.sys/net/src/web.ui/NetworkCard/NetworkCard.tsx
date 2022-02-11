@@ -26,7 +26,10 @@ export const NetworkCard: React.FC<NetworkCardProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({ boxSizing: 'border-box', Flex: 'x-stretch-stretch' }),
+    base: css({
+      boxSizing: 'border-box',
+      Flex: 'x-stretch-stretch',
+    }),
     rootCard: css({
       minWidth: 600,
       minHeight: 300,
@@ -40,8 +43,8 @@ export const NetworkCard: React.FC<NetworkCardProps> = (props) => {
   const elRootCard = (
     <Card style={styles.rootCard}>
       <CardBody header={elHeader}>
-        <NetworkCardBody bus={bus} self={self} peers={peers} status={status} style={styles.fill} />
-        <NetworkCardFooter bus={bus} self={self} />
+        <NetworkCardBody self={self} bus={bus} peers={peers} status={status} style={styles.fill} />
+        <NetworkCardFooter self={self} bus={bus} netbus={netbus} />
       </CardBody>
     </Card>
   );
