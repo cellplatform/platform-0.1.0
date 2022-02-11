@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions, Test } from 'sys.ui.dev';
 import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
-import { RepoLink } from './ui/RepoLink';
+import { RepoLink } from './RepoLink';
 
 type CtxRunTests = () => Promise<TestSuiteRunResponse>;
 
@@ -29,9 +29,9 @@ export const actions = DevActions<Ctx>()
     };
 
     const tests = (e.ctx.tests = {
-      Automerge: () => run(import('../../../web.Automerge/Automerge.lib.TEST')),
-      AutomergeDoc: () => run(import('../../../web.Automerge/AutomergeDoc.TEST')),
-      CrdtBus: () => run(import('../../../web.CrdtBus/TEST')),
+      Automerge: () => run(import('../../web.Automerge/Automerge.lib.TEST')),
+      AutomergeDoc: () => run(import('../../web.Automerge/AutomergeDoc.TEST')),
+      CrdtBus: () => run(import('../../web.CrdtBus/TEST')),
     });
 
     // Auto-run on load.

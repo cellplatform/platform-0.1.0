@@ -4,7 +4,7 @@ import { t } from './common';
 
 const imports = {
   ModuleInfo: import('./web.ui/ModuleInfo/dev/DEV'),
-  UnitTests: import('./web.ui/dev/DEV.UnitTests'),
+  UnitTests: import('./web.ui/dev.UnitTests/DEV'),
 };
 
 /**

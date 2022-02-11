@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions, toObject } from 'sys.ui.dev';
 
-import { TestNetwork, WebRuntime, t, rx } from '../../../web.test';
+import { TestNetwork, WebRuntime, t, rx } from '../../web.test';
 import { Sample, SampleProps } from './DEV.Sample';
 import { SimpleDoc } from './DEV.types';
 import { CrdtBus } from '../../../';

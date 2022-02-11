@@ -1,5 +1,5 @@
 import React from 'react';
-import { COLORS, css, CssValue, Icons } from '../../../common';
+import { COLORS, css, CssValue, Icons } from '../common';
 
 export type RepoLinkProps = {
   url: string;
