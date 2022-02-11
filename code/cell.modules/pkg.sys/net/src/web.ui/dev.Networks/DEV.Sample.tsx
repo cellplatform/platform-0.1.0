@@ -36,7 +36,6 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
     base: css({
       boxSizing: 'border-box',
       minWidth: 450,
-      backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
     }),
     empty: {
       base: css({ minWidth: 660, Flex: 'center-center' }),

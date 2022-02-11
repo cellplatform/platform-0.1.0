@@ -4,7 +4,7 @@ import { Card, css, CssValue, t, useLocalPeer } from './DEV.common';
 import { DevNetworkBody } from './DEV.Network.Body';
 import { DevNetworkFooter } from './DEV.Network.Footer';
 import { DevNetworkTitlebar } from './DEV.Network.Titlebar';
-import { DevChildCard } from './DEV.Network.ChildCard';
+import { DevChild } from './DEV.Network.Child';
 import { NetbusCard } from '../NetbusCard';
 
 /**
@@ -41,20 +41,20 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
     base: css({
       boxSizing: 'border-box',
       Flex: 'x-stretch-stretch',
-      backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
     }),
     card: css({
       Flex: 'y-stretch-stretch',
       minWidth: 600,
       minHeight: 300,
     }),
+    fill: css({ flex: 1 }),
   };
 
   /**
    * TODO 🐷
    * - determine content based on root card's selection state.
    */
-  const elContentTmp = <NetbusCard netbus={network.netbus} showAsCard={false} />;
+  const elTMP = <NetbusCard netbus={network.netbus} style={styles.fill} />;
 
   const elRootCard = (
     <Card style={styles.card}>
@@ -64,16 +64,12 @@ export const DevNetwork: React.FC<DevNetworkProps> = (props) => {
     </Card>
   );
 
-  const elChildCard = (
-    <DevChildCard bus={bus} netbus={network.netbus} title={'Netbus'}>
-      {elContentTmp}
-    </DevChildCard>
-  );
+  const elChild = <DevChild>{elTMP}</DevChild>;
 
   return (
     <div {...css(styles.base, props.style)}>
       {elRootCard}
-      {elChildCard}
+      {elChild}
     </div>
   );
 };
