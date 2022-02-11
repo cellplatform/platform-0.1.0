@@ -1,8 +1,8 @@
 import React from 'react';
 import { Observable, Subject } from 'rxjs';
-import { DevActions } from 'sys.ui.dev';
+import { DevActions, ObjectView } from 'sys.ui.dev';
 
-import { EventStack, EventStackProps, useEventBusHistory } from '.';
+import { EventStack, EventStackProps, useEventBusHistory } from '..';
 import { rx, t, time } from '../../common';
 
 type Ctx = {
@@ -46,22 +46,6 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('debug');
-
-    e.boolean('width', (e) => {
-      if (e.changing) e.ctx.width = e.changing.next ? 300 : undefined;
-      e.boolean.current = typeof e.ctx.width === 'number';
-    });
-
-    e.hr(1, 0.2);
-
-    e.button('reset', (e) => e.ctx.reset$.next());
-    e.button('fire', (e) => e.ctx.fireSample());
-
-    e.hr();
-  })
-
-  .items((e) => {
     e.title('props');
 
     e.select((config) => {
@@ -79,6 +63,25 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr();
+  })
+
+  .items((e) => {
+    e.title('debug');
+
+    e.boolean('width', (e) => {
+      if (e.changing) e.ctx.width = e.changing.next ? 300 : undefined;
+      e.boolean.current = typeof e.ctx.width === 'number';
+    });
+
+    e.hr(1, 0.2);
+    e.button('fire', (e) => e.ctx.fireSample());
+    e.button('reset', (e) => e.ctx.reset$.next());
+
+    e.hr();
+    e.component((e) => {
+      const data = e.ctx.props;
+      return <ObjectView name={'props'} data={data} style={{ MarginX: 15 }} fontSize={10} />;
+    });
   })
 
   .subject((e) => {

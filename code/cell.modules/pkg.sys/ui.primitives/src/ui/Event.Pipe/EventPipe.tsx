@@ -8,6 +8,7 @@ import {
   defaultValue,
   deleteUndefined,
   useResizeObserver,
+  COLORS,
 } from '../../common';
 import { EventHistoryItem } from '../Event/types';
 import {
@@ -18,6 +19,11 @@ import {
 
 export { EventPipeItemClickEventHandler, EventPipeItemClickEvent };
 
+/**
+ * Types
+ */
+export type EventPipeTheme = 'Dark' | 'Light';
+
 export type EventPipeProps = {
   events?: EventHistoryItem[];
   backgroundColor?: string | number;
@@ -25,12 +31,29 @@ export type EventPipeProps = {
   orientation?: 'x' | 'y';
   thickness?: number;
   duration?: { slide?: number }; // msecs
+  theme?: EventPipeTheme;
   style?: CssValue;
   onEventClick?: EventPipeItemClickEventHandler;
 };
 
+/**
+ * Constants
+ */
+const THEMES: EventPipeTheme[] = ['Light', 'Dark'];
+const DEFAULT_THEME: EventPipeTheme = 'Light';
+const DEFAULT = {
+  THEME: DEFAULT_THEME,
+};
+export const EventPipeConstants = {
+  DEFAULT,
+  THEMES,
+};
+
+/**
+ * Component
+ */
 export const EventPipe: React.FC<EventPipeProps> = (props) => {
-  const { orientation = 'x', thickness = 8, backgroundColor = -0.06 } = props;
+  const { orientation = 'x', thickness = 8, theme = 'Light' } = props;
   const slideDuration = defaultValue(props.duration?.slide, 300) / 1000;
   const max = defaultValue(props.event?.max, 10);
 
@@ -44,6 +67,20 @@ export const EventPipe: React.FC<EventPipeProps> = (props) => {
   const isReady = resize.ready;
   const baseSize = orientation === 'x' ? resize.rect.width : resize.rect.height;
 
+  /**
+   * Theme/Colors
+   */
+  const isLight = theme === 'Light';
+  const backgroundColor = (() => {
+    if (props.backgroundColor !== undefined) return props.backgroundColor;
+    return isLight ? -0.06 : 0.15;
+  })();
+
+  const itemColor = isLight ? COLORS.DARK : 1;
+
+  /**
+   * [Render]
+   */
   const styles = {
     base: css({
       position: 'relative',
@@ -81,6 +118,7 @@ export const EventPipe: React.FC<EventPipeProps> = (props) => {
           size={thickness}
           parentSize={baseSize}
           orientation={orientation}
+          color={itemColor}
           onClick={props.onEventClick}
         />
       </m.div>
