@@ -167,6 +167,6 @@ export type DevImagePasteboardUri = {
   data: {
     bytes: number;
     mimetype: string;
-    uri?: string; // A base64 encoded CSS <image> "dataUri".
+    binary?: Uint8Array;
   };
 };
