@@ -6,7 +6,6 @@ export type NetworkId = string;
  * Represents a running [PeerNetwork] instance.
  */
 export type PeerNetwork = {
-  dispose(): void;
   bus: t.EventBus;
   netbus: t.PeerNetbus;
   events: {
@@ -14,4 +13,5 @@ export type PeerNetwork = {
     group: t.GroupEvents;
     runtime: t.WebRuntimeEvents;
   };
+  dispose(): void;
 };

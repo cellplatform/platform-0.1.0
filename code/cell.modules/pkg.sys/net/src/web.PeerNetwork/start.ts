@@ -17,10 +17,11 @@ type Args = {
 export async function start(args: Args): Promise<t.PeerNetwork> {
   const { bus, signal } = args;
   const self = args.self ?? cuid();
+  const id = self;
 
   const peer = Controller({ bus });
   const netbus = PeerNetbus({ bus, self });
-  const runtime = WebRuntime.Bus.Controller({ bus, netbus, id: self });
+  const runtime = WebRuntime.Bus.Controller({ id, bus, netbus });
 
   const events = {
     peer: PeerEvents(bus),
