@@ -1,5 +1,6 @@
 export * from './drag';
 export * from './events';
+export * from './FC';
 export * from './keyboard';
 export * from './measure';
 export * from './mouse';
