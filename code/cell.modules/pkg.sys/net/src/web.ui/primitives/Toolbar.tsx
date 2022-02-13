@@ -9,7 +9,7 @@ export type ToolbarProps = {
 };
 
 export const Toolbar: React.FC<ToolbarProps> = (props) => {
-  const { edge = 'N', padding = 8 } = props;
+  const { edge = 'N', padding = [8, 12] } = props;
   const border = `solid 1px ${color.format(-0.08)}`;
 
   /**

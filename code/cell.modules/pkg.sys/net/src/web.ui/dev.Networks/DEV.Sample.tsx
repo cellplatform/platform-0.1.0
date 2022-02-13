@@ -90,7 +90,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
           let elChild: undefined | JSX.Element;
 
           if (child === 'Netbus') elChild = <NetbusCard netbus={netbus} style={style} />;
-          if (child === 'Crdt') elChild = <DevCrdtCard netbus={netbus} style={style} />;
+          if (child === 'Crdt') elChild = <DevCrdtCard network={network} style={style} />;
           if (child === 'Filesystem') elChild = <DevFsCard network={network} style={style} />;
 
           return <NetworkCard key={e.index} network={network} child={elChild} />;

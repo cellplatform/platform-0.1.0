@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { DevActions, ObjectView, TEST } from '../../web.test';
-import { css, DevConstants, PeerNetwork, rx, t } from './DEV.common';
+import { DevActions, ObjectView, TEST, slug } from '../../web.test';
+import { color, COLORS, css, DevConstants, PeerNetwork, rx, t } from './DEV.common';
 import { DevSample, DevSampleProps } from './DEV.Sample';
 
 type Ctx = {
@@ -37,23 +37,25 @@ export const actions = DevActions<Ctx>()
   })
 
   .init(async (e) => {
-    const { ctx, bus } = e;
+    const { ctx } = e;
 
     if (ctx.props.networks.length === 0) {
       await addNetwork(ctx);
       await addNetwork(ctx);
     }
-
-    // await autoConnect(ctx);
   })
 
   .items((e) => {
     e.title('Network Client');
 
+    e.button('auto connect (peers)', (e) => autoConnect(e.ctx));
+    e.hr(1, 0.1);
+
+    e.title('View');
     e.select((config) => {
       config
         .view('buttons')
-        .title('view')
+        // .title('view')
         .items(DevConstants.VIEWS)
         .initial(config.ctx.props.view)
         .pipe((e) => {
@@ -64,7 +66,7 @@ export const actions = DevActions<Ctx>()
     e.select((config) => {
       config
         .view('buttons')
-        .title('child')
+        .title('child (card)')
         .items(CHILD_TYPES)
         .initial(config.ctx.props.child)
         .pipe((e) => {
@@ -76,10 +78,11 @@ export const actions = DevActions<Ctx>()
         });
     });
 
-    e.hr();
+    e.hr(1, 0.1);
   })
 
   .items((e) => {
+    e.title('Collection');
     e.button('add', (e) => addNetwork(e.ctx));
 
     e.hr(1, 0.1);
@@ -104,10 +107,6 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Debug');
-
-    e.button('auto connect', (e) => {
-      autoConnect(e.ctx);
-    });
 
     e.boolean('background', (e) => {
       if (e.changing) e.ctx.debug.background = e.changing.next;
@@ -150,8 +149,8 @@ export const actions = DevActions<Ctx>()
       host: { background: -0.04 },
       layout: {
         cropmarks: -0.2,
-        position: isCollection ? [60, 40, 80, 40] : undefined,
-        background: debug.background || isCollection ? -0.1 : 0,
+        position: isCollection ? [40, 40, 80, 40] : undefined,
+        // background: debug.background || isCollection ? -0.1 : 0,
         label: !isUri && {
           topLeft: !isEmpty && 'Peer-to-Peer',
           bottomLeft: !isEmpty && `WebRTC Signal: "${DEFAULT.SIGNAL_SERVER}"`,
@@ -163,16 +162,32 @@ export const actions = DevActions<Ctx>()
      * [Render]
      */
     const styles = {
-      base: css({
-        flex: 1,
-        Scroll: isCollection,
-        Padding: debug.background || isCollection ? [70, 45] : undefined,
-      }),
+      base: css({ flex: 1 }),
+      outer: {
+        base: css({
+          Scroll: true,
+          position: 'relative',
+          overflow: 'hidden',
+        }),
+        bg: css({
+          Absolute: 0,
+          Padding: [45, 45],
+          background: color.alpha(COLORS.DARK, 0.12),
+          boxShadow: `inset 0 0 15px 0 ${color.format(-0.06)}`,
+        }),
+      },
     };
+
+    const outerStyle = css(
+      styles.outer.base,
+      debug.background || isCollection ? styles.outer.bg : undefined,
+    );
 
     e.render(
       <div {...styles.base}>
-        <DevSample {...props} />
+        <div {...outerStyle}>
+          <DevSample {...props} />
+        </div>
       </div>,
     );
   });
@@ -196,7 +211,5 @@ async function autoConnect(ctx: Ctx) {
   if (!a || !b) return;
 
   const conn = a.events.peer.connection(a.netbus.self, b.netbus.self);
-  if (await conn.isConnected()) return;
-
-  await conn.open.data({ isReliable: true });
+  if (!(await conn.isConnected())) await conn.open.data({ isReliable: true });
 }

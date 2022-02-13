@@ -31,7 +31,11 @@ export const NetbusCard: React.FC<NetbusCardProps> = (props) => {
    * [Handlers]
    */
   const fireSampleEvent = () => {
-    netbus.fire({ type: 'FOO/name', payload: { count: 0 } });
+    const data = Uint8Array.from([1, 2, 3]);
+    netbus.fire({
+      type: 'FOO/name',
+      payload: { count: 0, data },
+    });
   };
 
   /**
