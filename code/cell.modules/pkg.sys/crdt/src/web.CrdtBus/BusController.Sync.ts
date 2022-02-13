@@ -2,6 +2,8 @@ import { filter, debounceTime } from 'rxjs/operators';
 
 import { Automerge, rx, t } from './common';
 
+import { Hash } from '@platform/cell.schema';
+
 type O = Record<string, unknown>;
 type D = Automerge.FreezeObject<O>;
 type Milliseconds = number;
@@ -15,7 +17,8 @@ type SyncStates = { [peer: PeerId]: { [doc: DocumentId]: Automerge.SyncState } }
  * Refs:
  *    Paper (Theory):       https://arxiv.org/abs/2012.00472
  *    Blog Post:            https://martin.kleppmann.com/2020/12/02/bloom-filter-hash-graph-sync.html
- *    Library Unit-Tests:   https://github.com/automerge/automerge/blob/main/test/sync_test.js#L15-L35
+ *    Lib Unit-Tests:       https://github.com/automerge/automerge/blob/main/test/sync_test.js#L15-L35
+ *
  */
 export function BusControllerSync(args: {
   netbus: t.NetworkBus<any>;
@@ -28,6 +31,10 @@ export function BusControllerSync(args: {
   const incoming$ = rx
     .payload<t.CrdtSyncSendEvent>(netbus.$, 'sys.crdt/sync/send')
     .pipe(filter((e) => e.source !== local));
+
+  console.group('// BusControllerSync //');
+  console.log('local', local);
+  console.groupEnd();
 
   const syncStates: SyncStates = {};
   const peerSyncStates = (peer: PeerId) => syncStates[peer] || (syncStates[peer] = {});
@@ -42,15 +49,20 @@ export function BusControllerSync(args: {
     const before = ref[id] || Automerge.initSyncState();
     const [after, message] = Automerge.generateSyncMessage(data, before);
     ref[id] = after;
+
     if (message) {
+      console.log('🌼 OUT from', local, '| HASH\n', Hash.sha256(message));
+
       netbus.target.node(remote).fire({
         type: 'sys.crdt/sync/send',
         payload: { source: local, doc: { id }, sync: { message } },
       });
     }
   };
+
   const syncToPeers = async (doc: { id: DocumentId; data: O }) => {
-    (await netbus.uri()).remotes.forEach((remote) => syncToPeer(remote, doc));
+    const remotes = (await netbus.uri()).remotes;
+    remotes.forEach((remote) => syncToPeer(remote, doc));
   };
 
   /**
@@ -81,8 +93,15 @@ export function BusControllerSync(args: {
     // Process the received message against local sync-state.
     const ref = peerSyncStates(e.source);
     const syncStateBefore = ref[id] || Automerge.initSyncState();
-    const message = e.sync.message as Automerge.BinarySyncMessage;
+    const message = new Uint8Array(e.sync.message) as Automerge.BinarySyncMessage;
     const received = Automerge.receiveSyncMessage(before, syncStateBefore, message);
+
+    console.log('🌳 IN from', e.source, '| HASH\n', Hash.sha256(message));
+
+    // console.group('🌳 INCOMING, local', local);
+    // console.log('e', e);
+    // console.log('message hash\n', Hash.sha256(message));
+    // console.groupEnd();
 
     // Update local document.
     ref[id] = received[1]; // sync-state (after).
