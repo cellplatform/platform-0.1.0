@@ -2,7 +2,7 @@ import { domMax, DragElastic, LazyMotion } from 'framer-motion';
 import React, { useEffect, useRef } from 'react';
 import { filter } from 'rxjs/operators';
 
-import { css, CssValue, t, useResizeObserver } from './common';
+import { css, CssValue, FC, t, useResizeObserver } from './common';
 import { Events } from './Events';
 import { Child } from './MotionDraggable.Child';
 import * as n from './types';
@@ -79,7 +79,11 @@ const View: React.FC<MotionDraggableProps> = (props) => {
   );
 };
 
-(View as any).Events = Events;
-type E = (bus: t.EventBus<any>) => n.MotionDraggableEvents;
-type T = React.FC<MotionDraggableProps> & { Events: E };
-export const MotionDraggable = View as T;
+/**
+ * Export API.
+ */
+type Props = MotionDraggableProps;
+type Fields = {
+  Events: (bus: t.EventBus<any>) => n.MotionDraggableEvents;
+};
+export const MotionDraggable = FC.decorate<Props, Fields>(View, { Events });
