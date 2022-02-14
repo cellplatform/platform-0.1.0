@@ -16,7 +16,7 @@ export { UAParser };
 /**
  * @platform
  */
-export { events } from '@platform/react';
+export { events, FC } from '@platform/react';
 export { log } from '@platform/log/lib/client';
 export { css, color, CssValue, formatColor, Style } from '@platform/css';
 export { useResizeObserver } from '@platform/react';

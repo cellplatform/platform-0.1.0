@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { CommandBar } from '../../Command.Bar';
-import { CssValue, LocalPeerCard, t } from '../common';
+import { color, CssValue, LocalPeerCard, t, COLORS } from '../common';
 
 export type NetworkCardFooterProps = {
   network: t.PeerNetwork;
@@ -23,5 +23,13 @@ export const NetworkCardFooter: React.FC<NetworkCardFooterProps> = (props) => {
     return LocalPeerCard.connect({ bus, remote, self, isReliable, autoStartVideo });
   };
 
-  return <CommandBar network={network} onAction={(e) => startConnection(e.text)} />;
+  return (
+    <CommandBar
+      network={network}
+      onAction={(e) => startConnection(e.text)}
+      backgroundColor={color.alpha(COLORS.DARK, 0.85)}
+      cornerRadius={[0, 0, 3, 3]}
+      inset={true}
+    />
+  );
 };
