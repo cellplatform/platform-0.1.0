@@ -14,7 +14,7 @@ const DEFAULT = {
   VIEW: 'Collection',
 };
 
-const CHILD_TYPES: t.DevChildKind[] = ['None', 'Netbus', 'Crdt', 'Filesystem'];
+const CHILD_TYPES: t.DevChildKind[] = ['None', 'Netbus', 'Crdt', 'Filesystem', 'Video'];
 
 /**
  * Actions

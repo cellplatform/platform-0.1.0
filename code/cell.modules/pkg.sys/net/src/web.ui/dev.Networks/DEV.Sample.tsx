@@ -12,9 +12,10 @@ import {
   NetworkCard,
   t,
 } from './DEV.common';
-import { DevCrdtCard } from './DEV.CrdtCard';
+import { DevCrdtCard } from './DEV.Card.Crdt';
 import { DevEmpty } from './DEV.Empty';
-import { DevFsCard } from './DEV.FsCard';
+import { DevFsCard } from './DEV.Card.Fs';
+import { DevVideoCard } from './DEV.Card.Video';
 
 export type DevSampleProps = {
   networks: t.PeerNetwork[];
@@ -92,6 +93,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
           if (child === 'Netbus') elChild = <NetbusCard netbus={netbus} style={style} />;
           if (child === 'Crdt') elChild = <DevCrdtCard network={network} style={style} />;
           if (child === 'Filesystem') elChild = <DevFsCard network={network} style={style} />;
+          if (child === 'Video') elChild = <DevVideoCard network={network} style={style} />;
 
           return <NetworkCard key={e.index} network={network} child={elChild} />;
         },

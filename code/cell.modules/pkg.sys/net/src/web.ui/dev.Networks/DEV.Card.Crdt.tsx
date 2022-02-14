@@ -52,17 +52,6 @@ export const DevCrdtCard: React.FC<DevCrdtCardProps> = (props) => {
         const local = netbus.self;
         console.log('CHANGED', local, e.doc.next);
         // console.group('🌳 CHANGED - self', network.netbus.self);
-
-        // console.log('e', e);
-        // console.log('e.', e.doc);
-        // setDoc(doc);
-
-        // const next = e.doc.next as T;
-        // console.log('||||| next', next);
-        // setObj(next);
-        // // e.
-        // redraw();
-        // console.groupEnd();
       });
     };
 
