@@ -8,7 +8,10 @@ type Milliseconds = number;
 export type PeerEvents = t.Disposable & {
   $: t.Observable<t.PeerEvent>;
 
-  create(signal: string, self?: t.PeerId): Promise<t.PeerLocalInitRes>;
+  create(
+    signal: string,
+    options?: { self?: t.PeerId; timeout?: Milliseconds },
+  ): Promise<t.PeerLocalInitRes>;
   created(self: t.PeerId): {
     self: t.PeerId;
     $: t.Observable<t.PeerLocalInitRes>;

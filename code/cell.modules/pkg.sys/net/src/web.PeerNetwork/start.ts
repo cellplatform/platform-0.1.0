@@ -3,19 +3,26 @@ import { GroupEvents, PeerEvents } from '../web.PeerNetwork.events';
 import { cuid, t, WebRuntime } from './common';
 import { Controller } from './controller';
 
-type DomainEndpoint = string;
+type Milliseconds = number;
+type DomainEndpoint = string; // eg "rtc.foo.org"
 
-type Args = {
+type StartArgs = {
   bus: t.EventBus<any>;
   signal: DomainEndpoint;
   self?: t.PeerId;
+  timeout?: Milliseconds;
+};
+
+type StartRes = {
+  network: t.PeerNetwork;
+  error?: t.PeerError;
 };
 
 /**
  * Create and start a new peer-network.
  */
-export async function start(args: Args): Promise<t.PeerNetwork> {
-  const { bus, signal } = args;
+export async function start(args: StartArgs): Promise<StartRes> {
+  const { bus, signal, timeout } = args;
   const self = args.self ?? cuid();
   const id = self;
 
@@ -38,7 +45,7 @@ export async function start(args: Args): Promise<t.PeerNetwork> {
   };
 
   const status = await events.peer.status(self).object();
-  const api: t.PeerNetwork = {
+  const network: t.PeerNetwork = {
     dispose,
     self,
     bus,
@@ -47,6 +54,11 @@ export async function start(args: Args): Promise<t.PeerNetwork> {
     status,
   };
 
-  await events.peer.create(signal, self);
-  return api;
+  // Initialize the peer.
+  const res = await events.peer.create(signal, { self, timeout });
+  const error = res.error;
+
+  // Finish up.
+  if (error) await dispose();
+  return { network, error };
 }

@@ -1,5 +1,7 @@
 import { t } from './common';
 
+type Milliseconds = number;
+
 /**
  * NETWORK
  */
@@ -26,6 +28,7 @@ export type PeerLocalInitReqEvent = {
 export type PeerLocalCreateReq = {
   self: t.PeerId;
   signal: string; // String containing the signal server endpoint: "host/path"
+  timeout?: Milliseconds;
 };
 
 /**
@@ -39,6 +42,7 @@ export type PeerLocalInitRes = {
   self: t.PeerId;
   createdAt: number;
   signal: t.PeerSignallingEndpoint;
+  error?: t.PeerError;
 };
 
 /**

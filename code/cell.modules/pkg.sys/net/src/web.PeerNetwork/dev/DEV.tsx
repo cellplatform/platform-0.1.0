@@ -103,7 +103,7 @@ export const actions = DevActions<Ctx>()
 
     const init = () => {
       events.media.start(EventBridge.videoRef(self)).video();
-      events.peer.create(signal, self);
+      events.peer.create(signal, { self });
       events.peer.media(self).video();
     };
     time.delay(100, init);
@@ -290,7 +290,7 @@ export const actions = DevActions<Ctx>()
 
     e.button('fire ⚡️ Peer:Local/init', async (e) => {
       const { self, signal, events } = e.ctx;
-      events?.peer.create(signal, self);
+      events?.peer.create(signal, { self });
     });
 
     e.button('fire ⚡️ Peer:Local/purge', async (e) => {

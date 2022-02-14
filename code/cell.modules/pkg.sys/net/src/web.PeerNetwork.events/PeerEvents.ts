@@ -23,12 +23,13 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
   /**
    * CREATE
    */
-  const create = (signal: string, id?: t.PeerId) => {
-    const self = id || cuid();
+  const create: t.PeerEvents['create'] = (signal, options = {}) => {
+    const self = options.self || cuid();
+    const { timeout } = options;
     const res = firstValueFrom(created(self).$);
     bus.fire({
       type: 'sys.net/peer/local/init:req',
-      payload: { self, signal },
+      payload: { self, signal, timeout },
     });
     return res;
   };
@@ -72,7 +73,7 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
     };
 
     const object = async (): Promise<t.PeerStatusObject> => {
-      let _current = (await get()).peer as t.PeerStatus;
+      let _current = (await get()).peer as t.PeerStatus; // NB: Initial value.
       changed$.subscribe((e) => (_current = e.peer));
       return {
         $: changed$.pipe(map((e) => e.peer)),

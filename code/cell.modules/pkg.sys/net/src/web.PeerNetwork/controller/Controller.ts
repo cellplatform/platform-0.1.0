@@ -29,7 +29,6 @@ export function Controller(args: { bus: t.EventBus<any> }): t.PeerController {
   const bus = args.bus as t.EventBus<t.PeerEvent>;
   const events = PeerEvents(bus);
   const { $, dispose$ } = events;
-
   const refs = MemoryRefs();
 
   const dispose = () => {
@@ -108,52 +107,70 @@ export function Controller(args: { bus: t.EventBus<any> }): t.PeerController {
     return connRef;
   };
 
-  const initLocalPeer = (e: t.PeerLocalCreateReq) => {
-    const createdAt = time.now.timestamp;
-    const signal = StringUtil.parseEndpointAddress({ address: e.signal, key: DEFAULT.PEERJS_KEY });
-    const { host, path, port, secure, key } = signal;
-    const peer = new PeerJS(e.self, { host, path, port, secure, key });
-    const self: SelfRef = { id: e.self, peer, createdAt, signal, connections: [], media: {} };
-
-    /**
-     * Listen for incoming DATA connection requests.
-     */
-    peer.on('connection', (dataConnection) => {
-      dataConnection.on('open', () => {
-        refs.connection(self).add('data', 'incoming', dataConnection);
-        completeConnection('data', 'incoming', self, dataConnection);
+  const initializeLocalPeer = (e: t.PeerLocalCreateReq) => {
+    return new Promise<{ self: SelfRef; error?: string }>((resolve) => {
+      const createdAt = time.now.timestamp;
+      const signal = StringUtil.parseEndpointAddress({
+        address: e.signal,
+        key: DEFAULT.PEERJS_KEY,
       });
-    });
+      const { host, path, port, secure, key } = signal;
+      const peer = new PeerJS(e.self, { host, path, port, secure, key });
+      const self: SelfRef = { id: e.self, peer, createdAt, signal, connections: [], media: {} };
 
-    /**
-     * Listen for incoming MEDIA connection requests (video/screen).
-     */
-    peer.on('call', async (mediaConnection) => {
-      const metadata = (mediaConnection.metadata || {}) as t.PeerConnectionMetadataMedia;
-      const { kind, constraints } = metadata;
-
-      const answer = (localStream?: MediaStream) => {
-        mediaConnection.answer(localStream);
-        mediaConnection.on('stream', (remoteStream) => {
-          refs.connection(self).add(kind, 'incoming', mediaConnection, remoteStream);
-          completeConnection(kind, 'incoming', self, mediaConnection);
-        });
+      let complete = false;
+      const done = (error?: string) => {
+        if (!complete) resolve({ self, error });
+        timeout?.cancel();
+        complete = true;
       };
 
-      if (kind === 'media/video') {
-        const local = await events.media(self.id).request({ kind, constraints });
-        answer(local.media);
-      }
+      /**
+       * Listen for incoming DATA connection requests.
+       */
+      peer.on('connection', (dataConnection) => {
+        dataConnection.on('open', () => {
+          refs.connection(self).add('data', 'incoming', dataConnection);
+          completeConnection('data', 'incoming', self, dataConnection);
+        });
+      });
 
-      if (kind === 'media/screen') {
-        // NB: Screen shares do not send back another stream so do
-        //     not request it from the user.
-        answer();
-      }
+      /**
+       * Listen for incoming MEDIA connection requests (video/screen).
+       */
+      peer.on('call', async (mediaConnection) => {
+        const metadata = (mediaConnection.metadata || {}) as t.PeerConnectionMetadataMedia;
+        const { kind, constraints } = metadata;
+
+        const answer = (localStream?: MediaStream) => {
+          mediaConnection.answer(localStream);
+          mediaConnection.on('stream', (remoteStream) => {
+            refs.connection(self).add(kind, 'incoming', mediaConnection, remoteStream);
+            completeConnection(kind, 'incoming', self, mediaConnection);
+          });
+        };
+
+        if (kind === 'media/video') {
+          const local = await events.media(self.id).request({ kind, constraints });
+          answer(local.media);
+        }
+
+        if (kind === 'media/screen') {
+          // NB: Screen shares do not send back another stream so do
+          //     not request it from the user.
+          answer();
+        }
+      });
+
+      /**
+       * Wait for peer to fully initialize itself.
+       */
+      const timeout = time.delay(e.timeout ?? 3000, () => {
+        const err = `Timeout (${e.timeout}ms): Failed to initialize local peer (${e.self}) via signal server "${signal.host}"`;
+        done(err);
+      });
+      peer.on('open', () => done());
     });
-
-    // Finish up.
-    return self;
   };
 
   /**
@@ -161,13 +178,25 @@ export function Controller(args: { bus: t.EventBus<any> }): t.PeerController {
    */
   rx.payload<t.PeerLocalInitReqEvent>($, 'sys.net/peer/local/init:req')
     .pipe(delay(0))
-    .subscribe((e) => {
+    .subscribe(async (e) => {
       const id = e.self;
-      if (!refs.self[id]) refs.self[id] = initLocalPeer(e);
+      let error: undefined | t.PeerError;
+
+      if (!refs.self[id]) {
+        const res = await initializeLocalPeer(e);
+        if (res.error) error = { message: res.error };
+        refs.self[id] = res.self;
+      }
+
       const self = refs.self[id];
       bus.fire({
         type: 'sys.net/peer/local/init:res',
-        payload: { self: e.self, createdAt: self.createdAt, signal: self.signal },
+        payload: {
+          self: e.self,
+          createdAt: self.createdAt,
+          signal: self.signal,
+          error,
+        },
       });
     });
 
