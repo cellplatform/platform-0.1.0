@@ -1,8 +1,21 @@
 import React from 'react';
+import { DevEventBusTextbox } from '../../web.PeerNetwork/dev/DEV.event.netbus/DEV.NetbusCard.Textbox';
 
-import { DevActions, ObjectView, TEST, slug } from '../../web.test';
-import { color, COLORS, css, DevConstants, PeerNetwork, rx, t } from './DEV.common';
+import { cuid, time, DevActions, ObjectView, TEST, slug } from '../../web.test';
+import {
+  EventBridge,
+  color,
+  COLORS,
+  css,
+  DevConstants,
+  PeerNetwork,
+  rx,
+  t,
+  MediaStream,
+} from './DEV.common';
 import { DevSample, DevSampleProps } from './DEV.Sample';
+
+import PeerJS from 'peerjs';
 
 type Ctx = {
   props: DevSampleProps;
@@ -28,7 +41,7 @@ export const actions = DevActions<Ctx>()
         // view: DevNetworkConstants.DEFAULT.VIEW,
         view: 'Collection',
         // view: 'Single',
-        child: 'Crdt',
+        child: 'Video',
         networks: [],
       },
       debug: { background: false },
@@ -43,6 +56,9 @@ export const actions = DevActions<Ctx>()
       await addNetwork(ctx);
       await addNetwork(ctx);
     }
+
+    // await time.wait(1500);
+    // await autoConnect(ctx);
   })
 
   .items((e) => {
@@ -88,7 +104,7 @@ export const actions = DevActions<Ctx>()
     e.hr(1, 0.1);
     e.button('clear', (e) => {
       const ctx = e.ctx;
-      ctx.props.networks.forEach((net) => net.dispose());
+      ctx.props.networks.forEach((network) => network.dispose());
       ctx.props.networks = [];
     });
 
@@ -111,6 +127,80 @@ export const actions = DevActions<Ctx>()
     e.boolean('background', (e) => {
       if (e.changing) e.ctx.debug.background = e.changing.next;
       e.boolean.current = e.ctx.debug.background;
+    });
+
+    e.button('TMP', async (e) => {
+      const a = await createNetwork();
+      const b = await createNetwork();
+
+      // await time.wait(1000);
+
+      const conn = a.events.peer.connection(a.netbus.self, b.netbus.self);
+
+      console.log('await conn.isConnected()', await conn.isConnected());
+
+      const res = await conn.open.data();
+
+      console.log('res', res);
+      console.log('await conn.isConnected()', await conn.isConnected());
+    });
+
+    e.button('TMP-1', async (e) => {
+      const A = `${cuid()}`;
+      const B = `${cuid()}`;
+
+      // console.log('id', id);
+      const peer1 = new PeerJS(A);
+      const peer2 = new PeerJS(B);
+
+      peer2.on('connection', (conn) => {
+        console.log('connection');
+        conn.on('data', (data) => {
+          console.log('data', data);
+        });
+        conn.on('open', () => {
+          conn.send('hello!');
+        });
+      });
+
+      peer1.on('connection', (conn) => {
+        console.log('connection');
+        conn.on('data', (data) => {
+          console.log('data', data);
+        });
+        conn.on('open', () => {
+          conn.send('hello!');
+        });
+      });
+
+      // await time.wait(1200);
+
+      /**
+       * TODO 🐷
+       * - Resolve connection
+       */
+
+      console.log('-------------------------------------------');
+
+      peer1.on('open', () => {
+        console.log('peer1 open');
+        const conn1 = peer1.connect(B);
+
+        conn1.on('open', () => {
+          conn1.send('Hi');
+        });
+      });
+
+      // console.log('conn1', conn1);
+
+      // conn1.on('open', () => {
+      //   conn1.send('Hi');
+      // });
+
+      // const conn = peer.connect('another-peers-id');
+      // conn.on('open', () => {
+      //   conn.send('hi!');
+      // });
     });
 
     e.hr();
@@ -198,10 +288,19 @@ export default actions;
  * Helpers
  */
 
-async function addNetwork(ctx: Ctx) {
+async function createNetwork() {
   const bus = rx.bus();
   const signal = DEFAULT.SIGNAL_SERVER;
   const network = await PeerNetwork.start({ bus, signal });
+
+  MediaStream.Controller({ bus });
+  EventBridge.startEventBridge({ self: network.netbus.self, bus });
+
+  return network;
+}
+
+async function addNetwork(ctx: Ctx) {
+  const network = await createNetwork();
   ctx.props.networks.push(network);
 }
 

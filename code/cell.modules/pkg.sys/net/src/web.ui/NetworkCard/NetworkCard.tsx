@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { CardBody } from '../primitives';
-import { Card, css, CssValue, t, useLocalPeer } from './common';
+import { Card, css, CssValue, t, useLocalPeer, rx } from './common';
 import { NetworkCardBody } from './components/Body';
 import { NetworkCardChild } from './components/Child';
 import { NetworkCardFooter } from './components/Footer';

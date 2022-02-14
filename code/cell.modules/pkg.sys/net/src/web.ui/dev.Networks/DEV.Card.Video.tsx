@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t, Card, CardBody } from './DEV.common';
+import { color, css, CssValue, t, Card, CardBody, Button } from './DEV.common';
 
 export type DevVideoCardProps = {
   network: t.PeerNetwork;
@@ -7,6 +7,9 @@ export type DevVideoCardProps = {
 };
 
 export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
+  const { network } = props;
+  const self = network.netbus.self;
+
   /**
    * [Render]
    */
@@ -27,7 +30,28 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
     </>
   );
 
-  const elBody = <div>body</div>;
+  const connectVideo = async () => {
+    const peer = network.events.peer;
+    const status = await peer.status(self).get();
+    const conn = status.peer?.connections[0];
+
+    if (conn) {
+      const parent = conn.id;
+      const remote = conn.peer.remote.id;
+
+      const f = peer.connection(self, remote).open.media('media/video', { parent });
+      console.log('f', f);
+      const ff = await f;
+      console.log('ff', ff);
+      console.log('network.status.current', network.status.current);
+    }
+  };
+
+  const elBody = (
+    <div {...styles.body}>
+      <Button onClick={connectVideo}>Start Video</Button>
+    </div>
+  );
 
   const elFooter = (
     <div {...styles.footer}>

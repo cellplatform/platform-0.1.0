@@ -20,8 +20,8 @@ export const actions = DevActions<Ctx>()
   .context((e) => e.prev ?? {})
 
   .init(async (e) => {
-    e.ctx.results = await Test.run(Object.values(Imports));
-    // e.ctx.results = await Test.run(Imports.PeerNetworkUri);
+    // e.ctx.results = await Test.run(Object.values(Imports));
+    e.ctx.results = await Test.run(Imports.PeerNetwork);
   })
 
   .items((e) => {
@@ -44,7 +44,7 @@ export const actions = DevActions<Ctx>()
     e.settings({
       host: { background: -0.04 },
       layout: {
-        label: 'Unit Tests',
+        label: '<Test.View.Results>',
         position: [150, 80],
         border: -0.1,
         cropmarks: -0.2,
