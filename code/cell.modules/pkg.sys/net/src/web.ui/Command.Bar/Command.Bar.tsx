@@ -53,8 +53,8 @@ export const View: React.FC<CommandBarProps> = (props) => {
       display: 'flex',
       position: 'relative',
       boxSizing: 'border-box',
-      borderRadius,
       backgroundColor: color.format(props.backgroundColor),
+      borderRadius,
     }),
     inset: css({ Absolute: 0 }),
     body: css({ flex: 1, Flex: 'x-stretch-stretch' }),
@@ -71,17 +71,19 @@ export const View: React.FC<CommandBarProps> = (props) => {
 
   const elements: JSX.Element[] = [];
 
-  const elDivBorder = <div {...styles.divider.border} />;
-  const elDivSpacer = <div {...styles.divider.spacer} />;
   const appendDivider = () => {
-    if (elements.length > 0) elements.push(...[elDivSpacer, elDivBorder, elDivSpacer]);
+    if (elements.length > 0) {
+      elements.push(<div {...styles.divider.spacer} key={elements.length} />);
+      elements.push(<div {...styles.divider.border} key={elements.length} />);
+      elements.push(<div {...styles.divider.spacer} key={elements.length} />);
+    }
   };
 
   parts.forEach((part) => {
     if (part === 'Input') {
       appendDivider();
       elements.push(
-        <div {...styles.input}>
+        <div {...styles.input} key={elements.length}>
           <CommandTextbox onChange={props.onChange} onAction={props.onAction} theme={'Dark'} />
         </div>,
       );
@@ -89,15 +91,19 @@ export const View: React.FC<CommandBarProps> = (props) => {
 
     if (part === 'Events') {
       appendDivider();
-      elements.push(<div {...styles.events}>{<CommandBarEvents network={network} />}</div>);
+      elements.push(
+        <div {...styles.events} key={elements.length}>
+          {<CommandBarEvents network={network} />}
+        </div>,
+      );
     }
   });
 
   const elBody = (
     <div {...styles.body}>
-      {elDivSpacer}
+      <div {...styles.divider.spacer} />
       {elements}
-      {elDivSpacer}
+      <div {...styles.divider.spacer} />
     </div>
   );
 
