@@ -20,6 +20,7 @@ export type PeerEvents = t.Disposable & {
     res$: t.Observable<t.PeerLocalStatusRes>;
     changed$: t.Observable<t.PeerLocalStatusChanged>;
     get(): Promise<t.PeerLocalStatusRes>;
+    object(): Promise<t.PeerStatusObject>;
     refresh(): void;
   };
 

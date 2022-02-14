@@ -1,7 +1,7 @@
-import { t, cuid, WebRuntime } from './common';
-import { Controller } from './controller';
 import { PeerNetbus } from '../web.PeerNetbus';
-import { PeerEvents, GroupEvents } from '../web.PeerNetwork.events';
+import { GroupEvents, PeerEvents } from '../web.PeerNetwork.events';
+import { cuid, t, WebRuntime } from './common';
+import { Controller } from './controller';
 
 type DomainEndpoint = string;
 
@@ -29,7 +29,7 @@ export async function start(args: Args): Promise<t.PeerNetwork> {
     runtime: runtime.events,
   };
 
-  const dispose = () => {
+  const dispose = async () => {
     peer.dispose();
     runtime.dispose();
     events.peer.dispose();
@@ -37,11 +37,14 @@ export async function start(args: Args): Promise<t.PeerNetwork> {
     events.runtime.dispose();
   };
 
+  const status = await events.peer.status(self).object();
   const api: t.PeerNetwork = {
+    dispose,
+    self,
     bus,
     netbus,
     events,
-    dispose,
+    status,
   };
 
   await events.peer.create(signal, self);
