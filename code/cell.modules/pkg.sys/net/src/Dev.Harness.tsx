@@ -11,8 +11,8 @@ const imports = {
   CommandBar: import('./web.ui/Command.Bar/dev/DEV'),
   CommandTextbox: import('./web.ui/Command.Textbox/dev/DEV'),
   Networks: import('./web.ui/dev.Networks/DEV'),
-  UnitTests: import('./web.ui/dev/DEV.UnitTests'),
-  SamplePeerNetwork: import('./web.PeerNetwork/dev/DEV'),
+  UnitTests: import('./web.ui/dev.UnitTests/DEV'),
+  Sample: import('./web.PeerNetwork/dev/DEV'),
 };
 
 /**
