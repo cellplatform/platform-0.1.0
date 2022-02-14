@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t, Style } from '../../common';
+import React from 'react';
+import { css, CssValue, t, Style } from '../../common';
 import { Toolbar } from './Toolbar';
 
 export type CardBodyProps = {
@@ -22,11 +22,23 @@ export const CardBody: React.FC<CardBodyProps> = (props) => {
       Flex: 'y-stretch-stretch',
       ...Style.toPadding(props.padding),
     }),
+    header: css({}),
+    footer: css({ fontSize: 12 }),
   };
 
-  const elHeader = props.header && <Toolbar edge={'N'}>{props.header}</Toolbar>;
+  const elHeader = props.header && (
+    <Toolbar edge={'N'} style={styles.header}>
+      {props.header}
+    </Toolbar>
+  );
+
   const elBody = <div {...styles.body}>{props.children}</div>;
-  const elFooter = props.footer && <Toolbar edge={'S'}>{props.footer}</Toolbar>;
+
+  const elFooter = props.footer && (
+    <Toolbar edge={'S'} style={styles.footer}>
+      {props.footer}
+    </Toolbar>
+  );
 
   return (
     <div {...css(styles.base, props.style)}>

@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Subject } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import React from 'react';
 
-import { color, css, CssValue, EventPipe, FC, t, useEventBusHistory } from '../../common';
+import { color, css, CssValue, FC, t } from '../../common';
 import {
   CommandTextbox,
   CommandTextboxActionEventHandler,
   CommandTextboxChangeEventHandler,
 } from '../Command.Textbox';
-import { Icons } from '../Icons';
-import { CommandInset, CommandInsetProps } from './Command.Inset';
 import { CommandBarEvents, CommandBarEventsProps } from './CommandBar.Events';
+import { CommandBarInset, CommandBarInsetProps } from './CommandBar.Inset';
 
 /**
  * Types
@@ -19,7 +16,7 @@ export type CommandBarPart = 'Input' | 'Events';
 
 export type CommandBarProps = {
   network: t.PeerNetwork;
-  inset?: boolean | CommandInsetProps;
+  inset?: boolean | CommandBarInsetProps;
   parts?: CommandBarPart[];
   cornerRadius?: [number, number, number, number];
   backgroundColor?: string | number;
@@ -112,7 +109,7 @@ export const View: React.FC<CommandBarProps> = (props) => {
     ...(typeof inset === 'object' ? inset : {}),
   };
 
-  const elInsetBorder = inset && <CommandInset {...insetProps} style={styles.inset} />;
+  const elInsetBorder = inset && <CommandBarInset {...insetProps} style={styles.inset} />;
 
   return (
     <div {...css(styles.base, props.style)}>
@@ -123,10 +120,10 @@ export const View: React.FC<CommandBarProps> = (props) => {
 };
 
 type Fields = {
-  Inset: React.FC<CommandInsetProps>;
+  Inset: React.FC<CommandBarInsetProps>;
   Events: React.FC<CommandBarEventsProps>;
 };
 export const CommandBar = FC.decorate<CommandBarProps, Fields>(View, {
-  Inset: CommandInset,
+  Inset: CommandBarInset,
   Events: CommandBarEvents,
 });

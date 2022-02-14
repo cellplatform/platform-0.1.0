@@ -1,14 +1,14 @@
 import React from 'react';
 import { color, css, CssValue } from '../../common';
 
-export type CommandInsetProps = {
+export type CommandBarInsetProps = {
   cornerRadius?: [number, number, number, number];
   borderTop?: string | number;
   boxShadow?: string;
   style?: CssValue;
 };
 
-export const CommandInset: React.FC<CommandInsetProps> = (props) => {
+export const CommandBarInset: React.FC<CommandBarInsetProps> = (props) => {
   const boxShadow = props.boxShadow ?? `inset 0 2px 6px ${color.format(-0.6)}`;
 
   const borderRadius = props.cornerRadius

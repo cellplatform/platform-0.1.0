@@ -3,7 +3,7 @@ import React from 'react';
 import {
   CommandBar,
   CommandBarProps,
-  CommandInsetProps,
+  CommandBarInsetProps,
   CommandBarConstants,
   CommandBarPart,
 } from '..';
@@ -92,7 +92,7 @@ export const actions = DevActions<Ctx>()
     });
     if (!network) return;
 
-    const bg = props.inset ? ({ cornerRadius: [0, 0, 5, 5] } as CommandInsetProps) : undefined;
+    const bg = props.inset ? ({ cornerRadius: [0, 0, 5, 5] } as CommandBarInsetProps) : undefined;
 
     e.render(
       <CommandBar

@@ -1,2 +1,3 @@
-export * from './Command.Bar';
-export * from './Command.Inset';
+export * from './CommandBar';
+export * from './CommandBar.Inset';
+export * from './CommandBar.Events';
