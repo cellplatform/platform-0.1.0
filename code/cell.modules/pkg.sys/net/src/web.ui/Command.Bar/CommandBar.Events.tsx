@@ -7,11 +7,12 @@ import { Icons } from '../Icons';
 
 export type CommandBarEventsProps = {
   network: t.PeerNetwork;
+  iconEdge?: 'Left' | 'Right';
   style?: CssValue;
 };
 
 export const CommandBarEvents: React.FC<CommandBarEventsProps> = (props) => {
-  const { network } = props;
+  const { network, iconEdge = 'Right' } = props;
   const { netbus } = network;
 
   const history = useEventBusHistory(netbus);
@@ -38,7 +39,8 @@ export const CommandBarEvents: React.FC<CommandBarEventsProps> = (props) => {
     base: css({ flex: 1, boxSizing: 'border-box', Flex: 'x-center-center' }),
     pipe: css({ flex: 1 }),
     icon: css({
-      marginLeft: 5,
+      marginLeft: iconEdge === 'Right' ?? 5,
+      marginRight: iconEdge === 'Left' ?? 5,
       paddingTop: 3,
       opacity: recentlyFired ? 0.9 : 0.3,
       transition: `opacity 300ms`,
@@ -56,12 +58,17 @@ export const CommandBarEvents: React.FC<CommandBarEventsProps> = (props) => {
     />
   );
 
+  const elIcon = (
+    <div {...styles.icon}>
+      <Icons.Event color={1} size={16} />
+    </div>
+  );
+
   return (
     <div {...css(styles.base, props.style)}>
+      {iconEdge === 'Left' && elIcon}
       {elPipe}
-      <div {...styles.icon}>
-        <Icons.Event color={1} size={16} />
-      </div>
+      {iconEdge === 'Right' && elIcon}
     </div>
   );
 };

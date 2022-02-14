@@ -49,7 +49,7 @@ export const CommandTextbox: React.FC<CommandTextboxProps> = (props) => {
   const COL_HIGHLIGHT = isDark ? COLORS.WHITE : COLORS.DARK;
   const COL_ICON = {
     PENDING: Boolean(input && !pending) ? COL_HIGHLIGHT : color.alpha(COL_BASE, 0.8),
-    TERMINAL: isDark ? COLORS.WHITE : color.alpha(COL_BASE, 0.5),
+    TERMINAL: isDark ? COLORS.WHITE : color.alpha(COL_BASE, 0.8),
   };
   const COL_TEXT = {
     DEFAULT: color.alpha(COL_BASE, 0.5),
@@ -81,7 +81,7 @@ export const CommandTextbox: React.FC<CommandTextboxProps> = (props) => {
     },
     right: {
       base: css({
-        top: -3,
+        top: -1,
         Flex: 'x-center-center',
         position: 'relative',
         marginLeft: 1,

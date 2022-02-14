@@ -63,6 +63,9 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Debug');
 
+    e.button('arrangement (1)', (e) => (e.ctx.props.parts = ['Input', 'Events']));
+    e.button('arrangement (2)', (e) => (e.ctx.props.parts = ['Events', 'Input']));
+
     e.hr(1, 0.1);
 
     e.button('netbus.fire', (e) => {
@@ -71,8 +74,15 @@ export const actions = DevActions<Ctx>()
 
     e.hr();
     e.component((e) => {
-      const data = e.ctx.props;
-      return <ObjectView name={'props'} data={data} style={{ MarginX: 15 }} fontSize={10} />;
+      return (
+        <ObjectView
+          name={'props'}
+          data={e.ctx.props}
+          style={{ MarginX: 15 }}
+          fontSize={10}
+          expandPaths={['$']}
+        />
+      );
     });
   })
 

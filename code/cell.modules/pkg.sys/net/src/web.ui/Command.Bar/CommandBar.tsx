@@ -76,7 +76,9 @@ export const View: React.FC<CommandBarProps> = (props) => {
     }
   };
 
-  parts.forEach((part) => {
+  parts.forEach((part, i) => {
+    const isFirst = i === 0;
+
     if (part === 'Input') {
       appendDivider();
       elements.push(
@@ -90,7 +92,7 @@ export const View: React.FC<CommandBarProps> = (props) => {
       appendDivider();
       elements.push(
         <div {...styles.events} key={elements.length}>
-          {<CommandBarEvents network={network} />}
+          {<CommandBarEvents network={network} iconEdge={isFirst ? 'Left' : 'Right'} />}
         </div>,
       );
     }
