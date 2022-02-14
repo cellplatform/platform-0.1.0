@@ -24,7 +24,7 @@ export const actions = DevActions<Ctx>()
   .init(async (e) => {
     const { ctx, bus } = e;
     const signal = TEST.SIGNAL;
-    const network = await PeerNetwork.start({ bus, signal });
+    const { network } = await PeerNetwork.start({ bus, signal });
     const { netbus } = network;
     ctx.props = { showAsCard: true, netbus };
   })

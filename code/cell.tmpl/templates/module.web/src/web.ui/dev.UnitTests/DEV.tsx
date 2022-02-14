@@ -39,7 +39,7 @@ export const actions = DevActions<Ctx>()
     e.settings({
       host: { background: -0.04 },
       layout: {
-        label: 'Unit Tests',
+        label: '<Test.View.Results>',
         position: [150, 80],
         border: -0.1,
         cropmarks: -0.2,

@@ -30,8 +30,9 @@ export const actions = DevActions<Ctx>()
     const { ctx, bus } = e;
 
     const signal = TEST.SIGNAL;
-    const network = (ctx.network = await PeerNetwork.start({ bus, signal }));
+    const { network } = await PeerNetwork.start({ bus, signal });
     const { self } = network.netbus;
+    ctx.network = network;
 
     const status = (await network.events.peer.status(self).get()).peer;
     if (status) {

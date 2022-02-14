@@ -291,7 +291,7 @@ export default actions;
 async function createNetwork() {
   const bus = rx.bus();
   const signal = DEFAULT.SIGNAL_SERVER;
-  const network = await PeerNetwork.start({ bus, signal });
+  const { network } = await PeerNetwork.start({ bus, signal });
 
   MediaStream.Controller({ bus });
   EventBridge.startEventBridge({ self: network.netbus.self, bus });
