@@ -18,7 +18,7 @@ export function useActionsRedraw(args: {
   throttle?: number;
 }) {
   const { actions } = args;
-  const [redraw, setRedraw] = useState<number>(0);
+  const [, setRedraw] = useState<number>(0);
   const bus = args.bus as t.EventBus<t.ActionEvent>;
 
   useEffect(() => {

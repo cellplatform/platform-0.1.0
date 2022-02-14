@@ -85,9 +85,10 @@ export const actions = DevActions<Ctx>()
     };
 
     e.component((e) => {
+      console.log('render component', 'Foo');
       return (
         <Sample
-          text={'Foo'}
+          text={'Component.Foo'}
           count={e.ctx.count}
           onIncrement={() => e.change.ctx((draft) => draft.count++)}
           onEnvironment={() => e.change.settings({ host: { background: COLORS.DARK } })}
@@ -98,12 +99,16 @@ export const actions = DevActions<Ctx>()
     e.component((e) => {
       return (
         <Sample
-          text={'Bar'}
+          text={'Component.Bar'}
           count={e.ctx.count}
           onIncrement={() => e.change.ctx((draft) => draft.count++)}
           onEnvironment={() => e.change.settings({ host: { background: -0.03 } })}
         />
       );
+    });
+
+    e.button('redraw', (e) => {
+      e.redraw();
     });
 
     e.hr();

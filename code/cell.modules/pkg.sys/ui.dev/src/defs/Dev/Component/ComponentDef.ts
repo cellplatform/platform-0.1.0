@@ -1,4 +1,4 @@
-import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, throttleTime } from 'rxjs/operators';
 
 import { Component } from '../../../web.ui/Action.Dev';
 import { Model, R, t, Handler, rx } from '../common';
@@ -72,12 +72,19 @@ export const ComponentDef: t.ActionDef<T> = {
       }
     };
 
+    actions.state.redraw$
+      .pipe(
+        filter(() => Boolean(item.handler)),
+        debounceTime(0),
+        throttleTime(0),
+      )
+      .subscribe(fireRender);
     actions.event.changed$
       .pipe(
         filter(() => Boolean(item.handler)),
         debounceTime(0),
         distinctUntilChanged((prev, next) => R.equals(prev.to.ctx.current, next.to.ctx.current)),
       )
-      .subscribe((e) => fireRender());
+      .subscribe(fireRender);
   },
 };
