@@ -6,6 +6,9 @@ export type PeerMediaConstraints = t.PartialDeep<MediaStreamConstraints>;
 export type PeerError = { message: string };
 export type PeerModule = { name: string; version: string };
 
+/**
+ * Status
+ */
 export type PeerStatus = {
   id: t.PeerId;
   isOnline: boolean;
@@ -14,6 +17,14 @@ export type PeerStatus = {
   connections: t.PeerConnectionStatus[];
 };
 
+export type PeerStatusObject = {
+  $: t.Observable<t.PeerStatus>;
+  current: t.PeerStatus;
+};
+
+/**
+ * Connection broker end-point.
+ */
 export type PeerSignallingEndpoint = {
   host: string;
   port: number;

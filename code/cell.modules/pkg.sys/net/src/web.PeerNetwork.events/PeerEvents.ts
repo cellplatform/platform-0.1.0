@@ -71,7 +71,18 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
       bus.fire({ type: 'sys.net/peer/local/status:refresh', payload: { self } });
     };
 
-    return { self, get, refresh, req$, res$, changed$ };
+    const object = async (): Promise<t.PeerStatusObject> => {
+      let _current = (await get()).peer as t.PeerStatus;
+      changed$.subscribe((e) => (_current = e.peer));
+      return {
+        $: changed$.pipe(map((e) => e.peer)),
+        get current() {
+          return _current;
+        },
+      };
+    };
+
+    return { self, get, object, refresh, req$, res$, changed$ };
   };
 
   /**
