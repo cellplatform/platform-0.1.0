@@ -1,35 +1,28 @@
 import React, { useEffect, useRef } from 'react';
-import { css, CssValue, defaultValue } from '../../common';
+import { css, CssValue, defaultValue, t, Style } from '../../common';
 
 export type VideoStreamProps = {
   stream?: MediaStream;
   width?: number;
   height?: number;
-  borderRadius?: number;
+  borderRadius?: t.CssRadiusInput;
   isMuted?: boolean;
   style?: CssValue;
 };
 
 export const VideoStream: React.FC<VideoStreamProps> = (props) => {
-  const { stream } = props;
+  const { stream, isMuted = false, width = 300, height = 200, borderRadius = 30 } = props;
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const isMuted = defaultValue(props.isMuted, false);
-  const width = defaultValue(props.width, 300);
-  const height = defaultValue(props.height, 200);
-  const borderRadius = defaultValue(props.borderRadius, 16);
-
   useEffect(() => {
-    if (videoRef.current && stream) {
-      videoRef.current.srcObject = stream;
-    }
+    if (videoRef.current && stream) videoRef.current.srcObject = stream;
   }, [stream, videoRef]);
 
   const styles = {
     base: css({
       position: 'relative',
       overflow: 'hidden',
-      borderRadius,
+      borderRadius: Style.toRadius(borderRadius),
       width,
       height,
     }),

@@ -25,6 +25,7 @@ export type ICssStyle = {
   toShadow: CssToShadow;
   toPosition: CssToPosition;
   toAbsolute: CssToAbsolute;
+  toRadius: CssToRadius;
 };
 
 /**
@@ -103,3 +104,9 @@ export type CssEdgePosition = CssEdges & { position: CssPosition };
 
 export type CssToPosition = (position: CssPosition, edges: CssEdgesInput) => CssEdgePosition;
 export type CssToAbsolute = (edges: CssEdgesInput) => CssEdgePosition;
+
+/**
+ * Border/Corner Radius
+ */
+export type CssRadiusInput = N | [N, N, N, N];
+export type CssToRadius = (corner: CssRadiusInput) => string | undefined;

@@ -136,3 +136,22 @@ export const toPosition: t.CssToPosition = (position, edges) => {
   return { position, ...toEdges(edges) } as t.CssEdgePosition;
 };
 export const toAbsolute: t.CssToAbsolute = (edges) => toPosition('absolute', edges);
+
+/**
+ * Corner/border radius.
+ */
+
+export const toRadius: t.CssToRadius = (edges) => {
+  if (edges === null || edges === undefined) return undefined;
+  if (typeof edges === 'number') return `${edges}px`;
+  if (typeof edges === 'string') return edges;
+  if (Array.isArray(edges)) {
+    const convert = (input: t.CssRadiusInput) => {
+      if (typeof input === 'number') return input === 0 ? 0 : `${input}px`;
+      if (input === null || input === undefined) return 0;
+      return input || 0;
+    };
+    return [...edges.slice(0, 4), 0, 0, 0, 0].slice(0, 4).map(convert).join(' ');
+  }
+  return undefined;
+};

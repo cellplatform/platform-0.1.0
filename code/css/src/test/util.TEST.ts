@@ -268,3 +268,25 @@ describe('toPosition', () => {
     expect(res2.left).to.eql(40);
   });
 });
+
+describe('toRadius', () => {
+  it('null/undefined', () => {
+    expect(Style.toRadius(null)).to.eql(undefined);
+    expect(Style.toRadius(undefined)).to.eql(undefined);
+  });
+
+  it('single value', () => {
+    expect(Style.toRadius(10)).to.eql('10px');
+    expect(Style.toRadius('5em')).to.eql('5em');
+  });
+
+  it('array [N,N,N,N]', () => {
+    const res1 = Style.toRadius([10, '5em', null, undefined, 999, 999] as any); // To long.
+    const res2 = Style.toRadius([10, '5em'] as any); // To short
+    const res3 = Style.toRadius([null, undefined, 0, '']);
+
+    expect(res1).to.eql('10px 5em 0 0');
+    expect(res2).to.eql('10px 5em 0 0');
+    expect(res3).to.eql('0 0 0 0');
+  });
+});

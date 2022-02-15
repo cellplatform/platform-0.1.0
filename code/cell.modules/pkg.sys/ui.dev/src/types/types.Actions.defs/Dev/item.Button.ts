@@ -45,7 +45,6 @@ export type ActionButtonHandlerArgs<C> = t.ActionHandlerArgs<C> & {
     ActionHandlerSettingsButtonArgs
   >;
   readonly button: t.ActionButtonProps;
-  redraw(): void; // TEMP 🐷 todo - move to base: [ActionHandlerArgs]
 };
 export type ActionHandlerSettingsButtonArgs = t.ActionHandlerSettingsArgs & {
   button?: Partial<t.ActionButtonProps>;

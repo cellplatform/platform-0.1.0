@@ -27,6 +27,7 @@ export const SelectDef: t.ActionDef<T> = {
     const { item } = Model.item<T>(actions, args.id);
     const namespace = actions.state.namespace;
     const bus = rx.busAsType<E>(args.bus);
+    const redraw = () => args.actions.state.redraw$.next();
 
     // Listen for events.
     rx.payload<E>(bus.$, 'sys.ui.dev/action/Select')
@@ -59,7 +60,17 @@ export const SelectDef: t.ActionDef<T> = {
 
             const changing = e.changing;
             const select = item;
-            const payload: P = { ctx, changing, host, layout, actions, select, settings, toObject };
+            const payload: P = {
+              ctx,
+              changing,
+              host,
+              layout,
+              actions,
+              select,
+              settings,
+              toObject,
+              redraw,
+            };
             if (changing) item.current = changing.next; // Update the item to the latest selection.
 
             for (const fn of e.item.handlers) {

@@ -8,6 +8,7 @@ export type ActionHandlerArgs<C> = {
   readonly host: t.Host;
   readonly layout: t.HostedLayout;
   readonly actions: t.HostedActions;
+  redraw(): void;
   toObject<T>(proxy: any): T | undefined;
 };
 
