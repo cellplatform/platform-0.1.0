@@ -65,14 +65,12 @@ export const BodyColumnRight: React.FC<BodyColumnRightProps> = (props) => {
             <Label.Peer
               id={id}
               media={stream?.media}
-              isCopyable={false}
               style={styles.peer}
               onClick={(e) => {
                 const media = e.target === 'Icon' ? stream?.media : undefined;
-                // const media =
                 bus.fire({
                   type: 'sys.net/ui.NetworkCard/PeerClick',
-                  payload: { instance, network, peer: id, isSelf: false, media },
+                  payload: { instance, network, peer: id, media },
                 });
               }}
             />

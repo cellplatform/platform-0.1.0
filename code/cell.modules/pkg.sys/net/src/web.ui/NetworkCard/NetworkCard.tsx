@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { CardBody } from '../primitives';
-import { Card, css, CssValue, t, useLocalPeer, rx } from './common';
+import { Card, css, CssValue, t, useLocalPeer } from './common';
 import { NetworkCardBody } from './components/Body';
 import { NetworkCardChild } from './components/Child';
 import { NetworkCardFooter } from './components/Footer';
@@ -48,7 +48,7 @@ export const NetworkCard: React.FC<NetworkCardProps> = (props) => {
           peers={peers}
           style={styles.fill}
         />
-        <NetworkCardFooter network={network} />
+        <NetworkCardFooter instance={instance} network={network} />
       </CardBody>
     </Card>
   );

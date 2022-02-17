@@ -35,13 +35,17 @@ export const NetworkCardBody: React.FC<NetworkCardBodyProps> = (props) => {
 
   const elDivider = <div {...styles.divider} />;
   const elDivTraceEdges = <div {...css(styles.divider, styles.trace)} />;
-
-  const elNote = <div {...styles.note}>{`${rx.bus.instance(bus)}`}</div>;
+  const elDebug = <div {...styles.note}>{`${rx.bus.instance(bus)}`}</div>;
 
   return (
     <div {...css(styles.base, props.style)}>
       {elDivider}
-      <BodyColumnLeft network={network} self={self} style={styles.column} />
+      <BodyColumnLeft
+        instance={props.instance}
+        network={network}
+        self={self}
+        style={styles.column}
+      />
       {elDivTraceEdges}
       <BodyColumnRight
         instance={props.instance}
@@ -50,7 +54,7 @@ export const NetworkCardBody: React.FC<NetworkCardBodyProps> = (props) => {
         style={styles.column}
       />
       {elDivider}
-      {elNote}
+      {elDebug}
     </div>
   );
 };

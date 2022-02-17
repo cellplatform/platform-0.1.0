@@ -2,7 +2,7 @@ import { t } from '../common';
 import { PeerEvents } from '../../web.PeerNetwork.events';
 
 export type ConnectArgs = {
-  bus: t.EventBus;
+  bus: t.EventBus<any>;
   self: t.PeerId;
   remote: t.PeerId;
   isReliable?: boolean;

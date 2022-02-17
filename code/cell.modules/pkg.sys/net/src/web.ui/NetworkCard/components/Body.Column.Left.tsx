@@ -5,13 +5,14 @@ import { css, CssValue, t, useLocalPeer } from '../common';
 import { BodyColumnHr, BodyColumnTitle } from './Body.Column';
 
 export type BodyColumnLeftProps = {
+  instance: t.InstanceId;
   network: t.PeerNetwork;
   self: t.PeerId;
   style?: CssValue;
 };
 
 export const BodyColumnLeft: React.FC<BodyColumnLeftProps> = (props) => {
-  const { network } = props;
+  const { network, instance } = props;
   const bus = network.bus;
   const self = useLocalPeer({ bus, self: props.self });
 
@@ -24,7 +25,19 @@ export const BodyColumnLeft: React.FC<BodyColumnLeftProps> = (props) => {
   };
 
   const elPeer = (
-    <Label.Peer id={self.id} isSelf={true} media={self.media.video} style={styles.peer} />
+    <Label.Peer
+      id={self.id}
+      isSelf={true}
+      media={self.media.video}
+      style={styles.peer}
+      onClick={(e) => {
+        const media = e.target === 'Icon' ? self.media.video : undefined;
+        bus.fire({
+          type: 'sys.net/ui.NetworkCard/PeerClick',
+          payload: { instance, network, peer: self.id, media },
+        });
+      }}
+    />
   );
 
   return (
