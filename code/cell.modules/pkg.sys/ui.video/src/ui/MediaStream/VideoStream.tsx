@@ -11,7 +11,7 @@ export type VideoStreamProps = {
 };
 
 export const VideoStream: React.FC<VideoStreamProps> = (props) => {
-  const { stream, isMuted = false, width = 300, height = 200, borderRadius = 30 } = props;
+  const { stream, isMuted = false, width = 300, height = 200, borderRadius = 20 } = props;
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
