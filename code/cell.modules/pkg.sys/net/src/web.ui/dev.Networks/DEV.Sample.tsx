@@ -2,22 +2,15 @@ import React from 'react';
 
 import { Label } from '../Label';
 import { NetbusCard } from '../NetbusCard';
-import {
-  BulletList,
-  color,
-  COLORS,
-  css,
-  CssValue,
-  DevConstants,
-  NetworkCard,
-  t,
-} from './DEV.common';
+import { BulletList, color, COLORS, css, CssValue, DevConstants, t } from './DEV.common';
 import { DevCrdtCard } from './DEV.Card.Crdt';
 import { DevEmpty } from './DEV.Empty';
 import { DevFsCard } from './DEV.Card.Fs';
 import { DevVideoCard } from './DEV.Card.Video';
+import { DevNetworkCard } from './DEV.NetworkCard';
 
 export type DevSampleProps = {
+  instance: t.InstanceId;
   networks: t.PeerNetwork[];
   view?: t.DevViewKind;
   child?: t.DevChildKind;
@@ -95,7 +88,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
           if (child === 'Filesystem') elChild = <DevFsCard network={network} style={style} />;
           if (child === 'Video') elChild = <DevVideoCard network={network} style={style} />;
 
-          return <NetworkCard key={e.index} network={network} child={elChild} />;
+          return <DevNetworkCard key={e.index} instance={props.instance} network={network} />;
         },
       }}
     />

@@ -28,9 +28,6 @@ export {
   MotionDraggableDef,
 } from 'sys.ui.primitives/lib/ui/Draggable.Motion';
 
-export { AudioWaveform } from 'sys.ui.video/lib/ui/AudioWaveform';
-export { MediaStream, MediaEvent, VideoStream } from 'sys.ui.video/lib/ui/MediaStream';
-
 /**
  * @local
  */

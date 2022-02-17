@@ -1,5 +1,7 @@
 export { Observable } from 'rxjs';
 
+export type InstanceId = string;
+
 /**
  * @platform
  */

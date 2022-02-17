@@ -1,21 +1,18 @@
 import React from 'react';
-import { DevEventBusTextbox } from '../../web.PeerNetwork/dev/DEV.event.netbus/DEV.NetbusCard.Textbox';
 
-import { cuid, time, DevActions, ObjectView, TEST, slug } from '../../web.test';
+import { DevActions, ObjectView, TEST } from '../../web.test';
 import {
-  EventBridge,
   color,
   COLORS,
   css,
   DevConstants,
+  EventBridge,
+  MediaStream,
   PeerNetwork,
   rx,
   t,
-  MediaStream,
 } from './DEV.common';
 import { DevSample, DevSampleProps } from './DEV.Sample';
-
-import PeerJS from 'peerjs';
 
 type Ctx = {
   props: DevSampleProps;
@@ -38,6 +35,7 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
     const ctx: Ctx = {
       props: {
+        instance: 'instance.foo',
         // view: DevNetworkConstants.DEFAULT.VIEW,
         view: 'Collection',
         // view: 'Single',
@@ -53,12 +51,9 @@ export const actions = DevActions<Ctx>()
     const { ctx } = e;
 
     if (ctx.props.networks.length === 0) {
-      await addNetwork(ctx);
-      await addNetwork(ctx);
+      const wait = Array.from({ length: 2 }).map(() => addNetwork(ctx, e.redraw));
+      await Promise.all(wait);
     }
-
-    // await time.wait(1500);
-    // await autoConnect(ctx);
   })
 
   .items((e) => {
@@ -71,7 +66,6 @@ export const actions = DevActions<Ctx>()
     e.select((config) => {
       config
         .view('buttons')
-        // .title('view')
         .items(DevConstants.VIEWS)
         .initial(config.ctx.props.view)
         .pipe((e) => {
@@ -99,7 +93,7 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Collection');
-    e.button('add', (e) => addNetwork(e.ctx));
+    e.button('add', (e) => addNetwork(e.ctx, e.redraw));
 
     e.hr(1, 0.1);
     e.button('clear', (e) => {
@@ -129,98 +123,36 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.debug.background;
     });
 
-    e.button('TMP', async (e) => {
-      const a = await createNetwork();
-      const b = await createNetwork();
-
-      // await time.wait(1000);
-
-      const conn = a.events.peer.connection(a.netbus.self, b.netbus.self);
-
-      console.log('await conn.isConnected()', await conn.isConnected());
-
-      const res = await conn.open.data();
-
-      console.log('res', res);
-      console.log('await conn.isConnected()', await conn.isConnected());
-    });
-
-    e.button('TMP-1', async (e) => {
-      const A = `${cuid()}`;
-      const B = `${cuid()}`;
-
-      // console.log('id', id);
-      const peer1 = new PeerJS(A);
-      const peer2 = new PeerJS(B);
-
-      peer2.on('connection', (conn) => {
-        console.log('connection');
-        conn.on('data', (data) => {
-          console.log('data', data);
-        });
-        conn.on('open', () => {
-          conn.send('hello!');
-        });
-      });
-
-      peer1.on('connection', (conn) => {
-        console.log('connection');
-        conn.on('data', (data) => {
-          console.log('data', data);
-        });
-        conn.on('open', () => {
-          conn.send('hello!');
-        });
-      });
-
-      // await time.wait(1200);
-
-      /**
-       * TODO 🐷
-       * - Resolve connection
-       */
-
-      console.log('-------------------------------------------');
-
-      peer1.on('open', () => {
-        console.log('peer1 open');
-        const conn1 = peer1.connect(B);
-
-        conn1.on('open', () => {
-          conn1.send('Hi');
-        });
-      });
-
-      // console.log('conn1', conn1);
-
-      // conn1.on('open', () => {
-      //   conn1.send('Hi');
-      // });
-
-      // const conn = peer.connect('another-peers-id');
-      // conn.on('open', () => {
-      //   conn.send('hi!');
-      // });
-    });
+    e.button('redraw', (e) => e.redraw());
 
     e.hr();
     e.component((e) => {
       const obj = (name: string, data: any) => {
-        return <ObjectView name={name} data={data} style={{ MarginX: 15 }} expandPaths={['$']} />;
+        return (
+          <ObjectView
+            name={name}
+            data={data}
+            style={{ MarginX: 15 }}
+            fontSize={11}
+            expandPaths={['$']}
+          />
+        );
       };
 
       const styles = {
-        div: css({ height: 1, Margin: [15, 0], backgroundColor: 'rgba(255, 0, 0, 0.1)' }),
+        hr: css({ height: 1, Margin: [15, 0], backgroundColor: 'rgba(255, 0, 0, 0.1)' }),
       };
 
       const network = e.ctx.props.view === 'Single' ? e.ctx.props.networks[0] : undefined;
-      const divider = <div {...styles.div} />;
+      const hr = <div {...styles.hr} />;
 
       return (
         <div>
           {obj('props', e.ctx.props)}
-          {network && divider}
+          {network && hr}
           {network && obj('network[0]', network)}
+          {network && hr}
+          {network && obj('network[0].status', network.status.current)}
         </div>
       );
     });
@@ -233,6 +165,7 @@ export const actions = DevActions<Ctx>()
 
     const view = props.view ?? DevConstants.DEFAULT.VIEW;
     const isCollection = view === 'Collection';
+    const isSingle = view === 'Single';
     const isUri = view === 'URI';
 
     e.settings({
@@ -240,7 +173,6 @@ export const actions = DevActions<Ctx>()
       layout: {
         cropmarks: -0.2,
         position: isCollection ? [40, 40, 80, 40] : undefined,
-        // background: debug.background || isCollection ? -0.1 : 0,
         label: !isUri && {
           topLeft: !isEmpty && 'Peer-to-Peer',
           bottomLeft: !isEmpty && `WebRTC Signal: "${DEFAULT.SIGNAL_SERVER}"`,
@@ -258,11 +190,13 @@ export const actions = DevActions<Ctx>()
           Scroll: true,
           position: 'relative',
           overflow: 'hidden',
+          minWidth: isSingle ? 930 : undefined,
         }),
         bg: css({
           Absolute: 0,
           Padding: [45, 45],
-          background: color.alpha(COLORS.DARK, 0.12),
+          background: color.alpha(COLORS.DARK, 0.08),
+          border: `solid 1px ${color.format(-0.12)}`,
           boxShadow: `inset 0 0 15px 0 ${color.format(-0.06)}`,
         }),
       },
@@ -299,8 +233,9 @@ async function createNetwork() {
   return network;
 }
 
-async function addNetwork(ctx: Ctx) {
+async function addNetwork(ctx: Ctx, redraw: () => void) {
   const network = await createNetwork();
+  network.status.$.subscribe(redraw);
   ctx.props.networks.push(network);
 }
 

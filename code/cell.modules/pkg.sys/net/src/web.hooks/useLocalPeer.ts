@@ -5,6 +5,7 @@ import { t, MediaStreamUtil, rx } from '../common';
 import { PeerEvents } from '../web.PeerNetwork.events';
 
 export type UseLocalPeer = {
+  id: t.PeerId;
   ready: boolean;
   status?: t.PeerStatus;
   media: { video?: MediaStream; screen?: MediaStream };
@@ -22,6 +23,7 @@ export function useLocalPeer(args: {
 }): UseLocalPeer {
   const { self, onChange } = args;
   const bus = rx.busAsType<t.PeerEvent>(args.bus);
+  const id = self;
 
   const [ready, setReady] = useState(false);
   const [status, setStatus] = useState<t.PeerStatus>();
@@ -72,11 +74,12 @@ export function useLocalPeer(args: {
     if (onChange) {
       const media = { video, screen };
       const connections = status?.connections ?? [];
-      onChange({ ready, status, media, connections });
+      onChange({ id, ready, status, media, connections });
     }
-  }, [ready, status, video, screen, onChange]);
+  }, [id, ready, status, video, screen, onChange]);
 
   return {
+    id,
     ready,
     status,
     media: { video, screen },

@@ -8,13 +8,14 @@ import { NetworkCardFooter } from './components/Footer';
 import { NetworkCardTitlebar } from './components/Titlebar';
 
 export type NetworkCardProps = {
+  instance: t.InstanceId;
   network: t.PeerNetwork;
   child?: JSX.Element;
   style?: CssValue;
 };
 
 export const NetworkCard: React.FC<NetworkCardProps> = (props) => {
-  const { network, child } = props;
+  const { network, child, instance } = props;
   const { bus, netbus } = network;
   const self = netbus.self;
 
@@ -26,10 +27,7 @@ export const NetworkCard: React.FC<NetworkCardProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({
-      boxSizing: 'border-box',
-      Flex: 'x-stretch-stretch',
-    }),
+    base: css({ boxSizing: 'border-box', Flex: 'x-stretch-stretch' }),
     rootCard: css({
       minWidth: 600,
       minHeight: 300,
@@ -43,7 +41,13 @@ export const NetworkCard: React.FC<NetworkCardProps> = (props) => {
   const elRootCard = (
     <Card style={styles.rootCard}>
       <CardBody header={elHeader}>
-        <NetworkCardBody self={self} bus={bus} peers={peers} status={status} style={styles.fill} />
+        <NetworkCardBody
+          instance={instance}
+          self={self}
+          network={network}
+          peers={peers}
+          style={styles.fill}
+        />
         <NetworkCardFooter network={network} />
       </CardBody>
     </Card>

@@ -1,34 +1,41 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t, Card, CardBody, Button } from './DEV.common';
+import {
+  color,
+  css,
+  CssValue,
+  t,
+  Card,
+  CardBody,
+  Button,
+  VideoStream,
+  useResizeObserver,
+} from './DEV.common';
 
 export type DevVideoCardProps = {
   network: t.PeerNetwork;
+  stream?: MediaStream;
   style?: CssValue;
 };
 
 export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
-  const { network } = props;
+  const { network, stream } = props;
   const self = network.netbus.self;
+
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const resize = useResizeObserver(bodyRef);
 
   /**
    * [Render]
    */
   const styles = {
     base: css({ width: 300, display: 'flex' }),
-    body: css({ minHeight: 50, fontSize: 14 }),
+    body: css({ flex: 1, position: 'relative' }),
     footer: {
       base: css({ flex: 1, Flex: 'x-center-center', fontSize: 13, PaddingY: 5 }),
       pipe: css({ flex: 1 }),
       footer: css({ fontSize: 14 }),
     },
   };
-
-  const elHeader = (
-    <>
-      <div>{'Video'}</div>
-      <div></div>
-    </>
-  );
 
   const connectVideo = async () => {
     const peer = network.events.peer;
@@ -47,9 +54,26 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
     }
   };
 
+  const elHeader = (
+    <>
+      <div>{'Video'}</div>
+      <div>{/* <Button onClick={connectVideo}>Start Video</Button> */}</div>
+    </>
+  );
+
+  const elVideo = stream && resize.ready && (
+    <VideoStream
+      stream={stream}
+      width={resize.rect.width}
+      height={resize.rect.height}
+      borderRadius={[0, 0, 3, 3]}
+      isMuted={true}
+    />
+  );
+
   const elBody = (
-    <div {...styles.body}>
-      <Button onClick={connectVideo}>Start Video</Button>
+    <div ref={bodyRef} {...styles.body}>
+      {elVideo}
     </div>
   );
 
@@ -61,9 +85,7 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
 
   return (
     <Card style={css(styles.base, props.style)}>
-      <CardBody padding={[18, 20, 15, 20]} header={elHeader} footer={elFooter}>
-        {elBody}
-      </CardBody>
+      <CardBody header={elHeader}>{elBody}</CardBody>
     </Card>
   );
 };

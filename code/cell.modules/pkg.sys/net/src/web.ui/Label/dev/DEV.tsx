@@ -22,7 +22,7 @@ const DEFAULT = { id: 'peer:ckzdck7q200643e5z6mt57iul' };
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.Label')
+  .namespace('ui.Label(s)')
   .context((e) => {
     if (e.prev) return e.prev;
 

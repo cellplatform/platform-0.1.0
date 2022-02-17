@@ -2,7 +2,7 @@ import React from 'react';
 
 import { CssValue, t } from '../../common';
 import { Icons } from '../Icons';
-import { LabelLayout } from './Layout';
+import { Layout } from './Layout';
 
 export type NetworkLabelProps = {
   id: t.NetworkId;
@@ -17,7 +17,7 @@ export const NetworkLabel: React.FC<NetworkLabelProps> = (props) => {
   const uri = `${PREDICATE}:${id || '<id>'}`;
 
   return (
-    <LabelLayout
+    <Layout
       style={props.style}
       text={uri}
       isCopyable={isCopyable}

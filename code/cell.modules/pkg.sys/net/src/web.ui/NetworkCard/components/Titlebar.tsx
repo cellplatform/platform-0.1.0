@@ -19,7 +19,7 @@ export const NetworkCardTitlebar: React.FC<NetworkCardTitlebarProps> = (props) =
    */
   const styles = {
     title: css({ paddingLeft: 5 }),
-    icons: css({ Flex: 'x-center-center', marginRight: 5 }),
+    icons: css({ Flex: 'x-center-center', marginRight: 0 }),
     icon: css({
       position: 'relative',
       top: 0,
@@ -32,8 +32,9 @@ export const NetworkCardTitlebar: React.FC<NetworkCardTitlebarProps> = (props) =
     <>
       <div {...css(styles.title)}>{'Network Peer'}</div>
       <div {...styles.icons}>
-        <Icons.FsNetworkDrive style={styles.icon} size={iconSize} opacity={DISABLED} />
-        <Icons.Bus style={styles.icon} size={iconSize} opacity={ENABLED} />
+        {/* <Icons.FsNetworkDrive style={styles.icon} size={iconSize} opacity={0.7} /> */}
+        {/* <Icons.Bus style={styles.icon} size={iconSize} opacity={ENABLED} /> */}
+        <Icons.Antenna style={styles.icon} size={iconSize} opacity={0.7} />
       </div>
     </>
   );

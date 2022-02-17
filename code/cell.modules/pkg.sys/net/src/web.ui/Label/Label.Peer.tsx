@@ -1,29 +1,54 @@
 import React from 'react';
 
-import { CssValue, t } from '../../common';
+import { CssValue, t, VideoStream } from '../common';
 import { Icons } from '../Icons';
-import { LabelLayout } from './Layout';
+import { Layout, LayoutTarget } from './Layout';
+
+const PREDICATE = 'peer';
+
+export type PeerLabelClickEvent = {
+  id: t.PeerId;
+  uri: string;
+  target: LayoutTarget;
+  media?: MediaStream;
+};
+export type PeerLabelClickEventHandler = (e: PeerLabelClickEvent) => void;
 
 export type PeerLabelProps = {
   id: t.PeerId;
   isCopyable?: boolean;
+  media?: MediaStream;
+  isSelf?: boolean;
   style?: CssValue;
+  onClick?: PeerLabelClickEventHandler;
 };
 
 export const PeerLabel: React.FC<PeerLabelProps> = (props) => {
-  const { isCopyable = true } = props;
-  const PREDICATE = 'peer';
+  const { media, isCopyable = true, isSelf = false } = props;
   const id = (props.id || '').trim().replace(/^peer\:/, '');
   const uri = `${PREDICATE}:${id || '<id>'}`;
 
+  /**
+   * [Render]
+   */
   return (
-    <LabelLayout
+    <Layout
       style={props.style}
       text={uri}
       isCopyable={isCopyable}
       labelOffset={[0, -1]}
       renderIcon={(e) => {
-        return <Icons.Face size={22} />;
+        if (!media) return <Icons.Face size={22} />;
+        if (media) {
+          return (
+            <VideoStream stream={media} width={22} height={22} borderRadius={3} isMuted={isSelf} />
+          );
+        }
+        return undefined;
+      }}
+      onClick={(e) => {
+        const { target } = e;
+        props.onClick?.({ id, uri, target, media });
       }}
     />
   );
