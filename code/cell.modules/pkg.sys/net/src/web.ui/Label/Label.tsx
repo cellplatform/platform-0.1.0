@@ -1,5 +1,5 @@
-import { PeerLabel as Peer, PeerLabelProps } from './Label.Peer';
-import { NetworkLabel as Network, NetworkLabelProps } from './Label.Network';
+import { PeerLabel as Peer, PeerLabelProps } from '../Label.Peer';
+import { NetworkLabel as Network, NetworkLabelProps } from '../Label.Network';
 
 export { PeerLabelProps, NetworkLabelProps };
 

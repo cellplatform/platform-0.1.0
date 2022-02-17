@@ -2,7 +2,7 @@ import React from 'react';
 
 import { CssValue, t, VideoStream } from '../common';
 import { Icons } from '../Icons';
-import { Layout, LayoutTarget } from './Layout';
+import { Layout, LayoutTarget } from '../Label/Layout';
 
 const PREDICATE = 'peer';
 

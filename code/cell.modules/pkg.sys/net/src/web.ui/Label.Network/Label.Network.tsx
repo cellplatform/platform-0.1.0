@@ -2,7 +2,7 @@ import React from 'react';
 
 import { CssValue, t } from '../../common';
 import { Icons } from '../Icons';
-import { Layout } from './Layout';
+import { Layout } from '../Label/Layout';
 
 export type NetworkLabelProps = {
   id: t.NetworkId;
