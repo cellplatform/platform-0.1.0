@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { css, CssValue, defaultValue, R } from '../../common';
+import { css, CssValue } from '../../common';
 import { OptionButton } from './Option';
 import { OptionClickEventHandler, OptionItem, OptionRenderFactory } from './types';
 
@@ -18,12 +18,12 @@ export type RadiosProps = {
 };
 
 export const Radios: React.FC<RadiosProps> = (props) => {
-  const items = toItems(props.items);
-  const selected = toSingleSelected(items, props.selected);
-  const isClearable = defaultValue(props.isClearable, false);
+  const items = Helpers.toItems(props.items);
+  const selected = Helpers.toSingleSelected(items, props.selected);
+  const isClearable = props.isClearable ?? false;
 
   const elOptions = items.map((option, index) => {
-    const isSelected = R.equals(option, selected);
+    const isSelected = Helpers.isSelected(option, selected);
     return (
       <OptionButton
         key={`rdo-${index}`}
@@ -57,12 +57,12 @@ export type CheckboxesProps = {
 };
 
 export const Checkboxes: React.FC<CheckboxesProps> = (props) => {
-  const items = toItems(props.items);
-  const selected = toMultiSelected(items, props.selected);
-  const isClearable = defaultValue(props.isClearable, true);
+  const items = Helpers.toItems(props.items);
+  const selected = Helpers.toMultiSelected(items, props.selected);
+  const isClearable = props.isClearable ?? true;
 
   const elOptions = items.map((option, index) => {
-    const isSelected = selected.some((item) => R.equals(item, option));
+    const isSelected = Helpers.isAnySelected(option, selected);
     const isLastSelection = isSelected && selected.length === 1;
     const canDeselect = isClearable ? true : !isLastSelection;
 
@@ -89,29 +89,36 @@ export const Checkboxes: React.FC<CheckboxesProps> = (props) => {
  * [Helpers]
  */
 
-function toItems(options?: (OptionItem | string)[]): OptionItem[] {
-  if (options === undefined) return [];
-  return options.map((input) => toItem(input));
-}
+const Helpers = {
+  toItems(options?: (OptionItem | string)[]): OptionItem[] {
+    if (options === undefined) return [];
+    return options.map((input) => Helpers.toItem(input));
+  },
 
-function toItem(input: string | OptionItem): OptionItem {
-  return typeof input === 'object' ? input : { label: input, value: input };
-}
+  toItem(input: string | OptionItem): OptionItem {
+    return typeof input === 'object' ? input : { label: input, value: input };
+  },
 
-function toSingleSelected(
-  items: OptionItem[],
-  input?: OptionItem | number,
-): OptionItem | undefined {
-  if (input === undefined) return undefined;
-  if (typeof input === 'number') return items[input];
-  return toItem(input);
-}
+  toSingleSelected(items: OptionItem[], input?: OptionItem | number): OptionItem | undefined {
+    if (input === undefined) return undefined;
+    if (typeof input === 'number') return items[input];
+    return Helpers.toItem(input);
+  },
 
-function toMultiSelected(
-  items: OptionItem[],
-  input?: OptionItem | OptionItem[] | number | number[],
-): OptionItem[] {
-  if (input === undefined) return [];
-  const list = Array.isArray(input) ? input : [input];
-  return list.map((value) => (typeof value === 'number' ? items[value] : value)).filter(Boolean);
-}
+  toMultiSelected(
+    items: OptionItem[],
+    input?: OptionItem | OptionItem[] | number | number[],
+  ): OptionItem[] {
+    if (input === undefined) return [];
+    const list = Array.isArray(input) ? input : [input];
+    return list.map((value) => (typeof value === 'number' ? items[value] : value)).filter(Boolean);
+  },
+
+  isSelected(option: OptionItem<any>, selected?: OptionItem<any>) {
+    return selected === undefined ? option.value === undefined : option.value === selected.value;
+  },
+
+  isAnySelected(option: OptionItem<any>, selected: OptionItem<any>[]) {
+    return selected.some((item) => Helpers.isSelected(option, item));
+  },
+};
