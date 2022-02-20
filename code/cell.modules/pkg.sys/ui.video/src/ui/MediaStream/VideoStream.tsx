@@ -1,11 +1,12 @@
 import React, { useEffect, useRef } from 'react';
-import { css, CssValue, defaultValue, t, Style } from '../../common';
+import { css, CssValue, defaultValue, t, Style, color } from '../../common';
 
 export type VideoStreamProps = {
   stream?: MediaStream;
   width?: number;
   height?: number;
   borderRadius?: t.CssRadiusInput;
+  backgroundColor?: string | number;
   isMuted?: boolean;
   style?: CssValue;
 };
@@ -23,6 +24,7 @@ export const VideoStream: React.FC<VideoStreamProps> = (props) => {
       position: 'relative',
       overflow: 'hidden',
       borderRadius: Style.toRadius(borderRadius),
+      backgroundColor: color.format(props.backgroundColor),
       width,
       height,
     }),
