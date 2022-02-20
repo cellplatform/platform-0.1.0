@@ -29,12 +29,22 @@ export function useController(args: { instance: t.InstanceId; network: t.PeerNet
       .pipe()
       .subscribe((e) => {
         if (e.media) {
-          const el = <DevVideoCard network={network} style={styles.child} stream={e.media} />;
-          setChild(el);
+          setChild(
+            <DevVideoCard
+              instance={instance}
+              network={network}
+              style={styles.child}
+              stream={e.media}
+            />,
+          );
         }
       });
 
-    rx.payload<k.NetworkCardCommandActionEvent>($, 'sys.net/ui.NetworkCard/CommandAction')
+    rx.payload<k.NetworkCardCloseChildEvent>($, 'sys.net/ui.NetworkCard/CloseChild')
+      .pipe()
+      .subscribe((e) => setChild(undefined));
+
+    rx.payload<t.NetworkCardCommandActionEvent>($, 'sys.net/ui.NetworkCard/CommandAction')
       .pipe()
       .subscribe((e) => {
         /**

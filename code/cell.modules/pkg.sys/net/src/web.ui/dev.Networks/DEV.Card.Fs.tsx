@@ -37,7 +37,7 @@ export const DevFsCard: React.FC<DevFsCardProps> = (props) => {
 
   return (
     <Card style={css(styles.base, props.style)}>
-      <CardBody padding={[18, 20, 15, 20]} header={elHeader} footer={elFooter}>
+      <CardBody padding={[18, 20, 15, 20]} header={{ el: elHeader }} footer={{ el: elFooter }}>
         {elBody}
       </CardBody>
     </Card>

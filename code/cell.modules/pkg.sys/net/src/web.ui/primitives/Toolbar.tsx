@@ -5,6 +5,7 @@ export type ToolbarProps = {
   children?: React.ReactNode;
   edge?: 'N' | 'S';
   padding?: t.CssEdgesInput;
+  height?: number;
   style?: CssValue;
 };
 
@@ -18,7 +19,6 @@ export const Toolbar: React.FC<ToolbarProps> = (props) => {
   const styles = {
     base: css({
       boxSizing: 'border-box',
-      Flex: `x-spaceBetween-center`,
       borderTop: edge === 'S' ? border : undefined,
       borderBottom: edge === 'N' ? border : undefined,
       backgroundColor: color.format(-0.03),
@@ -26,6 +26,11 @@ export const Toolbar: React.FC<ToolbarProps> = (props) => {
       borderRadius: edge === 'N' ? [2, 2, 0, 0] : [0, 0, 2, 2],
       ...Style.toPadding(padding),
     }),
+    body: css({ Flex: `x-spaceBetween-center` }),
   };
-  return <div {...css(styles.base, props.style)}>{props.children}</div>;
+  return (
+    <div {...css(styles.base, props.style)}>
+      <div {...styles.body}>{props.children}</div>
+    </div>
+  );
 };

@@ -10,7 +10,6 @@ import {
   MediaStream,
   PeerNetwork,
   rx,
-  t,
 } from './DEV.common';
 import { DevSample, DevSampleProps } from './DEV.Sample';
 
@@ -18,13 +17,6 @@ type Ctx = {
   props: DevSampleProps;
   debug: { background: boolean };
 };
-
-const DEFAULT = {
-  SIGNAL_SERVER: TEST.SIGNAL,
-  VIEW: 'Collection',
-};
-
-const CHILD_TYPES: t.DevChildKind[] = ['None', 'Netbus', 'Crdt', 'Filesystem', 'Video'];
 
 /**
  * Actions
@@ -39,7 +31,7 @@ export const actions = DevActions<Ctx>()
         // view: DevNetworkConstants.DEFAULT.VIEW,
         view: 'Collection',
         // view: 'Single',
-        child: 'Video',
+        // child: 'Video',
         networks: [],
       },
       debug: { background: false },
@@ -76,15 +68,14 @@ export const actions = DevActions<Ctx>()
     e.select((config) => {
       config
         .view('buttons')
-        .title('child (card)')
-        .items(CHILD_TYPES)
+        .title('ChildKind')
+        .items([
+          { label: '<undefined> (use controller)', value: undefined },
+          ...DevConstants.CHILD_KINDS,
+        ])
         .initial(config.ctx.props.child)
         .pipe((e) => {
-          if (e.changing) {
-            const next = e.changing?.next[0].value;
-            const value = !next || next === '<undefined>' ? undefined : next;
-            e.ctx.props.child = value;
-          }
+          if (e.changing) e.ctx.props.child = e.changing?.next[0].value;
         });
     });
 
@@ -148,7 +139,7 @@ export const actions = DevActions<Ctx>()
 
       return (
         <div>
-          {obj('props', e.ctx.props)}
+          {obj('props (sample)', e.ctx.props)}
           {network && hr}
           {network && obj('network[0]', network)}
           {network && hr}
@@ -175,7 +166,7 @@ export const actions = DevActions<Ctx>()
         position: isCollection ? [40, 40, 80, 40] : undefined,
         label: !isUri && {
           topLeft: !isEmpty && 'Peer-to-Peer',
-          bottomLeft: !isEmpty && `WebRTC Signal: "${DEFAULT.SIGNAL_SERVER}"`,
+          bottomLeft: !isEmpty && `WebRTC Signal: "${TEST.SIGNAL}"`,
         },
       },
     });
@@ -224,7 +215,7 @@ export default actions;
 
 async function createNetwork() {
   const bus = rx.bus();
-  const signal = DEFAULT.SIGNAL_SERVER;
+  const signal = TEST.SIGNAL;
   const { network } = await PeerNetwork.start({ bus, signal });
 
   MediaStream.Controller({ bus });

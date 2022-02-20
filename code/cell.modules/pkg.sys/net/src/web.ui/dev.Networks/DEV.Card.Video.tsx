@@ -9,17 +9,21 @@ import {
   Button,
   VideoStream,
   useResizeObserver,
+  Icons,
+  rx,
 } from './DEV.common';
 
 export type DevVideoCardProps = {
+  instance: t.InstanceId;
   network: t.PeerNetwork;
   stream?: MediaStream;
   style?: CssValue;
 };
 
 export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
-  const { network, stream } = props;
+  const { network, stream, instance } = props;
   const self = network.netbus.self;
+  const bus = rx.busAsType<t.NetworkCardEvent>(network.bus);
 
   const bodyRef = useRef<HTMLDivElement>(null);
   const resize = useResizeObserver(bodyRef);
@@ -34,6 +38,12 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
       base: css({ flex: 1, Flex: 'x-center-center', fontSize: 13, PaddingY: 5 }),
       pipe: css({ flex: 1 }),
       footer: css({ fontSize: 14 }),
+    },
+    header: {},
+    toolbar: {
+      base: css({ Flex: 'x-center-center' }),
+      body: css({}),
+      button: css({ height: 20 }),
     },
   };
 
@@ -57,7 +67,19 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
   const elHeader = (
     <>
       <div>{'Video'}</div>
-      <div>{/* <Button onClick={connectVideo}>Start Video</Button> */}</div>
+      <div {...styles.toolbar.base}>
+        <Button {...styles.toolbar.button}>
+          <Icons.Close
+            size={20}
+            onClick={(e) => {
+              bus.fire({
+                type: 'sys.net/ui.NetworkCard/CloseChild',
+                payload: { instance },
+              });
+            }}
+          />
+        </Button>
+      </div>
     </>
   );
 
@@ -85,7 +107,15 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
 
   return (
     <Card style={css(styles.base, props.style)}>
-      <CardBody header={elHeader}>{elBody}</CardBody>
+      <CardBody
+        header={{
+          el: elHeader,
+          height: 38,
+          padding: [8, 8, 8, 12],
+        }}
+      >
+        {elBody}
+      </CardBody>
     </Card>
   );
 };

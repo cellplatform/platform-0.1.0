@@ -41,7 +41,14 @@ export const PeerLabel: React.FC<PeerLabelProps> = (props) => {
         if (!media) return <Icons.Face size={22} />;
         if (media) {
           return (
-            <VideoStream stream={media} width={22} height={22} borderRadius={3} isMuted={isSelf} />
+            <VideoStream
+              stream={media}
+              isMuted={isSelf}
+              width={22}
+              height={22}
+              borderRadius={3}
+              backgroundColor={-0.03}
+            />
           );
         }
         return undefined;

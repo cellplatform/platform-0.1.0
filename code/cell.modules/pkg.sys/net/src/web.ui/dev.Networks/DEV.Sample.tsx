@@ -1,12 +1,8 @@
 import React from 'react';
 
 import { Label } from '../Label';
-import { NetbusCard } from '../NetbusCard';
 import { BulletList, color, COLORS, css, CssValue, DevConstants, t } from './DEV.common';
-import { DevCrdtCard } from './DEV.Card.Crdt';
 import { DevEmpty } from './DEV.Empty';
-import { DevFsCard } from './DEV.Card.Fs';
-import { DevVideoCard } from './DEV.Card.Video';
 import { DevNetworkCard } from './DEV.NetworkCard';
 
 export type DevSampleProps = {
@@ -18,7 +14,7 @@ export type DevSampleProps = {
 };
 
 export const DevSample: React.FC<DevSampleProps> = (props) => {
-  const { view = DevConstants.DEFAULT.VIEW, child } = props;
+  const { view = DevConstants.DEFAULT.VIEW, child, instance } = props;
 
   const isCollection = view === 'Collection';
   const list = props.networks ?? [];
@@ -32,17 +28,14 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
     /**
      * TODO 🐷
      */
-    return <Label.Network id={''} />;
+    return <Label.Peer id={networks[0].self ?? ''} />;
   }
 
   /**
    * [Render]
    */
   const styles = {
-    base: css({
-      boxSizing: 'border-box',
-      minWidth: 450,
-    }),
+    base: css({ boxSizing: 'border-box', minWidth: 450 }),
   };
 
   const elClientCards = (
@@ -56,7 +49,6 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
           if (!isCollection) return null;
 
           const data = e.data as D;
-          const network = data.network;
 
           /**
            * TODO 🐷
@@ -76,19 +68,16 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
         },
         body: (e) => {
           if (e.kind !== 'Default') return;
+
           const data = e.data as D;
-          const { network } = data;
-          const { netbus } = network;
-
-          const style = css({ flex: 1 });
-          let elChild: undefined | JSX.Element;
-
-          if (child === 'Netbus') elChild = <NetbusCard netbus={netbus} style={style} />;
-          if (child === 'Crdt') elChild = <DevCrdtCard network={network} style={style} />;
-          if (child === 'Filesystem') elChild = <DevFsCard network={network} style={style} />;
-          if (child === 'Video') elChild = <DevVideoCard network={network} style={style} />;
-
-          return <DevNetworkCard key={e.index} instance={props.instance} network={network} />;
+          return (
+            <DevNetworkCard
+              key={e.index}
+              instance={props.instance}
+              network={data.network}
+              child={child}
+            />
+          );
         },
       }}
     />

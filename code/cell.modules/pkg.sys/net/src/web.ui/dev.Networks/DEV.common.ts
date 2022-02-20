@@ -27,6 +27,13 @@ export { EventBridge } from '../../web.PeerNetwork/dev/DEV.event';
  * Constants
  */
 export const VIEWS: t.DevViewKind[] = ['URI', 'Single', 'Collection'];
+export const CHILD_KINDS: t.DevChildKind[] = ['Empty', 'Netbus', 'Crdt', 'Filesystem', 'Video'];
+
 const VIEW: t.DevViewKind = 'Collection';
 const DEFAULT = { VIEW };
-export const DevConstants = { VIEWS, DEFAULT };
+
+export const DevConstants = {
+  DEFAULT,
+  VIEWS,
+  CHILD_KINDS,
+};

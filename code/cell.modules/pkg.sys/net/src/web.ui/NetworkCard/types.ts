@@ -1,6 +1,9 @@
 import * as t from '../../common/types';
 
-export type NetworkCardEvent = NetworkCardPeerClickEvent | NetworkCardCommandActionEvent;
+export type NetworkCardEvent =
+  | NetworkCardPeerClickEvent
+  | t.CommandBarEvent
+  | NetworkCardCloseChildEvent;
 
 /**
  * Events
@@ -16,12 +19,10 @@ export type NetworkCardPeerClick = {
   media?: MediaStream;
 };
 
-export type NetworkCardCommandActionEvent = {
-  type: 'sys.net/ui.NetworkCard/CommandAction';
-  payload: NetworkCardCommandAction;
+export type NetworkCardCloseChildEvent = {
+  type: 'sys.net/ui.NetworkCard/CloseChild';
+  payload: NetworkCardCloseChild;
 };
-export type NetworkCardCommandAction = {
+export type NetworkCardCloseChild = {
   instance: t.InstanceId;
-  network: t.PeerNetwork;
-  text: string;
 };

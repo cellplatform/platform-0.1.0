@@ -84,7 +84,7 @@ export const NetbusCard: React.FC<NetbusCardProps> = (props) => {
 
   return (
     <Card style={css(styles.base, props.style)} showAsCard={showAsCard}>
-      <CardBody padding={padding} header={elHeader} footer={elFooter}>
+      <CardBody padding={padding} header={{ el: elHeader }} footer={{ el: elFooter }}>
         {elBody}
       </CardBody>
     </Card>
