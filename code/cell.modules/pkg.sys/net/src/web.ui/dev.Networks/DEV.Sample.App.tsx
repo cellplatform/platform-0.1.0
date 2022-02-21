@@ -26,7 +26,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
   };
   return (
     <div {...css(styles.base, props.style)}>
-      {network && <DevNetworkCard instance={instance} network={network} />}
+      {network && <DevNetworkCard instance={instance} network={network} showPlaceholder={true} />}
     </div>
   );
 };

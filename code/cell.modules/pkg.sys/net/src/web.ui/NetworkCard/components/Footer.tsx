@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { CommandBar } from '../../Command.Bar';
-import { color, COLORS, CssValue, k, rx, t } from '../common';
+import { color, COLORS, CssValue, k, rx, t, CommandBar } from '../common';
 
 export type NetworkCardFooterProps = {
   instance: t.InstanceId;
@@ -11,7 +10,6 @@ export type NetworkCardFooterProps = {
 
 export const NetworkCardFooter: React.FC<NetworkCardFooterProps> = (props) => {
   const { network, instance } = props;
-  const self = network.self;
   const bus = rx.busAsType<k.NetworkCardEvent>(network.bus);
 
   return (

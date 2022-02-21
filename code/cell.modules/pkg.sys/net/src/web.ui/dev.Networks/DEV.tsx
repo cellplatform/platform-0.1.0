@@ -31,7 +31,7 @@ export const actions = DevActions<Ctx>()
         // view: DevNetworkConstants.DEFAULT.VIEW,
         view: 'Collection',
         // view: 'Single',
-        // child: 'Video',
+        child: 'Placeholder',
         networks: [],
       },
       debug: { background: false },

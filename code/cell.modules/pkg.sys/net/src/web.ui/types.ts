@@ -1,2 +1,2 @@
 export * from './NetworkCard/types';
-export * from './Command.Bar/types';
+export * from '../web.ui.sys/Command.Bar/types';

@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, EventPipe, t, useEventBusHistory } from '../common';
-import { Icons } from '../Icons';
+import { css, CssValue, EventPipe, t, useEventBusHistory, Icons } from '../common';
 
 export type CommandBarEventsProps = {
   network: t.PeerNetwork;
