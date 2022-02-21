@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, EventPipe, t, useEventBusHistory, Icons } from '../common';
+import { css, CssValue, EventPipe, t, useEventBusHistory, Icons, time } from '../common';
 
 export type CommandBarEventsProps = {
   network: t.PeerNetwork;
@@ -31,9 +31,18 @@ export const CommandBarEvents: React.FC<CommandBarEventsProps> = (props) => {
   }, []); // eslint-disable-line
 
   /**
+   * Handlers
+   */
+  const fireSampleEvent = () => {
+    netbus.fire({
+      type: 'FOO/sample',
+      payload: { message: 'My sample event', time: time.now.timestamp },
+    });
+  };
+
+  /**
    * [Render]
    */
-
   const styles = {
     base: css({ flex: 1, boxSizing: 'border-box', Flex: 'x-center-center' }),
     pipe: css({ flex: 1 }),
@@ -59,7 +68,7 @@ export const CommandBarEvents: React.FC<CommandBarEventsProps> = (props) => {
 
   const elIcon = (
     <div {...styles.icon}>
-      <Icons.Event color={1} size={16} />
+      <Icons.Event color={1} size={16} onClick={fireSampleEvent} />
     </div>
   );
 
