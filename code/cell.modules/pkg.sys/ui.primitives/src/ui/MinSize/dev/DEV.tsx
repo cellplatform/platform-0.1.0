@@ -16,7 +16,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('sys.ui.MinSize')
+  .namespace('ui.MinSize')
   .context((e) => {
     if (e.prev) return e.prev;
     return {

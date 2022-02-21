@@ -14,7 +14,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('sys.ui.Antechamber')
+  .namespace('ui.Antechamber')
   .context((e) => {
     if (e.prev) return e.prev;
 
