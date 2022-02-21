@@ -19,7 +19,10 @@ export const Component: React.FC<ComponentProps> = (props) => {
   if (!item.handler || !element) return null;
 
   const styles = {
-    base: css({ position: 'relative', boxSizing: 'border-box' }),
+    base: css({
+      position: 'relative',
+      boxSizing: 'border-box',
+    }),
   };
 
   return <div {...styles.base}>{element}</div>;

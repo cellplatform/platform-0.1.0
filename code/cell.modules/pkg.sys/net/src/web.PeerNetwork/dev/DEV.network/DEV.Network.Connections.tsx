@@ -8,7 +8,7 @@ import {
   DevDataConnections,
   DevMediaConnections,
 } from '../DEV.connection';
-import { DevEventBusCard } from '../DEV.event';
+import { DevNetbusCard } from '../DEV.event';
 
 export type DevNetworkConnectionsProps = {
   bus: t.EventBus<any>;
@@ -117,7 +117,7 @@ export const DevNetworkConnections: React.FC<DevNetworkConnectionsProps> = (prop
       ));
 
   const elNetbus = props.showNetbus && (
-    <DevEventBusCard bus={bus} netbus={netbus} margin={[PADDING.CARD, 0, 0, PADDING.CARD]} />
+    <DevNetbusCard netbus={netbus} margin={[PADDING.CARD, 0, 0, PADDING.CARD]} />
   );
 
   return (

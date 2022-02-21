@@ -1,10 +1,14 @@
 import React from 'react';
-import { DevActions, lorem } from 'sys.ui.dev';
+import { DevActions, lorem, ObjectView } from 'sys.ui.dev';
 
 import { Card, CardProps } from '..';
-import { css } from '../../../common';
+import { css, t } from '../../common';
 
 type Ctx = { props: CardProps };
+
+const DEFAULT = {
+  PADDING: [25, 30] as t.CssEdgesInput,
+};
 
 /**
  * Actions
@@ -15,9 +19,10 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
     const ctx: Ctx = {
       props: {
-        padding: [25, 30],
+        padding: DEFAULT.PADDING,
         userSelect: true,
         shadow: true,
+        showAsCard: true,
       },
     };
     return ctx;
@@ -36,24 +41,44 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = Boolean(e.ctx.props.shadow);
     });
 
+    e.boolean('padding', (e) => {
+      if (e.changing) e.ctx.props.padding = e.changing.next ? DEFAULT.PADDING : undefined;
+      e.boolean.current = e.ctx.props.padding !== undefined;
+    });
+
+    e.boolean('margin', (e) => {
+      if (e.changing) e.ctx.props.margin = e.changing.next ? 30 : undefined;
+      e.boolean.current = e.ctx.props.margin !== undefined;
+    });
+
+    e.boolean('showAsCard', (e) => {
+      if (e.changing) e.ctx.props.showAsCard = e.changing.next;
+      e.boolean.current = e.ctx.props.showAsCard;
+    });
+
     e.hr();
+  })
+
+  .items((e) => {
+    e.component((e) => {
+      return <ObjectView name={'props'} data={e.ctx.props} style={{ MarginX: 15 }} fontSize={10} />;
+    });
   })
 
   .subject((e) => {
     e.settings({
+      host: { background: -0.04 },
       layout: {
-        cropmarks: -0.2,
-        background: 1,
         label: '<Card>',
+        cropmarks: -0.2,
         width: 450,
       },
-      host: { background: -0.04 },
     });
 
     const styles = {
       base: css({}),
       body: css({
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+        backgroundColor: 'rgba(255, 0, 0, 0.05)' /* RED */,
       }),
     };
 

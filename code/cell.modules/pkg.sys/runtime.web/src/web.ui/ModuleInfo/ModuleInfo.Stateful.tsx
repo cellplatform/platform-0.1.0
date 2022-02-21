@@ -3,16 +3,16 @@ import React from 'react';
 import { CssValue, t } from '../../common';
 import { useManifest } from '../useManifest';
 import { ModuleInfo } from './ModuleInfo';
-import * as m from './types';
+import * as k from './types';
 
 export type ModuleInfoStatefulProps = {
   url?: t.ManifestUrl;
-  title?: m.ModuleInfoTitle;
-  fields?: m.ModuleInfoFields[];
+  title?: k.ModuleInfoTitle;
+  fields?: k.ModuleInfoFields[];
   minWidth?: number;
   maxWidth?: number;
   style?: CssValue;
-  onExportClick?: m.ModuleInfoExportClick;
+  onExportClick?: k.ModuleInfoExportClick;
 };
 
 export const ModuleInfoStateful: React.FC<ModuleInfoStatefulProps> = (props) => {

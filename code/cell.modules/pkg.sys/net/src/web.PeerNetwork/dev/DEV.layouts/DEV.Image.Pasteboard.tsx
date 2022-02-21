@@ -30,10 +30,8 @@ export const DevImagePasteboard: React.FC<DevImagePasteboardProps> = (props) => 
      * PASTE from clipboard.
      */
     document.addEventListener('paste', async (e) => {
-      const data = await clipboardToDataUri(e);
-      const { uri, bytes, mimetype } = data;
-
-      setImageUri(uri);
+      const res = await clipboardToDataUri(e);
+      const { bytes, mimetype, binary } = res;
 
       const tx = slug();
       netbus.target.remote({
@@ -43,10 +41,13 @@ export const DevImagePasteboard: React.FC<DevImagePasteboardProps> = (props) => 
 
       netbus.target.remote({
         type: 'DEV/ImagePasteboard',
-        payload: { tx, action: 'paste:send', data: { uri, bytes, mimetype } },
+        payload: { tx, action: 'paste:send', data: { bytes, mimetype, binary } },
       });
 
-      console.log('OUTGOING // pasted', data);
+      console.log('OUTGOING // pasted', res);
+
+      const uri = await arrayBufferToStringUri(binary);
+      setImageUri(uri);
     });
 
     /**
@@ -60,9 +61,14 @@ export const DevImagePasteboard: React.FC<DevImagePasteboardProps> = (props) => 
     /**
      * INCOMING data.
      */
-    incoming$.pipe(filter((e) => e.action === 'paste:send')).subscribe((e) => {
+    incoming$.pipe(filter((e) => e.action === 'paste:send')).subscribe(async (e) => {
       const { data, tx } = e;
-      if (data.uri) setImageUri(data.uri);
+
+      if (data.binary) {
+        const uri = await arrayBufferToStringUri(data.binary);
+        setImageUri(uri);
+      }
+
       setIncoming((prev) => prev.filter((item) => item.tx !== tx));
     });
 
@@ -104,9 +110,7 @@ export const DevImagePasteboard: React.FC<DevImagePasteboardProps> = (props) => 
 
   return (
     <div {...css(styles.base, props.style)}>
-      {/* <div {...styles.imageBorder} /> */}
       <div {...styles.image} />
-      {/* <img {...styles.image} src={imageUri} /> */}
       {elSpinner}
     </div>
   );
@@ -116,10 +120,10 @@ export const DevImagePasteboard: React.FC<DevImagePasteboardProps> = (props) => 
  * [Helpers]
  */
 
-type C = { uri: string; bytes: number; mimetype: string };
+type C = { bytes: number; mimetype: string; binary: Uint8Array };
 
 function clipboardToDataUri(e: ClipboardEvent) {
-  return new Promise<C>((resolve, reject) => {
+  return new Promise<C>(async (resolve, reject) => {
     if (!e.clipboardData) return reject('No clipboard data');
 
     const items = e.clipboardData.items;
@@ -130,19 +134,42 @@ function clipboardToDataUri(e: ClipboardEvent) {
         const blob = item.getAsFile();
 
         if (blob) {
+          const binary = await blobToUint8Array(blob);
           const bytes = blob.size;
           const mimetype = blob.type;
-          const reader = new FileReader();
-          reader.onload = function (event) {
-            resolve({
-              mimetype,
-              bytes,
-              uri: event.target?.result as string,
-            });
-          };
-          reader.readAsDataURL(blob);
+          resolve({ mimetype, bytes, binary });
         }
       }
     }
   });
 }
+
+const blobToUint8Array = (blob: Blob) => {
+  return new Promise<Uint8Array>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const result = reader.result;
+      if (!(result instanceof ArrayBuffer)) {
+        return reject('Blob could not be loaded as an ArrayBuffer');
+      }
+      const data = new Uint8Array(reader.result as ArrayBuffer);
+      resolve(data);
+    };
+    reader.readAsArrayBuffer(blob);
+  });
+};
+
+const arrayBufferToStringUri = (data: Uint8Array) => {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const uri = reader.result;
+      if (typeof uri === 'string') {
+        resolve(uri);
+      } else {
+        reject('Failed to data convert to URI');
+      }
+    };
+    reader.readAsDataURL(new Blob([data]));
+  });
+};

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { css, CssValue, LocalPeerCard, t, useLocalPeer } from './DEV.common';
+import { css, CssValue, LocalPeerCard, t } from './DEV.common';
 
 export type DevPropsProps = {
   self: t.PeerId;
@@ -11,15 +11,6 @@ export type DevPropsProps = {
 export const DevProps: React.FC<DevPropsProps> = (props) => {
   const { self, bus } = props;
 
-  const local = useLocalPeer({
-    self,
-    bus,
-    onChange(e) {
-      // console.log('useLocalPeer.onChange:', e);
-    },
-  });
-  const status = local.status;
-
   /**
    * [Render]
    */
@@ -27,11 +18,11 @@ export const DevProps: React.FC<DevPropsProps> = (props) => {
     base: css({ position: 'relative' }),
   };
 
-  const elLocalPeer = status && (
+  const elLocalPeer = (
     <LocalPeerCard
-      self={{ id: self, status }}
+      self={self}
       bus={bus}
-      newConnections={{ isReliable: true, autoStartVideo: false }}
+      openConnectionOptions={{ isReliable: true, autoStartVideo: false }}
     />
   );
 

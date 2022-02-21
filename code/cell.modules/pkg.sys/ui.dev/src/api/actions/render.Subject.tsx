@@ -8,6 +8,7 @@ import { Handler } from './Handler';
 export function renderSubject(args: { model: t.ActionsModelState<any> }) {
   type R = t.ActionSubject<any>;
   const { model } = args;
+  const redraw = () => model.state.redraw$.next();
 
   const ctx = Context.getAndStore(model);
   if (!ctx) {
@@ -37,6 +38,7 @@ export function renderSubject(args: { model: t.ActionsModelState<any> }) {
           if (el) subject.items.push({ el, layout });
           return payload;
         },
+        redraw,
       };
 
       // Invoke the handler.

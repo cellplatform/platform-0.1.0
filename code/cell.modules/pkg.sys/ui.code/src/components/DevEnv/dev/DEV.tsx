@@ -3,14 +3,14 @@ import { debounceTime } from 'rxjs/operators';
 import { DevActions, TestSuiteRunResponse } from 'sys.ui.dev';
 
 import { DevEnv, DevEnvProps } from '..';
-import { m, rx, t, Filesystem } from '../common';
+import { k, rx, t, Filesystem } from '../common';
 import { evalCode } from './DEV.eval';
 
 type Ctx = {
   bus: t.EventBus;
   props: DevEnvProps;
   editor?: t.CodeEditorInstanceEvents;
-  onReady: m.DevEnvReadyHandler;
+  onReady: k.DevEnvReadyHandler;
   runTests(code?: string): Promise<TestSuiteRunResponse | undefined>;
 };
 

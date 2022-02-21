@@ -25,6 +25,7 @@ export const ButtonDef: t.ActionDef<T> = {
   listen(args) {
     const { actions } = args;
     const bus = rx.busAsType<E>(args.bus);
+    const redraw = () => args.actions.state.redraw$.next();
 
     // Listen for events.
     rx.payload<E>(bus.$, 'sys.ui.dev/action/Button')
@@ -51,7 +52,7 @@ export const ButtonDef: t.ActionDef<T> = {
               })(args);
 
             const button = item as t.ActionButtonProps;
-            const payload: P = { ctx, host, layout, actions, settings, button, toObject };
+            const payload: P = { ctx, host, layout, actions, settings, button, toObject, redraw };
 
             for (const fn of e.item.handlers) {
               const res = fn(payload);

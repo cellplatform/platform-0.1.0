@@ -1,7 +1,8 @@
 import React from 'react';
 import { WebRuntime } from 'sys.runtime.web';
-import { DevActions, LocalStorage, ObjectView, toObject } from 'sys.ui.dev';
 
+import { PeerNetwork } from '../../';
+import { DevActions, LocalStorage, ObjectView, TEST, toObject } from '../../web.test';
 import {
   css,
   cuid,
@@ -18,7 +19,6 @@ import {
 import { EventBridge } from './DEV.event';
 import { DevProps } from './DEV.Props';
 import { DevRootLayout } from './DEV.Root';
-import { PeerNetwork } from '../../';
 
 type O = Record<string, unknown>;
 
@@ -65,7 +65,7 @@ const showLayout = (ctx: Ctx, kind: t.DevGroupLayout['kind'], props?: O) => {
 };
 
 const DEFAULT = {
-  signal: 'rtc.cellfs.com',
+  signal: TEST.SIGNAL,
   fs: 'dev.net.fs',
 };
 
@@ -103,7 +103,7 @@ export const actions = DevActions<Ctx>()
 
     const init = () => {
       events.media.start(EventBridge.videoRef(self)).video();
-      events.peer.create(signal, self);
+      events.peer.create(signal, { self });
       events.peer.media(self).video();
     };
     time.delay(100, init);
@@ -290,7 +290,7 @@ export const actions = DevActions<Ctx>()
 
     e.button('fire ⚡️ Peer:Local/init', async (e) => {
       const { self, signal, events } = e.ctx;
-      events?.peer.create(signal, self);
+      events?.peer.create(signal, { self });
     });
 
     e.button('fire ⚡️ Peer:Local/purge', async (e) => {

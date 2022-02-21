@@ -1,26 +1,34 @@
-import { t, cuid, WebRuntime } from './common';
-import { Controller } from './controller';
 import { PeerNetbus } from '../web.PeerNetbus';
-import { PeerEvents, GroupEvents } from '../web.PeerNetwork.events';
+import { GroupEvents, PeerEvents } from '../web.PeerNetwork.events';
+import { cuid, t, WebRuntime } from './common';
+import { Controller } from './controller';
 
-type DomainEndpoint = string;
+type Milliseconds = number;
+type DomainEndpoint = string; // eg "rtc.foo.org"
 
-type Args = {
+type StartArgs = {
   bus: t.EventBus<any>;
   signal: DomainEndpoint;
   self?: t.PeerId;
+  timeout?: Milliseconds;
+};
+
+type StartRes = {
+  network: t.PeerNetwork;
+  error?: t.PeerError;
 };
 
 /**
  * Create and start a new peer-network.
  */
-export async function start(args: Args): Promise<t.PeerNetwork> {
-  const { bus, signal } = args;
+export async function start(args: StartArgs): Promise<StartRes> {
+  const { bus, signal, timeout } = args;
   const self = args.self ?? cuid();
+  const id = self;
 
   const peer = Controller({ bus });
   const netbus = PeerNetbus({ bus, self });
-  const runtime = WebRuntime.Bus.Controller({ bus, netbus, id: self });
+  const runtime = WebRuntime.Bus.Controller({ id, bus, netbus });
 
   const events = {
     peer: PeerEvents(bus),
@@ -28,7 +36,7 @@ export async function start(args: Args): Promise<t.PeerNetwork> {
     runtime: runtime.events,
   };
 
-  const dispose = () => {
+  const dispose = async () => {
     peer.dispose();
     runtime.dispose();
     events.peer.dispose();
@@ -36,13 +44,21 @@ export async function start(args: Args): Promise<t.PeerNetwork> {
     events.runtime.dispose();
   };
 
-  const api: t.PeerNetwork = {
+  const status = await events.peer.status(self).object();
+  const network: t.PeerNetwork = {
+    dispose,
+    self,
     bus,
     netbus,
     events,
-    dispose,
+    status,
   };
 
-  await events.peer.create(signal, self);
-  return api;
+  // Initialize the peer.
+  const res = await events.peer.create(signal, { self, timeout });
+  const error = res.error;
+
+  // Finish up.
+  if (error) await dispose();
+  return { network, error };
 }

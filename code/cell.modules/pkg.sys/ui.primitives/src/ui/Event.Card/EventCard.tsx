@@ -12,6 +12,7 @@ export type EventStackCardProps = {
   width?: number;
   height?: number;
   shadow?: CardProps['shadow'];
+  showAsCard?: boolean;
   style?: CssValue;
 
   showPayload?: boolean;
@@ -72,7 +73,7 @@ export const EventStackCard: React.FC<EventStackCardProps> = (props) => {
   );
 
   return (
-    <Card shadow={shadow} style={styles.base}>
+    <Card shadow={shadow} style={styles.base} showAsCard={props.showAsCard}>
       {elBody}
     </Card>
   );

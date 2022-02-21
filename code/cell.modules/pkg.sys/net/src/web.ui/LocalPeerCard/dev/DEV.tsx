@@ -1,13 +1,14 @@
 import React from 'react';
-import { toObject, DevActions, lorem } from 'sys.ui.dev';
-import { LocalPeerCard, LocalPeerCardProps } from '..';
-import { t, cuid, rx } from '../../common';
+
+import { LocalPeerCard, LocalPeerCardConstants, LocalPeerCardProps } from '..';
 import { PeerNetwork } from '../../..';
+import { DevActions, lorem, ObjectView, TEST } from '../../../web.test';
+import { t } from '../../common';
+import * as k from '../types';
 
 type Ctx = {
   network?: t.PeerNetwork;
-  props?: LocalPeerCardProps;
-  newConnections: boolean;
+  props: LocalPeerCardProps;
   title?: string | null;
 };
 
@@ -20,7 +21,7 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const ctx: Ctx = {
-      newConnections: true,
+      props: {} as any, // Hack 🐷
     };
     return ctx;
   })
@@ -28,19 +29,14 @@ export const actions = DevActions<Ctx>()
   .init(async (e) => {
     const { ctx, bus } = e;
 
-    const signal = 'rtc.cellfs.com';
-    const network = (ctx.network = await PeerNetwork.start({ bus, signal }));
+    const signal = TEST.SIGNAL;
+    const { network } = await PeerNetwork.start({ bus, signal });
     const { self } = network.netbus;
-
-    // network.netbus.
+    ctx.network = network;
 
     const status = (await network.events.peer.status(self).get()).peer;
     if (status) {
-      ctx.props = {
-        bus,
-        self: { id: self, status },
-        showAsCard: true,
-      };
+      ctx.props = { bus, self, showAsCard: true };
     }
   })
 
@@ -54,7 +50,7 @@ export const actions = DevActions<Ctx>()
         .view('buttons')
         .items(['default', 'custom', 'custom (long)', 'none (null)'])
         .pipe((e) => {
-          const current = e.select.current[0].value; // NB: always first.
+          const current = e.select.current[0]?.value; // NB: always first.
 
           if (current === 'default') e.ctx.title = undefined;
           if (current === 'custom') e.ctx.title = 'My Title';
@@ -63,22 +59,37 @@ export const actions = DevActions<Ctx>()
         });
     });
 
-    e.boolean('newConnections', (e) => {
-      if (e.changing) e.ctx.newConnections = e.changing.next;
-      e.boolean.current = e.ctx.newConnections;
-    });
+    e.hr(1, 0.1);
+
+    e.select((config) =>
+      config
+        .title('fields:')
+        .items(LocalPeerCardConstants.FIELDS)
+        .initial(undefined)
+        .clearable(true)
+        .view('buttons')
+        .multi(true)
+        .pipe((e) => {
+          if (e.changing && e.ctx.props) {
+            const next = e.changing.next.map(({ value }) => value) as k.LocalPeerCardFields[];
+            e.ctx.props.fields = next.length === 0 ? undefined : next;
+          }
+        }),
+    );
 
     e.hr();
     e.title('Debug');
 
     e.boolean('asCard', (e) => {
-      if (e.changing) {
-        (e.ctx.props as LocalPeerCardProps).showAsCard = e.changing.next;
-      }
-      e.boolean.current = e.ctx.props?.showAsCard;
+      if (e.changing) e.ctx.props.showAsCard = e.changing.next;
+      e.boolean.current = e.ctx.props.showAsCard;
     });
 
     e.hr();
+
+    e.component((e) => {
+      return <ObjectView name={'props'} data={e.ctx.props} style={{ MarginX: 15 }} fontSize={11} />;
+    });
   })
 
   .subject((e) => {
@@ -89,10 +100,8 @@ export const actions = DevActions<Ctx>()
       layout: { cropmarks: -0.2 },
     });
 
-    if (props) {
-      e.render(
-        <LocalPeerCard {...props} newConnections={e.ctx.newConnections} title={e.ctx.title} />,
-      );
+    if (props.bus) {
+      e.render(<LocalPeerCard {...props} title={e.ctx.title} style={{ maxWidth: 400 }} />);
     }
   });
 

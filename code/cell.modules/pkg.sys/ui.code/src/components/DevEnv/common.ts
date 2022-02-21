@@ -1,4 +1,4 @@
 export * from '../../common';
 
-import * as m from './types';
-export { m };
+import * as k from './types';
+export { k };

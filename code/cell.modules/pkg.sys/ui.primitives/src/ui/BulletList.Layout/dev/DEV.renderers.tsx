@@ -1,7 +1,7 @@
 import React from 'react';
 import { k, css, COLORS } from '../common';
 import { Card } from '../../Card';
-import { SyntaxLabel } from '../../SyntaxLabel';
+import { Text } from '../../Text';
 import { Renderers, BulletConnectorLinesProps } from '../renderers';
 
 export type RenderCtx = {
@@ -63,7 +63,7 @@ export function sampleBodyRendererFactory(getCtx: () => RenderCtx) {
       component: css({ fontFamily: 'monospace', fontWeight: 'bold', fontSize: 16 }),
     };
 
-    const elComponent = <SyntaxLabel text={'<Component>'} style={styles.component} />;
+    const elComponent = <Text.Syntax text={'<Component>'} style={styles.component} />;
 
     if (bodyKind === 'Vanilla') {
       return <div {...styles.sample.vanilla}>{elComponent}</div>;

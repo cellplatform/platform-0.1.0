@@ -8,6 +8,7 @@ export type ITextModifierKeys = {
 };
 
 export type TextInputFocusAction = {
+  selectOnFocus?: boolean;
   focusOnLoad?: boolean;
   focusAction?: 'SELECT' | 'END';
 };

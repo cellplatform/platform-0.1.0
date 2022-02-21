@@ -4,7 +4,7 @@ import { DevActions } from 'sys.ui.dev';
 import { ModuleInfo, ModuleInfoConstants, ModuleInfoProps, ModuleInfoStateful } from '..';
 import { Filesystem, rx, t } from '../../../common';
 import { ManifestSelectorConstants, ManifestSelectorStateful } from '../../ManifestSelector';
-import * as m from '../types';
+import * as k from '../types';
 
 type Ctx = {
   bus: t.EventBus;
@@ -57,7 +57,7 @@ export const actions = DevActions<Ctx>()
         .multi(true)
         .pipe((e) => {
           if (e.changing) {
-            const next = e.changing.next.map(({ value }) => value) as m.ModuleInfoFields[];
+            const next = e.changing.next.map(({ value }) => value) as k.ModuleInfoFields[];
             e.ctx.props.fields = next.length === 0 ? undefined : next;
           }
         }),

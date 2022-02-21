@@ -1,6 +1,6 @@
 import { firstValueFrom, Subject, of, timeout } from 'rxjs';
 import { take, filter, takeUntil, map, catchError } from 'rxjs/operators';
-import { cuid, rx, t, slug } from '../common';
+import { cuid, rx, t, slug, UriUtil } from '../common';
 
 import { EventNamespace } from './EventNamespace';
 
@@ -23,12 +23,13 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
   /**
    * CREATE
    */
-  const create = (signal: string, id?: t.PeerId) => {
-    const self = id || cuid();
+  const create: t.PeerEvents['create'] = (signal, options = {}) => {
+    const self = options.self || cuid();
+    const { timeout } = options;
     const res = firstValueFrom(created(self).$);
     bus.fire({
       type: 'sys.net/peer/local/init:req',
-      payload: { self, signal },
+      payload: { self, signal, timeout },
     });
     return res;
   };
@@ -37,6 +38,7 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
    * CREATED
    */
   const created = (self: t.PeerId) => {
+    self = UriUtil.peer.trimPrefix(self);
     const $ = rx
       .payload<t.PeerLocalInitResEvent>(bus$, 'sys.net/peer/local/init:res')
       .pipe(filter((e) => e.self === self));
@@ -47,6 +49,8 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
    * STATUS
    */
   const status = (self: t.PeerId) => {
+    self = UriUtil.peer.trimPrefix(self);
+
     const req$ = rx
       .payload<t.PeerLocalStatusReqEvent>(bus$, 'sys.net/peer/local/status:req')
       .pipe(filter((e) => e.self === self));
@@ -68,13 +72,26 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
       bus.fire({ type: 'sys.net/peer/local/status:refresh', payload: { self } });
     };
 
-    return { self, get, refresh, req$, res$, changed$ };
+    const object = async (): Promise<t.PeerStatusObject> => {
+      let _current = (await get()).peer as t.PeerStatus; // NB: Initial value.
+      changed$.subscribe((e) => (_current = e.peer));
+      return {
+        $: changed$.pipe(map((e) => e.peer)),
+        get current() {
+          return _current;
+        },
+      };
+    };
+
+    return { self, get, object, refresh, req$, res$, changed$ };
   };
 
   /**
    * PURGE
    */
   const purge = (self: t.PeerId) => {
+    self = UriUtil.peer.trimPrefix(self);
+
     const req$ = rx
       .payload<t.PeerLocalPurgeReqEvent>(bus$, 'sys.net/peer/local/purge:req')
       .pipe(filter((e) => e.self === self));
@@ -96,6 +113,8 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
    * LOCAL: Media
    */
   const media = (self: t.PeerId) => {
+    self = UriUtil.peer.trimPrefix(self);
+
     const req$ = rx
       .payload<t.PeerLocalMediaReqEvent>(bus$, 'sys.net/peer/local/media:req')
       .pipe(filter((e) => e.self === self));
@@ -144,6 +163,9 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
    * CONNECT (Outgoing)
    */
   const connection = (self: t.PeerId, remote: t.PeerId) => {
+    self = UriUtil.peer.trimPrefix(self);
+    remote = UriUtil.peer.trimPrefix(remote);
+
     const connected$ = rx
       .payload<t.PeerConnectResEvent>(bus$, 'sys.net/peer/conn/connect:res')
       .pipe(filter((e) => e.self === self && e.remote === remote));
@@ -189,13 +211,25 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
       return res;
     };
 
-    return { self, connected$, disconnected$, open, close };
+    const isConnected = async () => {
+      const current = (await status(self).get()).peer;
+      if (!current) throw new Error(`Status could not be retrieved`);
+
+      remote = UriUtil.peer.trimPrefix(remote);
+      return current.connections
+        .filter(({ kind }) => kind === 'data')
+        .some(({ peer }) => peer.remote.id === remote);
+    };
+
+    return { self, remote, connected$, disconnected$, open, close, isConnected };
   };
 
   /**
    * Connections
    */
   const connections = (self: t.PeerId) => {
+    self = UriUtil.peer.trimPrefix(self);
+
     const connect = {
       req$: rx
         .payload<t.PeerConnectReqEvent>(bus$, 'sys.net/peer/conn/connect:req')
@@ -222,6 +256,8 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
    * Data stream
    */
   const data = (self: t.PeerId) => {
+    self = UriUtil.peer.trimPrefix(self);
+
     const out = {
       req$: rx
         .payload<t.PeerDataOutReqEvent>(bus$, 'sys.net/peer/data/out:req')
@@ -257,7 +293,9 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
       req$: rx.payload<t.PeerRemoteExistsReqEvent>(bus$, 'sys.net/peer/remote/exists:req'),
       res$: rx.payload<t.PeerRemoteExistsResEvent>(bus$, 'sys.net/peer/remote/exists:res'),
       async get(args: { self: t.PeerId; remote: t.PeerId; timeout?: Milliseconds }) {
-        const { self } = args;
+        const self = UriUtil.peer.trimPrefix(args.self);
+        const remotePeer = UriUtil.peer.trimPrefix(args.remote);
+
         const tx = slug();
         const msecs = args.timeout ?? 10000;
         const first = firstValueFrom(
@@ -270,7 +308,7 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
 
         bus.fire({
           type: 'sys.net/peer/remote/exists:req',
-          payload: { tx, self, remote: args.remote },
+          payload: { tx, self, remote: remotePeer },
         });
 
         const res = await first;
@@ -279,7 +317,7 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
         const fail: t.PeerRemoteExistsRes = {
           tx,
           self,
-          remote: args.remote,
+          remote: remotePeer,
           exists: false,
           error: res,
         };

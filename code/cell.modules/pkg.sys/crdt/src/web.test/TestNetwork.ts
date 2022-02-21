@@ -16,8 +16,11 @@ export async function TestNetwork<D extends O>(args: {
   const peers = await Promise.all(
     mocks.map((netbus) => {
       const id = netbus.mock.local;
-      const bus = rx.bus();
-      const ctrl = CrdtBus.Controller({ id, bus, sync: { netbus, debounce } });
+      const ctrl = CrdtBus.Controller({
+        id,
+        bus: rx.bus(),
+        sync: { netbus, debounce },
+      });
       const { events, dispose } = ctrl;
       const doc = (id: string, initial?: D) => {
         return events.doc<D>({ id, initial: initial ?? args.initial });

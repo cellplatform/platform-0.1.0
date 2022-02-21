@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { color, COLORS, style, css, CssValue, defaultValue, t } from '../../common';
+import { color, COLORS, Style, css, CssValue, defaultValue, t } from '../../common';
 
 export type HrProps = {
   color?: string | number | 'MAGENTA' | 'CYAN';
@@ -28,7 +28,7 @@ export const Hr: React.FC<HrProps> = (props) => {
       border: 'none',
       borderBottom: `${dashed ? 'dashed' : 'solid'} ${thickness}px ${borderColor}`,
       opacity,
-      ...style.toMargins(margin),
+      ...Style.toMargins(margin),
     }),
   };
 

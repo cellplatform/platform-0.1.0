@@ -27,6 +27,7 @@ export const BooleanDef: t.ActionDef<T> = {
     const { item } = Model.item<T>(actions, args.id);
     const namespace = actions.state.namespace;
     const bus = rx.busAsType<E>(args.bus);
+    const redraw = () => args.actions.state.redraw$.next();
 
     // Listen for events.
     rx.payload<E>(bus.$, 'sys.ui.dev/action/Boolean')
@@ -63,6 +64,7 @@ export const BooleanDef: t.ActionDef<T> = {
               boolean,
               settings,
               toObject,
+              redraw,
             };
             if (changing) item.current = changing.next;
 

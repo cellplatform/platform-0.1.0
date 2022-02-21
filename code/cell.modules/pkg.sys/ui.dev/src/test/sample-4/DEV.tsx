@@ -25,10 +25,12 @@ export const actions = DevActions<Ctx>()
       config
         .view('buttons')
         .title(`foo *bold* <T> {P}`)
-        .items([0, 1, 2])
+        .items([0, 1, 2, { label: '<undefined>', value: undefined }])
         .initial(config.ctx.value)
+        .initial(undefined)
+        // .multi(true)
         .pipe((e) => {
-          if (e.changing) e.ctx.value = e.changing?.next[0].value;
+          if (e.changing) e.ctx.value = e.changing?.next[0]?.value;
           const current = e.select.current[0];
         });
     });

@@ -1,5 +1,5 @@
 import { ManifestUrl, t, time } from '../../common';
-import * as m from '../types';
+import * as k from '../types';
 import { toFiles } from './item.files';
 import { toHash } from './item.hash';
 import { toRemote } from './item.remote';
@@ -9,8 +9,8 @@ type P = t.PropListItem;
 export function toPropsList(args: {
   manifest?: t.ModuleManifest;
   url?: string;
-  fields: m.ModuleInfoFields[];
-  onExportClick?: m.ModuleInfoExportClick;
+  fields: k.ModuleInfoFields[];
+  onExportClick?: k.ModuleInfoExportClick;
 }): t.PropListItem[] {
   const { manifest, onExportClick, fields } = args;
 
@@ -24,8 +24,8 @@ export function toPropsList(args: {
    * Base properties.
    */
   const list: P[] = [];
-  const add = (field: m.ModuleInfoFields) => {
-    const is = (...match: m.ModuleInfoFields[]) => match.includes(field);
+  const add = (field: k.ModuleInfoFields) => {
+    const is = (...match: k.ModuleInfoFields[]) => match.includes(field);
     const href = url.href;
 
     if (is('source:url') && href) {

@@ -336,16 +336,10 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
   };
 
   private handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    const { focusAction, onFocus } = this.props;
-    if (focusAction === 'SELECT') {
-      this.selectAll();
-    }
-    if (focusAction === 'END') {
-      this.cursorToEnd();
-    }
-    if (onFocus) {
-      onFocus(e);
-    }
+    const { focusAction, onFocus, selectOnFocus } = this.props;
+    if (focusAction === 'SELECT' || selectOnFocus) this.selectAll();
+    if (focusAction === 'END') this.cursorToEnd();
+    onFocus?.(e);
     this.fire({ type: 'TEXT_INPUT/focus', payload: { isFocused: true } });
   };
 

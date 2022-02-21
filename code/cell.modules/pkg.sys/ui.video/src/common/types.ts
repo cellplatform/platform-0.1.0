@@ -4,6 +4,7 @@ export { Observable } from 'rxjs';
  * @platform
  */
 export { EventBus, PartialDeep, Disposable } from '@platform/types';
+export { CssRadiusInput } from '@platform/css/lib/types';
 
 /**
  * @system

@@ -263,6 +263,7 @@ export class TextInput extends React.PureComponent<TextInputProps, TextInputStat
         maxLength={this.props.maxLength}
         mask={this.props.mask}
         valueStyle={valueStyle}
+        selectOnFocus={this.props.selectOnFocus}
         focusOnLoad={this.props.focusOnLoad}
         focusAction={this.props.focusAction}
         onKeyPress={this.props.onKeyPress}

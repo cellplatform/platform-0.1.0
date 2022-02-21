@@ -6,9 +6,13 @@ import { t } from './common';
 const imports = {
   ModuleInfo: import('./web.ui/ModuleInfo/dev/DEV'),
   LocalPeerCard: import('./web.ui/LocalPeerCard/dev/DEV'),
+  NetbusCard: import('./web.ui/NetbusCard/dev/DEV'),
+  Label: import('./web.ui/Label/dev/DEV'),
+  CommandBar: import('./web.ui.sys/Command.Bar/dev/DEV'),
+  CommandTextbox: import('./web.ui.sys/Command.Textbox/dev/DEV'),
   Networks: import('./web.ui/dev.Networks/DEV'),
-  UnitTests: import('./web.ui/dev/DEV.UnitTests'),
-  SamplePeerNetwork: import('./web.PeerNetwork/dev/DEV'),
+  UnitTests: import('./web.ui/dev.UnitTests/DEV'),
+  Sample: import('./web.PeerNetwork/dev/DEV'),
 };
 
 /**

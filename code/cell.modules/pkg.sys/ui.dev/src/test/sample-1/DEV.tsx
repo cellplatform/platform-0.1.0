@@ -85,9 +85,10 @@ export const actions = DevActions<Ctx>()
     };
 
     e.component((e) => {
+      console.log('render component', 'Foo');
       return (
         <Sample
-          text={'Foo'}
+          text={'Component.Foo'}
           count={e.ctx.count}
           onIncrement={() => e.change.ctx((draft) => draft.count++)}
           onEnvironment={() => e.change.settings({ host: { background: COLORS.DARK } })}
@@ -98,12 +99,16 @@ export const actions = DevActions<Ctx>()
     e.component((e) => {
       return (
         <Sample
-          text={'Bar'}
+          text={'Component.Bar'}
           count={e.ctx.count}
           onIncrement={() => e.change.ctx((draft) => draft.count++)}
           onEnvironment={() => e.change.settings({ host: { background: -0.03 } })}
         />
       );
+    });
+
+    e.button('redraw', (e) => {
+      e.redraw();
     });
 
     e.hr();
@@ -252,7 +257,7 @@ export const actions = DevActions<Ctx>()
     e.select((config) => {
       config
         .label('select (multi)')
-        .description('My set of dropdown options')
+        .description('My title of dropdown options')
         .items(['Chocolate', 'Strawberry', 'Vanilla'])
         .multi(true)
         .indent(25)
@@ -275,9 +280,9 @@ export const actions = DevActions<Ctx>()
 
     e.select((config) => {
       config
-        .title('My radio options')
+        .title('My title of radio options')
         .initial('Chocolate')
-        .description('My set mutually exclusive options')
+        .description('Description of mutually exclusive options')
         .view('buttons')
         .items(['Chocolate', 'Strawberry', 'Vanilla'])
         // .clearable(true)
@@ -311,6 +316,17 @@ export const actions = DevActions<Ctx>()
               isPlaceholder: !Boolean(current),
             },
           });
+        });
+    });
+
+    e.select((config) => {
+      config
+        .view('buttons')
+        .title('Sample undefined value')
+        .items([1, 'two', { label: '<undefined>', value: undefined }])
+        .initial(undefined)
+        .pipe((e) => {
+          //
         });
     });
 

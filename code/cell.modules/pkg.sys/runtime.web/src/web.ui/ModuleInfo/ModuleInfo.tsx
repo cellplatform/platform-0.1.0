@@ -2,19 +2,19 @@ import React from 'react';
 
 import { color, css, CssValue, t, HashChip, PropList, PropListItem } from '../../common';
 import { toPropsList } from './props/toList';
-import * as m from './types';
+import * as k from './types';
 import { DEFAULT } from './constants';
 
 export type ModuleInfoProps = {
   manifestUrl?: t.ManifestUrl;
-  title?: m.ModuleInfoTitle;
+  title?: k.ModuleInfoTitle;
   manifest?: t.ModuleManifest;
-  fields?: m.ModuleInfoFields[];
+  fields?: k.ModuleInfoFields[];
   width?: number;
   minWidth?: number;
   maxWidth?: number;
   style?: CssValue;
-  onExportClick?: m.ModuleInfoExportClick;
+  onExportClick?: k.ModuleInfoExportClick;
 };
 
 export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {

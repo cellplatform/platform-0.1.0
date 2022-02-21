@@ -6,3 +6,6 @@ export * from './libs';
 export * from './colors';
 
 export * from './util.MediaStream';
+export * from './util.Uri';
+export * from './util.Filter';
+export * from './util.String';

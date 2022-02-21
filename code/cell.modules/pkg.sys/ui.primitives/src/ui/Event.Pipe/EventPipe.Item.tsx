@@ -11,6 +11,7 @@ export type EventPipeItemProps = {
   item: EventHistoryItem;
   size: number;
   parentSize: number;
+  color: string | number;
   orientation: 'x' | 'y';
   style?: CssValue;
   onClick?: EventPipeItemClickEventHandler;
@@ -24,7 +25,7 @@ export const EventPipeItem: React.FC<EventPipeItemProps> = (props) => {
       width: size,
       height: size,
       borderRadius: size,
-      backgroundColor: color.format(COLORS.DARK),
+      backgroundColor: color.format(props.color),
       position: 'absolute',
       left: orientation === 'x' ? parentSize - size : undefined,
       top: orientation === 'y' ? parentSize - size : undefined,
