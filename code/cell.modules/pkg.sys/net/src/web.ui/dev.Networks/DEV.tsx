@@ -13,9 +13,17 @@ import {
 } from './DEV.common';
 import { DevSample, DevSampleProps } from './DEV.Sample';
 
+const IMAGE = {
+  // "Desert Scene"
+  BG_IMAGE: `https://images.unsplash.com/photo-1530953845756-f7ffd1ab1cf9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2970&q=80`,
+};
+
 type Ctx = {
   props: DevSampleProps;
-  debug: { background: boolean };
+  debug: {
+    background: boolean;
+    backgroundImage: boolean;
+  };
 };
 
 /**
@@ -31,10 +39,11 @@ export const actions = DevActions<Ctx>()
         // view: DevNetworkConstants.DEFAULT.VIEW,
         view: 'Collection',
         // view: 'Single',
-        child: 'Placeholder',
+        // child: 'Placeholder',
+        // child: undefined,
         networks: [],
       },
-      debug: { background: false },
+      debug: { background: false, backgroundImage: false },
     };
     return ctx;
   })
@@ -114,6 +123,11 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.debug.background;
     });
 
+    e.boolean('backgroundImage', (e) => {
+      if (e.changing) e.ctx.debug.backgroundImage = e.changing.next;
+      e.boolean.current = e.ctx.debug.backgroundImage;
+    });
+
     e.button('redraw', (e) => e.redraw());
 
     e.hr();
@@ -186,9 +200,12 @@ export const actions = DevActions<Ctx>()
         bg: css({
           Absolute: 0,
           Padding: [45, 45],
-          background: color.alpha(COLORS.DARK, 0.08),
           border: `solid 1px ${color.format(-0.12)}`,
           boxShadow: `inset 0 0 15px 0 ${color.format(-0.06)}`,
+          background: color.alpha(COLORS.DARK, 0.08),
+          backgroundImage: debug.backgroundImage ? `url(${IMAGE.BG_IMAGE})` : undefined,
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'contain',
         }),
       },
     };

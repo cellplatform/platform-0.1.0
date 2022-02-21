@@ -17,6 +17,7 @@ type Message = {
 
 const DEFAULT = {
   MESSAGE_DELAY: 1000,
+  TOOLTIP: 'Copy',
 };
 
 export type TextCopyProps = {
@@ -27,6 +28,8 @@ export type TextCopyProps = {
   downOffset?: Pixels;
   icon?: k.TextCopyIcon;
   isCopyable?: boolean;
+
+  tooltip?: boolean | string;
   style?: CssValue;
   onCopy?: k.TextCopyEventHandler;
   onMouse?: k.TextCopyMouseEventHandler;
@@ -42,6 +45,14 @@ export const View: V = (props) => {
 
   const isCopyable = props.isCopyable === false ? false : Boolean(props.onCopy);
   const hasMessage = message !== undefined;
+
+  const tooltip = (() => {
+    const { tooltip } = props;
+    if (tooltip === null) return undefined;
+    if (tooltip === undefined) return DEFAULT.TOOLTIP;
+    if (typeof tooltip === 'string') return tooltip;
+    return undefined;
+  })();
 
   /**
    * [Lifecycle]
@@ -78,16 +89,26 @@ export const View: V = (props) => {
     }
   };
 
-  const fireMouse = (action: k.TextCopyMouseAction) => {
-    props.onMouse?.({ isOver, isDown, action });
+  const updateState = (args: {
+    action: k.TextCopyMouseEvent['action'];
+    isOver: boolean;
+    isDown: boolean;
+  }) => {
+    const { action, isOver, isDown } = args;
+    setOver(isOver);
+    setDown(isDown);
+    props.onMouse?.({ action, isOver, isDown });
+  };
+
+  const handlePress = (isDown: boolean) => {
+    updateState({ isOver, isDown, action: isOver ? 'Over' : 'Leave' });
   };
   const handleOver = (isOver: boolean) => {
-    setOver(isOver);
-    fireMouse(isOver ? 'Over' : 'Leave');
-  };
-  const handlePress = (isDown: boolean) => {
-    setDown(isDown);
-    fireMouse(isDown ? 'Down' : 'Up');
+    updateState({
+      isOver,
+      isDown: !isOver ? false : isDown,
+      action: isOver ? 'Over' : 'Leave',
+    });
   };
 
   let filter = '';
@@ -133,6 +154,7 @@ export const View: V = (props) => {
       onMouseDown={() => handlePress(true)}
       onMouseUp={() => handlePress(false)}
       onClick={handleClick}
+      title={!elMessage ? tooltip : undefined}
     >
       {elBody}
       {elMessage}

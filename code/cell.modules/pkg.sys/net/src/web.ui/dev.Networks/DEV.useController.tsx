@@ -9,11 +9,21 @@ import { css, LocalPeerCard, rx, t, PeerNetwork } from './DEV.common';
 /**
  * Hooks
  */
-export function useController(args: { instance: t.InstanceId; network: t.PeerNetwork }) {
-  const { network, instance } = args;
-  const [child, setChild] = useState<undefined | JSX.Element>();
+export function useController(args: {
+  instance: t.InstanceId;
+  network: t.PeerNetwork;
+  defaultChild?: JSX.Element;
+}) {
+  const { network, instance, defaultChild } = args;
 
+  const [child, setChild] = useState<undefined | JSX.Element>(defaultChild);
+
+  /**
+   * Lifecycle
+   */
   useEffect(() => {
+    const { netbus } = network;
+
     const dispose$ = new Subject<void>();
     const dispose = () => {
       dispose$.next();
@@ -32,7 +42,6 @@ export function useController(args: { instance: t.InstanceId; network: t.PeerNet
      *    Insert anything []
      *
      */
-    const netbus = network.netbus;
     const Strategy = {
       peer: PeerNetwork.PeerStrategy({ bus, netbus }),
       // group: PeerNetwork.GroupStrategy({ bus, netbus }),
@@ -61,7 +70,7 @@ export function useController(args: { instance: t.InstanceId; network: t.PeerNet
 
     rx.payload<k.NetworkCardCloseChildEvent>($, 'sys.net/ui.NetworkCard/CloseChild')
       .pipe()
-      .subscribe((e) => setChild(undefined));
+      .subscribe((e) => setChild(defaultChild));
 
     rx.payload<t.CommandBarActionEvent>($, 'sys.ui.CommandBar/Action')
       .pipe()
@@ -79,7 +88,7 @@ export function useController(args: { instance: t.InstanceId; network: t.PeerNet
       });
 
     return () => dispose();
-  }, [network, instance]);
+  }, [network, instance, defaultChild]);
 
   return { child };
 }

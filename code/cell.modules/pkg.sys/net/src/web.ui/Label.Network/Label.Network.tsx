@@ -7,11 +7,13 @@ import { Layout } from '../Label/Layout';
 export type NetworkLabelProps = {
   id: t.NetworkId;
   isCopyable?: boolean;
+  moreIcon?: boolean;
   style?: CssValue;
 };
 
 export const NetworkLabel: React.FC<NetworkLabelProps> = (props) => {
   const { isCopyable = true } = props;
+
   const PREDICATE = 'network';
   const id = (props.id || '').trim().replace(/^network\:/, '');
   const uri = `${PREDICATE}:${id || '<id>'}`;
@@ -22,7 +24,8 @@ export const NetworkLabel: React.FC<NetworkLabelProps> = (props) => {
       text={uri}
       isCopyable={isCopyable}
       labelOffset={[0, 0]}
-      renderIcon={(e) => {
+      renderIconRight={Boolean(props.moreIcon)}
+      renderIconLeft={(e) => {
         return <Icons.Antenna size={22} />;
       }}
     />

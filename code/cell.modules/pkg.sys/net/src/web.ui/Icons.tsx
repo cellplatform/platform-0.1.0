@@ -13,6 +13,7 @@ import {
   MdFace,
   MdHelpOutline,
   MdKeyboard,
+  MdMore,
 } from 'react-icons/md';
 import { FiMic, FiMicOff } from 'react-icons/fi';
 import { TiUpload } from 'react-icons/ti';
@@ -48,4 +49,5 @@ export const Icons = {
   Network: icon(FaNetworkWired),
   Event: icon(VscSymbolEvent),
   Keyboard: icon(MdKeyboard),
+  More: icon(MdMore),
 };

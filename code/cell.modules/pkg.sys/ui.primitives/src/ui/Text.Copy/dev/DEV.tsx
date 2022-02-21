@@ -91,6 +91,27 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr();
+    e.title('Props');
+
+    e.select((config) => {
+      config
+        .view('buttons')
+        .title('tooltip')
+        .items([
+          { label: '<undefined> - default', value: undefined },
+          { label: '<null>', value: null },
+          'My Tooltip Value',
+        ])
+        .initial(undefined)
+        .pipe((e) => {
+          if (e.changing) {
+            const next = e.changing?.next[0].value;
+            e.ctx.props.tooltip = next;
+          }
+        });
+    });
+
+    e.hr();
   })
 
   .items((e) => {

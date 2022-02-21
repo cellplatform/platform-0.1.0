@@ -16,8 +16,6 @@ const getUri = (kind: K) => {
   return 'error:unknown';
 };
 
-const DEFAULT = { id: 'peer:ckzdck7q200643e5z6mt57iul' };
-
 /**
  * Actions
  */
@@ -31,6 +29,7 @@ export const actions = DevActions<Ctx>()
       props: {
         id: getUri(kind),
         isCopyable: true,
+        moreIcon: true,
       },
       debug: { kind, emptyValue: false },
     };
@@ -47,6 +46,11 @@ export const actions = DevActions<Ctx>()
     e.boolean('isCopyable', (e) => {
       if (e.changing) e.ctx.props.isCopyable = e.changing.next;
       e.boolean.current = e.ctx.props.isCopyable;
+    });
+
+    e.boolean('showMoreIcon', (e) => {
+      if (e.changing) e.ctx.props.moreIcon = e.changing.next;
+      e.boolean.current = e.ctx.props.moreIcon;
     });
 
     e.hr();
@@ -92,7 +96,9 @@ export const actions = DevActions<Ctx>()
     const id = emptyValue ? '' : getUri(kind);
 
     if (kind === '<Label.Peer>') {
-      e.render(<Label.Peer {...props} id={id} />);
+      e.render(
+        <Label.Peer {...props} id={id} onClick={(e) => console.log('<Label.Peer>.onClick:', e)} />,
+      );
     }
 
     if (kind === '<Label.Network>') {

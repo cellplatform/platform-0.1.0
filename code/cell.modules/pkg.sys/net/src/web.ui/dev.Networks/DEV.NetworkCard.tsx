@@ -22,8 +22,6 @@ export const DevNetworkCard: React.FC<DevNetworkCardProps> = (props) => {
   const { netbus } = network;
   const child = props.child;
 
-  const ctrl = useController({ network, instance });
-
   /**
    * Render
    */
@@ -31,10 +29,13 @@ export const DevNetworkCard: React.FC<DevNetworkCardProps> = (props) => {
     child: css({ flex: 1 }),
   };
 
+  const elDefaultChild = <DevCardPlaceholder style={styles.child} />;
+  const ctrl = useController({ network, instance, defaultChild: elDefaultChild });
+
   let elChild: undefined | JSX.Element;
 
   if (child === 'Placeholder' || (!ctrl.child && props.showPlaceholder)) {
-    elChild = <DevCardPlaceholder style={styles.child} />;
+    elChild = elDefaultChild;
   }
   if (child === 'Netbus') {
     elChild = <NetbusCard netbus={netbus} style={styles.child} />;
