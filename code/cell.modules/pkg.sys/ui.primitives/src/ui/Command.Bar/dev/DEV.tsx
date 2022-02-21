@@ -7,7 +7,10 @@ import {
   CommandBarConstants,
   CommandBarPart,
 } from '..';
-import { COLORS, DevActions, ObjectView, PeerNetwork, TEST } from '../../../web.test';
+import { COLORS } from '../../common';
+import { DevActions, ObjectView } from 'sys.ui.dev';
+
+import { NetworkBusMock } from 'sys.runtime.web';
 
 type Ctx = {
   props: CommandBarProps;
@@ -20,17 +23,17 @@ export const actions = DevActions<Ctx>()
   .namespace('ui.Command.Bar')
   .context((e) => {
     if (e.prev) return e.prev;
+
+    const netbus = NetworkBusMock({ local: 'local-id', remotes: ['peer-1', 'peer-2'] });
     const ctx: Ctx = {
-      props: {} as any, // HACK
+      props: { netbus },
     };
+
     return ctx;
   })
 
   .init(async (e) => {
     const { ctx, bus } = e;
-    const signal = TEST.SIGNAL;
-    const { network } = await PeerNetwork.start({ bus, signal });
-    ctx.props = { network, inset: true };
   })
 
   .items((e) => {
@@ -69,7 +72,7 @@ export const actions = DevActions<Ctx>()
     e.hr(1, 0.1);
 
     e.button('netbus.fire', (e) => {
-      e.ctx.props.network?.netbus.fire({ type: 'FOO/event', payload: { count: 123 } });
+      e.ctx.props.netbus.fire({ type: 'FOO/event', payload: { count: 123 } });
     });
 
     e.hr();
@@ -88,7 +91,7 @@ export const actions = DevActions<Ctx>()
 
   .subject((e) => {
     const { props } = e.ctx;
-    const { network } = props;
+    // const { netbus } = props;
 
     e.settings({
       host: { background: COLORS.DARK },
@@ -100,7 +103,7 @@ export const actions = DevActions<Ctx>()
         labelColor: 0.6,
       },
     });
-    if (!network) return;
+    // if (!network) return;
 
     const bg = props.inset ? ({ cornerRadius: [0, 0, 5, 5] } as CommandBarInsetProps) : undefined;
 

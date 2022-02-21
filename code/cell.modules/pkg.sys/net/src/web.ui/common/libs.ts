@@ -19,6 +19,9 @@ export {
 } from 'sys.ui.primitives/lib/ui/Event.Stack';
 export { EventPipe } from 'sys.ui.primitives/lib/ui/Event.Pipe';
 
+export { CommandBar } from 'sys.ui.primitives/lib/ui/Command.Bar';
+export { CommandTextbox } from 'sys.ui.primitives/lib/ui/Command.Textbox';
+
 export { AudioWaveform } from 'sys.ui.video/lib/ui/AudioWaveform';
 export { MediaStream, MediaEvent, VideoStream } from 'sys.ui.video/lib/ui/MediaStream';
 

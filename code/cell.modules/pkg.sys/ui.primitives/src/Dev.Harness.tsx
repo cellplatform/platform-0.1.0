@@ -14,6 +14,7 @@ const imports = {
   TextEditor: import('./ui/TextEditor/DEV'),
 
   CommandTextbox: import('./ui/Command.Textbox/dev/DEV'),
+  CommandBar: import('./ui/Command.Bar/dev/DEV'),
 
   MinSize: import('./ui/MinSize/dev/DEV'),
   PositioningContainer: import('./ui/PositioningContainer/dev/DEV'),

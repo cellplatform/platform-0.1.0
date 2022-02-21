@@ -15,7 +15,7 @@ import { CommandBarInset, CommandBarInsetProps } from './CommandBar.Inset';
 export type CommandBarPart = 'Input' | 'Events';
 
 export type CommandBarProps = {
-  network: t.PeerNetwork;
+  netbus: t.NetworkBus<any>;
   inset?: boolean | CommandBarInsetProps;
   parts?: CommandBarPart[];
   cornerRadius?: [number, number, number, number];
@@ -35,7 +35,7 @@ export const CommandBarConstants = { PARTS };
  * Component
  */
 export const View: React.FC<CommandBarProps> = (props) => {
-  const { network, inset } = props;
+  const { netbus, inset } = props;
   const { parts = ['Input', 'Events'] } = props;
 
   const borderRadius = props.cornerRadius
@@ -92,7 +92,7 @@ export const View: React.FC<CommandBarProps> = (props) => {
       appendDivider();
       elements.push(
         <div {...styles.events} key={elements.length}>
-          {<CommandBarEvents network={network} iconEdge={isFirst ? 'Left' : 'Right'} />}
+          {<CommandBarEvents netbus={netbus} iconEdge={isFirst ? 'Left' : 'Right'} />}
         </div>,
       );
     }

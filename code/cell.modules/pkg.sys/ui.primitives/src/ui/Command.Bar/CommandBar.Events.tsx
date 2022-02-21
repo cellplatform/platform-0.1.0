@@ -2,17 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, EventPipe, t, useEventBusHistory, Icons, time } from '../common';
+import { css, CssValue, t, time } from '../common';
+import { Icons } from '../Icons';
+import { EventPipe } from '../Event.Pipe';
+import { useEventBusHistory } from '../Event';
 
 export type CommandBarEventsProps = {
-  network: t.PeerNetwork;
+  netbus: t.NetworkBus<any>;
   iconEdge?: 'Left' | 'Right';
   style?: CssValue;
 };
 
 export const CommandBarEvents: React.FC<CommandBarEventsProps> = (props) => {
-  const { network, iconEdge = 'Right' } = props;
-  const { netbus } = network;
+  const { netbus, iconEdge = 'Right' } = props;
 
   const history = useEventBusHistory(netbus);
   const [recentlyFired, setRecentlyFired] = useState(false);

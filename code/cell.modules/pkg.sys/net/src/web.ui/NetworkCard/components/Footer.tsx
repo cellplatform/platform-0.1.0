@@ -14,7 +14,7 @@ export const NetworkCardFooter: React.FC<NetworkCardFooterProps> = (props) => {
 
   return (
     <CommandBar
-      network={network}
+      netbus={network.netbus}
       backgroundColor={color.alpha(COLORS.DARK, 0.85)}
       cornerRadius={[0, 0, 3, 3]}
       inset={true}
