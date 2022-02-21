@@ -13,6 +13,8 @@ const imports = {
   QRCode: import('./ui/QRCode/dev/DEV'),
   TextEditor: import('./ui/TextEditor/DEV'),
 
+  CommandTextbox: import('./ui/Command.Textbox/dev/DEV'),
+
   MinSize: import('./ui/MinSize/dev/DEV'),
   PositioningContainer: import('./ui/PositioningContainer/dev/DEV'),
   PositioningLayers: import('./ui/PositioningLayers/dev/DEV'),

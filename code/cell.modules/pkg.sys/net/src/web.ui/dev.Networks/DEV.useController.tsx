@@ -39,8 +39,7 @@ export function useController(args: {
     /**
      * Manage behavioral strategies.
      * NOTE:
-     *    Insert anything []
-     *
+     *    Insert behavior strategies into the pipeline here.
      */
     const Strategy = {
       peer: PeerNetwork.PeerStrategy({ bus, netbus }),
