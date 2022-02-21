@@ -4,7 +4,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 
 import * as k from '../NetworkCard/types';
 import { DevVideoCard } from './DEV.Card.Video';
-import { css, LocalPeerCard, rx, t, PeerNetwork } from './DEV.common';
+import { css, LocalPeerCard, rx, t, PeerNetwork, CommandBar } from './DEV.common';
 
 /**
  * Hooks
@@ -15,19 +15,21 @@ export function useController(args: {
   defaultChild?: JSX.Element;
 }) {
   const { network, instance, defaultChild } = args;
-
   const [child, setChild] = useState<undefined | JSX.Element>(defaultChild);
 
   /**
-   * Lifecycle
+   * Lifecycle.
    */
   useEffect(() => {
     const { netbus } = network;
+
+    const commandBar = CommandBar.Events({ bus: network.bus, instance });
 
     const dispose$ = new Subject<void>();
     const dispose = () => {
       dispose$.next();
       Strategy.peer.dispose();
+      commandBar.dispose();
     };
 
     const bus = rx.busAsType<k.NetworkCardEvent>(network.bus);
@@ -71,20 +73,21 @@ export function useController(args: {
       .pipe()
       .subscribe((e) => setChild(defaultChild));
 
-    rx.payload<t.CommandBarActionEvent>($, 'sys.ui.CommandBar/Action')
-      .pipe()
-      .subscribe((e) => {
-        /**
-         * TODO 🐷
-         * - parse and interpret the command text.
-         */
-        const remote = e.text;
+    /**
+     * List for actions from the [CommandBar] textbox.
+     */
+    commandBar.action.$.subscribe((e) => {
+      /**
+       * TODO 🐷
+       * - parse and interpret the command text.
+       */
+      const remote = e.text;
 
-        const self = network.self;
-        const isReliable = true;
-        const autoStartVideo = true;
-        return LocalPeerCard.connect({ bus, remote, self, isReliable, autoStartVideo });
-      });
+      const self = network.self;
+      const isReliable = true;
+      const autoStartVideo = true;
+      return LocalPeerCard.connect({ bus, remote, self, isReliable, autoStartVideo });
+    });
 
     return () => dispose();
   }, [network, instance, defaultChild]);

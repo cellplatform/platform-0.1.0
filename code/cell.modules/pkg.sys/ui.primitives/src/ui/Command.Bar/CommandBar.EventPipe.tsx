@@ -7,13 +7,13 @@ import { Icons } from '../Icons';
 import { EventPipe } from '../Event.Pipe';
 import { useEventBusHistory } from '../Event';
 
-export type CommandBarEventsProps = {
+export type CommandBarEventPipeProps = {
   netbus: t.NetworkBus<any>;
   iconEdge?: 'Left' | 'Right';
   style?: CssValue;
 };
 
-export const CommandBarEvents: React.FC<CommandBarEventsProps> = (props) => {
+export const CommandBarEventPipe: React.FC<CommandBarEventPipeProps> = (props) => {
   const { netbus, iconEdge = 'Right' } = props;
 
   const history = useEventBusHistory(netbus);

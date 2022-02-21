@@ -13,7 +13,7 @@ export type CommandTextboxTheme = 'Dark' | 'Light';
 export type CommandTextboxActionEvent = { text: string };
 export type CommandTextboxActionEventHandler = (e: CommandTextboxActionEvent) => void;
 
-export type CommandTextboxChangeEvent = { text: string };
+export type CommandTextboxChangeEvent = { from: string; to: string };
 export type CommandTextboxChangeEventHandler = (e: CommandTextboxChangeEvent) => void;
 
 export type CommandTextboxProps = {
@@ -125,10 +125,10 @@ export const CommandTextbox: React.FC<CommandTextboxProps> = (props) => {
         spellCheck={false}
         selectOnFocus={true}
         onChange={(e) => {
-          const text = e.to;
-          setText(text);
+          const { from, to } = e;
+          setText(to);
           setPending(true);
-          props.onChange?.({ text });
+          props.onChange?.({ from, to });
         }}
         onEnter={() => {
           const text = input;

@@ -6,8 +6,10 @@ import {
   CommandTextboxActionEventHandler,
   CommandTextboxChangeEventHandler,
 } from '../Command.Textbox';
-import { CommandBarEvents, CommandBarEventsProps } from './CommandBar.Events';
+import { CommandBarEventPipe, CommandBarEventPipeProps } from './CommandBar.EventPipe';
 import { CommandBarInset, CommandBarInsetProps } from './CommandBar.Inset';
+import { CommandBarEvents } from './Events';
+import * as k from './types';
 
 /**
  * Types
@@ -15,6 +17,7 @@ import { CommandBarInset, CommandBarInsetProps } from './CommandBar.Inset';
 export type CommandBarPart = 'Input' | 'Events';
 
 export type CommandBarProps = {
+  events?: { bus: t.EventBus<any>; instance: string };
   netbus: t.NetworkBus<any>;
   inset?: boolean | CommandBarInsetProps;
   parts?: CommandBarPart[];
@@ -41,6 +44,16 @@ export const View: React.FC<CommandBarProps> = (props) => {
   const borderRadius = props.cornerRadius
     ?.map((value) => (value === 0 ? '0' : `${value}px`))
     .join(' ');
+
+  const [events, setEvents] = React.useState<k.CommandBarEvents | undefined>();
+
+  /**
+   * Lifecycle
+   */
+  React.useEffect(() => {
+    if (props.events) setEvents(CommandBarEvents(props.events));
+    return () => events?.dispose();
+  }, [props.events]); // eslint-disable-line
 
   /**
    * [Render]
@@ -83,7 +96,19 @@ export const View: React.FC<CommandBarProps> = (props) => {
       appendDivider();
       elements.push(
         <div {...styles.input} key={elements.length}>
-          <CommandTextbox onChange={props.onChange} onAction={props.onAction} theme={'Dark'} />
+          <CommandTextbox
+            theme={'Dark'}
+            onChange={(e) => {
+              const { from, to } = e;
+              events?.text.changed({ from, to });
+              props.onChange?.(e);
+            }}
+            onAction={(e) => {
+              const { text } = e;
+              events?.action.fire({ text });
+              props.onAction?.(e);
+            }}
+          />
         </div>,
       );
     }
@@ -92,7 +117,7 @@ export const View: React.FC<CommandBarProps> = (props) => {
       appendDivider();
       elements.push(
         <div {...styles.events} key={elements.length}>
-          {<CommandBarEvents netbus={netbus} iconEdge={isFirst ? 'Left' : 'Right'} />}
+          {<CommandBarEventPipe netbus={netbus} iconEdge={isFirst ? 'Left' : 'Right'} />}
         </div>,
       );
     }
@@ -123,9 +148,11 @@ export const View: React.FC<CommandBarProps> = (props) => {
 
 type Fields = {
   Inset: React.FC<CommandBarInsetProps>;
-  Events: React.FC<CommandBarEventsProps>;
+  EventPipe: React.FC<CommandBarEventPipeProps>;
+  Events: k.CommandBarEventsFactory;
 };
 export const CommandBar = FC.decorate<CommandBarProps, Fields>(View, {
   Inset: CommandBarInset,
+  EventPipe: CommandBarEventPipe,
   Events: CommandBarEvents,
 });

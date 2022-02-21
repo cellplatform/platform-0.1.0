@@ -7,7 +7,7 @@ import {
   CommandBarConstants,
   CommandBarPart,
 } from '..';
-import { COLORS } from '../../common';
+import { COLORS, t, rx } from '../../common';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { NetworkBusMock } from 'sys.runtime.web';
@@ -34,6 +34,14 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx, bus } = e;
+    const instance = 'foo.instance';
+    ctx.props.events = { bus, instance };
+
+    const events = CommandBar.Events({ bus, instance });
+
+    events.$.subscribe((e) => {
+      console.log('CommandBar.Events.$', e);
+    });
   })
 
   .items((e) => {

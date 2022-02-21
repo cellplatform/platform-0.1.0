@@ -1,9 +1,6 @@
 import * as t from '../../common/types';
 
-export type NetworkCardEvent =
-  | NetworkCardPeerClickEvent
-  | t.CommandBarEvent
-  | NetworkCardCloseChildEvent;
+export type NetworkCardEvent = NetworkCardPeerClickEvent | NetworkCardCloseChildEvent;
 
 /**
  * Events
