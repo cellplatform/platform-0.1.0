@@ -12,6 +12,8 @@ export * from './ui/MinSize/types';
 export * from './ui/PositioningContainer/types';
 export * from './ui/PositioningLayers/types';
 
+export * from './ui/Event/types';
+
 export * from './ui/Tree/types';
 export * from './ui/StackPanel/types';
 

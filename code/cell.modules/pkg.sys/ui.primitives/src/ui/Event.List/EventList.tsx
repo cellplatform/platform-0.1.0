@@ -1,9 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { color, css, CssValue, t } from '../../common';
 
-export type EventListProps = { style?: CssValue };
+export type EventListProps = {
+  items?: t.EventHistoryItem[];
+  style?: CssValue;
+};
 
 export const EventList: React.FC<EventListProps> = (props) => {
+  const { items = [] } = props;
+
   /**
    * [Render]
    */

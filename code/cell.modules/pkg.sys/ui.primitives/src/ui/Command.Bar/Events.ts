@@ -1,5 +1,5 @@
-import { Subject } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { animationFrameScheduler, Subject } from 'rxjs';
+import { filter, observeOn, takeUntil } from 'rxjs/operators';
 
 import { rx } from '../common';
 import * as k from './types';
@@ -13,7 +13,11 @@ export const CommandBarEvents: k.CommandBarEventsFactory = (args) => {
   const dispose = () => dispose$.next();
   const bus = rx.busAsType<k.CommandBarEvent>(args.bus);
 
-  const $ = bus.$.pipe(filter((e) => e.payload.instance === instance));
+  const $ = bus.$.pipe(
+    takeUntil(dispose$),
+    filter((e) => e.payload.instance === instance),
+    observeOn(animationFrameScheduler),
+  );
 
   const action: k.CommandBarEvents['action'] = {
     $: rx.payload<k.CommandBarActionEvent>($, 'sys.ui.CommandBar/Action'),
