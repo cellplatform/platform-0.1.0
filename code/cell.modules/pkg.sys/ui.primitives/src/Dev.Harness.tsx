@@ -29,6 +29,7 @@ const imports = {
   EventCard: import('./ui/Event.Card/dev/DEV'),
   EventStack: import('./ui/Event.Stack/dev/DEV'),
   EventPipe: import('./ui/Event.Pipe/dev/DEV'),
+  EventList: import('./ui/Event.List/dev/DEV'),
 
   HashChip: import('./ui/HashChip/dev/DEV'),
 
