@@ -1,19 +1,19 @@
 import * as t from '../../common/types';
 
-export type CommandBarEvent = NetworkCardCommandActionEvent;
+type InstanceId = string;
+
+export type CommandBarEvent = CommandBarActionEvent;
 
 /**
  * TODO 🐷
  * - move to primitives
  */
 
-type InstanceId = string;
-
-export type NetworkCardCommandActionEvent = {
-  type: 'sys.net/ui.NetworkCard/CommandAction';
-  payload: NetworkCardCommandAction;
+export type CommandBarActionEvent = {
+  type: 'sys.ui.CommandBar/Action';
+  payload: CommandBarAction;
 };
-export type NetworkCardCommandAction = {
+export type CommandBarAction = {
   instance: InstanceId;
   network: t.PeerNetwork;
   text: string;

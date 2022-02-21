@@ -44,7 +44,7 @@ export function useController(args: { instance: t.InstanceId; network: t.PeerNet
       .pipe()
       .subscribe((e) => setChild(undefined));
 
-    rx.payload<t.NetworkCardCommandActionEvent>($, 'sys.net/ui.NetworkCard/CommandAction')
+    rx.payload<t.CommandBarActionEvent>($, 'sys.ui.CommandBar/Action')
       .pipe()
       .subscribe((e) => {
         /**

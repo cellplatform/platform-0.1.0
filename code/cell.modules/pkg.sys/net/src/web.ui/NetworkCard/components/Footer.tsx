@@ -21,7 +21,7 @@ export const NetworkCardFooter: React.FC<NetworkCardFooterProps> = (props) => {
       onAction={(e) => {
         const { text } = e;
         bus.fire({
-          type: 'sys.net/ui.NetworkCard/CommandAction',
+          type: 'sys.ui.CommandBar/Action',
           payload: { instance, network, text },
         });
       }}

@@ -35,9 +35,10 @@ async function createNetwork() {
   const bus = rx.bus();
   const signal = TEST.SIGNAL;
   const { network } = await PeerNetwork.start({ bus, signal });
+  const self = network.self;
 
   MediaStream.Controller({ bus });
-  EventBridge.startEventBridge({ self: network.netbus.self, bus });
+  EventBridge.startEventBridge({ self, bus });
 
   return network;
 }
