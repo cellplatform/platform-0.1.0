@@ -22,7 +22,7 @@ export const NetworkCardFooter: React.FC<NetworkCardFooterProps> = (props) => {
         const { text } = e;
         bus.fire({
           type: 'sys.ui.CommandBar/Action',
-          payload: { instance, network, text },
+          payload: { instance, text },
         });
       }}
     />

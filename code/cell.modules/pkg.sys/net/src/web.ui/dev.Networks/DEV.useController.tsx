@@ -4,7 +4,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 
 import * as k from '../NetworkCard/types';
 import { DevVideoCard } from './DEV.Card.Video';
-import { css, LocalPeerCard, rx, t } from './DEV.common';
+import { css, LocalPeerCard, rx, t, PeerNetwork } from './DEV.common';
 
 /**
  * Hooks
@@ -15,29 +15,48 @@ export function useController(args: { instance: t.InstanceId; network: t.PeerNet
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
+    const dispose = () => {
+      dispose$.next();
+      Strategy.peer.dispose();
+    };
+
     const bus = rx.busAsType<k.NetworkCardEvent>(network.bus);
     const $ = bus.$.pipe(
       takeUntil(dispose$),
       filter((e) => e.payload.instance === instance),
     );
 
+    /**
+     * Manage behavioral strategies.
+     * NOTE:
+     *    Insert anything []
+     *
+     */
+    const netbus = network.netbus;
+    const Strategy = {
+      peer: PeerNetwork.PeerStrategy({ bus, netbus }),
+      // group: PeerNetwork.GroupStrategy({ bus, netbus }),
+    };
+
+    /**
+     * Event handlers
+     * (with a UI render factory as an example plugin entry point).
+     */
     const styles = {
       child: css({ flex: 1 }),
     };
 
     rx.payload<k.NetworkCardPeerClickEvent>($, 'sys.net/ui.NetworkCard/PeerClick')
-      .pipe()
+      .pipe(filter((e) => Boolean(e.media)))
       .subscribe((e) => {
-        if (e.media) {
-          setChild(
-            <DevVideoCard
-              instance={instance}
-              network={network}
-              style={styles.child}
-              stream={e.media}
-            />,
-          );
-        }
+        setChild(
+          <DevVideoCard
+            instance={instance}
+            network={network}
+            style={styles.child}
+            stream={e.media}
+          />,
+        );
       });
 
     rx.payload<k.NetworkCardCloseChildEvent>($, 'sys.net/ui.NetworkCard/CloseChild')
@@ -53,13 +72,13 @@ export function useController(args: { instance: t.InstanceId; network: t.PeerNet
          */
         const remote = e.text;
 
-        const self = e.network.self;
+        const self = network.self;
         const isReliable = true;
         const autoStartVideo = true;
         return LocalPeerCard.connect({ bus, remote, self, isReliable, autoStartVideo });
       });
 
-    return () => dispose$.next();
+    return () => dispose();
   }, [network, instance]);
 
   return { child };

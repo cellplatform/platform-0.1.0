@@ -15,6 +15,5 @@ export type CommandBarActionEvent = {
 };
 export type CommandBarAction = {
   instance: InstanceId;
-  network: t.PeerNetwork;
   text: string;
 };
