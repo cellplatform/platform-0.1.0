@@ -1,8 +1,15 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { EventList, EventListProps } from '..';
+import { EventListProps } from '..';
+import { NetworkBusMock } from 'sys.runtime.web';
+import { t } from '../../common';
+import { DevSample } from './DEV.Sample';
 
-type Ctx = { props: EventListProps };
+type Ctx = {
+  props: EventListProps;
+  netbus: t.NetworkBusMock;
+  count: number;
+};
 
 /**
  * Actions
@@ -11,7 +18,14 @@ export const actions = DevActions<Ctx>()
   .namespace('ui.EventList')
   .context((e) => {
     if (e.prev) return e.prev;
-    const ctx: Ctx = { props: {} };
+
+    const netbus = NetworkBusMock({ local: 'local-id', remotes: ['peer-1', 'peer-2'] });
+
+    const ctx: Ctx = {
+      netbus,
+      props: {},
+      count: 0,
+    };
     return ctx;
   })
 
@@ -20,7 +34,21 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('Dev');
+    e.title('Debug');
+
+    const fire = (ctx: Ctx, total: number) => {
+      new Array(total).fill(true).forEach(() => {
+        ctx.count++;
+        ctx.netbus.fire({
+          type: 'FOO/sample',
+          payload: { count: ctx.count },
+        });
+      });
+    };
+
+    e.button('fire', (e) => fire(e.ctx, 1));
+    e.button('fire (10)', (e) => fire(e.ctx, 10));
+    e.button('fire (100)', (e) => fire(e.ctx, 100));
 
     e.hr();
 
@@ -43,36 +71,10 @@ export const actions = DevActions<Ctx>()
       layout: {
         label: '<EventList>',
         position: [150, 80],
-        // border: -0.1,
         cropmarks: -0.2,
-        // background: 1,
       },
     });
-
-    const el = <Example />;
-    e.render(el);
-
-    // e.render(<EventList {...e.ctx.props} />);
+    e.render(<DevSample netbus={e.ctx.netbus} childProps={e.ctx.props} />);
   });
 
 export default actions;
-
-/**
- * TEMP
- */
-
-import { VariableSizeList as List } from 'react-window';
-
-// These row heights are arbitrary.
-// Yours should be based on the content of the row.
-const rowHeights = new Array(1000).fill(true).map(() => 25 + Math.round(Math.random() * 50));
-
-const getItemSize = (index: number) => rowHeights[index];
-
-const Row = ({ index, style }: any) => <div style={style}>Row {index}</div>;
-
-const Example = () => (
-  <List height={150} itemCount={1000} itemSize={getItemSize} width={300}>
-    {Row}
-  </List>
-);
