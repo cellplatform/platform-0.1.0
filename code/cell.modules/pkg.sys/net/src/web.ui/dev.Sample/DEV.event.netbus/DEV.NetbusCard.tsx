@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { UriUtil } from '../..';
 import {
   Card,
   css,
@@ -9,6 +8,7 @@ import {
   PropList,
   PropListItem,
   Style,
+  UriUtil,
   t,
   useEventBusHistory,
 } from '../DEV.common';

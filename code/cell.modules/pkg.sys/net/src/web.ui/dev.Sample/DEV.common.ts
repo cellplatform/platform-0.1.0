@@ -7,7 +7,7 @@ export * from '../../web.ui/common';
 export * from '../../web.PeerNetwork.events';
 export * from './DEV.libs';
 
-export { PeerNetwork } from '..';
+export { UriUtil, PeerNetwork } from '../../web.PeerNetwork';
 export { t };
 
 export const isLocalhost = location.hostname === 'localhost';

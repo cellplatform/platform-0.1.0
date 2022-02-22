@@ -10,7 +10,7 @@ const imports = {
   Label: import('./web.ui/Label/dev/DEV'),
   Networks: import('./web.ui/dev.Networks/DEV'),
   UnitTests: import('./web.ui/dev.UnitTests/DEV'),
-  Sample: import('./web.PeerNetwork/dev/DEV'),
+  Sample: import('./web.ui/dev.Sample/DEV'),
 };
 
 /**
