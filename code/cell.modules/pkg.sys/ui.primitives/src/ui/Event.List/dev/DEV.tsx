@@ -1,14 +1,42 @@
+import { Observable, Subject, BehaviorSubject, firstValueFrom, timeout, of, interval } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+  tap,
+  catchError,
+} from 'rxjs/operators';
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { EventListProps } from '..';
+import { EventListProps, EventList } from '..';
 import { NetworkBusMock } from 'sys.runtime.web';
-import { t } from '../../common';
+import { t, rx } from '../common';
 import { DevSample } from './DEV.Sample';
+import * as k from '../types';
 
 type Ctx = {
   props: EventListProps;
   netbus: t.NetworkBusMock;
+  events: k.EventListEvents;
   count: number;
+  reset$: Subject<void>;
+};
+
+const fire = (ctx: Ctx, total: number) => {
+  new Array(total).fill(true).forEach(() => {
+    ctx.count++;
+    const count = ctx.count;
+    ctx.netbus.fire({
+      type: `FOO/sample/${count}`,
+      payload: { count },
+    });
+  });
 };
 
 /**
@@ -19,36 +47,40 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const netbus = NetworkBusMock({ local: 'local-id', remotes: ['peer-1', 'peer-2'] });
+    const bus = rx.bus();
+    const instance = 'sample.foo';
+    const events = EventList.Events({ bus, instance });
 
+    const netbus = NetworkBusMock({ local: 'local-id', remotes: ['peer-1', 'peer-2'] });
     const ctx: Ctx = {
       netbus,
-      props: {},
+      props: { event: { bus, instance } },
+      events,
       count: 0,
+      reset$: new Subject<void>(),
     };
     return ctx;
   })
 
   .init(async (e) => {
     const { ctx, bus } = e;
+    fire(ctx, 1);
   })
 
   .items((e) => {
     e.title('Debug');
 
-    const fire = (ctx: Ctx, total: number) => {
-      new Array(total).fill(true).forEach(() => {
-        ctx.count++;
-        ctx.netbus.fire({
-          type: 'FOO/sample',
-          payload: { count: ctx.count },
-        });
-      });
-    };
-
     e.button('fire', (e) => fire(e.ctx, 1));
     e.button('fire (10)', (e) => fire(e.ctx, 10));
     e.button('fire (100)', (e) => fire(e.ctx, 100));
+
+    e.hr(1, 0.1);
+    e.button('clear', (e) => e.ctx.reset$.next());
+
+    e.hr();
+
+    e.button('scroll: Top', (e) => e.ctx.events.scroll.fire('Top'));
+    e.button('scroll: Bottom', (e) => e.ctx.events.scroll.fire('Bottom'));
 
     e.hr();
 
@@ -70,11 +102,12 @@ export const actions = DevActions<Ctx>()
       host: { background: -0.04 },
       layout: {
         label: '<EventList>',
-        position: [150, 80],
+        position: [150, null],
+        width: 400,
         cropmarks: -0.2,
       },
     });
-    e.render(<DevSample netbus={e.ctx.netbus} childProps={e.ctx.props} />);
+    e.render(<DevSample netbus={e.ctx.netbus} childProps={e.ctx.props} reset$={e.ctx.reset$} />);
   });
 
 export default actions;

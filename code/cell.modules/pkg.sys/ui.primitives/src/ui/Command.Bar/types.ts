@@ -12,6 +12,7 @@ export type CommandBarEventsFactory = (args: {
 }) => CommandBarEvents;
 
 export type CommandBarEvents = Disposable & {
+  instance: InstanceId;
   $: Observable<CommandBarEvent>;
   action: {
     $: Observable<CommandBarAction>;

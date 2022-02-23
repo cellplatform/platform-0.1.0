@@ -5,7 +5,7 @@ export { Observable } from 'rxjs';
 /**
  * @platform
  */
-export { EventBus, Event, DomRect } from '@platform/types';
+export { EventBus, Event, DomRect, PartialDeep } from '@platform/types';
 export {
   IHttpClientCellFileUpload,
   ManifestUrl,

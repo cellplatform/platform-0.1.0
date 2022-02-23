@@ -146,6 +146,9 @@ export const View: React.FC<CommandBarProps> = (props) => {
   );
 };
 
+/**
+ * Export
+ */
 type Fields = {
   Inset: React.FC<CommandBarInsetProps>;
   EventPipe: React.FC<CommandBarEventPipeProps>;

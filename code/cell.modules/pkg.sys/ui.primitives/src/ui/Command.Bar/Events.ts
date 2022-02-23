@@ -41,5 +41,5 @@ export const CommandBarEvents: k.CommandBarEventsFactory = (args) => {
     },
   };
 
-  return { $, dispose, dispose$, action, text };
+  return { instance, $, dispose, dispose$, action, text };
 };

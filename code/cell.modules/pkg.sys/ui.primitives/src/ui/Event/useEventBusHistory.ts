@@ -9,7 +9,7 @@ import { EventBusHistoryHook, EventHistoryItem } from './types';
  * Captures a running history of events within a state array.
  */
 export const useEventBusHistory: EventBusHistoryHook = (bus, options = {}) => {
-  const { max, reset$ } = options;
+  const { max, reset$, insertAt = 'End' } = options;
   const [events, setEvents] = useState<EventHistoryItem[]>([]);
   const [total, setTotal] = useState<number>(0);
 
@@ -29,7 +29,10 @@ export const useEventBusHistory: EventBusHistoryHook = (bus, options = {}) => {
     );
 
     if (reset$) {
-      reset$.pipe(takeUntil(dispose$)).subscribe(reset);
+      reset$.pipe(takeUntil(dispose$)).subscribe(() => {
+        console.log('reset');
+        reset();
+      });
     }
 
     $.subscribe((event) => {
@@ -43,7 +46,9 @@ export const useEventBusHistory: EventBusHistoryHook = (bus, options = {}) => {
       setEvents((prev) => {
         const timestamp = time.now.timestamp;
         const item: EventHistoryItem = { id: slug(), event, count, timestamp };
-        let events = [...prev, item];
+
+        let events = insertAt === 'Start' ? [item, ...prev] : [...prev, item];
+
         if (max !== undefined) events = events.slice(events.length - max);
         if (options.onChange) options.onChange({ total: count, events });
         return events;
@@ -51,7 +56,7 @@ export const useEventBusHistory: EventBusHistoryHook = (bus, options = {}) => {
     });
 
     return () => dispose$.next();
-  }, [bus, reset$]); // eslint-disable-line
+  }, [bus, reset$, insertAt]); // eslint-disable-line
 
   return { total, events, reset };
 };
