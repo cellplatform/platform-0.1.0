@@ -1,24 +1,12 @@
-import { Observable, Subject, BehaviorSubject, firstValueFrom, timeout, of, interval } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-  tap,
-  catchError,
-} from 'rxjs/operators';
 import React from 'react';
-import { DevActions, ObjectView } from 'sys.ui.dev';
-import { EventListProps, EventList } from '..';
+import { Subject } from 'rxjs';
 import { NetworkBusMock } from 'sys.runtime.web';
-import { t, rx } from '../common';
-import { DevSample } from './DEV.Sample';
+import { DevActions, ObjectView } from 'sys.ui.dev';
+
+import { EventList, EventListProps } from '..';
+import { rx, t } from '../common';
 import * as k from '../types';
+import { DevSample } from './DEV.Sample';
 
 type Ctx = {
   props: EventListProps;
@@ -65,6 +53,10 @@ export const actions = DevActions<Ctx>()
   .init(async (e) => {
     const { ctx, bus } = e;
     fire(ctx, 1);
+
+    ctx.events.$.subscribe((e) => {
+      console.log('e', e);
+    });
   })
 
   .items((e) => {

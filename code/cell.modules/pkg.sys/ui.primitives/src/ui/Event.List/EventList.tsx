@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { VariableSizeList as List } from 'react-window';
 
-import { color, COLORS, css, CssValue, FC, R, t, useResizeObserver, rx } from './common';
+import { color, COLORS, css, CssValue, FC, R, t, useResizeObserver } from './common';
 import { EventListRow, EventListRowData } from './EventList.Row';
 import { useController } from './EventList.useController';
 import { EventListEvents } from './Events';
@@ -15,6 +15,7 @@ export type EventListProps = {
   items?: t.EventHistoryItem[];
   colors?: t.PartialDeep<k.EventListColors>;
   style?: CssValue;
+  onClick?: (e: k.EventListClicked) => void;
 };
 
 /**
@@ -37,7 +38,8 @@ export const View: React.FC<EventListProps> = (props) => {
   const size = resize.rect;
 
   const listRef = useRef<List>(null);
-  useController({ ...props.event, listRef });
+  const ctrl = useController({ ...props.event, listRef });
+  const instance = ctrl.instance;
 
   /**
    * [Render]
@@ -58,7 +60,15 @@ export const View: React.FC<EventListProps> = (props) => {
   const getItemSize = (index: number) => 20;
   const getItemData = (index: number): EventListRowData | undefined => {
     const item = items[index];
-    return !item ? undefined : { item, colors };
+    const onClick = (e: k.EventListClicked) => {
+      props.onClick?.(e);
+      ctrl.bus.fire({
+        type: 'sys.ui.EventList/Clicked',
+        payload: { instance, index, item },
+      });
+    };
+
+    return !item ? undefined : { instance, item, colors, onClick };
   };
 
   const elBackground = (

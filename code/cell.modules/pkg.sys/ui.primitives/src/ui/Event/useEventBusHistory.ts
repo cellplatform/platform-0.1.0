@@ -30,7 +30,6 @@ export const useEventBusHistory: EventBusHistoryHook = (bus, options = {}) => {
 
     if (reset$) {
       reset$.pipe(takeUntil(dispose$)).subscribe(() => {
-        console.log('reset');
         reset();
       });
     }

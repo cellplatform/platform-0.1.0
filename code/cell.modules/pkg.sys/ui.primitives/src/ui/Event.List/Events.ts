@@ -31,5 +31,16 @@ export const EventListEvents: k.EventListEventsFactory = (args) => {
     },
   };
 
-  return { instance, $, dispose, dispose$, scroll };
+  const click: k.EventListEvents['click'] = {
+    $: rx.payload<k.EventListClickedEvent>($, 'sys.ui.EventList/Clicked'),
+    fire(args) {
+      const { index, item } = args;
+      bus.fire({
+        type: 'sys.ui.EventList/Clicked',
+        payload: { instance, index, item },
+      });
+    },
+  };
+
+  return { instance, $, dispose, dispose$, scroll, click };
 };

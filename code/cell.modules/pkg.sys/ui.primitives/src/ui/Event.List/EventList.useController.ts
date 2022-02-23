@@ -13,17 +13,18 @@ export function useController(args: {
   bus?: t.EventBus<any>;
   instance?: string;
 }) {
-  const { listRef, instance = 'inactive' } = args;
+  const { listRef, instance = 'default' } = args;
   const bus = rx.busAsType<k.EventListEvent>(args.bus || rx.bus());
 
   /**
    * Lifecycle.
    */
   useEffect(() => {
-    console.log('init');
-
     const events = EventListEvents({ bus, instance });
 
+    /**
+     * Scroll to an item.
+     */
     events.scroll.$.subscribe((e) => {
       const list = listRef.current;
       if (!list) return;
@@ -31,21 +32,14 @@ export function useController(args: {
       const total = list.props.itemCount;
       const { align = 'auto' } = e;
       const index = e.target === 'Top' ? 0 : e.target === 'Bottom' ? total - 1 : e.target;
-
-      // console.log('getTotal()', getTotal());
-      console.log('index', index);
-
-      console.log('list', listRef);
-      console.log('list', list);
-      console.log('list', list.context);
-
       list?.scrollToItem(index, align);
-
-      // list?.
     });
 
     return () => events.dispose();
   }, [listRef, bus, instance]); // eslint-disable-line
 
-  return {};
+  return {
+    instance,
+    bus,
+  };
 }

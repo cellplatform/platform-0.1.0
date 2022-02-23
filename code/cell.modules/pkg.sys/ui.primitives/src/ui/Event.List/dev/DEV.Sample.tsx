@@ -1,19 +1,5 @@
-import { Observable, Subject, BehaviorSubject, firstValueFrom, timeout, of, interval } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-  tap,
-  catchError,
-} from 'rxjs/operators';
-
 import React from 'react';
+import { Observable } from 'rxjs';
 
 import { EventList, EventListProps } from '..';
 import { t } from '../../common';
@@ -28,7 +14,6 @@ export type DevSampleProps = {
 
 export const DevSample: React.FC<DevSampleProps> = (props) => {
   const { netbus, reset$ } = props;
-
   const history = useEventBusHistory(netbus, { insertAt: 'Start', reset$ });
   return <EventList {...props.childProps} items={history.events} style={{ flex: 1 }} />;
 };
