@@ -4,7 +4,7 @@ import { NetworkBusMock } from 'sys.runtime.web';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { EventList, EventListProps } from '..';
-import { rx, t } from '../common';
+import { rx, t, time, value } from '../common';
 import * as k from '../types';
 import { DevSample } from './DEV.Sample';
 
@@ -16,15 +16,28 @@ type Ctx = {
   reset$: Subject<void>;
 };
 
-const fire = (ctx: Ctx, total: number) => {
-  new Array(total).fill(true).forEach(() => {
-    ctx.count++;
-    const count = ctx.count;
-    ctx.netbus.fire({
-      type: `FOO/sample/${count}`,
-      payload: { count },
-    });
+type Milliseconds = number;
+
+const fire = async (ctx: Ctx, total: number, options: { delay?: Milliseconds | false } = {}) => {
+  // Add an item.
+  ctx.count++;
+  const count = ctx.count;
+  ctx.netbus.fire({
+    type: `FOO/sample/event-${count}`,
+    payload: { count },
   });
+
+  // Delay.
+
+  // 🌳 RECURSION (make another one...)
+  // console.log('total', total);
+
+  if (typeof options.delay === 'number' && options.delay > 0) {
+    await time.wait(options.delay);
+  }
+  if (total > 1) {
+    await fire(ctx, total - 1, { delay: 0 }); // 🌳 RECURSION (make another one...)
+  }
 };
 
 /**
@@ -60,11 +73,19 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
+    e.title('Props');
+
+    e.boolean('[TODO] isSelectable', (e) => {
+      // if (e.changing) e.ctx.props = e.changing.next;
+      // e.boolean.current = e.ctx.props;
+    });
+
+    e.hr();
+
     e.title('Debug');
 
-    e.button('fire', (e) => fire(e.ctx, 1));
-    e.button('fire (10)', (e) => fire(e.ctx, 10));
-    e.button('fire (100)', (e) => fire(e.ctx, 100));
+    e.button('fire (1)', async (e) => fire(e.ctx, 1));
+    e.button('fire (10)', async (e) => fire(e.ctx, 10));
 
     e.hr(1, 0.1);
     e.button('clear', (e) => e.ctx.reset$.next());

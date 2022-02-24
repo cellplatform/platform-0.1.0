@@ -3,19 +3,15 @@ import { color, css, CssValue, t } from '../../common';
 
 type Color = string | number;
 
-export type BulletProps = {
+export type BulletDotProps = {
   showHighlight?: boolean;
-  backgroundColor?: Color;
-  borderColor?: Color;
+  backgroundColor: Color;
+  borderColor: Color;
   style?: CssValue;
 };
 
-export const Bullet: React.FC<BulletProps> = (props) => {
-  const {
-    showHighlight = false,
-    backgroundColor: discBackgroundColor = 1,
-    borderColor: discBorderColor = -0.3,
-  } = props;
+export const BulletDot: React.FC<BulletDotProps> = (props) => {
+  const { showHighlight = false, backgroundColor, borderColor } = props;
 
   const SIZE = {
     ROOT: 17,
@@ -46,8 +42,8 @@ export const Bullet: React.FC<BulletProps> = (props) => {
       boxSizing: 'border-box',
       borderRadius: SIZE.DISC,
       Size: SIZE.DISC,
-      backgroundColor: color.format(discBackgroundColor),
-      border: `solid 1px ${discBorderColor}`,
+      backgroundColor: color.format(backgroundColor),
+      border: `solid 1px ${borderColor}`,
     }),
   };
 

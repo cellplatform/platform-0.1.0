@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, t, time } from '../common';
+import { css, CssValue, t, time, slug } from '../common';
 import { Icons } from '../Icons';
 import { EventPipe } from '../Event.Pipe';
 import { useEventBusHistory } from '../Event';
@@ -37,8 +37,8 @@ export const CommandBarEventPipe: React.FC<CommandBarEventPipeProps> = (props) =
    */
   const fireSampleEvent = () => {
     netbus.fire({
-      type: 'FOO/sample',
-      payload: { message: 'My sample event', time: time.now.timestamp },
+      type: `FOO/sample/event-${history.total}`,
+      payload: { tx: slug(), message: 'My sample event', time: time.now.timestamp },
     });
   };
 

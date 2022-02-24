@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 
-import { BulletListLayout, BulletListLayoutProps } from '..';
+import { BulletList, BulletListLayoutProps } from '..';
 import { RenderCtx, sampleBodyRendererFactory, sampleBulletRendererFactory } from './DEV.renderers';
 import { k } from '../common';
 
@@ -45,7 +45,6 @@ export const actions = DevActions<Ctx>()
         bullet: { edge: 'near', size: 60 },
         renderers: renderer,
         spacing: 10,
-
         debug: { border: true },
       },
       renderCtx: {
@@ -243,7 +242,7 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    e.render(items.length > 0 && <BulletListLayout {...e.ctx.props} style={{}} />);
+    e.render(items.length > 0 && <BulletList.Layout {...e.ctx.props} style={{}} />);
   });
 
 export default actions;

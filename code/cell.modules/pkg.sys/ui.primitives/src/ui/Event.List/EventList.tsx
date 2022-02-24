@@ -22,8 +22,12 @@ export type EventListProps = {
  * Constants
  */
 const DEFAULT_COLORS: k.EventListColors = {
-  margin: color.alpha(COLORS.DARK, 0.4),
-  typeLabel: color.alpha(COLORS.DARK, 0.8),
+  typeLabel: color.alpha(COLORS.DARK, 0.75),
+  margin: color.alpha(COLORS.DARK, 0.07),
+  dot: {
+    border: color.alpha(COLORS.DARK, 0.3),
+    background: COLORS.WHITE,
+  },
 };
 
 /**
@@ -49,8 +53,8 @@ export const View: React.FC<EventListProps> = (props) => {
     bg: {
       base: css({ Absolute: 0 }),
       margin: css({
-        width: 1,
-        Absolute: [0, null, 0, 8],
+        width: 3,
+        Absolute: [0, null, 0, 7],
         backgroundColor: color.format(colors.margin),
       }),
     },

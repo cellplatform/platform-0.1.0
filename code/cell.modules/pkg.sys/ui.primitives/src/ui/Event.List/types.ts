@@ -9,8 +9,9 @@ type Index = number;
 export type EventListAlign = 'auto' | 'smart' | 'center' | 'end' | 'start';
 
 export type EventListColors = {
-  margin: Color;
   typeLabel: Color;
+  margin: Color;
+  dot: { border: Color; background: Color };
 };
 
 /**
