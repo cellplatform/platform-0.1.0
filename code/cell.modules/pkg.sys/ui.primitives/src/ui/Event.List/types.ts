@@ -15,7 +15,7 @@ export type EventListColors = {
 };
 
 /**
- * Event API.
+ * EVENTS (API)
  */
 export type EventListEventsFactory = (args: {
   bus: EventBus<any>;

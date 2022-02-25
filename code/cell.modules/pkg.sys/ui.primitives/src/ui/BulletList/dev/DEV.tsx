@@ -3,13 +3,17 @@ import { DevActions } from 'sys.ui.dev';
 
 import { BulletList, BulletListLayoutProps } from '..';
 import { RenderCtx, sampleBodyRendererFactory, sampleBulletRendererFactory } from './DEV.renderers';
-import { k, DEFAULTS } from '../common';
+import { k, DEFAULTS, t, rx, time } from '../common';
 
 type D = { msg: string };
 
 type Ctx = {
+  bus: t.EventBus<any>;
+  instance: string;
   props: BulletListLayoutProps;
   renderCtx: RenderCtx;
+  events: k.BulletListEvents;
+  redraw(): Promise<void>;
 };
 
 const CtxUtil = {
@@ -40,7 +44,14 @@ export const actions = DevActions<Ctx>()
       body: sampleBodyRendererFactory(getRenderCtx),
     };
 
+    const bus = rx.bus();
+    const instance = 'sample.foo';
+    const events = BulletList.Virtual.Events({ bus, instance });
+
     const ctx: Ctx = {
+      bus,
+      instance,
+      events,
       props: {
         orientation: 'y',
         bullet: { edge: 'near', size: 60 },
@@ -49,13 +60,14 @@ export const actions = DevActions<Ctx>()
         debug: { border: true },
       },
       renderCtx: {
+        enabled: true,
         bulletKind: 'Lines',
-        // bodyKind: 'Card',
-        bodyKind: 'Vanilla',
+        bodyKind: 'Card',
         connectorRadius: 20,
         connectorLineWidth: 5,
-        virtual: true,
+        virtualScroll: true,
       },
+      redraw: async () => time.delay(0, () => events.redraw.fire()),
     };
 
     return ctx;
@@ -63,23 +75,23 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx } = e;
-    Array.from({ length: 3 }).forEach((_, i) => {
-      const item = CtxUtil.addItem(ctx);
+    new Array(3).fill(ctx).forEach(() => CtxUtil.addItem(ctx));
 
-      if (i === 0) {
-        // TEMP 🐷
-        item.child = {
-          south: (e) => <div>Hello</div>,
-        };
-      }
-
-      console.log('item', item);
+    ctx.events.$.subscribe((e) => {
+      console.log('events.$:', e);
     });
   })
 
   .items((e) => {
-    e.button('redraw', (e) => e.redraw());
+    e.boolean('render (reset)', (e) => {
+      if (e.changing) e.ctx.renderCtx.enabled = e.changing.next;
+      e.boolean.current = e.ctx.renderCtx.enabled;
+    });
 
+    e.hr();
+  })
+
+  .items((e) => {
     e.title('Props');
 
     e.select((config) => {
@@ -92,7 +104,10 @@ export const actions = DevActions<Ctx>()
         .initial(config.ctx.props.orientation)
         .view('buttons')
         .pipe((e) => {
-          if (e.changing) e.ctx.props.orientation = e.changing?.next[0].value;
+          if (e.changing) {
+            e.ctx.props.orientation = e.changing?.next[0].value;
+            e.ctx.redraw();
+          }
         });
     });
 
@@ -120,6 +135,7 @@ export const actions = DevActions<Ctx>()
           if (e.changing) {
             const bullet = e.ctx.props.bullet || (e.ctx.props.bullet = {});
             bullet.size = e.changing?.next[0].value;
+            e.ctx.redraw();
           }
         });
     });
@@ -139,8 +155,8 @@ export const actions = DevActions<Ctx>()
     });
 
     e.boolean('virtual (scrolling)', (e) => {
-      if (e.changing) e.ctx.renderCtx.virtual = e.changing.next;
-      e.boolean.current = e.ctx.renderCtx.virtual;
+      if (e.changing) e.ctx.renderCtx.virtualScroll = e.changing.next;
+      e.boolean.current = e.ctx.renderCtx.virtualScroll;
     });
 
     e.select((config) => {
@@ -150,7 +166,10 @@ export const actions = DevActions<Ctx>()
         .items([0, 5, 10, 20])
         .initial(config.ctx.props.spacing as number)
         .pipe((e) => {
-          if (e.changing) e.ctx.props.spacing = e.changing?.next[0].value;
+          if (e.changing) {
+            e.ctx.props.spacing = e.changing?.next[0].value;
+            e.ctx.redraw();
+          }
         });
     });
 
@@ -165,7 +184,10 @@ export const actions = DevActions<Ctx>()
         .items(['Lines', 'Dot', { label: 'undefined (use default)', value: undefined }])
         .initial(config.ctx.renderCtx.bulletKind)
         .pipe((e) => {
-          if (e.changing) e.ctx.renderCtx.bulletKind = e.changing?.next[0].value;
+          if (e.changing) {
+            e.ctx.renderCtx.bulletKind = e.changing?.next[0].value;
+            e.ctx.redraw();
+          }
         });
     });
 
@@ -187,7 +209,10 @@ export const actions = DevActions<Ctx>()
         .items([3, 5, 10])
         .initial(config.ctx.renderCtx.connectorLineWidth)
         .pipe((e) => {
-          if (e.changing) e.ctx.renderCtx.connectorLineWidth = e.changing?.next[0].value;
+          if (e.changing) {
+            e.ctx.renderCtx.connectorLineWidth = e.changing?.next[0].value;
+            e.ctx.redraw();
+          }
         });
     });
 
@@ -202,9 +227,19 @@ export const actions = DevActions<Ctx>()
         .initial(config.ctx.renderCtx.bodyKind)
         .pipe((e) => {
           if (e.changing) e.ctx.renderCtx.bodyKind = e.changing?.next[0].value;
+          e.ctx.redraw();
         });
     });
 
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Events (Virtual)');
+    e.button('⚡️ scroll: Top', (e) => e.ctx.events.scroll.fire('Top'));
+    e.button('⚡️ scroll: Bottom', (e) => e.ctx.events.scroll.fire('Bottom'));
+    e.hr(1, 0.1);
+    e.button('⚡️ redraw', (e) => e.ctx.events.redraw.fire());
     e.hr();
   })
 
@@ -246,7 +281,7 @@ export const actions = DevActions<Ctx>()
     const orientation = props.orientation ?? DEFAULTS.orientation;
     const isHorizontal = orientation === 'x';
     const isVertical = orientation === 'y';
-    const isVirtual = e.ctx.renderCtx.virtual;
+    const isVirtual = e.ctx.renderCtx.virtualScroll;
 
     const FIXED_SIZE = 310;
 
@@ -254,11 +289,12 @@ export const actions = DevActions<Ctx>()
       host: { background: -0.04 },
       layout: total > 0 && {
         cropmarks: -0.2,
-        position: !renderCtx.virtual ? undefined : isVertical ? [150, null] : [null, 150],
+        position: !isVirtual ? undefined : isVertical ? [150, null] : [null, 150],
         width: isVirtual && isVertical ? FIXED_SIZE : undefined,
         height: isVirtual && isHorizontal ? FIXED_SIZE : undefined,
         label: {
-          topLeft: '<BulletList>',
+          topLeft: `<BulletList>`,
+          topRight: isVirtual ? `(virtual scrolling)` : undefined,
           bottomLeft: `total: ${items.length}`,
           bottomRight: `Body/Sample:"${e.ctx.renderCtx.bodyKind}"`,
         },
@@ -266,28 +302,33 @@ export const actions = DevActions<Ctx>()
     });
 
     if (items.length === 0) return;
+    if (!renderCtx.enabled) return;
 
     if (!isVirtual) {
       e.render(<BulletList.Layout {...props} />);
     }
+
     if (isVirtual) {
+      const getItemSize: k.GetBulletItemSize = (e) => {
+        const spacing = (props.spacing || 0) as number;
+        const kind = renderCtx.bodyKind;
+
+        // NB: These are fixed sizes for testing only.
+        //     Will not adjust if the card content expands.
+        let size = e.is.vertical ? 84 : 250; // Debug card (default).
+        if (kind === 'Card') size = e.is.vertical ? 45 : 167;
+        if (kind === 'Vanilla') size = e.is.vertical ? 23 : 118;
+
+        if (!e.is.first) size += spacing;
+        return size;
+      };
+
       e.render(
         <BulletList.Virtual
           {...props}
           style={{ flex: 1 }}
-          getItemSize={(e) => {
-            const spacing = (props.spacing || 0) as number;
-            const kind = renderCtx.bodyKind;
-
-            // NB: These are fixed sizes for testing only.
-            //     Will not adjust if the card content expands.
-            let size = e.is.vertical ? 84 : 250; // Debug card (default).
-            if (kind === 'Card') size = e.is.vertical ? 40 : 167;
-            if (kind === 'Vanilla') size = e.is.vertical ? 23 : 118;
-
-            if (!e.is.first) size += spacing;
-            return size;
-          }}
+          event={{ bus: e.ctx.bus, instance: e.ctx.instance }}
+          itemSize={getItemSize}
         />,
       );
     }

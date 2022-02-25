@@ -1,4 +1,11 @@
+import { Disposable, EventBus } from '@platform/types';
+import { Observable } from 'rxjs';
+
+type InstanceId = string;
+type Index = number;
 type Pixels = number;
+
+export type BulletListItemAlign = 'auto' | 'smart' | 'center' | 'end' | 'start';
 
 export type BulletOrientation = 'x' | 'y'; // x:horizontal, y:vertical
 export type BulletEdge = 'near' | 'far';
@@ -8,12 +15,6 @@ export type BulletItem<T = any> = {
   id: string;
   data: T;
   spacing?: BulletSpacing;
-  child?: {
-    north?: BulletItemRenderer;
-    south?: BulletItemRenderer;
-    east?: BulletItemRenderer;
-    west?: BulletItemRenderer;
-  };
 };
 
 export type BulletItemRenderer = (e: BulletItemArgs) => JSX.Element | null | undefined;
@@ -45,3 +46,75 @@ export type GetBulletItemSizeArgs = {
   item: BulletItem;
   is: { first: boolean; last: boolean; vertical: boolean; horizontal: boolean };
 };
+
+/**
+ * EVENTS (API)
+ */
+export type BulletListEventsFactory = (args: {
+  bus: EventBus<any>;
+  instance: InstanceId;
+}) => BulletListEvents;
+
+export type BulletListEvents = Disposable & {
+  $: Observable<BulletListEvent>;
+  instance: InstanceId;
+  scroll: {
+    $: Observable<BulletListScroll>;
+    fire(target: BulletListScroll['target'], options?: { align?: BulletListItemAlign }): void;
+  };
+  click: {
+    $: Observable<BulletListClick>;
+    fire(args: {
+      index: Index;
+      item: BulletItem;
+      mouse: BulletListClick['mouse'];
+      button: BulletListClick['button'];
+    }): void;
+  };
+  redraw: {
+    $: Observable<BulletListRedraw>;
+    fire(): void;
+  };
+};
+
+/**
+ * EVENT Definitions
+ */
+export type BulletListEvent = BulletListScrollEvent | BulletListClickEvent | BulletListRedrawEvent;
+
+/**
+ * Initiates a scroll operation on the list.
+ */
+export type BulletListScrollEvent = {
+  type: 'sys.ui.BulletList/Scroll';
+  payload: BulletListScroll;
+};
+export type BulletListScroll = {
+  instance: InstanceId;
+  target: 'Top' | 'Bottom' | Index;
+  align?: BulletListItemAlign;
+};
+
+/**
+ * Fires when an event is clicked.
+ */
+export type BulletListClickEvent = {
+  type: 'sys.ui.BulletList/Click';
+  payload: BulletListClick;
+};
+export type BulletListClick = {
+  instance: InstanceId;
+  index: Index;
+  item: BulletItem;
+  mouse: 'Down' | 'Up';
+  button: 'Left' | 'Right';
+};
+
+/**
+ * Forces a redraw of the list.
+ */
+export type BulletListRedrawEvent = {
+  type: 'sys.ui.BulletList/Redraw';
+  payload: BulletListRedraw;
+};
+export type BulletListRedraw = { instance: InstanceId };

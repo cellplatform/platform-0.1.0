@@ -5,11 +5,12 @@ import { Text } from '../../Text';
 import { Renderers, BulletConnectorLinesProps } from '../renderers';
 
 export type RenderCtx = {
+  enabled: boolean;
   bulletKind: 'Lines' | 'Dot';
   bodyKind: 'Card' | 'Vanilla' | undefined;
   connectorRadius?: number;
   connectorLineWidth?: number;
-  virtual: boolean;
+  virtualScroll: boolean;
 };
 
 /**
