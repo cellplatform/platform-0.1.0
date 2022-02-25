@@ -1,5 +1,5 @@
 import React from 'react';
-import { COLORS, css, CssValue } from '../../common';
+import { color, COLORS, css, CssValue } from '../../common';
 
 export type TypeLabelProps = {
   text: string;
@@ -14,7 +14,6 @@ export const TypeLabel: React.FC<TypeLabelProps> = (props) => {
   const styles = {
     base: css({
       fontSize: 11,
-      fontWeight: 600,
       fontFamily: 'monospace',
       color: props.color,
       cursor: onClick ? 'pointer' : 'default',
@@ -45,11 +44,11 @@ export const renderPart = (parts: string[], i: number) => {
   const styles = {
     base: css({ userSelect: 'auto' }),
     value: {
-      base: css({}),
+      base: css({ fontWeight: 500 }),
       first: css({}),
-      last: css({ color: COLORS.MAGENTA }),
+      last: css({ color: COLORS.CYAN, fontWeight: 600 }),
     },
-    slash: css({ color: COLORS.CYAN, MarginX: 1 }),
+    slash: css({ color: color.alpha(COLORS.DARK, 0.2), MarginX: 1 }),
   };
 
   const elValue = (

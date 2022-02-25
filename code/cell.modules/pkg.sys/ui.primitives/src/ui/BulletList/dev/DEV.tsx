@@ -1,9 +1,9 @@
 import React from 'react';
-import { DevActions } from 'sys.ui.dev';
+import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { BulletList, BulletListLayoutProps } from '..';
 import { RenderCtx, sampleBodyRendererFactory, sampleBulletRendererFactory } from './DEV.renderers';
-import { k, DEFAULTS, t, rx, time } from '../common';
+import { k, DEFAULTS, ALL, t, rx, time, value } from '../common';
 
 type D = { msg: string };
 
@@ -13,10 +13,11 @@ type Ctx = {
   props: BulletListLayoutProps;
   renderCtx: RenderCtx;
   events: k.BulletListEvents;
+  debug: { scrollAlign: k.BulletListItemAlign };
   redraw(): Promise<void>;
 };
 
-const CtxUtil = {
+const Util = {
   addItem(ctx: Ctx, options: { spacing?: k.BulletSpacing } = {}) {
     const { spacing } = options;
     const items = ctx.props.items || (ctx.props.items = []);
@@ -28,6 +29,8 @@ const CtxUtil = {
     items.push(item);
     return item;
   },
+  items: (ctx: Ctx) => ctx.props.items || [],
+  total: (ctx: Ctx) => Util.items(ctx).length,
 };
 
 /**
@@ -67,6 +70,7 @@ export const actions = DevActions<Ctx>()
         connectorLineWidth: 5,
         virtualScroll: true,
       },
+      debug: { scrollAlign: 'auto' },
       redraw: async () => time.delay(0, () => events.redraw.fire()),
     };
 
@@ -75,7 +79,7 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx } = e;
-    new Array(3).fill(ctx).forEach(() => CtxUtil.addItem(ctx));
+    new Array(3).fill(ctx).forEach(() => Util.addItem(ctx));
 
     ctx.events.$.subscribe((e) => {
       console.log('events.$:', e);
@@ -236,9 +240,33 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Events (Virtual)');
-    e.button('⚡️ scroll: Top', (e) => e.ctx.events.scroll.fire('Top'));
-    e.button('⚡️ scroll: Bottom', (e) => e.ctx.events.scroll.fire('Bottom'));
+
+    e.select((config) => {
+      config
+        .view('buttons')
+        .title('Align (when scrolled to)')
+        .items(ALL.AlignTypes)
+        .initial(config.ctx.debug.scrollAlign)
+        .pipe((e) => {
+          if (e.changing) e.ctx.debug.scrollAlign = e.changing?.next[0].value;
+        });
+    });
+
+    const scrollTo = (ctx: Ctx, target: k.BulletListScroll['target']) => {
+      const align = ctx.debug.scrollAlign;
+      ctx.events.scroll.fire(target, { align });
+    };
+
+    e.button('⚡️ scroll: "Top"', (e) => scrollTo(e.ctx, 'Top'));
+    e.button('⚡️ scroll: "Bottom"', (e) => scrollTo(e.ctx, 'Bottom'));
+    e.button('⚡️ scroll: <index> (middle)', (e) => {
+      const total = Util.total(e.ctx);
+      const index = value.round(total / 2, 0);
+      scrollTo(e.ctx, index);
+    });
+
     e.hr(1, 0.1);
+
     e.button('⚡️ redraw', (e) => e.ctx.events.redraw.fire());
     e.hr();
   })
@@ -246,16 +274,31 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Items');
 
-    e.button('add', (e) => CtxUtil.addItem(e.ctx));
-    e.button('add (10)', (e) => new Array(10).fill(e.ctx).forEach((ctx) => CtxUtil.addItem(ctx)));
+    const Add = {
+      button(total: number, note?: string) {
+        e.button(`add (${note ?? total})`, (e) => Add.handler(e.ctx, total));
+      },
+      handler(ctx: Ctx, total: number) {
+        new Array(total).fill(ctx).forEach((ctx) => Util.addItem(ctx));
+      },
+    };
+
+    Add.button(1);
+    Add.button(10);
+    Add.button(100);
+    Add.button(1000, '1K');
+    Add.button(10000, '10K');
+
+    e.hr(1, 0.1);
+
     e.button('add (spacing: { before })', (e) => {
-      CtxUtil.addItem(e.ctx, { spacing: { before: 30 } });
+      Util.addItem(e.ctx, { spacing: { before: 30 } });
     });
     e.button('add (spacing: { after })', (e) => {
-      CtxUtil.addItem(e.ctx, { spacing: { after: 30 } });
+      Util.addItem(e.ctx, { spacing: { after: 30 } });
     });
     e.button('add (spacing: { before, after })', (e) => {
-      CtxUtil.addItem(e.ctx, { spacing: { before: 15, after: 30 } });
+      Util.addItem(e.ctx, { spacing: { before: 15, after: 30 } });
     });
 
     e.hr(1, 0.1);
@@ -273,12 +316,28 @@ export const actions = DevActions<Ctx>()
     e.hr();
   })
 
+  .items((e) => {
+    e.component((e) => {
+      const total = Util.total(e.ctx);
+      const props = total < 100 ? e.ctx.props : { ...e.ctx.props, items: `BulletItem[${total}]` };
+      return (
+        <ObjectView
+          name={'props'}
+          data={props}
+          style={{ MarginX: 15 }}
+          fontSize={10}
+          expandPaths={['$']}
+        />
+      );
+    });
+  })
+
   .subject((e) => {
     const { props, renderCtx } = e.ctx;
     const { items = [] } = props;
     const total = items.length;
 
-    const orientation = props.orientation ?? DEFAULTS.orientation;
+    const orientation = props.orientation ?? DEFAULTS.Orientation;
     const isHorizontal = orientation === 'x';
     const isVertical = orientation === 'y';
     const isVirtual = e.ctx.renderCtx.virtualScroll;
@@ -292,11 +351,12 @@ export const actions = DevActions<Ctx>()
         position: !isVirtual ? undefined : isVertical ? [150, null] : [null, 150],
         width: isVirtual && isVertical ? FIXED_SIZE : undefined,
         height: isVirtual && isHorizontal ? FIXED_SIZE : undefined,
+        border: isVirtual ? -0.1 : undefined,
         label: {
-          topLeft: `<BulletList>`,
-          topRight: isVirtual ? `(virtual scrolling)` : undefined,
-          bottomLeft: `total: ${items.length}`,
-          bottomRight: `Body/Sample:"${e.ctx.renderCtx.bodyKind}"`,
+          topLeft: `<BulletList>[${items.length}]`,
+          topRight: isVirtual ? `"virtual rendering"` : ``,
+          bottomLeft: isVirtual ? `scrollable` : ``,
+          bottomRight: `Body:"${e.ctx.renderCtx.bodyKind}"`,
         },
       },
     });

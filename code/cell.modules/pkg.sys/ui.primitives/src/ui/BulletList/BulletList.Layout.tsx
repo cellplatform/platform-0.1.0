@@ -27,7 +27,7 @@ export const BulletListLayout: React.FC<BulletListLayoutProps> = (props) => {
  */
 export const Helpers = {
   renderer(props: BulletListLayoutProps) {
-    const { orientation = DEFAULTS.orientation, bullet = {}, items = [] } = props;
+    const { orientation = DEFAULTS.Orientation, bullet = {}, items = [] } = props;
 
     const renderers = {
       bullet: props.renderers?.bullet ?? Renderers.asRenderer(Renderers.Bullet.ConnectorLines),

@@ -44,7 +44,7 @@ const fire = async (ctx: Ctx, total: number, options: { delay?: Milliseconds | f
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.EventList')
+  .namespace('ui.event.EventList')
   .context((e) => {
     if (e.prev) return e.prev;
 
