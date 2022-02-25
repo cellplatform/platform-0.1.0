@@ -8,6 +8,7 @@ export type ResizeObserver = t.Disposable & {
   readonly elements: ResizeElementObserver[];
   watch(target: HTMLElement): ResizeElementObserver;
   unwatch(target: HTMLElement): void;
+  refresh(): void;
 };
 
 export type ResizeElementObserver = t.Disposable & {
@@ -15,6 +16,7 @@ export type ResizeElementObserver = t.Disposable & {
   readonly target: HTMLElement;
   readonly rect: t.DomRect;
   dispose(): void;
+  refresh(): t.DomRect;
 };
 
 /**

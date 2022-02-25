@@ -25,7 +25,10 @@ export const ResizeObserver = (el?: HTMLElement | null): t.ResizeObserver => {
   const root$ = new Subject<t.ResizeObserverEvent>();
   const dispose$ = new Subject<void>();
 
-  type Item = { element: t.ResizeElementObserver; next(e: t.ResizeObserverEvent): void };
+  type Item = {
+    element: t.ResizeElementObserver;
+    next(e: t.ResizeObserverEvent): void;
+  };
   let items: Item[] = [];
   const findByTarget = (el: HTMLElement) => items.find((item) => item.element.target === el);
 
@@ -44,13 +47,18 @@ export const ResizeObserver = (el?: HTMLElement | null): t.ResizeObserver => {
     let rect: t.DomRect = DEFAULT.RECT;
     const $ = item$.pipe(takeUntil(dispose$), observeOn(animationFrameScheduler));
     const element: t.ResizeElementObserver = {
-      target,
       $,
+      target,
       dispose$: dispose$.asObservable(),
-      dispose,
       get rect() {
         return rect;
       },
+      refresh() {
+        const rect = target.getBoundingClientRect();
+        item.next(toSizeEvent(target, rect));
+        return rect;
+      },
+      dispose,
     };
     const item: Item = { element, next: (e) => item$.next(e) };
 
@@ -70,19 +78,24 @@ export const ResizeObserver = (el?: HTMLElement | null): t.ResizeObserver => {
     return item;
   };
 
+  const toSizeEvent = (target: HTMLElement, rect: t.DomRect): t.ResizeObserverSizeEvent => {
+    const { x, y, width, height, top, right, bottom, left } = rect;
+    return {
+      type: 'ResizeObserver/size',
+      payload: {
+        target,
+        rect: { x, y, width, height, top, right, bottom, left },
+      },
+    };
+  };
+
   const dom = new (window as any).ResizeObserver((entries: any) => {
     entries.forEach((e: any) => {
       const target = e.target;
       const item = findByTarget(target);
       if (item) {
-        const { x, y, width, height, top, right, bottom, left } = e.contentRect;
-        item.next({
-          type: 'ResizeObserver/size',
-          payload: {
-            target: e.target,
-            rect: { x, y, width, height, top, right, bottom, left },
-          },
-        });
+        const event = toSizeEvent(item.element.target, e.contentRect);
+        item.next(event);
       }
     });
   });
@@ -108,6 +121,11 @@ export const ResizeObserver = (el?: HTMLElement | null): t.ResizeObserver => {
 
     unwatch(target: HTMLElement) {
       findByTarget(target)?.element.dispose();
+    },
+
+    refresh(target?: HTMLElement) {
+      if (target) findByTarget(target)?.element.refresh();
+      if (!target) api.elements.forEach((el) => el.refresh());
     },
   };
 
