@@ -5,6 +5,7 @@ export type BulletEdge = 'near' | 'far';
 export type BulletSpacing = { before?: Pixels; after?: Pixels };
 
 export type BulletItem<T = any> = {
+  id: string;
   data: T;
   spacing?: BulletSpacing;
   child?: {
@@ -35,4 +36,12 @@ export type BulletItemArgs<T = any> = {
     spacer: boolean;
     bullet: { near: boolean; far: boolean };
   };
+};
+
+export type GetBulletItemSize = (args: GetBulletItemSizeArgs) => Pixels;
+export type GetBulletItemSizeArgs = {
+  index: number;
+  total: number;
+  item: BulletItem;
+  is: { first: boolean; last: boolean; vertical: boolean; horizontal: boolean };
 };

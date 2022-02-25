@@ -9,6 +9,7 @@ export type RenderCtx = {
   bodyKind: 'Card' | 'Vanilla' | undefined;
   connectorRadius?: number;
   connectorLineWidth?: number;
+  virtual: boolean;
 };
 
 /**

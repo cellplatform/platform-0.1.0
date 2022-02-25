@@ -1,5 +1,5 @@
 import React from 'react';
-import { css, CssValue, k } from './common';
+import { DEFAULTS, css, CssValue, k } from './common';
 import { BulletListLayoutItem } from './BulletList.Layout.Item';
 import { Renderers } from './renderers';
 
@@ -16,42 +16,56 @@ export type BulletListLayoutProps = {
 };
 
 export const BulletListLayout: React.FC<BulletListLayoutProps> = (props) => {
-  const { orientation = 'y', bullet = {}, items = [] } = props;
-  const renderers = {
-    bullet: props.renderers?.bullet ?? Renderers.asRenderer(Renderers.Bullet.ConnectorLines),
-    body: props.renderers?.body ?? Renderers.asRenderer(Renderers.Body.Default),
-  };
+  const renderer = Helpers.renderer(props);
+  const { orientation } = renderer;
+  const styles = { base: css({ Flex: `${orientation}-stretch-stretch` }) };
+  return <div {...css(styles.base, props.style)}>{renderer.items()}</div>;
+};
 
-  const toSpacing = (itemSpacing?: k.BulletSpacing): k.BulletSpacing => {
-    if (typeof itemSpacing === 'object') return itemSpacing;
-    const spacing = props.spacing;
-    if (typeof spacing === 'number') return { before: spacing, after: 0 };
-    return typeof spacing === 'object' ? spacing : { before: 0, after: 0 };
-  };
+/**
+ * Helpers
+ */
+export const Helpers = {
+  renderer(props: BulletListLayoutProps) {
+    const { orientation = DEFAULTS.orientation, bullet = {}, items = [] } = props;
 
-  /**
-   * [Render]
-   */
-  const styles = {
-    base: css({ Flex: `${orientation}-stretch-stretch` }),
-  };
+    const renderers = {
+      bullet: props.renderers?.bullet ?? Renderers.asRenderer(Renderers.Bullet.ConnectorLines),
+      body: props.renderers?.body ?? Renderers.asRenderer(Renderers.Body.Default),
+    };
 
-  const elItems = items.map((item, i) => {
-    return (
-      <BulletListLayoutItem
-        key={`bullet.${i}`}
-        index={i}
-        total={items.length}
-        item={item}
-        orientation={orientation}
-        bulletEdge={bullet.edge ?? 'near'}
-        bulletSize={bullet.size ?? 15}
-        spacing={toSpacing(item.spacing)}
-        renderers={renderers}
-        debug={props.debug}
-      />
-    );
-  });
+    const toSpacing = (itemSpacing?: k.BulletSpacing): k.BulletSpacing => {
+      if (typeof itemSpacing === 'object') return itemSpacing;
+      const spacing = props.spacing;
+      if (typeof spacing === 'number') return { before: spacing, after: 0 };
+      return typeof spacing === 'object' ? spacing : { before: 0, after: 0 };
+    };
 
-  return <div {...css(styles.base, props.style)}>{elItems}</div>;
+    const api = {
+      orientation,
+      renderers,
+      item(item: k.BulletItem, i: number, style?: CssValue) {
+        return (
+          <BulletListLayoutItem
+            key={`bullet.${i}`}
+            index={i}
+            total={items.length}
+            item={item}
+            orientation={orientation}
+            bulletEdge={bullet.edge ?? 'near'}
+            bulletSize={bullet.size ?? 15}
+            spacing={toSpacing(item.spacing)}
+            renderers={renderers}
+            debug={props.debug}
+            style={style}
+          />
+        );
+      },
+      items() {
+        return items.map((item, i) => api.item(item, i));
+      },
+    };
+
+    return api;
+  },
 };

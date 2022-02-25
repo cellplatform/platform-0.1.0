@@ -3,7 +3,7 @@ import { DevActions } from 'sys.ui.dev';
 
 import { BulletList, BulletListLayoutProps } from '..';
 import { RenderCtx, sampleBodyRendererFactory, sampleBulletRendererFactory } from './DEV.renderers';
-import { k } from '../common';
+import { k, DEFAULTS } from '../common';
 
 type D = { msg: string };
 
@@ -17,8 +17,9 @@ const CtxUtil = {
     const { spacing } = options;
     const items = ctx.props.items || (ctx.props.items = []);
 
-    const data: D = { msg: `item-${items.length + 1}` };
-    const item: k.BulletItem<D> = { data, spacing };
+    const id = `item-${items.length + 1}`;
+    const data: D = { msg: id };
+    const item: k.BulletItem<D> = { id, data, spacing };
 
     items.push(item);
     return item;
@@ -49,9 +50,11 @@ export const actions = DevActions<Ctx>()
       },
       renderCtx: {
         bulletKind: 'Lines',
-        bodyKind: 'Card',
+        // bodyKind: 'Card',
+        bodyKind: 'Vanilla',
         connectorRadius: 20,
         connectorLineWidth: 5,
+        virtual: true,
       },
     };
 
@@ -75,6 +78,8 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
+    e.button('redraw', (e) => e.redraw());
+
     e.title('Props');
 
     e.select((config) => {
@@ -131,6 +136,11 @@ export const actions = DevActions<Ctx>()
         debug.border = e.changing.next;
       }
       e.boolean.current = e.ctx.props.debug?.border ?? false;
+    });
+
+    e.boolean('virtual (scrolling)', (e) => {
+      if (e.changing) e.ctx.renderCtx.virtual = e.changing.next;
+      e.boolean.current = e.ctx.renderCtx.virtual;
     });
 
     e.select((config) => {
@@ -202,6 +212,7 @@ export const actions = DevActions<Ctx>()
     e.title('Items');
 
     e.button('add', (e) => CtxUtil.addItem(e.ctx));
+    e.button('add (10)', (e) => new Array(10).fill(e.ctx).forEach((ctx) => CtxUtil.addItem(ctx)));
     e.button('add (spacing: { before })', (e) => {
       CtxUtil.addItem(e.ctx, { spacing: { before: 30 } });
     });
@@ -228,21 +239,58 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const { items = [] } = e.ctx.props;
+    const { props, renderCtx } = e.ctx;
+    const { items = [] } = props;
     const total = items.length;
+
+    const orientation = props.orientation ?? DEFAULTS.orientation;
+    const isHorizontal = orientation === 'x';
+    const isVertical = orientation === 'y';
+    const isVirtual = e.ctx.renderCtx.virtual;
+
+    const FIXED_SIZE = 310;
 
     e.settings({
       host: { background: -0.04 },
       layout: total > 0 && {
         cropmarks: -0.2,
+        position: !renderCtx.virtual ? undefined : isVertical ? [150, null] : [null, 150],
+        width: isVirtual && isVertical ? FIXED_SIZE : undefined,
+        height: isVirtual && isHorizontal ? FIXED_SIZE : undefined,
         label: {
           topLeft: '<BulletList>',
+          bottomLeft: `total: ${items.length}`,
           bottomRight: `Body/Sample:"${e.ctx.renderCtx.bodyKind}"`,
         },
       },
     });
 
-    e.render(items.length > 0 && <BulletList.Layout {...e.ctx.props} style={{}} />);
+    if (items.length === 0) return;
+
+    if (!isVirtual) {
+      e.render(<BulletList.Layout {...props} />);
+    }
+    if (isVirtual) {
+      e.render(
+        <BulletList.Virtual
+          {...props}
+          style={{ flex: 1 }}
+          getItemSize={(e) => {
+            const spacing = (props.spacing || 0) as number;
+            const kind = renderCtx.bodyKind;
+
+            // NB: These are fixed sizes for testing only.
+            //     Will not adjust if the card content expands.
+            let size = e.is.vertical ? 84 : 250; // Debug card (default).
+            if (kind === 'Card') size = e.is.vertical ? 40 : 167;
+            if (kind === 'Vanilla') size = e.is.vertical ? 23 : 118;
+
+            if (!e.is.first) size += spacing;
+            return size;
+          }}
+        />,
+      );
+    }
   });
 
 export default actions;

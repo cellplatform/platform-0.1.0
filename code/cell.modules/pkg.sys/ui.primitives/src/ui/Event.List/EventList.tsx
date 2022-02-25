@@ -82,19 +82,17 @@ export const View: React.FC<EventListProps> = (props) => {
   );
 
   const elBody = (
-    <div>
-      <List
-        ref={listRef}
-        width={size.width}
-        height={size.height}
-        itemCount={items.length}
-        itemSize={getItemSize}
-        itemData={getItemData}
-        itemKey={(index: number) => items[index]?.id}
-      >
-        {EventListRow}
-      </List>
-    </div>
+    <List
+      ref={listRef}
+      width={size.width}
+      height={size.height}
+      itemCount={items.length}
+      itemSize={getItemSize}
+      itemData={getItemData}
+      itemKey={(index: number) => items[index]?.id}
+    >
+      {EventListRow}
+    </List>
   );
 
   return (
