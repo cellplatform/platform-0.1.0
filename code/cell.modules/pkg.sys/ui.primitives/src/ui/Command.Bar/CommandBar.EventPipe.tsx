@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, t, time, slug } from '../common';
-import { Icons } from '../Icons';
-import { EventPipe } from '../Event.Pipe';
 import { useEventBusHistory } from '../Event';
+import { EventPipe } from '../Event.Pipe';
+import { Button, css, CssValue, Icons, slug, t, time } from './common';
 
 export type CommandBarEventPipeProps = {
   netbus: t.NetworkBus<any>;
@@ -49,10 +48,10 @@ export const CommandBarEventPipe: React.FC<CommandBarEventPipeProps> = (props) =
     base: css({ flex: 1, boxSizing: 'border-box', Flex: 'x-center-center' }),
     pipe: css({ flex: 1 }),
     icon: css({
-      marginLeft: iconEdge === 'Right' ?? 5,
-      marginRight: iconEdge === 'Left' ?? 5,
+      marginLeft: iconEdge === 'Right' ? 5 : 0,
+      marginRight: iconEdge === 'Left' ? 5 : 0,
       paddingTop: 3,
-      opacity: recentlyFired ? 0.9 : 0.3,
+      opacity: recentlyFired ? 1 : 0.3,
       transition: `opacity 300ms`,
     }),
   };
@@ -70,7 +69,9 @@ export const CommandBarEventPipe: React.FC<CommandBarEventPipeProps> = (props) =
 
   const elIcon = (
     <div {...styles.icon}>
-      <Icons.Event color={1} size={16} onClick={fireSampleEvent} />
+      <Button>
+        <Icons.Event color={1} size={16} onClick={fireSampleEvent} />
+      </Button>
     </div>
   );
 

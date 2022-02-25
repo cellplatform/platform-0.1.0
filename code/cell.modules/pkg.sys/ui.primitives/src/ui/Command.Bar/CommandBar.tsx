@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { color, css, CssValue, FC, t } from '../../common';
+import { color, css, CssValue, FC, t } from './common';
 import {
   CommandTextbox,
   CommandTextboxActionEventHandler,

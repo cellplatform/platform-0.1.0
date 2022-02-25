@@ -1,7 +1,7 @@
 import { animationFrameScheduler, Subject } from 'rxjs';
 import { filter, observeOn, takeUntil } from 'rxjs/operators';
 
-import { rx } from '../common';
+import { rx } from './common';
 import * as k from './types';
 
 /**

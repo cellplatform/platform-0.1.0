@@ -1,5 +1,5 @@
 import React from 'react';
-import { color, css, CssValue } from '../../common';
+import { color, css, CssValue } from './common';
 
 export type CommandBarInsetProps = {
   cornerRadius?: [number, number, number, number];
