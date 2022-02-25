@@ -22,7 +22,10 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
 
   type D = { network: t.PeerNetwork };
   const isEmpty = networks.length === 0;
-  const items = networks.map<{ data: D }>((network) => ({ data: { network } }));
+  const items = networks.map<{ data: D; id: string }>((network, i) => ({
+    id: `net.${i}`,
+    data: { network },
+  }));
 
   if (view === 'URI') {
     /**

@@ -12,6 +12,7 @@ import {
   rx,
 } from './DEV.common';
 import { DevSample, DevSampleProps } from './DEV.Sample';
+import { DevEventList } from './DEV.EventList';
 
 const IMAGE = {
   // "Desert Scene"
@@ -199,25 +200,63 @@ export const actions = DevActions<Ctx>()
         }),
         bg: css({
           Absolute: 0,
-          Padding: [45, 45],
           border: `solid 1px ${color.format(-0.12)}`,
           boxShadow: `inset 0 0 15px 0 ${color.format(-0.06)}`,
           background: color.alpha(COLORS.DARK, 0.08),
           backgroundImage: debug.backgroundImage ? `url(${IMAGE.BG_IMAGE})` : undefined,
           backgroundRepeat: 'no-repeat',
-          backgroundSize: 'contain',
+          backgroundSize: 'cover',
         }),
+        behind: {
+          base: css({ Absolute: 0, Flex: `x-stretch-stretch` }),
+          left: css({
+            flex: 1,
+            backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+          }),
+          right: css({ width: 300, display: 'flex' }),
+        },
       },
     };
 
     const outerStyle = css(
       styles.outer.base,
-      debug.background || isCollection ? styles.outer.bg : undefined,
+      // debug.background || isCollection ? { Padding: [45, 45] } : undefined,
+      {
+        Absolute: 0,
+      },
     );
+
+    const selectedNetwork = e.ctx.props.networks[0];
+    console.log('firstNetwork', selectedNetwork);
+
+    // const elBehind = (
+    //   <div
+    //     {...css(
+    //       styles.outer.behind.base,
+    //       debug.background || isCollection ? styles.outer.bg : undefined,
+    //     )}
+    //   >
+    //     <div {...styles.outer.behind.left}>
+    //       <DevSample {...props} />
+    //     </div>
+    //     <div {...styles.outer.behind.right}>
+    //       {/* 🌳
+    //           ==>> ENTRY POINT HERE: ==>>
+
+    //           first network (explicitly chosen).
+    //           TODO: expand to support different selected networks in the colleciton here
+
+    //       */}
+    //       {selectedNetwork && <DevEventList network={selectedNetwork} style={{ flex: 1 }} />}
+    //     </div>
+    //   </div>
+    // );
 
     e.render(
       <div {...styles.base}>
+        {/* {elBehind} */}
         <div {...outerStyle}>
+          {/* <div/> */}
           <DevSample {...props} />
         </div>
       </div>,

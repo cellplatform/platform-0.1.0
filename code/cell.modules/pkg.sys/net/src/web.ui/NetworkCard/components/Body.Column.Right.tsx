@@ -43,7 +43,7 @@ export const BodyColumnRight: React.FC<BodyColumnRightProps> = (props) => {
       orientation={'y'}
       bullet={{ edge: 'near', size: 12 }}
       spacing={5}
-      items={peers.map((data) => ({ data }))}
+      items={peers.map((data, i) => ({ id: `net.${i}`, data }))}
       renderers={{
         bullet: (e) => {
           return (
