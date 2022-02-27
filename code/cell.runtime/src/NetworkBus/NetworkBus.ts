@@ -88,5 +88,7 @@ export function NetworkBus<T extends E = E>(args: {
     },
   };
 
+  // Finish up.
+  (api as any)._instance = `net.${rx.bus.instance(bus)}`;
   return api;
 }

@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
-import { t, time } from './common';
+import { t, time, rx } from './common';
 import { NetworkBus } from './NetworkBus';
 
 /**
@@ -50,7 +50,10 @@ export function NetworkBusMock<E extends t.Event = t.Event>(
   });
 
   if (options.memorylog) netbus.$.subscribe((e) => mock.fired.push(e));
-
   options.remotes?.forEach((uri) => mock.remote(uri));
-  return { ...netbus, mock };
+
+  // Finish up.
+  const api = { ...netbus, mock };
+  (api as any)._instance = `${rx.bus.instance(api)}.mock`;
+  return api;
 }

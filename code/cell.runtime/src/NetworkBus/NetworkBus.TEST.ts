@@ -1,9 +1,18 @@
-import { expect, is, time } from '../test';
+import { expect, is, time, rx, t } from '../test';
 import { NetworkBusMock } from './NetworkBus.Mock';
+import { NetworkBus } from '.';
 
 type E = { type: 'foo'; payload: { count?: number } };
 
 describe('NetworkBus', () => {
+  it('rx.instance(bus): "net.bus.<Instance-ID>"', () => {
+    const pump: t.NetworkPump<E> = { in: (fn) => null, out: (e) => null };
+    const netbus = NetworkBus({ pump, local: async () => 'local', remotes: async () => [] });
+
+    const id = rx.bus.instance(netbus);
+    expect(id.startsWith('net.bus.')).to.eql(true);
+  });
+
   it('$ (observable)', () => {
     const bus = NetworkBusMock();
     expect(is.observable(bus.$)).to.eql(true);
