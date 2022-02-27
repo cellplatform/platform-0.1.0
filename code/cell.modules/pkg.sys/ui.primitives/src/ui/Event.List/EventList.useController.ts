@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import { VariableSizeList as List } from 'react-window';
 
 import { rx, t } from './common';
@@ -8,13 +8,10 @@ import * as k from './types';
 /**
  * Event behavior controller.
  */
-export function useController(args: {
-  listRef: React.RefObject<List>;
-  bus?: t.EventBus<any>;
-  instance?: string;
-}) {
-  const { listRef, instance = 'default' } = args;
+export function useController(args: { bus?: t.EventBus<any>; instance?: string }) {
+  const { instance = 'default' } = args;
   const bus = rx.busAsType<k.EventListEvent>(args.bus || rx.bus());
+  const listRef = useRef<List>(null);
 
   /**
    * Lifecycle.

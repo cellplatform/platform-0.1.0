@@ -27,10 +27,9 @@ export const View: React.FC<BulletListVirtualProps> = (props) => {
   const orientation = renderer.orientation;
 
   const rootRef = useRef<HTMLDivElement>(null);
-  const listRef = useRef<List>(null);
   const resize = useResizeObserver(rootRef);
 
-  const ctrl = useEventsController({ ...props.event, listRef });
+  const ctrl = useEventsController({ ...props.event });
   const { instance } = ctrl;
 
   const getItemSize = (index: number) => {
@@ -74,7 +73,7 @@ export const View: React.FC<BulletListVirtualProps> = (props) => {
   const elBody = resize.ready && (
     <List
       key={ctrl.key} // NB: Enabled "redraws" of the list.
-      ref={listRef}
+      ref={ctrl.listRef}
       width={size.width}
       height={size.height}
       layout={orientation === 'y' ? 'vertical' : 'horizontal'}

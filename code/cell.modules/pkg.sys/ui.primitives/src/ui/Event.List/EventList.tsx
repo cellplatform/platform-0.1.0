@@ -1,8 +1,7 @@
-import React, { useRef } from 'react';
-import { VariableSizeList as List } from 'react-window';
+import React from 'react';
 
 import { BulletList } from '../BulletList';
-import { color, COLORS, css, CssValue, EventListConstants, FC, R, t } from './common';
+import { color, css, CssValue, EventListConstants, FC, t } from './common';
 import { EventListRow } from './EventList.Row';
 import { useController } from './EventList.useController';
 import { EventListEvents } from './Events';
@@ -14,7 +13,6 @@ import * as k from './types';
 export type EventListProps = {
   event?: { bus: t.EventBus<any>; instance: string };
   items?: t.EventHistoryItem[];
-  colors?: t.PartialDeep<k.EventListColors>;
   style?: CssValue;
   onClick?: (e: k.EventListClicked) => void;
 };
@@ -25,28 +23,12 @@ export type EventListProps = {
 const { ROW } = EventListConstants;
 
 /**
- * TODO 🐷
- * - clean up
- */
-const DEFAULT_COLORS: k.EventListColors = {
-  typeLabel: color.alpha(COLORS.DARK, 0.75),
-  margin: color.alpha(COLORS.DARK, 0.07),
-  dot: {
-    border: color.alpha(COLORS.DARK, 0.3),
-    background: COLORS.WHITE,
-  },
-};
-
-/**
  * Component
  */
 export const View: React.FC<EventListProps> = (props) => {
   const { items = [] } = props;
-  const colors = R.mergeDeepRight(DEFAULT_COLORS, props.colors ?? {});
 
-  const listRef = useRef<List>(null);
-  const ctrl = useController({ ...props.event, listRef });
-  const instance = ctrl.instance;
+  useController({ ...props.event });
 
   /**
    * [Render]

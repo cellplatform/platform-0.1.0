@@ -1,7 +1,7 @@
 import React from 'react';
 import { css, CssValue, t, EventListConstants } from './common';
-import { CountLabel } from './Label.Count';
-import { TypeLabel } from './Label.Type';
+import { CountLabel } from './components/Label.Count';
+import { TypeLabel } from './components/Label.Type';
 
 const { ROW } = EventListConstants;
 

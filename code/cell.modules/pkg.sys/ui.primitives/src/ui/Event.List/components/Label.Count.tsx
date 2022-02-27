@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { color, COLORS, css, CssValue } from '../../common';
+import React from 'react';
+import { color, COLORS, css, CssValue } from '../common';
 
 export type CountLabelProps = {
   count: number;

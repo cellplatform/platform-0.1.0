@@ -3,16 +3,9 @@ import { Observable } from 'rxjs';
 import * as t from '../../common/types';
 
 type InstanceId = string;
-type Color = string | number;
 type Index = number;
 
 export type EventListAlign = 'auto' | 'smart' | 'center' | 'end' | 'start';
-
-export type EventListColors = {
-  typeLabel: Color;
-  margin: Color;
-  dot: { border: Color; background: Color };
-};
 
 /**
  * EVENTS (API)

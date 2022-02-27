@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { VariableSizeList as List } from 'react-window';
 
 import { rx, t } from './common';
@@ -8,14 +8,11 @@ import * as k from './types';
 /**
  * Event behavior controller.
  */
-export function useEventsController(args: {
-  listRef: React.RefObject<List>;
-  bus?: t.EventBus<any>;
-  instance?: string;
-}) {
-  const { listRef, instance = 'default' } = args;
+export function useEventsController(args: { bus?: t.EventBus<any>; instance?: string }) {
+  const { instance = 'default' } = args;
   const bus = rx.busAsType<k.BulletListEvent>(args.bus || rx.bus());
 
+  const listRef = useRef<List>(null);
   const [count, setCount] = useState(0);
 
   /**
@@ -47,6 +44,7 @@ export function useEventsController(args: {
   }, [listRef, bus, instance]); // eslint-disable-line
 
   return {
+    listRef,
     instance,
     bus,
     key: `redraw.${count}`,

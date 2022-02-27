@@ -1,5 +1,5 @@
 import React from 'react';
-import { color, COLORS, css, CssValue } from '../../common';
+import { color, COLORS, css, CssValue } from '../common';
 
 export type TypeLabelProps = {
   text: string;
