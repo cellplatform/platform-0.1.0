@@ -4,7 +4,6 @@ import { color, COLORS, css, CssValue } from '../../common';
 export type TypeLabelProps = {
   text: string;
   style?: CssValue;
-  color?: string | number;
   onClick?: (e: { text: string }) => void;
 };
 
@@ -15,7 +14,6 @@ export const TypeLabel: React.FC<TypeLabelProps> = (props) => {
     base: css({
       fontSize: 11,
       fontFamily: 'monospace',
-      color: props.color,
       cursor: onClick ? 'pointer' : 'default',
     }),
   };

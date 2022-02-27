@@ -1,8 +1,9 @@
 import React, { useRef } from 'react';
 import { VariableSizeList as List } from 'react-window';
 
-import { color, COLORS, css, CssValue, FC, R, t, useResizeObserver } from './common';
-import { EventListRow, EventListRowData } from './EventList.Row';
+import { BulletList } from '../BulletList';
+import { color, COLORS, css, CssValue, EventListConstants, FC, R, t } from './common';
+import { EventListRow } from './EventList.Row';
 import { useController } from './EventList.useController';
 import { EventListEvents } from './Events';
 import * as k from './types';
@@ -21,6 +22,12 @@ export type EventListProps = {
 /**
  * Constants
  */
+const { ROW } = EventListConstants;
+
+/**
+ * TODO 🐷
+ * - clean up
+ */
 const DEFAULT_COLORS: k.EventListColors = {
   typeLabel: color.alpha(COLORS.DARK, 0.75),
   margin: color.alpha(COLORS.DARK, 0.07),
@@ -37,10 +44,6 @@ export const View: React.FC<EventListProps> = (props) => {
   const { items = [] } = props;
   const colors = R.mergeDeepRight(DEFAULT_COLORS, props.colors ?? {});
 
-  const rootRef = useRef<HTMLDivElement>(null);
-  const resize = useResizeObserver(rootRef);
-  const size = resize.rect;
-
   const listRef = useRef<List>(null);
   const ctrl = useController({ ...props.event, listRef });
   const instance = ctrl.instance;
@@ -50,57 +53,49 @@ export const View: React.FC<EventListProps> = (props) => {
    */
   const styles = {
     base: css({ position: 'relative' }),
-    bg: {
-      base: css({ Absolute: 0 }),
-      margin: css({
-        width: 3,
-        Absolute: [0, null, 0, 7],
-        backgroundColor: color.format(colors.margin),
-      }),
-    },
     body: css({ Absolute: 0 }),
   };
 
-  const getItemSize = (index: number) => 20;
-  const getItemData = (index: number): EventListRowData | undefined => {
-    const item = items[index];
-    const onClick = (e: k.EventListClicked) => {
-      props.onClick?.(e);
-      ctrl.bus.fire({
-        type: 'sys.ui.EventList/Clicked',
-        payload: { instance, index, item },
-      });
-    };
-
-    return !item ? undefined : { instance, item, colors, onClick };
-  };
-
-  const elBackground = (
-    <div {...styles.bg.base}>
-      <div {...styles.bg.margin} />
-    </div>
-  );
+  /**
+   * TODO 🐷 Memoize
+   *    - OR never pass arrays into lists
+   *      and adopt the API pattern of the underlying virtualizer library (react-window)
+   */
+  const listItems = items.map((data, i): t.BulletItem => {
+    return { id: `${i}`, data };
+  });
 
   const elBody = (
-    <List
-      ref={listRef}
-      width={size.width}
-      height={size.height}
-      itemCount={items.length}
-      itemSize={getItemSize}
-      itemData={getItemData}
-      itemKey={(index: number) => items[index]?.id}
-    >
-      {EventListRow}
-    </List>
+    <BulletList.Virtual
+      style={styles.body}
+      spacing={ROW.SPACING}
+      items={listItems}
+      itemSize={(e) => (e.is.first ? ROW.HEIGHT : ROW.HEIGHT + ROW.SPACING)}
+      renderers={{
+        bullet(e) {
+          return (
+            <BulletList.Renderers.Bullet.ConnectorLines
+              {...e}
+              radius={0}
+              lineWidth={2}
+              lineColor={color.format(-0.1)}
+            />
+          );
+        },
+        body(e) {
+          if (e.kind !== 'Default') return;
+
+          const { index } = e;
+          const { first, last } = e.is;
+          const data = e.data as t.EventHistoryItem;
+
+          return <EventListRow index={index} data={data} is={{ first, last }} />;
+        },
+      }}
+    />
   );
 
-  return (
-    <div ref={rootRef} {...css(styles.base, props.style)}>
-      {elBackground}
-      {resize.ready && elBody}
-    </div>
-  );
+  return <div {...css(styles.base, props.style)}>{elBody}</div>;
 };
 
 /**

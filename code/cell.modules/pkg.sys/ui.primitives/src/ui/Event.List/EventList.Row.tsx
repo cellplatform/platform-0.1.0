@@ -1,60 +1,40 @@
 import React from 'react';
-import { ListChildComponentProps } from 'react-window';
-
-import { css, t } from '../../common';
-import { BulletDot } from './Bullet.Dot';
-import { TypeLabel } from './Label.Type';
+import { css, CssValue, t, EventListConstants } from './common';
 import { CountLabel } from './Label.Count';
-import * as k from './types';
+import { TypeLabel } from './Label.Type';
 
-export type EventListRowData = {
-  instance: string;
-  item: t.EventHistoryItem;
-  colors: k.EventListColors;
-  onClick?: (e: k.EventListClicked) => void;
+const { ROW } = EventListConstants;
+
+export type EventListRowProps = {
+  index: number;
+  data: t.EventHistoryItem;
+  is: { first: boolean; last: boolean };
+  style?: CssValue;
 };
 
-export const EventListRow: React.FC<ListChildComponentProps> = (props) => {
-  const { index } = props;
-
-  const data = props.data?.(index) as EventListRowData;
-  if (!data) return null;
-
-  const { item, colors, instance, onClick } = data;
+export const EventListRow: React.FC<EventListRowProps> = (props) => {
+  const { data } = props;
 
   /**
    * [Render]
    */
   const styles = {
     base: css({
-      position: 'relative',
-      Flex: 'x-stretch-center',
-      userSelect: 'none',
+      Flex: 'x-stretch-stretch',
+      fontSize: 12,
+      boxSizing: 'border-box',
+      paddingLeft: 6,
+      paddingRight: 15,
+      height: ROW.HEIGHT,
     }),
-    left: css({}),
-    middle: css({ flex: 1, marginLeft: 4 }),
-    right: css({ paddingRight: 10 }),
+    left: css({ flex: 1 }),
+    right: css({}),
   };
-
-  const elLabel = (
-    <TypeLabel
-      text={item.event.type}
-      color={colors.typeLabel}
-      onClick={() => onClick?.({ instance, index, item })}
-    />
-  );
 
   return (
     <div {...css(styles.base, props.style)}>
-      <BulletDot
-        style={styles.left}
-        borderColor={colors.dot.border}
-        backgroundColor={colors.dot.background}
-      />
-      <div {...styles.middle}>{elLabel}</div>
-      <div {...styles.right}>
-        <CountLabel count={item.count} />
-      </div>
+      <TypeLabel text={data.event.type} style={styles.left} />
+      <CountLabel count={data.count} style={styles.right} />
     </div>
   );
 };
