@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
-import { BulletList, BulletListLayoutProps } from '..';
+import { BulletList, BulletListProps } from '..';
 import {
   RenderCtx,
   sampleBodyRendererFactory,
@@ -14,7 +14,8 @@ type D = { msg: string };
 type Ctx = {
   bus: t.EventBus<any>;
   instance: string;
-  props: BulletListLayoutProps;
+  items: k.BulletItem[];
+  props: BulletListProps; // Common properties.
   renderCtx: RenderCtx;
   events: k.BulletListEvents;
   debug: { scrollAlign: k.BulletListItemAlign };
@@ -24,17 +25,14 @@ type Ctx = {
 const Util = {
   addItem(ctx: Ctx, options: { spacing?: k.BulletSpacing } = {}) {
     const { spacing } = options;
-    const items = ctx.props.items || (ctx.props.items = []);
+    const items = ctx.items;
 
-    const id = `item-${items.length + 1}`;
-    const data: D = { msg: id };
-    const item: k.BulletItem<D> = { id, data, spacing };
+    const data: D = { msg: `item-${items.length + 1}` };
+    const item: k.BulletItem<D> = { data, spacing };
 
-    items.push(item);
+    ctx.items.push(item);
     return item;
   },
-  items: (ctx: Ctx) => ctx.props.items || [],
-  total: (ctx: Ctx) => Util.items(ctx).length,
 };
 
 /**
@@ -59,6 +57,7 @@ export const actions = DevActions<Ctx>()
       bus,
       instance,
       events,
+      items: [],
       props: {
         orientation: 'y',
         bullet: { edge: 'near', size: 60 },
@@ -83,11 +82,8 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx } = e;
+    ctx.events.$.subscribe((e) => console.log('events.$:', e));
     new Array(3).fill(ctx).forEach(() => Util.addItem(ctx));
-
-    ctx.events.$.subscribe((e) => {
-      console.log('events.$:', e);
-    });
   })
 
   .items((e) => {
@@ -264,7 +260,7 @@ export const actions = DevActions<Ctx>()
     e.button('⚡️ scroll: "Top"', (e) => scrollTo(e.ctx, 'Top'));
     e.button('⚡️ scroll: "Bottom"', (e) => scrollTo(e.ctx, 'Bottom'));
     e.button('⚡️ scroll: <index> (middle)', (e) => {
-      const total = Util.total(e.ctx);
+      const total = e.ctx.items.length;
       const index = value.round(total / 2, 0);
       scrollTo(e.ctx, index);
     });
@@ -307,14 +303,16 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.1);
 
-    e.button('clear', (e) => (e.ctx.props.items = []));
+    e.button('clear', (e) => {
+      e.ctx.items = [];
+    });
     e.button('remove: first', (e) => {
-      const items = e.ctx.props.items || [];
-      e.ctx.props.items = items?.slice(0, items.length - 1);
+      const items = e.ctx.items;
+      e.ctx.items = items?.slice(0, items.length - 1);
     });
     e.button('remove: last', (e) => {
-      const items = e.ctx.props.items || [];
-      e.ctx.props.items = items?.slice(0, items.length - 1);
+      const items = e.ctx.items;
+      e.ctx.items = items?.slice(items.length - 1);
     });
 
     e.hr();
@@ -322,7 +320,7 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.component((e) => {
-      const total = Util.total(e.ctx);
+      const total = e.ctx.items.length;
       const props = total < 100 ? e.ctx.props : { ...e.ctx.props, items: `BulletItem[${total}]` };
       return (
         <ObjectView
@@ -337,8 +335,7 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const { props, renderCtx } = e.ctx;
-    const { items = [] } = props;
+    const { items, props, renderCtx } = e.ctx;
     const total = items.length;
 
     const orientation = props.orientation ?? DEFAULTS.Orientation;
@@ -357,7 +354,7 @@ export const actions = DevActions<Ctx>()
         height: isVirtual && isHorizontal ? FIXED_SIZE : undefined,
         border: isVirtual ? -0.1 : undefined,
         label: {
-          topLeft: `<BulletList>[${items.length}]`,
+          topLeft: `<BulletList>[${total}]`,
           topRight: isVirtual ? `"virtual rendering"` : ``,
           bottomLeft: isVirtual ? `scrollable` : ``,
           bottomRight: `Body:"${e.ctx.renderCtx.bodyKind}"`,
@@ -365,21 +362,27 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    if (items.length === 0) return;
+    if (total === 0) return;
     if (!renderCtx.enabled) return;
 
     /**
      * Simple (non-scrolling) layout.
      */
     if (!isVirtual) {
-      e.render(<BulletList.Layout {...props} />);
+      e.render(<BulletList.Layout {...props} items={items} />);
     }
 
     /**
      * Virtual scolling list.
      */
     if (isVirtual) {
-      const getItemSize: k.GetBulletItemSize = (e) => {
+      const getData: k.GetBulletItemData = (index) => {
+        const data = items[index];
+        const id = `item.${index}`; // TEMP 🐷
+        return data ? { id, data } : undefined;
+      };
+
+      const getSize: k.GetBulletItemSize = (e) => {
         const spacing = (props.spacing || 0) as number;
         const kind = renderCtx.bodyKind;
 
@@ -396,9 +399,9 @@ export const actions = DevActions<Ctx>()
       e.render(
         <BulletList.Virtual
           {...props}
-          style={{ flex: 1 }}
+          items={{ total, getData, getSize }}
           event={{ bus: e.ctx.bus, instance: e.ctx.instance }}
-          itemSize={getItemSize}
+          style={{ flex: 1 }}
         />,
       );
     }

@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { VariableSizeList as List } from 'react-window';
 
-import { BulletListLayoutProps, Helpers } from './BulletList.Layout';
+import { BulletListProps, Helpers } from './BulletList.Layout';
 import { BulletListVirtualRow, BulletListVirtualRowData } from './BulletList.Virtual.Row';
 import { css, FC, k, t, useResizeObserver } from './common';
 import { BulletListEvents } from './Events';
@@ -10,20 +10,19 @@ import { useEventsController } from './Events.useController';
 /**
  * Types
  */
-export type BulletListVirtualProps = BulletListLayoutProps & {
+export type BulletListVirtualProps = BulletListProps & {
+  items: { total: number; getData: k.GetBulletItemData; getSize: k.GetBulletItemSize };
   event?: { bus: t.EventBus<any>; instance: string };
-  itemSize: k.GetBulletItemSize;
-  onClick?: (e: k.BulletListClick) => void;
 };
 
 /**
  * Component
  */
 export const View: React.FC<BulletListVirtualProps> = (props) => {
-  const { items = [] } = props;
-  const total = items.length;
+  const { items } = props;
+  const total = items.total;
 
-  const renderer = Helpers.renderer(props);
+  const renderer = Helpers.renderer(props, total);
   const orientation = renderer.orientation;
 
   const rootRef = useRef<HTMLDivElement>(null);
@@ -32,7 +31,7 @@ export const View: React.FC<BulletListVirtualProps> = (props) => {
   const ctrl = useEventsController({ ...props.event });
   const { instance } = ctrl;
 
-  const getItemSize = (index: number) => {
+  const getSize = (index: number) => {
     const item = items[index];
     const e: k.GetBulletItemSizeArgs = {
       index,
@@ -45,19 +44,21 @@ export const View: React.FC<BulletListVirtualProps> = (props) => {
         vertical: orientation === 'y',
       },
     };
-    return props.itemSize(e);
+    return props.items.getSize(e);
   };
 
-  const getItemData = (index: number): BulletListVirtualRowData => {
-    const item = items[index];
+  const getData = (index: number): BulletListVirtualRowData | undefined => {
+    const item = items.getData?.(index);
+    if (!item) return undefined;
     return {
       item,
       render: () => renderer.item(item, index),
       onMouse(e) {
         const { mouse, button } = e;
-        const payload: t.BulletListClick = { instance, index, item, mouse, button };
-        props.onClick?.(payload);
-        ctrl.bus.fire({ type: 'sys.ui.BulletList/Click', payload });
+        ctrl.bus.fire({
+          type: 'sys.ui.BulletList/Click',
+          payload: { instance, index, item, mouse, button },
+        });
       },
     };
   };
@@ -72,15 +73,15 @@ export const View: React.FC<BulletListVirtualProps> = (props) => {
 
   const elBody = resize.ready && (
     <List
-      key={ctrl.key} // NB: Enabled "redraws" of the list.
+      key={ctrl.key} // NB: Enable "redraws" of the list.
       ref={ctrl.listRef}
       width={size.width}
       height={size.height}
       layout={orientation === 'y' ? 'vertical' : 'horizontal'}
-      itemCount={items.length}
-      itemSize={getItemSize}
-      itemData={getItemData}
-      itemKey={(index: number) => items[index]?.id}
+      itemCount={total}
+      itemSize={getSize}
+      itemData={getData}
+      itemKey={(index: number) => `row.${index}`}
     >
       {BulletListVirtualRow}
     </List>

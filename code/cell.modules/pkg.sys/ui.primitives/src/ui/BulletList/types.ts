@@ -12,7 +12,6 @@ export type BulletEdge = 'near' | 'far';
 export type BulletSpacing = { before?: Pixels; after?: Pixels };
 
 export type BulletItem<T = any> = {
-  id: string;
   data: T;
   spacing?: BulletSpacing;
 };
@@ -46,6 +45,8 @@ export type GetBulletItemSizeArgs = {
   item: BulletItem;
   is: { first: boolean; last: boolean; vertical: boolean; horizontal: boolean };
 };
+
+export type GetBulletItemData = (index: number) => BulletItem | undefined;
 
 /**
  * EVENTS (API)

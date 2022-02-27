@@ -14,8 +14,8 @@ export type BulletListVirtualRowData = {
 };
 
 export const BulletListVirtualRow: React.FC<ListChildComponentProps> = (props) => {
-  const data = props.data(props.index) as BulletListVirtualRowData;
-  const el = data.render();
+  const { index } = props;
+  const data = props.data(index) as BulletListVirtualRowData;
 
   const mouseHandler = (mouse: M) => {
     return (e: React.MouseEvent) => {
@@ -25,8 +25,13 @@ export const BulletListVirtualRow: React.FC<ListChildComponentProps> = (props) =
   };
 
   return (
-    <div style={props.style} onMouseDown={mouseHandler('Down')} onMouseUp={mouseHandler('Up')}>
-      {el}
+    <div
+      key={`row.${index}`}
+      style={props.style}
+      onMouseDown={mouseHandler('Down')}
+      onMouseUp={mouseHandler('Up')}
+    >
+      {data.render()}
     </div>
   );
 };

@@ -27,8 +27,22 @@ const { ROW } = EventListConstants;
  */
 export const View: React.FC<EventListProps> = (props) => {
   const { items = [] } = props;
+  const total = items.length;
 
   useController({ ...props.event });
+
+  /**
+   * [Handlers]
+   */
+  const getData: t.GetBulletItemData = (index) => {
+    const data = items[index];
+    const { id } = data;
+    return { id, data };
+  };
+
+  const getSize: t.GetBulletItemSize = (e) => {
+    return e.is.first ? ROW.HEIGHT : ROW.HEIGHT + ROW.SPACING;
+  };
 
   /**
    * [Render]
@@ -38,21 +52,11 @@ export const View: React.FC<EventListProps> = (props) => {
     body: css({ Absolute: 0 }),
   };
 
-  /**
-   * TODO 🐷 Memoize
-   *    - OR never pass arrays into lists
-   *      and adopt the API pattern of the underlying virtualizer library (react-window)
-   */
-  const listItems = items.map((data, i): t.BulletItem => {
-    return { id: `${i}`, data };
-  });
-
   const elBody = (
     <BulletList.Virtual
       style={styles.body}
       spacing={ROW.SPACING}
-      items={listItems}
-      itemSize={(e) => (e.is.first ? ROW.HEIGHT : ROW.HEIGHT + ROW.SPACING)}
+      items={{ total, getData, getSize }}
       renderers={{
         bullet(e) {
           return (

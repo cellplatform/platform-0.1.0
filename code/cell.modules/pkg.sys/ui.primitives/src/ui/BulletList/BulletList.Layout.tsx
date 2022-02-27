@@ -5,8 +5,10 @@ import { Renderers } from './renderers';
 
 type Pixels = number;
 
-export type BulletListLayoutProps = {
-  items?: k.BulletItem[];
+/**
+ * Shared with "Virtual" variant of the component.
+ */
+export type BulletListProps = {
   renderers?: { bullet?: k.BulletRenderer; body?: k.BulletRenderer };
   orientation?: k.BulletOrientation;
   bullet?: { edge?: k.BulletEdge; size?: Pixels };
@@ -15,19 +17,37 @@ export type BulletListLayoutProps = {
   debug?: { border?: boolean };
 };
 
+/**
+ * Component specific
+ */
+export type BulletListLayoutProps = BulletListProps & {
+  items: k.BulletItem[]; // "Simple" list of items.
+};
+
+/**
+ * Simple (non-virtualized) layout
+ */
 export const BulletListLayout: React.FC<BulletListLayoutProps> = (props) => {
-  const renderer = Helpers.renderer(props);
+  const { items = [] } = props;
+  const renderer = Helpers.renderer(props, items.length);
   const { orientation } = renderer;
-  const styles = { base: css({ Flex: `${orientation}-stretch-stretch` }) };
-  return <div {...css(styles.base, props.style)}>{renderer.items()}</div>;
+
+  /**
+   * [Render]
+   */
+  const styles = {
+    base: css({ Flex: `${orientation}-stretch-stretch` }),
+  };
+  const elements = items.map((item, i) => renderer.item(item, i));
+  return <div {...css(styles.base, props.style)}>{elements}</div>;
 };
 
 /**
  * Helpers
  */
 export const Helpers = {
-  renderer(props: BulletListLayoutProps) {
-    const { orientation = DEFAULTS.Orientation, bullet = {}, items = [] } = props;
+  renderer(props: BulletListProps, total: number) {
+    const { orientation = DEFAULTS.Orientation, bullet = {} } = props;
 
     const renderers = {
       bullet: props.renderers?.bullet ?? Renderers.asRenderer(Renderers.Bullet.ConnectorLines),
@@ -44,25 +64,22 @@ export const Helpers = {
     const api = {
       orientation,
       renderers,
-      item(item: k.BulletItem, i: number, style?: CssValue) {
+      item(item: k.BulletItem, index: number, style?: CssValue) {
         return (
           <BulletListLayoutItem
-            key={`bullet.${i}`}
-            index={i}
-            total={items.length}
+            key={`bullet.${index}`}
+            index={index}
+            total={total}
+            renderers={renderers}
             item={item}
             orientation={orientation}
             bulletEdge={bullet.edge ?? 'near'}
             bulletSize={bullet.size ?? 15}
             spacing={toSpacing(item.spacing)}
-            renderers={renderers}
             debug={props.debug}
             style={style}
           />
         );
-      },
-      items() {
-        return items.map((item, i) => api.item(item, i));
       },
     };
 
