@@ -18,7 +18,7 @@ export type RenderCtx = {
  * based on an input "type" flag.
  */
 export function sampleBulletRendererFactory(getCtx: () => RenderCtx) {
-  const fn: k.BulletItemRenderer = (e) => {
+  const fn: k.BulletRenderer = (e) => {
     const ctx = getCtx();
     const bulletKind = ctx.bulletKind;
 
@@ -51,7 +51,7 @@ export function sampleBulletRendererFactory(getCtx: () => RenderCtx) {
  * based on an input "type" flag.
  */
 export function sampleBodyRendererFactory(getCtx: () => RenderCtx) {
-  const fn: k.BulletItemRenderer = (e) => {
+  const fn: k.BulletRenderer = (e) => {
     const ctx = getCtx();
     const bodyKind = ctx.bodyKind;
 

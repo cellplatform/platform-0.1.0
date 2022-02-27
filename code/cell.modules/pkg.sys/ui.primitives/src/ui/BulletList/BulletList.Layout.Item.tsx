@@ -5,8 +5,8 @@ import { Renderers } from './renderers';
 
 type Pixels = number;
 type R = {
-  bullet: k.BulletItemRenderer;
-  body: k.BulletItemRenderer;
+  bullet: k.BulletRenderer;
+  body: k.BulletRenderer;
 };
 
 const DEFAULT_RENDERER: R = {
@@ -34,7 +34,7 @@ export const BulletListLayoutItem: React.FC<BulletListLayoutItemProps> = (props)
   const spacing = formatSpacing(props.spacing);
   const invertedOrientation = orientation === 'x' ? 'y' : 'x';
 
-  const is: k.BulletItemArgs['is'] = {
+  const is: k.BulletRendererArgs['is'] = {
     empty: total === 0,
     single: total === 1,
     first: index === 0,
@@ -46,7 +46,7 @@ export const BulletListLayoutItem: React.FC<BulletListLayoutItemProps> = (props)
     bullet: { near: props.bulletEdge === 'near', far: props.bulletEdge === 'far' },
   };
 
-  const args: k.BulletItemArgs = {
+  const args: k.BulletRendererArgs = {
     kind: 'Default',
     index,
     total,
@@ -86,14 +86,14 @@ export const BulletListLayoutItem: React.FC<BulletListLayoutItemProps> = (props)
     }),
   };
 
-  const renderContent: k.BulletItemRenderer = (args: k.BulletItemArgs) => {
+  const renderContent: k.BulletRenderer = (args: k.BulletRendererArgs) => {
     const parts = renderParts(args, renderers);
     const elBullet = <div {...styles.bullet.outer}>{parts.bullet}</div>;
     const elBody = <div {...styles.body.outer}>{parts.body}</div>;
     return placeInOrder(args.bullet.edge, elBullet, elBody);
   };
 
-  const renderSpacer = (args: k.BulletItemArgs, edge: 'before' | 'after', offset: Pixels) => {
+  const renderSpacer = (args: k.BulletRendererArgs, edge: 'before' | 'after', offset: Pixels) => {
     if (offset === 0) return null;
 
     const styles = {
@@ -112,7 +112,7 @@ export const BulletListLayoutItem: React.FC<BulletListLayoutItemProps> = (props)
       }),
     };
 
-    const e: k.BulletItemArgs = {
+    const e: k.BulletRendererArgs = {
       ...args,
       kind: 'Spacing',
       is: { ...is, spacer: true },
@@ -192,15 +192,15 @@ function placeInOrder(edge: k.BulletEdge, bullet: JSX.Element, body: JSX.Element
 }
 
 function renderPart(
-  e: k.BulletItemArgs,
-  renderer: k.BulletItemRenderer,
-  defaultRenderer: k.BulletItemRenderer,
+  e: k.BulletRendererArgs,
+  renderer: k.BulletRenderer,
+  defaultRenderer: k.BulletRenderer,
 ) {
   const el = renderer(e);
   return (el === undefined ? defaultRenderer(e) : el) as JSX.Element | null;
 }
 
-function renderParts(e: k.BulletItemArgs, renderers: R) {
+function renderParts(e: k.BulletRendererArgs, renderers: R) {
   return {
     bullet: renderPart(e, renderers.bullet, DEFAULT_RENDERER.bullet),
     body: renderPart(e, renderers.body, DEFAULT_RENDERER.body),

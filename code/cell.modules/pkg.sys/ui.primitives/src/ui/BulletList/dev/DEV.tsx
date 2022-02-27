@@ -2,7 +2,11 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { BulletList, BulletListLayoutProps } from '..';
-import { RenderCtx, sampleBodyRendererFactory, sampleBulletRendererFactory } from './DEV.renderers';
+import {
+  RenderCtx,
+  sampleBodyRendererFactory,
+  sampleBulletRendererFactory,
+} from './DEV.Sample.renderers';
 import { k, DEFAULTS, ALL, t, rx, time, value } from '../common';
 
 type D = { msg: string };
@@ -179,14 +183,14 @@ export const actions = DevActions<Ctx>()
 
     e.hr();
 
-    e.title('Plugin Renderer: Bullet');
+    e.title('Bullet Renderers (Plugin)');
 
     e.select((config) => {
       config
-        .view('buttons')
         .title('bullet <Kind>')
         .items(['Lines', 'Dot', { label: 'undefined (use default)', value: undefined }])
         .initial(config.ctx.renderCtx.bulletKind)
+        .view('buttons')
         .pipe((e) => {
           if (e.changing) {
             e.ctx.renderCtx.bulletKind = e.changing?.next[0].value;
@@ -197,10 +201,10 @@ export const actions = DevActions<Ctx>()
 
     e.select((config) => {
       config
-        .view('buttons')
         .title('ConnectorLines: radius')
         .items([0, 20])
         .initial(config.ctx.renderCtx.connectorRadius)
+        .view('buttons')
         .pipe((e) => {
           if (e.changing) e.ctx.renderCtx.connectorRadius = e.changing?.next[0].value;
         });
@@ -364,10 +368,16 @@ export const actions = DevActions<Ctx>()
     if (items.length === 0) return;
     if (!renderCtx.enabled) return;
 
+    /**
+     * Simple (non-scrolling) layout.
+     */
     if (!isVirtual) {
       e.render(<BulletList.Layout {...props} />);
     }
 
+    /**
+     * Virtual scolling list.
+     */
     if (isVirtual) {
       const getItemSize: k.GetBulletItemSize = (e) => {
         const spacing = (props.spacing || 0) as number;

@@ -7,7 +7,7 @@ type Pixels = number;
 
 export type BulletListLayoutProps = {
   items?: k.BulletItem[];
-  renderers?: { bullet?: k.BulletItemRenderer; body?: k.BulletItemRenderer };
+  renderers?: { bullet?: k.BulletRenderer; body?: k.BulletRenderer };
   orientation?: k.BulletOrientation;
   bullet?: { edge?: k.BulletEdge; size?: Pixels };
   spacing?: number | k.BulletSpacing; // Number (defaults to) => { before }

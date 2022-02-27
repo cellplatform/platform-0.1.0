@@ -45,7 +45,7 @@ export const BodyColumnRight: React.FC<BodyColumnRightProps> = (props) => {
       spacing={5}
       items={peers.map((data, i) => ({ id: `net.${i}`, data }))}
       renderers={{
-        bullet: (e) => {
+        bullet(e) {
           return (
             <BulletList.Renderers.Bullet.ConnectorLines
               {...e}
@@ -55,7 +55,7 @@ export const BodyColumnRight: React.FC<BodyColumnRightProps> = (props) => {
             />
           );
         },
-        body: (e) => {
+        body(e) {
           if (e.kind !== 'Default') return;
           const item = e.data as P;
           const id = item.id;

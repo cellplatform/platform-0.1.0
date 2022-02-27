@@ -8,7 +8,7 @@ export const Renderers = {
   Body,
 
   asRenderer(Component: React.FC<any>) {
-    return function renderer(e: k.BulletItemArgs) {
+    return function renderer(e: k.BulletRendererArgs) {
       return <Component {...e} />;
     };
   },

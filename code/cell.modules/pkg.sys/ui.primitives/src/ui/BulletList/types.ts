@@ -17,8 +17,8 @@ export type BulletItem<T = any> = {
   spacing?: BulletSpacing;
 };
 
-export type BulletItemRenderer = (e: BulletItemArgs) => JSX.Element | null | undefined;
-export type BulletItemArgs<T = any> = {
+export type BulletRenderer = (e: BulletRendererArgs) => JSX.Element | null | undefined; // <null> == nothing, <undefined> == use default
+export type BulletRendererArgs<T = any> = {
   kind: 'Default' | 'Spacing';
   index: number;
   total: number;

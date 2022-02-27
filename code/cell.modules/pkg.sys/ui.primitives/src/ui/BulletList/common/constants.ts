@@ -1,15 +1,15 @@
 import * as k from '../types';
 
+/**
+ * All Values
+ */
 const AlignTypes: k.BulletListItemAlign[] = ['auto', 'smart', 'center', 'end', 'start'];
-
-const Orientation: k.BulletOrientation = 'y';
-export const DEFAULTS = {
-  Orientation,
-};
-
 export const ALL = { AlignTypes };
 
-export const BulletListConstants = {
-  DEFAULTS,
-  ALL,
-};
+/**
+ * Defaults
+ */
+const DefaultOrientation: k.BulletOrientation = 'y';
+
+export const DEFAULTS = { Orientation: DefaultOrientation };
+export const BulletListConstants = { DEFAULTS, ALL };
