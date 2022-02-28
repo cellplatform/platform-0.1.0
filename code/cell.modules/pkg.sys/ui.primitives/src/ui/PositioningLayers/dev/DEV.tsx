@@ -35,7 +35,7 @@ const insert = (ctx: Ctx, position: t.BoxPosition) => {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('sys.ui.PositioningLayers')
+  .namespace('ui.PositioningLayers')
   .context((e) => {
     if (e.prev) return e.prev;
 

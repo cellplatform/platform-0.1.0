@@ -26,12 +26,13 @@ export const BodyColumnLeft: React.FC<BodyColumnLeftProps> = (props) => {
 
   const elPeer = (
     <Label.Peer
+      style={styles.peer}
       id={self.id}
       isSelf={true}
       media={self.media.video}
-      style={styles.peer}
+      moreIcon={false}
       onClick={(e) => {
-        const media = e.target === 'Icon' ? self.media.video : undefined;
+        const media = e.target === 'Icon:Left' ? self.media.video : undefined;
         bus.fire({
           type: 'sys.net/ui.NetworkCard/PeerClick',
           payload: { instance, network, peer: self.id, media },

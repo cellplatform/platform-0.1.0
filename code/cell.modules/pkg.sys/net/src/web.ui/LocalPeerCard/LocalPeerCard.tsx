@@ -3,8 +3,7 @@ import { interval, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { useLocalPeer } from '../../web.hooks';
-import { Card, css, CssValue, Hr, PropList, t } from '../common';
-import { CommandTextbox } from '../../web.ui.sys/Command.Textbox';
+import { CommandTextbox, Card, css, CssValue, Hr, PropList, t } from '../common';
 import { LocalPeerCardConstants } from './constants';
 import { Connect, connect } from './LocalPeerCard.connect';
 import { toItems } from './LocalPeerCard.toItems';

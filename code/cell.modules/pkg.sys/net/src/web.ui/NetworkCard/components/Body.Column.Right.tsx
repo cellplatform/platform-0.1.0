@@ -43,9 +43,9 @@ export const BodyColumnRight: React.FC<BodyColumnRightProps> = (props) => {
       orientation={'y'}
       bullet={{ edge: 'near', size: 12 }}
       spacing={5}
-      items={peers.map((data) => ({ data }))}
+      items={peers.map((data, i) => ({ id: `net.${i}`, data }))}
       renderers={{
-        bullet: (e) => {
+        bullet(e) {
           return (
             <BulletList.Renderers.Bullet.ConnectorLines
               {...e}
@@ -55,7 +55,7 @@ export const BodyColumnRight: React.FC<BodyColumnRightProps> = (props) => {
             />
           );
         },
-        body: (e) => {
+        body(e) {
           if (e.kind !== 'Default') return;
           const item = e.data as P;
           const id = item.id;
@@ -63,14 +63,16 @@ export const BodyColumnRight: React.FC<BodyColumnRightProps> = (props) => {
           const stream = media ? (media as t.PeerConnectionMediaStatus) : undefined;
           const el = (
             <Label.Peer
+              style={styles.peer}
               id={id}
               media={stream?.media}
-              style={styles.peer}
+              moreIcon={true}
               onClick={(e) => {
-                const media = e.target === 'Icon' ? stream?.media : undefined;
+                const peer = id;
+                const media = e.target === 'Icon:Left' ? stream?.media : undefined;
                 bus.fire({
                   type: 'sys.net/ui.NetworkCard/PeerClick',
-                  payload: { instance, network, peer: id, media },
+                  payload: { instance, network, peer, media },
                 });
               }}
             />

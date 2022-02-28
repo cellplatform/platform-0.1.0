@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil, filter } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
-import { DEFAULT, ResizeObserver } from '../resize/ResizeObserver';
 import * as t from '../common/types';
+import { DEFAULT, ResizeObserver } from '../resize/ResizeObserver';
 
 /**
  * Hook for attaching an monitoring the size of a DOM element.
@@ -44,15 +44,17 @@ export function useResizeObserver(
   } = {},
 ): t.UseResizeObserver {
   const [rect, setRect] = useState<t.DomRect>(DEFAULT.RECT);
-  const readyRef = useRef<boolean>(false);
+  const readyRef = useRef(false);
 
   const rootRef = useRef<t.ResizeObserver>(wrangleObserver(options.root) ?? ResizeObserver());
-  const change$ = useRef<Subject<t.DomRect>>(new Subject<t.DomRect>());
+  const change$ = useRef(new Subject<t.DomRect>());
+  const refresh$ = useRef(new Subject<void>());
 
   useEffect(() => {
     const root = rootRef.current;
     const element = root.watch(ref.current as HTMLElement);
 
+    // Listem to observer.
     element.$.pipe(
       takeUntil(element.dispose$),
       filter((e) => e.payload.rect.x > -1),
@@ -63,6 +65,10 @@ export function useResizeObserver(
       options.onSize?.(size);
     });
 
+    // Force a refresh.
+    refresh$.current.pipe(takeUntil(element.dispose$)).subscribe(() => element.refresh());
+
+    // Finish up.
     readyRef.current = true;
     return () => element?.dispose();
   }, [ref]); // eslint-disable-line
@@ -72,6 +78,7 @@ export function useResizeObserver(
     $: change$.current.asObservable(),
     root: rootRef.current,
     rect,
+    refresh: () => refresh$.current.next(),
   };
 }
 

@@ -6,12 +6,15 @@ const imports = {
   useDragTarget: import('./hooks/useDragTarget/dev/DEV'),
 
   Antechamber: import('./ui/Antechamber/dev/DEV'),
-  BulletListLayout: import('./ui/BulletList.Layout/dev/DEV'),
+  BulletListLayout: import('./ui/BulletList/dev/DEV'),
   DotTabstrip: import('./ui/DotTabstrip/dev/DEV'),
   Zoom: import('./ui/Zoom/DEV'),
   PropList: import('./ui/PropList/dev/DEV'),
   QRCode: import('./ui/QRCode/dev/DEV'),
   TextEditor: import('./ui/TextEditor/DEV'),
+
+  CommandTextbox: import('./ui/Command.Textbox/dev/DEV'),
+  CommandBar: import('./ui/Command.Bar/dev/DEV'),
 
   MinSize: import('./ui/MinSize/dev/DEV'),
   PositioningContainer: import('./ui/PositioningContainer/dev/DEV'),
@@ -26,6 +29,7 @@ const imports = {
   EventCard: import('./ui/Event.Card/dev/DEV'),
   EventStack: import('./ui/Event.Stack/dev/DEV'),
   EventPipe: import('./ui/Event.Pipe/dev/DEV'),
+  EventList: import('./ui/Event.List/dev/DEV'),
 
   HashChip: import('./ui/HashChip/dev/DEV'),
 

@@ -1,9 +1,16 @@
 import { NetworkBusMock, NetworkBusMocks } from '.';
-import { expect, is, t, time } from '../test';
+import { expect, is, t, time, rx } from '../test';
 
 type E = { type: 'foo'; payload: { count?: number } };
 
 describe('NetworkBusMock', () => {
+  it('rx.instance(bus): "mock.net.bus.<Instance-ID>"', () => {
+    const bus = NetworkBusMock();
+    const id = rx.bus.instance(bus);
+    expect(id.startsWith('net.bus.')).to.eql(true);
+    expect(id.endsWith('.mock')).to.eql(true);
+  });
+
   it('defaults', () => {
     const netbus = NetworkBusMock<E>();
     expect(netbus.mock.local).to.eql('uri:me');

@@ -1,28 +1,27 @@
 import { Icon } from '@platform/ui.icon';
+import { BiBus } from 'react-icons/bi';
+import { CgDatabase } from 'react-icons/cg';
+import { FaNetworkWired } from 'react-icons/fa';
+import { FiMic, FiMicOff } from 'react-icons/fi';
+import { GrNetworkDrive } from 'react-icons/gr';
+import { HiOutlineDatabase } from 'react-icons/hi';
 import {
-  MdClose,
-  MdSettingsInputAntenna,
-  MdPortableWifiOff,
-  MdWifi,
-  MdLock,
-  MdLockOpen,
-  MdNoEncryption,
-  MdSend,
   MdArrowBack,
   MdArrowForward,
+  MdClose,
   MdFace,
   MdHelpOutline,
   MdKeyboard,
+  MdLock,
+  MdLockOpen,
+  MdMore,
+  MdNoEncryption,
+  MdPortableWifiOff,
+  MdSend,
+  MdSettingsInputAntenna,
+  MdWifi,
 } from 'react-icons/md';
-import { FiMic, FiMicOff } from 'react-icons/fi';
 import { TiUpload } from 'react-icons/ti';
-import { BiBus } from 'react-icons/bi';
-import { CgDatabase } from 'react-icons/cg';
-import { RiTerminalBoxFill } from 'react-icons/ri';
-import { HiOutlineDatabase } from 'react-icons/hi';
-import { GrNetworkDrive } from 'react-icons/gr';
-import { FaNetworkWired } from 'react-icons/fa';
-import { VscSymbolEvent } from 'react-icons/vsc';
 
 const icon = Icon.renderer;
 
@@ -40,12 +39,11 @@ export const Icons = {
   Upload: { Box: icon(TiUpload) },
   Arrow: { Back: icon(MdArrowBack), Forward: icon(MdArrowForward) },
   Bus: icon(BiBus),
-  Terminal: icon(RiTerminalBoxFill),
   Database: icon(HiOutlineDatabase),
   FsDrives: icon(CgDatabase),
   FsNetworkDrive: icon(GrNetworkDrive),
   Unknown: icon(MdHelpOutline),
   Network: icon(FaNetworkWired),
-  Event: icon(VscSymbolEvent),
   Keyboard: icon(MdKeyboard),
+  More: icon(MdMore),
 };

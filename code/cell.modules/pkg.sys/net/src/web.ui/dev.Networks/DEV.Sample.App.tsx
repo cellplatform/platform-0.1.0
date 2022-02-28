@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 
 import { TEST } from '../../web.test';
 import { color, css, CssValue, EventBridge, MediaStream, PeerNetwork, rx, t } from './DEV.common';
+import { DevEventList } from './DEV.EventList';
 import { DevNetworkCard } from './DEV.NetworkCard';
 
 export type DevSampleAppProps = { style?: CssValue };
 
 export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
   const [network, setNetwork] = useState<t.PeerNetwork>();
-  const instance = 'instance.foo';
+  const instance = 'instance.app';
 
   useEffect(() => {
     createNetwork().then((e) => setNetwork(e));
@@ -20,13 +21,19 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
   const styles = {
     base: css({
       Absolute: 0,
-      Flex: 'y-center-center',
       backgroundColor: color.format(-0.04),
+      Flex: 'x-stretch-stretch',
     }),
+    left: css({ Flex: 'y-center-center', flex: 1 }),
+    right: css({ width: 300 }),
   };
+
   return (
     <div {...css(styles.base, props.style)}>
-      {network && <DevNetworkCard instance={instance} network={network} showPlaceholder={true} />}
+      <div {...styles.left}>
+        {network && <DevNetworkCard instance={instance} network={network} showPlaceholder={true} />}
+      </div>
+      {network && <DevEventList network={network} style={styles.right} />}
     </div>
   );
 };

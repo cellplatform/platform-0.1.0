@@ -21,7 +21,7 @@ export { t };
 /**
  * @development
  */
-export { EventBridge } from '../../web.PeerNetwork/dev/DEV.event';
+export { EventBridge } from '../dev.Sample/DEV.event';
 
 /**
  * Constants

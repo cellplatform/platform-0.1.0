@@ -14,7 +14,7 @@ import { Ctx } from './types';
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('sys.ui.PositioningContainer')
+  .namespace('ui.PositioningContainer')
   .context((e) => {
     if (e.prev) return e.prev;
 

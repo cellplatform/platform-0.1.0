@@ -4,20 +4,32 @@ import { filter, takeUntil } from 'rxjs/operators';
 
 import * as k from '../NetworkCard/types';
 import { DevVideoCard } from './DEV.Card.Video';
-import { css, LocalPeerCard, rx, t, PeerNetwork } from './DEV.common';
+import { css, LocalPeerCard, rx, t, PeerNetwork, CommandBar } from './DEV.common';
 
 /**
  * Hooks
  */
-export function useController(args: { instance: t.InstanceId; network: t.PeerNetwork }) {
-  const { network, instance } = args;
-  const [child, setChild] = useState<undefined | JSX.Element>();
+export function useController(args: {
+  instance: t.InstanceId;
+  network: t.PeerNetwork;
+  defaultChild?: JSX.Element;
+}) {
+  const { network, instance, defaultChild } = args;
+  const [child, setChild] = useState<undefined | JSX.Element>(defaultChild);
 
+  /**
+   * Lifecycle.
+   */
   useEffect(() => {
+    const { netbus } = network;
+
+    const commandBar = CommandBar.Events({ bus: network.bus, instance });
+
     const dispose$ = new Subject<void>();
     const dispose = () => {
       dispose$.next();
       Strategy.peer.dispose();
+      commandBar.dispose();
     };
 
     const bus = rx.busAsType<k.NetworkCardEvent>(network.bus);
@@ -29,10 +41,8 @@ export function useController(args: { instance: t.InstanceId; network: t.PeerNet
     /**
      * Manage behavioral strategies.
      * NOTE:
-     *    Insert anything []
-     *
+     *    Insert behavior strategies into the pipeline here.
      */
-    const netbus = network.netbus;
     const Strategy = {
       peer: PeerNetwork.PeerStrategy({ bus, netbus }),
       // group: PeerNetwork.GroupStrategy({ bus, netbus }),
@@ -61,25 +71,26 @@ export function useController(args: { instance: t.InstanceId; network: t.PeerNet
 
     rx.payload<k.NetworkCardCloseChildEvent>($, 'sys.net/ui.NetworkCard/CloseChild')
       .pipe()
-      .subscribe((e) => setChild(undefined));
+      .subscribe((e) => setChild(defaultChild));
 
-    rx.payload<t.CommandBarActionEvent>($, 'sys.ui.CommandBar/Action')
-      .pipe()
-      .subscribe((e) => {
-        /**
-         * TODO 🐷
-         * - parse and interpret the command text.
-         */
-        const remote = e.text;
+    /**
+     * List for actions from the [CommandBar] textbox.
+     */
+    commandBar.action.$.subscribe((e) => {
+      /**
+       * TODO 🐷
+       * - parse and interpret the command text.
+       */
+      const remote = e.text;
 
-        const self = network.self;
-        const isReliable = true;
-        const autoStartVideo = true;
-        return LocalPeerCard.connect({ bus, remote, self, isReliable, autoStartVideo });
-      });
+      const self = network.self;
+      const isReliable = true;
+      const autoStartVideo = true;
+      return LocalPeerCard.connect({ bus, remote, self, isReliable, autoStartVideo });
+    });
 
     return () => dispose();
-  }, [network, instance]);
+  }, [network, instance, defaultChild]);
 
   return { child };
 }

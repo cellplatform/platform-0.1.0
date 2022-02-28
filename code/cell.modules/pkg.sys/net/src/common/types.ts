@@ -22,7 +22,7 @@ export { NetworkBus, NetworkBusFilter, NetworkPump, Fs } from '@platform/cell.ty
  * @system
  */
 export { MediaEvent } from 'sys.ui.video/lib/types';
-export { PropListItem } from 'sys.ui.primitives/lib/ui/PropList';
+export { PropListItem, EventBusHistory } from 'sys.ui.primitives/lib/types';
 export { WebRuntimeEvents } from 'sys.runtime.web/lib/types';
 
 /**
