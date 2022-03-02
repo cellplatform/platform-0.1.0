@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { DevActions } from '../..';
-import { Radios, Checkboxes } from '.';
+import { DevActions } from '../../..';
+import { Radios, Checkboxes } from '..';
 
-import { OptionItem } from './types';
+import { OptionItem } from '../types';
 import { R, css } from '../../common';
 
 type Ctx = {
