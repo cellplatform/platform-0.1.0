@@ -34,7 +34,7 @@ export const View: React.FC<EventListProps> = (props) => {
   /**
    * [Handlers]
    */
-  const getData: t.GetBulletItemData = (index) => {
+  const getData: t.GetBulletItem = (index) => {
     const data = items[index];
     const { id } = data;
     return { id, data };

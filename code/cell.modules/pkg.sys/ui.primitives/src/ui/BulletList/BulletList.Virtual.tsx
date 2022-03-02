@@ -11,7 +11,7 @@ import { useEventsController } from './Events.useController';
  * Types
  */
 export type BulletListVirtualProps = BulletListProps & {
-  items: { total: number; getData: k.GetBulletItemData; getSize: k.GetBulletItemSize };
+  items: { total: number; getData: k.GetBulletItem; getSize: k.GetBulletItemSize };
   event?: { bus: t.EventBus<any>; instance: string };
 };
 

@@ -25,17 +25,18 @@ export type BulletRendererArgs<T = any> = {
   orientation: BulletOrientation;
   bullet: { edge: BulletEdge; size: Pixels };
   spacing: BulletSpacing;
-  is: {
-    empty: boolean;
-    single: boolean;
-    first: boolean;
-    last: boolean;
-    edge: boolean;
-    vertical: boolean;
-    horizontal: boolean;
-    spacer: boolean;
-    bullet: { near: boolean; far: boolean };
-  };
+  is: BulletRenderFlags;
+};
+export type BulletRenderFlags = {
+  empty: boolean;
+  single: boolean;
+  first: boolean;
+  last: boolean;
+  edge: boolean;
+  vertical: boolean;
+  horizontal: boolean;
+  spacer: boolean;
+  bullet: { near: boolean; far: boolean };
 };
 
 export type GetBulletItemSize = (args: GetBulletItemSizeArgs) => Pixels;
@@ -46,7 +47,7 @@ export type GetBulletItemSizeArgs = {
   is: { first: boolean; last: boolean; vertical: boolean; horizontal: boolean };
 };
 
-export type GetBulletItemData = (index: number) => BulletItem | undefined;
+export type GetBulletItem = (index: number) => BulletItem | undefined;
 
 /**
  * EVENTS (API)

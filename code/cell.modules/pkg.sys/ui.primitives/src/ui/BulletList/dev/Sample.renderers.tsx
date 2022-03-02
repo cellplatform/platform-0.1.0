@@ -1,5 +1,5 @@
 import React from 'react';
-import { k, css, COLORS } from '../common';
+import { color, t, k, css, COLORS } from '../common';
 import { Card } from '../../Card';
 import { Text } from '../../Text';
 import { Renderers, BulletConnectorLinesProps } from '../renderers';
@@ -58,21 +58,35 @@ export function sampleBodyRendererFactory(getCtx: () => RenderCtx) {
     if (e.kind === 'Spacing') return null;
 
     const styles = {
-      sample: {
-        card: css({ PaddingX: 30, PaddingY: 12 }),
-        vanilla: css({ PaddingX: 6, PaddingY: 2 }),
+      card: {
+        base: css({ PaddingX: 30, PaddingY: 12, position: 'relative' }),
+        data: css({ Absolute: [null, 3, 2, null], fontSize: 10, color: color.format(-0.2) }),
       },
+      vanilla: css({ PaddingX: 6, PaddingY: 2 }),
       component: css({ fontFamily: 'monospace', fontWeight: 'bold', fontSize: 16 }),
     };
 
+    type D = { msg: string };
+    const data = e.data as D;
     const elComponent = <Text.Syntax text={'<Component>'} style={styles.component} />;
 
+    /**
+     * Body: Vanilla (Sample)
+     */
     if (bodyKind === 'Vanilla') {
-      return <div {...styles.sample.vanilla}>{elComponent}</div>;
+      return <div {...styles.vanilla}>{elComponent}</div>;
     }
 
+    /**
+     * Body: Card (Sample)
+     */
     if (bodyKind === 'Card') {
-      return <Card style={styles.sample.card}>{elComponent}</Card>;
+      return (
+        <Card style={styles.card.base}>
+          {elComponent}
+          <div {...styles.card.data}>{data.msg}</div>
+        </Card>
+      );
     }
 
     // Not found.

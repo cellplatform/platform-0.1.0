@@ -5,6 +5,7 @@ import { Renderers } from './renderers';
 export { BulletListLayoutProps, BulletListProps } from './BulletList.Layout';
 export { BulletListVirtualProps } from './BulletList.Virtual';
 export { BulletListConstants } from './common';
+export * from './renderers';
 
 export const BulletList = {
   Layout,

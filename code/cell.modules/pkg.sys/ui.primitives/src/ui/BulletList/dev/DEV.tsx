@@ -6,7 +6,7 @@ import {
   RenderCtx,
   sampleBodyRendererFactory,
   sampleBulletRendererFactory,
-} from './DEV.Sample.renderers';
+} from './Sample.renderers';
 import { k, DEFAULTS, ALL, t, rx, time, value } from '../common';
 
 type D = { msg: string };
@@ -92,6 +92,11 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.renderCtx.enabled;
     });
 
+    e.boolean('virtual (scrolling)', (e) => {
+      if (e.changing) e.ctx.renderCtx.virtualScroll = e.changing.next;
+      e.boolean.current = e.ctx.renderCtx.virtualScroll;
+    });
+
     e.hr();
   })
 
@@ -150,17 +155,12 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Debug');
 
-    e.boolean('border', (e) => {
+    e.boolean('border (trace lines)', (e) => {
       if (e.changing) {
         const debug = e.ctx.props.debug || (e.ctx.props.debug = {});
         debug.border = e.changing.next;
       }
       e.boolean.current = e.ctx.props.debug?.border ?? false;
-    });
-
-    e.boolean('virtual (scrolling)', (e) => {
-      if (e.changing) e.ctx.renderCtx.virtualScroll = e.changing.next;
-      e.boolean.current = e.ctx.renderCtx.virtualScroll;
     });
 
     e.select((config) => {
@@ -258,12 +258,12 @@ export const actions = DevActions<Ctx>()
     };
 
     e.button('⚡️ scroll: "Top"', (e) => scrollTo(e.ctx, 'Top'));
-    e.button('⚡️ scroll: "Bottom"', (e) => scrollTo(e.ctx, 'Bottom'));
     e.button('⚡️ scroll: <index> (middle)', (e) => {
       const total = e.ctx.items.length;
       const index = value.round(total / 2, 0);
       scrollTo(e.ctx, index);
     });
+    e.button('⚡️ scroll: "Bottom"', (e) => scrollTo(e.ctx, 'Bottom'));
 
     e.hr(1, 0.1);
 
@@ -273,6 +273,8 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Items');
+    e.button('clear', (e) => (e.ctx.items = []));
+    e.hr(1, 0.1);
 
     const Add = {
       button(total: number, note?: string) {
@@ -303,9 +305,6 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.1);
 
-    e.button('clear', (e) => {
-      e.ctx.items = [];
-    });
     e.button('remove: first', (e) => {
       const items = e.ctx.items;
       e.ctx.items = items?.slice(0, items.length - 1);
@@ -376,11 +375,7 @@ export const actions = DevActions<Ctx>()
      * Virtual scolling list.
      */
     if (isVirtual) {
-      const getData: k.GetBulletItemData = (index) => {
-        const data = items[index];
-        const id = `item.${index}`; // TEMP 🐷
-        return data ? { id, data } : undefined;
-      };
+      const getData: k.GetBulletItem = (index) => items[index];
 
       const getSize: k.GetBulletItemSize = (e) => {
         const spacing = (props.spacing || 0) as number;

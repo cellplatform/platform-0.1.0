@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { color, css, CssValue, k } from './common';
+import { color, css, CssValue, k, Is } from './common';
 import { Renderers } from './renderers';
 
 type Pixels = number;
@@ -19,8 +19,10 @@ export type BulletListLayoutItemProps = {
   total: number;
   item: k.BulletItem;
   orientation: k.BulletOrientation;
-  bulletEdge: k.BulletEdge;
-  bulletSize: Pixels; // Offset size of the bullet row/column.
+  bullet: {
+    edge: k.BulletEdge;
+    size: Pixels; // Offset size of the bullet row/column.
+  };
   spacing: k.BulletSpacing;
   renderers: R;
   style?: CssValue;
@@ -28,23 +30,12 @@ export type BulletListLayoutItemProps = {
 };
 
 export const BulletListLayoutItem: React.FC<BulletListLayoutItemProps> = (props) => {
-  const { item, orientation, index, total, renderers, debug = {} } = props;
+  const { item, orientation, index, total, renderers, debug = {}, bullet } = props;
   const { data } = item;
 
   const spacing = formatSpacing(props.spacing);
   const invertedOrientation = orientation === 'x' ? 'y' : 'x';
-
-  const is: k.BulletRendererArgs['is'] = {
-    empty: total === 0,
-    single: total === 1,
-    first: index === 0,
-    last: index === total - 1,
-    edge: index === 0 || index === total - 1,
-    horizontal: orientation === 'x',
-    vertical: orientation === 'y',
-    spacer: false,
-    bullet: { near: props.bulletEdge === 'near', far: props.bulletEdge === 'far' },
-  };
+  const is = Is.toItemFlags({ index, total, bullet, orientation });
 
   const args: k.BulletRendererArgs = {
     kind: 'Default',
@@ -52,7 +43,7 @@ export const BulletListLayoutItem: React.FC<BulletListLayoutItemProps> = (props)
     total,
     data,
     orientation,
-    bullet: { edge: props.bulletEdge, size: props.bulletSize },
+    bullet,
     spacing,
     is,
   };

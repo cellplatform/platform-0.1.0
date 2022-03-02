@@ -5,8 +5,10 @@ import { t } from './common';
 const imports = {
   useDragTarget: import('./hooks/useDragTarget/dev/DEV'),
 
+  BulletList: import('./ui/BulletList/dev/DEV'),
+  BulletListConnectorLines: import('./ui/BulletList/renderers/dev/DEV.ConnectorLines'),
+
   Antechamber: import('./ui/Antechamber/dev/DEV'),
-  BulletListLayout: import('./ui/BulletList/dev/DEV'),
   DotTabstrip: import('./ui/DotTabstrip/dev/DEV'),
   Zoom: import('./ui/Zoom/DEV'),
   PropList: import('./ui/PropList/dev/DEV'),

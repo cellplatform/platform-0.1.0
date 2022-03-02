@@ -3,3 +3,4 @@ import * as k from '../types';
 
 export { k };
 export * from './constants';
+export * from './Is';
