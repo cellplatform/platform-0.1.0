@@ -5,43 +5,49 @@ import { DevActions } from '../../..';
 import sample1 from '../../../test/sample-1/DEV';
 import sample2 from '../../../test/sample-2/DEV';
 import sample3 from '../../../test/sample-3/DEV';
-import { HttpClient, log, rx } from '../../common';
+import { rx } from '../../common';
 
 const ACTIONS = [sample1, sample2, sample3];
 
-const client = HttpClient.create(5000);
-const bus = rx.bus();
-
-bus.$.subscribe((e) => {
-  log.info('e', e);
-});
-
 type Ctx = { props: HarnessProps };
-const props: HarnessProps = {
-  bus,
-  actions: ACTIONS,
-  store: true, // Default (local-storage).
-  allowRubberband: false,
-
-  // store: Store.ActionsSelect.cell({
-  //   client,
-  //   uri: 'cell:ckkynysav001hrret8tzzg2pp:A1',
-  //   actions: ACTIONS,
-  // }),
-};
 
 /**
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.dev/Harness')
-  .context((e) => e.prev || { props: { ...props } })
+  .namespace('ui.dev.Harness')
+
+  .context((e) => {
+    if (e.prev) return e.prev;
+
+    const bus = rx.bus();
+    const ctx: Ctx = {
+      props: {
+        bus,
+        actions: ACTIONS,
+        store: true, // Default (local-storage).
+        allowRubberband: false,
+        useDevQueryString: true,
+      },
+    };
+    return ctx;
+  })
+
+  .init(async (e) => {
+    const { ctx, bus } = e;
+  })
 
   .items((e) => {
     e.title('props');
+
     e.boolean('allowRubberband', (e) => {
       if (e.changing) e.ctx.props.allowRubberband = e.changing.next;
       e.boolean.current = e.ctx.props.allowRubberband;
+    });
+
+    e.boolean('useDevQueryString', (e) => {
+      if (e.changing) e.ctx.props.useDevQueryString = e.changing.next;
+      e.boolean.current = e.ctx.props.useDevQueryString;
     });
 
     e.hr(1, 0.1);

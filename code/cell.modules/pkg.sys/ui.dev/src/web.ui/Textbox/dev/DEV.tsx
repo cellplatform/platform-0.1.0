@@ -11,7 +11,7 @@ type Ctx = { props: TextboxProps };
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.dev/Textbox')
+  .namespace('ui.dev.Textbox')
   .context((e) => {
     if (e.prev) return e.prev;
     return {

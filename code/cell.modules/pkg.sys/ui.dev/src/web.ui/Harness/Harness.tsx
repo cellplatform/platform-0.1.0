@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { css, CssValue, defaultValue, rx, t } from '../../common';
-import { useActionsRedraw, useActionsPropertyInput } from '../../web.hooks';
+import { useActionsRedraw, useActionsPropertyInput, useDevQueryString } from '../../web.hooks';
 import { Store } from '../../web.store';
 import { useActionsSelectorState } from '../ActionsSelector';
 import { ErrorBoundary } from '../ErrorBoundary';
@@ -17,6 +17,7 @@ export type HarnessProps = {
   initial?: t.Namespace | null;
   allowRubberband?: boolean; // Page rubber-band effect in Chrome (default: false).
   showActions?: boolean;
+  useDevQueryString?: boolean; // Change "dev=<selected>" query string on selection (default:true).
   style?: CssValue;
 };
 
@@ -61,6 +62,11 @@ export const Harness: React.FC<HarnessProps> = (props) => {
     ],
     bus,
     actions: selected,
+  });
+
+  useDevQueryString({
+    isEnabled: props.useDevQueryString,
+    selected: selected?.toObject().namespace,
   });
 
   const env: t.ActionsModelEnv = selected?.toObject().env || { viaSubject: {}, viaAction: {} };

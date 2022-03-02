@@ -12,7 +12,7 @@ type Ctx = { props: ResultsProps };
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.TestSuite')
+  .namespace('ui.dev.TestSuite')
   .context((e) => {
     if (e.prev) return e.prev;
     const ctx: Ctx = { props: { scroll: true } };
@@ -42,11 +42,7 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr(1, 0.1);
-
-    e.button('clear', (e) => {
-      e.ctx.props.data = undefined;
-    });
-
+    e.button('clear', (e) => (e.ctx.props.data = undefined));
     e.hr();
   })
 
