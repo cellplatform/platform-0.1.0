@@ -9,6 +9,5 @@ export * from './Actions.handler.context';
 export * from './Actions.handler.subject';
 export * from './Actions.handler.init';
 export * from './Actions.model';
-export * from './Actions.store';
 export * from './Actions.subject';
 export * from './Actions.item';

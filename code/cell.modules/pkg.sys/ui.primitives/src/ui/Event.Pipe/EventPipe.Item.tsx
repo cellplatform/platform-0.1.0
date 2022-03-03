@@ -1,7 +1,7 @@
 import { domAnimation, LazyMotion, m } from 'framer-motion';
 import React from 'react';
 
-import { color, COLORS, css, CssValue } from '../../common';
+import { color, css, CssValue } from '../../common';
 import { EventHistoryItem } from '../Event/types';
 
 export type EventPipeItemClickEvent = EventHistoryItem;

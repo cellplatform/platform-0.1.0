@@ -25,9 +25,7 @@ export const actions = DevActions<Ctx>()
       props: {
         bus,
         actions: ACTIONS,
-        store: true, // Default (local-storage).
         allowRubberband: false,
-        useDevQueryString: true,
       },
     };
     return ctx;
@@ -43,11 +41,6 @@ export const actions = DevActions<Ctx>()
     e.boolean('allowRubberband', (e) => {
       if (e.changing) e.ctx.props.allowRubberband = e.changing.next;
       e.boolean.current = e.ctx.props.allowRubberband;
-    });
-
-    e.boolean('useDevQueryString', (e) => {
-      if (e.changing) e.ctx.props.useDevQueryString = e.changing.next;
-      e.boolean.current = e.ctx.props.useDevQueryString;
     });
 
     e.hr(1, 0.1);
