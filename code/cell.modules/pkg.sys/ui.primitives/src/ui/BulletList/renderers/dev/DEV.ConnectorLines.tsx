@@ -2,10 +2,21 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { BulletConnectorLinesProps, BulletList } from '../..';
-import { Is } from '../../common';
+import { Is, t } from '../../common';
 
 type Ctx = {
   props: BulletConnectorLinesProps;
+};
+
+const DEFAULT = {
+  BULLET: { edge: 'near', size: 60 } as t.BulletRendererArgs['bullet'],
+};
+
+const Util = {
+  update(ctx: Ctx) {
+    ctx.props.is = Is.toItemFlags(ctx.props);
+    return ctx;
+  },
 };
 
 /**
@@ -23,21 +34,97 @@ export const actions = DevActions<Ctx>()
         total: 3,
         data: null,
         orientation: 'y',
-        bullet: { edge: 'near', size: 10 },
+        bullet: DEFAULT.BULLET,
         spacing: {},
-        radius: 120,
-        get is() {
-          const props = e.current?.props;
-          if (!props) throw new Error('Props');
-          return Is.toItemFlags(props);
-        },
+        radius: 20,
+        is: {} as any, // HACK 🐷
       },
     };
+
+    ctx.props.is = Is.toItemFlags(ctx.props);
     return ctx;
   })
 
   .init(async (e) => {
     const { ctx, bus } = e;
+    Util.update(e.ctx);
+  })
+
+  .items((e) => {
+    e.title('Props');
+
+    e.select((config) => {
+      config
+        .title('orientation')
+        .items([
+          { label: 'x (horizontal)', value: 'x' },
+          { label: 'y (vertical)', value: 'y' },
+        ])
+        .initial(config.ctx.props.orientation)
+        .view('buttons')
+        .pipe((e) => {
+          if (e.changing) {
+            e.ctx.props.orientation = e.changing?.next[0].value;
+            Util.update(e.ctx);
+          }
+        });
+    });
+
+    e.select((config) => {
+      config
+        .view('buttons')
+        .title('bullet.edge')
+        .initial(config.ctx.props.bullet?.edge)
+        .items(['near', 'far'])
+        .pipe((e) => {
+          if (e.changing) {
+            const bullet = e.ctx.props.bullet || (e.ctx.props.bullet = DEFAULT.BULLET);
+            bullet.edge = e.changing?.next[0].value;
+            Util.update(e.ctx);
+          }
+        });
+    });
+
+    e.select((config) => {
+      config
+        .view('buttons')
+        .title('bullet.size')
+        .items([15, 30, 60, 120])
+        .initial(config.ctx.props.bullet?.size)
+        .pipe((e) => {
+          if (e.changing) {
+            const bullet = e.ctx.props.bullet || (e.ctx.props.bullet = DEFAULT.BULLET);
+            bullet.size = e.changing?.next[0].value;
+            Util.update(e.ctx);
+          }
+        });
+    });
+
+    e.select((config) => {
+      config
+        .title('index')
+        .items([0, 1, 2])
+        .initial(config.ctx.props.index)
+        .view('buttons')
+        .pipe((e) => {
+          if (e.changing) e.ctx.props.index = e.changing?.next[0].value;
+          Util.update(e.ctx);
+        });
+    });
+
+    e.select((config) => {
+      config
+        .title('radius')
+        .items([0, 20, 30])
+        .initial(config.ctx.props.radius)
+        .view('buttons')
+        .pipe((e) => {
+          if (e.changing) e.ctx.props.radius = e.changing?.next[0].value;
+          Util.update(e.ctx);
+        });
+    });
+
+    e.hr();
   })
 
   .items((e) => {
@@ -59,14 +146,18 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    const orientation = e.ctx.props.orientation;
+    const size = e.ctx.props.bullet.size;
+    const isHorizontal = orientation === 'x';
+    const isVertical = orientation === 'y';
+
     e.settings({
       host: { background: -0.04 },
       layout: {
-        label: '<ConnectorLines>',
-        position: [150, 80],
         border: -0.1,
         cropmarks: -0.2,
-        // background: 1,
+        width: isHorizontal ? size : 100,
+        height: isVertical ? size : 100,
       },
     });
 

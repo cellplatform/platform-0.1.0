@@ -18,7 +18,7 @@ type Ctx = {
   props: BulletListProps; // Common properties.
   renderCtx: RenderCtx;
   events: k.BulletListEvents;
-  debug: { scrollAlign: k.BulletListItemAlign };
+  debug: { scrollAlign: k.BulletListItemAlign; virtualPadding: boolean };
   redraw(): Promise<void>;
 };
 
@@ -73,7 +73,7 @@ export const actions = DevActions<Ctx>()
         connectorLineWidth: 5,
         virtualScroll: true,
       },
-      debug: { scrollAlign: 'auto' },
+      debug: { scrollAlign: 'auto', virtualPadding: true },
       redraw: async () => time.delay(0, () => events.redraw.fire()),
     };
 
@@ -92,9 +92,16 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.renderCtx.enabled;
     });
 
+    e.hr(1, 0.1);
+
     e.boolean('virtual (scrolling)', (e) => {
       if (e.changing) e.ctx.renderCtx.virtualScroll = e.changing.next;
       e.boolean.current = e.ctx.renderCtx.virtualScroll;
+    });
+
+    e.boolean('virtual (padding)', (e) => {
+      if (e.changing) e.ctx.debug.virtualPadding = e.changing.next;
+      e.boolean.current = e.ctx.debug.virtualPadding;
     });
 
     e.hr();
@@ -334,7 +341,7 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const { items, props, renderCtx } = e.ctx;
+    const { items, props, renderCtx, debug } = e.ctx;
     const total = items.length;
 
     const orientation = props.orientation ?? DEFAULTS.Orientation;
@@ -396,6 +403,8 @@ export const actions = DevActions<Ctx>()
           {...props}
           items={{ total, getData, getSize }}
           event={{ bus: e.ctx.bus, instance: e.ctx.instance }}
+          paddingNear={debug.virtualPadding ? 50 : 0}
+          paddingFar={debug.virtualPadding ? 150 : 0}
           style={{ flex: 1 }}
         />,
       );
