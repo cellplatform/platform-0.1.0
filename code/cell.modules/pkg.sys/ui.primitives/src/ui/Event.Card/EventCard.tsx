@@ -4,7 +4,7 @@ import { defaultValue, css, CssValue, t, COLORS, ObjectView } from '../../common
 import { Card, CardProps } from '../Card';
 import { PropList, PropListItem } from '../PropList';
 
-export type EventStackCardProps = {
+export type EventCardProps = {
   count: number;
   event: t.Event<any>;
   title?: string;
@@ -19,9 +19,8 @@ export type EventStackCardProps = {
   onShowPayloadToggle?: () => void;
 };
 
-export const EventStackCard: React.FC<EventStackCardProps> = (props) => {
-  const { event, width, height, showPayload = false, isTopCard } = props;
-  const shadow = defaultValue(props.shadow);
+export const EventCard: React.FC<EventCardProps> = (props) => {
+  const { event, width, height, showPayload = false, isTopCard = true, shadow = true } = props;
 
   const styles = {
     base: css({ position: 'relative', width, height, minHeight: 40 }),

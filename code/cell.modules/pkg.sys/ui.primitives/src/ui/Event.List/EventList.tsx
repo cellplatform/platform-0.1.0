@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 
 import { BulletList } from '../BulletList';
 import { color, css, CssValue, EventListConstants, FC, t } from './common';
@@ -6,6 +6,10 @@ import { EventListRow } from './EventList.Row';
 import { useController } from './EventList.useController';
 import { EventListEvents } from './Events';
 import * as k from './types';
+
+import { EventCard } from '../Event.Card';
+
+import { useClickOutside } from '@platform/react/lib/hooks';
 
 /**
  * Types
@@ -29,7 +33,12 @@ export const View: React.FC<EventListProps> = (props) => {
   const { items = [] } = props;
   const total = items.length;
 
+  const baseRef = useRef<HTMLDivElement>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | undefined>();
+  const [showPayload, setShowPayload] = useState(false);
+
   useController({ ...props.event });
+  useClickOutside('down', baseRef, () => setSelectedIndex(undefined));
 
   /**
    * [Handlers]
@@ -48,40 +57,78 @@ export const View: React.FC<EventListProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({ position: 'relative' }),
-    body: css({ Absolute: 0 }),
+    base: css({
+      position: 'relative',
+      Flex: 'y-stretch-stretch',
+      boxSizing: 'border-box',
+    }),
+    list: {
+      base: css({ flex: 1, position: 'relative' }),
+      body: css({ Absolute: [0, 0, 0, 12] }),
+    },
+    selected: {
+      base: css({ position: 'relative', paddingRight: 12 }),
+    },
   };
 
-  const elBody = (
-    <BulletList.Virtual
-      style={styles.body}
-      spacing={ROW.SPACING}
-      items={{ total, getData, getSize }}
-      renderers={{
-        bullet(e) {
-          return (
-            <BulletList.Renderers.Bullet.ConnectorLines
-              {...e}
-              radius={0}
-              lineWidth={2}
-              lineColor={color.format(-0.1)}
-            />
-          );
-        },
-        body(e) {
-          if (e.kind !== 'Default') return;
-
-          const { index } = e;
-          const { first, last } = e.is;
-          const data = e.data as t.EventHistoryItem;
-
-          return <EventListRow index={index} data={data} is={{ first, last }} />;
-        },
-      }}
-    />
+  const selectedItem = items[selectedIndex ?? 0];
+  const elSelected = selectedItem && (
+    <div {...styles.selected.base}>
+      <EventCard
+        event={selectedItem.event}
+        count={selectedItem.count}
+        showPayload={showPayload}
+        onShowPayloadToggle={() => setShowPayload((prev) => !prev)}
+      />
+    </div>
   );
 
-  return <div {...css(styles.base, props.style)}>{elBody}</div>;
+  const elList = (
+    <div {...styles.list.base}>
+      <BulletList.Virtual
+        style={styles.list.body}
+        spacing={ROW.SPACING}
+        items={{ total, getData, getSize }}
+        paddingNear={10}
+        renderers={{
+          bullet(e) {
+            return (
+              <BulletList.Renderers.Bullet.ConnectorLines
+                {...e}
+                radius={4}
+                lineWidth={2}
+                lineColor={color.format(-0.1)}
+              />
+            );
+          },
+          body(e) {
+            if (e.kind !== 'Default') return;
+
+            const { index } = e;
+            const { first, last } = e.is;
+            const data = e.data as t.EventHistoryItem;
+            const selected = selectedIndex === undefined ? undefined : index === selectedIndex;
+
+            return (
+              <EventListRow
+                index={index}
+                data={data}
+                is={{ first, last, selected }}
+                onClick={(e) => setSelectedIndex(e.index)}
+              />
+            );
+          },
+        }}
+      />
+    </div>
+  );
+
+  return (
+    <div ref={baseRef} {...css(styles.base, props.style)}>
+      {elSelected}
+      {elList}
+    </div>
+  );
 };
 
 /**

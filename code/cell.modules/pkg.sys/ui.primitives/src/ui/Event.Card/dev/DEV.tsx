@@ -1,9 +1,9 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { EventStackCard, EventStackCardProps } from '..';
+import { EventCard, EventCardProps } from '..';
 import { t } from '../../common';
 
-type Ctx = { props: EventStackCardProps };
+type Ctx = { props: EventCardProps };
 
 /**
  * Actions
@@ -84,7 +84,7 @@ export const actions = DevActions<Ctx>()
         position: { top: 200 },
       },
     });
-    e.render(<EventStackCard {...e.ctx.props} />);
+    e.render(<EventCard {...e.ctx.props} />);
   });
 
 export default actions;
