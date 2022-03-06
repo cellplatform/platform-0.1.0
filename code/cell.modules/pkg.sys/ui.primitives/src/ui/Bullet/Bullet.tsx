@@ -1,8 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { color, COLORS, css, CssValue, t, R } from '../../common';
+import { domAnimation, LazyMotion, m } from 'framer-motion';
+import React from 'react';
+import { color, css, CssValue } from '../../common';
 
 type Pixels = number;
 type Color = string | number;
+type Scale = number;
+type Milliseconds = number;
 
 type BulletBody = {
   radius?: Pixels;
@@ -19,6 +22,9 @@ type BulletOuter = {
   backgroundBlur?: Pixels;
 };
 
+type BulletHover = { over: Scale; down: Scale; duration: Milliseconds };
+type M = React.MouseEventHandler<HTMLDivElement>;
+
 /**
  * Types
  */
@@ -27,7 +33,13 @@ export type BulletProps = {
   size?: Pixels;
   body?: BulletBody;
   outer?: BulletOuter;
+  hover?: BulletHover;
   style?: CssValue;
+  onClick?: M;
+  onMouseDown?: M;
+  onMouseUp?: M;
+  onMouseEnter?: M;
+  onMouseLeave?: M;
 };
 
 /**
@@ -49,9 +61,7 @@ export const BulletConstants = { DEFAULTS };
  * Component
  */
 export const Bullet: React.FC<BulletProps> = (props) => {
-  const { size = DEFAULTS.size, body = DEFAULTS.body, outer } = props;
-
-  console.log('body', body);
+  const { size = DEFAULTS.size, body = DEFAULTS.body, outer, hover } = props;
 
   /**
    * [Render]
@@ -81,17 +91,27 @@ export const Bullet: React.FC<BulletProps> = (props) => {
       }),
   };
 
-  console.log('-------------------------------------------');
-  console.log('Util.toBlur(outer.backgroundBlur)', Util.toBlur(outer?.backgroundBlur));
-  console.log('Util.toBlur(body.backgroundBlur)', Util.toBlur(body.backgroundBlur));
-
-  const elOuter = outer && <div {...styles.outer} />;
+  const duration = (hover?.duration || 0) / 1000;
+  const whileHover = !hover ? undefined : { scale: hover.over, transition: { duration } };
+  const whileTap = !hover ? undefined : { scale: hover.down };
 
   return (
-    <div {...css(styles.base, props.style)}>
-      {elOuter}
-      <div {...styles.body}>{props.children}</div>
-    </div>
+    <LazyMotion features={domAnimation}>
+      <m.div
+        {...css(styles.base, props.style)}
+        style={{ originX: 'center', originY: 'center' }}
+        whileHover={whileHover}
+        whileTap={whileTap}
+        onClick={props.onClick}
+        onMouseDown={props.onMouseDown}
+        onMouseUp={props.onMouseUp}
+        onMouseEnter={props.onMouseEnter}
+        onMouseLeave={props.onMouseLeave}
+      >
+        {outer && <m.div {...styles.outer} />}
+        <m.div {...styles.body}>{props.children}</m.div>
+      </m.div>
+    </LazyMotion>
   );
 };
 

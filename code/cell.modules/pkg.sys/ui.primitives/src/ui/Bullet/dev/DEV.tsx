@@ -8,7 +8,13 @@ const { DEFAULTS } = BulletConstants;
 
 type Ctx = {
   props: BulletProps;
-  debug: { showChild: boolean; cropMarks: boolean; texture: boolean; isLight: boolean };
+  debug: {
+    showChild: boolean;
+    cropMarks: boolean;
+    texture: boolean;
+    isLight: boolean;
+    hover: boolean;
+  };
 };
 
 const Util = {
@@ -33,7 +39,7 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
     const ctx: Ctx = {
       props: {},
-      debug: { showChild: false, cropMarks: true, texture: false, isLight: true },
+      debug: { showChild: false, cropMarks: true, texture: false, isLight: true, hover: true },
     };
     return ctx;
   })
@@ -56,7 +62,9 @@ export const actions = DevActions<Ctx>()
           if (e.changing) e.ctx.props.size = e.changing?.next[0].value;
         });
     });
+  })
 
+  .items((e) => {
     e.hr(1, 0.1);
     e.title('Presets');
 
@@ -121,6 +129,11 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.debug.texture;
     });
 
+    e.boolean('hover', (e) => {
+      if (e.changing) e.ctx.debug.hover = e.changing.next;
+      e.boolean.current = e.ctx.debug.hover;
+    });
+
     e.hr();
 
     e.component((e) => {
@@ -149,13 +162,19 @@ export const actions = DevActions<Ctx>()
         background: debug.texture ? `url(${TEXTURE})` : isLight ? -0.04 : COLORS.DARK,
       },
       layout: {
-        cropmarks: debug.cropMarks ? (isLight ? -0.2 : 0.1) : undefined,
+        cropmarks: debug.cropMarks ? (isLight ? -0.2 : 0.1) : 0,
         labelColor: isLight ? -0.5 : 0.8,
       },
     });
 
+    const hover = debug.hover ? { over: 1.8, down: 1.2, duration: 100 } : undefined;
+
     const elChild = debug.showChild && <Icons.Lock.Open size={size - 5} />;
-    const el = <Bullet {...e.ctx.props}>{elChild}</Bullet>;
+    const el = (
+      <Bullet {...e.ctx.props} hover={hover}>
+        {elChild}
+      </Bullet>
+    );
 
     e.render(el);
   });

@@ -1,7 +1,7 @@
-import { domAnimation, LazyMotion, m } from 'framer-motion';
 import React from 'react';
 
-import { color, css, CssValue } from '../../common';
+import { css, CssValue } from '../../common';
+import { Bullet } from '../Bullet';
 import { EventHistoryItem } from '../Event/types';
 
 export type EventPipeItemClickEvent = EventHistoryItem;
@@ -22,26 +22,18 @@ export const EventPipeItem: React.FC<EventPipeItemProps> = (props) => {
 
   const styles = {
     base: css({
-      width: size,
-      height: size,
-      borderRadius: size,
-      backgroundColor: color.format(props.color),
       position: 'absolute',
       left: orientation === 'x' ? parentSize - size : undefined,
       top: orientation === 'y' ? parentSize - size : undefined,
     }),
   };
   return (
-    <LazyMotion features={domAnimation}>
-      <m.div
-        {...styles.base}
-        style={{ originX: 'center', originY: 'center' }}
-        whileHover={{ scale: 3, transition: { duration: 0.2 } }}
-        whileTap={{ scale: 2 }}
-        onClick={() => {
-          if (onClick) onClick(item);
-        }}
-      />
-    </LazyMotion>
+    <Bullet
+      style={styles.base}
+      size={size}
+      body={{ backgroundColor: props.color, radius: size }}
+      hover={{ over: 2, down: 1.5, duration: 100 }}
+      onClick={() => onClick?.(item)}
+    />
   );
 };
