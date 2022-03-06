@@ -33,7 +33,7 @@ export const HostLayout: React.FC<HostLayoutProps> = (props) => {
       flex: 1,
       position: 'relative',
       color: formatColor(host?.color),
-      backgroundColor: formatColor(host?.background),
+      ...toBackground(host),
     }),
     body: css({
       Absolute: 0,
@@ -130,4 +130,22 @@ const toBorderColor = (input: t.HostedLayout['border']) => {
   const border = defaultValue(input, true);
   const value = border === true ? 0.3 : border === false ? 0 : border;
   return formatColor(value);
+};
+
+const toBackground = (host?: t.Host): React.CSSProperties => {
+  if (!host) return {};
+
+  const value = host.background;
+
+  if (typeof value === 'string' && value.includes('url(')) {
+    return {
+      backgroundImage: value,
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'cover',
+    };
+  }
+
+  return {
+    backgroundColor: formatColor(value),
+  };
 };

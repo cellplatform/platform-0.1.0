@@ -2,7 +2,7 @@ import React from 'react';
 
 import { t, CssValue } from '../../common';
 import { useActionsRedraw } from '../../web.hooks';
-import { HostLayout, ActionsVisible } from './HostLayout';
+import { HostLayout, ActionsVisible } from './Host.Layout';
 
 export type HostProps = {
   bus: t.EventBus;
