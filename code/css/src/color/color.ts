@@ -34,8 +34,9 @@ export function format(value: string | number | boolean | undefined): string | u
   if (typeof value === 'number') {
     return toGrayAlpha(value);
   }
-  if (typeof value === 'string' && !value.includes('#') && !value.includes('rgb')) {
-    return `#${value}`;
+  if (typeof value === 'string') {
+    if (value.includes('url(')) return value;
+    if (!value.includes('#') && !value.includes('rgb')) return `#${value}`;
   }
   return value as string;
 }

@@ -41,5 +41,10 @@ describe('color', () => {
     it('string: hex value with no hash', () => {
       test('fff', '#fff');
     });
+
+    it('string: does not convert "url(...)"', () => {
+      const value = `url(my-image.png)`;
+      test(value, value);
+    });
   });
 });
