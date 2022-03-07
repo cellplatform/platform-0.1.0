@@ -1,7 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { color, css, CssValue, t, COLORS } from '../../common';
-import { PositioningContainer } from './PositioningContainer';
+import { PositioningLayer } from './PositioningLayer';
 
+/**
+ * Types
+ */
 type Plane = 'x' | 'y';
 type SelectedMap = { top: boolean; right: boolean; bottom: boolean; left: boolean };
 type EdgeButtonClickArgs = { edge: t.BoxEdge };
@@ -10,19 +13,22 @@ type GridTargetClickArgs = {
   dblClick: boolean;
 };
 
-export type PositioningContainerConfigChangeEvent = { prev?: t.BoxPosition; next: t.BoxPosition };
-export type PositioningContainerConfigChangeEventHandler = (
-  e: PositioningContainerConfigChangeEvent,
+export type PositioningLayerConfigChangeEvent = { prev?: t.BoxPosition; next: t.BoxPosition };
+export type PositioningLayerConfigChangeEventHandler = (
+  e: PositioningLayerConfigChangeEvent,
 ) => void;
 
-export type PositioningContainerConfigProps = {
+export type PositioningLayerConfigProps = {
   isEnabled?: boolean;
   position?: t.BoxPosition;
   style?: CssValue;
-  onChange?: PositioningContainerConfigChangeEventHandler;
+  onChange?: PositioningLayerConfigChangeEventHandler;
 };
 
-export const PositioningContainerConfig: React.FC<PositioningContainerConfigProps> = (props) => {
+/**
+ * Component
+ */
+export const PositioningLayerConfig: React.FC<PositioningLayerConfigProps> = (props) => {
   const { isEnabled = true, position } = props;
   const gutter = 12;
 
@@ -198,9 +204,9 @@ const Box: React.FC<BoxProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       {position && (
-        <PositioningContainer position={position}>
+        <PositioningLayer position={position}>
           <div {...styles.content} />
-        </PositioningContainer>
+        </PositioningLayer>
       )}
       <GridTargets isEnabled={isEnabled} onClick={props.onClick} />
     </div>

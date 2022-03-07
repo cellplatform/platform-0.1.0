@@ -8,7 +8,7 @@ import { css, CssValue, t, useResizeObserver } from './common';
 export type PositioningSize = { position: t.BoxPosition; parent: t.DomRect; child: t.DomRect };
 export type PositioningSizeHandler = (e: PositioningSize) => void;
 
-export type PositioningContainerProps = {
+export type PositioningLayerProps = {
   children?: React.ReactNode;
   position?: t.BoxPosition;
   rootResize?: t.ResizeObserver;
@@ -21,7 +21,7 @@ export type PositioningContainerProps = {
 /**
  * Manages positioning a single child element based on positioning rules.
  */
-export const PositioningContainer: React.FC<PositioningContainerProps> = (props) => {
+export const PositioningLayer: React.FC<PositioningLayerProps> = (props) => {
   const [rootSize, setRootSize] = useState<t.DomRect | undefined>();
 
   const rootRef = useRef<HTMLDivElement>(null);
@@ -50,7 +50,7 @@ export const PositioningContainer: React.FC<PositioningContainerProps> = (props)
       });
     });
 
-    childResize$.subscribe((e) => {
+    childResize$.subscribe(() => {
       props.onSize?.(getSizeEvent(position, rootRef, childRef));
     });
 
@@ -89,11 +89,7 @@ export const PositioningContainer: React.FC<PositioningContainerProps> = (props)
   );
 
   return (
-    <div
-      ref={rootRef}
-      {...css(styles.base, props.style)}
-      className={'Sys-Primitives-PositioningContainer'}
-    >
+    <div ref={rootRef} {...css(styles.base, props.style)}>
       {elChild}
     </div>
   );

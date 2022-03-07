@@ -2,25 +2,19 @@ import React, { useEffect, useRef, useState } from 'react';
 import { animationFrameScheduler, Subject } from 'rxjs';
 import { filter, debounceTime, observeOn, takeUntil } from 'rxjs/operators';
 
-import { PositioningContainer } from '../PositioningContainer';
+import { PositioningLayer } from '../PositioningLayer';
 import { css, CssValue, t, useResizeObserver } from './common';
 import { Query, Refs } from './Query';
 
-export type PositioningLayersSize = { size: t.DomRect; layers: PositioningLayerSize[] };
-export type PositioningLayersSizeHandler = (e: PositioningLayersSize) => void;
-export type PositioningLayerSize = {
-  id: string;
-  index: number;
-  position: t.BoxPosition;
-  size: t.DomRect;
-};
+export type PositioningLayoutSize = { size: t.DomRect; layers: t.PositioningLayerSize[] };
+export type PositioningLayoutSizeHandler = (e: PositioningLayoutSize) => void;
 
 export type PositioningLayoutProps = {
   layers?: t.PositioningLayer[];
   rootResize?: t.ResizeObserver;
   childPointerEvents?: 'none' | 'auto';
   style?: CssValue;
-  onSize?: PositioningLayersSizeHandler;
+  onSize?: PositioningLayoutSizeHandler;
 };
 
 /**
@@ -100,7 +94,7 @@ export const PositioningLayout: React.FC<PositioningLayoutProps> = (props) => {
     layers.map((layer, index) => {
       const find = Query(layers, layerRefs.current);
       return (
-        <PositioningContainer
+        <PositioningLayer
           key={`${layer.id}.${index}`}
           style={styles.layer.container}
           position={layer.position}
@@ -121,7 +115,7 @@ export const PositioningLayout: React.FC<PositioningLayoutProps> = (props) => {
           }}
         >
           {renderLayer({ index, layers, size, find })}
-        </PositioningContainer>
+        </PositioningLayer>
       );
     });
 
@@ -152,7 +146,10 @@ function renderLayer(args: {
   return layer.render({ index, total, size, find, props, position }) ?? null;
 }
 
-function toLayerSizes(args: { refs: Refs; layers: t.PositioningLayer[] }): PositioningLayerSize[] {
+function toLayerSizes(args: {
+  refs: Refs;
+  layers: t.PositioningLayer[];
+}): t.PositioningLayerSize[] {
   return Object.values(args.refs)
     .map((ref) => {
       const { id, position } = ref;

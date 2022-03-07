@@ -1,9 +1,9 @@
 import React from 'react';
 import { color, css, CssValue, t } from './common';
 import {
-  PositioningContainerConfig,
-  PositioningContainerConfigChangeEventHandler,
-} from '../PositioningContainer/PositioningContainer.Config';
+  PositioningLayerConfig,
+  PositioningLayerConfigChangeEventHandler,
+} from '../PositioningLayer/PositioningLayer.Config';
 import { PropList, PropListItem } from '../PropList';
 
 type Index = number;
@@ -27,7 +27,7 @@ export const LayerProperties: React.FC<LayerPropertiesProps> = (props) => {
     { label: 'foo', value: 123 },
   ];
 
-  const handlePositionChange: PositioningContainerConfigChangeEventHandler = (e) => {
+  const handlePositionChange: PositioningLayerConfigChangeEventHandler = (e) => {
     const position = e.next;
     props.onChange?.({ index, layer: { ...layer, position } });
   };
@@ -61,7 +61,7 @@ export const LayerProperties: React.FC<LayerPropertiesProps> = (props) => {
       <div {...styles.body}>
         <div {...styles.left}>
           <div {...styles.positionConfig.outer}>
-            <PositioningContainerConfig position={layer.position} onChange={handlePositionChange} />
+            <PositioningLayerConfig position={layer.position} onChange={handlePositionChange} />
           </div>
         </div>
         <div {...styles.right}>

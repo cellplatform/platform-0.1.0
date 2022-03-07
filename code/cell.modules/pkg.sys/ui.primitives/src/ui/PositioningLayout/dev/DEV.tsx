@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 
-import { PositioningLayout, PositioningLayoutProps, PositioningLayersSizeHandler } from '..';
+import { PositioningLayout, PositioningLayoutProps, PositioningLayoutSizeHandler } from '..';
 import { t, rx } from '../common';
 import { PositioningLayoutConfig } from '../PositioningLayout.Config';
 import { PositioningLayoutConfigStack } from '../PositioningLayout.ConfigStack';
@@ -13,7 +13,7 @@ type Ctx = {
   bus: t.EventBus;
   props: PositioningLayoutProps;
   debug: { size?: t.DomRect; current?: Index };
-  onSize: PositioningLayersSizeHandler;
+  onSize: PositioningLayoutSizeHandler;
 };
 
 const insert = (ctx: Ctx, position: t.BoxPosition) => {

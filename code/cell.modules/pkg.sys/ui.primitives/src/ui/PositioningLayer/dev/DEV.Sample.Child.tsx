@@ -28,7 +28,7 @@ export const SampleChild: React.FC<SampleChildProps> = (props) => {
       position: 'relative',
       userSelect: 'none',
       backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
-      borderRadius: 15,
+      borderRadius: 10,
       border: `dashed 1px ${color.format(-0.1)}`,
       boxSizing: 'border-box',
       padding: 20,
@@ -53,7 +53,7 @@ export const SampleChild: React.FC<SampleChildProps> = (props) => {
       <div>
         w:{size.width}, h:{size.height}
       </div>
-      <div>🐷🐷🐷 wrong</div>
+      <div>🐷🐷🐷 hello</div>
     </div>
   );
 

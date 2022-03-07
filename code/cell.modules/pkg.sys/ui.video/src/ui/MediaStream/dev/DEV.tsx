@@ -10,7 +10,7 @@ import { DevAudioWaveform } from './DEV.AudioWaveform';
 import { DevRecordButton } from './DEV.RecordButton';
 import { Sample } from './DEV.Sample';
 import { DevLayoutMediaComponents } from './DEV.Layout.MediaComponents';
-import { PositioningLayers } from 'sys.ui.primitives/lib/ui/PositioningLayers';
+import { PositioningLayout } from 'sys.ui.primitives/lib/ui/PositioningLayout';
 import { DevOuter } from './DEV.Layout.Outer';
 
 import { PathListStateful } from 'sys.fs/lib/web.ui/PathList';
@@ -346,7 +346,7 @@ export const actions = DevActions<Ctx>()
 
     e.render(
       <MinSize style={{ flex: 1 }} minWidth={675} minHeight={390} warningElement={elTooSmall}>
-        <PositioningLayers
+        <PositioningLayout
           layers={[mediaComponentsLayer, filesystemLayer]}
           childPointerEvents={'none'}
           style={{ Absolute: 0 }}

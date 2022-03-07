@@ -9,7 +9,8 @@ export * from './ui/DotTabstrip/types';
 export * from './ui/PropList/types';
 export * from './ui/QRCode/types';
 export * from './ui/MinSize/types';
-export * from './ui/PositioningContainer/types';
+
+export * from './ui/PositioningLayer/types';
 export * from './ui/PositioningLayout/types';
 
 export * from './ui/Event/types';

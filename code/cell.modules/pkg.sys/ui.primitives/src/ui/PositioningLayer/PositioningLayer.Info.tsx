@@ -2,17 +2,15 @@ import React from 'react';
 import { PropList, PropListItem } from '../PropList';
 
 import { css, CssValue, t } from '../../common';
-import { PositioningContainerProps, PositioningSize } from './PositioningContainer';
+import { PositioningLayerProps, PositioningSize } from './PositioningLayer';
 
-export type PositioningContainerPropertiesProps = {
-  props: PositioningContainerProps;
+export type PositioningLayerInfoProps = {
+  props: PositioningLayerProps;
   size?: PositioningSize;
   style?: CssValue;
 };
 
-export const PositioningContainerProperties: React.FC<PositioningContainerPropertiesProps> = (
-  props,
-) => {
+export const PositioningLayerInfo: React.FC<PositioningLayerInfoProps> = (props) => {
   const { size } = props;
   const { position } = props.props;
   const styles = { base: css({}) };

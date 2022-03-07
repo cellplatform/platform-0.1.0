@@ -1,10 +1,10 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 
-import { PositioningContainer } from '..';
+import { PositioningLayer } from '..';
 import { css, deleteUndefined, t } from '../common';
-import { PositioningContainerConfig } from '../PositioningContainer.Config';
-import { PositioningContainerProperties } from '../PositioningContainer.Properties';
+import { PositioningLayerConfig } from '../PositioningLayer.Config';
+import { PositioningLayerInfo } from '../PositioningLayer.Info';
 import { SampleChild } from './DEV.Sample.Child';
 import { SampleRoot } from './DEV.Sample.Root';
 import { EdgeDropdown } from './EdgeDropdown';
@@ -14,7 +14,7 @@ import { Ctx } from './types';
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.PositioningContainer')
+  .namespace('ui.PositioningLayer')
   .context((e) => {
     if (e.prev) return e.prev;
 
@@ -29,12 +29,12 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('Positioning Container');
+    e.title('Positioning Layer');
     e.hr();
 
     e.component((e) => {
       return (
-        <PositioningContainerProperties
+        <PositioningLayerInfo
           props={e.ctx.props}
           size={e.ctx.debug.size}
           style={{ Margin: [10, 30] }}
@@ -49,7 +49,7 @@ export const actions = DevActions<Ctx>()
       };
       return (
         <div {...styles.base}>
-          <PositioningContainerConfig
+          <PositioningLayerConfig
             position={e.ctx.props.position}
             isEnabled={e.ctx.debug.isConfigEnabled}
             style={styles.container}
@@ -113,7 +113,7 @@ export const actions = DevActions<Ctx>()
     e.settings({
       host: { background: -0.04 },
       layout: {
-        label: '<PositioningContainer>',
+        label: '<PositioningLayer>',
         position: [150, 80],
         border: -0.1,
         cropmarks: -0.2,
@@ -128,9 +128,9 @@ export const actions = DevActions<Ctx>()
 
     e.render(
       <SampleRoot>
-        <PositioningContainer {...e.ctx.props} style={styles.container} onSize={e.ctx.onSize}>
+        <PositioningLayer {...e.ctx.props} style={styles.container} onSize={e.ctx.onSize}>
           <SampleChild width={child.width} height={child.height} />
-        </PositioningContainer>
+        </PositioningLayer>
       </SampleRoot>,
     );
   });

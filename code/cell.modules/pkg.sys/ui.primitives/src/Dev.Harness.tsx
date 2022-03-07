@@ -20,7 +20,7 @@ const imports = {
   CommandBar: import('./ui/Command.Bar/dev/DEV'),
 
   MinSize: import('./ui/MinSize/dev/DEV'),
-  PositioningContainer: import('./ui/PositioningContainer/dev/DEV'),
+  PositioningLayer: import('./ui/PositioningLayer/dev/DEV'),
   PositioningLayout: import('./ui/PositioningLayout/dev/DEV'),
 
   DraggableSort: import('./ui/Draggable.Sort/dev/DEV'),
