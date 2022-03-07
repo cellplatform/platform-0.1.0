@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Label } from '../../Label';
-import { css, BulletList, CssValue, t, color, R, k, rx } from '../common';
+import { css, List, CssValue, t, color, R, k, rx } from '../common';
 import { BodyColumnTitle } from './Body.Column';
 
 export type BodyColumnRightProps = {
@@ -38,7 +38,7 @@ export const BodyColumnRight: React.FC<BodyColumnRightProps> = (props) => {
   };
 
   const elPeersList = (
-    <BulletList.Layout
+    <List.Layout
       style={{ marginLeft: 0 }}
       orientation={'y'}
       bullet={{ edge: 'near', size: 12 }}
@@ -47,7 +47,7 @@ export const BodyColumnRight: React.FC<BodyColumnRightProps> = (props) => {
       renderers={{
         bullet(e) {
           return (
-            <BulletList.Renderers.Bullet.ConnectorLines
+            <List.Renderers.Bullet.ConnectorLines
               {...e}
               radius={0}
               lineWidth={3}

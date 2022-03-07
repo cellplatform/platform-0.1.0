@@ -10,7 +10,7 @@ export { Hr } from 'sys.ui.primitives/lib/ui/Hr';
 export { Button, ButtonProps } from 'sys.ui.primitives/lib/ui.ref/button/Button';
 export { PropList, PropListItem } from 'sys.ui.primitives/lib/ui/PropList';
 export { Card } from 'sys.ui.primitives/lib/ui/Card';
-export { BulletList } from 'sys.ui.primitives/lib/ui/BulletList';
+export { List } from 'sys.ui.primitives/lib/ui/List';
 export { Text } from 'sys.ui.primitives/lib/ui/Text';
 export { ObjectView } from 'sys.ui.primitives/lib/ui/ObjectView';
 export { Spinner } from 'sys.ui.primitives/lib/ui.ref/spinner/Spinner';
