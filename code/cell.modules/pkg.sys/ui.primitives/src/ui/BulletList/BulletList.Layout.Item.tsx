@@ -5,12 +5,11 @@ import { Renderers } from './renderers';
 
 type Pixels = number;
 type R = {
-  bullet: k.BulletRenderer;
+  bullet?: k.BulletRenderer;
   body: k.BulletRenderer;
 };
 
 const DEFAULT_RENDERER: R = {
-  bullet: Renderers.asRenderer(Renderers.Bullet.ConnectorLines),
   body: Renderers.asRenderer(Renderers.Body.Default),
 };
 
@@ -79,7 +78,7 @@ export const BulletListLayoutItem: React.FC<BulletListLayoutItemProps> = (props)
 
   const renderContent: k.BulletRenderer = (args: k.BulletRendererArgs) => {
     const parts = renderParts(args, renderers);
-    const elBullet = <div {...styles.bullet.outer}>{parts.bullet}</div>;
+    const elBullet = parts.bullet && <div {...styles.bullet.outer}>{parts.bullet}</div>;
     const elBody = <div {...styles.body.outer}>{parts.body}</div>;
     return placeInOrder(args.bullet.edge, elBullet, elBody);
   };
@@ -160,40 +159,26 @@ export const BulletListLayoutItem: React.FC<BulletListLayoutItemProps> = (props)
  * [Helpers]
  */
 
-function placeInOrder(edge: k.BulletEdge, bullet: JSX.Element, body: JSX.Element) {
-  if (edge === 'near') {
-    return (
-      <>
-        {bullet}
-        {body}
-      </>
-    );
-  }
-
-  if (edge === 'far') {
-    return (
-      <>
-        {body}
-        {bullet}
-      </>
-    );
-  }
-
-  throw new Error(`Edge '${edge}' not supported`);
+type RenderOutput = JSX.Element | null | undefined | false;
+function placeInOrder(edge: k.BulletEdge, bullet: RenderOutput, body: RenderOutput) {
+  let order: RenderOutput[] = [];
+  if (edge === 'near') order = [bullet, body];
+  if (edge === 'far') order = [body, bullet];
+  return <>{order}</>;
 }
 
 function renderPart(
   e: k.BulletRendererArgs,
   renderer: k.BulletRenderer,
-  defaultRenderer: k.BulletRenderer,
+  defaultRenderer?: k.BulletRenderer,
 ) {
   const el = renderer(e);
-  return (el === undefined ? defaultRenderer(e) : el) as JSX.Element | null;
+  return (el === undefined ? defaultRenderer?.(e) : el) as JSX.Element | null;
 }
 
 function renderParts(e: k.BulletRendererArgs, renderers: R) {
   return {
-    bullet: renderPart(e, renderers.bullet, DEFAULT_RENDERER.bullet),
+    bullet: renderers.bullet ? renderPart(e, renderers.bullet) : undefined,
     body: renderPart(e, renderers.body, DEFAULT_RENDERER.body),
   };
 }

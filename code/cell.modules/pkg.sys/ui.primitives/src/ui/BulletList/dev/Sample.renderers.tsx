@@ -17,7 +17,7 @@ export type RenderCtx = {
  * A factory that produces a function for rendering bullets
  * based on an input "type" flag.
  */
-export function sampleBulletRendererFactory(getCtx: () => RenderCtx) {
+export function sampleBulletFactory(getCtx: () => RenderCtx) {
   const fn: k.BulletRenderer = (e) => {
     const ctx = getCtx();
     const bulletKind = ctx.bulletKind;
@@ -50,7 +50,7 @@ export function sampleBulletRendererFactory(getCtx: () => RenderCtx) {
  * A factory that produces a function for rendering sample body content
  * based on an input "type" flag.
  */
-export function sampleBodyRendererFactory(getCtx: () => RenderCtx) {
+export function sampleBodyFactory(getCtx: () => RenderCtx) {
   const fn: k.BulletRenderer = (e) => {
     const ctx = getCtx();
     const bodyKind = ctx.bodyKind;

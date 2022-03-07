@@ -2,12 +2,8 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { BulletList, BulletListProps } from '..';
-import {
-  RenderCtx,
-  sampleBodyRendererFactory,
-  sampleBulletRendererFactory,
-} from './Sample.renderers';
-import { k, DEFAULTS, ALL, t, rx, time, value } from '../common';
+import { ALL, DEFAULTS, k, rx, t, time, value } from '../common';
+import { RenderCtx, sampleBodyFactory, sampleBulletFactory } from './Sample.renderers';
 
 type D = { msg: string };
 
@@ -45,8 +41,8 @@ export const actions = DevActions<Ctx>()
 
     const getRenderCtx = () => e.current?.renderCtx as RenderCtx;
     const renderer = {
-      bullet: sampleBulletRendererFactory(getRenderCtx),
-      body: sampleBodyRendererFactory(getRenderCtx),
+      bullet: sampleBulletFactory(getRenderCtx),
+      body: sampleBodyFactory(getRenderCtx),
     };
 
     const bus = rx.bus();
@@ -191,7 +187,7 @@ export const actions = DevActions<Ctx>()
     e.select((config) => {
       config
         .title('bullet <Kind>')
-        .items(['Lines', 'Dot', { label: 'undefined (use default)', value: undefined }])
+        .items([{ label: '<undefined> (use default)', value: undefined }, 'Lines', 'Dot'])
         .initial(config.ctx.renderCtx.bulletKind)
         .view('buttons')
         .pipe((e) => {
@@ -234,7 +230,7 @@ export const actions = DevActions<Ctx>()
       config
         .view('buttons')
         .title('body <Kind>')
-        .items(['Card', 'Vanilla', { label: 'undefined (use default)', value: undefined }])
+        .items([{ label: '<undefined> (none)', value: undefined }, 'Card', 'Vanilla'])
         .initial(config.ctx.renderCtx.bodyKind)
         .pipe((e) => {
           if (e.changing) e.ctx.renderCtx.bodyKind = e.changing?.next[0].value;
