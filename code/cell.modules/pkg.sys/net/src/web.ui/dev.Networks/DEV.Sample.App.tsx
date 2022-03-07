@@ -22,7 +22,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
   const instance = 'instance.app';
 
   useEffect(() => {
-    createNetwork().then((e) => setNetwork(e));
+    Util.createNetwork().then((e) => setNetwork(e));
   }, []);
 
   /**
@@ -54,14 +54,20 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
   );
 };
 
-async function createNetwork() {
-  const bus = rx.bus();
-  const signal = TEST.SIGNAL;
-  const { network } = await PeerNetwork.start({ bus, signal });
-  const self = network.self;
+/**
+ * [Helpers]
+ */
 
-  MediaStream.Controller({ bus });
-  EventBridge.startEventBridge({ self, bus });
+const Util = {
+  async createNetwork() {
+    const bus = rx.bus();
+    const signal = TEST.SIGNAL;
+    const { network } = await PeerNetwork.start({ bus, signal });
+    const self = network.self;
 
-  return network;
-}
+    MediaStream.Controller({ bus });
+    EventBridge.startEventBridge({ self, bus });
+
+    return network;
+  },
+};

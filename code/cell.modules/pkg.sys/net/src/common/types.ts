@@ -24,6 +24,7 @@ export { NetworkBus, NetworkBusFilter, NetworkPump, Fs } from '@platform/cell.ty
 export { MediaEvent } from 'sys.ui.video/lib/types';
 export { PropListItem, EventBusHistory } from 'sys.ui.primitives/lib/types';
 export { WebRuntimeEvents } from 'sys.runtime.web/lib/types';
+export { PositioningLayer } from 'sys.ui.primitives/lib/ui/PositioningLayout/types';
 
 /**
  * local
