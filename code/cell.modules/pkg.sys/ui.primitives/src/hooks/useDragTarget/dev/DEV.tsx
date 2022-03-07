@@ -49,7 +49,7 @@ export const actions = DevActions<Ctx>()
       host: { background: -0.04 },
     });
 
-    e.render(<Sample isEnabled={e.ctx.isEnabled} />);
+    e.render(<Sample isEnabled={e.ctx.isEnabled} />, {});
   });
 
 export default actions;

@@ -4,7 +4,7 @@ type M = GlobalEventHandlersEventMap;
 
 /**
  * Hook that handles checking if addEventListener is supported,
- * adding the event listener,and removal on cleanup.
+ * adding the event listener and removal on cleanup.
  *
  * Source (MIT):
  *    https://www.jclem.net/posts/pan-zoom-canvas-react

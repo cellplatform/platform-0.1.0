@@ -1,8 +1,15 @@
+/**
+ * @platform
+ */
 export * from '@platform/ui.text/lib/types';
 export * from '@platform/ui.button/lib/types';
 export * from '@platform/ui.image/lib/types';
 
+/**
+ * @local
+ */
 export * from './hooks/useDragTarget/types';
+export * from './hooks/useUIEventBus/types';
 
 export * from './ui/List/types';
 export * from './ui/DotTabstrip/types';

@@ -57,11 +57,7 @@ export const View: React.FC<EventListProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({
-      position: 'relative',
-      Flex: 'y-stretch-stretch',
-      boxSizing: 'border-box',
-    }),
+    base: css({ position: 'relative', Flex: 'y-stretch-stretch', boxSizing: 'border-box' }),
     list: {
       base: css({ flex: 1, position: 'relative' }),
       body: css({ Absolute: [0, 0, 0, 12] }),

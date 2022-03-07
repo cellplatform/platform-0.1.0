@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { readDropEvent } from './util';
-import { t } from '../../common';
+import { t } from '../common';
 
 type OnDrop = (e: t.Dropped) => void;
 type Args<T extends HTMLElement> = {
@@ -12,7 +12,9 @@ type Args<T extends HTMLElement> = {
 /**
  * Provides hooks for treating a DIV element as a "drag-n-drop" target.
  */
-export function useDragTarget<T extends HTMLElement>(input?: Partial<Args<T>> | OnDrop) {
+export function useDragTarget<T extends HTMLElement>(
+  input?: Partial<Args<T>> | OnDrop,
+): t.DragTargetHook<T> {
   const args = wrangle<T>(useRef<T>(null), input);
   const { ref, onDrop, isEnabled = true } = args;
 

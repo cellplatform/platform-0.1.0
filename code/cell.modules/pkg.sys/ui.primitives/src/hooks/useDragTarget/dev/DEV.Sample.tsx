@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ObjectView } from 'sys.ui.dev';
 
 import { useDragTarget } from '..';
-import { color, css, Button, Spinner, t } from './common';
+import { color, css, Button, Spinner, t } from './DEV.common';
 import { upload } from './DEV.Sample.upload';
 
 const toUpload = (file: t.DroppedFile): t.IHttpClientCellFileUpload => {
