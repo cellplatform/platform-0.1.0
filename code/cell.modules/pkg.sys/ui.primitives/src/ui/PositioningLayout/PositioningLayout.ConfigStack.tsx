@@ -7,7 +7,7 @@ import { Button } from '../../ui.ref/button/Button';
 
 type Index = number;
 
-export type PositioningLayersPropertiesStackProps = {
+export type PositioningLayoutConfigStackProps = {
   layers?: t.PositioningLayer[];
   current?: Index;
   maxDepth?: number;
@@ -16,7 +16,7 @@ export type PositioningLayersPropertiesStackProps = {
   onCurrentChange?: (e: { prev: Index; next: Index }) => void;
 };
 
-export const PositioningLayersPropertiesStack: React.FC<PositioningLayersPropertiesStackProps> = (
+export const PositioningLayoutConfigStack: React.FC<PositioningLayoutConfigStackProps> = (
   props,
 ) => {
   const { layers = [], maxDepth = 3 } = props;

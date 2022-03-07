@@ -1,17 +1,17 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 
-import { PositioningLayers, PositioningLayersProps, PositioningLayersSizeHandler } from '..';
+import { PositioningLayout, PositioningLayoutProps, PositioningLayersSizeHandler } from '..';
 import { t, rx } from '../common';
-import { PositioningLayersProperties } from '../PositioningLayers.Properties';
-import { PositioningLayersPropertiesStack } from '../PositioningLayers.PropertiesStack';
+import { PositioningLayoutConfig } from '../PositioningLayout.Config';
+import { PositioningLayoutConfigStack } from '../PositioningLayout.ConfigStack';
 import { DevSample } from './DEV.Sample';
 
 type Index = number;
 
 type Ctx = {
   bus: t.EventBus;
-  props: PositioningLayersProps;
+  props: PositioningLayoutProps;
   debug: { size?: t.DomRect; current?: Index };
   onSize: PositioningLayersSizeHandler;
 };
@@ -35,7 +35,7 @@ const insert = (ctx: Ctx, position: t.BoxPosition) => {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.PositioningLayers')
+  .namespace('ui.PositioningLayout')
   .context((e) => {
     if (e.prev) return e.prev;
 
@@ -53,33 +53,6 @@ export const actions = DevActions<Ctx>()
     insert(ctx, { x: 'center', y: 'bottom' });
     return ctx;
   })
-
-  // .items((e) => {
-  //   e.title('Positioning Layers');
-
-  //   e.component((e) => {
-  //     return (
-  //       <WebRuntime.ui.ManifestSelectorStateful
-  //         bus={e.ctx.bus}
-  //         style={{ MarginX: 25, MarginY: 15 }}
-  //         onEntryClick={async (ev) => {
-  //           const current = e.ctx.debug.current ?? -1;
-  //           console.log('current', current);
-  //           console.log('e', ev);
-
-  //           const layers = e.ctx.props.layers || [];
-  //           const target = layers[current]?.id;
-  //           // console.log('layer', layer);
-  //           console.log('target', target);
-  //           // const events = toObject(e.ctx.debug.events) as t.WebRuntimeEvents;
-  //           e.ctx.debug.events.useModule.fire({ target, module: ev.remote });
-  //         }}
-  //       />
-  //     );
-  //   });
-
-  //   e.hr();
-  // })
 
   .items((e) => {
     e.title('Insert');
@@ -104,7 +77,7 @@ export const actions = DevActions<Ctx>()
     e.component((e) => {
       const x = 30;
       return (
-        <PositioningLayersProperties
+        <PositioningLayoutConfig
           props={e.ctx.props}
           current={e.ctx.debug.current}
           style={{ Margin: [10, x, 10, x] }}
@@ -117,7 +90,7 @@ export const actions = DevActions<Ctx>()
     e.component((e) => {
       const x = 30;
       return (
-        <PositioningLayersPropertiesStack
+        <PositioningLayoutConfigStack
           layers={e.ctx.props.layers}
           current={e.ctx.debug.current}
           style={{ Margin: [20, x, 20, x] }}
@@ -144,7 +117,7 @@ export const actions = DevActions<Ctx>()
       host: { background: -0.04 },
       layout: {
         label: {
-          topLeft: '<PositioningLayers>',
+          topLeft: '<PositioningLayout>',
           topRight: !size ? undefined : `${size.width} x ${size.height} px`,
         },
         position: [150, 80],
@@ -153,7 +126,7 @@ export const actions = DevActions<Ctx>()
         background: 1,
       },
     });
-    e.render(<PositioningLayers {...e.ctx.props} style={{ flex: 1 }} onSize={e.ctx.onSize} />);
+    e.render(<PositioningLayout {...e.ctx.props} style={{ flex: 1 }} onSize={e.ctx.onSize} />);
   });
 
 export default actions;

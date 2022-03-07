@@ -25,7 +25,7 @@ export type PositioningLayerRenderArgs<P extends O = O> = {
   index: Index; // Layer index (0-based).
   total: number; // Total number of layers (1-based).
   size: t.DomRect; // Root container size
-  find: PositioningLayersQuery;
+  find: PositioningLayoutQuery;
   position: t.BoxPosition;
   props: P;
 };
@@ -35,22 +35,22 @@ export type PositioningLayerRenderArgs<P extends O = O> = {
  * NB: edge wildcards supported on ID's (eg "*foo" or "foo*")
  *     or pass "*" (or nothing) to retrieve all layers.
  */
-export type PositioningLayersQuery = {
-  readonly all: PositioningLayerInfo[];
-  index(index: Index): PositioningLayerInfo | undefined;
-  first(id: Id): PositioningLayerInfo | undefined;
-  match(id?: Id): PositioningLayerInfo[];
-  overlap(input: Id | Index): PositioningLayerOverlapInfo[];
+export type PositioningLayoutQuery = {
+  readonly all: PositioningLayoutInfo[];
+  index(index: Index): PositioningLayoutInfo | undefined;
+  first(id: Id): PositioningLayoutInfo | undefined;
+  match(id?: Id): PositioningLayoutInfo[];
+  overlap(input: Id | Index): PositioningLayoutOverlapInfo[];
 };
 
-export type PositioningLayerInfo = {
+export type PositioningLayoutInfo = {
   id: Id;
   index: Index;
   position: t.BoxPosition;
   size: t.DomRect; // Child element size.
 };
 
-export type PositioningLayerOverlapInfo = PositioningLayerInfo & {
+export type PositioningLayoutOverlapInfo = PositioningLayoutInfo & {
   x: boolean;
   y: boolean;
 };

@@ -4,8 +4,8 @@ import { PropList, PropListItem } from '../../PropList';
 
 export type DevSampleProplistProps = {
   id: string;
-  info?: t.PositioningLayerInfo;
-  overlaps: t.PositioningLayerOverlapInfo[];
+  info?: t.PositioningLayoutInfo;
+  overlaps: t.PositioningLayoutOverlapInfo[];
   style?: CssValue;
 };
 
@@ -21,8 +21,8 @@ export const DevSampleProplist: React.FC<DevSampleProplistProps> = (props) => {
 
 function toList(args: {
   id: string;
-  info?: t.PositioningLayerInfo;
-  overlaps: t.PositioningLayerOverlapInfo[];
+  info?: t.PositioningLayoutInfo;
+  overlaps: t.PositioningLayoutOverlapInfo[];
 }) {
   const { id, info, overlaps } = args;
   const index = info ? `${info.index}` : '?';

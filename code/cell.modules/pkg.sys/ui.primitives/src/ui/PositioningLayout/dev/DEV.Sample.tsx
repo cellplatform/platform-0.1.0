@@ -8,9 +8,9 @@ type Id = string;
 export type DevSampleProps = {
   id: Id;
   selected?: Id;
-  info?: t.PositioningLayerInfo;
-  overlaps: t.PositioningLayerOverlapInfo[];
-  find: t.PositioningLayersQuery;
+  info?: t.PositioningLayoutInfo;
+  overlaps: t.PositioningLayoutOverlapInfo[];
+  find: t.PositioningLayoutQuery;
   style?: CssValue;
   onClick?: (e: { id: Id }) => void;
 };

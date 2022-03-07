@@ -15,7 +15,7 @@ export type PositioningLayerSize = {
   size: t.DomRect;
 };
 
-export type PositioningLayersProps = {
+export type PositioningLayoutProps = {
   layers?: t.PositioningLayer[];
   rootResize?: t.ResizeObserver;
   childPointerEvents?: 'none' | 'auto';
@@ -26,11 +26,11 @@ export type PositioningLayersProps = {
 /**
  * Manages a stack of <PositioningContainer> elements as layers.
  */
-export const PositioningLayers: React.FC<PositioningLayersProps> = (props) => {
+export const PositioningLayout: React.FC<PositioningLayoutProps> = (props) => {
   const { layers = [] } = props;
 
   const [size, setSize] = useState<t.DomRect | undefined>();
-  const [count, setRedraw] = useState<number>(0);
+  const [, setRedraw] = useState<number>(0);
   const redraw = () => setRedraw((prev) => prev + 1);
 
   const fireSizeRef = useRef<Subject<void>>(new Subject<void>());
@@ -126,11 +126,7 @@ export const PositioningLayers: React.FC<PositioningLayersProps> = (props) => {
     });
 
   return (
-    <div
-      ref={rootRef}
-      {...css(styles.base, props.style)}
-      className={'Sys-Primitives-PositioningLayers'}
-    >
+    <div ref={rootRef} {...css(styles.base, props.style)}>
       {elLayers}
     </div>
   );
@@ -144,7 +140,7 @@ function renderLayer(args: {
   index: number;
   layers: t.PositioningLayer[];
   size: t.DomRect;
-  find: t.PositioningLayersQuery;
+  find: t.PositioningLayoutQuery;
 }) {
   const { index, layers, size, find } = args;
   const total = layers.length;

@@ -5,14 +5,14 @@ export type Refs = { [id: string]: Ref };
 
 type Id = string;
 type Index = number;
-type Info = t.PositioningLayerInfo;
-type Overlap = t.PositioningLayerOverlapInfo;
+type Info = t.PositioningLayoutInfo;
+type Overlap = t.PositioningLayoutOverlapInfo;
 
 /**
  * API for querying layers.
  */
 export function Query(layers: t.PositioningLayer[], refs: Refs) {
-  const api: t.PositioningLayersQuery = {
+  const api: t.PositioningLayoutQuery = {
     get all() {
       return api.match();
     },

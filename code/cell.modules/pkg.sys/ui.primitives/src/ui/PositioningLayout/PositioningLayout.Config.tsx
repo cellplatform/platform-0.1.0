@@ -1,17 +1,17 @@
 import React from 'react';
 import { R, color, css, CssValue, t } from './common';
 import { PropList, PropListItem } from '../PropList';
-import { PositioningLayersProps } from './PositioningLayers';
+import { PositioningLayoutProps } from './PositioningLayout';
 
 type Index = number;
 
-export type PositioningLayersPropertiesProps = {
-  props: PositioningLayersProps;
+export type PositioningLayoutConfigProps = {
+  props: PositioningLayoutProps;
   current?: Index;
   style?: CssValue;
 };
 
-export const PositioningLayersProperties: React.FC<PositioningLayersPropertiesProps> = (props) => {
+export const PositioningLayoutConfig: React.FC<PositioningLayoutConfigProps> = (props) => {
   const { current } = props;
   const { layers = [] } = props.props;
   const total = layers.length;
