@@ -161,10 +161,24 @@ export const BulletListLayoutItem: React.FC<BulletListLayoutItemProps> = (props)
 
 type RenderOutput = JSX.Element | null | undefined | false;
 function placeInOrder(edge: k.BulletEdge, bullet: RenderOutput, body: RenderOutput) {
-  let order: RenderOutput[] = [];
-  if (edge === 'near') order = [bullet, body];
-  if (edge === 'far') order = [body, bullet];
-  return <>{order}</>;
+  if (edge === 'near') {
+    return (
+      <>
+        {bullet}
+        {body}
+      </>
+    );
+  }
+  if (edge === 'far') {
+    return (
+      <>
+        {body}
+        {bullet}
+      </>
+    );
+  }
+
+  throw new Error(`"${edge}" not supported`);
 }
 
 function renderPart(
