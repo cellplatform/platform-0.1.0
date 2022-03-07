@@ -3,32 +3,38 @@ import React from 'react';
 import { color, css, CssValue, k, Is } from './common';
 import { Renderers } from './renderers';
 
+/**
+ * Types
+ */
 type Pixels = number;
 type R = {
-  bullet?: k.BulletRenderer;
-  body: k.BulletRenderer;
+  bullet?: k.ListBulletRenderer;
+  body: k.ListBulletRenderer;
 };
 
 const DEFAULT_RENDERER: R = {
   body: Renderers.asRenderer(Renderers.Body.Default),
 };
 
-export type BulletListLayoutItemProps = {
+export type ListLayoutItemProps = {
   index: number;
   total: number;
-  item: k.BulletItem;
-  orientation: k.BulletOrientation;
+  item: k.ListItem;
+  orientation: k.ListOrientation;
   bullet: {
-    edge: k.BulletEdge;
+    edge: k.ListBulletEdge;
     size: Pixels; // Offset size of the bullet row/column.
   };
-  spacing: k.BulletSpacing;
+  spacing: k.ListBulletSpacing;
   renderers: R;
   style?: CssValue;
   debug?: { border?: boolean };
 };
 
-export const BulletListLayoutItem: React.FC<BulletListLayoutItemProps> = (props) => {
+/**
+ * Component
+ */
+export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
   const { item, orientation, index, total, renderers, debug = {}, bullet } = props;
   const { data } = item;
 
@@ -36,7 +42,7 @@ export const BulletListLayoutItem: React.FC<BulletListLayoutItemProps> = (props)
   const invertedOrientation = orientation === 'x' ? 'y' : 'x';
   const is = Is.toItemFlags({ index, total, bullet, orientation });
 
-  const args: k.BulletRendererArgs = {
+  const args: k.ListBulletRendererArgs = {
     kind: 'Default',
     index,
     total,
@@ -76,14 +82,18 @@ export const BulletListLayoutItem: React.FC<BulletListLayoutItemProps> = (props)
     }),
   };
 
-  const renderContent: k.BulletRenderer = (args: k.BulletRendererArgs) => {
+  const renderContent: k.ListBulletRenderer = (args: k.ListBulletRendererArgs) => {
     const parts = renderParts(args, renderers);
     const elBullet = parts.bullet && <div {...styles.bullet.outer}>{parts.bullet}</div>;
     const elBody = <div {...styles.body.outer}>{parts.body}</div>;
     return placeInOrder(args.bullet.edge, elBullet, elBody);
   };
 
-  const renderSpacer = (args: k.BulletRendererArgs, edge: 'before' | 'after', offset: Pixels) => {
+  const renderSpacer = (
+    args: k.ListBulletRendererArgs,
+    edge: 'before' | 'after',
+    offset: Pixels,
+  ) => {
     if (offset === 0) return null;
 
     const styles = {
@@ -102,7 +112,7 @@ export const BulletListLayoutItem: React.FC<BulletListLayoutItemProps> = (props)
       }),
     };
 
-    const e: k.BulletRendererArgs = {
+    const e: k.ListBulletRendererArgs = {
       ...args,
       kind: 'Spacing',
       is: { ...is, spacer: true },
@@ -160,7 +170,7 @@ export const BulletListLayoutItem: React.FC<BulletListLayoutItemProps> = (props)
  */
 
 type RenderOutput = JSX.Element | null | undefined | false;
-function placeInOrder(edge: k.BulletEdge, bullet: RenderOutput, body: RenderOutput) {
+function placeInOrder(edge: k.ListBulletEdge, bullet: RenderOutput, body: RenderOutput) {
   if (edge === 'near') {
     return (
       <>
@@ -182,22 +192,22 @@ function placeInOrder(edge: k.BulletEdge, bullet: RenderOutput, body: RenderOutp
 }
 
 function renderPart(
-  e: k.BulletRendererArgs,
-  renderer: k.BulletRenderer,
-  defaultRenderer?: k.BulletRenderer,
+  e: k.ListBulletRendererArgs,
+  renderer: k.ListBulletRenderer,
+  defaultRenderer?: k.ListBulletRenderer,
 ) {
   const el = renderer(e);
   return (el === undefined ? defaultRenderer?.(e) : el) as JSX.Element | null;
 }
 
-function renderParts(e: k.BulletRendererArgs, renderers: R) {
+function renderParts(e: k.ListBulletRendererArgs, renderers: R) {
   return {
     bullet: renderers.bullet ? renderPart(e, renderers.bullet) : undefined,
     body: renderPart(e, renderers.body, DEFAULT_RENDERER.body),
   };
 }
 
-function formatSpacing(input: k.BulletSpacing): Required<k.BulletSpacing> {
+function formatSpacing(input: k.ListBulletSpacing): Required<k.ListBulletSpacing> {
   const { before = 0, after = 0 } = input;
   return { before, after };
 }

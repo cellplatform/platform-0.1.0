@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
-import { BulletList, BulletListProps } from '..';
+import { List, ListProps } from '..';
 import { ALL, DEFAULTS, k, rx, t, time, value } from '../common';
 import { RenderCtx, sampleBodyFactory, sampleBulletFactory } from './Sample.renderers';
 
@@ -10,21 +10,21 @@ type D = { msg: string };
 type Ctx = {
   bus: t.EventBus<any>;
   instance: string;
-  items: k.BulletItem[];
-  props: BulletListProps; // Common properties.
+  items: k.ListItem[];
+  props: ListProps; // Common properties.
   renderCtx: RenderCtx;
-  events: k.BulletListEvents;
-  debug: { scrollAlign: k.BulletListItemAlign; virtualPadding: boolean };
+  events: k.ListEvents;
+  debug: { scrollAlign: k.ListItemAlign; virtualPadding: boolean };
   redraw(): Promise<void>;
 };
 
 const Util = {
-  addItem(ctx: Ctx, options: { spacing?: k.BulletSpacing } = {}) {
+  addItem(ctx: Ctx, options: { spacing?: k.ListBulletSpacing } = {}) {
     const { spacing } = options;
     const items = ctx.items;
 
     const data: D = { msg: `item-${items.length + 1}` };
-    const item: k.BulletItem<D> = { data, spacing };
+    const item: k.ListItem<D> = { data, spacing };
 
     ctx.items.push(item);
     return item;
@@ -35,7 +35,7 @@ const Util = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.BulletList')
+  .namespace('ui.List')
   .context((e) => {
     if (e.prev) return e.prev;
 
@@ -47,7 +47,7 @@ export const actions = DevActions<Ctx>()
 
     const bus = rx.bus();
     const instance = 'sample.foo';
-    const events = BulletList.Virtual.Events({ bus, instance });
+    const events = List.Virtual.Events({ bus, instance });
 
     const ctx: Ctx = {
       bus,
@@ -255,7 +255,7 @@ export const actions = DevActions<Ctx>()
         });
     });
 
-    const scrollTo = (ctx: Ctx, target: k.BulletListScroll['target']) => {
+    const scrollTo = (ctx: Ctx, target: k.ListScroll['target']) => {
       const align = ctx.debug.scrollAlign;
       ctx.events.scroll.fire(target, { align });
     };
@@ -356,7 +356,7 @@ export const actions = DevActions<Ctx>()
         height: isVirtual && isHorizontal ? FIXED_SIZE : undefined,
         border: isVirtual ? -0.1 : undefined,
         label: {
-          topLeft: `<BulletList>[${total}]`,
+          topLeft: `<List>[${total}]`,
           topRight: isVirtual ? `"virtual rendering"` : ``,
           bottomLeft: isVirtual ? `scrollable` : ``,
           bottomRight: `Body:"${e.ctx.renderCtx.bodyKind}"`,
@@ -371,16 +371,16 @@ export const actions = DevActions<Ctx>()
      * Simple (non-scrolling) layout.
      */
     if (!isVirtual) {
-      e.render(<BulletList.Layout {...props} items={items} />);
+      e.render(<List.Layout {...props} items={items} />);
     }
 
     /**
      * Virtual scolling list.
      */
     if (isVirtual) {
-      const getData: k.GetBulletItem = (index) => items[index];
+      const getData: k.GetListItem = (index) => items[index];
 
-      const getSize: k.GetBulletItemSize = (e) => {
+      const getSize: k.GetListItemSize = (e) => {
         const spacing = (props.spacing || 0) as number;
         const kind = renderCtx.bodyKind;
 
@@ -395,7 +395,7 @@ export const actions = DevActions<Ctx>()
       };
 
       e.render(
-        <BulletList.Virtual
+        <List.Virtual
           {...props}
           items={{ total, getData, getSize }}
           event={{ bus: e.ctx.bus, instance: e.ctx.instance }}

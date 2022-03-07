@@ -1,10 +1,10 @@
 import React, { forwardRef, useRef } from 'react';
 import { VariableSizeList as List } from 'react-window';
 
-import { BulletListProps, Helpers } from './BulletList.Layout';
-import { BulletListVirtualRow, BulletListVirtualRowData } from './BulletList.Virtual.Row';
+import { ListProps, Helpers } from './List.Layout';
+import { ListVirtualRow, ListVirtualRowData } from './List.Virtual.Row';
 import { css, FC, k, t, useResizeObserver } from './common';
-import { BulletListEvents } from './Events';
+import { ListEvents } from './Events';
 import { useEventsController } from './Events.useController';
 
 type Pixels = number;
@@ -12,8 +12,8 @@ type Pixels = number;
 /**
  * Types
  */
-export type BulletListVirtualProps = BulletListProps & {
-  items: { total: number; getData: k.GetBulletItem; getSize: k.GetBulletItemSize };
+export type ListVirtualProps = ListProps & {
+  items: { total: number; getData: k.GetListItem; getSize: k.GetListItemSize };
   event?: { bus: t.EventBus<any>; instance: string };
   paddingNear?: Pixels;
   paddingFar?: Pixels;
@@ -27,7 +27,7 @@ export type BulletListVirtualProps = BulletListProps & {
  *    - https://react-window.vercel.app/#/examples/list/fixed-size
  *
  */
-export const View: React.FC<BulletListVirtualProps> = (props) => {
+export const View: React.FC<ListVirtualProps> = (props) => {
   const { items, paddingNear = 0, paddingFar = 0 } = props;
   const total = items.total;
 
@@ -42,17 +42,17 @@ export const View: React.FC<BulletListVirtualProps> = (props) => {
 
   const getSize = (index: number) => {
     const item = items[index];
-    const is: k.GetBulletItemSizeArgs['is'] = {
+    const is: k.GetListItemSizeArgs['is'] = {
       first: index === 0,
       last: index === total - 1,
       horizontal: orientation === 'x',
       vertical: orientation === 'y',
     };
-    const e: k.GetBulletItemSizeArgs = { index, total, item, is };
+    const e: k.GetListItemSizeArgs = { index, total, item, is };
     return props.items.getSize(e);
   };
 
-  const getData = (index: number): BulletListVirtualRowData | undefined => {
+  const getData = (index: number): ListVirtualRowData | undefined => {
     const item = items.getData?.(index);
     if (!item) return undefined;
     return {
@@ -61,7 +61,7 @@ export const View: React.FC<BulletListVirtualProps> = (props) => {
       onMouse(e) {
         const { mouse, button } = e;
         ctrl.bus.fire({
-          type: 'sys.ui.BulletList/Click',
+          type: 'sys.ui.List/Click',
           payload: { instance, index, item, mouse, button },
         });
       },
@@ -87,7 +87,7 @@ export const View: React.FC<BulletListVirtualProps> = (props) => {
   const Row = ({ style, ...rest }: any) => {
     const left = orientation === 'x' ? `${parseFloat(style.left) + paddingNear}px` : style.left;
     const top = orientation === 'y' ? `${parseFloat(style.top) + paddingNear}px` : style.top;
-    return <BulletListVirtualRow {...rest} style={{ ...style, left, top }} />;
+    return <ListVirtualRow {...rest} style={{ ...style, left, top }} />;
   };
 
   const elBody = resize.ready && (
@@ -117,7 +117,7 @@ export const View: React.FC<BulletListVirtualProps> = (props) => {
 /**
  * Export
  */
-type Fields = { Events: k.BulletListEventsFactory };
-export const BulletListVirtual = FC.decorate<BulletListVirtualProps, Fields>(View, {
-  Events: BulletListEvents,
+type Fields = { Events: k.ListEventsFactory };
+export const ListVirtual = FC.decorate<ListVirtualProps, Fields>(View, {
+  Events: ListEvents,
 });

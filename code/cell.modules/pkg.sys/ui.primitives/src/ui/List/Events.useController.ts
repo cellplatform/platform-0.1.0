@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from 'react';
 import { VariableSizeList as List } from 'react-window';
 
 import { rx, t } from './common';
-import { BulletListEvents } from './Events';
+import { ListEvents } from './Events';
 import * as k from './types';
 
 /**
@@ -10,7 +10,7 @@ import * as k from './types';
  */
 export function useEventsController(args: { bus?: t.EventBus<any>; instance?: string }) {
   const { instance = 'default' } = args;
-  const bus = rx.busAsType<k.BulletListEvent>(args.bus || rx.bus());
+  const bus = rx.busAsType<k.ListEvent>(args.bus || rx.bus());
 
   const listRef = useRef<List>(null);
   const [count, setCount] = useState(0);
@@ -19,7 +19,7 @@ export function useEventsController(args: { bus?: t.EventBus<any>; instance?: st
    * Lifecycle.
    */
   useEffect(() => {
-    const events = BulletListEvents({ bus, instance });
+    const events = ListEvents({ bus, instance });
 
     /**
      * Scroll to an item.

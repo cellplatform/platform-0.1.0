@@ -6,8 +6,8 @@ const imports = {
   useDragTarget: import('./hooks/useDragTarget/dev/DEV'),
 
   Bullet: import('./ui/Bullet/dev/DEV'),
-  BulletList: import('./ui/BulletList/dev/DEV'),
-  BulletListConnectorLines: import('./ui/BulletList/renderers/dev/DEV.ConnectorLines'),
+  List: import('./ui/List/dev/DEV'),
+  ListConnectorLines: import('./ui/List/renderers/dev/DEV.ConnectorLines'),
 
   Antechamber: import('./ui/Antechamber/dev/DEV'),
   DotTabstrip: import('./ui/DotTabstrip/dev/DEV'),

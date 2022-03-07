@@ -4,7 +4,7 @@ export * from '@platform/ui.image/lib/types';
 
 export * from './hooks/useDragTarget/types';
 
-export * from './ui/BulletList/types';
+export * from './ui/List/types';
 export * from './ui/DotTabstrip/types';
 export * from './ui/PropList/types';
 export * from './ui/QRCode/types';

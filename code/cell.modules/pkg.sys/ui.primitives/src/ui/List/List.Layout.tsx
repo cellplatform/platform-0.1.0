@@ -1,6 +1,6 @@
 import React from 'react';
 import { DEFAULTS, css, CssValue, k } from './common';
-import { BulletListLayoutItem } from './BulletList.Layout.Item';
+import { ListLayoutItem } from './List.Layout.Item';
 import { Renderers } from './renderers';
 
 type Pixels = number;
@@ -8,11 +8,11 @@ type Pixels = number;
 /**
  * Shared with "Virtual" variant of the component.
  */
-export type BulletListProps = {
-  renderers?: { bullet?: k.BulletRenderer; body?: k.BulletRenderer };
-  orientation?: k.BulletOrientation;
-  bullet?: { edge?: k.BulletEdge; size?: Pixels };
-  spacing?: number | k.BulletSpacing; // Number (defaults to) => { before }
+export type ListProps = {
+  renderers?: { bullet?: k.ListBulletRenderer; body?: k.ListBulletRenderer };
+  orientation?: k.ListOrientation;
+  bullet?: { edge?: k.ListBulletEdge; size?: Pixels };
+  spacing?: number | k.ListBulletSpacing; // Number (defaults to) => { before }
   style?: CssValue;
   debug?: { border?: boolean };
 };
@@ -20,14 +20,14 @@ export type BulletListProps = {
 /**
  * Component specific
  */
-export type BulletListLayoutProps = BulletListProps & {
-  items: k.BulletItem[]; // "Simple" list of items.
+export type ListLayoutProps = ListProps & {
+  items: k.ListItem[]; // "Simple" list of items.
 };
 
 /**
  * Simple (non-virtualized) layout
  */
-export const BulletListLayout: React.FC<BulletListLayoutProps> = (props) => {
+export const ListLayout: React.FC<ListLayoutProps> = (props) => {
   const { items = [] } = props;
   const renderer = Helpers.renderer(props, items.length);
   const { orientation } = renderer;
@@ -46,7 +46,7 @@ export const BulletListLayout: React.FC<BulletListLayoutProps> = (props) => {
  * Helpers
  */
 export const Helpers = {
-  renderer(props: BulletListProps, total: number) {
+  renderer(props: ListProps, total: number) {
     const { orientation = DEFAULTS.Orientation, bullet = {} } = props;
 
     const renderers = {
@@ -54,7 +54,7 @@ export const Helpers = {
       body: props.renderers?.body ?? Renderers.asRenderer(Renderers.Body.Default),
     };
 
-    const toSpacing = (itemSpacing?: k.BulletSpacing): k.BulletSpacing => {
+    const toSpacing = (itemSpacing?: k.ListBulletSpacing): k.ListBulletSpacing => {
       if (typeof itemSpacing === 'object') return itemSpacing;
       const spacing = props.spacing;
       if (typeof spacing === 'number') return { before: spacing, after: 0 };
@@ -64,9 +64,9 @@ export const Helpers = {
     const api = {
       orientation,
       renderers,
-      item(item: k.BulletItem, index: number, style?: CssValue) {
+      item(item: k.ListItem, index: number, style?: CssValue) {
         return (
-          <BulletListLayoutItem
+          <ListLayoutItem
             key={`bullet.${index}`}
             index={index}
             total={total}

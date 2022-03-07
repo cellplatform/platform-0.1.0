@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 
-import { BulletList } from '../BulletList';
+import { List } from '../List';
 import { color, css, CssValue, EventListConstants, FC, t } from './common';
 import { EventListRow } from './EventList.Row';
 import { useController } from './EventList.useController';
@@ -43,13 +43,13 @@ export const View: React.FC<EventListProps> = (props) => {
   /**
    * [Handlers]
    */
-  const getData: t.GetBulletItem = (index) => {
+  const getData: t.GetListItem = (index) => {
     const data = items[index];
     const { id } = data;
     return { id, data };
   };
 
-  const getSize: t.GetBulletItemSize = (e) => {
+  const getSize: t.GetListItemSize = (e) => {
     return e.is.first ? ROW.HEIGHT : ROW.HEIGHT + ROW.SPACING;
   };
 
@@ -85,7 +85,7 @@ export const View: React.FC<EventListProps> = (props) => {
 
   const elList = (
     <div {...styles.list.base}>
-      <BulletList.Virtual
+      <List.Virtual
         style={styles.list.body}
         spacing={ROW.SPACING}
         items={{ total, getData, getSize }}
@@ -93,7 +93,7 @@ export const View: React.FC<EventListProps> = (props) => {
         renderers={{
           bullet(e) {
             return (
-              <BulletList.Renderers.Bullet.ConnectorLines
+              <List.Renderers.Bullet.ConnectorLines
                 {...e}
                 radius={4}
                 lineWidth={2}

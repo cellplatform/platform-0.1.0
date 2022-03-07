@@ -3,19 +3,19 @@ import { ListChildComponentProps } from 'react-window';
 
 import { k } from './common';
 
-type C = k.BulletListClick;
+type C = k.ListClick;
 type M = C['mouse'];
 type B = C['button'];
 
-export type BulletListVirtualRowData = {
-  item: k.BulletItem;
+export type ListVirtualRowData = {
+  item: k.ListItem;
   render(): JSX.Element;
   onMouse(e: { mouse: M; button: B }): void;
 };
 
-export const BulletListVirtualRow: React.FC<ListChildComponentProps> = (props) => {
+export const ListVirtualRow: React.FC<ListChildComponentProps> = (props) => {
   const { index } = props;
-  const data = props.data(index) as BulletListVirtualRowData;
+  const data = props.data(index) as ListVirtualRowData;
 
   const mouseHandler = (mouse: M) => {
     return (e: React.MouseEvent) => {

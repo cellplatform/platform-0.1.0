@@ -10,9 +10,9 @@ export const Is = {
   toItemFlags(args: {
     index: number;
     total: number;
-    orientation: k.BulletOrientation;
-    bullet: { edge: k.BulletEdge };
-  }): k.BulletRenderFlags {
+    orientation: k.ListOrientation;
+    bullet: { edge: k.ListBulletEdge };
+  }): k.ListBulletRenderFlags {
     const { index, total, orientation, bullet } = args;
     return {
       empty: total === 0,

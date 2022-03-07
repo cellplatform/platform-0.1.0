@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
-import { BulletConnectorLinesProps, BulletList } from '../..';
+import { BulletConnectorLinesProps, List } from '../..';
 import { Is, t } from '../../common';
 
 type Ctx = {
@@ -9,7 +9,7 @@ type Ctx = {
 };
 
 const DEFAULT = {
-  BULLET: { edge: 'near', size: 60 } as t.BulletRendererArgs['bullet'],
+  BULLET: { edge: 'near', size: 60 } as t.ListBulletRendererArgs['bullet'],
 };
 
 const Util = {
@@ -23,7 +23,7 @@ const Util = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.BulletList.ConnectorLines')
+  .namespace('ui.List.ConnectorLines')
   .context((e) => {
     if (e.prev) return e.prev;
 
@@ -161,7 +161,7 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    const el = <BulletList.Renderers.Bullet.ConnectorLines {...e.ctx.props} />;
+    const el = <List.Renderers.Bullet.ConnectorLines {...e.ctx.props} />;
 
     e.render(el);
   });

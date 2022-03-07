@@ -4,7 +4,7 @@ import { Card } from '../../Card';
 import { ObjectView } from '../../ObjectView';
 import { css, CssValue, k } from '../common';
 
-export type BodyDefaultProps = k.BulletRendererArgs & {
+export type BodyDefaultProps = k.ListBulletRendererArgs & {
   width?: string | number;
   minWidth?: string | number;
   expandPaths?: string[];
