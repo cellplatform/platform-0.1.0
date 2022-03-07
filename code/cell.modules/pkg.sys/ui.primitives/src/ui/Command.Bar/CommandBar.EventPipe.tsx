@@ -7,15 +7,15 @@ import { EventPipe } from '../Event.Pipe';
 import { Button, css, CssValue, Icons, slug, t, time } from './common';
 
 export type CommandBarEventPipeProps = {
-  netbus: t.NetworkBus<any>;
+  bus: t.EventBus<any>;
   iconEdge?: 'Left' | 'Right';
   style?: CssValue;
 };
 
 export const CommandBarEventPipe: React.FC<CommandBarEventPipeProps> = (props) => {
-  const { netbus, iconEdge = 'Right' } = props;
+  const { bus, iconEdge = 'Right' } = props;
 
-  const history = useEventBusHistory(netbus);
+  const history = useEventBusHistory(bus);
   const [recentlyFired, setRecentlyFired] = useState(false);
 
   /**
@@ -23,7 +23,7 @@ export const CommandBarEventPipe: React.FC<CommandBarEventPipeProps> = (props) =
    */
   useEffect(() => {
     const dispose$ = new Subject<void>();
-    const netbus$ = netbus.$.pipe(takeUntil(dispose$));
+    const netbus$ = bus.$.pipe(takeUntil(dispose$));
 
     netbus$.subscribe(() => setRecentlyFired(true));
     netbus$.pipe(debounceTime(1500)).subscribe(() => setRecentlyFired(false));
@@ -35,7 +35,7 @@ export const CommandBarEventPipe: React.FC<CommandBarEventPipeProps> = (props) =
    * Handlers
    */
   const fireSampleEvent = () => {
-    netbus.fire({
+    bus.fire({
       type: `FOO/sample/event-${history.total}`,
       payload: { tx: slug(), message: 'My sample event', time: time.now.timestamp },
     });

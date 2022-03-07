@@ -18,6 +18,7 @@ const imports = {
 
   CommandTextbox: import('./ui/Command.Textbox/dev/DEV'),
   CommandBar: import('./ui/Command.Bar/dev/DEV'),
+  CommandCard: import('./ui/Command.Card/dev/DEV'),
 
   MinSize: import('./ui/MinSize/dev/DEV'),
   PositioningLayer: import('./ui/PositioningLayer/dev/DEV'),

@@ -2,7 +2,7 @@ import { expect } from '../test';
 import React from 'react';
 import { FC } from '.';
 
-describe.only('FC (Functional Component)', () => {
+describe('FC (Functional Component)', () => {
   describe('FC.decorate', () => {
     it('assigns fields', () => {
       type FooProps = { count?: number };

@@ -11,14 +11,16 @@ import { CommandBarInset, CommandBarInsetProps } from './CommandBar.Inset';
 import { CommandBarEvents } from './Events';
 import * as k from './types';
 
+type Id = string;
+
 /**
  * Types
  */
 export type CommandBarPart = 'Input' | 'Events';
 
 export type CommandBarProps = {
-  events?: { bus: t.EventBus<any>; instance: string };
-  netbus: t.NetworkBus<any>;
+  events?: { bus: t.EventBus<any>; instance: Id };
+  bus: t.EventBus<any>;
   inset?: boolean | CommandBarInsetProps;
   parts?: CommandBarPart[];
   cornerRadius?: [number, number, number, number];
@@ -38,7 +40,7 @@ export const CommandBarConstants = { PARTS };
  * Component
  */
 export const View: React.FC<CommandBarProps> = (props) => {
-  const { netbus, inset } = props;
+  const { bus, inset } = props;
   const { parts = ['Input', 'Events'] } = props;
 
   const borderRadius = props.cornerRadius
@@ -117,7 +119,7 @@ export const View: React.FC<CommandBarProps> = (props) => {
       appendDivider();
       elements.push(
         <div {...styles.events} key={elements.length}>
-          {<CommandBarEventPipe netbus={netbus} iconEdge={isFirst ? 'Left' : 'Right'} />}
+          {<CommandBarEventPipe bus={bus} iconEdge={isFirst ? 'Left' : 'Right'} />}
         </div>,
       );
     }

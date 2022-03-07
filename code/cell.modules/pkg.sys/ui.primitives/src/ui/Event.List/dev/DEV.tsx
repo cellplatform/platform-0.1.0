@@ -17,10 +17,10 @@ type Ctx = {
   netbus: t.NetworkBusMock;
   events: k.EventListEvents;
   reset$: Subject<void>;
-  debug: CtxDebug;
+  debug: Debug;
 };
 
-type CtxDebug = {
+type Debug = {
   fireCount: number; // Total number of fires.
   busKind: 'bus' | 'netbus';
 };
