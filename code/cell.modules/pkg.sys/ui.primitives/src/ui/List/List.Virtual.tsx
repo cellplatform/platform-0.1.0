@@ -4,8 +4,7 @@ import { VariableSizeList as List } from 'react-window';
 import { ListProps, Helpers } from './List.Layout';
 import { ListVirtualRow, ListVirtualRowData } from './List.Virtual.Row';
 import { css, FC, k, t, useResizeObserver } from './common';
-import { ListEvents } from './Events';
-import { useEventsController } from './Events.useController';
+import { ListEvents, useEventsController } from './events';
 
 type Pixels = number;
 

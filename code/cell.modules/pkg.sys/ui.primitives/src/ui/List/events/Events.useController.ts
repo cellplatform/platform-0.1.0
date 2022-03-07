@@ -1,9 +1,8 @@
 import { useRef, useEffect, useState } from 'react';
 import { VariableSizeList as List } from 'react-window';
 
-import { rx, t } from './common';
+import { rx, t, k } from '../common';
 import { ListEvents } from './Events';
-import * as k from './types';
 
 /**
  * Event behavior controller.
