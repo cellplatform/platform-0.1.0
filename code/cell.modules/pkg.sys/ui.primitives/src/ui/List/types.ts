@@ -1,7 +1,7 @@
 import { Disposable, EventBus } from '@platform/types';
 import { Observable } from 'rxjs';
 
-type InstanceId = string;
+type Id = string;
 type Index = number;
 type Pixels = number;
 
@@ -52,34 +52,47 @@ export type GetListItem = (index: number) => ListItem | undefined;
 /**
  * EVENTS (API)
  */
-export type ListEventsFactory = (args: { bus: EventBus<any>; instance: InstanceId }) => ListEvents;
+export type ListEventsFactory = (args: { bus: EventBus<any>; instance: Id }) => ListEvents;
 
 export type ListEvents = Disposable & {
   $: Observable<ListEvent>;
-  instance: InstanceId;
+  instance: Id;
   scroll: {
     $: Observable<ListScroll>;
     fire(target: ListScroll['target'], options?: { align?: ListItemAlign }): void;
   };
-  click: {
-    $: Observable<ListClick>;
-    fire(args: {
-      index: Index;
-      item: ListItem;
-      mouse: ListClick['mouse'];
-      button: ListClick['button'];
-    }): void;
-  };
   redraw: {
     $: Observable<ListRedraw>;
     fire(): void;
+  };
+  item: ListItemEvents;
+};
+
+export type ListItemEvents = {
+  click: {
+    $: Observable<ListItemClick>;
+    fire(args: {
+      index: Index;
+      item: ListItem;
+      mouse: ListItemClick['mouse'];
+      button: ListItemClick['button'];
+    }): void;
+  };
+  hover: {
+    $: Observable<ListItemHover>;
+    fire(args: {
+      index: Index;
+      item: ListItem;
+      isOver: ListItemHover['isOver'];
+      mouse: ListItemHover['mouse'];
+    }): void;
   };
 };
 
 /**
  * EVENT Definitions
  */
-export type ListEvent = ListScrollEvent | ListClickEvent | ListRedrawEvent;
+export type ListEvent = ListScrollEvent | ListItemClickEvent | ListRedrawEvent | ListItemHoverEvent;
 
 /**
  * Initiates a scroll operation on the list.
@@ -89,24 +102,9 @@ export type ListScrollEvent = {
   payload: ListScroll;
 };
 export type ListScroll = {
-  instance: InstanceId;
+  instance: Id;
   target: 'Top' | 'Bottom' | Index;
   align?: ListItemAlign;
-};
-
-/**
- * Fires when an event is clicked.
- */
-export type ListClickEvent = {
-  type: 'sys.ui.List/Click';
-  payload: ListClick;
-};
-export type ListClick = {
-  instance: InstanceId;
-  index: Index;
-  item: ListItem;
-  mouse: 'Down' | 'Up';
-  button: 'Left' | 'Right';
 };
 
 /**
@@ -116,4 +114,34 @@ export type ListRedrawEvent = {
   type: 'sys.ui.List/Redraw';
   payload: ListRedraw;
 };
-export type ListRedraw = { instance: InstanceId };
+export type ListRedraw = { instance: Id };
+
+/**
+ * Fires when an item is clicked.
+ */
+export type ListItemClickEvent = {
+  type: 'sys.ui.List/Item/Click';
+  payload: ListItemClick;
+};
+export type ListItemClick = {
+  instance: Id;
+  index: Index;
+  item: ListItem;
+  mouse: 'Down' | 'Up';
+  button: 'Left' | 'Right';
+};
+
+/**
+ * Fires when an item is hovered over.
+ */
+export type ListItemHoverEvent = {
+  type: 'sys.ui.List/Item/Hover';
+  payload: ListItemHover;
+};
+export type ListItemHover = {
+  instance: Id;
+  index: Index;
+  item: ListItem;
+  mouse: 'Down' | 'Up';
+  isOver: boolean;
+};

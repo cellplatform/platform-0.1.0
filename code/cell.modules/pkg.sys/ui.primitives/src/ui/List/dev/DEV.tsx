@@ -5,6 +5,8 @@ import { List, ListProps } from '..';
 import { ALL, DEFAULTS, k, rx, t, time, value } from '../common';
 import { RenderCtx, sampleBodyFactory, sampleBulletFactory } from './Sample.renderers';
 
+import { SelectionMonitor } from '../hooks';
+
 type D = { msg: string };
 
 type Ctx = {
@@ -78,8 +80,12 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx } = e;
-    ctx.events.$.subscribe((e) => console.log('events.$:', e));
+    const { bus, instance } = ctx;
+
     new Array(3).fill(ctx).forEach(() => Util.addItem(ctx));
+
+    SelectionMonitor({ bus, instance });
+    // ctx.events.$.subscribe((e) => console.log('events.$:', e));
   })
 
   .items((e) => {

@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef } from 'react';
+import React, { createContext, forwardRef, useRef } from 'react';
 import { VariableSizeList as List } from 'react-window';
 
 import { ListProps, Helpers } from './List.Layout';
@@ -57,11 +57,18 @@ export const View: React.FC<ListVirtualProps> = (props) => {
     return {
       item,
       render: () => renderer.item(item, index),
-      onMouse(e) {
+      onClick(e) {
         const { mouse, button } = e;
         ctrl.bus.fire({
-          type: 'sys.ui.List/Click',
+          type: 'sys.ui.List/Item/Click',
           payload: { instance, index, item, mouse, button },
+        });
+      },
+      onHover(e) {
+        const { isOver, mouse } = e;
+        ctrl.bus.fire({
+          type: 'sys.ui.List/Item/Hover',
+          payload: { instance, index, item, isOver, mouse },
         });
       },
     };

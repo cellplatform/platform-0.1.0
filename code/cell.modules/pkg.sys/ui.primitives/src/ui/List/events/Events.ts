@@ -1,7 +1,7 @@
 import { animationFrameScheduler, Subject } from 'rxjs';
 import { filter, observeOn, takeUntil } from 'rxjs/operators';
 
-import { k, rx } from '../common';
+import { k, rx, Is } from '../common';
 
 type E = k.ListEvents;
 
@@ -16,7 +16,7 @@ export const ListEvents: k.ListEventsFactory = (args) => {
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
-    filter((e) => e.type.startsWith('sys.ui.List/')),
+    filter((e) => Is.listEvent(e)),
     filter((e) => e.payload.instance === instance),
     observeOn(animationFrameScheduler),
   );
@@ -32,17 +32,6 @@ export const ListEvents: k.ListEventsFactory = (args) => {
     },
   };
 
-  const click: E['click'] = {
-    $: rx.payload<k.ListClickEvent>($, 'sys.ui.List/Click'),
-    fire(args) {
-      const { index, item, mouse, button } = args;
-      bus.fire({
-        type: 'sys.ui.List/Click',
-        payload: { instance, index, item, mouse, button },
-      });
-    },
-  };
-
   const redraw: E['redraw'] = {
     $: rx.payload<k.ListRedrawEvent>($, 'sys.ui.List/Redraw'),
     fire() {
@@ -50,13 +39,31 @@ export const ListEvents: k.ListEventsFactory = (args) => {
     },
   };
 
-  return {
-    instance,
-    $,
-    dispose,
-    dispose$,
-    scroll,
-    click,
-    redraw,
+  const item: E['item'] = {
+    click: {
+      $: rx.payload<k.ListItemClickEvent>($, 'sys.ui.List/Item/Click'),
+      fire(args) {
+        const { index, item, mouse, button } = args;
+        bus.fire({
+          type: 'sys.ui.List/Item/Click',
+          payload: { instance, index, item, mouse, button },
+        });
+      },
+    },
+    hover: {
+      $: rx.payload<k.ListItemHoverEvent>($, 'sys.ui.List/Item/Hover'),
+      fire(args) {
+        const { index, item, isOver, mouse } = args;
+        bus.fire({
+          type: 'sys.ui.List/Item/Hover',
+          payload: { instance, index, item, isOver, mouse },
+        });
+      },
+    },
   };
+
+  /**
+   * API
+   */
+  return { instance, $, dispose, dispose$, scroll, redraw, item };
 };

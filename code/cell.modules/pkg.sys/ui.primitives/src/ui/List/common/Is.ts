@@ -1,9 +1,14 @@
+import { t } from '../../common';
 import * as k from '../types';
 
 /**
  * Boolean flags.
  */
 export const Is = {
+  listEvent(e: t.Event) {
+    return e.type.startsWith('sys.ui.List/');
+  },
+
   /**
    * Flags passed to an item renderer.
    */
