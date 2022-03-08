@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { copyToClipboard, css, CssValue, Style, t, time } from '../../common';
+import { copyToClipboard, css, CssValue, Style, t, time, FC } from '../../common';
 import { TextCopyIcon } from './TextCopy.Icon';
 import * as k from './types';
 import { Icons } from '../Icons';
 
+/**
+ * Types
+ */
 type Milliseconds = number;
 type Pixels = number;
 type Percent = number;
@@ -35,8 +38,10 @@ export type TextCopyProps = {
   onMouse?: k.TextCopyMouseEventHandler;
 };
 
-type V = React.FC<TextCopyProps>;
-export const View: V = (props) => {
+/**
+ * Component
+ */
+export const View: React.FC<TextCopyProps> = (props) => {
   const { children, inlineBlock = true, downOffset = 1, icon } = props;
 
   const [isOver, setOver] = useState(false);
@@ -166,6 +171,9 @@ export const View: V = (props) => {
 /**
  * Export (API)
  */
-type C = V & { Icon: t.IIcon };
-export const TextCopy: C = View as any;
-TextCopy.Icon = Icons.Copy;
+type Fields = { Icon: t.IIcon };
+export const TextCopy = FC.decorate<TextCopyProps, Fields>(
+  View,
+  { Icon: Icons.Copy },
+  { displayName: 'TextCopy' },
+);
