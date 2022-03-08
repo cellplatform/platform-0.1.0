@@ -8,7 +8,7 @@ describe('NetworkBusMock', () => {
     const bus = NetworkBusMock();
     const id = rx.bus.instance(bus);
     expect(id.startsWith('net.bus.')).to.eql(true);
-    expect(id.endsWith('.mock')).to.eql(true);
+    expect(id.endsWith(':mock')).to.eql(true);
   });
 
   it('defaults', () => {

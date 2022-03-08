@@ -54,6 +54,6 @@ export function NetworkBusMock<E extends t.Event = t.Event>(
 
   // Finish up.
   const api = { ...netbus, mock };
-  (api as any)._instance = `${rx.bus.instance(api)}.mock`;
+  (api as any)._instance = `${rx.bus.instance(api)}:mock`;
   return api;
 }
