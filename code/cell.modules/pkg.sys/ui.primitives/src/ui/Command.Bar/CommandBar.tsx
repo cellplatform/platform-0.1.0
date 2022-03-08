@@ -156,8 +156,12 @@ type Fields = {
   EventPipe: React.FC<CommandBarEventPipeProps>;
   Events: k.CommandBarEventsFactory;
 };
-export const CommandBar = FC.decorate<CommandBarProps, Fields>(View, {
-  Inset: CommandBarInset,
-  EventPipe: CommandBarEventPipe,
-  Events: CommandBarEvents,
-});
+export const CommandBar = FC.decorate<CommandBarProps, Fields>(
+  View,
+  {
+    Inset: CommandBarInset,
+    EventPipe: CommandBarEventPipe,
+    Events: CommandBarEvents,
+  },
+  { displayName: 'CommandBar' },
+);
