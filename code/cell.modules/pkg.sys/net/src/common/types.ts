@@ -25,8 +25,9 @@ export { MediaEvent } from 'sys.ui.video/lib/types';
 export { PropListItem, EventBusHistory } from 'sys.ui.primitives/lib/types';
 export { WebRuntimeEvents } from 'sys.runtime.web/lib/types';
 export { PositioningLayer } from 'sys.ui.primitives/lib/ui/PositioningLayout/types';
+export { Dropped } from 'sys.ui.primitives/lib/types';
 
 /**
- * local
+ * @local
  */
 export * from '../types';

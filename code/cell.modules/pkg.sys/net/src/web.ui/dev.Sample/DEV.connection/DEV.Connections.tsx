@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Card, CardStack, CardStackItem, css, CssValue, Dropped, t } from '../DEV.common';
+import { Card, CardStack, CardStackItem, css, CssValue, t } from '../DEV.common';
 import { DevCard } from '../DEV.layouts';
 
 export type DevConnectionsProps = {
@@ -8,7 +8,7 @@ export type DevConnectionsProps = {
   connections: t.PeerConnectionStatus[];
   margin?: t.CssEdgesInput;
   style?: CssValue;
-  onDrop?: (e: Dropped) => void;
+  onDrop?: (e: t.Dropped) => void;
 };
 
 export const DevConnections: React.FC<DevConnectionsProps> = (props) => {
