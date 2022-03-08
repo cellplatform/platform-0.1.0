@@ -1,32 +1,43 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { useUIEventBus, PointerBusArgs } from '..';
+import { UIEventBusHookArgs, UIEvents } from '..';
 import { t, rx, slug } from './DEV.common';
 import { DevSample } from './DEV.Sample';
 
+type C = { index: number; message: string };
+
 type Ctx = {
-  args: PointerBusArgs;
+  events: t.UIEvents<C>;
+  args: UIEventBusHookArgs<C>;
 };
 
 /**
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('hook.useDomBus')
+  .namespace('hook.useUIEvents')
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const namespace = ' FOO/thing/// '; // NB: "Dirty" namespace is cleaned to "FOO/thing"
     const instance = `demo.${slug()}`;
     const bus = rx.bus();
-    const ctx: Ctx = { args: { bus, instance, namespace } };
+    const events = UIEvents<C>({ bus, instance });
+    const ctx: Ctx = {
+      events,
+      args: {
+        bus,
+        instance,
+        ctx: { index: 0, message: 'hello' },
+      },
+    };
 
     return ctx;
   })
 
   .init(async (e) => {
-    const bus = e.ctx.args.bus;
-    bus.$.subscribe((e) => console.log('bus.$:', e));
+    e.ctx.events.$.subscribe((e) => {
+      console.log('events.$:', e);
+    });
   })
 
   .items((e) => {
@@ -58,7 +69,7 @@ export const actions = DevActions<Ctx>()
       border: -0.1,
       cropmarks: -0.2,
       label: {
-        topLeft: 'hook: useDomBus',
+        topLeft: 'hook: useUIEvents',
         bottomRight: `${rx.bus.instance(bus)}`,
       },
     });

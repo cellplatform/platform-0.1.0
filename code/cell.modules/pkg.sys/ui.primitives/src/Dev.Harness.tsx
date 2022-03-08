@@ -4,7 +4,7 @@ import { t } from './common';
 
 const imports = {
   useDragTarget: import('./hooks/useDragTarget/dev/DEV'),
-  useUIEventBus: import('./hooks/useUIEventBus/dev/DEV'),
+  useUIEvents: import('./hooks/useUIEvents/dev/DEV'),
 
   Bullet: import('./ui/Bullet/dev/DEV'),
   List: import('./ui/List/dev/DEV'),

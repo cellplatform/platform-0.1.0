@@ -1,30 +1,30 @@
 import { MouseEventHandler, TouchEventHandler, UIEvent, TouchEvent, MouseEvent } from 'react';
 
-import { t } from '../common';
+import { rx, t } from '../common';
 
-type ID = string;
+type O = Record<string, unknown>;
+type Id = string;
 type H = HTMLElement;
 
-export type PointerBusArgs = {
+export type UIEventBusHookArgs<Ctx extends O = O> = {
   bus: t.EventBus<any>;
-  instance: ID;
-  namespace: string; // The root namespace to fire events within.
-  onMouse?: (e: t.UIMouse) => void;
-  onTouch?: (e: t.UITouch) => void;
+  instance: Id;
+  ctx: Ctx;
 };
 
 /**
  * Hook for abstracting a set of DOM events through an event-bus.
  */
-export function useUIEventBus<T extends H = H>(args: PointerBusArgs): t.UIEventBusHook<T> {
-  const { bus, instance } = args;
-  const namespace = Util.trimNamespace(args.namespace);
+export function useUIEvents<Ctx extends O = O, T extends H = H>(
+  args: UIEventBusHookArgs<Ctx>,
+): t.UIEventsHook<T> {
+  const { instance, ctx } = args;
+  const bus = rx.busAsType<t.UIEvent>(args.bus);
 
-  const mouseHandler = (kind: keyof t.UIEventBusMouse): MouseEventHandler<T> => {
+  const mouseHandler = (kind: keyof t.UIEventsMouse): MouseEventHandler<T> => {
     return (e) => {
       const { button, buttons } = e;
-      const payload: t.UIMouse = {
-        instance,
+      const mouse: t.UIMouseEventProps = {
         kind,
         ...Util.toBase(e),
         ...Util.toKeys(e),
@@ -35,16 +35,17 @@ export function useUIEventBus<T extends H = H>(args: PointerBusArgs): t.UIEventB
         page: { x: e.pageX, y: e.pageY },
         screen: { x: e.screenX, y: e.screenY },
       };
-      args.onMouse?.(payload);
-      bus.fire({ type: `${namespace}/Mouse`, payload });
+      bus.fire({
+        type: 'sys.ui.event/Mouse',
+        payload: { instance, ctx, mouse },
+      });
     };
   };
 
-  const touchHandler = (kind: keyof t.UIEventBusTouch): TouchEventHandler<T> => {
+  const touchHandler = (kind: keyof t.UIEventsTouch): TouchEventHandler<T> => {
     return (e) => {
       const { touches, targetTouches, changedTouches } = e;
-      const payload: t.UITouch = {
-        instance,
+      const touch: t.UITouchEventProps = {
         kind,
         ...Util.toBase(e),
         ...Util.toKeys(e),
@@ -52,12 +53,14 @@ export function useUIEventBus<T extends H = H>(args: PointerBusArgs): t.UIEventB
         targetTouches,
         changedTouches,
       };
-      args.onTouch?.(payload);
-      bus.fire({ type: `${namespace}/Touch`, payload });
+      bus.fire({
+        type: 'sys.ui.event/Touch',
+        payload: { instance, ctx, touch },
+      });
     };
   };
 
-  const mouse: t.UIEventBusMouse<T> = {
+  const mouse: t.UIEventsMouse<T> = {
     onClick: mouseHandler('onClick'),
     onMouseDown: mouseHandler('onMouseDown'),
     onMouseDownCapture: mouseHandler('onMouseDownCapture'),
@@ -73,7 +76,7 @@ export function useUIEventBus<T extends H = H>(args: PointerBusArgs): t.UIEventB
     onMouseUpCapture: mouseHandler('onMouseUpCapture'),
   };
 
-  const touch: t.UIEventBusTouch<T> = {
+  const touch: t.UIEventsTouch<T> = {
     onTouchCancel: touchHandler('onTouchCancel'),
     onTouchCancelCapture: touchHandler('onTouchCancelCapture'),
     onTouchEnd: touchHandler('onTouchEnd'),
@@ -89,7 +92,7 @@ export function useUIEventBus<T extends H = H>(args: PointerBusArgs): t.UIEventB
   /**
    * API
    */
-  return { instance, namespace, mouse, touch };
+  return { instance, mouse, touch };
 }
 
 /**

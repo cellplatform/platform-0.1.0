@@ -1,19 +1,21 @@
+import { Disposable, EventBus } from '@platform/types';
 import { MouseEventHandler, TouchEventHandler, TouchList } from 'react';
+import { Observable } from 'rxjs';
 
+type O = Record<string, unknown>;
 type H = HTMLElement;
 type Id = string;
 
 /**
  * Hook for abstracting a set of DOM events through an event-bus.
  */
-export type UIEventBusHook<T extends H = H> = {
+export type UIEventsHook<T extends H = H> = {
   instance: Id;
-  namespace: string;
-  mouse: UIEventBusMouse<T>;
-  touch: UIEventBusTouch<T>;
+  mouse: UIEventsMouse<T>;
+  touch: UIEventsTouch<T>;
 };
 
-export type UIEventBusMouse<T extends H = H> = {
+export type UIEventsMouse<T extends H = H> = {
   onClick: MouseEventHandler<T>;
   onMouseDown: MouseEventHandler<T>;
   onMouseDownCapture: MouseEventHandler<T>;
@@ -29,7 +31,7 @@ export type UIEventBusMouse<T extends H = H> = {
   onMouseUpCapture: MouseEventHandler<T>;
 };
 
-export type UIEventBusTouch<T extends H = H> = {
+export type UIEventsTouch<T extends H = H> = {
   onTouchCancel: TouchEventHandler<T>;
   onTouchCancelCapture: TouchEventHandler<T>;
   onTouchEnd: TouchEventHandler<T>;
@@ -43,10 +45,8 @@ export type UIEventBusTouch<T extends H = H> = {
 };
 
 /**
- * Events
+ * Common
  */
-export type UIEventPayload = UIMouse | UITouch;
-
 export type UIEventBase = {
   readonly bubbles: boolean;
   readonly cancelable: boolean;
@@ -65,12 +65,29 @@ export type UIModifierKeys = {
 };
 
 /**
+ * EVENT (API)
+ */
+export type UIEventsFactory = (args: { bus: EventBus<any>; instance: Id }) => UIEvents;
+export type UIEvents<Ctx extends O = O> = Disposable & {
+  instance: Id;
+  $: Observable<UIEvent>;
+  mouse: { $: Observable<UIMouse<Ctx>> };
+  touch: { $: Observable<UITouch<Ctx>> };
+};
+
+/**
+ * EVENT (Definitions)
+ */
+export type UIEvent = UIMouseEvent | UITouchEvent;
+
+/**
  * https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent
  */
-export type UIMouse = UIEventBase &
+export type UIMouseEvent<Ctx extends O = O> = { type: 'sys.ui.event/Mouse'; payload: UIMouse<Ctx> };
+export type UIMouse<Ctx extends O = O> = { instance: Id; ctx: Ctx; mouse: UIMouseEventProps };
+export type UIMouseEventProps = UIEventBase &
   UIModifierKeys & {
-    readonly instance: Id;
-    readonly kind: keyof UIEventBusMouse;
+    readonly kind: keyof UIEventsMouse;
     readonly button: number;
     readonly buttons: number;
     readonly client: { x: number; y: number };
@@ -79,10 +96,14 @@ export type UIMouse = UIEventBase &
     readonly screen: { x: number; y: number };
   };
 
-export type UITouch = UIEventBase &
+/**
+ * https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent
+ */
+export type UITouchEvent<Ctx extends O = O> = { type: 'sys.ui.event/Touch'; payload: UITouch<Ctx> };
+export type UITouch<Ctx extends O = O> = { instance: Id; ctx: Ctx; touch: UITouchEventProps };
+export type UITouchEventProps = UIEventBase &
   UIModifierKeys & {
-    readonly instance: Id;
-    readonly kind: keyof UIEventBusTouch;
+    readonly kind: keyof UIEventsTouch;
     readonly targetTouches: TouchList;
     readonly changedTouches: TouchList;
     readonly touches: TouchList;

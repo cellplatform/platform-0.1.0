@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { color, COLORS, css, CssValue, t, Card, TextSyntax } from './DEV.common';
-import { useUIEventBus, PointerBusArgs } from '..';
+import { useUIEvents, UIEventBusHookArgs } from '..';
 
 export type DevSampleProps = {
-  args: PointerBusArgs;
+  args: UIEventBusHookArgs;
   style?: CssValue;
 };
 
 export const DevSample: React.FC<DevSampleProps> = (props) => {
-  const pointer = useUIEventBus(props.args);
+  const pointer = useUIEvents(props.args);
+  const { mouse } = pointer;
 
   /**
    * [Render]
@@ -24,7 +25,11 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
   };
 
   const elCard = (
-    <div onClick={pointer.mouse.onClick}>
+    <div
+      onClick={mouse.onClick}
+      onMouseEnter={mouse.onMouseEnter}
+      onMouseLeave={mouse.onMouseLeave}
+    >
       <Card style={styles.card}>
         <TextSyntax text={'<Component>'} style={styles.label} />
       </Card>
