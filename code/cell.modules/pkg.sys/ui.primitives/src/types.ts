@@ -8,8 +8,8 @@ export * from '@platform/ui.image/lib/types';
 /**
  * @local
  */
-export * from './hooks/useDragTarget/types';
-export * from './hooks/useUIEvents/types';
+export * from './hooks/DragTarget/types';
+export * from './hooks/UIEvents/types';
 
 export * from './ui/List/types';
 export * from './ui/DotTabstrip/types';

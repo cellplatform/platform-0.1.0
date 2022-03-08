@@ -1,10 +1,9 @@
-import { MouseEventHandler, TouchEventHandler, UIEvent, TouchEvent, MouseEvent } from 'react';
+import React, { RefObject, useRef } from 'react';
 
 import { rx, t } from '../common';
 
 type O = Record<string, unknown>;
 type Id = string;
-type H = HTMLElement;
 
 export type UIEventBusHookArgs<Ctx extends O = O> = {
   bus: t.EventBus<any>;
@@ -15,17 +14,19 @@ export type UIEventBusHookArgs<Ctx extends O = O> = {
 /**
  * Hook for abstracting a set of DOM events through an event-bus.
  */
-export function useUIEvents<Ctx extends O = O, T extends H = H>(
+export function useUIEvents<Ctx extends O = O, H extends HTMLElement = HTMLElement>(
   args: UIEventBusHookArgs<Ctx>,
-): t.UIEventsHook<T> {
+): t.UIEventsHook<H> {
   const { instance, ctx } = args;
   const bus = rx.busAsType<t.UIEvent>(args.bus);
 
-  const mouseHandler = (kind: keyof t.UIEventsMouse): MouseEventHandler<T> => {
+  const ref = useRef<H>(null);
+  const target = Util.toTarget(ref);
+
+  const mouseHandler = (kind: keyof t.UIEventsMouse): React.MouseEventHandler<H> => {
     return (e) => {
       const { button, buttons } = e;
       const mouse: t.UIMouseEventProps = {
-        kind,
         ...Util.toBase(e),
         ...Util.toKeys(e),
         button,
@@ -37,16 +38,15 @@ export function useUIEvents<Ctx extends O = O, T extends H = H>(
       };
       bus.fire({
         type: 'sys.ui.event/Mouse',
-        payload: { instance, ctx, mouse },
+        payload: { instance, kind, mouse, target, ctx },
       });
     };
   };
 
-  const touchHandler = (kind: keyof t.UIEventsTouch): TouchEventHandler<T> => {
+  const touchHandler = (kind: keyof t.UIEventsTouch): React.TouchEventHandler<H> => {
     return (e) => {
       const { touches, targetTouches, changedTouches } = e;
       const touch: t.UITouchEventProps = {
-        kind,
         ...Util.toBase(e),
         ...Util.toKeys(e),
         touches,
@@ -55,12 +55,24 @@ export function useUIEvents<Ctx extends O = O, T extends H = H>(
       };
       bus.fire({
         type: 'sys.ui.event/Touch',
-        payload: { instance, ctx, touch },
+        payload: { instance, kind, touch, target, ctx },
       });
     };
   };
 
-  const mouse: t.UIEventsMouse<T> = {
+  const focusHandler = (kind: keyof t.UIEventsFocus): React.FocusEventHandler<H> => {
+    return (e) => {
+      const isFocused = kind === 'onFocus' || kind === 'onFocusCapture';
+      const isBlurred = kind === 'onBlur' || kind === 'onBlurCapture';
+      const focus: t.UIFocusEventProps = Util.toBase(e);
+      bus.fire({
+        type: 'sys.ui.event/Focus',
+        payload: { instance, kind, focus, target, isFocused, isBlurred, ctx },
+      });
+    };
+  };
+
+  const mouse: t.UIEventsMouse<H> = {
     onClick: mouseHandler('onClick'),
     onMouseDown: mouseHandler('onMouseDown'),
     onMouseDownCapture: mouseHandler('onMouseDownCapture'),
@@ -76,7 +88,7 @@ export function useUIEvents<Ctx extends O = O, T extends H = H>(
     onMouseUpCapture: mouseHandler('onMouseUpCapture'),
   };
 
-  const touch: t.UIEventsTouch<T> = {
+  const touch: t.UIEventsTouch<H> = {
     onTouchCancel: touchHandler('onTouchCancel'),
     onTouchCancelCapture: touchHandler('onTouchCancelCapture'),
     onTouchEnd: touchHandler('onTouchEnd'),
@@ -89,10 +101,17 @@ export function useUIEvents<Ctx extends O = O, T extends H = H>(
     onTouchOutCapture: touchHandler('onTouchOutCapture'),
   };
 
+  const focus: t.UIEventsFocus<H> = {
+    onFocus: focusHandler('onFocus'),
+    onFocusCapture: focusHandler('onFocusCapture'),
+    onBlur: focusHandler('onBlur'),
+    onBlurCapture: focusHandler('onBlurCapture'),
+  };
+
   /**
    * API
    */
-  return { instance, mouse, touch };
+  return { instance, ref, mouse, touch, focus };
 }
 
 /**
@@ -100,11 +119,7 @@ export function useUIEvents<Ctx extends O = O, T extends H = H>(
  */
 
 const Util = {
-  trimNamespace(input: string) {
-    return (input || '').trim().replace(/\/*$/, '');
-  },
-
-  toBase(e: UIEvent): t.UIEventBase {
+  toBase(e: React.UIEvent | React.FocusEvent): t.UIEventBase {
     const {
       bubbles,
       cancelable,
@@ -114,6 +129,7 @@ const Util = {
       preventDefault,
       stopPropagation,
     } = e;
+
     return {
       bubbles,
       cancelable,
@@ -125,8 +141,17 @@ const Util = {
     };
   },
 
-  toKeys(e: MouseEvent | TouchEvent): t.UIModifierKeys {
+  toKeys(e: React.MouseEvent | React.TouchEvent): t.UIModifierKeys {
     const { ctrlKey, altKey, metaKey, shiftKey } = e;
     return { ctrlKey, altKey, metaKey, shiftKey };
+  },
+
+  toTarget(ref: RefObject<HTMLElement>): t.UIEventTarget {
+    return {
+      get containsFocus() {
+        const active = document.activeElement;
+        return active && ref.current ? ref.current.contains(active) : false;
+      },
+    };
   },
 };

@@ -2,13 +2,11 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { UIEventBusHookArgs, UIEvents } from '..';
 import { t, rx, slug } from './DEV.common';
-import { DevSample } from './DEV.Sample';
-
-type C = { index: number; message: string };
+import { DevSample, EventCtx } from './DEV.Sample';
 
 type Ctx = {
-  events: t.UIEvents<C>;
-  args: UIEventBusHookArgs<C>;
+  events: t.UIEvents<EventCtx>;
+  args: UIEventBusHookArgs<EventCtx>;
 };
 
 /**
@@ -21,7 +19,7 @@ export const actions = DevActions<Ctx>()
 
     const instance = `demo.${slug()}`;
     const bus = rx.bus();
-    const events = UIEvents<C>({ bus, instance });
+    const events = UIEvents<EventCtx>({ bus, instance });
     const ctx: Ctx = {
       events,
       args: {
@@ -37,6 +35,13 @@ export const actions = DevActions<Ctx>()
   .init(async (e) => {
     e.ctx.events.$.subscribe((e) => {
       console.log('events.$:', e);
+    });
+
+    e.ctx.events.mouse.$.subscribe((e) => {
+      // console.log("e", e)
+      // const f = e.c
+
+      console.log('containsFocus', e.target.containsFocus);
     });
   })
 
