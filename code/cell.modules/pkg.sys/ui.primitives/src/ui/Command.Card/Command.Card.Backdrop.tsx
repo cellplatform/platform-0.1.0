@@ -30,14 +30,14 @@ export const CommandCardBackdrop: React.FC<CommandCardBackdropProps> = (props) =
     }),
     top: css({
       flex: 1,
-      padding: 20, // TEMP 🐷
+      Flex: 'center-center', // TEMP 🐷
     }),
     bottom: css({}),
   };
 
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.top}>top</div>
+      <div {...styles.top}>{'body'}</div>
       <div {...styles.bottom}>
         <CommandBar bus={bus} />
       </div>
