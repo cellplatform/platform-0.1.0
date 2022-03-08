@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { Bullet, BulletProps } from '../../Bullet';
-import { css, CssValue, k } from '../common';
+import { Bullet } from '../../Bullet';
+import { css, CssValue, t } from '../common';
 
-export type BulletDotProps = k.ListBulletRendererArgs & { item?: BulletProps; style?: CssValue };
+export type BulletDotProps = t.ListBulletRendererArgs & { item?: t.BulletProps; style?: CssValue };
 
 export const BulletDot: React.FC<BulletDotProps> = (props) => {
   if (props.kind === 'Spacing') return null;

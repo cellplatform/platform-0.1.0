@@ -1,5 +1,5 @@
 import React from 'react';
-import { color, t, k, css, COLORS } from '../common';
+import { color, t, css, COLORS } from '../common';
 import { Card } from '../../Card';
 import { Text } from '../../Text';
 import { Renderers, BulletConnectorLinesProps } from '../renderers';
@@ -18,7 +18,7 @@ export type RenderCtx = {
  * based on an input "type" flag.
  */
 export function sampleBulletFactory(getCtx: () => RenderCtx) {
-  const fn: k.ListBulletRenderer = (e) => {
+  const fn: t.ListBulletRenderer = (e) => {
     const ctx = getCtx();
     const bulletKind = ctx.bulletKind;
 
@@ -51,7 +51,7 @@ export function sampleBulletFactory(getCtx: () => RenderCtx) {
  * based on an input "type" flag.
  */
 export function sampleBodyFactory(getCtx: () => RenderCtx) {
-  const fn: k.ListBulletRenderer = (e) => {
+  const fn: t.ListBulletRenderer = (e) => {
     const ctx = getCtx();
     const bodyKind = ctx.bodyKind;
 

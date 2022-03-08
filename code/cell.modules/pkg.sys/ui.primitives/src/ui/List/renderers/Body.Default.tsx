@@ -2,9 +2,9 @@ import React from 'react';
 
 import { Card } from '../../Card';
 import { ObjectView } from '../../ObjectView';
-import { css, CssValue, k } from '../common';
+import { css, CssValue, t } from '../common';
 
-export type BodyDefaultProps = k.ListBulletRendererArgs & {
+export type BodyDefaultProps = t.ListBulletRendererArgs & {
   width?: string | number;
   minWidth?: string | number;
   expandPaths?: string[];

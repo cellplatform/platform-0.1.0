@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { color, css, CssValue, k, Is } from './common';
+import { color, css, CssValue, Is, t, useUIEvents } from './common';
+
 import { Renderers } from './renderers';
 
 /**
@@ -8,41 +9,49 @@ import { Renderers } from './renderers';
  */
 type Pixels = number;
 type R = {
-  bullet?: k.ListBulletRenderer;
-  body: k.ListBulletRenderer;
-};
-
-const DEFAULT_RENDERER: R = {
-  body: Renderers.asRenderer(Renderers.Body.Default),
+  bullet?: t.ListBulletRenderer;
+  body: t.ListBulletRenderer;
 };
 
 export type ListLayoutItemProps = {
+  event: t.ListEventArgs;
   index: number;
   total: number;
-  item: k.ListItem;
-  orientation: k.ListOrientation;
+  item: t.ListItem;
+  orientation: t.ListOrientation;
   bullet: {
-    edge: k.ListBulletEdge;
+    edge: t.ListBulletEdge;
     size: Pixels; // Offset size of the bullet row/column.
   };
-  spacing: k.ListBulletSpacing;
+  spacing: t.ListBulletSpacing;
   renderers: R;
   style?: CssValue;
   debug?: { border?: boolean };
 };
 
 /**
+ * Constants
+ */
+const DEFAULT_RENDERER: R = {
+  body: Renderers.asRenderer(Renderers.Body.Default),
+};
+
+/**
  * Component
  */
 export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
+  const { bus, instance } = props.event;
   const { item, orientation, index, total, renderers, debug = {}, bullet } = props;
   const { data } = item;
+
+  const ctx: t.CtxItem = { kind: 'Item', index, total, item };
+  const ui = useUIEvents<t.CtxItem, HTMLDivElement>({ bus, instance, ctx });
 
   const spacing = formatSpacing(props.spacing);
   const invertedOrientation = orientation === 'x' ? 'y' : 'x';
   const is = Is.toItemFlags({ index, total, bullet, orientation });
 
-  const args: k.ListBulletRendererArgs = {
+  const args: t.ListBulletRendererArgs = {
     kind: 'Default',
     index,
     total,
@@ -82,7 +91,7 @@ export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
     }),
   };
 
-  const renderContent: k.ListBulletRenderer = (args: k.ListBulletRendererArgs) => {
+  const renderContent: t.ListBulletRenderer = (args: t.ListBulletRendererArgs) => {
     const parts = renderParts(args, renderers);
     const elBullet = parts.bullet && <div {...styles.bullet.outer}>{parts.bullet}</div>;
     const elBody = <div {...styles.body.outer}>{parts.body}</div>;
@@ -90,7 +99,7 @@ export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
   };
 
   const renderSpacer = (
-    args: k.ListBulletRendererArgs,
+    args: t.ListBulletRendererArgs,
     edge: 'before' | 'after',
     offset: Pixels,
   ) => {
@@ -112,7 +121,7 @@ export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
       }),
     };
 
-    const e: k.ListBulletRendererArgs = {
+    const e: t.ListBulletRendererArgs = {
       ...args,
       kind: 'Spacing',
       is: { ...is, spacer: true },
@@ -157,7 +166,14 @@ export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
    * Component.
    */
   return (
-    <div {...css(styles.base, props.style)}>
+    <div
+      {...css(styles.base, props.style)}
+      ref={ui.ref}
+      onMouseDown={ui.mouse.onMouseDown}
+      onMouseUp={ui.mouse.onMouseUp}
+      onMouseEnter={ui.mouse.onMouseEnter}
+      onMouseLeave={ui.mouse.onMouseLeave}
+    >
       {elSpacer.before}
       {elMain}
       {elSpacer.after}
@@ -170,7 +186,7 @@ export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
  */
 
 type RenderOutput = JSX.Element | null | undefined | false;
-function placeInOrder(edge: k.ListBulletEdge, bullet: RenderOutput, body: RenderOutput) {
+function placeInOrder(edge: t.ListBulletEdge, bullet: RenderOutput, body: RenderOutput) {
   if (edge === 'near') {
     return (
       <>
@@ -192,22 +208,22 @@ function placeInOrder(edge: k.ListBulletEdge, bullet: RenderOutput, body: Render
 }
 
 function renderPart(
-  e: k.ListBulletRendererArgs,
-  renderer: k.ListBulletRenderer,
-  defaultRenderer?: k.ListBulletRenderer,
+  e: t.ListBulletRendererArgs,
+  renderer: t.ListBulletRenderer,
+  defaultRenderer?: t.ListBulletRenderer,
 ) {
   const el = renderer(e);
   return (el === undefined ? defaultRenderer?.(e) : el) as JSX.Element | null;
 }
 
-function renderParts(e: k.ListBulletRendererArgs, renderers: R) {
+function renderParts(e: t.ListBulletRendererArgs, renderers: R) {
   return {
     bullet: renderers.bullet ? renderPart(e, renderers.bullet) : undefined,
     body: renderPart(e, renderers.body, DEFAULT_RENDERER.body),
   };
 }
 
-function formatSpacing(input: k.ListBulletSpacing): Required<k.ListBulletSpacing> {
+function formatSpacing(input: t.ListBulletSpacing): Required<t.ListBulletSpacing> {
   const { before = 0, after = 0 } = input;
   return { before, after };
 }
