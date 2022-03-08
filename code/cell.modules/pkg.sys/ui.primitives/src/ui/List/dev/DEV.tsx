@@ -2,34 +2,36 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { List, ListProps } from '..';
-import { ALL, DEFAULTS, k, rx, t, time, value } from '../common';
+import { ALL, DEFAULTS, rx, slug, t, time, value } from '../common';
+import { SelectionMonitor } from '../hooks';
 import { RenderCtx, sampleBodyFactory, sampleBulletFactory } from './Sample.renderers';
 
-import { SelectionMonitor } from '../hooks';
-
 type D = { msg: string };
-
 type Ctx = {
   bus: t.EventBus<any>;
   instance: string;
-  items: k.ListItem[];
+  items: t.ListItem[];
   props: ListProps; // Common properties.
   renderCtx: RenderCtx;
-  events: k.ListEvents;
-  debug: { scrollAlign: k.ListItemAlign; virtualPadding: boolean };
+  events: t.ListEvents;
+  debug: { scrollAlign: t.ListItemAlign; virtualPadding: boolean; canFocus: boolean };
   redraw(): Promise<void>;
 };
 
 const Util = {
-  addItem(ctx: Ctx, options: { spacing?: k.ListBulletSpacing } = {}) {
+  addItem(ctx: Ctx, options: { spacing?: t.ListBulletSpacing } = {}) {
     const { spacing } = options;
     const items = ctx.items;
-
     const data: D = { msg: `item-${items.length + 1}` };
-    const item: k.ListItem<D> = { data, spacing };
-
+    const item: t.ListItem<D> = { data, spacing };
     ctx.items.push(item);
-    return item;
+  },
+
+  toProps(ctx: Ctx): ListProps {
+    const { props, debug } = ctx;
+    const event = { bus: ctx.bus, instance: ctx.instance };
+    const tabIndex = debug.canFocus ? -1 : undefined;
+    return { ...props, event, tabIndex };
   },
 };
 
@@ -48,7 +50,7 @@ export const actions = DevActions<Ctx>()
     };
 
     const bus = rx.bus();
-    const instance = 'sample.foo';
+    const instance = `demo.${slug()}`;
     const events = List.Virtual.Events({ bus, instance });
 
     const ctx: Ctx = {
@@ -61,6 +63,7 @@ export const actions = DevActions<Ctx>()
         bullet: { edge: 'near', size: 60 },
         renderers: renderer,
         spacing: 10,
+
         debug: { border: true },
       },
       renderCtx: {
@@ -71,8 +74,12 @@ export const actions = DevActions<Ctx>()
         connectorLineWidth: 5,
         virtualScroll: true,
       },
-      debug: { scrollAlign: 'auto', virtualPadding: true },
-      redraw: async () => time.delay(0, () => events.redraw.fire()),
+      debug: {
+        scrollAlign: 'auto',
+        virtualPadding: true,
+        canFocus: true,
+      },
+      redraw: () => time.delay(0, () => events.redraw.fire()),
     };
 
     return ctx;
@@ -92,18 +99,6 @@ export const actions = DevActions<Ctx>()
     e.boolean('render (reset)', (e) => {
       if (e.changing) e.ctx.renderCtx.enabled = e.changing.next;
       e.boolean.current = e.ctx.renderCtx.enabled;
-    });
-
-    e.hr(1, 0.1);
-
-    e.boolean('virtual (scrolling)', (e) => {
-      if (e.changing) e.ctx.renderCtx.virtualScroll = e.changing.next;
-      e.boolean.current = e.ctx.renderCtx.virtualScroll;
-    });
-
-    e.boolean('virtual (padding)', (e) => {
-      if (e.changing) e.ctx.debug.virtualPadding = e.changing.next;
-      e.boolean.current = e.ctx.debug.virtualPadding;
     });
 
     e.hr();
@@ -171,6 +166,25 @@ export const actions = DevActions<Ctx>()
       }
       e.boolean.current = e.ctx.props.debug?.border ?? false;
     });
+
+    e.hr(1, 0.1);
+
+    e.boolean('virtual (scrolling)', (e) => {
+      if (e.changing) e.ctx.renderCtx.virtualScroll = e.changing.next;
+      e.boolean.current = e.ctx.renderCtx.virtualScroll;
+    });
+
+    e.boolean('virtual (padding)', (e) => {
+      if (e.changing) e.ctx.debug.virtualPadding = e.changing.next;
+      e.boolean.current = e.ctx.debug.virtualPadding;
+    });
+
+    e.boolean('canFocus', (e) => {
+      if (e.changing) e.ctx.debug.canFocus = e.changing.next;
+      e.boolean.current = e.ctx.debug.canFocus;
+    });
+
+    e.hr(1, 0.1);
 
     e.select((config) => {
       config
@@ -261,7 +275,7 @@ export const actions = DevActions<Ctx>()
         });
     });
 
-    const scrollTo = (ctx: Ctx, target: k.ListScroll['target']) => {
+    const scrollTo = (ctx: Ctx, target: t.ListScroll['target']) => {
       const align = ctx.debug.scrollAlign;
       ctx.events.scroll.fire(target, { align });
     };
@@ -343,8 +357,10 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const { items, props, renderCtx, debug } = e.ctx;
+    const { items, renderCtx, debug } = e.ctx;
     const total = items.length;
+    const props = Util.toProps(e.ctx);
+    // const event = { bus: e.ctx.bus, instance: e.ctx.instance };
 
     const orientation = props.orientation ?? DEFAULTS.Orientation;
     const isHorizontal = orientation === 'x';
@@ -384,9 +400,9 @@ export const actions = DevActions<Ctx>()
      * Virtual scolling list.
      */
     if (isVirtual) {
-      const getData: k.GetListItem = (index) => items[index];
+      const getData: t.GetListItem = (index) => items[index];
 
-      const getSize: k.GetListItemSize = (e) => {
+      const getSize: t.GetListItemSize = (e) => {
         const spacing = (props.spacing || 0) as number;
         const kind = renderCtx.bodyKind;
 
@@ -404,7 +420,6 @@ export const actions = DevActions<Ctx>()
         <List.Virtual
           {...props}
           items={{ total, getData, getSize }}
-          event={{ bus: e.ctx.bus, instance: e.ctx.instance }}
           paddingNear={debug.virtualPadding ? 50 : 0}
           paddingFar={debug.virtualPadding ? 150 : 0}
           style={{ flex: 1 }}

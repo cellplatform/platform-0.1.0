@@ -1,10 +1,11 @@
-import React, { createContext, forwardRef, useRef } from 'react';
+import React, { forwardRef } from 'react';
 import { VariableSizeList as List } from 'react-window';
 
-import { ListProps, Helpers } from './List.Layout';
+import { css, FC, t, useResizeObserver, useUIEvents } from './common';
+import { ListEvents } from './Events';
+import { ListProps, Util } from './List.Layout';
 import { ListVirtualRow, ListVirtualRowData } from './List.Virtual.Row';
-import { css, FC, k, t, useResizeObserver } from './common';
-import { ListEvents, useEventsController } from './events';
+import { useListEventsController } from './hooks';
 
 type Pixels = number;
 
@@ -12,8 +13,8 @@ type Pixels = number;
  * Types
  */
 export type ListVirtualProps = ListProps & {
-  items: { total: number; getData: k.GetListItem; getSize: k.GetListItemSize };
-  event?: { bus: t.EventBus<any>; instance: string };
+  items: { total: number; getData: t.GetListItem; getSize: t.GetListItemSize };
+  event?: t.ListEventArgs;
   paddingNear?: Pixels;
   paddingFar?: Pixels;
 };
@@ -27,51 +28,35 @@ export type ListVirtualProps = ListProps & {
  *
  */
 export const View: React.FC<ListVirtualProps> = (props) => {
-  const { items, paddingNear = 0, paddingFar = 0 } = props;
-  const total = items.total;
+  const { items, paddingNear = 0, paddingFar = 0, tabIndex } = props;
 
-  const renderer = Helpers.renderer(props, total);
+  const total = items.total;
+  const ctrl = useListEventsController({ event: props.event });
+  const { bus, instance } = ctrl;
+
+  const renderer = Util.renderer({ props, total, event: { bus, instance } });
   const orientation = renderer.orientation;
 
-  const rootRef = useRef<HTMLDivElement>(null);
-  const resize = useResizeObserver(rootRef);
-
-  const ctrl = useEventsController({ ...props.event });
-  const { instance } = ctrl;
+  const ctx: t.CtxList = { kind: 'List', total };
+  const ui = useUIEvents<t.CtxList, HTMLDivElement>({ bus, instance, ctx });
+  const resize = useResizeObserver(ui.ref);
 
   const getSize = (index: number) => {
     const item = items[index];
-    const is: k.GetListItemSizeArgs['is'] = {
+    const is: t.GetListItemSizeArgs['is'] = {
       first: index === 0,
       last: index === total - 1,
       horizontal: orientation === 'x',
       vertical: orientation === 'y',
     };
-    const e: k.GetListItemSizeArgs = { index, total, item, is };
+    const e: t.GetListItemSizeArgs = { index, total, item, is };
     return props.items.getSize(e);
   };
 
   const getData = (index: number): ListVirtualRowData | undefined => {
     const item = items.getData?.(index);
     if (!item) return undefined;
-    return {
-      item,
-      render: () => renderer.item(item, index),
-      onClick(e) {
-        const { mouse, button } = e;
-        ctrl.bus.fire({
-          type: 'sys.ui.List/Item/Click',
-          payload: { instance, index, item, mouse, button },
-        });
-      },
-      onHover(e) {
-        const { isOver, mouse } = e;
-        ctrl.bus.fire({
-          type: 'sys.ui.List/Item/Hover',
-          payload: { instance, index, item, isOver, mouse },
-        });
-      },
-    };
+    return { item, render: () => renderer.item(item, index) };
   };
 
   /**
@@ -114,16 +99,26 @@ export const View: React.FC<ListVirtualProps> = (props) => {
   );
 
   return (
-    <div ref={rootRef} {...css(styles.base, props.style)}>
+    <div
+      {...css(styles.base, props.style)}
+      ref={ui.ref}
+      tabIndex={tabIndex}
+      onMouseDown={ui.mouse.onMouseDown}
+      onMouseUp={ui.mouse.onMouseUp}
+      onMouseEnter={ui.mouse.onMouseEnter}
+      onMouseLeave={ui.mouse.onMouseLeave}
+    >
       {elBody}
     </div>
   );
 };
 
 /**
- * Export
+ * Export (API)
  */
-type Fields = { Events: k.ListEventsFactory };
-export const ListVirtual = FC.decorate<ListVirtualProps, Fields>(View, {
-  Events: ListEvents,
-});
+type Fields = { Events: t.ListEventsFactory };
+export const ListVirtual = FC.decorate<ListVirtualProps, Fields>(
+  View,
+  { Events: ListEvents },
+  { displayName: 'ListVirtual' },
+);
