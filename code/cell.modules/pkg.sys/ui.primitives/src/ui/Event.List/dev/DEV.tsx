@@ -59,6 +59,16 @@ const Util = {
     if (busKind === 'netbus') return ctx.netbus;
     throw new Error(`Bus kind '${busKind}' not supported.`);
   },
+
+  /**
+   * Prepare render props
+   */
+  toProps(ctx: Ctx) {
+    const bus = Util.toBus(ctx);
+    const event = ctx.props.event ? { ...ctx.props.event, bus } : undefined;
+    const props = { ...ctx.props, event };
+    return props;
+  },
 };
 
 /**
@@ -77,9 +87,12 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       bus,
       netbus,
-      props: { event: { bus, instance } },
       events,
       reset$: new Subject<void>(),
+      props: {
+        event: { bus, instance },
+        showBusId: true,
+      },
       debug: {
         fireCount: 0,
         busKind: 'netbus',
@@ -123,12 +136,19 @@ export const actions = DevActions<Ctx>()
       // e.boolean.current = e.ctx.props;
     });
 
-    e.hr();
+    e.boolean('show bus identifier', (e) => {
+      if (e.changing) e.ctx.props.showBusId = e.changing.next;
+      e.boolean.current = e.ctx.props.showBusId;
+    });
 
+    e.hr();
+  })
+
+  .items((e) => {
     e.title('Debug');
 
-    e.button('fire (1)', async (e) => Util.fire(e.ctx, 1));
-    e.button('fire (10)', async (e) => Util.fire(e.ctx, 10));
+    e.button('fire (1)', (e) => Util.fire(e.ctx, 1));
+    e.button('fire (10)', (e) => Util.fire(e.ctx, 10));
 
     e.hr(1, 0.1);
     e.button('clear', (e) => e.ctx.reset$.next());
@@ -166,6 +186,7 @@ export const actions = DevActions<Ctx>()
     const { busKind } = e.ctx.debug;
     const bus = Util.toBus(e.ctx);
     const busInstance = rx.bus.instance(bus);
+    const props = Util.toProps(e.ctx);
 
     e.settings({
       host: { background: -0.04 },
@@ -181,7 +202,7 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    e.render(<DevSample bus={bus} childProps={e.ctx.props} reset$={e.ctx.reset$} />);
+    e.render(<DevSample bus={bus} childProps={props} reset$={e.ctx.reset$} />);
   });
 
 export default actions;

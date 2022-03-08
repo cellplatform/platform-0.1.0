@@ -1,15 +1,13 @@
-import React, { useState, useRef } from 'react';
+import { useClickOutside } from '@platform/react/lib/hooks';
+import React, { useRef, useState } from 'react';
 
 import { List } from '../List';
-import { color, css, CssValue, EventListConstants, FC, t } from './common';
+import { color, COLORS, css, CssValue, EventListConstants, FC, rx, t } from './common';
+import { EventListHeader } from './EventList.Header';
 import { EventListRow } from './EventList.Row';
 import { useController } from './EventList.useController';
 import { EventListEvents } from './Events';
 import * as k from './types';
-
-import { EventCard } from '../Event.Card';
-
-import { useClickOutside } from '@platform/react/lib/hooks';
 
 /**
  * Types
@@ -18,6 +16,7 @@ export type EventListProps = {
   event?: { bus: t.EventBus<any>; instance: string };
   items?: t.EventHistoryItem[];
   style?: CssValue;
+  showBusId?: boolean;
   onClick?: (e: k.EventListClicked) => void;
 };
 
@@ -35,10 +34,12 @@ export const View: React.FC<EventListProps> = (props) => {
 
   const baseRef = useRef<HTMLDivElement>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | undefined>();
-  const [showPayload, setShowPayload] = useState(false);
 
-  useController({ ...props.event });
+  const ctrl = useController({ ...props.event });
   useClickOutside('down', baseRef, () => setSelectedIndex(undefined));
+
+  const { bus, instance } = ctrl;
+  const selectedItem = items[selectedIndex ?? 0];
 
   /**
    * [Handlers]
@@ -57,26 +58,26 @@ export const View: React.FC<EventListProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({ position: 'relative', Flex: 'y-stretch-stretch', boxSizing: 'border-box' }),
+    base: css({
+      position: 'relative',
+      Flex: 'y-stretch-stretch',
+      boxSizing: 'border-box',
+      color: COLORS.DARK,
+    }),
+    header: css({ marginRight: 12 }),
     list: {
       base: css({ flex: 1, position: 'relative' }),
       body: css({ Absolute: [0, 0, 0, 12] }),
     },
-    selected: {
-      base: css({ position: 'relative', paddingRight: 12 }),
-    },
   };
 
-  const selectedItem = items[selectedIndex ?? 0];
-  const elSelected = selectedItem && (
-    <div {...styles.selected.base}>
-      <EventCard
-        event={selectedItem.event}
-        count={selectedItem.count}
-        showPayload={showPayload}
-        onShowPayloadToggle={() => setShowPayload((prev) => !prev)}
-      />
-    </div>
+  const elHeader = selectedItem && (
+    <EventListHeader
+      items={[selectedItem]}
+      total={total}
+      busId={props.showBusId ? rx.bus.instance(bus) : undefined}
+      style={styles.header}
+    />
   );
 
   const elList = (
@@ -121,7 +122,7 @@ export const View: React.FC<EventListProps> = (props) => {
 
   return (
     <div ref={baseRef} {...css(styles.base, props.style)}>
-      {elSelected}
+      {elHeader}
       {elList}
     </div>
   );
@@ -133,6 +134,8 @@ export const View: React.FC<EventListProps> = (props) => {
 type Fields = {
   Events: k.EventListEventsFactory;
 };
-export const EventList = FC.decorate<EventListProps, Fields>(View, {
-  Events: EventListEvents,
-});
+export const EventList = FC.decorate<EventListProps, Fields>(
+  View,
+  { Events: EventListEvents },
+  { displayName: 'EventList' },
+);
