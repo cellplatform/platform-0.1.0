@@ -3,10 +3,13 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { List, ListProps } from '..';
 import { ALL, DEFAULTS, rx, slug, t, time, value } from '../common';
-import { SelectionMonitor } from '../hooks';
+import { ListSelectionMonitor } from '../ListSelectionMonitor';
 import { RenderCtx, sampleBodyFactory, sampleBulletFactory } from './Sample.renderers';
 
-type D = { msg: string };
+/**
+ * Types
+ */
+type D = { msg: string; id: string };
 type Ctx = {
   bus: t.EventBus<any>;
   instance: string;
@@ -14,15 +17,26 @@ type Ctx = {
   props: ListProps; // Common properties.
   renderCtx: RenderCtx;
   events: t.ListEvents;
-  debug: { scrollAlign: t.ListItemAlign; virtualPadding: boolean; canFocus: boolean };
+  debug: CtxDebug;
   redraw(): Promise<void>;
 };
+type CtxDebug = {
+  scrollAlign: t.ListItemAlign;
+  virtualPadding: boolean;
+  canFocus: boolean;
+  tmp?: any;
+};
 
+/**
+ * Helpers
+ */
 const Util = {
   addItem(ctx: Ctx, options: { spacing?: t.ListBulletSpacing } = {}) {
     const { spacing } = options;
     const items = ctx.items;
-    const data: D = { msg: `item-${items.length + 1}` };
+    const id = slug();
+    const msg = `item-${items.length + 1}:${id}`;
+    const data: D = { msg, id };
     const item: t.ListItem<D> = { data, spacing };
     ctx.items.push(item);
   },
@@ -89,16 +103,41 @@ export const actions = DevActions<Ctx>()
     const { ctx } = e;
     const { bus, instance } = ctx;
 
-    new Array(3).fill(ctx).forEach(() => Util.addItem(ctx));
+    new Array(10).fill(ctx).forEach(() => Util.addItem(ctx));
 
-    SelectionMonitor({ bus, instance });
-    // ctx.events.$.subscribe((e) => console.log('events.$:', e));
+    /**
+     * TEMP 🐷
+     * List Selection
+     */
+    const selection = ListSelectionMonitor({
+      bus,
+      instance,
+      multi: true,
+      clearOnBlur: false,
+    });
+    selection.changed$.subscribe((selection) => {
+      ctx.props.selection = selection;
+      e.redraw();
+    });
   })
 
   .items((e) => {
     e.boolean('render (reset)', (e) => {
       if (e.changing) e.ctx.renderCtx.enabled = e.changing.next;
       e.boolean.current = e.ctx.renderCtx.enabled;
+    });
+
+    e.component((e) => {
+      return (
+        <ObjectView
+          name={'selection'}
+          data={e.ctx.props.selection}
+          style={{ MarginX: 15 }}
+          fontSize={10}
+          expandPaths={['$']}
+          expandLevel={5}
+        />
+      );
     });
 
     e.hr();
@@ -179,7 +218,7 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.debug.virtualPadding;
     });
 
-    e.boolean('canFocus', (e) => {
+    e.boolean('canFocus (tabindex)', (e) => {
       if (e.changing) e.ctx.debug.canFocus = e.changing.next;
       e.boolean.current = e.ctx.debug.canFocus;
     });
@@ -343,7 +382,8 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.component((e) => {
       const total = e.ctx.items.length;
-      const props = total < 100 ? e.ctx.props : { ...e.ctx.props, items: `BulletItem[${total}]` };
+      let props = Util.toProps(e.ctx) as any;
+      props = total < 100 ? props : { ...props, items: `BulletItem[${total}]` };
       return (
         <ObjectView
           name={'props'}
@@ -360,7 +400,6 @@ export const actions = DevActions<Ctx>()
     const { items, renderCtx, debug } = e.ctx;
     const total = items.length;
     const props = Util.toProps(e.ctx);
-    // const event = { bus: e.ctx.bus, instance: e.ctx.instance };
 
     const orientation = props.orientation ?? DEFAULTS.Orientation;
     const isHorizontal = orientation === 'x';
@@ -373,7 +412,7 @@ export const actions = DevActions<Ctx>()
       host: { background: -0.04 },
       layout: total > 0 && {
         cropmarks: -0.2,
-        position: !isVirtual ? undefined : isVertical ? [150, null] : [null, 150],
+        position: !isVirtual ? undefined : isVertical ? [80, null] : [null, 80],
         width: isVirtual && isVertical ? FIXED_SIZE : undefined,
         height: isVirtual && isHorizontal ? FIXED_SIZE : undefined,
         border: isVirtual ? -0.1 : undefined,

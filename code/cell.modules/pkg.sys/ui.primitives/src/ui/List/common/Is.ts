@@ -17,8 +17,12 @@ export const Is = {
     total: number;
     orientation: k.ListOrientation;
     bullet: { edge: k.ListBulletEdge };
+    selection?: t.ListSelection;
+    isFocused?: boolean;
   }): k.ListBulletRenderFlags {
-    const { index, total, orientation, bullet } = args;
+    const { index, total, orientation, bullet, selection, isFocused = false } = args;
+    const selected = selection ? selection.indexes.includes(index) : false;
+
     return {
       empty: total === 0,
       single: total === 1,
@@ -29,6 +33,8 @@ export const Is = {
       vertical: orientation === 'y',
       spacer: false,
       bullet: { near: bullet.edge === 'near', far: bullet.edge === 'far' },
+      focused: isFocused,
+      selected,
     };
   },
 };

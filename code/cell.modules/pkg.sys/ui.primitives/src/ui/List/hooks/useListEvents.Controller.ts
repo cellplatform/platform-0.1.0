@@ -27,8 +27,8 @@ export function useListEventsController(args: { event?: t.ListEventArgs }) {
       const list = listRef.current;
       if (!list) return;
 
-      const total = list.props.itemCount;
       const { align = 'auto' } = e;
+      const total = list.props.itemCount;
       const index = e.target === 'Top' ? 0 : e.target === 'Bottom' ? total - 1 : e.target;
       list?.scrollToItem(index, align);
     });

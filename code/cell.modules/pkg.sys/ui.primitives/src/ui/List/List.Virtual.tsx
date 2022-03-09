@@ -1,11 +1,11 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useState } from 'react';
 import { VariableSizeList as List } from 'react-window';
 
 import { css, FC, t, useResizeObserver, useUIEvents } from './common';
 import { ListEvents } from './Events';
+import { useListEventsController } from './hooks';
 import { ListProps, Util } from './List.Layout';
 import { ListVirtualRow, ListVirtualRowData } from './List.Virtual.Row';
-import { useListEventsController } from './hooks';
 
 type Pixels = number;
 
@@ -34,12 +34,14 @@ export const View: React.FC<ListVirtualProps> = (props) => {
   const ctrl = useListEventsController({ event: props.event });
   const { bus, instance } = ctrl;
 
-  const renderer = Util.renderer({ props, total, event: { bus, instance } });
-  const orientation = renderer.orientation;
-
   const ctx: t.CtxList = { kind: 'List', total };
-  const ui = useUIEvents<t.CtxList, HTMLDivElement>({ bus, instance, ctx });
+  const ui = useUIEvents<t.CtxList, HTMLDivElement>({ bus, instance, ctx, focusRedraw: true });
+  const isFocused = ui.element.containsFocus;
+
   const resize = useResizeObserver(ui.ref);
+  const event = { bus, instance };
+  const renderer = Util.renderer({ props, total, event, isFocused });
+  const orientation = renderer.orientation;
 
   const getSize = (index: number) => {
     const item = items[index];
@@ -64,7 +66,10 @@ export const View: React.FC<ListVirtualProps> = (props) => {
    */
   const size = resize.rect;
   const styles = {
-    base: css({ position: 'relative' }),
+    base: css({
+      position: 'relative',
+      outline: 'none', // NB: supress default "focus" border
+    }),
   };
 
   // eslint-disable-next-line react/display-name
@@ -107,6 +112,8 @@ export const View: React.FC<ListVirtualProps> = (props) => {
       onMouseUp={ui.mouse.onMouseUp}
       onMouseEnter={ui.mouse.onMouseEnter}
       onMouseLeave={ui.mouse.onMouseLeave}
+      onFocus={ui.focus.onFocus}
+      onBlur={ui.focus.onBlur}
     >
       {elBody}
     </div>

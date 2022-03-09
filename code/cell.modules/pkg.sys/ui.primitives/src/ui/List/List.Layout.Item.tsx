@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { color, css, CssValue, Is, t, useUIEvents } from './common';
-
 import { Renderers } from './renderers';
 
 /**
@@ -19,6 +18,8 @@ export type ListLayoutItemProps = {
   total: number;
   item: t.ListItem;
   orientation: t.ListOrientation;
+  selection?: t.ListSelection;
+  isFocused: boolean;
   bullet: {
     edge: t.ListBulletEdge;
     size: Pixels; // Offset size of the bullet row/column.
@@ -41,7 +42,17 @@ const DEFAULT_RENDERER: R = {
  */
 export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
   const { bus, instance } = props.event;
-  const { item, orientation, index, total, renderers, debug = {}, bullet } = props;
+  const {
+    item,
+    orientation,
+    index,
+    total,
+    renderers,
+    debug = {},
+    bullet,
+    selection,
+    isFocused,
+  } = props;
   const { data } = item;
 
   const ctx: t.CtxItem = { kind: 'Item', index, total, item };
@@ -49,7 +60,14 @@ export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
 
   const spacing = formatSpacing(props.spacing);
   const invertedOrientation = orientation === 'x' ? 'y' : 'x';
-  const is = Is.toItemFlags({ index, total, bullet, orientation });
+  const is = Is.toItemFlags({
+    index,
+    total,
+    bullet,
+    orientation,
+    selection,
+    isFocused,
+  });
 
   const args: t.ListBulletRendererArgs = {
     kind: 'Default',

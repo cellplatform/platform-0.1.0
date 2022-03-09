@@ -13,11 +13,19 @@ export type ListOrientation = 'x' | 'y'; // x:horizontal, y:vertical
 export type ListBulletEdge = 'near' | 'far';
 export type ListBulletSpacing = { before?: Pixels; after?: Pixels };
 
+/**
+ * Items
+ */
 export type ListItem<T = any> = {
   data: T;
   spacing?: ListBulletSpacing;
 };
 
+export type ListSelection = { indexes: Index[] };
+
+/**
+ * Rendering
+ */
 export type ListBulletRenderer = (e: ListBulletRendererArgs) => JSX.Element | null | undefined; // <null> == nothing, <undefined> == use default
 export type ListBulletRendererArgs<T = any> = {
   kind: 'Default' | 'Spacing';
@@ -39,6 +47,8 @@ export type ListBulletRenderFlags = {
   horizontal: boolean;
   spacer: boolean;
   bullet: { near: boolean; far: boolean };
+  selected: boolean;
+  focused: boolean;
 };
 
 export type GetListItemSize = (args: GetListItemSizeArgs) => Pixels;

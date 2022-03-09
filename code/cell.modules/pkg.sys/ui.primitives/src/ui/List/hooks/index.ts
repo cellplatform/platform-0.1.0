@@ -1,2 +1,2 @@
-export * from './useSelection';
+export * from './useListSelection';
 export * from './useListEvents.Controller';

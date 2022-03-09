@@ -1,10 +1,9 @@
 import React, { useRef } from 'react';
 
-import { useUIEvents, css, CssValue, DEFAULTS, eventDummy, t } from './common';
+import { css, CssValue, DEFAULTS, eventDummy, t, useUIEvents } from './common';
 import { ListLayoutItem } from './List.Layout.Item';
 import { Renderers } from './renderers';
 
-type Id = string;
 type Pixels = number;
 
 /**
@@ -13,6 +12,7 @@ type Pixels = number;
 export type ListProps = {
   event?: t.ListEventArgs;
   renderers?: { bullet?: t.ListBulletRenderer; body?: t.ListBulletRenderer };
+  selection?: t.ListSelection;
   orientation?: t.ListOrientation;
   bullet?: { edge?: t.ListBulletEdge; size?: Pixels };
   spacing?: number | t.ListBulletSpacing; // Number (defaults to) => { before }
@@ -38,15 +38,21 @@ export const ListLayout: React.FC<ListLayoutProps> = (props) => {
   const refEvent = useRef<t.ListEventArgs>(props.event ?? eventDummy());
   const event = refEvent.current;
   const { bus, instance } = event;
-  const renderer = Util.renderer({ props, total, event });
 
   const ctx: t.CtxList = { kind: 'List', total };
-  const ui = useUIEvents<t.CtxList, HTMLDivElement>({ bus, instance, ctx });
+  const ui = useUIEvents<t.CtxList, HTMLDivElement>({ bus, instance, ctx, focusRedraw: true });
+  const isFocused = ui.element.containsFocus;
+  const renderer = Util.renderer({ props, total, event, isFocused });
 
   /**
    * [Render]
    */
-  const styles = { base: css({ Flex: `${renderer.orientation}-stretch-stretch` }) };
+  const styles = {
+    base: css({
+      Flex: `${renderer.orientation}-stretch-stretch`,
+      outline: 'none', // NB: supress default "focus" border
+    }),
+  };
   const elements = items.map((item, i) => renderer.item(item, i));
 
   return (
@@ -58,6 +64,8 @@ export const ListLayout: React.FC<ListLayoutProps> = (props) => {
       onMouseUp={ui.mouse.onMouseUp}
       onMouseEnter={ui.mouse.onMouseEnter}
       onMouseLeave={ui.mouse.onMouseLeave}
+      onFocus={ui.focus.onFocus}
+      onBlur={ui.focus.onBlur}
     >
       {elements}
     </div>
@@ -69,8 +77,8 @@ export const ListLayout: React.FC<ListLayoutProps> = (props) => {
  */
 
 export const Util = {
-  renderer(args: { props: ListProps; total: number; event: t.ListEventArgs }) {
-    const { props, total, event } = args;
+  renderer(args: { props: ListProps; total: number; event: t.ListEventArgs; isFocused: boolean }) {
+    const { props, total, event, isFocused } = args;
     const { orientation = DEFAULTS.Orientation, bullet = {} } = props;
 
     const renderers = {
@@ -97,7 +105,9 @@ export const Util = {
             total={total}
             renderers={renderers}
             item={item}
+            selection={props.selection}
             orientation={orientation}
+            isFocused={isFocused}
             bullet={{ edge: bullet.edge ?? 'near', size: bullet.size ?? 15 }}
             spacing={toSpacing(item.spacing)}
             debug={props.debug}
