@@ -6,7 +6,7 @@ import { Card, css, CssValue, TextSyntax } from './DEV.common';
 export type EventCtx = { index: number; message: string };
 
 export type DevSampleProps = {
-  args: UIEventBusHookArgs<EventCtx>;
+  args: UIEventBusHookArgs<EventCtx, HTMLDivElement>;
   style?: CssValue;
 };
 

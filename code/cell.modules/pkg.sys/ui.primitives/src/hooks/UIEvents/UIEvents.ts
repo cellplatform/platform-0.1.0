@@ -31,14 +31,17 @@ export function UIEvents<Ctx extends O = O>(args: {
 
   const mouse: t.UIEvents<Ctx>['mouse'] = {
     $: rx.payload<t.UIMouseEvent<Ctx>>($, 'sys.ui.event/Mouse'),
+    event: (name) => mouse.$.pipe(filter((e) => e.name === name)),
   };
 
   const touch: t.UIEvents<Ctx>['touch'] = {
     $: rx.payload<t.UITouchEvent<Ctx>>($, 'sys.ui.event/Touch'),
+    event: (name) => touch.$.pipe(filter((e) => e.name === name)),
   };
 
   const focus: t.UIEvents<Ctx>['focus'] = {
     $: rx.payload<t.UIFocusEvent<Ctx>>($, 'sys.ui.event/Focus'),
+    event: (name) => focus.$.pipe(filter((e) => e.name === name)),
   };
 
   /**

@@ -19,12 +19,22 @@ type Id = string;
 export type UIEventsHook<T extends H = H> = {
   instance: Id;
   ref: RefObject<T>;
-  mouse: UIEventsMouse<T>;
-  touch: UIEventsTouch<T>;
-  focus: UIEventsFocus<T>;
+  readonly element: UIEventsHookElement<T>;
+  readonly mouse: UIEventHandlersMouse<T>;
+  readonly touch: UIEventHandlersTouch<T>;
+  readonly focus: UIEventHandlersFocus<T>;
 };
 
-export type UIEventsMouse<T extends H = H> = {
+export type UIEventsHookElement<T extends H> = {
+  ref: RefObject<T>;
+  readonly containsFocus: boolean;
+  readonly withinFocus: boolean;
+};
+
+/**
+ * Event Handler methods.
+ */
+export type UIEventHandlersMouse<T extends H = H> = {
   onClick: MouseEventHandler<T>;
   onMouseDown: MouseEventHandler<T>;
   onMouseDownCapture: MouseEventHandler<T>;
@@ -40,7 +50,7 @@ export type UIEventsMouse<T extends H = H> = {
   onMouseUpCapture: MouseEventHandler<T>;
 };
 
-export type UIEventsTouch<T extends H = H> = {
+export type UIEventHandlersTouch<T extends H = H> = {
   onTouchCancel: TouchEventHandler<T>;
   onTouchCancelCapture: TouchEventHandler<T>;
   onTouchEnd: TouchEventHandler<T>;
@@ -53,7 +63,7 @@ export type UIEventsTouch<T extends H = H> = {
   onTouchOutCapture: TouchEventHandler<T>;
 };
 
-export type UIEventsFocus<T extends H = H> = {
+export type UIEventHandlersFocus<T extends H = H> = {
   onFocus: FocusEventHandler<T>;
   onFocusCapture: FocusEventHandler<T>;
   onBlur: FocusEventHandler<T>;
@@ -91,9 +101,24 @@ export type UIEventsFactory = (args: { bus: EventBus<any>; instance: Id }) => UI
 export type UIEvents<Ctx extends O = O> = Disposable & {
   instance: Id;
   $: Observable<UIEvent>;
-  mouse: { $: Observable<UIMouse<Ctx>> };
-  touch: { $: Observable<UITouch<Ctx>> };
-  focus: { $: Observable<UIFocus<Ctx>> };
+  mouse: UIEventsMouse<Ctx>;
+  touch: UIEventsTouch<Ctx>;
+  focus: UIEventsFocus<Ctx>;
+};
+
+export type UIEventsMouse<Ctx extends O> = {
+  $: Observable<UIMouse<Ctx>>;
+  event(name: keyof UIEventHandlersMouse): Observable<UIMouse<Ctx>>;
+};
+
+export type UIEventsTouch<Ctx extends O> = {
+  $: Observable<UITouch<Ctx>>;
+  event(name: keyof UIEventHandlersTouch): Observable<UITouch<Ctx>>;
+};
+
+export type UIEventsFocus<Ctx extends O> = {
+  $: Observable<UIFocus<Ctx>>;
+  event(name: keyof UIEventHandlersFocus): Observable<UIFocus<Ctx>>;
 };
 
 /**
@@ -108,7 +133,7 @@ export type UIMouseEvent<Ctx extends O = O> = { type: 'sys.ui.event/Mouse'; payl
 export type UIMouse<Ctx extends O = O> = {
   readonly ctx: Ctx;
   readonly instance: Id;
-  readonly kind: keyof UIEventsMouse;
+  readonly name: keyof UIEventHandlersMouse;
   readonly mouse: UIMouseEventProps;
   readonly target: UIEventTarget;
 };
@@ -129,7 +154,7 @@ export type UITouchEvent<Ctx extends O = O> = { type: 'sys.ui.event/Touch'; payl
 export type UITouch<Ctx extends O = O> = {
   readonly ctx: Ctx;
   readonly instance: Id;
-  readonly kind: keyof UIEventsTouch;
+  readonly name: keyof UIEventHandlersTouch;
   readonly touch: UITouchEventProps;
   readonly target: UIEventTarget;
 };
@@ -148,7 +173,7 @@ export type UIFocusEvent<Ctx extends O = O> = { type: 'sys.ui.event/Focus'; payl
 export type UIFocus<Ctx extends O = O> = {
   readonly ctx: Ctx;
   readonly instance: Id;
-  readonly kind: keyof UIEventsFocus;
+  readonly name: keyof UIEventHandlersFocus;
   readonly focus: UIFocusEventProps;
   readonly isFocused: boolean;
   readonly isBlurred: boolean;

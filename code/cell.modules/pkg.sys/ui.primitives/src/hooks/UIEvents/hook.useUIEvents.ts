@@ -1,29 +1,46 @@
 import React, { RefObject, useRef } from 'react';
 
 import { rx, t } from '../common';
+import { containsFocus, withinFocus } from '../Focus';
+import { useFocus } from '../Focus';
 
 type O = Record<string, unknown>;
 type Id = string;
 
-export type UIEventBusHookArgs<Ctx extends O = O> = {
+export type UIEventBusHookArgs<Ctx extends O, H extends HTMLElement> = {
   bus: t.EventBus<any>;
   instance: Id;
   ctx: Ctx;
+  ref?: RefObject<H>;
+  focusRedraw?: boolean; // Cause redraw when focus/blur events fire on the [ref] element.
 };
 
 /**
  * Hook for abstracting a set of DOM events through an event-bus.
  */
-export function useUIEvents<Ctx extends O = O, H extends HTMLElement = HTMLElement>(
-  args: UIEventBusHookArgs<Ctx>,
+export function useUIEvents<Ctx extends O, H extends HTMLElement>(
+  args: UIEventBusHookArgs<Ctx, H>,
 ): t.UIEventsHook<H> {
-  const { instance, ctx } = args;
+  const { instance, ctx, focusRedraw: redrawOnFocus = false } = args;
   const bus = rx.busAsType<t.UIEvent>(args.bus);
 
-  const ref = useRef<H>(null);
+  const _ref = useRef<H>(null);
+  const ref = args.ref || _ref;
   const target = Util.toTarget(ref);
 
-  const mouseHandler = (kind: keyof t.UIEventsMouse): React.MouseEventHandler<H> => {
+  useFocus(ref, { redraw: redrawOnFocus });
+
+  const element: t.UIEventsHookElement<H> = {
+    ref,
+    get containsFocus() {
+      return containsFocus(ref);
+    },
+    get withinFocus() {
+      return withinFocus(ref);
+    },
+  };
+
+  const mouseHandler = (name: keyof t.UIEventHandlersMouse): React.MouseEventHandler<H> => {
     return (e) => {
       const { button, buttons } = e;
       const mouse: t.UIMouseEventProps = {
@@ -38,12 +55,12 @@ export function useUIEvents<Ctx extends O = O, H extends HTMLElement = HTMLEleme
       };
       bus.fire({
         type: 'sys.ui.event/Mouse',
-        payload: { instance, kind, mouse, target, ctx },
+        payload: { instance, name, mouse, target, ctx },
       });
     };
   };
 
-  const touchHandler = (kind: keyof t.UIEventsTouch): React.TouchEventHandler<H> => {
+  const touchHandler = (name: keyof t.UIEventHandlersTouch): React.TouchEventHandler<H> => {
     return (e) => {
       const { touches, targetTouches, changedTouches } = e;
       const touch: t.UITouchEventProps = {
@@ -55,24 +72,24 @@ export function useUIEvents<Ctx extends O = O, H extends HTMLElement = HTMLEleme
       };
       bus.fire({
         type: 'sys.ui.event/Touch',
-        payload: { instance, kind, touch, target, ctx },
+        payload: { instance, name, touch, target, ctx },
       });
     };
   };
 
-  const focusHandler = (kind: keyof t.UIEventsFocus): React.FocusEventHandler<H> => {
+  const focusHandler = (name: keyof t.UIEventHandlersFocus): React.FocusEventHandler<H> => {
     return (e) => {
-      const isFocused = kind === 'onFocus' || kind === 'onFocusCapture';
-      const isBlurred = kind === 'onBlur' || kind === 'onBlurCapture';
+      const isFocused = name === 'onFocus' || name === 'onFocusCapture';
+      const isBlurred = name === 'onBlur' || name === 'onBlurCapture';
       const focus: t.UIFocusEventProps = Util.toBase(e);
       bus.fire({
         type: 'sys.ui.event/Focus',
-        payload: { instance, kind, focus, target, isFocused, isBlurred, ctx },
+        payload: { instance, name, focus, target, isFocused, isBlurred, ctx },
       });
     };
   };
 
-  const mouse: t.UIEventsMouse<H> = {
+  const mouse: t.UIEventHandlersMouse<H> = {
     onClick: mouseHandler('onClick'),
     onMouseDown: mouseHandler('onMouseDown'),
     onMouseDownCapture: mouseHandler('onMouseDownCapture'),
@@ -88,7 +105,7 @@ export function useUIEvents<Ctx extends O = O, H extends HTMLElement = HTMLEleme
     onMouseUpCapture: mouseHandler('onMouseUpCapture'),
   };
 
-  const touch: t.UIEventsTouch<H> = {
+  const touch: t.UIEventHandlersTouch<H> = {
     onTouchCancel: touchHandler('onTouchCancel'),
     onTouchCancelCapture: touchHandler('onTouchCancelCapture'),
     onTouchEnd: touchHandler('onTouchEnd'),
@@ -101,7 +118,7 @@ export function useUIEvents<Ctx extends O = O, H extends HTMLElement = HTMLEleme
     onTouchOutCapture: touchHandler('onTouchOutCapture'),
   };
 
-  const focus: t.UIEventsFocus<H> = {
+  const focus: t.UIEventHandlersFocus<H> = {
     onFocus: focusHandler('onFocus'),
     onFocusCapture: focusHandler('onFocusCapture'),
     onBlur: focusHandler('onBlur'),
@@ -111,7 +128,14 @@ export function useUIEvents<Ctx extends O = O, H extends HTMLElement = HTMLEleme
   /**
    * API
    */
-  return { instance, ref, mouse, touch, focus };
+  return {
+    instance,
+    element,
+    ref,
+    mouse,
+    touch,
+    focus,
+  };
 }
 
 /**
@@ -149,8 +173,7 @@ const Util = {
   toTarget(ref: RefObject<HTMLElement>): t.UIEventTarget {
     return {
       get containsFocus() {
-        const active = document.activeElement;
-        return active && ref.current ? ref.current.contains(active) : false;
+        return containsFocus(ref);
       },
     };
   },

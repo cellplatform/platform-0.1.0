@@ -6,7 +6,7 @@ import { DevSample, EventCtx } from './DEV.Sample';
 
 type Ctx = {
   events: t.UIEvents<EventCtx>;
-  args: UIEventBusHookArgs<EventCtx>;
+  args: UIEventBusHookArgs<EventCtx, HTMLDivElement>;
 };
 
 /**
