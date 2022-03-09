@@ -3,6 +3,7 @@ import { color, t, css, COLORS } from '../common';
 import { Card } from '../../Card';
 import { Text } from '../../Text';
 import { Renderers, BulletConnectorLinesProps } from '../renderers';
+import { DataSample } from './DEV.types';
 
 export type RenderCtx = {
   enabled: boolean;
@@ -66,9 +67,9 @@ export function sampleBodyFactory(getCtx: () => RenderCtx) {
       component: css({ fontFamily: 'monospace', fontWeight: 'bold', fontSize: 16 }),
     };
 
-    type D = { msg: string };
-    const data = e.data as D;
-    const elComponent = <Text.Syntax text={'<Component>'} style={styles.component} />;
+    const data = e.data as DataSample;
+    const text = data.isTruncated ? `more:...` : `<Component>`;
+    const elComponent = <Text.Syntax text={text} style={styles.component} />;
 
     /**
      * Body: Vanilla (Sample)

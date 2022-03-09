@@ -4,16 +4,17 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { List, ListProps } from '..';
 import { ALL, DEFAULTS, rx, slug, t, time, value } from '../common';
 import { ListSelectionMonitor } from '../ListSelectionMonitor';
-import { RenderCtx, sampleBodyFactory, sampleBulletFactory } from './Sample.renderers';
+import { RenderCtx, sampleBodyFactory, sampleBulletFactory } from './DEV.Sample.renderers';
+
+import { DataSample } from './DEV.types';
 
 /**
  * Types
  */
-type D = { msg: string; id: string };
 type Ctx = {
   bus: t.EventBus<any>;
   instance: string;
-  items: t.ListItem[];
+  items: t.ListItem<DataSample>[];
   props: ListProps; // Common properties.
   renderCtx: RenderCtx;
   events: t.ListEvents;
@@ -36,8 +37,8 @@ const Util = {
     const items = ctx.items;
     const id = slug();
     const msg = `item-${items.length + 1}:${id}`;
-    const data: D = { msg, id };
-    const item: t.ListItem<D> = { data, spacing };
+    const data: DataSample = { msg, id };
+    const item: t.ListItem<DataSample> = { data, spacing };
     ctx.items.push(item);
   },
 
@@ -397,8 +398,8 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const { items, renderCtx, debug } = e.ctx;
-    const total = items.length;
+    const { renderCtx, debug } = e.ctx;
+    const total = e.ctx.items.length;
     const props = Util.toProps(e.ctx);
 
     const orientation = props.orientation ?? DEFAULTS.Orientation;
@@ -432,6 +433,14 @@ export const actions = DevActions<Ctx>()
      * Simple (non-scrolling) layout.
      */
     if (!isVirtual) {
+      let items = e.ctx.items;
+      const MAX = 10;
+      if (items.length > MAX) {
+        // NB: Curtain long lists to prevent blow-out (should be shown in "virtual" scrolling list).
+        items = items.slice(0, MAX);
+        const last = items[MAX - 1];
+        items[MAX - 1] = { ...last, data: { ...last.data, isTruncated: true } };
+      }
       e.render(<List.Layout {...props} items={items} />);
     }
 
@@ -439,6 +448,7 @@ export const actions = DevActions<Ctx>()
      * Virtual scolling list.
      */
     if (isVirtual) {
+      const items = e.ctx.items;
       const getData: t.GetListItem = (index) => items[index];
 
       const getSize: t.GetListItemSize = (e) => {
