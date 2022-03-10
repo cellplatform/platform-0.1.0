@@ -68,7 +68,7 @@ export function sampleBodyFactory(getCtx: () => RenderCtx) {
     };
 
     const data = e.data as DataSample;
-    const text = data.isTruncated ? `more:...` : `<Component>`;
+    const text = data.isTruncated ? `more:...` : `${e.index}.<Component>`;
     const elComponent = <Text.Syntax text={text} style={styles.component} />;
 
     /**
