@@ -1,2 +1,2 @@
-export * from './hook.useFocus';
+export * from './useFocus';
 export { containsFocus, withinFocus } from './util';

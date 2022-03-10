@@ -1,1 +1,1 @@
-export * from './hook.useDragTarget';
+export * from './useDragTarget';

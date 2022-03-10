@@ -1,26 +1,31 @@
 import React, { useEffect } from 'react';
 import { Subject } from 'rxjs';
 
-import { EventPipeHookArgs, useEventPipe } from '..';
+import { useKeyboardPipe, KeyboardPipeHookArgs } from '..';
 import { Card, css, CssValue, TextSyntax } from './DEV.common';
-
-import { useKeyboardPipe } from '../../Keyboard';
 
 export type EventCtx = { index: number; message: string };
 
 export type DevSampleProps = {
-  args: EventPipeHookArgs<EventCtx, HTMLDivElement>;
+  args: KeyboardPipeHookArgs;
   style?: CssValue;
 };
 
 export const DevSample: React.FC<DevSampleProps> = (props) => {
-  const ui = useEventPipe<EventCtx, HTMLDivElement>(props.args);
+  const keyboard = useKeyboardPipe(props.args);
+
+  /**
+   * NOTE: Test multiple instances of the hook initiated.
+   *       Should not duplicate keyboard events.
+   */
+  useKeyboardPipe(props.args);
+  useKeyboardPipe(props.args);
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
-    const events = ui.events({ dispose$ });
+    const events = keyboard.events({ dispose$ });
     events.$.subscribe((e) => {
-      // console.log('inside hook', e);
+      // console.log('keyboard (inside hook)', e);
     });
 
     return () => dispose$.next();
@@ -36,17 +41,9 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
   };
 
   const elCard = (
-    <div
-      ref={ui.ref} // NB: Only required for special reference calculated, eg. [e.containsFocus]
-      tabIndex={0}
-      onClick={ui.mouse.onClick}
-      onMouseEnter={ui.mouse.onMouseEnter}
-      onMouseLeave={ui.mouse.onMouseLeave}
-      onFocus={ui.focus.onFocus}
-      onBlur={ui.focus.onBlur}
-    >
+    <div>
       <Card style={styles.card}>
-        <TextSyntax text={'<Component>'} style={styles.label} />
+        <TextSyntax text={'<Keyboard>'} style={styles.label} />
       </Card>
     </div>
   );

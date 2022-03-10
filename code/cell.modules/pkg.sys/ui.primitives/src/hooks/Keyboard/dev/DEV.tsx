@@ -1,12 +1,12 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { EventPipeHookArgs, UIEvents } from '..';
+import { KeyboardPipeHookArgs, KeyboardEvents } from '..';
 import { t, rx, slug } from './DEV.common';
-import { DevSample, EventCtx } from './DEV.Sample';
+import { DevSample } from './DEV.Sample';
 
 type Ctx = {
-  events: t.UIEvents<EventCtx>;
-  args: EventPipeHookArgs<EventCtx, HTMLDivElement>;
+  events: t.KeyboardEvents;
+  args: KeyboardPipeHookArgs;
   render: boolean;
 };
 
@@ -14,21 +14,17 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('hook.UIEvents')
+  .namespace('hook.Keyboard')
   .context((e) => {
     if (e.prev) return e.prev;
 
     const instance = `demo.${slug()}`;
     const bus = rx.bus();
-    const events = UIEvents<EventCtx>({ bus, instance });
+    const events = KeyboardEvents({ bus });
     const ctx: Ctx = {
       render: true,
       events,
-      args: {
-        bus,
-        instance,
-        ctx: { index: 0, message: 'hello' },
-      },
+      args: { bus },
     };
 
     return ctx;
@@ -72,7 +68,7 @@ export const actions = DevActions<Ctx>()
         border: -0.1,
         cropmarks: -0.2,
         label: {
-          topLeft: 'hook: useEventPipe',
+          topLeft: 'hook: useKeyboardPipe',
           bottomRight: `${rx.bus.instance(bus)}`,
         },
       },

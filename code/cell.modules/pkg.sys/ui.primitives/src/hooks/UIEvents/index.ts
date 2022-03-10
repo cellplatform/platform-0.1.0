@@ -1,2 +1,2 @@
-export * from './hook.useUIEvents';
+export * from './useEventPipe';
 export * from './UIEvents';

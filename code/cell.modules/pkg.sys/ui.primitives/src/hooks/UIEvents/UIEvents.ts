@@ -14,12 +14,14 @@ export function UIEvents<Ctx extends O = O>(args: {
   bus: t.EventBus<any>;
   instance: Id;
   dispose$?: Observable<any>;
-  filter?: (e: t.UIEvent<Ctx>) => boolean;
+  filter?: t.UIEventFilter<Ctx>;
 }): t.UIEvents<Ctx> {
   const { instance } = args;
+  const bus = rx.busAsType<t.UIEvent>(args.bus);
+
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
-  const bus = rx.busAsType<t.UIEvent>(args.bus);
+  args.dispose$?.subscribe(dispose);
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
@@ -29,17 +31,17 @@ export function UIEvents<Ctx extends O = O>(args: {
     observeOn(animationFrameScheduler),
   );
 
-  const mouse: t.UIEvents<Ctx>['mouse'] = {
+  const mouse: t.UIEventsMouse<Ctx> = {
     $: rx.payload<t.UIMouseEvent<Ctx>>($, 'sys.ui.event/Mouse'),
     event: (name) => mouse.$.pipe(filter((e) => e.name === name)),
   };
 
-  const touch: t.UIEvents<Ctx>['touch'] = {
+  const touch: t.UIEventsTouch<Ctx> = {
     $: rx.payload<t.UITouchEvent<Ctx>>($, 'sys.ui.event/Touch'),
     event: (name) => touch.$.pipe(filter((e) => e.name === name)),
   };
 
-  const focus: t.UIEvents<Ctx>['focus'] = {
+  const focus: t.UIEventsFocus<Ctx> = {
     $: rx.payload<t.UIFocusEvent<Ctx>>($, 'sys.ui.event/Focus'),
     event: (name) => focus.$.pipe(filter((e) => e.name === name)),
   };
@@ -47,6 +49,5 @@ export function UIEvents<Ctx extends O = O>(args: {
   /**
    * API
    */
-  args.dispose$?.subscribe(dispose);
   return { $, instance, dispose, dispose$, mouse, touch, focus };
 }

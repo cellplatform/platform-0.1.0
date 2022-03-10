@@ -1,12 +1,11 @@
-import { Disposable, EventBus } from '@platform/types';
+import { Disposable } from '@platform/types';
 import {
+  FocusEventHandler,
   MouseEventHandler,
+  RefObject,
   TouchEventHandler,
   TouchList,
-  FocusEventHandler,
-  RefObject,
 } from 'react';
-
 import { Observable } from 'rxjs';
 
 type O = Record<string, unknown>;
@@ -16,16 +15,19 @@ type Id = string;
 /**
  * Hook for abstracting a set of DOM events through an event-bus.
  */
-export type UIEventsHook<T extends H = H> = {
+export type UIEventPipeHook<Ctx extends O, T extends H = H> = {
   instance: Id;
   ref: RefObject<T>;
-  readonly element: UIEventsHookElement<T>;
-  readonly mouse: UIEventHandlersMouse<T>;
-  readonly touch: UIEventHandlersTouch<T>;
-  readonly focus: UIEventHandlersFocus<T>;
+  readonly element: UIEventPipeElement<T>;
+  readonly mouse: UIEventPipeMouse<T>;
+  readonly touch: UIEventPipeTouch<T>;
+  readonly focus: UIEventPipeFocus<T>;
+  events(args?: { dispose$?: Observable<any>; filter?: UIEventFilter<Ctx> }): UIEvents<Ctx>;
 };
 
-export type UIEventsHookElement<T extends H> = {
+export type UIEventFilter<Ctx extends O> = (e: UIEvent<Ctx>) => boolean;
+
+export type UIEventPipeElement<T extends H> = {
   ref: RefObject<T>;
   readonly containsFocus: boolean;
   readonly withinFocus: boolean;
@@ -34,7 +36,7 @@ export type UIEventsHookElement<T extends H> = {
 /**
  * Event Handler methods.
  */
-export type UIEventHandlersMouse<T extends H = H> = {
+export type UIEventPipeMouse<T extends H = H> = {
   onClick: MouseEventHandler<T>;
   onMouseDown: MouseEventHandler<T>;
   onMouseDownCapture: MouseEventHandler<T>;
@@ -50,7 +52,7 @@ export type UIEventHandlersMouse<T extends H = H> = {
   onMouseUpCapture: MouseEventHandler<T>;
 };
 
-export type UIEventHandlersTouch<T extends H = H> = {
+export type UIEventPipeTouch<T extends H = H> = {
   onTouchCancel: TouchEventHandler<T>;
   onTouchCancelCapture: TouchEventHandler<T>;
   onTouchEnd: TouchEventHandler<T>;
@@ -63,7 +65,7 @@ export type UIEventHandlersTouch<T extends H = H> = {
   onTouchOutCapture: TouchEventHandler<T>;
 };
 
-export type UIEventHandlersFocus<T extends H = H> = {
+export type UIEventPipeFocus<T extends H = H> = {
   onFocus: FocusEventHandler<T>;
   onFocusCapture: FocusEventHandler<T>;
   onBlur: FocusEventHandler<T>;
@@ -97,7 +99,6 @@ export type UIEventTarget = {
 /**
  * EVENT (API)
  */
-export type UIEventsFactory = (args: { bus: EventBus<any>; instance: Id }) => UIEvents;
 export type UIEvents<Ctx extends O = O> = Disposable & {
   instance: Id;
   $: Observable<UIEvent>;
@@ -108,17 +109,17 @@ export type UIEvents<Ctx extends O = O> = Disposable & {
 
 export type UIEventsMouse<Ctx extends O> = {
   $: Observable<UIMouse<Ctx>>;
-  event(name: keyof UIEventHandlersMouse): Observable<UIMouse<Ctx>>;
+  event(name: keyof UIEventPipeMouse): Observable<UIMouse<Ctx>>;
 };
 
 export type UIEventsTouch<Ctx extends O> = {
   $: Observable<UITouch<Ctx>>;
-  event(name: keyof UIEventHandlersTouch): Observable<UITouch<Ctx>>;
+  event(name: keyof UIEventPipeTouch): Observable<UITouch<Ctx>>;
 };
 
 export type UIEventsFocus<Ctx extends O> = {
   $: Observable<UIFocus<Ctx>>;
-  event(name: keyof UIEventHandlersFocus): Observable<UIFocus<Ctx>>;
+  event(name: keyof UIEventPipeFocus): Observable<UIFocus<Ctx>>;
 };
 
 /**
@@ -129,15 +130,18 @@ export type UIEvent<Ctx extends O = O> = UIMouseEvent<Ctx> | UITouchEvent<Ctx> |
 /**
  * https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent
  */
-export type UIMouseEvent<Ctx extends O = O> = { type: 'sys.ui.event/Mouse'; payload: UIMouse<Ctx> };
+export type UIMouseEvent<Ctx extends O = O> = {
+  type: 'sys.ui.event/Mouse';
+  payload: UIMouse<Ctx>;
+};
 export type UIMouse<Ctx extends O = O> = {
   readonly ctx: Ctx;
   readonly instance: Id;
-  readonly name: keyof UIEventHandlersMouse;
-  readonly mouse: UIMouseEventProps;
+  readonly name: keyof UIEventPipeMouse;
+  readonly mouse: UIMouseProps;
   readonly target: UIEventTarget;
 };
-export type UIMouseEventProps = UIEventBase &
+export type UIMouseProps = UIEventBase &
   UIModifierKeys & {
     readonly button: number;
     readonly buttons: number;
@@ -150,15 +154,18 @@ export type UIMouseEventProps = UIEventBase &
 /**
  * https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent
  */
-export type UITouchEvent<Ctx extends O = O> = { type: 'sys.ui.event/Touch'; payload: UITouch<Ctx> };
+export type UITouchEvent<Ctx extends O = O> = {
+  type: 'sys.ui.event/Touch';
+  payload: UITouch<Ctx>;
+};
 export type UITouch<Ctx extends O = O> = {
   readonly ctx: Ctx;
   readonly instance: Id;
-  readonly name: keyof UIEventHandlersTouch;
-  readonly touch: UITouchEventProps;
+  readonly name: keyof UIEventPipeTouch;
+  readonly touch: UITouchProps;
   readonly target: UIEventTarget;
 };
-export type UITouchEventProps = UIEventBase &
+export type UITouchProps = UIEventBase &
   UIModifierKeys & {
     readonly targetTouches: TouchList;
     readonly changedTouches: TouchList;
@@ -169,14 +176,17 @@ export type UITouchEventProps = UIEventBase &
  * https://developer.mozilla.org/en-US/docs/Web/API/Element/focus_event
  * https://developer.mozilla.org/en-US/docs/Web/API/Element/blur_event
  */
-export type UIFocusEvent<Ctx extends O = O> = { type: 'sys.ui.event/Focus'; payload: UIFocus<Ctx> };
+export type UIFocusEvent<Ctx extends O = O> = {
+  type: 'sys.ui.event/Focus';
+  payload: UIFocus<Ctx>;
+};
 export type UIFocus<Ctx extends O = O> = {
   readonly ctx: Ctx;
   readonly instance: Id;
-  readonly name: keyof UIEventHandlersFocus;
-  readonly focus: UIFocusEventProps;
+  readonly name: keyof UIEventPipeFocus;
+  readonly focus: UIFocusProps;
   readonly isFocused: boolean;
   readonly isBlurred: boolean;
   readonly target: UIEventTarget;
 };
-export type UIFocusEventProps = UIEventBase;
+export type UIFocusProps = UIEventBase;

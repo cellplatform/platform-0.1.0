@@ -3,8 +3,9 @@ import { Harness } from 'sys.ui.dev';
 import { t } from './common';
 
 const imports = {
-  useDragTarget: import('./hooks/DragTarget/dev/DEV'),
-  useUIEvents: import('./hooks/UIEvents/dev/DEV'),
+  hookDragTarget: import('./hooks/DragTarget/dev/DEV'),
+  hookUIEvents: import('./hooks/UIEvents/dev/DEV'),
+  hookKeyboard: import('./hooks/Keyboard/dev/DEV'),
 
   Bullet: import('./ui/Bullet/dev/DEV'),
   List: import('./ui/List/dev/DEV'),
