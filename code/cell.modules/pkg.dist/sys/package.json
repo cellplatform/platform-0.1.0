@@ -1,7 +1,7 @@
 {
   "name": "sys",
   "description": "Standard federated-function endpoing for 'system' modules",
-  "version": "0.0.96",
+  "version": "0.0.97",
   "main": "lib/index",
   "sideEffects": false,
   "compiler": {
