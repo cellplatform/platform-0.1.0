@@ -27,7 +27,6 @@ const BASE: k.SyntaxLabelColors = {
 export const TextSyntax: React.FC<TextSyntaxProps> = (props) => {
   const { text = '', inlineBlock = true, tokenizer = DefaultTokenizer } = props;
   const tokens = useMemo(() => tokenizer(text).parts, [tokenizer, text]);
-
   const colors = { ...BASE, ...props.colors };
 
   /**
@@ -43,7 +42,7 @@ export const TextSyntax: React.FC<TextSyntaxProps> = (props) => {
 
   const elements = tokens.map((token, i) => {
     return (
-      <span key={i} style={{ color: colors[token.kind] }}>
+      <span key={i} style={{ color: color.format(colors[token.kind]) }}>
         {token.text}
       </span>
     );

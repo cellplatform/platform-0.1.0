@@ -19,7 +19,6 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const instance = `demo.${slug()}`;
     const bus = rx.bus();
     const events = KeyboardEvents({ bus });
     const ctx: Ctx = {
@@ -109,8 +108,9 @@ export const actions = DevActions<Ctx>()
           topLeft: 'hook: useKeyboardPipe(bus)',
           bottomRight: `${rx.bus.instance(bus)}`,
         },
-        width: 500,
+        width: 540,
         height: 300,
+        background: 0.3,
       },
     });
 

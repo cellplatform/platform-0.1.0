@@ -1,4 +1,4 @@
-type Color = string;
+type Color = string | number;
 
 export type SyntaxLabelTokenizer = (text: string) => SyntaxLabelTokens;
 

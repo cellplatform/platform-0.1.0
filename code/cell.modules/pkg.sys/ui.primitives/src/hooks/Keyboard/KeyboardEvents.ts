@@ -32,5 +32,5 @@ export function KeyboardEvents(args: {
   /**
    * API
    */
-  return { $, dispose, dispose$, keydown$, keyup$ };
+  return { $, dispose, dispose$, down$: keydown$, up$: keyup$ };
 }

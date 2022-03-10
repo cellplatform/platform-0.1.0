@@ -19,8 +19,8 @@ export type KeyboardPipeHook = {
  */
 export type KeyboardEvents = Disposable & {
   $: Observable<KeyboardEvent>;
-  keydown$: Observable<KeyboardEvent>;
-  keyup$: Observable<KeyboardEvent>;
+  down$: Observable<KeyboardEvent>;
+  up$: Observable<KeyboardEvent>;
 };
 
 /**

@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { useKeyboardPipe, KeyboardPipeHookArgs } from '..';
 
 import { color, COLORS, Card, css, CssValue, TextSyntax, Icons } from './DEV.common';
+import { DevModifierKeys } from './DEV.ModifierKeys';
 
 export type EventCtx = { index: number; message: string };
 
@@ -36,37 +37,41 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({
-      position: 'relative',
-      Flex: 'center-center',
-    }),
-    card: css({ padding: 20 }),
-    label: css({ fontFamily: 'monospace', fontWeight: 'bold', fontSize: 16 }),
+    base: css({ Flex: 'y-stretch-stretch', boxSizing: 'border-box', position: 'relative' }),
+    body: {
+      base: css({
+        position: 'relative',
+        flex: 1,
+        Flex: 'center-center',
+      }),
+    },
+    footer: {
+      base: css({ Flex: 'x-spaceBetween-center', padding: 10 }),
+    },
+
     keyboard: {
       icon: css({ Absolute: [0, null, null, 18] }),
     },
   };
 
-  const elCard = (
-    <div>
-      <Card style={styles.card}>
-        <TextSyntax text={'<Keyboard>'} style={styles.label} />
-      </Card>
-    </div>
-  );
-
   const elIcon = (
     <Icons.Keyboard.fill
       size={60}
-      color={color.alpha(COLORS.DARK, 0.5)}
+      color={color.alpha(COLORS.DARK, 0.3)}
       style={styles.keyboard.icon}
     />
   );
 
   return (
     <div {...css(styles.base, props.style)}>
-      {elCard}
-      {elIcon}
+      <div {...styles.body.base}>
+        <div />
+        {elIcon}
+      </div>
+      <div {...styles.footer.base}>
+        <DevModifierKeys align={'left'} />
+        <DevModifierKeys align={'right'} />
+      </div>
     </div>
   );
 };
