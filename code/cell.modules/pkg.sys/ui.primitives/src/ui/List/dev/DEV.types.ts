@@ -1,5 +1,7 @@
+type Index = number;
+
 export type DataSample = {
   id: string;
   msg: string;
-  isTruncated?: boolean;
+  truncatedAt?: Index;
 };

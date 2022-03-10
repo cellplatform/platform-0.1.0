@@ -6,12 +6,12 @@ import { Renderers, BulletConnectorLinesProps } from '../renderers';
 import { DataSample } from './DEV.types';
 
 export type RenderCtx = {
+  total: number;
   enabled: boolean;
   bulletKind: 'Lines' | 'Dot';
   bodyKind: 'Card' | 'Vanilla' | undefined;
   connectorRadius?: number;
   connectorLineWidth?: number;
-  virtualScroll: boolean;
 };
 
 /**
@@ -68,7 +68,9 @@ export function sampleBodyFactory(getCtx: () => RenderCtx) {
     };
 
     const data = e.data as DataSample;
-    const text = data.isTruncated ? `more:...` : `${e.index}.<Component>`;
+    const truncatedAt = data.truncatedAt ?? 0;
+    const remaining = ctx.total - truncatedAt;
+    const text = truncatedAt ? `more:(..${remaining})` : `${e.index}.<Component>`;
     const elComponent = <Text.Syntax text={text} style={styles.component} />;
 
     /**

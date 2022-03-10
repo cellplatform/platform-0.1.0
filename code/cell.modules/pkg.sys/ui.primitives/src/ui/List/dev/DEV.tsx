@@ -22,10 +22,12 @@ type Ctx = {
   redraw(): Promise<void>;
 };
 type CtxDebug = {
+  virtualScroll: boolean;
   scrollAlign: t.ListItemAlign;
   virtualPadding: boolean;
   canFocus: boolean;
-  tmp?: any;
+
+  tmp?: any; // TEMP 🐷
 };
 
 /**
@@ -36,8 +38,8 @@ const Util = {
     const { spacing } = options;
     const items = ctx.items;
     const id = slug();
-    const msg = `item-${items.length + 1}:${id}`;
-    const data: DataSample = { msg, id };
+    const msg = `item-${items.length}:${id}`;
+    const data: DataSample = { id, msg };
     const item: t.ListItem<DataSample> = { data, spacing };
     ctx.items.push(item);
   },
@@ -82,17 +84,20 @@ export const actions = DevActions<Ctx>()
         debug: { border: true },
       },
       renderCtx: {
+        get total() {
+          return e.current?.items.length ?? 0;
+        },
         enabled: true,
         bulletKind: 'Lines',
         bodyKind: 'Card',
         connectorRadius: 20,
         connectorLineWidth: 5,
-        virtualScroll: true,
       },
       debug: {
         scrollAlign: 'auto',
         virtualPadding: true,
         canFocus: true,
+        virtualScroll: true,
       },
       redraw: () => time.delay(0, () => events.redraw.fire()),
     };
@@ -104,7 +109,8 @@ export const actions = DevActions<Ctx>()
     const { ctx } = e;
     const { bus, instance } = ctx;
 
-    new Array(10).fill(ctx).forEach(() => Util.addItem(ctx));
+    const TOTAL = 10;
+    new Array(TOTAL).fill(ctx).forEach(() => Util.addItem(ctx));
 
     /**
      * TEMP 🐷
@@ -210,8 +216,8 @@ export const actions = DevActions<Ctx>()
     e.hr(1, 0.1);
 
     e.boolean('virtual (scrolling)', (e) => {
-      if (e.changing) e.ctx.renderCtx.virtualScroll = e.changing.next;
-      e.boolean.current = e.ctx.renderCtx.virtualScroll;
+      if (e.changing) e.ctx.debug.virtualScroll = e.changing.next;
+      e.boolean.current = e.ctx.debug.virtualScroll;
     });
 
     e.boolean('virtual (padding)', (e) => {
@@ -247,7 +253,7 @@ export const actions = DevActions<Ctx>()
     e.select((config) => {
       config
         .title('bullet <Kind>')
-        .items([{ label: '<undefined> (use default)', value: undefined }, 'Lines', 'Dot'])
+        .items([{ label: '<undefined> (none)', value: undefined }, 'Lines', 'Dot'])
         .initial(config.ctx.renderCtx.bulletKind)
         .view('buttons')
         .pipe((e) => {
@@ -405,7 +411,7 @@ export const actions = DevActions<Ctx>()
     const orientation = props.orientation ?? DEFAULTS.Orientation;
     const isHorizontal = orientation === 'x';
     const isVertical = orientation === 'y';
-    const isVirtual = e.ctx.renderCtx.virtualScroll;
+    const isVirtual = e.ctx.debug.virtualScroll;
 
     const FIXED_SIZE = 310;
 
@@ -436,10 +442,11 @@ export const actions = DevActions<Ctx>()
       let items = e.ctx.items;
       const MAX = 10;
       if (items.length > MAX) {
-        // NB: Curtain long lists to prevent blow-out (should be shown in "virtual" scrolling list).
-        items = items.slice(0, MAX);
+        // NB: Curtail long lists to prevent rendering blow-out
+        //     when not in "virtual" scrolling mode.
+        items = [...items].slice(0, MAX);
         const last = items[MAX - 1];
-        items[MAX - 1] = { ...last, data: { ...last.data, isTruncated: true } };
+        items[MAX - 1] = { ...last, data: { ...last.data, truncatedAt: MAX } };
       }
       e.render(<List.Layout {...props} items={items} />);
     }
