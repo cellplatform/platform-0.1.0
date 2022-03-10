@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import { Subject } from 'rxjs';
 
 import { useKeyboardPipe, KeyboardPipeHookArgs } from '..';
-import { Card, css, CssValue, TextSyntax } from './DEV.common';
+
+import { color, COLORS, Card, css, CssValue, TextSyntax, Icons } from './DEV.common';
 
 export type EventCtx = { index: number; message: string };
 
@@ -35,9 +36,15 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({ Flex: 'center-center', width: 300, height: 200 }),
+    base: css({
+      position: 'relative',
+      Flex: 'center-center',
+    }),
     card: css({ padding: 20 }),
     label: css({ fontFamily: 'monospace', fontWeight: 'bold', fontSize: 16 }),
+    keyboard: {
+      icon: css({ Absolute: [0, null, null, 18] }),
+    },
   };
 
   const elCard = (
@@ -48,5 +55,18 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
     </div>
   );
 
-  return <div {...css(styles.base, props.style)}>{elCard}</div>;
+  const elIcon = (
+    <Icons.Keyboard.fill
+      size={60}
+      color={color.alpha(COLORS.DARK, 0.5)}
+      style={styles.keyboard.icon}
+    />
+  );
+
+  return (
+    <div {...css(styles.base, props.style)}>
+      {elCard}
+      {elIcon}
+    </div>
+  );
 };

@@ -3,6 +3,8 @@ import { Observable } from 'rxjs';
 
 import { UIEventBase, UIModifierKeys } from '../UIEvents/types';
 
+type Id = string;
+
 /**
  * Hook for piping a set of keyboard events through an event-bus.
  */
@@ -34,7 +36,9 @@ export type KeyboardKeypressEvent = {
   payload: KeyboardKeypress;
 };
 export type KeyboardKeypress = {
+  readonly instance: Id;
   readonly name: 'onKeydown' | 'onKeyup';
+  readonly key: string;
   readonly keyboard: KeyboardKeypressProps;
   readonly is: { down: boolean; up: boolean };
 };

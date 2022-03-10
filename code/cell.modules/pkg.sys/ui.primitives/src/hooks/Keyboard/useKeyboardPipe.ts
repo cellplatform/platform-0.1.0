@@ -5,6 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { rx, t } from '../common';
 import { Util } from '../UIEvents/util';
 import { KeyboardEvents } from './KeyboardEvents';
+import { SINGLETON_INSTANCE } from './constants';
 
 type Listener = { $: Observable<KeyboardEvent>; dispose(): void };
 
@@ -24,6 +25,7 @@ export type KeyboardPipeHookArgs = { bus: t.EventBus<any> };
 export function useKeyboardPipe(args: KeyboardPipeHookArgs): t.KeyboardPipeHook {
   const bus = rx.busAsType<t.KeyboardEvent>(args.bus);
   const key = rx.bus.instance(bus);
+  const instance = SINGLETON_INSTANCE;
 
   /**
    * Lifecycle
@@ -52,7 +54,7 @@ export function useKeyboardPipe(args: KeyboardPipeHookArgs): t.KeyboardPipeHook 
       };
       bus.fire({
         type: 'sys.ui.keyboard/keypress',
-        payload: { name, keyboard, is },
+        payload: { instance, name, key, keyboard, is },
       });
     };
 
@@ -73,7 +75,7 @@ export function useKeyboardPipe(args: KeyboardPipeHookArgs): t.KeyboardPipeHook 
       singleton[key]--;
       if (singleton[key] <= 0) delete singleton[key];
     };
-  }, [bus, key]);
+  }, [bus, key, instance]);
 
   /**
    * API
