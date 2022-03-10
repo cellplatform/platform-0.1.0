@@ -1,14 +1,14 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { KeyboardPipeHookArgs, KeyboardEvents } from '..';
-import { t, rx, slug } from './DEV.common';
+import { KeyboardPipeHookArgs, KeyboardEvents, Keyboard } from '..';
+import { t, rx } from './DEV.common';
 import { DevSample } from './DEV.Sample';
 
 type Ctx = {
   events: t.KeyboardEvents;
   args: KeyboardPipeHookArgs;
   render: boolean;
-  tmp: any;
+  state?: t.KeyboardState;
 };
 
 /**
@@ -25,7 +25,6 @@ export const actions = DevActions<Ctx>()
       render: true,
       events,
       args: { bus },
-      tmp: {},
     };
 
     return ctx;
@@ -33,53 +32,25 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx, redraw } = e;
-    e.ctx.events.$.subscribe((ev) => {
-      const { payload } = ev;
-      console.log('events.$:', payload);
+    const bus = ctx.args.bus;
 
-      const { key, is } = payload;
-      const { code, metaKey, ctrlKey, shiftKey, altKey } = payload.keyboard;
-      const modifiers = { metaKey, ctrlKey, shiftKey, altKey };
-
-      const tmp: any = (ctx.tmp = { payload, key, code, modifiers });
-
-      const modifier = (field: string, matchKey: string) => {
-        if (is.down && key === matchKey) tmp[field] = true;
-        if (is.up && key === matchKey) delete tmp[field];
-      };
-
-      modifier('META', 'Meta');
-      modifier('SHIFT', 'Shift');
-      modifier('CTRL', 'Ctrl');
-      modifier('ALT', 'Alt');
-
+    /**
+     * Example: raw state-monitor (without the hook)
+     */
+    const state = Keyboard.StateMonitor({ bus });
+    state.$.subscribe((e) => {
+      ctx.state = e;
       redraw();
     });
   })
 
   .items((e) => {
+    e.title('Dev');
+
     e.boolean('render', (e) => {
       if (e.changing) e.ctx.render = e.changing.next;
       e.boolean.current = e.ctx.render;
     });
-
-    e.component((e) => {
-      return (
-        <ObjectView
-          name={'tmp'}
-          data={e.ctx.tmp}
-          style={{ MarginX: 15 }}
-          fontSize={10}
-          expandPaths={['$']}
-        />
-      );
-    });
-
-    e.hr();
-  })
-
-  .items((e) => {
-    e.title('Dev');
 
     e.hr();
     e.component((e) => {
@@ -90,6 +61,21 @@ export const actions = DevActions<Ctx>()
           style={{ MarginX: 15 }}
           fontSize={10}
           expandPaths={['$']}
+        />
+      );
+    });
+
+    e.hr(1, 0.1);
+
+    e.component((e) => {
+      return (
+        <ObjectView
+          name={'Keyboard.State'}
+          data={e.ctx.state}
+          style={{ MarginX: 15 }}
+          fontSize={10}
+          expandPaths={['$']}
+          expandLevel={5}
         />
       );
     });
@@ -105,7 +91,7 @@ export const actions = DevActions<Ctx>()
         border: -0.1,
         cropmarks: -0.2,
         label: {
-          topLeft: 'hook: useKeyboardPipe(bus)',
+          topLeft: 'hook: useKeyboard(bus)',
           bottomRight: `${rx.bus.instance(bus)}`,
         },
         width: 540,

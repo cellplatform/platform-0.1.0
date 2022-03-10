@@ -97,7 +97,7 @@ export type UIEventTarget = {
 };
 
 /**
- * EVENT (API)
+ * EVENTS (API)
  */
 export type UIEvents<Ctx extends O = O> = Disposable & {
   instance: Id;

@@ -1,15 +1,31 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Card, color, COLORS, css, CssValue, TextSyntax, t } from './DEV.common';
+
+import { css, CssValue, t } from './DEV.common';
 import { DevKey, DevKeyDefaults } from './DEV.Key';
 
 export type DevModifierKeysProps = {
-  align?: 'left' | 'right';
+  edge: 'Left' | 'Right';
+  state: t.KeyboardState;
   spacing?: number;
   style?: CssValue;
 };
 
 export const DevModifierKeys: React.FC<DevModifierKeysProps> = (props) => {
-  const { align = 'left', spacing = DevKeyDefaults.SPACING } = props;
+  const { edge, state, spacing = DevKeyDefaults.SPACING } = props;
+
+  type P = { isPressed: boolean; isEdge: boolean };
+  const toPressed = (state: t.KeyboardModifierKeyState): P => {
+    if (state === false) return { isPressed: false, isEdge: false };
+    return {
+      isPressed: Array.isArray(state),
+      isEdge: (state as string[]).includes(edge),
+    };
+  };
+
+  const shift = toPressed(state.modifiers.shift);
+  const ctrl = toPressed(state.modifiers.ctrl);
+  const alt = toPressed(state.modifiers.alt);
+  const meta = toPressed(state.modifiers.meta);
 
   /**
    * [Render]
@@ -21,7 +37,7 @@ export const DevModifierKeys: React.FC<DevModifierKeysProps> = (props) => {
       boxSizing: 'border-box',
     }),
     row: css({
-      Flex: align === 'left' ? 'x-start-start' : 'x-end-end',
+      Flex: edge === 'Left' ? 'x-start-start' : 'x-end-end',
       marginBottom: spacing,
       ':last-child': { marginBottom: 0 },
     }),
@@ -30,12 +46,12 @@ export const DevModifierKeys: React.FC<DevModifierKeysProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.row}>
-        <DevKey label={'Shift'} paddingX={30} />
+        <DevKey label={'Shift'} paddingX={30} {...shift} />
       </div>
       <div {...styles.row}>
-        <DevKey label={'Ctrl'} />
-        <DevKey label={'Alt'} />
-        <DevKey label={'Meta'} />
+        <DevKey label={'Ctrl'} {...ctrl} />
+        <DevKey label={'Alt'} {...alt} />
+        <DevKey label={'Meta'} {...meta} />
       </div>
     </div>
   );

@@ -6,14 +6,21 @@ export const DevKeyDefaults = { SPACING: 4 };
 
 export type DevKeyProps = {
   label?: string | JSX.Element;
-  pressed?: boolean;
+  isPressed?: boolean;
+  isEdge?: boolean;
   spacing?: number;
   paddingX?: number;
   style?: CssValue;
 };
 
 export const DevKey: React.FC<DevKeyProps> = (props) => {
-  const { label = '?', pressed = false, paddingX = 12, spacing = DevKeyDefaults.SPACING } = props;
+  const {
+    label = '?',
+    isPressed = false,
+    isEdge = false,
+    paddingX = 12,
+    spacing = DevKeyDefaults.SPACING,
+  } = props;
 
   /**
    * [Render]
@@ -28,7 +35,7 @@ export const DevKey: React.FC<DevKeyProps> = (props) => {
     }),
     bg: css({
       Absolute: 0,
-      backgroundColor: pressed ? color.alpha(COLORS.DARK, 0.8) : undefined,
+      backgroundColor: isPressed ? color.alpha(COLORS.DARK, 0.8) : undefined,
     }),
     body: css({
       position: 'relative',
@@ -39,13 +46,20 @@ export const DevKey: React.FC<DevKeyProps> = (props) => {
       fontWeight: 'bold',
       fontSize: 13,
     }),
+    edge: css({
+      Absolute: [3, 3, null, null],
+      Size: 4,
+      borderRadius: 50,
+      backgroundColor: '#FF9A03', // Orange.
+      border: `solid 1px ${color.format(0.3)}`,
+    }),
   };
 
   const elLabel =
     typeof label === 'string' ? (
       <TextSyntax
         text={`<${label}>`}
-        colors={pressed ? { Brace: 0.8, Word: 1 } : undefined}
+        colors={isPressed ? { Brace: 0.8, Word: 1 } : undefined}
         style={styles.label}
       />
     ) : (
@@ -56,6 +70,7 @@ export const DevKey: React.FC<DevKeyProps> = (props) => {
     <Card style={css(styles.base, props.style)}>
       <div {...styles.bg} />
       <div {...styles.body}>{elLabel}</div>
+      {isPressed && isEdge && <div {...styles.edge} />}
     </Card>
   );
 };

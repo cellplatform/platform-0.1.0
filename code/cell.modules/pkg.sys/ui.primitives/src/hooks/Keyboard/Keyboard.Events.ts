@@ -1,5 +1,6 @@
 import { animationFrameScheduler, Subject, Observable } from 'rxjs';
-import { filter, observeOn, takeUntil } from 'rxjs/operators';
+import { filter, observeOn, takeUntil, map } from 'rxjs/operators';
+import { SINGLETON_INSTANCE } from './constants';
 
 import { rx, t } from '../common';
 
@@ -12,8 +13,10 @@ type O = Record<string, unknown>;
 
 export function KeyboardEvents(args: {
   bus: t.EventBus<any>;
+  instance?: Id;
   dispose$?: Observable<any>;
 }): t.KeyboardEvents {
+  const { instance = SINGLETON_INSTANCE } = args;
   const bus = rx.busAsType<t.KeyboardEvent>(args.bus);
 
   const dispose$ = new Subject<void>();
@@ -23,14 +26,16 @@ export function KeyboardEvents(args: {
   const $ = bus.$.pipe(
     takeUntil(dispose$),
     filter((e) => e.type.startsWith('sys.ui.keyboard/')),
+    filter((e) => e.payload.instance === instance),
     observeOn(animationFrameScheduler),
   );
 
-  const keydown$ = $.pipe(filter((e) => e.payload.is.down));
-  const keyup$ = $.pipe(filter((e) => e.payload.is.down));
+  const key$ = rx.payload<t.KeyboardKeypressEvent>($, 'sys.ui.keyboard/keypress');
+  const down$ = key$.pipe(filter((e) => e.is.down));
+  const up$ = key$.pipe(filter((e) => e.is.up));
 
   /**
    * API
    */
-  return { $, dispose, dispose$, down$: keydown$, up$: keyup$ };
+  return { $, dispose, dispose$, key$, down$, up$ };
 }

@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
 import { Subject } from 'rxjs';
 
-import { useKeyboardPipe, KeyboardPipeHookArgs } from '..';
-
-import { color, COLORS, Card, css, CssValue, TextSyntax, Icons } from './DEV.common';
+import { Keyboard, KeyboardPipeHookArgs } from '..';
+import { color, COLORS, css, CssValue, Icons } from './DEV.common';
 import { DevModifierKeys } from './DEV.ModifierKeys';
 
 export type EventCtx = { index: number; message: string };
@@ -14,14 +13,14 @@ export type DevSampleProps = {
 };
 
 export const DevSample: React.FC<DevSampleProps> = (props) => {
-  const keyboard = useKeyboardPipe(props.args);
+  const keyboard = Keyboard.useKeyboard(props.args);
 
   /**
    * NOTE: Test multiple instances of the hook initiated.
    *       Should not duplicate keyboard events.
    */
-  useKeyboardPipe(props.args);
-  useKeyboardPipe(props.args);
+  Keyboard.useKeyboardPipe(props.args);
+  Keyboard.useKeyboardPipe(props.args);
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
@@ -69,8 +68,8 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
         {elIcon}
       </div>
       <div {...styles.footer.base}>
-        <DevModifierKeys align={'left'} />
-        <DevModifierKeys align={'right'} />
+        <DevModifierKeys edge={'Left'} state={keyboard.state} />
+        <DevModifierKeys edge={'Right'} state={keyboard.state} />
       </div>
     </div>
   );

@@ -4,23 +4,53 @@ import { Observable } from 'rxjs';
 import { UIEventBase, UIModifierKeys } from '../UIEvents/types';
 
 type Id = string;
+export type KeyboardModifierEdges = ['Left'] | ['Right'] | ['Left' | 'Right'];
+
+export type KeyboardState = {
+  modifiers: KeyboardModifierKeys;
+};
+
+export type KeyboardModifierKeyState = false | KeyboardModifierEdges;
+export type KeyboardModifierKeys = {
+  shift: KeyboardModifierKeyState;
+  ctrl: KeyboardModifierKeyState;
+  alt: KeyboardModifierKeyState;
+  meta: KeyboardModifierKeyState;
+};
+
+export type KeyboardStateMonitor = Disposable & {
+  readonly $: Observable<KeyboardState>;
+  readonly current: KeyboardState;
+};
 
 /**
- * Hook for piping a set of keyboard events through an event-bus.
+ * HOOK keyboard state.
  */
-export type KeyboardPipeHook = {
-  key: string;
-  listeners: number; // Total number of listeners currently operating on the bus.
+export type KeyboardHook = {
+  readonly bus: Id;
+  readonly instance: Id;
+  readonly state: KeyboardState;
   events(args?: { dispose$?: Observable<any> }): KeyboardEvents;
 };
 
 /**
- * EVENT (API)
+ * HOOK for piping a set of keyboard events through an event-bus.
+ */
+export type KeyboardPipeHook = {
+  readonly bus: Id;
+  readonly instance: Id;
+  readonly listeners: number; // Total number of listeners currently operating on the bus.
+  events(args?: { dispose$?: Observable<any> }): KeyboardEvents;
+};
+
+/**
+ * EVENTS (API)
  */
 export type KeyboardEvents = Disposable & {
-  $: Observable<KeyboardEvent>;
-  down$: Observable<KeyboardEvent>;
-  up$: Observable<KeyboardEvent>;
+  readonly $: Observable<KeyboardEvent>;
+  readonly key$: Observable<KeyboardKeypress>;
+  readonly down$: Observable<KeyboardKeypress>;
+  readonly up$: Observable<KeyboardKeypress>;
 };
 
 /**
@@ -38,8 +68,7 @@ export type KeyboardKeypressEvent = {
 export type KeyboardKeypress = {
   readonly instance: Id;
   readonly name: 'onKeydown' | 'onKeyup';
-  readonly key: string;
-  readonly keyboard: KeyboardKeypressProps;
+  readonly keypress: KeyboardKeypressProps;
   readonly is: { down: boolean; up: boolean };
 };
 

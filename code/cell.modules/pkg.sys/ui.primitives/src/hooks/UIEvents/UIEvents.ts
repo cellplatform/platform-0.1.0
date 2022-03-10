@@ -9,7 +9,6 @@ type O = Record<string, unknown>;
 /**
  * Event API.
  */
-
 export function UIEvents<Ctx extends O = O>(args: {
   bus: t.EventBus<any>;
   instance: Id;
