@@ -113,4 +113,4 @@ export type ListItemMouseEvent = {
   type: 'sys.ui.List/Item/Mouse';
   payload: ListItemMouse;
 };
-export type ListItemMouse = t.UIMouseEventProps;
+export type ListItemMouse = t.UIMouseProps;

@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 
-import { css, CssValue, DEFAULTS, eventDummy, t, useUIEvents } from './common';
+import { css, CssValue, DEFAULTS, eventDummy, t, useEventPipe } from './common';
 import { ListLayoutItem } from './List.Layout.Item';
 import { Renderers } from './renderers';
 
@@ -40,7 +40,7 @@ export const ListLayout: React.FC<ListLayoutProps> = (props) => {
   const { bus, instance } = event;
 
   const ctx: t.CtxList = { kind: 'List', total };
-  const ui = useUIEvents<t.CtxList, HTMLDivElement>({ bus, instance, ctx, focusRedraw: true });
+  const ui = useEventPipe<t.CtxList, HTMLDivElement>({ bus, instance, ctx, focusRedraw: true });
   const isFocused = ui.element.containsFocus;
   const renderer = Util.renderer({ props, total, event, isFocused });
 
