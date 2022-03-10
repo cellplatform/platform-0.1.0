@@ -48,10 +48,10 @@ export const DevKey: React.FC<DevKeyProps> = (props) => {
     }),
     edge: css({
       Absolute: [3, 3, null, null],
-      Size: 4,
+      Size: 5,
       borderRadius: 50,
-      backgroundColor: '#FF9A03', // Orange.
-      border: `solid 1px ${color.format(0.3)}`,
+      backgroundColor: COLORS.MAGENTA,
+      border: `solid 1px ${color.format(0.7)}`,
     }),
   };
 
