@@ -1,2 +1,2 @@
-export * from './useEventPipe';
+export * from './useUIEventPipe';
 export * from './UIEvents';

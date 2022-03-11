@@ -19,7 +19,7 @@ export type EventPipeHookArgs<Ctx extends O, H extends HTMLElement> = {
 /**
  * Hook for abstracting a set of DOM events through an event-bus.
  */
-export function useEventPipe<Ctx extends O, H extends HTMLElement>(
+export function useUIEventPipe<Ctx extends O, H extends HTMLElement>(
   args: EventPipeHookArgs<Ctx, H>,
 ): t.UIEventPipeHook<Ctx, H> {
   const { instance, ctx, focusRedraw = false } = args;

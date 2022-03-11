@@ -1,7 +1,7 @@
 import React, { forwardRef, useState } from 'react';
 import { VariableSizeList as List } from 'react-window';
 
-import { css, FC, t, useResizeObserver, useEventPipe } from './common';
+import { css, FC, t, useResizeObserver, useUIEventPipe } from './common';
 import { ListEvents } from './Events';
 import { useListEventsController } from './hooks';
 import { ListProps, Util } from './List.Layout';
@@ -35,7 +35,7 @@ export const View: React.FC<ListVirtualProps> = (props) => {
   const { bus, instance } = ctrl;
 
   const ctx: t.CtxList = { kind: 'List', total };
-  const ui = useEventPipe<t.CtxList, HTMLDivElement>({ bus, instance, ctx, focusRedraw: true });
+  const ui = useUIEventPipe<t.CtxList, HTMLDivElement>({ bus, instance, ctx, focusRedraw: true });
   const isFocused = ui.element.containsFocus;
 
   const resize = useResizeObserver(ui.ref);

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Subject } from 'rxjs';
 
-import { EventPipeHookArgs, useEventPipe } from '..';
+import { EventPipeHookArgs, useUIEventPipe } from '..';
 import { Card, css, CssValue, TextSyntax } from './DEV.common';
 
 import { useKeyboardPipe } from '../../Keyboard';
@@ -14,7 +14,7 @@ export type DevSampleProps = {
 };
 
 export const DevSample: React.FC<DevSampleProps> = (props) => {
-  const ui = useEventPipe<EventCtx, HTMLDivElement>(props.args);
+  const ui = useUIEventPipe<EventCtx, HTMLDivElement>(props.args);
 
   useEffect(() => {
     const dispose$ = new Subject<void>();

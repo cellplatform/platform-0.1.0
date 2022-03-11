@@ -5,7 +5,7 @@ export { t };
 export * from '../../common';
 export * from './constants';
 export * from './Is';
-export { useEventPipe, UIEvents } from '../../../hooks/UIEvents';
+export { useUIEventPipe, UIEvents } from '../../../hooks/UIEvents';
 
 /**
  * Create a dummy EVENT {bus/instance} object.
