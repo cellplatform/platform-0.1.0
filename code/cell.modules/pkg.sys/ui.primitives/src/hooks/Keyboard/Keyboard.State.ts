@@ -17,13 +17,20 @@ export function KeyboardStateMonitor(args: {
   const { instance = SINGLETON_INSTANCE } = args;
   const bus = rx.busAsType<t.KeyboardEvent>(args.bus);
   const events = KeyboardEvents({ bus, instance });
-  const { dispose$, key$, down$, up$ } = events;
+  const { dispose$, key$ } = events;
 
   const onWindowBlur = () => reset();
   window.addEventListener('blur', onWindowBlur);
 
-  const reset = () => {
-    _current = R.clone(DEFAULT.STATE);
+  const reset = (options: { hard?: boolean } = {}) => {
+    const clone = R.clone(DEFAULT.STATE);
+    if (options.hard) {
+      // NB: Hard reset, drop everything.
+      _state = clone;
+    } else {
+      // NB: Retain the "last" event history item.
+      _state = { ...clone, last: _state.last };
+    }
     fireNext();
   };
 
@@ -32,14 +39,14 @@ export function KeyboardStateMonitor(args: {
     window.removeEventListener('blur', onWindowBlur);
   };
 
-  let _current: t.KeyboardState = R.clone(DEFAULT.STATE);
+  let _state: t.KeyboardState = R.clone(DEFAULT.STATE);
   const change = (fn: (state: t.KeyboardState) => void) => {
-    const state = R.clone(_current);
+    const state = R.clone(_state);
     fn(state);
-    _current = state;
+    _state = state;
   };
-  const fireNext = () => current$.next(_current);
-  const current$ = new BehaviorSubject<t.KeyboardState>(_current);
+  const fireNext = () => state$.next(_state);
+  const state$ = new BehaviorSubject<t.KeyboardState>(_state);
 
   /**
    * State update modifiers.
@@ -71,12 +78,12 @@ export function KeyboardStateMonitor(args: {
     };
 
     change((state) => {
-      const modifiers = state.modifiers;
+      const modifiers = state.current.modifiers;
       update(modifiers, 'shift', 'Shift');
       update(modifiers, 'ctrl', 'Control');
       update(modifiers, 'alt', 'Alt');
       update(modifiers, 'meta', 'Meta');
-      state.modified = Object.values(modifiers).some((v) => Boolean(v));
+      state.current.modified = Object.values(modifiers).some((v) => Boolean(v));
     });
   };
 
@@ -92,13 +99,14 @@ export function KeyboardStateMonitor(args: {
     if (is.modifier) return;
 
     change((state) => {
+      const next = state.current;
       if (is.down) {
         const key = toStateKey(e);
-        const index = state.pressed.findIndex((item) => item.code === code);
-        if (index < 0) state.pressed.push(key);
-        if (index >= 0) state.pressed[index] = key;
+        const index = next.pressed.findIndex((item) => item.code === code);
+        if (index < 0) next.pressed.push(key);
+        if (index >= 0) next.pressed[index] = key;
       } else {
-        state.pressed = state.pressed.filter((k) => k.code !== code);
+        next.pressed = next.pressed.filter((k) => k.code !== code);
       }
     });
   };
@@ -109,6 +117,7 @@ export function KeyboardStateMonitor(args: {
   events.key$.subscribe((e) => {
     updateModifierKeys(e);
     updatePressedKeys(e);
+    change((state) => (state.last = e));
     fireNext();
   });
 
@@ -120,12 +129,12 @@ export function KeyboardStateMonitor(args: {
     dispose,
     dispose$,
     key$,
-    current$: current$.pipe(
+    state$: state$.pipe(
       takeUntil(dispose$),
       distinctUntilChanged((prev, next) => R.equals(prev, next)),
     ),
-    get current() {
-      return _current;
+    get state() {
+      return _state;
     },
   };
 }

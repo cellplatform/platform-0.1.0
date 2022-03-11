@@ -117,6 +117,7 @@ function toFlags(e: KeyboardEvent): t.KeyboardKeyFlags {
     modifier: ['Shift', 'Alt', 'Control', 'Meta'].includes(e.key),
     number: e.code.startsWith('Digit') || e.code.startsWith('Numpad'),
     letter: e.code.startsWith('Key'),
+    arrow: e.code.startsWith('Arrow'),
     enter: e.code === 'Enter',
     escape: e.code === 'Escape',
   };

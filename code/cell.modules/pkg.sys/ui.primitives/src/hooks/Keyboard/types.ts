@@ -14,16 +14,24 @@ export type KeyboardKeyFlags = {
   readonly letter: boolean;
   readonly enter: boolean;
   readonly escape: boolean;
+  readonly arrow: boolean;
 };
 
 /**
  * State.
  */
-export type KeyboardKey = { key: string; code: string; is: KeyboardKeyFlags };
+export type KeyboardKey = {
+  key: string;
+  code: string;
+  is: KeyboardKeyFlags;
+};
 export type KeyboardState = {
-  modified: boolean;
-  modifiers: KeyboardModifierKeys;
-  pressed: KeyboardKey[];
+  current: {
+    modified: boolean;
+    modifiers: KeyboardModifierKeys;
+    pressed: KeyboardKey[];
+  };
+  last?: t.KeyboardKeypress;
 };
 
 export type KeyboardModifierKeyState = false | KeyboardModifierEdges;
@@ -36,8 +44,8 @@ export type KeyboardModifierKeys = {
 
 export type KeyboardStateMonitor = Disposable & {
   readonly key$: Observable<KeyboardKeypress>;
-  readonly current$: Observable<KeyboardState>;
-  readonly current: KeyboardState;
+  readonly state$: Observable<KeyboardState>;
+  readonly state: KeyboardState;
   reset(): void;
 };
 
@@ -47,7 +55,7 @@ export type KeyboardStateMonitor = Disposable & {
 export type KeyboardHook = {
   readonly bus: Id;
   readonly instance: Id;
-  readonly current: KeyboardState;
+  readonly state: KeyboardState;
   events(args?: { dispose$?: Observable<any> }): KeyboardEvents;
 };
 

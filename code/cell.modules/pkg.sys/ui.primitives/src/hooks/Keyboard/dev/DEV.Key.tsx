@@ -30,16 +30,13 @@ export const DevKey: React.FC<DevKeyProps> = (props) => {
       position: 'relative',
       boxSizing: 'border-box',
       overflow: 'hidden',
+      transform: `translate(0, ${isPressed ? 2 : 0}px)`,
       marginRight: spacing,
       ':last-child': { marginRight: 0 },
     }),
     bg: css({
       Absolute: 0,
-      backgroundColor: isPressed
-        ? isEdge
-          ? color.alpha(COLORS.DARK, 0.7)
-          : color.alpha(COLORS.DARK, 0.08)
-        : undefined,
+      backgroundColor: isPressed && isEdge ? color.alpha(COLORS.MAGENTA, 0.04) : undefined,
     }),
     body: css({
       position: 'relative',
@@ -53,15 +50,7 @@ export const DevKey: React.FC<DevKeyProps> = (props) => {
   };
 
   const elLabel =
-    typeof label === 'string' ? (
-      <TextSyntax
-        text={`<${label}>`}
-        colors={isPressed && isEdge ? { Brace: 0.8, Word: 1 } : undefined}
-        style={styles.label}
-      />
-    ) : (
-      label
-    );
+    typeof label !== 'string' ? label : <TextSyntax text={`<${label}>`} style={styles.label} />;
 
   return (
     <Card style={css(styles.base, props.style)}>

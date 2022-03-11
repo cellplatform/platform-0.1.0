@@ -22,10 +22,11 @@ export const DevModifierKeys: React.FC<DevModifierKeysProps> = (props) => {
     };
   };
 
-  const shift = toPressed(state.modifiers.shift);
-  const ctrl = toPressed(state.modifiers.ctrl);
-  const alt = toPressed(state.modifiers.alt);
-  const meta = toPressed(state.modifiers.meta);
+  const { modifiers } = state.current;
+  const shift = toPressed(modifiers.shift);
+  const ctrl = toPressed(modifiers.ctrl);
+  const alt = toPressed(modifiers.alt);
+  const meta = toPressed(modifiers.meta);
 
   /**
    * [Render]

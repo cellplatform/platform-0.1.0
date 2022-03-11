@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 
 import { R, rx, t } from '../common';
 import { DEFAULT, SINGLETON_INSTANCE } from './constants';
+import { KeyboardEvents } from './Keyboard.Events';
 import { KeyboardStateMonitor } from './Keyboard.State';
 import { useKeyboardPipe } from './useKeyboardPipe';
-import { KeyboardEvents } from './Keyboard.Events';
 
 type Id = string;
 
@@ -19,14 +19,14 @@ export function useKeyboard(args: KeyboardHookArgs): t.KeyboardHook {
   const busInstance = rx.bus.instance(bus);
 
   useKeyboardPipe({ bus, instance }); // NB: Singleton (ensure the keyboard events are piping into the bus).
-  const [current, setCurrent] = useState<t.KeyboardState>(R.clone(DEFAULT.STATE));
+  const [state, setState] = useState<t.KeyboardState>(R.clone(DEFAULT.STATE));
 
   /**
    * [Lifecycle]
    */
   useEffect(() => {
     const monitor = KeyboardStateMonitor({ bus, instance });
-    monitor.current$.subscribe((e) => setCurrent(e));
+    monitor.state$.subscribe((e) => setState(e));
     return () => monitor.dispose();
   }, [bus, busInstance, instance]);
 
@@ -36,7 +36,7 @@ export function useKeyboard(args: KeyboardHookArgs): t.KeyboardHook {
   return {
     bus: busInstance,
     instance,
-    current,
+    state,
     events: (args) => KeyboardEvents({ ...args, bus }),
   };
 }
