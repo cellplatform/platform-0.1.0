@@ -1,8 +1,8 @@
-import { animationFrameScheduler, Subject, Observable } from 'rxjs';
-import { filter, observeOn, takeUntil, map } from 'rxjs/operators';
-import { SINGLETON_INSTANCE } from './constants';
+import { animationFrameScheduler, Observable, Subject } from 'rxjs';
+import { filter, observeOn, takeUntil } from 'rxjs/operators';
 
 import { rx, t } from '../common';
+import { SINGLETON_INSTANCE } from './constants';
 
 type Id = string;
 type O = Record<string, unknown>;
