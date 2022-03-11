@@ -5,24 +5,13 @@ import { containsFocus } from '../Focus';
 
 export const Util = {
   toBase(e: React.UIEvent | React.FocusEvent | KeyboardEvent): t.UIEventBase {
-    const {
-      bubbles,
-      cancelable,
-      eventPhase,
-      timeStamp,
-      isTrusted,
-      preventDefault,
-      stopPropagation,
-    } = e;
-
+    const { bubbles, cancelable, eventPhase, timeStamp, isTrusted } = e;
     return {
       bubbles,
       cancelable,
       eventPhase,
       timeStamp,
       isTrusted,
-      preventDefault,
-      stopPropagation,
     };
   },
 

@@ -36,40 +36,54 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({ Flex: 'y-stretch-stretch', boxSizing: 'border-box', position: 'relative' }),
-    body: {
+    base: css({
+      Flex: 'y-stretch-stretch',
+      boxSizing: 'border-box',
+      position: 'relative',
+    }),
+    body: css({ flex: 1, position: 'relative', Flex: 'center-center' }),
+    footer: css({ Flex: 'x-spaceBetween-center', padding: 10 }),
+    icon: css({ Absolute: [0, null, null, 12] }),
+    keys: css({ Flex: 'x-center-center' }),
+    key: {
       base: css({
+        Flex: 'y-center-center',
         position: 'relative',
-        flex: 1,
-        Flex: 'center-center',
+        color: COLORS.DARK,
+        marginRight: 10,
+        ':last-child': { margin: 0 },
       }),
-    },
-    footer: {
-      base: css({ Flex: 'x-spaceBetween-center', padding: 10 }),
-    },
-
-    keyboard: {
-      icon: css({ Absolute: [0, null, null, 18] }),
+      label: css({ fontSize: 50 }),
+      code: css({ fontSize: 9, paddingTop: 5 }),
     },
   };
 
   const elIcon = (
-    <Icons.Keyboard.fill
-      size={60}
-      color={color.alpha(COLORS.DARK, 0.3)}
-      style={styles.keyboard.icon}
-    />
+    <Icons.Keyboard.fill size={42} color={color.alpha(COLORS.DARK, 0.3)} style={styles.icon} />
+  );
+
+  const elKeys = (
+    <div {...styles.keys}>
+      {keyboard.current.pressed.map((e, i) => {
+        return (
+          <div key={`${e.code}.${i}`} {...styles.key.base}>
+            <div {...styles.key.label}>{e.key}</div>
+            <div {...styles.key.code}>{e.code}</div>
+          </div>
+        );
+      })}
+    </div>
   );
 
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.body.base}>
-        <div />
+      <div {...styles.body}>
+        {elKeys}
         {elIcon}
       </div>
-      <div {...styles.footer.base}>
-        <DevModifierKeys edge={'Left'} state={keyboard.state} />
-        <DevModifierKeys edge={'Right'} state={keyboard.state} />
+      <div {...styles.footer}>
+        <DevModifierKeys edge={'Left'} state={keyboard.current} />
+        <DevModifierKeys edge={'Right'} state={keyboard.current} />
       </div>
     </div>
   );

@@ -1,13 +1,29 @@
 import { Disposable } from '@platform/types';
 import { Observable } from 'rxjs';
 
-import { UIEventBase, UIModifierKeys } from '../UIEvents/types';
+import * as t from '../../types';
 
 type Id = string;
 export type KeyboardModifierEdges = ['Left'] | ['Right'] | ['Left' | 'Right'];
 
+export type KeyboardKeyFlags = {
+  readonly down: boolean;
+  readonly up: boolean;
+  readonly modifier: boolean;
+  readonly number: boolean;
+  readonly letter: boolean;
+  readonly enter: boolean;
+  readonly escape: boolean;
+};
+
+/**
+ * State.
+ */
+export type KeyboardKey = { key: string; code: string; is: KeyboardKeyFlags };
 export type KeyboardState = {
+  modified: boolean;
   modifiers: KeyboardModifierKeys;
+  pressed: KeyboardKey[];
 };
 
 export type KeyboardModifierKeyState = false | KeyboardModifierEdges;
@@ -19,8 +35,10 @@ export type KeyboardModifierKeys = {
 };
 
 export type KeyboardStateMonitor = Disposable & {
-  readonly $: Observable<KeyboardState>;
+  readonly key$: Observable<KeyboardKeypress>;
+  readonly current$: Observable<KeyboardState>;
   readonly current: KeyboardState;
+  reset(): void;
 };
 
 /**
@@ -29,7 +47,7 @@ export type KeyboardStateMonitor = Disposable & {
 export type KeyboardHook = {
   readonly bus: Id;
   readonly instance: Id;
-  readonly state: KeyboardState;
+  readonly current: KeyboardState;
   events(args?: { dispose$?: Observable<any> }): KeyboardEvents;
 };
 
@@ -69,11 +87,11 @@ export type KeyboardKeypress = {
   readonly instance: Id;
   readonly name: 'onKeydown' | 'onKeyup';
   readonly keypress: KeyboardKeypressProps;
-  readonly is: { down: boolean; up: boolean };
+  readonly is: KeyboardKeyFlags;
 };
 
-export type KeyboardKeypressProps = UIEventBase &
-  UIModifierKeys & {
+export type KeyboardKeypressProps = t.UIEventBase &
+  t.UIModifierKeys & {
     readonly code: string;
     readonly key: string;
     readonly isComposing: boolean;

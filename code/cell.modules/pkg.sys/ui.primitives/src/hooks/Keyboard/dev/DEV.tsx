@@ -21,6 +21,7 @@ export const actions = DevActions<Ctx>()
 
     const bus = rx.bus();
     const events = KeyboardEvents({ bus });
+
     const ctx: Ctx = {
       render: true,
       events,
@@ -37,8 +38,8 @@ export const actions = DevActions<Ctx>()
     /**
      * Example: raw state-monitor (without the hook)
      */
-    const state = Keyboard.StateMonitor({ bus });
-    state.$.subscribe((e) => {
+    const keyboard = Keyboard.StateMonitor({ bus });
+    keyboard.current$.subscribe((e) => {
       ctx.state = e;
       redraw();
     });
@@ -74,8 +75,7 @@ export const actions = DevActions<Ctx>()
           data={e.ctx.state}
           style={{ MarginX: 15 }}
           fontSize={10}
-          expandPaths={['$']}
-          expandLevel={5}
+          expandPaths={['$', '$.modifiers', '$.pressed', '$.pressed.*']}
         />
       );
     });

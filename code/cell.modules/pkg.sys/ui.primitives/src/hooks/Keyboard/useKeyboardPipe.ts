@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Subject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { rx, t } from '../common';
+import { R, rx, t } from '../common';
 import { Util } from '../UIEvents/util';
 import { KeyboardEvents } from './Keyboard.Events';
 import { SINGLETON_INSTANCE } from './constants';
@@ -42,8 +42,11 @@ export function useKeyboardPipe(args: KeyboardPipeHookArgs): t.KeyboardPipeHook 
 
     const fire = (e: KeyboardEvent) => {
       const { code, key, isComposing, location, repeat } = e;
+      if (key === 'Dead') return; // REF: https://en.wikipedia.org/wiki/Dead_key
+
       const name = e.type === 'keydown' ? 'onKeydown' : 'onKeyup';
-      const is = { down: name === 'onKeydown', up: name === 'onKeyup' };
+      const is = toFlags(e);
+
       const keypress: t.KeyboardKeypressProps = {
         ...Util.toBase(e),
         ...Util.toModifierKeys(e),
@@ -90,8 +93,9 @@ export function useKeyboardPipe(args: KeyboardPipeHookArgs): t.KeyboardPipeHook 
 }
 
 /**
- * Listener
+ * Helpers
  */
+
 function listen() {
   const $ = new Subject<KeyboardEvent>();
   const handler = (e: KeyboardEvent) => $.next(e);
@@ -103,5 +107,17 @@ function listen() {
       document.removeEventListener('keydown', handler);
       document.removeEventListener('keyup', handler);
     },
+  };
+}
+
+function toFlags(e: KeyboardEvent): t.KeyboardKeyFlags {
+  return {
+    down: e.type === 'keydown',
+    up: e.type === 'keyup',
+    modifier: ['Shift', 'Alt', 'Control', 'Meta'].includes(e.key),
+    number: e.code.startsWith('Digit') || e.code.startsWith('Numpad'),
+    letter: e.code.startsWith('Key'),
+    enter: e.code === 'Enter',
+    escape: e.code === 'Escape',
   };
 }

@@ -81,8 +81,6 @@ export type UIEventBase = {
   readonly eventPhase: number;
   readonly timeStamp: number;
   readonly isTrusted: boolean;
-  preventDefault(): void;
-  stopPropagation(): void;
 };
 
 export type UIModifierKeys = {
