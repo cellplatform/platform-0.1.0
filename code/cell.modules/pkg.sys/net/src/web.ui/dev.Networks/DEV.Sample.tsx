@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Label } from '../Label';
-import { BulletList, color, COLORS, css, CssValue, DevConstants, t } from './DEV.common';
+import { List, color, COLORS, css, CssValue, DevConstants, t } from './DEV.common';
 import { DevEmpty } from './DEV.Empty';
 import { DevNetworkCard } from './DEV.NetworkCard';
 
@@ -22,10 +22,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
 
   type D = { network: t.PeerNetwork };
   const isEmpty = networks.length === 0;
-  const items = networks.map<{ data: D; id: string }>((network, i) => ({
-    id: `net.${i}`,
-    data: { network },
-  }));
+  const items = networks.map<{ data: D }>((network) => ({ data: { network } }));
 
   if (view === 'URI') {
     /**
@@ -42,7 +39,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
   };
 
   const elClientCards = (
-    <BulletList.Layout
+    <List.Layout
       orientation={'y'}
       bullet={{ edge: 'near', size: isCollection ? 60 : 0 }}
       spacing={50}
@@ -61,7 +58,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
           const lineColor = isConnected ? COLORS.CYAN_BLUE : color.alpha(COLORS.DARK, 0.1);
 
           return (
-            <BulletList.Renderers.Bullet.ConnectorLines
+            <List.Renderers.Bullet.ConnectorLines
               {...e}
               radius={30}
               lineWidth={12}

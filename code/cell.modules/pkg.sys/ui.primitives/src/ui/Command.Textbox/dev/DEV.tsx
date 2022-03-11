@@ -1,8 +1,8 @@
 import React from 'react';
+import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { CommandTextbox, CommandTextboxProps, OpenConnectionInputConstants } from '..';
-import { DevActions, ObjectView } from 'sys.ui.dev';
-import { COLORS, t } from '../../common';
+import { COLORS } from '../../common';
 
 const CONST = OpenConnectionInputConstants;
 

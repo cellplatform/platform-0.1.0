@@ -2,11 +2,11 @@ import React from 'react';
 
 import { EventStackCardFactory } from './types';
 
-import { EventStackCard } from '../Event.Card';
+import { EventCard } from '../Event.Card';
 
 export const cardFactory: EventStackCardFactory = (args) => {
   return (
-    <EventStackCard
+    <EventCard
       key={args.id}
       title={args.title}
       count={args.count}

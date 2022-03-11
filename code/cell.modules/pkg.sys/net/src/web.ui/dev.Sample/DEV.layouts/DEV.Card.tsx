@@ -9,7 +9,6 @@ import {
   Button,
   useDragTarget,
   COLORS,
-  Dropped,
 } from '../DEV.common';
 
 export type DevCardProps = {
@@ -19,7 +18,7 @@ export type DevCardProps = {
   shadow?: CardProps['shadow'];
   style?: CssValue;
   onClose?: () => void;
-  onDrop?: (e: Dropped) => void;
+  onDrop?: (e: t.Dropped) => void;
 };
 
 export const DevCard: React.FC<DevCardProps> = (props) => {

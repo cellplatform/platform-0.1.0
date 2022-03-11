@@ -1,4 +1,5 @@
 import { Icon } from '@platform/ui.icon';
+import { BsKeyboard, BsKeyboardFill } from 'react-icons/bs';
 import { FiAlertTriangle } from 'react-icons/fi';
 import { MdArrowBack, MdArrowForward, MdFace, MdLock, MdLockOpen, MdQrCode } from 'react-icons/md';
 import { RiFileCopyFill, RiTerminalBoxFill } from 'react-icons/ri';
@@ -15,4 +16,5 @@ export const Icons = {
   Terminal: icon(RiTerminalBoxFill),
   Arrow: { Back: icon(MdArrowBack), Forward: icon(MdArrowForward) },
   Event: icon(VscSymbolEvent),
+  Keyboard: { fill: icon(BsKeyboardFill), outline: icon(BsKeyboard) },
 };

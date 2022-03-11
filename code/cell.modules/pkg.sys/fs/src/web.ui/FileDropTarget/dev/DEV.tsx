@@ -4,7 +4,7 @@ import { FileDropTargetStateful, FileDropTargetStatefulProps } from '..';
 import { PathListStateful } from '../../PathList';
 import { t, rx, Filesystem, Icons, css } from '../common';
 
-import { PositioningLayers } from 'sys.ui.primitives/lib/ui/PositioningLayers';
+import { PositioningLayout } from 'sys.ui.primitives/lib/ui/PositioningLayout';
 import { PositioningLayer } from 'sys.ui.primitives/lib/types';
 import { DevOuter } from './DEV.Outer';
 
@@ -127,7 +127,7 @@ export const actions = DevActions<Ctx>()
     };
 
     e.render(
-      <PositioningLayers
+      <PositioningLayout
         layers={[dropLayer, pathsLayer]}
         childPointerEvents={'none'}
         style={{ flex: 1 }}

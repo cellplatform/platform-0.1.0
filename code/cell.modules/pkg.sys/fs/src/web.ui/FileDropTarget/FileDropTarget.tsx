@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t, useDragTarget, MinSize } from './common';
+import React from 'react';
+import { color, css, CssValue, t, useDragTarget } from './common';
 
 export type FileDropTargetProps = {
   style?: CssValue;

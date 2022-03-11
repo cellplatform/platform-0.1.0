@@ -14,6 +14,7 @@ export const CountLabel: React.FC<CountLabelProps> = (props) => {
     base: css({
       fontSize: 11,
       color: color.alpha(COLORS.MAGENTA, 0.25),
+      userSelect: 'none',
     }),
   };
   return <div {...css(styles.base, props.style)}>{props.count}</div>;

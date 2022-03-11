@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from 'react';
 
 import { TEST } from '../../web.test';
-import { color, css, CssValue, EventBridge, MediaStream, PeerNetwork, rx, t } from './DEV.common';
+import {
+  color,
+  css,
+  CssValue,
+  EventBridge,
+  MediaStream,
+  PeerNetwork,
+  rx,
+  t,
+  COLORS,
+} from './DEV.common';
 import { DevEventList } from './DEV.EventList';
 import { DevNetworkCard } from './DEV.NetworkCard';
 
@@ -12,7 +22,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
   const instance = 'instance.app';
 
   useEffect(() => {
-    createNetwork().then((e) => setNetwork(e));
+    Util.createNetwork().then((e) => setNetwork(e));
   }, []);
 
   /**
@@ -25,7 +35,13 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
       Flex: 'x-stretch-stretch',
     }),
     left: css({ Flex: 'y-center-center', flex: 1 }),
-    right: css({ width: 300 }),
+    right: css({
+      width: 300,
+      paddingTop: 10,
+      paddingLeft: 10,
+      borderLeft: `solid 1px ${color.format(-0.04)}`,
+      backgroundColor: color.alpha(COLORS.DARK, 0.03),
+    }),
   };
 
   return (
@@ -38,14 +54,20 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
   );
 };
 
-async function createNetwork() {
-  const bus = rx.bus();
-  const signal = TEST.SIGNAL;
-  const { network } = await PeerNetwork.start({ bus, signal });
-  const self = network.self;
+/**
+ * [Helpers]
+ */
 
-  MediaStream.Controller({ bus });
-  EventBridge.startEventBridge({ self, bus });
+const Util = {
+  async createNetwork() {
+    const bus = rx.bus();
+    const signal = TEST.SIGNAL;
+    const { network } = await PeerNetwork.start({ bus, signal });
+    const self = network.self;
 
-  return network;
-}
+    MediaStream.Controller({ bus });
+    EventBridge.startEventBridge({ self, bus });
+
+    return network;
+  },
+};

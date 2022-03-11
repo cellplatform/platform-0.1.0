@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { BulletList, css, CssValue, t } from '../../common';
+import { List, css, CssValue, t } from '../../common';
 import { DocCard } from './DEV.DocCard';
 import { SimpleDoc } from './DEV.types';
 
@@ -21,13 +21,13 @@ export const Sample: React.FC<SampleProps> = (props) => {
   };
 
   const elCards = (
-    <BulletList.Layout
+    <List.Layout
       orientation={'x'}
       bullet={{ edge: 'far', size: 60 }}
       spacing={20}
       items={docs.map((doc) => ({ data: doc }))}
       renderers={{
-        bullet: (e) => <BulletList.Renderers.Bullet.ConnectorLines {...e} radius={25} />,
+        bullet: (e) => <List.Renderers.Bullet.ConnectorLines {...e} radius={25} />,
         body: (e) => (e.kind === 'Default' ? <DocCard doc={e.data} /> : undefined),
       }}
     />

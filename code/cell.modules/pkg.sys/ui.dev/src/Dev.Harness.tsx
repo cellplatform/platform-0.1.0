@@ -9,9 +9,9 @@ const imports = {
   sample3: import('./test/sample-3/DEV'),
   sample4: import('./test/sample-4/DEV'),
 
-  Harness: import('./web.ui/Harness/DEV'),
-  Textbox: import('./web.ui/Textbox/DEV'),
-  OptionButtons: import('./web.ui/OptionButtons/DEV'),
+  Harness: import('./web.ui/Harness/dev/DEV'),
+  Textbox: import('./web.ui/Textbox/dev/DEV'),
+  OptionButtons: import('./web.ui/OptionButtons/dev/DEV'),
 
   TestSuite: import('./web.ui/TestSuite/dev/DEV'),
 };
@@ -20,17 +20,8 @@ const imports = {
  * UI Harness (Dev)
  */
 type Props = { bus?: t.EventBus };
-
 export const DevHarness: React.FC<Props> = (props) => {
-  const url = new URL(location.href);
-  return (
-    <Harness
-      bus={props.bus}
-      actions={Object.values(imports)}
-      initial={url.searchParams.get('dev')}
-      showActions={true}
-    />
-  );
+  return <Harness bus={props.bus} actions={Object.values(imports)} showActions={true} />;
 };
 
 export default DevHarness;

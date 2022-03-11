@@ -4,6 +4,11 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 /**
+ * 🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷
+ *     DANGER - DO NOT USE
+ *     Obsolete with React.FC (functional components)
+ * 🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷
+ *
  * Determines whether any element within the child DOM hierarchy
  * is focused.
  */

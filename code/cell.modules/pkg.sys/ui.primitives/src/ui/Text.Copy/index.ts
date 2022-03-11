@@ -1,1 +1,1 @@
-export * from './Text.Copy';
+export * from './TextCopy';

@@ -1,7 +1,9 @@
 import React from 'react';
+import { color, css, CssValue, Style, t } from '../../common';
 
-import { color, css, CssValue, defaultValue, Style, t } from '../../common';
-
+/**
+ * Types
+ */
 export type CardProps = {
   children?: React.ReactNode;
   background?: number | string;
@@ -23,9 +25,12 @@ export type CardProps = {
   onMouseLeave?: React.MouseEventHandler;
 };
 
+/**
+ * Component
+ */
 export const Card = React.forwardRef<HTMLDivElement, CardProps>((props, ref) => {
   const { background = 1, showAsCard = true } = props;
-  const borderColor = defaultValue(props.border?.color, -0.2);
+  const borderColor = props.border?.color ?? -0.2;
 
   const shadow = toShadow(props.shadow);
   const width = typeof props.width === 'number' ? { fixed: props.width } : props.width;
@@ -39,8 +44,8 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>((props, ref) => 
 
       width: width?.fixed,
       height: height?.fixed,
-      minWidth: defaultValue(width?.min, 10),
-      minHeight: defaultValue(height?.min, 10),
+      minWidth: width?.min ?? 10,
+      minHeight: height?.min ?? 10,
       maxWidth: width?.max,
       maxHeight: height?.max,
 
@@ -48,7 +53,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>((props, ref) => 
     }),
     card: css({
       border: `solid 1px ${color.format(borderColor)}`,
-      borderRadius: defaultValue(props.border?.radius, 4),
+      borderRadius: props.border?.radius ?? 4,
       background: color.format(background),
       boxShadow: Style.toShadow(shadow),
       ...Style.toPadding(props.padding),
@@ -77,7 +82,7 @@ Card.displayName = 'Card';
  */
 
 function toUserSelect(value: CardProps['userSelect']) {
-  value = defaultValue(value, false);
+  value = value ?? false;
   value = value === true ? 'auto' : value;
   value = value === false ? 'none' : value;
   return value as React.CSSProperties['userSelect'];

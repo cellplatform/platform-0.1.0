@@ -15,16 +15,7 @@ const imports = {
 type Props = { bus?: t.EventBus };
 
 export const DevHarness: React.FC<Props> = (props) => {
-  const url = new URL(location.href);
-
-  return (
-    <Harness
-      bus={props.bus}
-      actions={Object.values(imports)}
-      initial={url.searchParams.get('dev')}
-      showActions={true}
-    />
-  );
+  return <Harness bus={props.bus} actions={Object.values(imports)} showActions={true} />;
 };
 
 export default DevHarness;

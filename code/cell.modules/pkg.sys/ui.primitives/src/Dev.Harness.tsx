@@ -3,10 +3,15 @@ import { Harness } from 'sys.ui.dev';
 import { t } from './common';
 
 const imports = {
-  useDragTarget: import('./hooks/useDragTarget/dev/DEV'),
+  hookDragTarget: import('./hooks/DragTarget/dev/DEV'),
+  hookUIEvents: import('./hooks/UIEvents/dev/DEV'),
+  hookKeyboard: import('./hooks/Keyboard/dev/DEV'),
+
+  Bullet: import('./ui/Bullet/dev/DEV'),
+  List: import('./ui/List/dev/DEV'),
+  ListConnectorLines: import('./ui/List/renderers/dev/DEV.ConnectorLines'),
 
   Antechamber: import('./ui/Antechamber/dev/DEV'),
-  BulletListLayout: import('./ui/BulletList/dev/DEV'),
   DotTabstrip: import('./ui/DotTabstrip/dev/DEV'),
   Zoom: import('./ui/Zoom/DEV'),
   PropList: import('./ui/PropList/dev/DEV'),
@@ -15,10 +20,11 @@ const imports = {
 
   CommandTextbox: import('./ui/Command.Textbox/dev/DEV'),
   CommandBar: import('./ui/Command.Bar/dev/DEV'),
+  CommandCard: import('./ui/Command.Card/dev/DEV'),
 
   MinSize: import('./ui/MinSize/dev/DEV'),
-  PositioningContainer: import('./ui/PositioningContainer/dev/DEV'),
-  PositioningLayers: import('./ui/PositioningLayers/dev/DEV'),
+  PositioningLayer: import('./ui/PositioningLayer/dev/DEV'),
+  PositioningLayout: import('./ui/PositioningLayout/dev/DEV'),
 
   DraggableSort: import('./ui/Draggable.Sort/dev/DEV'),
   DraggableMotion: import('./ui/Draggable.Motion/dev/DEV'),
@@ -35,7 +41,7 @@ const imports = {
 
   Button: import('./ui.ref/button/Button.dev/DEV'),
   Switch: import('./ui.ref/button/Switch.dev/DEV'),
-  OptionButtons: import('sys.ui.dev/lib/web.ui/OptionButtons/DEV'),
+  OptionButtons: import('sys.ui.dev/lib/web.ui/OptionButtons/dev/DEV'),
 
   Svg: import('./ui/Image.Svg/dev/DEV'),
 
@@ -54,15 +60,7 @@ const imports = {
 type Props = { bus?: t.EventBus };
 
 export const DevHarness: React.FC<Props> = (props) => {
-  const url = new URL(location.href);
-  return (
-    <Harness
-      bus={props.bus}
-      actions={Object.values(imports)}
-      initial={url.searchParams.get('dev')}
-      showActions={true}
-    />
-  );
+  return <Harness bus={props.bus} actions={Object.values(imports)} showActions={true} />;
 };
 
 export default DevHarness;

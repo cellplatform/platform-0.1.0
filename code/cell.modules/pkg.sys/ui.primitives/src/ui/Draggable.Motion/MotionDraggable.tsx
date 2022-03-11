@@ -82,8 +82,11 @@ const View: React.FC<MotionDraggableProps> = (props) => {
 /**
  * Export API.
  */
-type Props = MotionDraggableProps;
 type Fields = {
   Events: (bus: t.EventBus<any>) => n.MotionDraggableEvents;
 };
-export const MotionDraggable = FC.decorate<Props, Fields>(View, { Events });
+export const MotionDraggable = FC.decorate<MotionDraggableProps, Fields>(
+  View,
+  { Events },
+  { displayName: 'MotionDraggable' },
+);

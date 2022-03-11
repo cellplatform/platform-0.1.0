@@ -3,11 +3,14 @@
  */
 export { TextInput } from '@platform/ui.text/lib/components/TextInput';
 
+/**
+ * @system
+ */
 export { Hr } from 'sys.ui.primitives/lib/ui/Hr';
 export { Button, ButtonProps } from 'sys.ui.primitives/lib/ui.ref/button/Button';
 export { PropList, PropListItem } from 'sys.ui.primitives/lib/ui/PropList';
 export { Card } from 'sys.ui.primitives/lib/ui/Card';
-export { BulletList } from 'sys.ui.primitives/lib/ui/BulletList';
+export { List } from 'sys.ui.primitives/lib/ui/List';
 export { Text } from 'sys.ui.primitives/lib/ui/Text';
 export { ObjectView } from 'sys.ui.primitives/lib/ui/ObjectView';
 export { Spinner } from 'sys.ui.primitives/lib/ui.ref/spinner/Spinner';
@@ -18,6 +21,8 @@ export {
   useEventBusHistory,
 } from 'sys.ui.primitives/lib/ui/Event.Stack';
 export { EventPipe } from 'sys.ui.primitives/lib/ui/Event.Pipe';
+
+export { PositioningLayout } from 'sys.ui.primitives/lib/ui/PositioningLayout';
 
 export { CommandBar } from 'sys.ui.primitives/lib/ui/Command.Bar';
 export { CommandTextbox } from 'sys.ui.primitives/lib/ui/Command.Textbox';

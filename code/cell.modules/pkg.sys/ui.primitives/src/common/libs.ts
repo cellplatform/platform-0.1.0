@@ -1,8 +1,8 @@
 /**
  * Ramda
  */
-import { equals, uniq, clamp, mergeDeepRight } from 'ramda';
-export const R = { equals, uniq, clamp, mergeDeepRight };
+import { equals, uniq, clamp, mergeDeepRight, clone } from 'ramda';
+export const R = { equals, uniq, clamp, mergeDeepRight, clone };
 
 /**
  * @platform

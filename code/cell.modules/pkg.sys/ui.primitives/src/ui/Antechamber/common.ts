@@ -1,4 +1,4 @@
 export * from '../../common';
-export { PositioningLayers } from '../PositioningLayers';
+export { PositioningLayout as PositioningLayers } from '../PositioningLayout';
 export { Icons } from '../Icons';
 export { Spinner } from '../../ui.ref/spinner/Spinner';

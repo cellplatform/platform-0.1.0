@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { css, CssValue, Dropped, t } from '../DEV.common';
+import { css, CssValue, t } from '../DEV.common';
 import { DevCard } from '../DEV.layouts';
 import { DevDataConnection } from './DEV.Data.Connection';
 import { DevMediaConnection } from './DEV.Media.Connection';
@@ -41,7 +41,7 @@ export const DevConnection: React.FC<DevConnectionProps> = (props) => {
     <DevMediaConnection self={self} bus={bus} connection={connection} />
   );
 
-  const handleDrop = (e: Dropped) => {
+  const handleDrop = (e: t.Dropped) => {
     console.log('file dropped', e);
   };
 

@@ -1,4 +1,4 @@
-import { map, merge, share } from 'rxjs/operators';
+import { map, mergeWith, share } from 'rxjs/operators';
 
 import { IKeypressEvent, KeypressObservable } from './types';
 import { fromDocumentEvent } from './util';
@@ -33,4 +33,4 @@ export const keyUp$ = fromDocumentEvent<KeyboardEvent>('keyup').pipe(
   share(),
 );
 
-export const keyPress$ = keyDown$.pipe(merge(keyUp$)) as KeypressObservable;
+export const keyPress$ = keyDown$.pipe(mergeWith(keyUp$)) as KeypressObservable;

@@ -1,14 +1,14 @@
-import { t } from '../../common';
+import { t, rx } from '../../common';
 import { ActionsSelectOnChangeEventHandler } from './types';
 
 /**
- * Fires appropriate events into the bus for an <ActionsSelect.
+ * Fires appropriate events into the bus for an <ActionsSelect> component.
  */
 export function useEventBus(args: {
-  bus?: t.EventBus;
+  bus?: t.EventBus<any>;
   onChange?: ActionsSelectOnChangeEventHandler;
 }) {
-  const bus = args.bus as t.EventBus<t.DevEvent>;
+  const bus = rx.busAsType<t.DevEvent>(args.bus || rx.bus());
   const active = Boolean(bus);
 
   const onChange: ActionsSelectOnChangeEventHandler = (e) => {
@@ -16,9 +16,12 @@ export function useEventBus(args: {
       const { selected } = e;
       const model = selected.toObject();
       const { namespace } = model;
-      bus.fire({ type: 'sys.ui.dev/actions/select/changed', payload: { namespace } });
+      bus.fire({
+        type: 'sys.ui.dev/actions/select/changed',
+        payload: { namespace },
+      });
     }
-    if (args.onChange) args.onChange(e);
+    args.onChange?.(e);
   };
 
   return { active, bus, onChange };

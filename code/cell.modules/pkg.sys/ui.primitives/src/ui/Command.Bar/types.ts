@@ -1,18 +1,18 @@
 import { Disposable, EventBus } from '@platform/types';
 import { Observable } from 'rxjs';
 
-type InstanceId = string;
+type Id = string;
 
 /**
  * Event API.
  */
 export type CommandBarEventsFactory = (args: {
   bus: EventBus<any>;
-  instance: InstanceId;
+  instance: Id;
 }) => CommandBarEvents;
 
 export type CommandBarEvents = Disposable & {
-  instance: InstanceId;
+  instance: Id;
   $: Observable<CommandBarEvent>;
   action: {
     $: Observable<CommandBarAction>;
@@ -36,7 +36,7 @@ export type CommandBarActionEvent = {
   type: 'sys.ui.CommandBar/Action';
   payload: CommandBarAction;
 };
-export type CommandBarAction = { instance: InstanceId; text: string };
+export type CommandBarAction = { instance: Id; text: string };
 
 /**
  * Fires when the textbox changes.
@@ -45,4 +45,4 @@ export type CommandBarTextChangeEvent = {
   type: 'sys.ui.CommandBar/TextChanged';
   payload: CommandBarTextChange;
 };
-export type CommandBarTextChange = { instance: InstanceId; from: string; to: string };
+export type CommandBarTextChange = { instance: Id; from: string; to: string };
