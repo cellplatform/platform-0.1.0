@@ -3,7 +3,7 @@ import React, { RefObject, useRef } from 'react';
 import { rx, t } from '../common';
 import { containsFocus, useFocus, withinFocus } from '../Focus';
 import { Util } from './util';
-import { UIEvents } from './UIEvents';
+import { UIEvents } from './UIEvent.Events';
 
 type O = Record<string, unknown>;
 type Id = string;
@@ -13,7 +13,7 @@ export type UIEventPipeHookArgs<Ctx extends O, H extends HTMLElement> = {
   instance: Id;
   ctx: Ctx;
   ref?: RefObject<H>;
-  focusRedraw?: boolean; // Cause redraw when focus/blur events fire on the [ref] element.
+  redrawOnFocus?: boolean; // Cause redraw when focus/blur events fire on the [ref] element.
 };
 
 /**
@@ -22,13 +22,13 @@ export type UIEventPipeHookArgs<Ctx extends O, H extends HTMLElement> = {
 export function useUIEventPipe<Ctx extends O, H extends HTMLElement>(
   args: UIEventPipeHookArgs<Ctx, H>,
 ): t.UIEventPipeHook<Ctx, H> {
-  const { instance, ctx, focusRedraw = false } = args;
+  const { instance, ctx, redrawOnFocus = false } = args;
   const bus = rx.busAsType<t.UIEvent>(args.bus);
 
   const _ref = useRef<H>(null);
   const ref = args.ref || _ref;
   const target = Util.toTarget(ref);
-  useFocus(ref, { redraw: focusRedraw });
+  useFocus(ref, { redraw: redrawOnFocus });
 
   /**
    * Target Element.
@@ -105,6 +105,7 @@ export function useUIEventPipe<Ctx extends O, H extends HTMLElement>(
    * API
    */
   return {
+    bus: rx.bus.instance(bus),
     instance,
     element,
     ref,

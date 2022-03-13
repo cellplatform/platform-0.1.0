@@ -43,6 +43,8 @@ export type KeyboardModifierKeys = {
 };
 
 export type KeyboardStateMonitor = Disposable & {
+  readonly bus: Id;
+  readonly instance: Id;
   readonly keypress$: Observable<KeyboardKeypress>;
   readonly state$: Observable<KeyboardState>;
   readonly state: KeyboardState;

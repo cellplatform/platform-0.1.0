@@ -1,7 +1,7 @@
 import { BehaviorSubject, Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
-import { R, rx, t, UIEvents } from './common';
+import { R, rx, t, UIEvent, Keyboard } from './common';
 
 /**
  * Types
@@ -27,6 +27,13 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
 
+  const keyboard = Keyboard.State.singleton(bus);
+
+  /**
+   * TODO 🐷
+   */
+  console.log('keyboard', keyboard);
+
   let current: t.ListSelection = { indexes: [] };
   const changed$ = new BehaviorSubject<t.ListSelection>(current);
   const change = (e: t.ListSelection) => {
@@ -37,7 +44,7 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
   };
 
   const dom = <Ctx extends O>(filter: (ctx: Ctx) => boolean) => {
-    return UIEvents<Ctx>({ bus, instance, dispose$, filter: (e) => filter(e.payload.ctx) });
+    return UIEvent.Events<Ctx>({ bus, instance, dispose$, filter: (e) => filter(e.payload.ctx) });
   };
 
   const item = dom<t.CtxItem>((ctx) => ctx.kind === 'Item');

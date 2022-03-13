@@ -1,9 +1,9 @@
 import React, { forwardRef, useState } from 'react';
 import { VariableSizeList as List } from 'react-window';
 
-import { css, FC, t, useResizeObserver, useUIEventPipe } from './common';
+import { css, FC, t, useResizeObserver, UIEvent, Keyboard } from './common';
 import { ListEvents } from './Events';
-import { useListEventsController } from './hooks';
+import { useListVirtualController } from './List.Virtual.useController';
 import { ListProps, Util } from './List.Layout';
 import { ListVirtualRow, ListVirtualRowData } from './List.Virtual.Row';
 
@@ -31,11 +31,18 @@ export const View: React.FC<ListVirtualProps> = (props) => {
   const { items, paddingNear = 0, paddingFar = 0, tabIndex } = props;
 
   const total = items.total;
-  const ctrl = useListEventsController({ event: props.event });
+  const ctrl = useListVirtualController({ event: props.event });
   const { bus, instance } = ctrl;
 
+  Keyboard.useEventPipe({ bus }); // Ensure keyboard events are being piped into the bus.
+
   const ctx: t.CtxList = { kind: 'List', total };
-  const ui = useUIEventPipe<t.CtxList, HTMLDivElement>({ bus, instance, ctx, focusRedraw: true });
+  const ui = UIEvent.useEventPipe<t.CtxList, HTMLDivElement>({
+    bus,
+    instance,
+    ctx,
+    redrawOnFocus: true,
+  });
   const isFocused = ui.element.containsFocus;
 
   const resize = useResizeObserver(ui.ref);

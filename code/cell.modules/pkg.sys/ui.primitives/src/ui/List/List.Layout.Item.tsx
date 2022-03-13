@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { color, css, CssValue, Is, t, useUIEventPipe } from './common';
+import { color, css, CssValue, Is, t, UIEvent } from './common';
 import { Renderers } from './renderers';
 
 /**
@@ -56,7 +56,7 @@ export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
   const { data } = item;
 
   const ctx: t.CtxItem = { kind: 'Item', index, total, item };
-  const ui = useUIEventPipe<t.CtxItem, HTMLDivElement>({ bus, instance, ctx });
+  const ui = UIEvent.useEventPipe<t.CtxItem, HTMLDivElement>({ bus, instance, ctx });
 
   const spacing = formatSpacing(props.spacing);
   const invertedOrientation = orientation === 'x' ? 'y' : 'x';

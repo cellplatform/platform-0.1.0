@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 
-import { css, CssValue, DEFAULTS, eventDummy, t, useUIEventPipe } from './common';
+import { css, CssValue, DEFAULTS, eventDummy, t, UIEvent, Keyboard } from './common';
 import { ListLayoutItem } from './List.Layout.Item';
 import { Renderers } from './renderers';
 
@@ -39,8 +39,15 @@ export const ListLayout: React.FC<ListLayoutProps> = (props) => {
   const event = refEvent.current;
   const { bus, instance } = event;
 
+  Keyboard.useEventPipe({ bus }); // Ensure keyboard events are being piped into the bus.
+
   const ctx: t.CtxList = { kind: 'List', total };
-  const ui = useUIEventPipe<t.CtxList, HTMLDivElement>({ bus, instance, ctx, focusRedraw: true });
+  const ui = UIEvent.useEventPipe<t.CtxList, HTMLDivElement>({
+    bus,
+    instance,
+    ctx,
+    redrawOnFocus: true,
+  });
   const isFocused = ui.element.containsFocus;
   const renderer = Util.renderer({ props, total, event, isFocused });
 

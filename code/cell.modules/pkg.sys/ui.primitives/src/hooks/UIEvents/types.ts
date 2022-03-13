@@ -16,6 +16,7 @@ type Id = string;
  * Hook for abstracting a set of DOM events through an event-bus.
  */
 export type UIEventPipeHook<Ctx extends O, T extends H = H> = {
+  bus: Id;
   instance: Id;
   ref: RefObject<T>;
   readonly element: UIEventPipeElement<T>;

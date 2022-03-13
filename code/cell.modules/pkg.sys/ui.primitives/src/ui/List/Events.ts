@@ -1,7 +1,7 @@
 import { animationFrameScheduler, Subject } from 'rxjs';
 import { filter, observeOn, takeUntil } from 'rxjs/operators';
 
-import { t, rx, Is, UIEvents } from './common';
+import { t, rx, Is, UIEvent } from './common';
 
 /**
  * Types
@@ -19,7 +19,7 @@ export const ListEvents: t.ListEventsFactory = (args) => {
   const bus = rx.busAsType<t.ListEvent>(args.bus);
 
   const dom = <Ctx extends O>(filter: (ctx: Ctx) => boolean) => {
-    return UIEvents<Ctx>({ bus, instance, dispose$, filter: (e) => filter(e.payload.ctx) });
+    return UIEvent.Events<Ctx>({ bus, instance, dispose$, filter: (e) => filter(e.payload.ctx) });
   };
   const events = {
     list: dom<t.CtxList>((ctx) => ctx.kind === 'List'),

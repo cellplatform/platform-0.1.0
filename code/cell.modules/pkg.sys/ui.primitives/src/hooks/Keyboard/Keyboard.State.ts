@@ -125,6 +125,8 @@ export function KeyboardStateMonitor(args: {
    * API
    */
   return {
+    bus: rx.bus.instance(bus),
+    instance,
     reset,
     dispose,
     dispose$,

@@ -1,13 +1,13 @@
 import { useRef, useEffect, useState } from 'react';
 import { VariableSizeList as List } from 'react-window';
 
-import { t, eventDummy } from '../common';
-import { ListEvents } from '../Events';
+import { t, eventDummy } from './common';
+import { ListEvents } from './Events';
 
 /**
  * Event behavior controller.
  */
-export function useListEventsController(args: { event?: t.ListEventArgs }) {
+export function useListVirtualController(args: { event?: t.ListEventArgs }) {
   const eventRef = useRef<t.ListEventArgs>(args.event ?? eventDummy());
   const listRef = useRef<List>(null);
   const [count, setCount] = useState(0);
