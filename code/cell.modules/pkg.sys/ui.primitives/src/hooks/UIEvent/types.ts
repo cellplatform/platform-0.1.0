@@ -99,6 +99,7 @@ export type UIEventTarget = {
  * EVENTS (API)
  */
 export type UIEvents<Ctx extends O = O> = Disposable & {
+  bus: Id;
   instance: Id;
   $: Observable<UIEvent>;
   mouse: UIEventsMouse<Ctx>;

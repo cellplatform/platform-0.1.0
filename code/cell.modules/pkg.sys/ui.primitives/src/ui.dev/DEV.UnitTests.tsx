@@ -3,7 +3,9 @@ import { DevActions, Test } from 'sys.ui.dev';
 import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
 const Imports = {
-  Tokenizer: import('../ui/Text.Syntax/Tokenizer.TEST'),
+  TextSyntaxTokenizer: import('../ui/Text.Syntax/Tokenizer.TEST'),
+  HooksKeyboard: import('../hooks/Keyboard/Keyboard.TEST'),
+  UIEvent: import('../hooks/UIEvent/UIEvent.TEST'),
 };
 
 type Ctx = { results?: TestSuiteRunResponse };

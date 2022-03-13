@@ -48,5 +48,14 @@ export function UIEvents<Ctx extends O = O>(args: {
   /**
    * API
    */
-  return { $, instance, dispose, dispose$, mouse, touch, focus };
+  return {
+    $,
+    bus: rx.bus.instance(bus),
+    instance,
+    dispose,
+    dispose$,
+    mouse,
+    touch,
+    focus,
+  };
 }

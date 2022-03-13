@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { t } from '../common';
+import { t, Keyboard, rx } from '../common';
 import { ListSelectionMonitor, ListSelectionMonitorArgs } from '../ListSelectionMonitor';
 
 /**
@@ -22,5 +22,9 @@ export function useListSelection(args: ListSelectionMonitorArgs) {
   /**
    * API
    */
-  return { instance, selection };
+  return {
+    bus: rx.bus.instance(bus),
+    instance,
+    selection,
+  };
 }
