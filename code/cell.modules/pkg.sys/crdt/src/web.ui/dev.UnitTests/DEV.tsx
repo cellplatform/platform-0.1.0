@@ -1,7 +1,12 @@
 import React from 'react';
 import { DevActions, Test } from 'sys.ui.dev';
 import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
-import { RepoLink } from './RepoLink';
+
+const Imports = {
+  Automerge: import('../../web.Automerge/Automerge.lib.TEST'),
+  AutomergeDoc: import('../../web.Automerge/AutomergeDoc.TEST'),
+  CrdtBus: import('../../web.CrdtBus/TEST'),
+};
 
 type CtxRunTests = () => Promise<TestSuiteRunResponse>;
 
@@ -22,35 +27,21 @@ export const actions = DevActions<Ctx>()
   .context((e) => e.prev ?? {})
 
   .init(async (e) => {
-    const run = async (input: Promise<any>) => {
-      const res = (e.ctx.results = await Test.run(input));
-      e.redraw();
-      return res;
-    };
-
-    const tests = (e.ctx.tests = {
-      Automerge: () => run(import('../../web.Automerge/Automerge.lib.TEST')),
-      AutomergeDoc: () => run(import('../../web.Automerge/AutomergeDoc.TEST')),
-      CrdtBus: () => run(import('../../web.CrdtBus/TEST')),
-    });
-
-    // Auto-run on load.
-    // await tests.Automerge();
-    // await tests.AutomergeDoc();
-    await tests.CrdtBus();
+    e.ctx.results = await Test.run(Object.values(Imports));
   })
 
   .items((e) => {
     e.title('Run Tests');
-    e.component((e) => {
-      return <RepoLink url={'https://github.com/automerge/automerge'} marginLeft={15} />;
+
+    e.button('all', async (e) => {
+      e.ctx.results = await Test.run(Object.values(Imports));
     });
 
     e.hr(1, 0.1);
 
-    e.button('run: Automerge (baseline)', (e) => e.ctx.tests?.Automerge());
-    e.button('run: AutomergeDoc (helpers)', (e) => e.ctx.tests?.AutomergeDoc());
-    e.button('run: CrdtBus', (e) => e.ctx.tests?.CrdtBus());
+    Object.keys(Imports).forEach((key) => {
+      e.button(`run: ${key}`, async (e) => (e.ctx.results = await Test.run(Imports[key])));
+    });
 
     e.hr();
   })
@@ -59,7 +50,7 @@ export const actions = DevActions<Ctx>()
     e.settings({
       host: { background: -0.04 },
       layout: {
-        label: 'Unit Tests (CRDT)',
+        label: '<Test.View.Results>',
         position: [150, 80],
         border: -0.1,
         cropmarks: -0.2,
