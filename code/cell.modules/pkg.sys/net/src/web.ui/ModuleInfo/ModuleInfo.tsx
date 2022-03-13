@@ -15,19 +15,20 @@ export type ModuleInfoProps = {
 export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
   const { width, minWidth = 230, maxWidth, fields = ModuleInfoConstants.DEFAULT.FIELDS } = props;
 
-  const items: PropListItem[] = [];
-  const push = (...input: PropListItem[]) => items.push(...input);
-
-  fields.forEach((field) => {
-    if (field === 'Module') push({ label: 'Module', value: `${pkg.name}@${pkg.version}` });
-    if (field === 'Module.Name') push({ label: 'Name', value: pkg.name });
-    if (field === 'Module.Version') items.push({ label: 'Version', value: pkg.version });
-  });
+  const items = PropList.builder<k.ModuleInfoFields>()
+    .field('Module', { label: 'Module', value: `${pkg.name}@${pkg.version}` })
+    .field('Module.Name', { label: 'Name', value: pkg.name })
+    .field('Module.Version', { label: 'Version', value: pkg.version })
+    .items(fields);
 
   /**
    * [Render]
    */
   const styles = { base: css({ position: 'relative', width, minWidth, maxWidth }) };
-  const elProps = <PropList items={items} defaults={{ clipboard: false }} />;
-  return <div {...css(styles.base, props.style)}>{elProps}</div>;
+
+  return (
+    <div {...css(styles.base, props.style)}>
+      <PropList items={items} defaults={{ clipboard: false }} />
+    </div>
+  );
 };

@@ -1,4 +1,13 @@
 /**
+ * Factory
+ */
+export type PropListFieldBuilder<F extends string> = {
+  field(name: F, item: PropListItemFactory | PropListItem): PropListFieldBuilder<F>;
+  items(fields?: F[]): PropListItem[];
+};
+export type PropListItemFactory = () => PropListItem;
+
+/**
  * Default values used when optional properties are ommitted.
  */
 export type PropListDefaults = {

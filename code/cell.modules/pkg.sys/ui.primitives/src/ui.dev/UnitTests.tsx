@@ -6,6 +6,7 @@ const Imports = {
   TextSyntaxTokenizer: import('../ui/Text.Syntax/Tokenizer.TEST'),
   HooksKeyboard: import('../hooks/Keyboard/Keyboard.TEST'),
   UIEvent: import('../hooks/UIEvent/UIEvent.TEST'),
+  PropList: import('../ui/PropList/PropList.TEST'),
 };
 
 type Ctx = { results?: TestSuiteRunResponse };
@@ -18,7 +19,8 @@ export const actions = DevActions<Ctx>()
   .context((e) => e.prev ?? {})
 
   .init(async (e) => {
-    e.ctx.results = await Test.run(Object.values(Imports));
+    // e.ctx.results = await Test.run(Object.values(Imports));
+    e.ctx.results = await Test.run(Imports.PropList);
   })
 
   .items((e) => {
