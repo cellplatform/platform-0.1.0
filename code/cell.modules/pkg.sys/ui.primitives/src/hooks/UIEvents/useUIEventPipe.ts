@@ -8,7 +8,7 @@ import { UIEvents } from './UIEvents';
 type O = Record<string, unknown>;
 type Id = string;
 
-export type EventPipeHookArgs<Ctx extends O, H extends HTMLElement> = {
+export type UIEventPipeHookArgs<Ctx extends O, H extends HTMLElement> = {
   bus: t.EventBus<any>;
   instance: Id;
   ctx: Ctx;
@@ -20,7 +20,7 @@ export type EventPipeHookArgs<Ctx extends O, H extends HTMLElement> = {
  * Hook for abstracting a set of DOM events through an event-bus.
  */
 export function useUIEventPipe<Ctx extends O, H extends HTMLElement>(
-  args: EventPipeHookArgs<Ctx, H>,
+  args: UIEventPipeHookArgs<Ctx, H>,
 ): t.UIEventPipeHook<Ctx, H> {
   const { instance, ctx, focusRedraw = false } = args;
   const bus = rx.busAsType<t.UIEvent>(args.bus);

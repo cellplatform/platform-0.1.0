@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
 import { Subject } from 'rxjs';
 
-import { EventPipeHookArgs, useUIEventPipe } from '..';
+import { UIEventPipeHookArgs, useUIEventPipe } from '..';
 import { Card, css, CssValue, TextSyntax } from './DEV.common';
 
-import { useKeyboardPipe } from '../../Keyboard';
+import { useKeyboardEventPipe } from '../../Keyboard';
 
 export type EventCtx = { index: number; message: string };
 
 export type DevSampleProps = {
-  args: EventPipeHookArgs<EventCtx, HTMLDivElement>;
+  args: UIEventPipeHookArgs<EventCtx, HTMLDivElement>;
   style?: CssValue;
 };
 

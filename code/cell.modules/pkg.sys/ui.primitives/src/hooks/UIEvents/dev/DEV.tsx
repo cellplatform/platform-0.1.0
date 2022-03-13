@@ -1,12 +1,12 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { EventPipeHookArgs, UIEvents } from '..';
+import { UIEventPipeHookArgs, UIEvents } from '..';
 import { t, rx, slug } from './DEV.common';
 import { DevSample, EventCtx } from './DEV.Sample';
 
 type Ctx = {
   events: t.UIEvents<EventCtx>;
-  args: EventPipeHookArgs<EventCtx, HTMLDivElement>;
+  args: UIEventPipeHookArgs<EventCtx, HTMLDivElement>;
   render: boolean;
 };
 
