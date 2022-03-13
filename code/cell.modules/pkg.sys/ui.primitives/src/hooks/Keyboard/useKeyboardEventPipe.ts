@@ -3,7 +3,7 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { rx, t } from '../common';
-import { Util } from '../UIEvents/util';
+import { Util } from '../UIEvent/util';
 import { SINGLETON_INSTANCE } from './constants';
 import { KeyboardEvents } from './Keyboard.Events';
 

@@ -4,7 +4,7 @@ import { t } from './common';
 
 const imports = {
   hookDragTarget: import('./hooks/DragTarget/dev/DEV'),
-  hookUIEvents: import('./hooks/UIEvents/dev/DEV'),
+  hookUIEvents: import('./hooks/UIEvent/dev/DEV'),
   hookKeyboard: import('./hooks/Keyboard/dev/DEV'),
 
   Bullet: import('./ui/Bullet/dev/DEV'),

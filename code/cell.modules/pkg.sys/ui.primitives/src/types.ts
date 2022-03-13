@@ -10,7 +10,7 @@ export * from '@platform/ui.image/lib/types';
  */
 export * from './hooks/DragTarget/types';
 export * from './hooks/Focus/types';
-export * from './hooks/UIEvents/types';
+export * from './hooks/UIEvent/types';
 export * from './hooks/Keyboard/types';
 
 export * from './ui/List/types';
