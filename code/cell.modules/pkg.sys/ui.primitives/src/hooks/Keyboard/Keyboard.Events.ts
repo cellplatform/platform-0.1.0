@@ -5,7 +5,6 @@ import { rx, t } from '../common';
 import { SINGLETON_INSTANCE } from './constants';
 
 type Id = string;
-type O = Record<string, unknown>;
 
 /**
  * Event API.
@@ -30,12 +29,19 @@ export function KeyboardEvents(args: {
     observeOn(animationFrameScheduler),
   );
 
-  const key$ = rx.payload<t.KeyboardKeypressEvent>($, 'sys.ui.keyboard/keypress');
-  const down$ = key$.pipe(filter((e) => e.is.down));
-  const up$ = key$.pipe(filter((e) => e.is.up));
+  const keypress$ = rx.payload<t.KeyboardKeypressEvent>($, 'sys.ui.keyboard/keypress');
+  const down$ = keypress$.pipe(filter((e) => e.is.down));
+  const up$ = keypress$.pipe(filter((e) => e.is.up));
 
   /**
    * API
    */
-  return { $, dispose, dispose$, key$, down$, up$ };
+  return {
+    $,
+    dispose,
+    dispose$,
+    keypress$,
+    down$,
+    up$,
+  };
 }

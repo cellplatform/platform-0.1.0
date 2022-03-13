@@ -1,18 +1,23 @@
 import { KeyboardEvents as Events } from './Keyboard.Events';
-import { KeyboardStateMonitor as StateMonitor } from './Keyboard.State';
+import { KeyboardStateMonitor } from './Keyboard.State';
+import { KeyboardStateSingleton } from './Keyboard.State.Singleton';
 import { EventProps } from './UI.EventProps';
 import { useKeyboard } from './useKeyboard';
-import { useKeyboardPipe } from './useKeyboardPipe';
+import { useKeyboardEventPipe as useEventPipe } from './useKeyboardEventPipe';
 
 /**
  * Index of Keyboard tools.
  */
 export const Keyboard = {
   Events,
-  StateMonitor,
+
+  State: {
+    singleton: KeyboardStateSingleton,
+    Monitor: KeyboardStateMonitor,
+  },
 
   useKeyboard,
-  useKeyboardPipe,
+  useEventPipe,
 
   UI: { EventProps },
 };

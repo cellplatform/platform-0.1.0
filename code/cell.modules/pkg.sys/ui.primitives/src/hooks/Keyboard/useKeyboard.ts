@@ -4,7 +4,7 @@ import { R, rx, t } from '../common';
 import { DEFAULT, SINGLETON_INSTANCE } from './constants';
 import { KeyboardEvents } from './Keyboard.Events';
 import { KeyboardStateMonitor } from './Keyboard.State';
-import { useKeyboardPipe } from './useKeyboardPipe';
+import { useKeyboardEventPipe } from './useKeyboardEventPipe';
 
 type Id = string;
 
@@ -18,7 +18,7 @@ export function useKeyboard(args: KeyboardHookArgs): t.KeyboardHook {
   const bus = rx.busAsType<t.KeyboardEvent>(args.bus);
   const busInstance = rx.bus.instance(bus);
 
-  useKeyboardPipe({ bus, instance }); // NB: Singleton (ensure the keyboard events are piping into the bus).
+  useKeyboardEventPipe({ bus, instance }); // NB: Singleton (ensure the keyboard events are piping into the bus).
   const [state, setState] = useState<t.KeyboardState>(R.clone(DEFAULT.STATE));
 
   /**

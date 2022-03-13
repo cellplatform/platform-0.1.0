@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import { Subject } from 'rxjs';
 
-import { Keyboard, KeyboardPipeHookArgs } from '..';
+import { Keyboard, KeyboardEventPipeHookArgs } from '..';
 import { color, COLORS, css, CssValue, Icons } from './DEV.common';
 import { DevModifierKeys } from './DEV.ModifierKeys';
 
 export type EventCtx = { index: number; message: string };
 
 export type DevSampleProps = {
-  args: KeyboardPipeHookArgs;
+  args: KeyboardEventPipeHookArgs;
   style?: CssValue;
 };
 
@@ -19,8 +19,8 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
    * NOTE: Test multiple instances of the hook initiated.
    *       Should not duplicate keyboard events.
    */
-  Keyboard.useKeyboardPipe(props.args);
-  Keyboard.useKeyboardPipe(props.args);
+  Keyboard.useEventPipe(props.args);
+  Keyboard.useEventPipe(props.args);
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
@@ -37,11 +37,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({
-      position: 'relative',
-      Flex: 'y-stretch-stretch',
-      boxSizing: 'border-box',
-    }),
+    base: css({ position: 'relative', Flex: 'y-stretch-stretch', boxSizing: 'border-box' }),
     body: {
       base: css({ flex: 1, position: 'relative' }),
       inner: css({ Absolute: 0, Flex: 'center-center', overflow: 'hidden' }),

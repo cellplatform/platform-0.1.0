@@ -1,19 +1,19 @@
 import { useEffect } from 'react';
-import { Subject, Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { R, rx, t } from '../common';
+import { rx, t } from '../common';
 import { Util } from '../UIEvents/util';
-import { KeyboardEvents } from './Keyboard.Events';
 import { SINGLETON_INSTANCE } from './constants';
+import { KeyboardEvents } from './Keyboard.Events';
 
 type Id = string;
 type Listener = { $: Observable<KeyboardEvent>; dispose(): void };
 
-const singleton: { [key: string]: number } = {};
+const singletonByBus: { [key: string]: number } = {};
 let singletonListener: Listener | undefined;
 
-export type KeyboardPipeHookArgs = { bus: t.EventBus<any>; instance?: Id };
+export type KeyboardEventPipeHookArgs = { bus: t.EventBus<any>; instance?: Id };
 
 /**
  * Hook for piping a set of keyboard events through an event-bus.
@@ -23,7 +23,7 @@ export type KeyboardPipeHookArgs = { bus: t.EventBus<any>; instance?: Id };
  *     recieve the keyboard events once (de-duped).
  *
  */
-export function useKeyboardPipe(args: KeyboardPipeHookArgs): t.KeyboardPipeHook {
+export function useKeyboardEventPipe(args: KeyboardEventPipeHookArgs): t.KeyboardPipeHook {
   const { instance = SINGLETON_INSTANCE } = args;
   const bus = rx.busAsType<t.KeyboardEvent>(args.bus);
   const busInstance = rx.bus.instance(bus);
@@ -37,8 +37,8 @@ export function useKeyboardPipe(args: KeyboardPipeHookArgs): t.KeyboardPipeHook 
     const dispose$ = new Subject<void>();
 
     // Append singleton count.
-    if (singleton[busInstance] === undefined) singleton[busInstance] = 0;
-    singleton[busInstance]++;
+    if (singletonByBus[busInstance] === undefined) singletonByBus[busInstance] = 0;
+    singletonByBus[busInstance]++;
 
     const fire = (e: KeyboardEvent) => {
       const { code, key, isComposing, location, repeat } = e;
@@ -67,7 +67,7 @@ export function useKeyboardPipe(args: KeyboardPipeHookArgs): t.KeyboardPipeHook 
      *       All other usages of this hook are ignored as the common
      *       bus will be getting a single set of keyboard events.
      */
-    if (singleton[busInstance] === 1) {
+    if (singletonByBus[busInstance] === 1) {
       $.pipe(takeUntil(dispose$)).subscribe(fire);
     }
 
@@ -76,8 +76,8 @@ export function useKeyboardPipe(args: KeyboardPipeHookArgs): t.KeyboardPipeHook 
      */
     return () => {
       dispose$.next();
-      singleton[busInstance]--;
-      if (singleton[busInstance] <= 0) delete singleton[busInstance];
+      singletonByBus[busInstance]--;
+      if (singletonByBus[busInstance] <= 0) delete singletonByBus[busInstance];
     };
   }, [bus, busInstance, instance]);
 
@@ -87,7 +87,7 @@ export function useKeyboardPipe(args: KeyboardPipeHookArgs): t.KeyboardPipeHook 
   return {
     bus: busInstance,
     instance,
-    listeners: singleton[busInstance] ?? 0,
+    listeners: singletonByBus[busInstance] ?? 0,
     events: (args) => KeyboardEvents({ ...args, bus }),
   };
 }

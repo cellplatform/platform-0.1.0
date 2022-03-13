@@ -17,7 +17,7 @@ export function KeyboardStateMonitor(args: {
   const { instance = SINGLETON_INSTANCE } = args;
   const bus = rx.busAsType<t.KeyboardEvent>(args.bus);
   const events = KeyboardEvents({ bus, instance });
-  const { dispose$, key$ } = events;
+  const { dispose$, keypress$ } = events;
 
   const onWindowBlur = () => reset();
   window.addEventListener('blur', onWindowBlur);
@@ -26,10 +26,10 @@ export function KeyboardStateMonitor(args: {
     const clone = R.clone(DEFAULT.STATE);
     if (options.hard) {
       // NB: Hard reset, drop everything.
-      _state = clone;
+      _current = clone;
     } else {
       // NB: Retain the "last" event history item.
-      _state = { ...clone, last: _state.last };
+      _current = { ...clone, last: _current.last };
     }
     fireNext();
   };
@@ -39,14 +39,14 @@ export function KeyboardStateMonitor(args: {
     window.removeEventListener('blur', onWindowBlur);
   };
 
-  let _state: t.KeyboardState = R.clone(DEFAULT.STATE);
+  let _current: t.KeyboardState = R.clone(DEFAULT.STATE);
   const change = (fn: (state: t.KeyboardState) => void) => {
-    const state = R.clone(_state);
+    const state = R.clone(_current);
     fn(state);
-    _state = state;
+    _current = state;
   };
-  const fireNext = () => state$.next(_state);
-  const state$ = new BehaviorSubject<t.KeyboardState>(_state);
+  const fireNext = () => current$.next(_current);
+  const current$ = new BehaviorSubject<t.KeyboardState>(_current);
 
   /**
    * State update modifiers.
@@ -114,7 +114,7 @@ export function KeyboardStateMonitor(args: {
   /**
    * Monitor changes.
    */
-  events.key$.subscribe((e) => {
+  keypress$.subscribe((e) => {
     updateModifierKeys(e);
     updatePressedKeys(e);
     change((state) => (state.last = e));
@@ -128,13 +128,13 @@ export function KeyboardStateMonitor(args: {
     reset,
     dispose,
     dispose$,
-    key$,
-    state$: state$.pipe(
+    keypress$,
+    state$: current$.pipe(
       takeUntil(dispose$),
       distinctUntilChanged((prev, next) => R.equals(prev, next)),
     ),
     get state() {
-      return _state;
+      return _current;
     },
   };
 }
