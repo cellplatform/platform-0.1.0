@@ -1,7 +1,7 @@
 import { KeyboardEvents as Events } from './Keyboard.Events';
 import { KeyboardStateMonitor } from './Keyboard.State';
 import { KeyboardStateSingleton } from './Keyboard.State.Singleton';
-import { EventProps } from './UI.EventProps';
+import { EventProps } from './ui/EventProps';
 import { useKeyboard } from './useKeyboard';
 import { useKeyboardEventPipe as useEventPipe } from './useKeyboardEventPipe';
 
