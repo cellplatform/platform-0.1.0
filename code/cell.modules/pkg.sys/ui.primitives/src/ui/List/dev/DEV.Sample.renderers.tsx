@@ -70,7 +70,7 @@ export function sampleBodyFactory(getCtx: () => RenderCtx) {
     const data = e.data as DataSample;
     const truncatedAt = data.truncatedAt ?? 0;
     const remaining = ctx.total - truncatedAt;
-    const text = truncatedAt ? `more:(..${remaining})` : `${e.index + 1}.<Component>`;
+    const text = truncatedAt ? `more:(..${remaining})` : `${e.index}.<Component>`;
     const elComponent = <Text.Syntax text={text} style={styles.component} />;
 
     /**

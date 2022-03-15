@@ -1,5 +1,6 @@
 import { t } from '../../common';
 import * as k from '../types';
+import { ListSelectionFlags } from '../../List.Selection/ListSelection.Flags';
 
 /**
  * Boolean flags.
@@ -21,7 +22,7 @@ export const Is = {
     isFocused?: boolean;
   }): k.ListBulletRenderFlags {
     const { index, total, orientation, bullet, selection, isFocused = false } = args;
-    const selected = selection ? selection.indexes.includes(index) : false;
+    const selected = ListSelectionFlags.selected(selection, index);
 
     return {
       empty: total === 0,

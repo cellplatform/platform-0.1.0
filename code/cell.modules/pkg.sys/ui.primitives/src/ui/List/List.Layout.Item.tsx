@@ -151,7 +151,18 @@ export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
   /**
    * Main rendering.
    */
-  const elMain = <div {...css(styles.main, styles.debug)}>{renderContent(args)}</div>;
+  const elMain = (
+    <div
+      {...css(styles.main, styles.debug)}
+      ref={ui.ref}
+      onMouseDown={ui.mouse.onMouseDown}
+      onMouseUp={ui.mouse.onMouseUp}
+      onMouseEnter={ui.mouse.onMouseEnter}
+      onMouseLeave={ui.mouse.onMouseLeave}
+    >
+      {renderContent(args)}
+    </div>
+  );
 
   /**
    * Spacer rendering.
@@ -184,14 +195,7 @@ export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
    * Component.
    */
   return (
-    <div
-      {...css(styles.base, props.style)}
-      ref={ui.ref}
-      onMouseDown={ui.mouse.onMouseDown}
-      onMouseUp={ui.mouse.onMouseUp}
-      onMouseEnter={ui.mouse.onMouseEnter}
-      onMouseLeave={ui.mouse.onMouseLeave}
-    >
+    <div {...css(styles.base, props.style)}>
       {elSpacer.before}
       {elMain}
       {elSpacer.after}

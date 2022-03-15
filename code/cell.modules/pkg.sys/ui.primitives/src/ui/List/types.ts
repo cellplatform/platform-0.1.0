@@ -21,8 +21,6 @@ export type ListItem<T = any> = {
   spacing?: ListBulletSpacing;
 };
 
-export type ListSelection = { indexes: Index[] };
-
 /**
  * Rendering
  */

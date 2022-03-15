@@ -3,8 +3,9 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { List, ListProps } from '..';
 import { ALL, DEFAULTS, rx, slug, t, time, value } from '../common';
-import { ListSelectionMonitor } from '../ListSelectionMonitor';
+
 import { RenderCtx, sampleBodyFactory, sampleBulletFactory } from './DEV.Sample.renderers';
+import { ListSelection } from '../../List.Selection';
 
 import { DataSample } from './DEV.types';
 
@@ -116,12 +117,14 @@ export const actions = DevActions<Ctx>()
      * TEMP 🐷
      * List Selection
      */
-    const selection = ListSelectionMonitor({
+    const selection = ListSelection.Monitor({
       bus,
       instance,
       multi: true,
-      clearOnBlur: false,
+      clearOnBlur: true,
+      allowEmpty: true,
     });
+
     selection.changed$.subscribe((selection) => {
       ctx.props.selection = selection;
       e.redraw();

@@ -7,6 +7,7 @@ const Imports = {
   HooksKeyboard: import('../hooks/Keyboard/Keyboard.TEST'),
   UIEvent: import('../hooks/UIEvent/UIEvent.TEST'),
   PropList: import('../ui/PropList/PropList.TEST'),
+  ListSelection: import('../ui/List.Selection/ListSelection.TEST'),
 };
 
 type Ctx = { results?: TestSuiteRunResponse };
@@ -19,8 +20,8 @@ export const actions = DevActions<Ctx>()
   .context((e) => e.prev ?? {})
 
   .init(async (e) => {
-    // e.ctx.results = await Test.run(Object.values(Imports));
-    e.ctx.results = await Test.run(Imports.PropList);
+    e.ctx.results = await Test.run(Object.values(Imports));
+    // e.ctx.results = await Test.run(Imports.ListSelection);
   })
 
   .items((e) => {
