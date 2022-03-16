@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 
-import { css, CssValue, t } from '../../common';
-import { CommandCardBackdrop } from './Command.Card.Backdrop';
+import { css, CssValue, t, FC } from './common';
+import { CommandCardLayout as Layout, CommandCardLayoutProps } from './Command.Card.Layout';
 
 /**
  * Types
@@ -14,20 +14,19 @@ export type CommandCardProps = {
 /**
  * Component
  */
-export const CommandCard: React.FC<CommandCardProps> = (props) => {
+const View: React.FC<CommandCardProps> = (props) => {
   const { bus } = props;
-
-  /**
-   * [Render]
-   */
-  const styles = {
-    base: css({ position: 'relative' }),
-    backdrop: css({ Absolute: 0 }),
-  };
-
-  return (
-    <div {...css(styles.base, props.style)}>
-      <CommandCardBackdrop bus={bus} style={styles.backdrop} />
-    </div>
-  );
+  return <Layout bus={bus} style={props.style} />;
 };
+
+/**
+ * Export
+ */
+type Fields = {
+  Layout: React.FC<CommandCardLayoutProps>;
+};
+export const CommandCard = FC.decorate<CommandCardProps, Fields>(
+  View,
+  { Layout },
+  { displayName: 'CommandCard' },
+);

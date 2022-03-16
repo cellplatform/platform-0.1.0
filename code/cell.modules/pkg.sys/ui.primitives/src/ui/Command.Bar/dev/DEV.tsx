@@ -78,7 +78,7 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       bus,
       netbus,
-      props: { bus },
+      props: { bus, textbox: { placeholder: 'my command' } },
       debug: { fireCount: 0, busKind: 'netbus' },
     };
 
@@ -117,6 +117,33 @@ export const actions = DevActions<Ctx>()
           if (e.changing) {
             const next = e.changing.next.map(({ value }) => value) as CommandBarPart[];
             e.ctx.props.parts = next.length === 0 ? undefined : next;
+          }
+        }),
+    );
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Props.Textbox');
+
+    const toTextbox = (ctx: Ctx) => ctx.props.textbox || (ctx.props.textbox = {});
+
+    e.boolean('spinner', (e) => {
+      const textbox = toTextbox(e.ctx);
+      if (e.changing) textbox.spinner = e.changing.next;
+      e.boolean.current = textbox.spinner;
+    });
+
+    e.textbox((config) =>
+      config
+        .title('placeholder')
+        .initial(config.ctx.props.textbox?.placeholder || '<nothing>')
+        .pipe((e) => {
+          if (e.changing?.action === 'invoke') {
+            const textbox = toTextbox(e.ctx);
+            e.textbox.current = e.changing.next || undefined;
+            textbox.placeholder = e.textbox.current;
           }
         }),
     );

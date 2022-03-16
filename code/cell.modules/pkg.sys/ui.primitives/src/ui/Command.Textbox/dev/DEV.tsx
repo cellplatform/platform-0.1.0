@@ -21,6 +21,7 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       self: '<CUID>',
       props: {
+        placeholder: 'command',
         spinner: false,
         theme: 'Dark',
         // theme: 'Light',
@@ -37,11 +38,6 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Props');
 
-    e.boolean('spinner', (e) => {
-      if (e.changing) e.ctx.props.spinner = e.changing.next;
-      e.boolean.current = e.ctx.props.spinner;
-    });
-
     e.select((config) => {
       config
         .view('buttons')
@@ -52,6 +48,23 @@ export const actions = DevActions<Ctx>()
           if (e.changing) e.ctx.props.theme = e.changing?.next[0].value;
         });
     });
+
+    e.boolean('spinner', (e) => {
+      if (e.changing) e.ctx.props.spinner = e.changing.next;
+      e.boolean.current = e.ctx.props.spinner;
+    });
+
+    e.textbox((config) =>
+      config
+        .title('placeholder')
+        .initial(config.ctx.props.placeholder || '<nothing>')
+        .pipe((e) => {
+          if (e.changing?.action === 'invoke') {
+            e.textbox.current = e.changing.next || undefined;
+            e.ctx.props.placeholder = e.textbox.current;
+          }
+        }),
+    );
 
     e.hr();
   })

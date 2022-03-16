@@ -140,6 +140,7 @@ export const actions = DevActions<Ctx>()
         },
       },
     });
+
     e.render(<CommandCard {...props} style={{ flex: 1 }} />);
   });
 

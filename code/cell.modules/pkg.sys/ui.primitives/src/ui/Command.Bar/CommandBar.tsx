@@ -25,6 +25,7 @@ export type CommandBarProps = {
   parts?: CommandBarPart[];
   cornerRadius?: [number, number, number, number];
   backgroundColor?: string | number;
+  textbox?: { placeholder?: string; spinner?: boolean };
   style?: CssValue;
   onChange?: CommandTextboxChangeEventHandler;
   onAction?: CommandTextboxActionEventHandler;
@@ -100,6 +101,8 @@ export const View: React.FC<CommandBarProps> = (props) => {
         <div {...styles.input} key={elements.length}>
           <CommandTextbox
             theme={'Dark'}
+            placeholder={props.textbox?.placeholder}
+            spinner={props.textbox?.spinner}
             onChange={(e) => {
               const { from, to } = e;
               events?.text.changed({ from, to });

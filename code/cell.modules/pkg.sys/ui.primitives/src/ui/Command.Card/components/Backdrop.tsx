@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { color, COLORS, css, CssValue, t } from '../../common';
-import { CommandBar } from '../Command.Bar';
+import { color, COLORS, css, CssValue, t } from '../common';
+import { CommandBar } from '../../Command.Bar';
 
 /**
  * Types
