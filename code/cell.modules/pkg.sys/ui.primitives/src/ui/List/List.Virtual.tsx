@@ -1,18 +1,19 @@
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef } from 'react';
 import { VariableSizeList as List } from 'react-window';
 
-import { css, FC, t, useResizeObserver, UIEvent, Keyboard } from './common';
+import { css, FC, t, useResizeObserver } from './common';
 import { ListEvents } from './Events';
-import { useListVirtualController } from './List.Virtual.useController';
-import { ListProps, Util } from './List.Layout';
-import { ListVirtualRow, ListVirtualRowData } from './List.Virtual.Row';
+import { useVirtualContext } from './useCtx.Virtual';
+import { ListVirtualItem, ListVirtualItemProps } from './List.Virtual.Item';
+import { useContext } from './useCtx';
+import { Renderer } from './Renderer';
 
 type Pixels = number;
 
 /**
  * Types
  */
-export type ListVirtualProps = ListProps & {
+export type ListVirtualProps = t.ListProps & {
   items: { total: number; getData: t.GetListItem; getSize: t.GetListItemSize };
   event?: t.ListEventArgs;
   paddingNear?: Pixels;
@@ -29,25 +30,13 @@ export type ListVirtualProps = ListProps & {
  */
 export const View: React.FC<ListVirtualProps> = (props) => {
   const { items, paddingNear = 0, paddingFar = 0, tabIndex } = props;
-
   const total = items.total;
-  const ctrl = useListVirtualController({ event: props.event });
-  const { bus, instance } = ctrl;
 
-  Keyboard.useEventPipe({ bus }); // Ensure keyboard events are being piped into the bus.
+  const ctx = useVirtualContext({ total, event: props.event });
+  const { bus, instance, state } = ctx;
 
-  const ctx: t.CtxList = { kind: 'List', total };
-  const ui = UIEvent.useEventPipe<t.CtxList, HTMLDivElement>({
-    bus,
-    instance,
-    ctx,
-    redrawOnFocus: true,
-  });
-  const isFocused = ui.element.containsFocus;
-
-  const resize = useResizeObserver(ui.ref);
-  const event = { bus, instance };
-  const renderer = Util.renderer({ props, total, event, isFocused });
+  const resize = useResizeObserver(ctx.ui.ref);
+  const renderer = Renderer({ bus, instance, props, state, total });
   const orientation = renderer.orientation;
 
   const getSize = (index: number) => {
@@ -62,7 +51,7 @@ export const View: React.FC<ListVirtualProps> = (props) => {
     return props.items.getSize(e);
   };
 
-  const getData = (index: number): ListVirtualRowData | undefined => {
+  const getData = (index: number): ListVirtualItemProps | undefined => {
     const item = items.getData?.(index);
     if (!item) return undefined;
     return { item, render: () => renderer.item(item, index) };
@@ -90,13 +79,13 @@ export const View: React.FC<ListVirtualProps> = (props) => {
   const Row = ({ style, ...rest }: any) => {
     const left = orientation === 'x' ? `${parseFloat(style.left) + paddingNear}px` : style.left;
     const top = orientation === 'y' ? `${parseFloat(style.top) + paddingNear}px` : style.top;
-    return <ListVirtualRow {...rest} style={{ ...style, left, top }} />;
+    return <ListVirtualItem {...rest} style={{ ...style, left, top }} />;
   };
 
   const elBody = resize.ready && (
     <List
-      key={ctrl.key} // NB: Enable "redraws" of the list.
-      ref={ctrl.listRef}
+      key={ctx.redrawKey} // NB: Enable forced "redraws" of the list (via event-bus).
+      ref={ctx.listRef}
       width={size.width}
       height={size.height}
       layout={orientation === 'y' ? 'vertical' : 'horizontal'}
@@ -113,14 +102,14 @@ export const View: React.FC<ListVirtualProps> = (props) => {
   return (
     <div
       {...css(styles.base, props.style)}
-      ref={ui.ref}
+      ref={ctx.ui.ref}
       tabIndex={tabIndex}
-      onMouseDown={ui.mouse.onMouseDown}
-      onMouseUp={ui.mouse.onMouseUp}
-      onMouseEnter={ui.mouse.onMouseEnter}
-      onMouseLeave={ui.mouse.onMouseLeave}
-      onFocus={ui.focus.onFocus}
-      onBlur={ui.focus.onBlur}
+      onMouseDown={ctx.ui.mouse.onMouseDown}
+      onMouseUp={ctx.ui.mouse.onMouseUp}
+      onMouseEnter={ctx.ui.mouse.onMouseEnter}
+      onMouseLeave={ctx.ui.mouse.onMouseLeave}
+      onFocus={ctx.ui.focus.onFocus}
+      onBlur={ctx.ui.focus.onBlur}
     >
       {elBody}
     </div>

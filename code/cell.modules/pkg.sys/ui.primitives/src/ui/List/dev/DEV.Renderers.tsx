@@ -60,7 +60,12 @@ export function sampleBodyFactory(getCtx: () => RenderCtx) {
 
     const styles = {
       card: {
-        base: css({ PaddingX: 30, PaddingY: 12, position: 'relative' }),
+        base: css({
+          PaddingX: 30,
+          PaddingY: 12,
+          position: 'relative',
+          transform: e.is.mouse.down ? `translateY(1px)` : undefined,
+        }),
         data: css({ Absolute: [null, 3, 2, null], fontSize: 8, color: color.format(-0.3) }),
       },
       vanilla: css({ PaddingX: 6, PaddingY: 2 }),
@@ -84,10 +89,9 @@ export function sampleBodyFactory(getCtx: () => RenderCtx) {
      * Body: Card (Sample)
      */
     if (bodyKind === 'Card') {
-      const { selected, focused } = e.is;
+      const { selected, focused, mouse } = e.is;
       const bgHighlight = color.alpha(COLORS.MAGENTA, 0.03);
       const bgHighlightBlurred = color.alpha(COLORS.CYAN, 0.08);
-
       const borderColor = !selected ? undefined : focused ? COLORS.MAGENTA : -0.5;
       const background = !selected ? undefined : focused ? bgHighlight : bgHighlightBlurred;
       return (

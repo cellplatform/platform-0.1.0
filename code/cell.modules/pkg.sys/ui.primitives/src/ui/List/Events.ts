@@ -54,5 +54,13 @@ export const ListEvents: t.ListEventsFactory = (args) => {
   /**
    * API
    */
-  return { instance, $, dispose, dispose$, scroll, redraw };
+  return {
+    bus: rx.bus.instance(bus),
+    instance,
+    $,
+    dispose,
+    dispose$,
+    scroll,
+    redraw,
+  };
 };

@@ -1,21 +1,22 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
 import { VariableSizeList as List } from 'react-window';
 
-import { t, eventDummy } from './common';
+import { t } from './common';
 import { ListEvents } from './Events';
+import { useContext } from './useCtx';
 
 /**
- * Event behavior controller.
+ * Controller for a virtual scrolling list.
  */
-export function useListVirtualController(args: { event?: t.ListEventArgs }) {
-  const eventRef = useRef<t.ListEventArgs>(args.event ?? eventDummy());
+export function useVirtualContext(args: { total: number; event?: t.ListEventArgs }) {
   const listRef = useRef<List>(null);
-  const [count, setCount] = useState(0);
+  const { total, event } = args;
 
-  const { bus, instance } = eventRef.current;
+  const ctx = useContext({ total, event });
+  const { bus, instance } = ctx;
 
   /**
-   * Lifecycle.
+   * Lifecycle
    */
   useEffect(() => {
     const events = ListEvents({ bus, instance });
@@ -33,19 +34,12 @@ export function useListVirtualController(args: { event?: t.ListEventArgs }) {
       list?.scrollToItem(index, align);
     });
 
-    /**
-     * Force redraw.
-     */
-    events.redraw.$.subscribe(() => setCount((prev) => prev + 1));
-
     // Finish up.
     return () => events.dispose();
   }, [listRef, bus, instance]); // eslint-disable-line
 
-  return {
-    key: `redraw.${count}`,
-    listRef,
-    instance,
-    bus,
-  };
+  /**
+   * API
+   */
+  return { ...ctx, listRef };
 }

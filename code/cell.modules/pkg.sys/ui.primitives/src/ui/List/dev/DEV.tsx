@@ -1,10 +1,10 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
-import { List, ListProps } from '..';
+import { List } from '..';
 import { ALL, DEFAULTS, rx, slug, t, time, value } from '../common';
 
-import { RenderCtx, sampleBodyFactory, sampleBulletFactory } from './DEV.Sample.renderers';
+import { RenderCtx, sampleBodyFactory, sampleBulletFactory } from './DEV.Renderers';
 import { ListSelection } from '../../List.Selection';
 
 import { DataSample } from './DEV.types';
@@ -16,7 +16,7 @@ type Ctx = {
   bus: t.EventBus<any>;
   instance: string;
   items: t.ListItem<DataSample>[];
-  props: ListProps; // Common properties.
+  props: t.ListProps; // Common properties.
   renderCtx: RenderCtx;
   events: t.ListEvents;
   debug: CtxDebug;
@@ -27,8 +27,7 @@ type CtxDebug = {
   scrollAlign: t.ListItemAlign;
   virtualPadding: boolean;
   canFocus: boolean;
-
-  tmp?: any; // TEMP 🐷
+  mouseState?: t.ListMouseState;
 };
 
 /**
@@ -45,7 +44,7 @@ const Util = {
     ctx.items.push(item);
   },
 
-  toProps(ctx: Ctx): ListProps {
+  toProps(ctx: Ctx): t.ListProps {
     const { props, debug } = ctx;
     const event = { bus: ctx.bus, instance: ctx.instance };
     const tabIndex = debug.canFocus ? -1 : undefined;
@@ -81,7 +80,6 @@ export const actions = DevActions<Ctx>()
         bullet: { edge: 'near', size: 60 },
         renderers: renderer,
         spacing: 10,
-
         debug: { border: true },
       },
       renderCtx: {
@@ -121,12 +119,12 @@ export const actions = DevActions<Ctx>()
       bus,
       instance,
       multi: true,
-      clearOnBlur: true,
+      clearOnBlur: false,
       allowEmpty: true,
     });
 
-    selection.changed$.subscribe((selection) => {
-      ctx.props.selection = selection;
+    selection.changed$.subscribe(() => {
+      ctx.props.selection = selection.current;
       e.redraw();
     });
   })
@@ -135,19 +133,6 @@ export const actions = DevActions<Ctx>()
     e.boolean('render (reset)', (e) => {
       if (e.changing) e.ctx.renderCtx.enabled = e.changing.next;
       e.boolean.current = e.ctx.renderCtx.enabled;
-    });
-
-    e.component((e) => {
-      return (
-        <ObjectView
-          name={'selection'}
-          data={e.ctx.props.selection}
-          style={{ MarginX: 15 }}
-          fontSize={10}
-          expandPaths={['$']}
-          expandLevel={5}
-        />
-      );
     });
 
     e.hr();
@@ -401,6 +386,36 @@ export const actions = DevActions<Ctx>()
           style={{ MarginX: 15 }}
           fontSize={10}
           expandPaths={['$']}
+        />
+      );
+    });
+
+    e.hr(1, 0.1);
+
+    e.component((e) => {
+      return (
+        <ObjectView
+          name={'selection'}
+          data={e.ctx.props.selection}
+          style={{ MarginX: 15 }}
+          fontSize={10}
+          expandPaths={['$']}
+          expandLevel={5}
+        />
+      );
+    });
+
+    e.hr(1, 0.1);
+
+    e.component((e) => {
+      return (
+        <ObjectView
+          name={'mouse'}
+          data={e.ctx.debug.mouseState}
+          style={{ MarginX: 15 }}
+          fontSize={10}
+          expandPaths={['$']}
+          expandLevel={5}
         />
       );
     });

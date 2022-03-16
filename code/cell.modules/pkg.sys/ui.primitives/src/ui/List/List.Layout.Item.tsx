@@ -18,8 +18,8 @@ export type ListLayoutItemProps = {
   total: number;
   item: t.ListItem;
   orientation: t.ListOrientation;
+  state?: t.ListState;
   selection?: t.ListSelection;
-  isFocused: boolean;
   bullet: {
     edge: t.ListBulletEdge;
     size: Pixels; // Offset size of the bullet row/column.
@@ -51,7 +51,7 @@ export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
     debug = {},
     bullet,
     selection,
-    isFocused,
+    state,
   } = props;
   const { data } = item;
 
@@ -66,7 +66,7 @@ export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
     bullet,
     orientation,
     selection,
-    isFocused,
+    state,
   });
 
   const args: t.ListBulletRendererArgs = {

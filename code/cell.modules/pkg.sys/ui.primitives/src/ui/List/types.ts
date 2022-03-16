@@ -1,6 +1,8 @@
-import * as t from '../../types';
+import { CssValue } from '@platform/css';
 import { Disposable, EventBus } from '@platform/types';
 import { Observable } from 'rxjs';
+
+import * as t from '../../types';
 
 type Id = string;
 type Index = number;
@@ -12,6 +14,27 @@ export type ListItemAlign = 'auto' | 'smart' | 'center' | 'end' | 'start';
 export type ListOrientation = 'x' | 'y'; // x:horizontal, y:vertical
 export type ListBulletEdge = 'near' | 'far';
 export type ListBulletSpacing = { before?: Pixels; after?: Pixels };
+
+export type ListMouseState = { over: Index; down: Index }; // TEMP 🐷
+export type ListState = {
+  isFocused: boolean;
+  mouse: t.ListMouseState;
+};
+
+/**
+ * <List> properties.
+ */
+export type ListProps = {
+  event?: t.ListEventArgs;
+  renderers?: { bullet?: t.ListBulletRenderer; body?: t.ListBulletRenderer };
+  selection?: t.ListSelection;
+  orientation?: t.ListOrientation;
+  bullet?: { edge?: t.ListBulletEdge; size?: Pixels };
+  spacing?: number | t.ListBulletSpacing; // Number (defaults to) => { before }
+  tabIndex?: number;
+  style?: CssValue;
+  debug?: { border?: boolean };
+};
 
 /**
  * Items
@@ -47,6 +70,7 @@ export type ListBulletRenderFlags = {
   bullet: { near: boolean; far: boolean };
   selected: boolean;
   focused: boolean;
+  mouse: { over: boolean; down: boolean };
 };
 
 export type GetListItemSize = (args: GetListItemSizeArgs) => Pixels;
@@ -64,8 +88,9 @@ export type GetListItem = (index: number) => ListItem | undefined;
  */
 export type ListEventsFactory = (args: { bus: EventBus<any>; instance: Id }) => ListEvents;
 export type ListEvents = Disposable & {
-  $: Observable<ListEvent>;
+  bus: Id;
   instance: Id;
+  $: Observable<ListEvent>;
   scroll: {
     $: Observable<ListScroll>;
     fire(target: ListScroll['target'], options?: { align?: ListItemAlign }): void;
@@ -102,13 +127,3 @@ export type ListRedrawEvent = {
   payload: ListRedraw;
 };
 export type ListRedraw = { instance: Id };
-
-/**
- * Fires when an item is clicked.
- */
-
-export type ListItemMouseEvent = {
-  type: 'sys.ui.List/Item/Mouse';
-  payload: ListItemMouse;
-};
-export type ListItemMouse = t.UIMouseProps;
