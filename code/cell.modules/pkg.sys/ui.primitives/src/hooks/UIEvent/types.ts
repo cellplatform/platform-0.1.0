@@ -109,16 +109,19 @@ export type UIEvents<Ctx extends O = O> = Disposable & {
 
 export type UIEventsMouse<Ctx extends O> = {
   $: Observable<UIMouse<Ctx>>;
+  filter(fn: (e: UIMouse<Ctx>) => boolean): UIEventsMouse<Ctx>;
   event(name: keyof UIEventPipeMouse): Observable<UIMouse<Ctx>>;
 };
 
 export type UIEventsTouch<Ctx extends O> = {
   $: Observable<UITouch<Ctx>>;
+  filter(fn: (e: UITouch<Ctx>) => boolean): UIEventsTouch<Ctx>;
   event(name: keyof UIEventPipeTouch): Observable<UITouch<Ctx>>;
 };
 
 export type UIEventsFocus<Ctx extends O> = {
   $: Observable<UIFocus<Ctx>>;
+  filter(fn: (e: UIFocus<Ctx>) => boolean): UIEventsFocus<Ctx>;
   event(name: keyof UIEventPipeFocus): Observable<UIFocus<Ctx>>;
 };
 

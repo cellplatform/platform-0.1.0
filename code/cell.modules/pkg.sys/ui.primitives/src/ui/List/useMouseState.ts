@@ -19,27 +19,34 @@ export function useMouseState(args: t.ListEventArgs) {
       dispose$,
       filter: (e) => e.payload.ctx.kind === 'Item',
     });
-    const handle = events.mouse.event;
+
+    const mouse = events.mouse;
 
     /**
      * Mouse state.
      */
-    handle('onMouseEnter').subscribe((e) => {
+    mouse.event('onMouseEnter').subscribe((e) => {
       setState((prev) => ({ ...prev, over: e.ctx.index }));
     });
 
-    handle('onMouseDown').subscribe((e) => {
-      setState((prev) => ({ ...prev, down: e.ctx.index }));
-    });
-
-    handle('onMouseUp').subscribe((e) => {
-      setState((prev) => {
-        if (prev.down === e.ctx.index) prev = { ...prev, down: -1 };
-        return prev;
+    mouse
+      .filter(UIEvent.isLeftButton)
+      .event('onMouseDown')
+      .subscribe((e) => {
+        setState((prev) => ({ ...prev, down: e.ctx.index }));
       });
-    });
 
-    handle('onMouseLeave').subscribe((e) => {
+    mouse
+      .filter(UIEvent.isLeftButton)
+      .event('onMouseUp')
+      .subscribe((e) => {
+        setState((prev) => {
+          if (prev.down === e.ctx.index) prev = { ...prev, down: -1 };
+          return prev;
+        });
+      });
+
+    mouse.event('onMouseLeave').subscribe((e) => {
       setState((prev) => {
         const index = e.ctx.index;
         if (prev.down === index) prev = { ...prev, down: -1 }; // Clear the [down] state, cannot be down if mouse has "left the building".

@@ -19,9 +19,9 @@ export const Is = {
     orientation: k.ListOrientation;
     bullet: { edge: k.ListBulletEdge };
     selection?: t.ListSelection;
-    isFocused?: boolean;
+    state?: t.ListState;
   }): k.ListBulletRenderFlags {
-    const { index, total, orientation, bullet, selection, isFocused = false } = args;
+    const { index, total, orientation, bullet, selection, state } = args;
     const selected = ListSelectionFlags.selected(selection, index);
 
     return {
@@ -34,8 +34,12 @@ export const Is = {
       vertical: orientation === 'y',
       spacer: false,
       bullet: { near: bullet.edge === 'near', far: bullet.edge === 'far' },
-      focused: isFocused,
+      focused: state?.isFocused ?? false,
       selected,
+      mouse: {
+        over: state ? state.mouse.over === index : false,
+        down: state ? state.mouse.down === index : false,
+      },
     };
   },
 };

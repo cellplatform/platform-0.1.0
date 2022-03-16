@@ -14,7 +14,7 @@ export function useListSelection(args: ListSelectionMonitorArgs): t.ListSelectio
    * [Lifecycle]
    */
   useEffect(() => {
-    const monitor = ListSelectionMonitor({
+    const selection = ListSelectionMonitor({
       bus,
       instance,
       multi,
@@ -22,8 +22,8 @@ export function useListSelection(args: ListSelectionMonitorArgs): t.ListSelectio
       allowEmpty,
       onChange,
     });
-    monitor.changed$.subscribe((e) => setCurrent(e));
-    return () => monitor.dispose();
+    selection.changed$.subscribe(() => setCurrent(selection.current));
+    return () => selection.dispose();
   }, [bus, instance, multi, clearOnBlur, allowEmpty, onChange]);
 
   /**

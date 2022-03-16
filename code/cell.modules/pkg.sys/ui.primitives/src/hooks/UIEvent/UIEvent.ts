@@ -1,5 +1,8 @@
 import { UIEvents as Events } from './UIEvent.Events';
 import { useUIEventPipe as useEventPipe } from './useUIEventPipe';
+import { Util } from './util';
+
+const { isLeftButton } = Util;
 
 /**
  * Index of tools for operating on [UIEvent]'s.
@@ -9,4 +12,5 @@ import { useUIEventPipe as useEventPipe } from './useUIEventPipe';
 export const UIEvent = {
   Events,
   useEventPipe,
+  isLeftButton,
 };

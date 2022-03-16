@@ -1,5 +1,5 @@
 import { animationFrameScheduler, Subject, Observable } from 'rxjs';
-import { filter, observeOn, takeUntil } from 'rxjs/operators';
+import { filter, observeOn, takeUntil, map } from 'rxjs/operators';
 
 import { rx, t } from '../common';
 
@@ -22,28 +22,61 @@ export function UIEvents<Ctx extends O = O>(args: {
   const dispose = () => dispose$.next();
   args.dispose$?.subscribe(dispose);
 
-  const $ = bus.$.pipe(
+  type UIEvent$ = Observable<t.UIEvent<Ctx>>;
+  const $: UIEvent$ = bus.$.pipe(
     takeUntil(dispose$),
     filter((e) => e.type.startsWith('sys.ui.event/')),
+    map((e) => e as t.UIEvent<Ctx>),
     filter((e) => e.payload.instance === instance),
-    filter((e) => (args.filter ? args.filter(e as t.UIEvent<Ctx>) : true)),
+    filter((e) => (args.filter ? args.filter(e) : true)),
     observeOn(animationFrameScheduler),
   );
 
-  const mouse: t.UIEventsMouse<Ctx> = {
-    $: rx.payload<t.UIMouseEvent<Ctx>>($, 'sys.ui.event/Mouse'),
-    event: (name) => mouse.$.pipe(filter((e) => e.name === name)),
+  const Mouse = ($: UIEvent$, fn: (e: t.UIMouse<Ctx>) => boolean): t.UIEventsMouse<Ctx> => {
+    $ = $.pipe(
+      filter((e) => e.type === 'sys.ui.event/Mouse'),
+      map((e) => e as t.UIMouseEvent<Ctx>),
+      filter((e) => fn(e.payload)),
+    );
+    const payload$ = $.pipe(map((e) => e.payload as t.UIMouse<Ctx>));
+    return {
+      $: payload$,
+      event: (name) => payload$.pipe(filter((e) => e.name === name)),
+      filter: (fn) => Mouse($, fn),
+    };
   };
 
-  const touch: t.UIEventsTouch<Ctx> = {
-    $: rx.payload<t.UITouchEvent<Ctx>>($, 'sys.ui.event/Touch'),
-    event: (name) => touch.$.pipe(filter((e) => e.name === name)),
+  const Touch = ($: UIEvent$, fn: (e: t.UITouch<Ctx>) => boolean): t.UIEventsTouch<Ctx> => {
+    $ = $.pipe(
+      filter((e) => e.type === 'sys.ui.event/Touch'),
+      map((e) => e as t.UITouchEvent<Ctx>),
+      filter((e) => fn(e.payload)),
+    );
+    const payload$ = $.pipe(map((e) => e.payload as t.UITouch<Ctx>));
+    return {
+      $: payload$,
+      filter: (fn) => Touch($, fn),
+      event: (name) => payload$.pipe(filter((e) => e.name === name)),
+    };
   };
 
-  const focus: t.UIEventsFocus<Ctx> = {
-    $: rx.payload<t.UIFocusEvent<Ctx>>($, 'sys.ui.event/Focus'),
-    event: (name) => focus.$.pipe(filter((e) => e.name === name)),
+  const Focus = ($: UIEvent$, fn: (e: t.UIFocus<Ctx>) => boolean): t.UIEventsFocus<Ctx> => {
+    $ = $.pipe(
+      filter((e) => e.type === 'sys.ui.event/Focus'),
+      map((e) => e as t.UIFocusEvent<Ctx>),
+      filter((e) => fn(e.payload)),
+    );
+    const payload$ = $.pipe(map((e) => e.payload as t.UIFocus<Ctx>));
+    return {
+      $: payload$,
+      filter: (fn) => Focus($, fn),
+      event: (name) => payload$.pipe(filter((e) => e.name === name)),
+    };
   };
+
+  // NB: Lazy instantiation.
+  const _cache: { [key: string]: any } = {};
+  const cache = (key: string, factory: () => any) => _cache[key] || (_cache[key] = factory());
 
   /**
    * API
@@ -54,8 +87,14 @@ export function UIEvents<Ctx extends O = O>(args: {
     instance,
     dispose,
     dispose$,
-    mouse,
-    touch,
-    focus,
+    get mouse() {
+      return cache('mouse', () => Mouse($, () => true));
+    },
+    get touch() {
+      return cache('touch', () => Touch($, () => true));
+    },
+    get focus() {
+      return cache('focus', () => Focus($, () => true));
+    },
   };
 }

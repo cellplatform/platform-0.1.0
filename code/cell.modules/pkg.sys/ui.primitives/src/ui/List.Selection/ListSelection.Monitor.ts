@@ -1,4 +1,4 @@
-import { BehaviorSubject, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { filter, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 
 import { R, rx, t, UIEvent, Keyboard } from './common';
@@ -16,7 +16,7 @@ export type ListSelectionMonitorArgs = {
   multi?: boolean; // Allow selection of multiple items.
   clearOnBlur?: boolean;
   allowEmpty?: boolean;
-  onChange?: (e: t.ListSelection) => void;
+  onChange?: (e: { selection: t.ListSelection; mouse: t.ListMouseState }) => void;
 };
 
 /**
@@ -28,6 +28,11 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
   const bus = rx.busAsType<t.ListEvent>(args.bus);
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
+
+  const dom = <Ctx extends O>(filter: (ctx: Ctx) => boolean) =>
+    UIEvent.Events<Ctx>({ bus, instance, dispose$, filter: (e) => filter(e.payload.ctx) });
+  const item = dom<t.CtxItem>((ctx) => ctx.kind === 'Item');
+  const list = dom<t.CtxList>((ctx) => ctx.kind === 'List');
 
   /**
    * Keyboard state.
@@ -48,14 +53,26 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
   /**
    * Current State
    */
-  let current: t.ListSelection = { indexes: [] };
-  const changed$ = new BehaviorSubject<t.ListSelection>(current);
-  const change = (e: t.ListSelection) => {
-    const indexes = R.uniq(e.indexes.filter((i) => i >= 0)).sort();
-    e = { ...e, indexes };
-    current = e;
-    changed$.next(e);
-    args.onChange?.(e);
+  let _selection: t.ListSelection = { indexes: [] };
+  let _mouse: t.ListMouseState = { over: -1, down: -1 };
+  const changed$ = new Subject<void>();
+  const clean = (indexes: Index[]) => R.uniq(indexes.filter((i) => i >= 0)).sort();
+
+  const Change = {
+    changed() {
+      changed$.next();
+      args.onChange?.({ selection: _selection, mouse: _mouse });
+    },
+    selection(e: t.ListSelection) {
+      e = { ...e, indexes: clean(e.indexes) };
+      _selection = e;
+      Change.changed();
+    },
+    mouse(e: t.ListMouseState) {
+      _mouse = { ...e };
+      changed$.next();
+      Change.changed();
+    },
   };
 
   /**
@@ -63,34 +80,34 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
    */
   const Select = {
     clear() {
-      change({ indexes: [] });
+      Change.selection({ indexes: [] });
     },
 
     remove(indexes: Index[]) {
-      change({ indexes: current.indexes.filter((i) => !indexes.includes(i)) });
+      Change.selection({ indexes: _selection.indexes.filter((i) => !indexes.includes(i)) });
     },
 
     /**
      * Simple single seletion.
      */
     single(index: Index) {
-      change({ indexes: [index] });
+      Change.selection({ indexes: [index] });
     },
 
     /**
      * Incremental selection/deselection (via META key).
      */
     incremental(index: Index) {
-      const existing = current.indexes.includes(index);
+      const existing = _selection.indexes.includes(index);
       if (!existing) {
         // ADD clicked item from selection.
-        const indexes = [...current.indexes, index];
-        change({ indexes });
+        const indexes = [..._selection.indexes, index];
+        Change.selection({ indexes });
       }
       if (existing) {
         // REMOVE existing selected item from selection.
-        const indexes = current.indexes.filter((item) => item !== index);
-        if (indexes.length > 0 || allowEmpty) change({ indexes });
+        const indexes = _selection.indexes.filter((item) => item !== index);
+        if (indexes.length > 0 || allowEmpty) Change.selection({ indexes });
       }
     },
 
@@ -101,8 +118,8 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
       const fill = (start: Index, end: Index) => {
         if (start < 0) return;
         const next = new Array(end - start + 1).fill(true).map((v, i) => i + start);
-        const indexes = [...current.indexes, ...next];
-        change({ indexes });
+        const indexes = [..._selection.indexes, ...next];
+        Change.selection({ indexes });
         if (ShiftKey.current) ShiftKey.current.prev = indexes;
       };
 
@@ -110,12 +127,12 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
         /**
          * Initial click within SHIFT translaction.
          */
-        const before = Find.closestPreviousSelection(current, index);
+        const before = Find.closestPreviousSelection(_selection, index);
         ShiftKey.current = {
           anchor: before < 0 ? index : before,
           prev: [],
         };
-        if (before < 0) fill(index, Find.closestNextSelection(current, index));
+        if (before < 0) fill(index, Find.closestNextSelection(_selection, index));
         if (before >= 0) fill(before + 1, index);
       } else {
         /**
@@ -128,13 +145,6 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
       }
     },
   };
-
-  const dom = <Ctx extends O>(filter: (ctx: Ctx) => boolean) => {
-    return UIEvent.Events<Ctx>({ bus, instance, dispose$, filter: (e) => filter(e.payload.ctx) });
-  };
-
-  const item = dom<t.CtxItem>((ctx) => ctx.kind === 'Item');
-  const list = dom<t.CtxList>((ctx) => ctx.kind === 'List');
 
   /**
    * Clear selection when list loses focus.
@@ -157,12 +167,45 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
   /**
    * Adjust selection on mouse-clicks.
    */
-  item.mouse.event('onMouseDown').subscribe((e) => {
-    const { index } = e.ctx;
-    const { metaKey, shiftKey } = e.mouse;
-    if (!multi || !(metaKey || shiftKey)) return Select.single(index);
-    if (multi && metaKey) return Select.incremental(index);
-    if (multi && shiftKey) return Select.block(index);
+  item.mouse
+    .filter(UIEvent.isLeftButton)
+    .event('onMouseDown')
+    .subscribe((e) => {
+      const { index } = e.ctx;
+      const { metaKey, shiftKey } = e.mouse;
+      if (!multi || !(metaKey || shiftKey)) return Select.single(index);
+      if (multi && metaKey) return Select.incremental(index);
+      if (multi && shiftKey) return Select.block(index);
+    });
+
+  /**
+   * Mouse state.
+   */
+  item.mouse.event('onMouseEnter').subscribe((e) => {
+    const index = e.ctx.index;
+    Change.mouse({ ..._mouse, over: index });
+  });
+
+  item.mouse
+    .filter(UIEvent.isLeftButton)
+    .event('onMouseDown')
+    .subscribe((e) => {
+      const index = e.ctx.index;
+      Change.mouse({ ..._mouse, down: index });
+    });
+
+  item.mouse
+    .filter(UIEvent.isLeftButton)
+    .event('onMouseUp')
+    .subscribe((e) => {
+      const index = e.ctx.index;
+      if (_mouse.down === index) Change.mouse({ ..._mouse, down: -1 });
+    });
+
+  item.mouse.event('onMouseLeave').subscribe((e) => {
+    const index = e.ctx.index;
+    if (_mouse.down === index) Change.mouse({ ..._mouse, down: -1 });
+    if (_mouse.over === index) Change.mouse({ ..._mouse, over: -1 });
   });
 
   /**
@@ -171,10 +214,10 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
   return {
     dispose,
     dispose$,
-    changed$: changed$.asObservable(),
     multi,
+    changed$: changed$.asObservable(),
     get current() {
-      return current;
+      return _selection;
     },
   };
 }

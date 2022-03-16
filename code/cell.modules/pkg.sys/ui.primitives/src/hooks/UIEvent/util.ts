@@ -27,4 +27,8 @@ export const Util = {
       },
     };
   },
+
+  isLeftButton(e: t.UIMouse) {
+    return e.mouse.button === 0;
+  },
 };
