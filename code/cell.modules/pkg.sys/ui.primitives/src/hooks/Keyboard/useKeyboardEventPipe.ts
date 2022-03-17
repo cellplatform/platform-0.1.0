@@ -58,7 +58,7 @@ export function useKeyboardEventPipe(args: KeyboardEventPipeHookArgs): t.Keyboar
       };
       bus.fire({
         type: 'sys.ui.keyboard/keypress',
-        payload: { instance, name, keypress, is },
+        payload: { instance, name, key, keypress, is },
       });
     };
 

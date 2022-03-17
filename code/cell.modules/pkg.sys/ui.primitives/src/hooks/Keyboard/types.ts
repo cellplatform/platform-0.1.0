@@ -96,6 +96,7 @@ export type KeyboardKeypressEvent = {
 export type KeyboardKeypress = {
   readonly instance: Id;
   readonly name: 'onKeydown' | 'onKeyup';
+  readonly key: string;
   readonly keypress: KeyboardKeypressProps;
   readonly is: KeyboardKeyFlags;
 };
