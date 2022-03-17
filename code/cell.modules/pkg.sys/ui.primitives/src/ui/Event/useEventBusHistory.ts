@@ -2,60 +2,74 @@ import { useEffect, useState } from 'react';
 import { animationFrameScheduler, Subject } from 'rxjs';
 import { observeOn, takeUntil, filter } from 'rxjs/operators';
 
-import { slug, time } from '../../common';
-import { EventBusHistoryHook, EventHistoryItem } from './types';
+import { t, slug, time } from '../../common';
 
 /**
- * Captures a running history of events within a state array.
+ * Captures a running history of events within a stateful array.
  */
-export const useEventBusHistory: EventBusHistoryHook = (bus, options = {}) => {
-  const { max, reset$, insertAt = 'End' } = options;
-  const [events, setEvents] = useState<EventHistoryItem[]>([]);
-  const [total, setTotal] = useState<number>(0);
-
-  const reset = () => {
-    setEvents([]);
-    setTotal(0);
-  };
+export const useEventBusHistory: t.EventBusHistoryHook = (bus, options = {}) => {
+  const { reset$ } = options;
+  const [events, setEvents] = useState<t.EventHistoryItem[]>([]);
 
   useEffect(() => {
-    const dispose$ = new Subject<void>();
-    if (!bus) return;
+    const history = EventBusHistoryMonitor(bus, options);
+    history.changed$.subscribe(() => setEvents(() => history.events));
+    return () => history.dispose();
+  }, [bus, reset$]); // eslint-disable-line
 
+  return {
+    events,
+    get total() {
+      return events.length;
+    },
+  };
+};
+
+/**
+ * Monitor
+ */
+export function EventBusHistoryMonitor(
+  bus?: t.EventBus<any>,
+  options: t.EventBusHistoryOptions = {},
+) {
+  const dispose$ = new Subject<void>();
+  const dispose = () => dispose$.next();
+
+  const events: t.EventHistoryItem[] = []; // NB: Event array is appended (not immutable) for performance reasons.
+
+  const changed$ = new Subject<t.EventHistoryItem[]>();
+  const changed = () => changed$.next(events);
+
+  const reset = () => {
+    events.length = 0;
+    changed();
+  };
+
+  if (bus) {
     const $ = bus.$.pipe(
       takeUntil(dispose$),
       filter((e) => (options.filter ? options.filter(e) : true)),
       observeOn(animationFrameScheduler),
     );
 
-    if (reset$) {
-      reset$.pipe(takeUntil(dispose$)).subscribe(() => {
-        reset();
-      });
-    }
-
     $.subscribe((event) => {
-      let count = 0;
-
-      setTotal((prev) => {
-        count = prev + 1;
-        return count;
-      });
-
-      setEvents((prev) => {
-        const timestamp = time.now.timestamp;
-        const item: EventHistoryItem = { id: slug(), event, count, timestamp };
-
-        let events = insertAt === 'Start' ? [item, ...prev] : [...prev, item];
-
-        if (max !== undefined) events = events.slice(events.length - max);
-        if (options.onChange) options.onChange({ total: count, events });
-        return events;
-      });
+      const count = events.length + 1;
+      const timestamp = time.now.timestamp;
+      events.push({ id: slug(), event, count, timestamp });
+      options.onChange?.({ total: count, events });
+      changed();
     });
 
-    return () => dispose$.next();
-  }, [bus, reset$, insertAt]); // eslint-disable-line
+    options.reset$?.pipe(takeUntil(dispose$)).subscribe(() => reset());
+  }
 
-  return { total, events, reset };
-};
+  return {
+    dispose,
+    dispose$,
+    changed$: changed$.pipe(takeUntil(dispose$)),
+    events,
+    get total() {
+      return events.length;
+    },
+  };
+}
