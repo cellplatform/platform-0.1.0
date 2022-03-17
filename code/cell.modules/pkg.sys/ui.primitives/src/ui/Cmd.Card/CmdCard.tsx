@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { css, CssValue, t, FC } from './common';
+import { CssValue, t, FC } from './common';
 import {
   CmdCardLayout as Layout,
   CmdCardLayoutProps as CmdCardLayoutProps,
-} from './Cmd.Card.Layout';
+} from './CmdCard.Layout';
 
 /**
  * Types

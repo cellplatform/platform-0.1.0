@@ -1,1 +1,1 @@
-export * from './Cmd.Textbox';
+export * from './CmdTextbox';

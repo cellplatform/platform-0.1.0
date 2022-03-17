@@ -1,1 +1,1 @@
-export * from './Cmd.Card';
+export * from './CmdCard';
