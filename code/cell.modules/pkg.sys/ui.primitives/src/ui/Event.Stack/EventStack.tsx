@@ -2,16 +2,22 @@ import React, { useRef, useState } from 'react';
 
 import { css, CssValue, defaultValue, useResizeObserver } from '../../common';
 import { CardStack, CardStackItem } from '../CardStack';
-import { cardFactory as defaultCardFactory } from './EventStack.factory';
 import { EventHistoryItem } from '../Event/types';
+import { cardFactory as defaultCardFactory } from './EventStack.factory';
 import { EventStackCardFactory } from './types';
 
+/**
+ * Types
+ */
 export type EventStackProps = {
   events?: EventHistoryItem[];
   card?: { title?: string; factory?: EventStackCardFactory; maxDepth?: number; duration?: number };
   style?: CssValue;
 };
 
+/**
+ * Component
+ */
 export const EventStack: React.FC<EventStackProps> = (props) => {
   const { events = [] } = props;
 

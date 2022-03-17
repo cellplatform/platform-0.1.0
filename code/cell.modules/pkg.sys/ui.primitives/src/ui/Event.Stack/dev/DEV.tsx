@@ -2,8 +2,9 @@ import React from 'react';
 import { Observable, Subject } from 'rxjs';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
-import { EventStack, EventStackProps, useEventBusHistory } from '..';
+import { EventStack, EventStackProps } from '..';
 import { rx, t, time } from '../../common';
+import { useEventBusHistory } from '../../Event';
 
 type Ctx = {
   bus: t.EventBus<any>;
