@@ -20,10 +20,14 @@ export * from './ui/PropList/types';
 export * from './ui/QRCode/types';
 export * from './ui/MinSize/types';
 
+export * from './ui/Command.Card/types';
+export * from './ui/Command.Bar/types';
+
 export * from './ui/PositioningLayer/types';
 export * from './ui/PositioningLayout/types';
 
 export * from './ui/Event/types';
+export * from './ui/Event.List/types';
 
 export * from './ui/Tree/types';
 export * from './ui/StackPanel/types';
