@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { color, COLORS, css, CssValue, t } from '../common';
-import { CommandBar } from '../../Command.Bar';
+import { CmdBar } from '../../Cmd.Bar';
 
 /**
  * Types
  */
-export type CommandCardBackdropProps = {
+export type BackdropProps = {
   bus: t.EventBus<any>;
   style?: CssValue;
 };
@@ -13,7 +13,7 @@ export type CommandCardBackdropProps = {
 /**
  * Component
  */
-export const CommandCardBackdrop: React.FC<CommandCardBackdropProps> = (props) => {
+export const Backdrop: React.FC<BackdropProps> = (props) => {
   const { bus } = props;
 
   /**
@@ -39,7 +39,7 @@ export const CommandCardBackdrop: React.FC<CommandCardBackdropProps> = (props) =
     <div {...css(styles.base, props.style)}>
       <div {...styles.top}>{'body'}</div>
       <div {...styles.bottom}>
-        <CommandBar bus={bus} />
+        <CmdBar bus={bus} />
       </div>
     </div>
   );

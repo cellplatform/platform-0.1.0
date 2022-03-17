@@ -18,9 +18,9 @@ const imports = {
   QRCode: import('./ui/QRCode/dev/DEV'),
   TextEditor: import('./ui/TextEditor/DEV'),
 
-  CommandTextbox: import('./ui/Command.Textbox/dev/DEV'),
-  CommandBar: import('./ui/Command.Bar/dev/DEV'),
-  CommandCard: import('./ui/Command.Card/dev/DEV'),
+  CmdTextbox: import('./ui/Cmd.Textbox/dev/DEV'),
+  CmdBar: import('./ui/Cmd.Bar/dev/DEV'),
+  CmdCard: import('./ui/Cmd.Card/dev/DEV'),
 
   MinSize: import('./ui/MinSize/dev/DEV'),
   PositioningLayer: import('./ui/PositioningLayer/dev/DEV'),

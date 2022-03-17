@@ -7,35 +7,36 @@ import * as k from './types';
 /**
  * Event API.
  */
-export const CommandBarEvents: k.CommandBarEventsFactory = (args) => {
+export const CmdBarEvents: k.CmdBarEventsFactory = (args) => {
   const { instance } = args;
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
-  const bus = rx.busAsType<k.CommandBarEvent>(args.bus);
+  const bus = rx.busAsType<k.CmdBarEvent>(args.bus);
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
     filter((e) => e.payload.instance === instance),
+    filter((e) => e.type.startsWith('sys.ui.CmdBar/')),
     observeOn(animationFrameScheduler),
   );
 
-  const action: k.CommandBarEvents['action'] = {
-    $: rx.payload<k.CommandBarActionEvent>($, 'sys.ui.CommandBar/Action'),
+  const action: k.CmdBarEvents['action'] = {
+    $: rx.payload<k.CmdBarActionEvent>($, 'sys.ui.CmdBar/Action'),
     fire(args) {
       const { text } = args;
       bus.fire({
-        type: 'sys.ui.CommandBar/Action',
+        type: 'sys.ui.CmdBar/Action',
         payload: { instance, text },
       });
     },
   };
 
-  const text: k.CommandBarEvents['text'] = {
-    changed$: rx.payload<k.CommandBarTextChangeEvent>($, 'sys.ui.CommandBar/TextChanged'),
+  const text: k.CmdBarEvents['text'] = {
+    changed$: rx.payload<k.CmdBarTextChangeEvent>($, 'sys.ui.CmdBar/TextChanged'),
     changed(args) {
       const { from, to } = args;
       bus.fire({
-        type: 'sys.ui.CommandBar/TextChanged',
+        type: 'sys.ui.CmdBar/TextChanged',
         payload: { instance, from, to },
       });
     },

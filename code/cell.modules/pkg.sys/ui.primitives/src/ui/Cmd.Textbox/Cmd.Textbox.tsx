@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { color, COLORS, css, CssValue } from '../common';
+import { color, COLORS, css, CssValue, t } from '../common';
 import { TextInput } from '../../ui.ref/text/TextInput';
 import { Icons } from '../Icons';
 import { Button } from '../../ui.ref/button/Button';
@@ -8,38 +8,30 @@ import { Spinner } from '../../ui.ref/spinner/Spinner';
 /**
  * Types
  */
-export type CommandTextboxTheme = 'Dark' | 'Light';
-
-export type CommandTextboxActionEvent = { text: string };
-export type CommandTextboxActionEventHandler = (e: CommandTextboxActionEvent) => void;
-
-export type CommandTextboxChangeEvent = { from: string; to: string };
-export type CommandTextboxChangeEventHandler = (e: CommandTextboxChangeEvent) => void;
-
-export type CommandTextboxProps = {
+export type CmdTextboxProps = {
   placeholder?: string;
   spinner?: boolean;
-  theme?: CommandTextboxTheme;
+  theme?: t.CmdTextboxTheme;
   style?: CssValue;
-  onChange?: CommandTextboxChangeEventHandler;
-  onAction?: CommandTextboxActionEventHandler;
+  onChange?: t.CmdTextboxChangeEventHandler;
+  onAction?: t.CmdTextboxActionEventHandler;
 };
 
 /**
  * Constants
  */
-const THEMES: CommandTextboxTheme[] = ['Light', 'Dark'];
-const DEFAULT_THEME: CommandTextboxTheme = 'Light';
+const THEMES: t.CmdTextboxTheme[] = ['Light', 'Dark'];
+const DEFAULT_THEME: t.CmdTextboxTheme = 'Light';
 const DEFAULT = {
   THEME: DEFAULT_THEME,
   PLACEHOLDER: 'command',
 };
-export const OpenConnectionInputConstants = { DEFAULT, THEMES };
+export const CmdTextboxContants = { DEFAULT, THEMES };
 
 /**
  * Component
  */
-export const CommandTextbox: React.FC<CommandTextboxProps> = (props) => {
+export const CmdTextbox: React.FC<CmdTextboxProps> = (props) => {
   const { theme = 'Light', spinner } = props;
 
   const [pending, setPending] = useState(false);

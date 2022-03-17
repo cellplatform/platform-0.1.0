@@ -20,8 +20,9 @@ export * from './ui/PropList/types';
 export * from './ui/QRCode/types';
 export * from './ui/MinSize/types';
 
-export * from './ui/Command.Card/types';
-export * from './ui/Command.Bar/types';
+export * from './ui/Cmd.Card/types';
+export * from './ui/Cmd.Bar/types';
+export * from './ui/Cmd.Textbox/types';
 
 export * from './ui/PositioningLayer/types';
 export * from './ui/PositioningLayout/types';

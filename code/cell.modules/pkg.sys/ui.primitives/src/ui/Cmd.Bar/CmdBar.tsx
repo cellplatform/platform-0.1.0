@@ -1,14 +1,10 @@
 import React from 'react';
 
 import { color, css, CssValue, FC, t } from './common';
-import {
-  CommandTextbox,
-  CommandTextboxActionEventHandler,
-  CommandTextboxChangeEventHandler,
-} from '../Command.Textbox';
-import { CommandBarEventPipe, CommandBarEventPipeProps } from './CommandBar.EventPipe';
-import { CommandBarInset, CommandBarInsetProps } from './CommandBar.Inset';
-import { CommandBarEvents } from './Events';
+import { CmdTextbox } from '../Cmd.Textbox';
+import { CmdBarEventPipe, CmdBarEventPipeProps } from './CmdBar.EventPipe';
+import { CmdBarInset, CmdBarInsetProps } from './CmdBar.Inset';
+import { CmdBarEvents } from './Events';
 import * as k from './types';
 
 type Id = string;
@@ -16,31 +12,31 @@ type Id = string;
 /**
  * Types
  */
-export type CommandBarPart = 'Input' | 'Events';
+export type CmdBarPart = 'Input' | 'Events';
 
-export type CommandBarProps = {
+export type CmdBarProps = {
   events?: { bus: t.EventBus<any>; instance: Id };
   bus: t.EventBus<any>;
-  inset?: boolean | CommandBarInsetProps;
-  parts?: CommandBarPart[];
+  inset?: boolean | CmdBarInsetProps;
+  parts?: CmdBarPart[];
   cornerRadius?: [number, number, number, number];
   backgroundColor?: string | number;
   textbox?: { placeholder?: string; spinner?: boolean };
   style?: CssValue;
-  onChange?: CommandTextboxChangeEventHandler;
-  onAction?: CommandTextboxActionEventHandler;
+  onChange?: t.CmdTextboxChangeEventHandler;
+  onAction?: t.CmdTextboxActionEventHandler;
 };
 
 /**
  * Constants
  */
-const PARTS: CommandBarPart[] = ['Input', 'Events'];
-export const CommandBarConstants = { PARTS };
+const PARTS: CmdBarPart[] = ['Input', 'Events'];
+export const CmdBarConstants = { PARTS };
 
 /**
  * Component
  */
-export const View: React.FC<CommandBarProps> = (props) => {
+export const View: React.FC<CmdBarProps> = (props) => {
   const { bus, inset } = props;
   const { parts = ['Input', 'Events'] } = props;
 
@@ -48,13 +44,13 @@ export const View: React.FC<CommandBarProps> = (props) => {
     ?.map((value) => (value === 0 ? '0' : `${value}px`))
     .join(' ');
 
-  const [events, setEvents] = React.useState<k.CommandBarEvents | undefined>();
+  const [events, setEvents] = React.useState<k.CmdBarEvents | undefined>();
 
   /**
    * Lifecycle
    */
   React.useEffect(() => {
-    if (props.events) setEvents(CommandBarEvents(props.events));
+    if (props.events) setEvents(CmdBarEvents(props.events));
     return () => events?.dispose();
   }, [props.events]); // eslint-disable-line
 
@@ -99,7 +95,7 @@ export const View: React.FC<CommandBarProps> = (props) => {
       appendDivider();
       elements.push(
         <div {...styles.input} key={elements.length}>
-          <CommandTextbox
+          <CmdTextbox
             theme={'Dark'}
             placeholder={props.textbox?.placeholder}
             spinner={props.textbox?.spinner}
@@ -122,7 +118,7 @@ export const View: React.FC<CommandBarProps> = (props) => {
       appendDivider();
       elements.push(
         <div {...styles.events} key={elements.length}>
-          {<CommandBarEventPipe bus={bus} iconEdge={isFirst ? 'Left' : 'Right'} />}
+          {<CmdBarEventPipe bus={bus} iconEdge={isFirst ? 'Left' : 'Right'} />}
         </div>,
       );
     }
@@ -141,7 +137,7 @@ export const View: React.FC<CommandBarProps> = (props) => {
     ...(typeof inset === 'object' ? inset : {}),
   };
 
-  const elInsetBorder = inset && <CommandBarInset {...insetProps} style={styles.inset} />;
+  const elInsetBorder = inset && <CmdBarInset {...insetProps} style={styles.inset} />;
 
   return (
     <div {...css(styles.base, props.style)}>
@@ -155,16 +151,16 @@ export const View: React.FC<CommandBarProps> = (props) => {
  * Export
  */
 type Fields = {
-  Inset: React.FC<CommandBarInsetProps>;
-  EventPipe: React.FC<CommandBarEventPipeProps>;
-  Events: k.CommandBarEventsFactory;
+  Inset: React.FC<CmdBarInsetProps>;
+  EventPipe: React.FC<CmdBarEventPipeProps>;
+  Events: k.CmdBarEventsFactory;
 };
-export const CommandBar = FC.decorate<CommandBarProps, Fields>(
+export const CmdBar = FC.decorate<CmdBarProps, Fields>(
   View,
   {
-    Inset: CommandBarInset,
-    EventPipe: CommandBarEventPipe,
-    Events: CommandBarEvents,
+    Inset: CmdBarInset,
+    EventPipe: CmdBarEventPipe,
+    Events: CmdBarEvents,
   },
-  { displayName: 'CommandBar' },
+  { displayName: 'CmdBar' },
 );

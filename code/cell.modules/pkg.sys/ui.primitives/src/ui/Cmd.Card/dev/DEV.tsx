@@ -2,19 +2,14 @@ import React from 'react';
 import { NetworkBusMock } from 'sys.runtime.web';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
-import {
-  CommandBar,
-  CommandBarConstants,
-  CommandBarInsetProps,
-  CommandBarPart,
-  CommandBarProps,
-} from '..';
-import { COLORS, rx, t } from '../../common';
+import { CmdCard, CmdCardProps } from '..';
+import { rx, t } from '../../common';
 
 type Ctx = {
   bus: t.EventBus<any>;
   netbus: t.NetworkBus<any>;
-  props: CommandBarProps;
+  props: CmdCardProps;
+  size: { width: number; height: number };
   debug: Debug;
 };
 
@@ -68,7 +63,7 @@ const Util = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.Command.Bar')
+  .namespace('ui.Cmd.Card')
   .context((e) => {
     if (e.prev) return e.prev;
 
@@ -78,77 +73,15 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       bus,
       netbus,
-      props: { bus, textbox: { placeholder: 'my command' } },
+      props: { bus },
+      size: { width: 500, height: 320 },
       debug: { fireCount: 0, busKind: 'netbus' },
     };
-
     return ctx;
   })
 
   .init(async (e) => {
     const { ctx, bus } = e;
-
-    const instance = 'foo.instance';
-    const events = CommandBar.Events({ bus, instance });
-    ctx.props.events = { bus, instance };
-
-    events.$.subscribe((e) => {
-      console.log('CommandBar.Events.$', e);
-    });
-  })
-
-  .items((e) => {
-    e.title('Props');
-
-    e.boolean('inset', (e) => {
-      if (e.changing) e.ctx.props.inset = e.changing.next;
-      e.boolean.current = e.ctx.props.inset as boolean;
-    });
-
-    e.select((config) =>
-      config
-        .title('parts:')
-        .items(CommandBarConstants.PARTS)
-        .initial(undefined)
-        .clearable(true)
-        .view('buttons')
-        .multi(true)
-        .pipe((e) => {
-          if (e.changing) {
-            const next = e.changing.next.map(({ value }) => value) as CommandBarPart[];
-            e.ctx.props.parts = next.length === 0 ? undefined : next;
-          }
-        }),
-    );
-
-    e.hr();
-  })
-
-  .items((e) => {
-    e.title('Props.Textbox');
-
-    const toTextbox = (ctx: Ctx) => ctx.props.textbox || (ctx.props.textbox = {});
-
-    e.boolean('spinner', (e) => {
-      const textbox = toTextbox(e.ctx);
-      if (e.changing) textbox.spinner = e.changing.next;
-      e.boolean.current = textbox.spinner;
-    });
-
-    e.textbox((config) =>
-      config
-        .title('placeholder')
-        .initial(config.ctx.props.textbox?.placeholder || '<nothing>')
-        .pipe((e) => {
-          if (e.changing?.action === 'invoke') {
-            const textbox = toTextbox(e.ctx);
-            e.textbox.current = e.changing.next || undefined;
-            textbox.placeholder = e.textbox.current;
-          }
-        }),
-    );
-
-    e.hr();
   })
 
   .items((e) => {
@@ -176,9 +109,6 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Debug');
 
-    e.button('arrangement (1)', (e) => (e.ctx.props.parts = ['Input', 'Events']));
-    e.button('arrangement (2)', (e) => (e.ctx.props.parts = ['Events', 'Input']));
-
     e.hr();
     e.component((e) => {
       return (
@@ -194,33 +124,24 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    const { width, height } = e.ctx.size;
     const { instance, busKind } = Util.toBus(e.ctx);
     const props = Util.toProps(e.ctx);
 
     e.settings({
-      host: { background: COLORS.DARK },
+      host: { background: -0.04 },
       layout: {
+        cropmarks: -0.2,
+        width,
+        height,
         label: {
-          topLeft: '<CommandBar>',
+          topLeft: '<CmdCard>',
           bottomRight: busKind === 'netbus' ? `${instance} (network)` : `${instance} (local)`,
         },
-        width: 600,
-        height: 38,
-        cropmarks: 0.2,
-        labelColor: 0.6,
       },
     });
 
-    const bg = props.inset ? ({ cornerRadius: [0, 0, 5, 5] } as CommandBarInsetProps) : undefined;
-
-    e.render(
-      <CommandBar
-        {...props}
-        onAction={(e) => console.log('onAction:', e)}
-        inset={bg}
-        style={{ flex: 1 }}
-      />,
-    );
+    e.render(<CmdCard {...props} style={{ flex: 1 }} />);
   });
 
 export default actions;

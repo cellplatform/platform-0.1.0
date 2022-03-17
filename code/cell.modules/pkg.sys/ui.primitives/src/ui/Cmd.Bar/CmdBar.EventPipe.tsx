@@ -6,13 +6,13 @@ import { useEventBusHistory } from '../Event';
 import { EventPipe } from '../Event.Pipe';
 import { Button, css, CssValue, Icons, slug, t, time } from './common';
 
-export type CommandBarEventPipeProps = {
+export type CmdBarEventPipeProps = {
   bus: t.EventBus<any>;
   iconEdge?: 'Left' | 'Right';
   style?: CssValue;
 };
 
-export const CommandBarEventPipe: React.FC<CommandBarEventPipeProps> = (props) => {
+export const CmdBarEventPipe: React.FC<CmdBarEventPipeProps> = (props) => {
   const { bus, iconEdge = 'Right' } = props;
 
   const history = useEventBusHistory(bus);

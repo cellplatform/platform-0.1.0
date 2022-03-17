@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { css, CssValue, t, FC } from './common';
-import { CommandCardBackdrop } from './components/Backdrop';
+import { css, CssValue, t } from './common';
+import { Backdrop } from './components/Backdrop';
 
 /**
  * Types
  */
-export type CommandCardLayoutProps = {
+export type CmdCardLayoutProps = {
   bus: t.EventBus<any>;
   style?: CssValue;
 };
@@ -14,7 +14,7 @@ export type CommandCardLayoutProps = {
 /**
  * Component
  */
-export const CommandCardLayout: React.FC<CommandCardLayoutProps> = (props) => {
+export const CmdCardLayout: React.FC<CmdCardLayoutProps> = (props) => {
   const { bus } = props;
 
   /**
@@ -27,7 +27,7 @@ export const CommandCardLayout: React.FC<CommandCardLayoutProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
-      <CommandCardBackdrop bus={bus} style={styles.backdrop} />
+      <Backdrop bus={bus} style={styles.backdrop} />
     </div>
   );
 };

@@ -1,21 +1,21 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
-import { CommandTextbox, CommandTextboxProps, OpenConnectionInputConstants } from '..';
+import { CmdTextbox, CmdTextboxProps, CmdTextboxContants } from '..';
 import { COLORS } from '../../common';
 
-const CONST = OpenConnectionInputConstants;
+const CONST = CmdTextboxContants;
 
 type Ctx = {
   self: string;
-  props: CommandTextboxProps;
+  props: CmdTextboxProps;
 };
 
 /**
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.Command.Textbox')
+  .namespace('ui.Cmd.Textbox')
   .context((e) => {
     if (e.prev) return e.prev;
     const ctx: Ctx = {
@@ -92,7 +92,7 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    e.render(<CommandTextbox {...e.ctx.props} onAction={(e) => console.log('onAction:', e)} />);
+    e.render(<CmdTextbox {...e.ctx.props} onAction={(e) => console.log('onAction:', e)} />);
   });
 
 export default actions;
