@@ -1,5 +1,5 @@
 import { ListSelectionMonitor as Monitor } from './ListSelection.Monitor';
-import { useListSelection } from './ListSelection.useSelection';
+import { useListSelection } from './useListSelection';
 import { ListSelectionFlags as is } from './ListSelection.Flags';
 
 export { useListSelection };

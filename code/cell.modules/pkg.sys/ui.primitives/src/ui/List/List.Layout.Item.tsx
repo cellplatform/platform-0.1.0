@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { color, css, CssValue, Is, t, UIEvent } from './common';
 import { Renderers } from './renderers';
@@ -147,6 +147,16 @@ export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
 
     return <div {...css(styles.base, styles.debug)}>{renderContent(e)}</div>;
   };
+
+  /**
+   * TODO 🐷 BUG
+   * mouse handlers cause unneessary re-rendering.
+   *
+   * - Figure out how to intrument the item events without
+   *   causing these re-renders
+   * - Memoiize
+   *
+   */
 
   /**
    * Main rendering.

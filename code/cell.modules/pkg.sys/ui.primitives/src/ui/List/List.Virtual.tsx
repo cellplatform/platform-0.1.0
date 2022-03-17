@@ -5,7 +5,6 @@ import { css, FC, t, useResizeObserver } from './common';
 import { ListEvents } from './Events';
 import { useVirtualContext } from './useCtx.Virtual';
 import { ListVirtualItem, ListVirtualItemProps } from './List.Virtual.Item';
-import { useContext } from './useCtx';
 import { Renderer } from './Renderer';
 
 type Pixels = number;

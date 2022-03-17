@@ -121,6 +121,12 @@ export const actions = DevActions<Ctx>()
       multi: true,
       clearOnBlur: false,
       allowEmpty: true,
+      ctx() {
+        return {
+          orientation: e.ctx.props.orientation,
+          total: e.ctx.items.length,
+        };
+      },
     });
 
     selection.changed$.subscribe(() => {

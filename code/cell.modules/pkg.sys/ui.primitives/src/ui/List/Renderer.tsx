@@ -35,7 +35,6 @@ export function Renderer(args: {
       return (
         <ListLayoutItem
           event={{ bus, instance }}
-          key={`bullet.${index}`}
           index={index}
           total={total}
           renderers={renderers}

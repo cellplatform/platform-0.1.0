@@ -5,6 +5,7 @@ import { t } from '../common';
 export default Test.describe('List.Selection', (e) => {
   e.describe('is (flags)', (e) => {
     const is = ListSelection.is;
+
     e.it('is.selected', () => {
       const selection: t.ListSelection = { indexes: [1, 2, 3] };
       expect(is.selected(selection, 2)).to.eql(true);

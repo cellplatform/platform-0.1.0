@@ -1,7 +1,7 @@
-import { Subject } from 'rxjs';
-import { filter, takeUntil, distinctUntilChanged } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 
-import { R, rx, t, UIEvent, Keyboard } from './common';
+import { DEFAULTS, Keyboard, R, rx, t, UIEvent } from './common';
 
 /**
  * Types
@@ -16,7 +16,9 @@ export type ListSelectionMonitorArgs = {
   multi?: boolean; // Allow selection of multiple items.
   clearOnBlur?: boolean;
   allowEmpty?: boolean;
-  onChange?: (e: { selection: t.ListSelection; mouse: t.ListMouseState }) => void;
+  keyboard?: boolean; // Support keyboard interaction (default: true).
+  reset$?: Observable<any>;
+  ctx: () => { orientation?: t.ListOrientation; total: number };
 };
 
 /**
@@ -28,6 +30,7 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
   const bus = rx.busAsType<t.ListEvent>(args.bus);
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
+  args.reset$?.pipe(takeUntil(dispose$)).subscribe(() => Change.reset());
 
   const dom = <Ctx extends O>(filter: (ctx: Ctx) => boolean) =>
     UIEvent.Events<Ctx>({ bus, instance, dispose$, filter: (e) => filter(e.payload.ctx) });
@@ -38,7 +41,11 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
    * Keyboard state.
    */
   const keyboard = Keyboard.State.singleton(bus);
-  const keyboard$ = keyboard.state$.pipe(takeUntil(dispose$));
+  const keyboardState$ = keyboard.state$.pipe(takeUntil(dispose$));
+  const keydown$ = keyboard.keypress$.pipe(
+    takeUntil(dispose$),
+    filter((e) => e.is.down),
+  );
 
   /**
    * SHIFT state.
@@ -53,15 +60,15 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
   /**
    * Current State
    */
-  let _selection: t.ListSelection = { indexes: [] };
-  let _mouse: t.ListMouseState = { over: -1, down: -1 };
-  const changed$ = new Subject<void>();
+  let _selection: t.ListSelection = DEFAULTS.selection;
+  let _mouse: t.ListMouseState = DEFAULTS.mouse;
+  const toState = () => ({ selection: _selection, mouse: _mouse });
+  const changed$ = new BehaviorSubject<t.ListSeletionState>(toState());
   const clean = (indexes: Index[]) => R.uniq(indexes.filter((i) => i >= 0)).sort();
 
   const Change = {
     changed() {
-      changed$.next();
-      args.onChange?.({ selection: _selection, mouse: _mouse });
+      changed$.next(toState());
     },
     selection(e: t.ListSelection) {
       e = { ...e, indexes: clean(e.indexes) };
@@ -70,7 +77,11 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
     },
     mouse(e: t.ListMouseState) {
       _mouse = { ...e };
-      changed$.next();
+      Change.changed();
+    },
+    reset() {
+      _selection = DEFAULTS.selection;
+      _mouse = DEFAULTS.mouse;
       Change.changed();
     },
   };
@@ -157,7 +168,7 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
   /**
    * Clear current [ShiftKey] operation on key-up.
    */
-  keyboard$
+  keyboardState$
     .pipe(
       distinctUntilChanged((prev, next) => ShiftKey.isPressed(prev) === ShiftKey.isPressed(next)),
       filter((e) => !ShiftKey.isPressed(e)),
@@ -182,24 +193,21 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
    * Mouse state.
    */
   item.mouse.event('onMouseEnter').subscribe((e) => {
-    const index = e.ctx.index;
-    Change.mouse({ ..._mouse, over: index });
+    Change.mouse({ ..._mouse, over: e.ctx.index });
   });
 
   item.mouse
     .filter(UIEvent.isLeftButton)
     .event('onMouseDown')
     .subscribe((e) => {
-      const index = e.ctx.index;
-      Change.mouse({ ..._mouse, down: index });
+      Change.mouse({ ..._mouse, down: e.ctx.index });
     });
 
   item.mouse
     .filter(UIEvent.isLeftButton)
     .event('onMouseUp')
     .subscribe((e) => {
-      const index = e.ctx.index;
-      if (_mouse.down === index) Change.mouse({ ..._mouse, down: -1 });
+      if (_mouse.down === e.ctx.index) Change.mouse({ ..._mouse, down: -1 });
     });
 
   item.mouse.event('onMouseLeave').subscribe((e) => {
@@ -209,13 +217,66 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
   });
 
   /**
+   * Arrow keys.
+   */
+  keydown$
+    .pipe(
+      filter((e) => args.keyboard ?? true),
+      filter((e) => e.is.arrow || e.key === 'Home' || e.key === 'End'),
+    )
+    .subscribe((e) => {
+      const ctx = args.ctx();
+      const { total, orientation = 'y' } = ctx;
+      if (total === 0) return;
+
+      const key = e.key;
+      const isShift = e.keypress.shiftKey;
+      const current = _selection.indexes;
+
+      const change = (index: Index) => {
+        const indexes = [index];
+        if (!R.equals(current, indexes)) Change.selection({ indexes });
+      };
+
+      const isPrev = orientation === 'y' ? key === 'ArrowUp' : key === 'ArrowLeft';
+      const isNext = orientation === 'y' ? key === 'ArrowDown' : key === 'ArrowRight';
+
+      if (isPrev || isNext) {
+        if (current.length === 0) {
+          // Nothing selected, start at [Beginning] or [End].
+          return change(isNext ? 0 : total - 1);
+        }
+        if (isPrev) {
+          return change(Math.max(0, current[0] - 1));
+        }
+        if (isNext) {
+          const index = current[current.length - 1] + 1;
+          return change(Math.min(total - 1, index));
+        }
+      }
+
+      if (key === 'Home') return change(0);
+      if (key === 'End') return change(total - 1);
+
+      /**
+       * TODO 🐷 KEYBOARD
+       * - scroll to item (ensure visible)
+       * - SHIFT additive selection.
+       * - Only change keyboard when list is focused.
+       */
+    });
+
+  /**
    * API
    */
   return {
     dispose,
     dispose$,
-    multi,
+    reset: Change.reset,
     changed$: changed$.asObservable(),
+    get state(): t.ListSeletionState {
+      return toState();
+    },
     get current() {
       return _selection;
     },
