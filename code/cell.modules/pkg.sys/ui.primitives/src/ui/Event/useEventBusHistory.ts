@@ -32,10 +32,10 @@ export function EventBusHistoryMonitor(
   bus?: t.EventBus<any>,
   options: t.EventBusHistoryOptions = {},
 ) {
+  const events: t.EventHistoryItem[] = []; // NB: Event array is appended (not immutable) for performance reasons.
+
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
-
-  const events: t.EventHistoryItem[] = []; // NB: Event array is appended (not immutable) for performance reasons.
 
   const changed$ = new Subject<t.EventHistoryItem[]>();
   const changed = () => changed$.next(events);
