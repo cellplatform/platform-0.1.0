@@ -16,11 +16,12 @@ export type EventBusHistoryHook = (
 ) => EventBusHistory;
 
 export type EventBusHistoryOptions = {
-  max?: number;
   reset$?: t.Observable<void>;
   onChange?: (e: EventBusHistory) => void;
   filter?: <E extends t.Event = t.Event>(e: E) => boolean;
-  insertAt?: 'Start' | 'End';
 };
 
-export type EventBusHistory = { total: number; events: EventHistoryItem[] };
+export type EventBusHistory = {
+  total: number;
+  events: EventHistoryItem[];
+};
