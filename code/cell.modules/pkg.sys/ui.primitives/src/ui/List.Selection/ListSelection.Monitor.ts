@@ -38,6 +38,22 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
   const list = dom<t.CtxList>((ctx) => ctx.kind === 'List');
 
   /**
+   * Current State
+   */
+  let _isListFocused = false;
+  let _selection: t.ListSelection = DEFAULTS.selection;
+  let _mouse: t.ListMouseState = DEFAULTS.mouse;
+  const toState = () => ({ selection: _selection, mouse: _mouse });
+  const changed$ = new BehaviorSubject<t.ListSeletionState>(toState());
+  const clean = (indexes: Index[]) => R.uniq(indexes.filter((i) => i >= 0)).sort();
+
+  /**
+   * List focus state.
+   */
+  list.focus.event('onFocus').subscribe(() => (_isListFocused = true));
+  list.focus.event('onBlur').subscribe(() => (_isListFocused = false));
+
+  /**
    * Keyboard state.
    */
   const keyboard = Keyboard.State.singleton(bus);
@@ -58,14 +74,8 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
   };
 
   /**
-   * Current State
+   * State change helpers.
    */
-  let _selection: t.ListSelection = DEFAULTS.selection;
-  let _mouse: t.ListMouseState = DEFAULTS.mouse;
-  const toState = () => ({ selection: _selection, mouse: _mouse });
-  const changed$ = new BehaviorSubject<t.ListSeletionState>(toState());
-  const clean = (indexes: Index[]) => R.uniq(indexes.filter((i) => i >= 0)).sort();
-
   const Change = {
     changed() {
       changed$.next(toState());
@@ -221,6 +231,7 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
    */
   keydown$
     .pipe(
+      filter(() => _isListFocused),
       filter((e) => args.keyboard ?? true),
       filter((e) => e.is.arrow || e.key === 'Home' || e.key === 'End'),
     )
