@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { css, CssValue, EventBusHistory, EventPipe, EventStack } from '../DEV.common';
+import { css, CssValue, EventPipe, EventStack, t } from '../DEV.common';
 
 export type DevEventBusStackProps = {
-  history: EventBusHistory;
+  history: t.EventBusHistory;
   style?: CssValue;
 };
 

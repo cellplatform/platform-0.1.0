@@ -4,7 +4,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 
 import * as k from '../NetworkCard/types';
 import { DevVideoCard } from './DEV.Card.Video';
-import { css, LocalPeerCard, rx, t, PeerNetwork, CommandBar } from './DEV.common';
+import { css, LocalPeerCard, rx, t, PeerNetwork, CmdBar } from './DEV.common';
 
 /**
  * Hooks
@@ -23,7 +23,7 @@ export function useController(args: {
   useEffect(() => {
     const { netbus } = network;
 
-    const commandBar = CommandBar.Events({ bus: network.bus, instance });
+    const commandBar = CmdBar.Events({ bus: network.bus, instance });
 
     const dispose$ = new Subject<void>();
     const dispose = () => {

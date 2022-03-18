@@ -9,9 +9,10 @@ export type DevEventListProps = {
 
 export const DevEventList: React.FC<DevEventListProps> = (props) => {
   const { network } = props;
-  const history = useEventBusHistory(network.netbus, { insertAt: 'Start' });
+  // const history = useEventBusHistory(network.netbus);
 
   if (!network) return null;
+  const bus = network.netbus;
 
   /**
    * [Render]
@@ -21,7 +22,7 @@ export const DevEventList: React.FC<DevEventListProps> = (props) => {
   };
   return (
     <div {...css(styles.base, props.style)}>
-      <EventList items={history.events} style={{ flex: 1 }} />
+      <EventList bus={bus} style={{ flex: 1 }} />
     </div>
   );
 };

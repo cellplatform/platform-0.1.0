@@ -3,7 +3,7 @@ import { interval, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { useLocalPeer } from '../../web.hooks';
-import { CommandTextbox, Card, css, CssValue, Hr, PropList, t } from '../common';
+import { CmdTextbox, Card, css, CssValue, Hr, PropList, t } from '../common';
 import { LocalPeerCardConstants } from './constants';
 import { Connect, connect } from './LocalPeerCard.connect';
 import { toItems } from './LocalPeerCard.toItems';
@@ -74,7 +74,7 @@ const View: V = (props) => {
   };
 
   const elConnect = fields.includes('Connection.Open') && (
-    <CommandTextbox
+    <CmdTextbox
       style={styles.textbox}
       placeholder={'open connection'}
       onAction={(e) => startConnection(e.text)}
