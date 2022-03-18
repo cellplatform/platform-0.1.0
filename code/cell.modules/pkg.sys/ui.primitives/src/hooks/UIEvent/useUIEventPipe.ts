@@ -14,6 +14,7 @@ export type UIEventPipeHookArgs<Ctx extends O, H extends HTMLElement> = {
   ctx: Ctx;
   ref?: RefObject<H>;
   redrawOnFocus?: boolean; // Cause redraw when focus/blur events fire on the [ref] element.
+  enabled?: boolean;
 };
 
 /**
@@ -22,13 +23,17 @@ export type UIEventPipeHookArgs<Ctx extends O, H extends HTMLElement> = {
 export function useUIEventPipe<Ctx extends O, H extends HTMLElement>(
   args: UIEventPipeHookArgs<Ctx, H>,
 ): t.UIEventPipeHook<Ctx, H> {
-  const { instance, ctx, redrawOnFocus = false } = args;
+  const { instance, ctx, redrawOnFocus = false, enabled = true } = args;
   const bus = rx.busAsType<t.UIEvent>(args.bus);
 
   const _ref = useRef<H>(null);
   const ref = args.ref || _ref;
   const target = Util.toTarget(ref);
-  useFocus(ref, { redraw: redrawOnFocus });
+  useFocus(ref, { redraw: enabled && redrawOnFocus });
+
+  const fire = (e: t.UIEvent) => {
+    if (enabled) bus.fire(e);
+  };
 
   /**
    * Target Element.
@@ -59,7 +64,7 @@ export function useUIEventPipe<Ctx extends O, H extends HTMLElement>(
         page: { x: e.pageX, y: e.pageY },
         screen: { x: e.screenX, y: e.screenY },
       };
-      bus.fire({
+      fire({
         type: 'sys.ui.event/Mouse',
         payload: { instance, name, mouse, target, ctx },
       });
@@ -79,7 +84,7 @@ export function useUIEventPipe<Ctx extends O, H extends HTMLElement>(
         targetTouches,
         changedTouches,
       };
-      bus.fire({
+      fire({
         type: 'sys.ui.event/Touch',
         payload: { instance, name, touch, target, ctx },
       });
@@ -94,7 +99,7 @@ export function useUIEventPipe<Ctx extends O, H extends HTMLElement>(
       const isFocused = name === 'onFocus' || name === 'onFocusCapture';
       const isBlurred = name === 'onBlur' || name === 'onBlurCapture';
       const focus: t.UIFocusProps = Util.toBase(e);
-      bus.fire({
+      fire({
         type: 'sys.ui.event/Focus',
         payload: { instance, name, focus, target, isFocused, isBlurred, ctx },
       });
