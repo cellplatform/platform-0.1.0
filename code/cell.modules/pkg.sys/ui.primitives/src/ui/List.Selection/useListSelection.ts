@@ -9,13 +9,14 @@ type Args = ListSelectionMonitorArgs & { onChange?: (e: t.ListSeletionState) => 
  * Selection monitor (hook)
  */
 export function useListSelection(args: Args): t.ListSelectionHook {
-  const { bus, instance, multi, clearOnBlur, allowEmpty, onChange, reset$, ctx } = args;
+  const { bus, instance, multi, clearOnBlur, allowEmpty, reset$ } = args;
   const [current, setCurrent] = useState<t.ListSeletionState>(DEFAULTS.state);
 
   /**
    * [Lifecycle]
    */
   useEffect(() => {
+    const { ctx } = args;
     const selection = ListSelectionMonitor({
       bus,
       instance,
@@ -25,14 +26,12 @@ export function useListSelection(args: Args): t.ListSelectionHook {
       clearOnBlur,
       allowEmpty,
     });
-
     selection.changed$.subscribe((e) => {
       setCurrent(e);
-      onChange?.(e);
+      args.onChange?.(e);
     });
-
     return () => selection.dispose();
-  }, [bus, instance, multi, clearOnBlur, allowEmpty, reset$, ctx, onChange]);
+  }, [bus, instance, multi, clearOnBlur, allowEmpty, reset$]); // eslint-disable-line
 
   /**
    * API
