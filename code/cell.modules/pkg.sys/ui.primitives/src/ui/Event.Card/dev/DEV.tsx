@@ -9,7 +9,7 @@ type Ctx = { props: EventCardProps };
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.event.EventCard')
+  .namespace('ui.EventCard')
   .context((e) => {
     if (e.prev) return e.prev;
 

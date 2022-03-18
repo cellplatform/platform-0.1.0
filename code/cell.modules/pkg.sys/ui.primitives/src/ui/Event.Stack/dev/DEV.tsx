@@ -19,7 +19,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.event.EventStack')
+  .namespace('ui.EventStack')
   .context((e) => {
     if (e.prev) return e.prev;
 

@@ -27,7 +27,7 @@ function fireSample(ctx: Ctx, msg?: string) {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.event.EventPipe')
+  .namespace('ui.EventPipe')
   .context((e) => {
     if (e.prev) return e.prev;
 
