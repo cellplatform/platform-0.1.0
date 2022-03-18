@@ -3,11 +3,15 @@ import { DevActions, Test } from 'sys.ui.dev';
 import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
 const Imports = {
+  HookKeyboard: import('../hooks/Keyboard/Keyboard.TEST'),
+
   TextSyntaxTokenizer: import('../ui/Text.Syntax/Tokenizer.TEST'),
-  HooksKeyboard: import('../hooks/Keyboard/Keyboard.TEST'),
   UIEvent: import('../hooks/UIEvent/UIEvent.TEST'),
   PropList: import('../ui/PropList/PropList.TEST'),
   ListSelection: import('../ui/List.Selection/ListSelection.TEST'),
+
+  CmdBar: import('../ui/Cmd.Bar/CmdBar.TEST'),
+  CmdCard: import('../ui/Cmd.Card/CmdCard.TEST'),
 };
 
 type Ctx = { results?: TestSuiteRunResponse };
@@ -21,7 +25,7 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     e.ctx.results = await Test.run(Object.values(Imports));
-    // e.ctx.results = await Test.run(Imports.ListSelection);
+    // e.ctx.results = await Test.run(Imports.HookEventBusHistory);
   })
 
   .items((e) => {

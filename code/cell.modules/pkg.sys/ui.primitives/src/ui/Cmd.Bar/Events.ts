@@ -1,17 +1,16 @@
 import { animationFrameScheduler, Subject } from 'rxjs';
 import { filter, observeOn, takeUntil } from 'rxjs/operators';
 
-import { rx } from './common';
-import * as k from './types';
+import { rx, t } from './common';
 
 /**
  * Event API.
  */
-export const CmdBarEvents: k.CmdBarEventsFactory = (args) => {
+export const CmdBarEvents: t.CmdBarEventsFactory = (args) => {
   const { instance } = args;
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
-  const bus = rx.busAsType<k.CmdBarEvent>(args.bus);
+  const bus = rx.busAsType<t.CmdBarEvent>(args.bus);
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
@@ -20,8 +19,8 @@ export const CmdBarEvents: k.CmdBarEventsFactory = (args) => {
     observeOn(animationFrameScheduler),
   );
 
-  const action: k.CmdBarEvents['action'] = {
-    $: rx.payload<k.CmdBarActionEvent>($, 'sys.ui.CmdBar/Action'),
+  const action: t.CmdBarEvents['action'] = {
+    $: rx.payload<t.CmdBarActionEvent>($, 'sys.ui.CmdBar/Action'),
     fire(args) {
       const { text } = args;
       bus.fire({
@@ -31,8 +30,8 @@ export const CmdBarEvents: k.CmdBarEventsFactory = (args) => {
     },
   };
 
-  const text: k.CmdBarEvents['text'] = {
-    changed$: rx.payload<k.CmdBarTextChangeEvent>($, 'sys.ui.CmdBar/TextChanged'),
+  const text: t.CmdBarEvents['text'] = {
+    changed$: rx.payload<t.CmdBarTextChangeEvent>($, 'sys.ui.CmdBar/TextChanged'),
     changed(args) {
       const { from, to } = args;
       bus.fire({
@@ -42,5 +41,13 @@ export const CmdBarEvents: k.CmdBarEventsFactory = (args) => {
     },
   };
 
-  return { instance, $, dispose, dispose$, action, text };
+  return {
+    bus: rx.bus.instance(bus),
+    instance,
+    $,
+    dispose,
+    dispose$,
+    action,
+    text,
+  };
 };

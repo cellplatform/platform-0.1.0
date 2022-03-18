@@ -5,7 +5,6 @@ import { CmdTextbox } from '../Cmd.Textbox';
 import { CmdBarEventPipe, CmdBarEventPipeProps } from './CmdBar.EventPipe';
 import { CmdBarInset, CmdBarInsetProps } from './CmdBar.Inset';
 import { CmdBarEvents } from './Events';
-import * as k from './types';
 
 type Id = string;
 
@@ -44,7 +43,7 @@ export const View: React.FC<CmdBarProps> = (props) => {
     ?.map((value) => (value === 0 ? '0' : `${value}px`))
     .join(' ');
 
-  const [events, setEvents] = React.useState<k.CmdBarEvents | undefined>();
+  const [events, setEvents] = React.useState<t.CmdBarEvents | undefined>();
 
   /**
    * Lifecycle
@@ -153,7 +152,7 @@ export const View: React.FC<CmdBarProps> = (props) => {
 type Fields = {
   Inset: React.FC<CmdBarInsetProps>;
   EventPipe: React.FC<CmdBarEventPipeProps>;
-  Events: k.CmdBarEventsFactory;
+  Events: t.CmdBarEventsFactory;
 };
 export const CmdBar = FC.decorate<CmdBarProps, Fields>(
   View,

@@ -1,10 +1,8 @@
 import React from 'react';
 
 import { CssValue, t, FC } from './common';
-import {
-  CmdCardLayout as Layout,
-  CmdCardLayoutProps as CmdCardLayoutProps,
-} from './CmdCard.Layout';
+import { CmdCardLayout as Layout, CmdCardLayoutProps } from './CmdCard.Layout';
+import { CmdCardEvents as Events } from './Events';
 
 /**
  * Types
@@ -27,9 +25,10 @@ const View: React.FC<CmdCardProps> = (props) => {
  */
 type Fields = {
   Layout: React.FC<CmdCardLayoutProps>;
+  Events: t.CmdCardEventsFactory;
 };
 export const CmdCard = FC.decorate<CmdCardProps, Fields>(
   View,
-  { Layout },
+  { Layout, Events },
   { displayName: 'CmdCard' },
 );

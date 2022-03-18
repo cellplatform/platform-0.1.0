@@ -9,6 +9,7 @@ type Id = string;
 export type CmdBarEventsFactory = (args: { bus: EventBus<any>; instance: Id }) => CmdBarEvents;
 
 export type CmdBarEvents = Disposable & {
+  bus: Id;
   instance: Id;
   $: Observable<CmdBarEvent>;
   action: {

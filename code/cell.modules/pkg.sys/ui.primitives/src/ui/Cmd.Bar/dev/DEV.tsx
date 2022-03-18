@@ -2,8 +2,10 @@ import React from 'react';
 import { NetworkBusMock } from 'sys.runtime.web';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
-import { CmdBar, CmdBarConstants, CmdBarInsetProps, CmdBarPart, CmdBarProps } from '..';
+import { CmdBar, CmdBarConstants, CmdBarPart, CmdBarProps } from '..';
 import { COLORS, rx, t } from '../../common';
+
+import { CmdBarInsetProps } from '../CmdBar.Inset';
 
 type Ctx = {
   bus: t.EventBus<any>;
