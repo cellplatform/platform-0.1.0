@@ -31,19 +31,17 @@ export const ListLayout: React.FC<ListLayoutProps> = (props) => {
       outline: 'none', // NB: supress default "focus" border.
     }),
   };
-  const elements = items.map((item, i) => renderer.item(item, i));
+
+  const elements = items.map((item, i) => {
+    return renderer.item(item, i);
+  });
 
   return (
     <div
-      {...css(styles.base, props.style)}
-      ref={ctx.ui.ref}
       tabIndex={tabIndex}
-      onMouseDown={ctx.ui.mouse.onMouseDown}
-      onMouseUp={ctx.ui.mouse.onMouseUp}
-      onMouseEnter={ctx.ui.mouse.onMouseEnter}
-      onMouseLeave={ctx.ui.mouse.onMouseLeave}
-      onFocus={ctx.ui.focus.onFocus}
-      onBlur={ctx.ui.focus.onBlur}
+      ref={ctx.list.ref}
+      {...ctx.list.handlers}
+      {...css(styles.base, props.style)}
     >
       {elements}
     </div>

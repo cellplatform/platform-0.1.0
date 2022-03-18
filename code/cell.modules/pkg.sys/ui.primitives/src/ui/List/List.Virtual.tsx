@@ -34,7 +34,7 @@ export const View: React.FC<ListVirtualProps> = (props) => {
   const ctx = useVirtualContext({ total, event: props.event });
   const { bus, instance, state } = ctx;
 
-  const resize = useResizeObserver(ctx.ui.ref);
+  const resize = useResizeObserver(ctx.list.ref);
   const renderer = Renderer({ bus, instance, props, state, total });
   const orientation = renderer.orientation;
 
@@ -100,15 +100,10 @@ export const View: React.FC<ListVirtualProps> = (props) => {
 
   return (
     <div
-      {...css(styles.base, props.style)}
-      ref={ctx.ui.ref}
       tabIndex={tabIndex}
-      onMouseDown={ctx.ui.mouse.onMouseDown}
-      onMouseUp={ctx.ui.mouse.onMouseUp}
-      onMouseEnter={ctx.ui.mouse.onMouseEnter}
-      onMouseLeave={ctx.ui.mouse.onMouseLeave}
-      onFocus={ctx.ui.focus.onFocus}
-      onBlur={ctx.ui.focus.onBlur}
+      ref={ctx.list.ref}
+      {...ctx.list.handlers}
+      {...css(styles.base, props.style)}
     >
       {elBody}
     </div>

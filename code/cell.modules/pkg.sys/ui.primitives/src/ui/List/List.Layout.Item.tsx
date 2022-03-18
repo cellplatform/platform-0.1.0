@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { color, css, CssValue, Is, t, UIEvent } from './common';
+import { ListEvents } from './Events';
 import { Renderers } from './renderers';
 
 /**
@@ -42,21 +43,12 @@ const DEFAULT_RENDERER: R = {
  */
 export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
   const { bus, instance } = props.event;
-  const {
-    item,
-    orientation,
-    index,
-    total,
-    renderers,
-    debug = {},
-    bullet,
-    selection,
-    state,
-  } = props;
+  const { item, orientation, index, total, renderers, debug = {}, bullet, selection } = props;
   const { data } = item;
 
   const ctx: t.CtxItem = { kind: 'Item', index, total, item };
   const ui = UIEvent.useEventPipe<t.CtxItem, HTMLDivElement>({ bus, instance, ctx });
+  const [state, setState] = useState(props.state);
 
   const spacing = formatSpacing(props.spacing);
   const invertedOrientation = orientation === 'x' ? 'y' : 'x';
@@ -79,6 +71,15 @@ export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
     spacing,
     is,
   };
+
+  /**
+   * [Lifecycle]
+   */
+  useEffect(() => {
+    const events = ListEvents({ bus, instance });
+    events.item(index).changed.$.subscribe((e) => setState(e.state.list));
+    return () => events.dispose();
+  }, []); // eslint-disable-line
 
   /**
    * [Render]
@@ -205,7 +206,7 @@ export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
    * Component.
    */
   return (
-    <div {...css(styles.base, props.style)}>
+    <div {...css(styles.base, props.style)} key={`item.${index}`}>
       {elSpacer.before}
       {elMain}
       {elSpacer.after}

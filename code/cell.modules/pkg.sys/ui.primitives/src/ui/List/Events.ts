@@ -6,7 +6,7 @@ import { t, rx, Is } from './common';
 /**
  * Types
  */
-type O = Record<string, unknown>;
+type Index = number;
 type E = t.ListEvents;
 
 /**
@@ -39,8 +39,21 @@ export const ListEvents: t.ListEventsFactory = (args) => {
   const redraw: E['redraw'] = {
     $: rx.payload<t.ListRedrawEvent>($, 'sys.ui.List/Redraw'),
     fire() {
-      bus.fire({ type: 'sys.ui.List/Redraw', payload: { instance } });
+      bus.fire({
+        type: 'sys.ui.List/Redraw',
+        payload: { instance },
+      });
     },
+  };
+
+  const item: E['item'] = (index: Index) => {
+    return {
+      changed: {
+        $: rx
+          .payload<t.ListItemChangedEvent>($, 'sys.ui.List/Item/Changed')
+          .pipe(filter((e) => e.index === index)),
+      },
+    };
   };
 
   /**
@@ -54,5 +67,6 @@ export const ListEvents: t.ListEventsFactory = (args) => {
     dispose$,
     scroll,
     redraw,
+    item,
   };
 };

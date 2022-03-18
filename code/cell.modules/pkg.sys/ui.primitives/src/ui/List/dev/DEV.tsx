@@ -113,8 +113,14 @@ export const actions = DevActions<Ctx>()
 
     /**
      * TEMP 🐷
-     * List Selection
+     *  List Selection
      */
+
+    /**
+     * TODO 🐷
+     * - Ensure [ListSelection] usage does not cause total list redraws.
+     */
+
     const selection = ListSelection.Monitor({
       bus,
       instance,
@@ -131,7 +137,7 @@ export const actions = DevActions<Ctx>()
 
     selection.changed$.subscribe(() => {
       ctx.props.selection = selection.current;
-      e.redraw();
+      // e.redraw();
     });
   })
 
@@ -489,7 +495,7 @@ export const actions = DevActions<Ctx>()
         // NB: These are fixed sizes for testing only.
         //     Will not adjust if the card content expands.
         let size = e.is.vertical ? 84 : 250; // Debug card (default).
-        if (kind === 'Card') size = e.is.vertical ? 45 : 167;
+        if (kind === 'Card') size = e.is.vertical ? 49 : 167;
         if (kind === 'Vanilla') size = e.is.vertical ? 23 : 118;
 
         if (!e.is.first) size += spacing;

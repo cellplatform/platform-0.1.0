@@ -99,12 +99,19 @@ export type ListEvents = Disposable & {
     $: Observable<ListRedraw>;
     fire(): void;
   };
+  item(index: Index): ListItemEvents;
+};
+
+export type ListItemEvents = {
+  changed: {
+    $: Observable<ListItemChanged>;
+  };
 };
 
 /**
  * EVENT Definitions
  */
-export type ListEvent = ListScrollEvent | ListRedrawEvent;
+export type ListEvent = ListScrollEvent | ListRedrawEvent | ListItemChangedEvent;
 
 /**
  * Initiates a scroll operation on the list.
@@ -127,3 +134,16 @@ export type ListRedrawEvent = {
   payload: ListRedraw;
 };
 export type ListRedraw = { instance: Id };
+
+/**
+ * Fires when a single list item's state has changed.
+ */
+export type ListItemChangedEvent = {
+  type: 'sys.ui.List/Item/Changed';
+  payload: ListItemChanged;
+};
+export type ListItemChanged = {
+  instance: Id;
+  index: Index;
+  state: { list: ListState };
+};

@@ -14,6 +14,8 @@ export type RenderCtx = {
   connectorLineWidth?: number;
 };
 
+const bodyRenderCount: number[] = []; // Debug 🐷. Keep a tally of the number of times each item has rendered.
+
 /**
  * A factory that produces a function for rendering bullets
  * based on an input "type" flag.
@@ -58,15 +60,27 @@ export function sampleBodyFactory(getCtx: () => RenderCtx) {
 
     if (e.kind === 'Spacing') return null;
 
+    bodyRenderCount[e.index] = (bodyRenderCount[e.index] ?? 0) + 1;
+
     const styles = {
       card: {
         base: css({
           PaddingX: 30,
-          PaddingY: 12,
+          paddingTop: 10,
+          paddingBottom: 18,
           position: 'relative',
           transform: e.is.mouse.down ? `translateY(1px)` : undefined,
         }),
-        data: css({ Absolute: [null, 3, 2, null], fontSize: 8, color: color.format(-0.3) }),
+        data: {
+          base: css({
+            fontSize: 8,
+            fontWeight: 'bold',
+            fontFamily: 'monospace',
+            color: color.format(-0.4),
+          }),
+          bottomLeft: css({ Absolute: [null, null, 2, 3] }),
+          bottomRight: css({ Absolute: [null, 3, 2, null] }),
+        },
       },
       vanilla: css({ PaddingX: 6, PaddingY: 2 }),
       component: css({ fontFamily: 'monospace', fontWeight: 'bold', fontSize: 16 }),
@@ -89,15 +103,18 @@ export function sampleBodyFactory(getCtx: () => RenderCtx) {
      * Body: Card (Sample)
      */
     if (bodyKind === 'Card') {
-      const { selected, focused, mouse } = e.is;
+      const { selected, focused } = e.is;
       const bgHighlight = color.alpha(COLORS.MAGENTA, 0.03);
       const bgHighlightBlurred = color.alpha(COLORS.CYAN, 0.08);
       const borderColor = !selected ? undefined : focused ? COLORS.MAGENTA : -0.5;
       const background = !selected ? undefined : focused ? bgHighlight : bgHighlightBlurred;
+      const renderCount = `render:${bodyRenderCount[e.index]}`;
+
       return (
         <Card style={styles.card.base} border={{ color: borderColor }} background={background}>
           {elComponent}
-          <div {...styles.card.data}>{data.msg}</div>
+          <div {...css(styles.card.data.base, styles.card.data.bottomLeft)}>{data.msg}</div>
+          <div {...css(styles.card.data.base, styles.card.data.bottomRight)}>{renderCount}</div>
         </Card>
       );
     }

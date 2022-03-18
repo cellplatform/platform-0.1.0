@@ -34,6 +34,7 @@ export function Renderer(args: {
     item(item: t.ListItem, index: number, style?: CssValue) {
       return (
         <ListLayoutItem
+          key={`item.${index}`}
           event={{ bus, instance }}
           index={index}
           total={total}
