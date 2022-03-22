@@ -20,6 +20,7 @@ export const DevEventList: React.FC<DevEventListProps> = (props) => {
   const styles = {
     base: css({ display: 'flex' }),
   };
+
   return (
     <div {...css(styles.base, props.style)}>
       <EventList bus={bus} style={{ flex: 1 }} />
