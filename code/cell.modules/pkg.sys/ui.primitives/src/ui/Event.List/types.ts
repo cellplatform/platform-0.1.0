@@ -2,7 +2,7 @@ import { Disposable, EventBus } from '@platform/types';
 import { Observable } from 'rxjs';
 import * as t from '../../common/types';
 
-type InstanceId = string;
+type Id = string;
 type Index = number;
 
 export type EventListAlign = 'auto' | 'smart' | 'center' | 'end' | 'start';
@@ -12,12 +12,13 @@ export type EventListAlign = 'auto' | 'smart' | 'center' | 'end' | 'start';
  */
 export type EventListEventsFactory = (args: {
   bus: EventBus<any>;
-  instance: InstanceId;
+  instance: Id;
 }) => EventListEvents;
 
 export type EventListEvents = Disposable & {
+  bus: Id;
+  instance: Id;
   $: Observable<EventListEvent>;
-  instance: InstanceId;
   scroll: {
     $: Observable<EventListScroll>;
     fire(target: EventListScroll['target'], options?: { align?: EventListAlign }): void;
@@ -41,7 +42,7 @@ export type EventListScrollEvent = {
   payload: EventListScroll;
 };
 export type EventListScroll = {
-  instance: InstanceId;
+  instance: Id;
   target: 'Top' | 'Bottom' | Index;
   align?: EventListAlign;
 };
@@ -54,7 +55,7 @@ export type EventListClickedEvent = {
   payload: EventListClicked;
 };
 export type EventListClicked = {
-  instance: InstanceId;
+  instance: Id;
   index: Index;
   item: t.EventHistoryItem;
 };

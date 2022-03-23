@@ -6,23 +6,22 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { EventList, EventListProps } from '..';
 import { rx, t } from '../common';
 import * as k from '../types';
-import { DevSample } from './DEV.Sample';
 
 /**
  * Types
  */
 type Ctx = {
-  props: EventListProps;
   bus: t.EventBus<any>;
   netbus: t.NetworkBusMock;
+  props: EventListProps;
   events: k.EventListEvents;
-  reset$: Subject<void>;
   debug: Debug;
 };
 
 type Debug = {
   fireCount: number; // Total number of fires.
   busKind: 'bus' | 'netbus';
+  reset$: Subject<void>;
 };
 
 /**
@@ -37,14 +36,10 @@ const Util = {
       ctx.debug.fireCount++;
       const count = ctx.debug.fireCount;
 
-      const event: t.Event = {
-        type: `FOO/sample/event-${count}`,
+      Util.toBus(ctx).fire({
+        type: `FOO/sample/event.${count}`,
         payload: { count },
-      };
-
-      const { busKind } = ctx.debug;
-      if (busKind === 'netbus') ctx.netbus.fire(event);
-      if (busKind === 'bus') ctx.bus.fire(event);
+      });
     };
 
     new Array(total).fill(ctx).forEach(fire);
@@ -59,23 +54,13 @@ const Util = {
     if (busKind === 'netbus') return ctx.netbus;
     throw new Error(`Bus kind '${busKind}' not supported.`);
   },
-
-  /**
-   * Prepare render props
-   */
-  toProps(ctx: Ctx) {
-    const bus = Util.toBus(ctx);
-    const event = ctx.props.event ? { ...ctx.props.event, bus } : undefined;
-    const props = { ...ctx.props, event };
-    return props;
-  },
 };
 
 /**
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.event.EventList')
+  .namespace('ui.EventList')
   .context((e) => {
     if (e.prev) return e.prev;
 
@@ -88,14 +73,11 @@ export const actions = DevActions<Ctx>()
       bus,
       netbus,
       events,
-      reset$: new Subject<void>(),
-      props: {
-        event: { bus, instance },
-        showBusId: true,
-      },
+      props: { bus: netbus },
       debug: {
         fireCount: 0,
         busKind: 'netbus',
+        reset$: new Subject<void>(),
       },
     };
     return ctx;
@@ -136,22 +118,17 @@ export const actions = DevActions<Ctx>()
       // e.boolean.current = e.ctx.props;
     });
 
-    e.boolean('show bus identifier', (e) => {
-      if (e.changing) e.ctx.props.showBusId = e.changing.next;
-      e.boolean.current = e.ctx.props.showBusId;
-    });
-
     e.hr();
   })
 
   .items((e) => {
     e.title('Debug');
 
+    e.button('reset', (e) => e.ctx.debug.reset$.next());
+    e.hr(1, 0.1);
     e.button('fire (1)', (e) => Util.fire(e.ctx, 1));
     e.button('fire (10)', (e) => Util.fire(e.ctx, 10));
-
-    e.hr(1, 0.1);
-    e.button('clear', (e) => e.ctx.reset$.next());
+    e.button('fire (100)', (e) => Util.fire(e.ctx, 100));
 
     e.hr();
 
@@ -183,17 +160,16 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const { busKind } = e.ctx.debug;
+    const { busKind, reset$ } = e.ctx.debug;
     const bus = Util.toBus(e.ctx);
-    const busInstance = rx.bus.instance(bus);
-    const props = Util.toProps(e.ctx);
+    const instance = rx.bus.instance(bus);
 
     e.settings({
       host: { background: -0.04 },
       layout: {
         label: {
           topLeft: '<EventList>',
-          bottomRight: busKind === 'netbus' ? `${busInstance} (network)` : `${busInstance} (local)`,
+          bottomRight: busKind === 'netbus' ? `${instance} (network)` : `${instance} (local)`,
         },
         position: [150, null],
         width: 400,
@@ -202,7 +178,7 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    e.render(<DevSample bus={bus} childProps={props} reset$={e.ctx.reset$} />);
+    e.render(<EventList {...e.ctx.props} bus={bus} reset$={reset$} style={{ flex: 1 }} />);
   });
 
 export default actions;
