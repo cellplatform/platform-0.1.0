@@ -9,29 +9,22 @@ type Id = string;
 export function Renderer(args: {
   bus: t.EventBus<any>;
   instance: Id;
-  props: t.ListProps;
-  state: t.ListState;
   total: number;
+  props: t.ListProps;
 }) {
-  const { bus, instance, props, state, total } = args;
-  const { orientation = DEFAULTS.Orientation, bullet = {} } = props;
+  const { bus, instance, props, total } = args;
+  const { state, orientation = DEFAULTS.Orientation, bullet = {} } = props;
 
   const renderers = {
     bullet: props.renderers?.bullet ?? Renderers.asRenderer(Renderers.Bullet.ConnectorLines),
     body: props.renderers?.body ?? Renderers.asRenderer(Renderers.Body.Default),
   };
 
-  const toSpacing = (itemSpacing?: t.ListBulletSpacing): t.ListBulletSpacing => {
-    if (typeof itemSpacing === 'object') return itemSpacing;
-    const spacing = props.spacing;
-    if (typeof spacing === 'number') return { before: spacing, after: 0 };
-    return typeof spacing === 'object' ? spacing : { before: 0, after: 0 };
-  };
-
   const api = {
     orientation,
     renderers,
-    item(item: t.ListItem, index: number, style?: CssValue) {
+    item(args: { index: number; item: t.ListItem; isScrolling?: boolean; style?: CssValue }) {
+      const { index, item, isScrolling, style } = args;
       return (
         <ListLayoutItem
           key={`item.${index}`}
@@ -40,12 +33,12 @@ export function Renderer(args: {
           total={total}
           renderers={renderers}
           item={item}
-          selection={props.selection}
           state={state}
           orientation={orientation}
           bullet={{ edge: bullet.edge ?? 'near', size: bullet.size ?? 15 }}
-          spacing={toSpacing(item.spacing)}
+          spacing={toSpacing(item.spacing, props.spacing)}
           debug={props.debug}
+          isScrolling={isScrolling}
           style={style}
         />
       );
@@ -54,3 +47,16 @@ export function Renderer(args: {
 
   return api;
 }
+
+/**
+ * [Helpers]
+ */
+
+const toSpacing = (
+  itemSpacing: t.ListBulletSpacing | undefined,
+  defaultSpacing: t.ListProps['spacing'],
+): t.ListBulletSpacing => {
+  if (typeof itemSpacing === 'object') return itemSpacing;
+  if (typeof defaultSpacing === 'number') return { before: defaultSpacing, after: 0 };
+  return typeof defaultSpacing === 'object' ? defaultSpacing : { before: 0, after: 0 };
+};

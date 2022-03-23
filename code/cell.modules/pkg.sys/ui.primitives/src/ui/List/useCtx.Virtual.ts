@@ -8,7 +8,7 @@ import { useContext } from './useCtx';
 /**
  * Controller for a virtual scrolling list.
  */
-export function useVirtualContext(args: { total: number; event?: t.ListEventArgs }) {
+export function useVirtualContext(args: { total: number; event?: t.ListBusArgs }) {
   const listRef = useRef<List>(null);
   const { total, event } = args;
 
@@ -16,7 +16,7 @@ export function useVirtualContext(args: { total: number; event?: t.ListEventArgs
   const { bus, instance } = ctx;
 
   /**
-   * Lifecycle
+   * Event API Behavior
    */
   useEffect(() => {
     const events = ListEvents({ bus, instance });

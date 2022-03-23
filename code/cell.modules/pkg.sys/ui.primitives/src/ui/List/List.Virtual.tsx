@@ -14,7 +14,7 @@ type Pixels = number;
  */
 export type ListVirtualProps = t.ListProps & {
   items: { total: number; getData: t.GetListItem; getSize: t.GetListItemSize };
-  event?: t.ListEventArgs;
+  event?: t.ListBusArgs;
   paddingNear?: Pixels;
   paddingFar?: Pixels;
 };
@@ -32,10 +32,10 @@ export const View: React.FC<ListVirtualProps> = (props) => {
   const total = items.total;
 
   const ctx = useVirtualContext({ total, event: props.event });
-  const { bus, instance, state } = ctx;
+  const { bus, instance } = ctx;
 
   const resize = useResizeObserver(ctx.list.ref);
-  const renderer = Renderer({ bus, instance, props, state, total });
+  const renderer = Renderer({ bus, instance, props, total });
   const orientation = renderer.orientation;
 
   const getSize = (index: number) => {
@@ -53,7 +53,12 @@ export const View: React.FC<ListVirtualProps> = (props) => {
   const getData = (index: number): ListVirtualItemProps | undefined => {
     const item = items.getData?.(index);
     if (!item) return undefined;
-    return { item, render: () => renderer.item(item, index) };
+    return {
+      item,
+      render({ isScrolling }) {
+        return renderer.item({ index, item, isScrolling });
+      },
+    };
   };
 
   /**
@@ -75,10 +80,10 @@ export const View: React.FC<ListVirtualProps> = (props) => {
     return <div ref={ref} style={{ ...style, width, height }} {...rest} />;
   });
 
-  const Row = ({ style, ...rest }: any) => {
+  const Row = ({ style, isScrolling, ...rest }: any) => {
     const left = orientation === 'x' ? `${parseFloat(style.left) + paddingNear}px` : style.left;
     const top = orientation === 'y' ? `${parseFloat(style.top) + paddingNear}px` : style.top;
-    return <ListVirtualItem {...rest} style={{ ...style, left, top }} />;
+    return <ListVirtualItem {...rest} isScrolling={isScrolling} style={{ ...style, left, top }} />;
   };
 
   const elBody = resize.ready && (
@@ -89,6 +94,7 @@ export const View: React.FC<ListVirtualProps> = (props) => {
       height={size.height}
       layout={orientation === 'y' ? 'vertical' : 'horizontal'}
       innerElementType={elListInner}
+      useIsScrolling={true}
       itemCount={total}
       itemSize={getSize}
       itemData={getData}

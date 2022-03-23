@@ -1,16 +1,15 @@
 import { Subject, takeUntil } from 'rxjs';
 
-import { rx, t, UIEvent } from './common';
+import { rx, t, UIEvent } from '../common';
 
 type Index = number;
-type S = t.ListMouseState;
-type Change = { item: Index; state: S };
+type S = t.ListMouse;
 
 /**
- * Maintains state of mouse over the set of <List> items.
+ * Maintains the state of the mouse over the set of <List> items.
  */
-export function ListMouseState(args: t.ListEventArgs) {
-  const { bus, instance } = args;
+export function ListMouseMonitor(event: t.ListBusArgs) {
+  const { bus, instance } = event;
 
   const events = UIEvent.Events<t.CtxItem>({
     bus,
@@ -19,11 +18,11 @@ export function ListMouseState(args: t.ListEventArgs) {
   });
   const { dispose, dispose$, mouse } = events;
 
+  const changed$ = new Subject<t.ListMouseChange>();
   let state: S = { over: -1, down: -1 };
-  const changed$ = new Subject<Change>();
   const setState = (item: Index, fn: (prev: S) => S) => {
-    state = fn(state);
-    changed$.next({ item, state });
+    state = { ...fn(state) };
+    changed$.next({ index: item, state });
   };
 
   /**

@@ -3,16 +3,7 @@ import { color, t, css, COLORS } from '../common';
 import { Card } from '../../Card';
 import { Text } from '../../Text';
 import { Renderers, BulletConnectorLinesProps } from '../renderers';
-import { DataSample } from './DEV.types';
-
-export type RenderCtx = {
-  total: number;
-  enabled: boolean;
-  bulletKind: 'Lines' | 'Dot';
-  bodyKind: 'Card' | 'Vanilla' | undefined;
-  connectorRadius?: number;
-  connectorLineWidth?: number;
-};
+import { DataSample, RenderCtx } from './DEV.types';
 
 const bodyRenderCount: number[] = []; // Debug 🐷. Keep a tally of the number of times each item has rendered.
 
@@ -110,11 +101,14 @@ export function sampleBodyFactory(getCtx: () => RenderCtx) {
       const background = !selected ? undefined : focused ? bgHighlight : bgHighlightBlurred;
       const renderCount = `render:${bodyRenderCount[e.index]}`;
 
+      const left = data.msg;
+      const right = e.is.scrolling ? `(scrolling) ${renderCount}` : renderCount;
+
       return (
         <Card style={styles.card.base} border={{ color: borderColor }} background={background}>
           {elComponent}
-          <div {...css(styles.card.data.base, styles.card.data.bottomLeft)}>{data.msg}</div>
-          <div {...css(styles.card.data.base, styles.card.data.bottomRight)}>{renderCount}</div>
+          <div {...css(styles.card.data.base, styles.card.data.bottomLeft)}>{left}</div>
+          <div {...css(styles.card.data.base, styles.card.data.bottomRight)}>{right}</div>
         </Card>
       );
     }

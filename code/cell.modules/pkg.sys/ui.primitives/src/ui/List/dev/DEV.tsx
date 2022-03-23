@@ -4,31 +4,15 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { List } from '..';
 import { ALL, DEFAULTS, rx, slug, t, time, value } from '../common';
 
-import { RenderCtx, sampleBodyFactory, sampleBulletFactory } from './DEV.Renderers';
-import { ListSelection } from '../../List.Selection';
+import { sampleBodyFactory, sampleBulletFactory } from './DEV.Renderers';
+import { ListState } from '../../List.State';
 
-import { DataSample } from './DEV.types';
+import { DataSample, Ctx, RenderCtx } from './DEV.types';
+import { DevSample } from './DEV.Sample';
 
 /**
  * Types
  */
-type Ctx = {
-  bus: t.EventBus<any>;
-  instance: string;
-  items: t.ListItem<DataSample>[];
-  props: t.ListProps; // Common properties.
-  renderCtx: RenderCtx;
-  events: t.ListEvents;
-  debug: CtxDebug;
-  redraw(): Promise<void>;
-};
-type CtxDebug = {
-  virtualScroll: boolean;
-  scrollAlign: t.ListItemAlign;
-  virtualPadding: boolean;
-  canFocus: boolean;
-  mouseState?: t.ListMouseState;
-};
 
 /**
  * Helpers
@@ -121,24 +105,40 @@ export const actions = DevActions<Ctx>()
      * - Ensure [ListSelection] usage does not cause total list redraws.
      */
 
-    const selection = ListSelection.Monitor({
-      bus,
-      instance,
-      multi: true,
-      clearOnBlur: false,
-      allowEmpty: true,
-      ctx() {
-        return {
-          orientation: e.ctx.props.orientation,
-          total: e.ctx.items.length,
-        };
-      },
-    });
+    // const getCtx = (): t.ListStateCtx => {
+    //   return {
+    //     orientation: e.ctx.props.orientation,
+    //     total: e.ctx.items.length,
+    //   };
+    // };
 
-    selection.changed$.subscribe(() => {
-      ctx.props.selection = selection.current;
-      // e.redraw();
-    });
+    // console.group('🌳 INIT');
+    // console.log('bus', rx.bus.instance(bus));
+    // console.log('instance', instance);
+    // console.groupEnd();
+
+    // const monitor = ListState.Monitor({
+    //   bus,
+    //   instance,
+    //   list: {
+    //     multi: true,
+    //     clearOnBlur: false,
+    //     allowEmpty: true,
+    //   },
+    //   getCtx,
+    // });
+
+    // monitor.changed$.subscribe(() => {
+    //   // console.log('changed$', e);
+    //   ctx.props.state = monitor.state;
+    //   // e.redraw();
+    // });
+
+    // selection.changed$.subscribe(() => {
+    //   ctx.props.selection = selection;
+    //   e.redraw();
+    //   console.log('TODO remove dev redraw');
+    // });
   })
 
   .items((e) => {
@@ -404,18 +404,18 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.1);
 
-    e.component((e) => {
-      return (
-        <ObjectView
-          name={'selection'}
-          data={e.ctx.props.selection}
-          style={{ MarginX: 15 }}
-          fontSize={10}
-          expandPaths={['$']}
-          expandLevel={5}
-        />
-      );
-    });
+    // e.component((e) => {
+    //   return (
+    //     <ObjectView
+    //       name={'selection'}
+    //       data={e.ctx.props.selection}
+    //       style={{ MarginX: 15 }}
+    //       fontSize={10}
+    //       expandPaths={['$']}
+    //       expandLevel={5}
+    //     />
+    //   );
+    // });
 
     e.hr(1, 0.1);
 
@@ -434,14 +434,14 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const { renderCtx, debug } = e.ctx;
-    const total = e.ctx.items.length;
+    const { renderCtx, debug, items } = e.ctx;
+    const total = items.length;
     const props = Util.toProps(e.ctx);
 
     const orientation = props.orientation ?? DEFAULTS.Orientation;
     const isHorizontal = orientation === 'x';
     const isVertical = orientation === 'y';
-    const isVirtual = e.ctx.debug.virtualScroll;
+    const isVirtual = debug.virtualScroll;
 
     const FIXED_SIZE = 310;
 
@@ -465,53 +465,7 @@ export const actions = DevActions<Ctx>()
     if (total === 0) return;
     if (!renderCtx.enabled) return;
 
-    /**
-     * Simple (non-scrolling) layout.
-     */
-    if (!isVirtual) {
-      let items = e.ctx.items;
-      const MAX = 10;
-      if (items.length > MAX) {
-        // NB: Curtail long lists to prevent rendering blow-out
-        //     when not in "virtual" scrolling mode.
-        items = [...items].slice(0, MAX);
-        const last = items[MAX - 1];
-        items[MAX - 1] = { ...last, data: { ...last.data, truncatedAt: MAX } };
-      }
-      e.render(<List.Layout {...props} items={items} />);
-    }
-
-    /**
-     * Virtual scolling list.
-     */
-    if (isVirtual) {
-      const items = e.ctx.items;
-      const getData: t.GetListItem = (index) => items[index];
-
-      const getSize: t.GetListItemSize = (e) => {
-        const spacing = (props.spacing || 0) as number;
-        const kind = renderCtx.bodyKind;
-
-        // NB: These are fixed sizes for testing only.
-        //     Will not adjust if the card content expands.
-        let size = e.is.vertical ? 84 : 250; // Debug card (default).
-        if (kind === 'Card') size = e.is.vertical ? 49 : 167;
-        if (kind === 'Vanilla') size = e.is.vertical ? 23 : 118;
-
-        if (!e.is.first) size += spacing;
-        return size;
-      };
-
-      e.render(
-        <List.Virtual
-          {...props}
-          items={{ total, getData, getSize }}
-          paddingNear={debug.virtualPadding ? 50 : 0}
-          paddingFar={debug.virtualPadding ? 150 : 0}
-          style={{ flex: 1 }}
-        />,
-      );
-    }
+    e.render(<DevSample items={items} props={props} debug={debug} renderCtx={renderCtx} />);
   });
 
 export default actions;

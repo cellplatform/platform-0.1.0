@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-import { color, css, CssValue, Is, t, UIEvent } from './common';
-import { ListEvents } from './Events';
+import { color, css, CssValue, t, UIEvent } from './common';
 import { Renderers } from './renderers';
+import { useDynamicItemState } from './useDynamicState';
 
 /**
  * Types
@@ -14,19 +14,19 @@ type R = {
 };
 
 export type ListLayoutItemProps = {
-  event: t.ListEventArgs;
+  event: t.ListBusArgs;
   index: number;
   total: number;
   item: t.ListItem;
   orientation: t.ListOrientation;
-  state?: t.ListState;
-  selection?: t.ListSelection;
+  state?: t.ListStateLazy;
   bullet: {
     edge: t.ListBulletEdge;
     size: Pixels; // Offset size of the bullet row/column.
   };
   spacing: t.ListBulletSpacing;
   renderers: R;
+  isScrolling?: boolean;
   style?: CssValue;
   debug?: { border?: boolean };
 };
@@ -43,24 +43,17 @@ const DEFAULT_RENDERER: R = {
  */
 export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
   const { bus, instance } = props.event;
-  const { item, orientation, index, total, renderers, debug = {}, bullet, selection } = props;
+  const { index, total, item, orientation, renderers, bullet, debug = {} } = props;
   const { data } = item;
 
   const ctx: t.CtxItem = { kind: 'Item', index, total, item };
   const ui = UIEvent.useEventPipe<t.CtxItem, HTMLDivElement>({ bus, instance, ctx });
-  const [state, setState] = useState(props.state);
+  const dynamic = useDynamicItemState({ index, total, orientation, bullet, state: props.state });
 
   const spacing = formatSpacing(props.spacing);
   const invertedOrientation = orientation === 'x' ? 'y' : 'x';
-  const is = Is.toItemFlags({
-    index,
-    total,
-    bullet,
-    orientation,
-    selection,
-    state,
-  });
-
+  const scrolling = Boolean(props.isScrolling);
+  const is: t.ListBulletRenderFlags = { ...dynamic.is, scrolling };
   const args: t.ListBulletRendererArgs = {
     kind: 'Default',
     index,
@@ -71,15 +64,6 @@ export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
     spacing,
     is,
   };
-
-  /**
-   * [Lifecycle]
-   */
-  useEffect(() => {
-    const events = ListEvents({ bus, instance });
-    events.item(index).changed.$.subscribe((e) => setState(e.state.list));
-    return () => events.dispose();
-  }, []); // eslint-disable-line
 
   /**
    * [Render]
@@ -151,11 +135,8 @@ export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
 
   /**
    * TODO 🐷 BUG
-   * mouse handlers cause unneessary re-rendering.
+   * - is.scrolling flag
    *
-   * - Figure out how to intrument the item events without
-   *   causing these re-renders
-   * - Memoiize
    *
    */
 

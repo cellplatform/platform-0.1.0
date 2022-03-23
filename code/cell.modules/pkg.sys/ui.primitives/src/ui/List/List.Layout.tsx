@@ -15,12 +15,12 @@ export type ListLayoutProps = t.ListProps & {
  * Simple (non-virtualized) layout
  */
 export const ListLayout: React.FC<ListLayoutProps> = (props) => {
-  const { items = [], tabIndex } = props;
+  const { items = [], tabIndex, state } = props;
   const total = items.length;
 
   const ctx = useContext({ total, event: props.event });
-  const { bus, instance, state } = ctx;
-  const renderer = Renderer({ bus, instance, props, state, total });
+  const { bus, instance } = ctx;
+  const renderer = Renderer({ bus, instance, props, total });
 
   /**
    * [Render]
@@ -32,8 +32,8 @@ export const ListLayout: React.FC<ListLayoutProps> = (props) => {
     }),
   };
 
-  const elements = items.map((item, i) => {
-    return renderer.item(item, i);
+  const elements = items.map((item, index) => {
+    return renderer.item({ item, index });
   });
 
   return (

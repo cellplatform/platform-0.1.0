@@ -8,26 +8,20 @@ type Id = string;
 type Index = number;
 type Pixels = number;
 
-export type ListEventArgs = { bus: EventBus<any>; instance: Id };
+export type ListBusArgs = { bus: EventBus<any>; instance: Id };
 export type ListItemAlign = 'auto' | 'smart' | 'center' | 'end' | 'start';
 
 export type ListOrientation = 'x' | 'y'; // x:horizontal, y:vertical
 export type ListBulletEdge = 'near' | 'far';
 export type ListBulletSpacing = { before?: Pixels; after?: Pixels };
 
-export type ListMouseState = { over: Index; down: Index }; // TEMP 🐷
-export type ListState = {
-  isFocused: boolean;
-  mouse: t.ListMouseState;
-};
-
 /**
  * <List> properties.
  */
 export type ListProps = {
-  event?: t.ListEventArgs;
+  event?: t.ListBusArgs;
   renderers?: { bullet?: t.ListBulletRenderer; body?: t.ListBulletRenderer };
-  selection?: t.ListSelection;
+  state?: t.ListStateLazy;
   orientation?: t.ListOrientation;
   bullet?: { edge?: t.ListBulletEdge; size?: Pixels };
   spacing?: number | t.ListBulletSpacing; // Number (defaults to) => { before }
@@ -70,6 +64,7 @@ export type ListBulletRenderFlags = {
   bullet: { near: boolean; far: boolean };
   selected: boolean;
   focused: boolean;
+  scrolling: boolean;
   mouse: { over: boolean; down: boolean };
 };
 
@@ -145,5 +140,5 @@ export type ListItemChangedEvent = {
 export type ListItemChanged = {
   instance: Id;
   index: Index;
-  state: { list: ListState };
+  state: { list: t.ListState };
 };
