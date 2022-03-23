@@ -337,6 +337,9 @@ export const actions = DevActions<Ctx>()
     e.hr(1, 0.1);
 
     e.button('⚡️ redraw', (e) => e.ctx.events.redraw.fire());
+
+    e.button('⚡️ focus', (e) => time.delay(0, () => e.ctx.events.focus.fire()));
+    e.button('⚡️ blur', (e) => time.delay(0, () => e.ctx.events.focus.fire(false)));
     e.hr();
   })
 
@@ -403,19 +406,6 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr(1, 0.1);
-
-    // e.component((e) => {
-    //   return (
-    //     <ObjectView
-    //       name={'selection'}
-    //       data={e.ctx.props.selection}
-    //       style={{ MarginX: 15 }}
-    //       fontSize={10}
-    //       expandPaths={['$']}
-    //       expandLevel={5}
-    //     />
-    //   );
-    // });
 
     e.hr(1, 0.1);
 

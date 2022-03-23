@@ -32,6 +32,15 @@ export function useContext(args: { total: number; event?: t.ListBusArgs }) {
      */
     events.redraw.$.subscribe(() => setCount((prev) => prev + 1));
 
+    /**
+     * Focus / Blur.
+     */
+    events.focus.$.subscribe((e) => {
+      const el = ui.ref.current;
+      if (e.focus) el?.focus();
+      if (!e.focus) el?.blur();
+    });
+
     // Finish up.
     return () => events.dispose();
   }, [bus, instance]); // eslint-disable-line

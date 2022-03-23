@@ -25,6 +25,9 @@ export const ListSelection = {
     return Array.isArray(indexes) ? indexes.includes(index) : false;
   },
 
+  /**
+   * TODO 🐷
+   */
   // add
   // remove
   // compact sequences

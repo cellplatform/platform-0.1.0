@@ -94,6 +94,10 @@ export type ListEvents = Disposable & {
     $: Observable<ListRedraw>;
     fire(): void;
   };
+  focus: {
+    $: Observable<ListFocus>;
+    fire(isFocused?: boolean): void;
+  };
   item(index: Index): ListItemEvents;
 };
 
@@ -106,7 +110,7 @@ export type ListItemEvents = {
 /**
  * EVENT Definitions
  */
-export type ListEvent = ListScrollEvent | ListRedrawEvent | ListItemChangedEvent;
+export type ListEvent = ListScrollEvent | ListRedrawEvent | ListFocusEvent | ListItemChangedEvent;
 
 /**
  * Initiates a scroll operation on the list.
@@ -129,6 +133,15 @@ export type ListRedrawEvent = {
   payload: ListRedraw;
 };
 export type ListRedraw = { instance: Id };
+
+/**
+ * Causes the list to recieve focus.
+ */
+export type ListFocusEvent = {
+  type: 'sys.ui.List/Focus';
+  payload: ListFocus;
+};
+export type ListFocus = { instance: Id; focus: boolean };
 
 /**
  * Fires when a single list item's state has changed.

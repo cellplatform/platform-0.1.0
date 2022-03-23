@@ -46,6 +46,16 @@ export const ListEvents: t.ListEventsFactory = (args) => {
     },
   };
 
+  const focus: E['focus'] = {
+    $: rx.payload<t.ListFocusEvent>($, 'sys.ui.List/Focus'),
+    fire(isFocused) {
+      bus.fire({
+        type: 'sys.ui.List/Focus',
+        payload: { instance, focus: isFocused ?? true },
+      });
+    },
+  };
+
   const item: E['item'] = (index: Index) => {
     return {
       changed: {
@@ -67,6 +77,7 @@ export const ListEvents: t.ListEventsFactory = (args) => {
     dispose$,
     scroll,
     redraw,
+    focus,
     item,
   };
 };
