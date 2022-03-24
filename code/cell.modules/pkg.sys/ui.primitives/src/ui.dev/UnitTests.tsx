@@ -12,8 +12,8 @@ const Imports = {
   PropList: import('../ui/PropList/PropList.TEST'),
   ListState: import('../ui/List.State/TEST'),
 
-  CmdBar: import('../ui/Cmd.Bar/CmdBar.TEST'),
-  CmdCard: import('../ui/Cmd.Card/CmdCard.TEST'),
+  CmdBar: import('../ui/Cmd.Bar/TEST'),
+  CmdCard: import('../ui/Cmd.Card/TEST'),
 };
 
 type Ctx = { results?: TestSuiteRunResponse };
