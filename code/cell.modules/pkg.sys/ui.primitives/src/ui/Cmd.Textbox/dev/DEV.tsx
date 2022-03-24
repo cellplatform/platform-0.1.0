@@ -7,8 +7,8 @@ import { COLORS } from '../../common';
 const CONST = CmdTextboxContants;
 
 type Ctx = {
-  self: string;
   props: CmdTextboxProps;
+  debug: { isControlled: boolean };
 };
 
 /**
@@ -18,16 +18,28 @@ export const actions = DevActions<Ctx>()
   .namespace('ui.Cmd.Textbox')
   .context((e) => {
     if (e.prev) return e.prev;
+
     const ctx: Ctx = {
-      self: '<CUID>',
       props: {
         placeholder: 'command',
         spinner: false,
         theme: 'Dark',
         // theme: 'Light',
         // theme: CONST.DEFAULT.THEME,
+        onChange(event) {
+          e.change.ctx((ctx) => {
+            const isControlled = e.current?.debug.isControlled ?? true;
+            const value = isControlled ? event.to : undefined;
+            ctx.props.text = value;
+          });
+        },
+        onAction(e) {
+          console.log('onAction:', e);
+        },
       },
+      debug: { isControlled: true },
     };
+
     return ctx;
   })
 
@@ -72,6 +84,15 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Debug');
 
+    e.boolean('controlled (state)', (e) => {
+      if (e.changing) {
+        const isControlled = e.changing.next;
+        e.ctx.debug.isControlled = isControlled;
+        if (isControlled) e.ctx.props.text = undefined;
+      }
+      e.boolean.current = e.ctx.debug.isControlled;
+    });
+
     e.hr();
     e.component((e) => {
       return <ObjectView name={'props'} data={e.ctx.props} style={{ MarginX: 15 }} fontSize={11} />;
@@ -92,7 +113,7 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    e.render(<CmdTextbox {...e.ctx.props} onAction={(e) => console.log('onAction:', e)} />);
+    e.render(<CmdTextbox {...e.ctx.props} />);
   });
 
 export default actions;

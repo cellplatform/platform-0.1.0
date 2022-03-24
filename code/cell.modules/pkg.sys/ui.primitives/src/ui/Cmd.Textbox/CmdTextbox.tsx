@@ -9,6 +9,7 @@ import { Spinner } from '../../ui.ref/spinner/Spinner';
  * Types
  */
 export type CmdTextboxProps = {
+  text?: string; // NB: undefined === handle state internally ("uncontrolled").
   placeholder?: string;
   spinner?: boolean;
   theme?: t.CmdTextboxTheme;
@@ -33,18 +34,20 @@ export const CmdTextboxContants = { DEFAULT, THEMES };
  */
 export const CmdTextbox: React.FC<CmdTextboxProps> = (props) => {
   const { theme = 'Light', spinner } = props;
+  const isControlled = typeof props.text === 'string';
 
   const [pending, setPending] = useState(false);
-  const [text, setText] = useState('');
-  const input = (text || '').trim();
+  const [textState, setTextState] = useState('');
+  const text = isControlled ? props.text : textState;
+  const textTrimmed = (text || '').trim();
 
-  const isInvokable = Boolean(input && pending);
+  const isInvokable = Boolean(textTrimmed && pending);
   const isDark = theme === 'Dark';
 
   const COL_BASE = isDark ? COLORS.WHITE : COLORS.DARK;
   const COL_HIGHLIGHT = isDark ? COLORS.WHITE : COLORS.DARK;
   const COL_ICON = {
-    PENDING: Boolean(input && !pending) ? COL_HIGHLIGHT : color.alpha(COL_BASE, 0.8),
+    PENDING: Boolean(textTrimmed && !pending) ? COL_HIGHLIGHT : color.alpha(COL_BASE, 0.8),
     TERMINAL: isDark ? COLORS.WHITE : color.alpha(COL_BASE, 0.8),
   };
   const COL_TEXT = {
@@ -93,7 +96,7 @@ export const CmdTextbox: React.FC<CmdTextboxProps> = (props) => {
   );
 
   const elSpinner = spinner && <Spinner size={22} color={isDark ? COLORS.WHITE : COLORS.DARK} />;
-  const elIcon = input && pending && !elSpinner && (
+  const elIcon = textTrimmed && pending && !elSpinner && (
     <Button isEnabled={isInvokable}>
       <Icons.Arrow.Forward size={20} color={COL_ICON.PENDING} />
     </Button>
@@ -118,12 +121,12 @@ export const CmdTextbox: React.FC<CmdTextboxProps> = (props) => {
         selectOnFocus={true}
         onChange={(e) => {
           const { from, to } = e;
-          setText(to);
+          if (!isControlled) setTextState(to);
           setPending(true);
           props.onChange?.({ from, to });
         }}
         onEnter={() => {
-          const text = input;
+          const text = textTrimmed;
           if (text) props.onAction?.({ text });
           setPending(false);
         }}
