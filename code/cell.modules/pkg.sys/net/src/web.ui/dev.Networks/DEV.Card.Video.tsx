@@ -1,20 +1,20 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
+
 import {
-  color,
-  css,
-  CssValue,
-  t,
+  Button,
   Card,
   CardBody,
-  Button,
-  VideoStream,
-  useResizeObserver,
+  css,
+  CssValue,
   Icons,
   rx,
+  t,
+  useResizeObserver,
+  VideoStream,
 } from './DEV.common';
 
 export type DevVideoCardProps = {
-  instance: t.InstanceId;
+  instance: t.Id;
   network: t.PeerNetwork;
   stream?: MediaStream;
   style?: CssValue;
@@ -22,7 +22,6 @@ export type DevVideoCardProps = {
 
 export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
   const { network, stream, instance } = props;
-  const self = network.netbus.self;
   const bus = rx.busAsType<t.NetworkCardEvent>(network.bus);
 
   const bodyRef = useRef<HTMLDivElement>(null);
@@ -47,21 +46,32 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
     },
   };
 
-  const connectVideo = async () => {
-    const peer = network.events.peer;
-    const status = await peer.status(self).get();
-    const conn = status.peer?.connections[0];
+  const onFullScreenClick = () => {
+    bus.fire({
+      type: 'sys.net/ui.NetworkCard/Overlay',
+      payload: {
+        instance,
+        render(e) {
+          const { width, height } = e.size;
+          return (
+            <VideoStream
+              stream={stream}
+              width={width}
+              height={height}
+              borderRadius={0}
+              isMuted={true}
+            />
+          );
+        },
+      },
+    });
+  };
 
-    if (conn) {
-      const parent = conn.id;
-      const remote = conn.peer.remote.id;
-
-      const f = peer.connection(self, remote).open.media('media/video', { parent });
-      console.log('f', f);
-      const ff = await f;
-      console.log('ff', ff);
-      console.log('network.status.current', network.status.current);
-    }
+  const onCloseChild = () => {
+    bus.fire({
+      type: 'sys.net/ui.NetworkCard/CloseChild',
+      payload: { instance },
+    });
   };
 
   const elHeader = (
@@ -69,15 +79,10 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
       <div>{'Video'}</div>
       <div {...styles.toolbar.base}>
         <Button {...styles.toolbar.button}>
-          <Icons.Close
-            size={20}
-            onClick={(e) => {
-              bus.fire({
-                type: 'sys.net/ui.NetworkCard/CloseChild',
-                payload: { instance },
-              });
-            }}
-          />
+          <Icons.FullScreen.Open size={20} onClick={onFullScreenClick} />
+        </Button>
+        <Button {...styles.toolbar.button}>
+          <Icons.Close size={20} onClick={onCloseChild} />
         </Button>
       </div>
     </>

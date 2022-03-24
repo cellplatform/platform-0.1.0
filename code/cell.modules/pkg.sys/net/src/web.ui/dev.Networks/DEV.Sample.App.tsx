@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 
 import { TEST } from '../../web.test';
+import * as k from '../NetworkCard/types';
 import {
   color,
   css,
@@ -8,11 +11,13 @@ import {
   EventBridge,
   MediaStream,
   PeerNetwork,
+  PositioningLayout,
   rx,
+  Spinner,
   t,
-  COLORS,
+  useResizeObserver,
 } from './DEV.common';
-import { DevEventList } from './DEV.EventList';
+import { DevFullscreen } from './DEV.Fullscreen';
 import { DevNetworkCard } from './DEV.NetworkCard';
 
 export type DevSampleAppProps = { style?: CssValue };
@@ -25,6 +30,29 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     Util.createNetwork().then((e) => setNetwork(e));
   }, []);
 
+  const [overlay, setOverlay] = useState<undefined | t.NetworkCardOverlay>();
+
+  /**
+   * TEMP - Overlay  🐷
+   */
+  useEffect(() => {
+    const dispose$ = new Subject<void>();
+
+    if (network) {
+      const bus = rx.busAsType<k.NetworkCardEvent>(network.bus);
+      const $ = bus.$.pipe(
+        takeUntil(dispose$),
+        filter((e) => e.payload.instance === instance),
+      );
+
+      rx.payload<k.NetworkCardOverlayEvent>($, 'sys.net/ui.NetworkCard/Overlay')
+        .pipe()
+        .subscribe((e) => setOverlay(e));
+    }
+
+    return () => dispose$.next();
+  }, [network]);
+
   /**
    * [Render]
    */
@@ -32,24 +60,49 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     base: css({
       Absolute: 0,
       backgroundColor: color.format(-0.04),
-      Flex: 'x-stretch-stretch',
     }),
-    left: css({ Flex: 'y-center-center', flex: 1 }),
-    right: css({
-      width: 300,
-      paddingTop: 10,
-      paddingLeft: 10,
-      borderLeft: `solid 1px ${color.format(-0.04)}`,
-      backgroundColor: color.alpha(COLORS.DARK, 0.03),
-    }),
+    layout: css({ Absolute: 0 }),
+    networkCard: css({ pointerEvents: 'auto' }),
+    fullscreen: css({ pointerEvents: 'auto' }),
+  };
+
+  const Card: t.PositioningLayer = {
+    id: 'card',
+    position: { x: 'center', y: 'center' },
+    render() {
+      if (!network) return <Spinner />;
+      return (
+        <DevNetworkCard
+          instance={instance}
+          network={network}
+          showPlaceholder={true}
+          style={styles.networkCard}
+        />
+      );
+    },
+  };
+
+  const Overlay: t.PositioningLayer = {
+    id: 'overlay',
+    position: { x: 'stretch', y: 'stretch' },
+    render({ size }) {
+      if (!overlay?.render) return null;
+      if (!network) return null;
+      return (
+        <DevFullscreen bus={network.bus} instance={instance} style={styles.fullscreen}>
+          {overlay.render({ size })}
+        </DevFullscreen>
+      );
+    },
   };
 
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.left}>
-        {network && <DevNetworkCard instance={instance} network={network} showPlaceholder={true} />}
-      </div>
-      {network && <DevEventList network={network} style={styles.right} />}
+      <PositioningLayout
+        layers={[Card, Overlay]}
+        style={styles.layout}
+        childPointerEvents={'none'}
+      />
     </div>
   );
 };

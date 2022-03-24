@@ -20,6 +20,8 @@ import {
   MdSend,
   MdSettingsInputAntenna,
   MdWifi,
+  MdFullscreen,
+  MdFullscreenExit,
 } from 'react-icons/md';
 import { TiUpload } from 'react-icons/ti';
 
@@ -46,4 +48,5 @@ export const Icons = {
   Network: icon(FaNetworkWired),
   Keyboard: icon(MdKeyboard),
   More: icon(MdMore),
+  FullScreen: { Open: icon(MdFullscreen), Exit: icon(MdFullscreenExit) },
 };
