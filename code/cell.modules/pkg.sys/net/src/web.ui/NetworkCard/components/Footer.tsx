@@ -3,7 +3,7 @@ import React from 'react';
 import { color, COLORS, CssValue, k, rx, t, CmdBar } from '../common';
 
 export type NetworkCardFooterProps = {
-  instance: t.InstanceId;
+  instance: t.Id;
   network: t.PeerNetwork;
   style?: CssValue;
 };

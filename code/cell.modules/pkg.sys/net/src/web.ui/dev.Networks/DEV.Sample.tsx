@@ -6,7 +6,7 @@ import { DevEmpty } from './DEV.Empty';
 import { DevNetworkCard } from './DEV.NetworkCard';
 
 export type DevSampleProps = {
-  instance: t.InstanceId;
+  instance: t.Id;
   networks: t.PeerNetwork[];
   view?: t.DevViewKind;
   child?: t.DevChildKind;

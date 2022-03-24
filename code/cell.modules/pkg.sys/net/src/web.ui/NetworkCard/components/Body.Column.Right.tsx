@@ -5,7 +5,7 @@ import { css, List, CssValue, t, color, R, k, rx } from '../common';
 import { BodyColumnTitle } from './Body.Column';
 
 export type BodyColumnRightProps = {
-  instance: t.InstanceId;
+  instance: t.Id;
   network: t.PeerNetwork;
   peers: t.PeerConnectionStatus[];
   style?: CssValue;

@@ -10,7 +10,7 @@ import { css, LocalPeerCard, rx, t, PeerNetwork, CmdBar } from './DEV.common';
  * Hooks
  */
 export function useController(args: {
-  instance: t.InstanceId;
+  instance: t.Id;
   network: t.PeerNetwork;
   defaultChild?: JSX.Element;
 }) {

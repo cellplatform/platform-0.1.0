@@ -5,7 +5,7 @@ import { BodyColumnLeft } from './Body.Column.Left';
 import { BodyColumnRight } from './Body.Column.Right';
 
 export type NetworkCardBodyProps = {
-  instance: t.InstanceId;
+  instance: t.Id;
   network: t.PeerNetwork;
   self: t.PeerId;
   peers: t.PeerConnectionStatus[];

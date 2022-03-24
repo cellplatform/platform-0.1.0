@@ -1,5 +1,5 @@
 import React from 'react';
-import { css, CssValue, t, useEventBusHistory } from './DEV.common';
+import { css, CssValue, t } from './DEV.common';
 import { EventList } from 'sys.ui.primitives/lib/ui/Event.List';
 
 export type DevEventListProps = {
@@ -9,9 +9,8 @@ export type DevEventListProps = {
 
 export const DevEventList: React.FC<DevEventListProps> = (props) => {
   const { network } = props;
-  // const history = useEventBusHistory(network.netbus);
-
   if (!network) return null;
+
   const bus = network.netbus;
 
   /**
