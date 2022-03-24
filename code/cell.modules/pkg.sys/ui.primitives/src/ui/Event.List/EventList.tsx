@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { Observable } from 'rxjs';
 
-import { useEventBusHistory } from '../Event';
+import { useEventHistory } from '../Event';
 import { css, CssValue, FC, rx, slug, t } from './common';
 import { EventListLayout as Layout, EventListLayoutProps } from './EventList.Layout';
 import { EventListEvents as Events } from './Events';
@@ -24,7 +24,7 @@ export type EventListProps = {
 export const View: React.FC<EventListProps> = (props) => {
   const { reset$ } = props;
   const internal = useRef<Internal>(props.event ?? dummy());
-  const history = useEventBusHistory(props.bus, { reset$ });
+  const history = useEventHistory(props.bus, { reset$ });
 
   /**
    * [Render]
@@ -46,11 +46,11 @@ export const View: React.FC<EventListProps> = (props) => {
 type Fields = {
   Events: t.EventListEventsFactory;
   Layout: React.FC<EventListLayoutProps>;
-  useEventBusHistory: t.EventBusHistoryHook;
+  useEventHistory: t.EventHistoryHookFactory;
 };
 export const EventList = FC.decorate<EventListProps, Fields>(
   View,
-  { Events, Layout, useEventBusHistory },
+  { Events, Layout, useEventHistory },
   { displayName: 'EventList' },
 );
 

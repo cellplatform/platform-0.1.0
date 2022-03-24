@@ -1,1 +1,1 @@
-export * from './useEventBusHistory';
+export * from '../Event.History';
