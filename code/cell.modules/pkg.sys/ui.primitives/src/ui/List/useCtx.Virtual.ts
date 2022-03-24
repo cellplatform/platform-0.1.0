@@ -28,6 +28,14 @@ export function useVirtualContext(args: { total: number; event?: t.ListBusArgs }
       const list = listRef.current;
       if (!list) return;
 
+      /**
+       * TODO 🐷 BUG
+       *    Scrolling to an item when padding to the list is set causes
+       *    inaccurate measurement of where to scroll to.
+       *
+       *    FIX: https://github.com/bvaughn/react-window/issues/540
+       */
+
       const { align = 'auto' } = e;
       const total = list.props.itemCount;
       const index = e.target === 'Top' ? 0 : e.target === 'Bottom' ? total - 1 : e.target;

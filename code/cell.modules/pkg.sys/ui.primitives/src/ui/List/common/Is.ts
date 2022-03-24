@@ -33,7 +33,7 @@ export const Is = {
       horizontal: orientation === 'x',
       vertical: orientation === 'y',
       spacer: false,
-      scrolling: false,
+      scrolling: false, // NB: default - Overridden elsewhere {...is, scrolling: <actual> }.
       bullet: { near: bullet.edge === 'near', far: bullet.edge === 'far' },
       focused: state?.selection?.isFocused ?? false,
       selected,
