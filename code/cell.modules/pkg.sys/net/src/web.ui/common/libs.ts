@@ -18,7 +18,7 @@ export { Spinner } from 'sys.ui.primitives/lib/ui.ref/spinner/Spinner';
 export { EventStack } from 'sys.ui.primitives/lib/ui/Event.Stack';
 export { EventPipe } from 'sys.ui.primitives/lib/ui/Event.Pipe';
 
-export { useEventBusHistory } from 'sys.ui.primitives/lib/ui/Event';
+export { useEventHistory } from 'sys.ui.primitives/lib/ui/Event';
 
 export { PositioningLayout } from 'sys.ui.primitives/lib/ui/PositioningLayout';
 

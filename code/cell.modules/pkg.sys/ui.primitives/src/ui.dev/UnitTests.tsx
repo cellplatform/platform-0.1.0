@@ -5,6 +5,8 @@ import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 const Imports = {
   HookKeyboard: import('../hooks/Keyboard/Keyboard.TEST'),
 
+  EventHistory: import('../ui/Event.History/TEST'),
+
   TextSyntaxTokenizer: import('../ui/Text.Syntax/Tokenizer.TEST'),
   UIEvent: import('../hooks/UIEvent/UIEvent.TEST'),
   PropList: import('../ui/PropList/PropList.TEST'),
@@ -25,7 +27,7 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     e.ctx.results = await Test.run(Object.values(Imports));
-    // e.ctx.results = await Test.run(Imports.ListState);
+    // e.ctx.results = await Test.run(Imports.EventHistory);
   })
 
   .items((e) => {

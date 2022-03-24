@@ -2,20 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { useEventBusHistory } from '../Event';
-import { EventPipe } from '../Event.Pipe';
-import { Button, css, CssValue, Icons, slug, t, time } from './common';
+import { useEventHistory } from '../Event';
+import { EventPipe, EventPipeItemClickEventHandler } from '../Event.Pipe';
+import { css, CssValue, Icons, t } from './common';
 
 export type CmdBarEventPipeProps = {
   bus: t.EventBus<any>;
   iconEdge?: 'Left' | 'Right';
   style?: CssValue;
+  onEventClick?: EventPipeItemClickEventHandler;
 };
 
 export const CmdBarEventPipe: React.FC<CmdBarEventPipeProps> = (props) => {
   const { bus, iconEdge = 'Right' } = props;
 
-  const history = useEventBusHistory(bus);
+  const history = useEventHistory(bus);
   const [recentlyFired, setRecentlyFired] = useState(false);
 
   /**
@@ -23,10 +24,10 @@ export const CmdBarEventPipe: React.FC<CmdBarEventPipeProps> = (props) => {
    */
   useEffect(() => {
     const dispose$ = new Subject<void>();
-    const netbus$ = bus.$.pipe(takeUntil(dispose$));
+    const bus$ = bus.$.pipe(takeUntil(dispose$));
 
-    netbus$.subscribe(() => setRecentlyFired(true));
-    netbus$.pipe(debounceTime(1500)).subscribe(() => setRecentlyFired(false));
+    bus$.subscribe(() => setRecentlyFired(true));
+    bus$.pipe(debounceTime(1500)).subscribe(() => setRecentlyFired(false));
 
     return () => dispose$.next();
   }, []); // eslint-disable-line
@@ -34,12 +35,6 @@ export const CmdBarEventPipe: React.FC<CmdBarEventPipeProps> = (props) => {
   /**
    * Handlers
    */
-  const fireSampleEvent = () => {
-    bus.fire({
-      type: `FOO/sample/event-${history.total}`,
-      payload: { tx: slug(), message: 'My sample event', time: time.now.timestamp },
-    });
-  };
 
   /**
    * [Render]
@@ -56,22 +51,20 @@ export const CmdBarEventPipe: React.FC<CmdBarEventPipeProps> = (props) => {
     }),
   };
 
+  // console.log('history.events', history.events);
+
   const elPipe = (
     <EventPipe
       events={history.events}
       style={styles.pipe}
       theme={'Dark'}
-      onEventClick={(item) => {
-        console.log('event', item.event);
-      }}
+      onEventClick={props.onEventClick}
     />
   );
 
   const elIcon = (
     <div {...styles.icon}>
-      <Button>
-        <Icons.Event color={1} size={16} onClick={fireSampleEvent} />
-      </Button>
+      <Icons.Event color={1} size={16} />
     </div>
   );
 

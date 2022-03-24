@@ -1,6 +1,6 @@
 export { Observable } from 'rxjs';
 
-export type InstanceId = string;
+export type Id = string;
 
 /**
  * @platform
@@ -13,6 +13,7 @@ export {
   FireEvent,
   Disposable,
   NpmPackageJson,
+  DomRect,
 } from '@platform/types';
 export { IStateObject, IStateObjectWritable } from '@platform/state.types';
 export { CssEdgesInput } from '@platform/css/lib/types';
@@ -22,7 +23,7 @@ export { NetworkBus, NetworkBusFilter, NetworkPump, Fs } from '@platform/cell.ty
  * @system
  */
 export { MediaEvent } from 'sys.ui.video/lib/types';
-export { PropListItem, EventBusHistory } from 'sys.ui.primitives/lib/types';
+export { PropListItem, EventHistory } from 'sys.ui.primitives/lib/types';
 export { WebRuntimeEvents } from 'sys.runtime.web/lib/types';
 export { PositioningLayer } from 'sys.ui.primitives/lib/ui/PositioningLayout/types';
 export { Dropped } from 'sys.ui.primitives/lib/types';

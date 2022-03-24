@@ -4,7 +4,7 @@ import { expect, Test } from 'sys.ui.dev';
 import { EventHistoryMonitor } from '.';
 import { rx, t } from '../common';
 
-export default Test.describe.only('EventHistoryMonitor', (e) => {
+export default Test.describe('EventHistoryMonitor', (e) => {
   e.it('has bus', () => {
     const bus = rx.bus();
     const monitor = EventHistoryMonitor(bus);

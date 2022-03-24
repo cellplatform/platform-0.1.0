@@ -1,15 +1,6 @@
 import React from 'react';
 
-import {
-  Button,
-  Card,
-  css,
-  CssValue,
-  EventPipe,
-  ObjectView,
-  t,
-  useEventBusHistory,
-} from '../common';
+import { Button, Card, css, CssValue, EventPipe, ObjectView, t, useEventHistory } from '../common';
 import { CardBody } from '../primitives';
 
 export type NetbusCardProps = {
@@ -23,7 +14,7 @@ export type NetbusCardProps = {
 export const NetbusCard: React.FC<NetbusCardProps> = (props) => {
   const { netbus, padding = [18, 20, 15, 20], showAsCard = true } = props;
 
-  const history = useEventBusHistory(netbus);
+  const history = useEventHistory(netbus);
   const total = history.total;
   const totalLabel = total === 1 ? '1 event' : `${total} events`;
 
