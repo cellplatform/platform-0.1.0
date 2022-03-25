@@ -13,7 +13,7 @@ export type DevSampleProps = {
 };
 
 export const DevSample: React.FC<DevSampleProps> = (props) => {
-  const keyboard = Keyboard.useKeyboard(props.args);
+  const keyboard = Keyboard.useKeyboardState(props.args);
 
   /**
    * NOTE: Test multiple instances of the hook initiated.
@@ -29,6 +29,23 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
     events.$.subscribe((e) => {
       // console.log('keyboard (inside hook)', e);
     });
+
+    // events.down.
+    // events.up.escape((e) => {
+    //   console.log('Escape', e);
+    // });
+
+    // events.down.enter((e) => {
+    //   console.log('Enter', e);
+    // });
+
+    // events.up.enter().$.subscribe((e) => {
+    //   console.log('$.Enter(up):', e);
+    // });
+
+    // events.down.code('KeyK', (e) => {
+    //   console.log('k', e);
+    // });
 
     return () => dispose$.next();
   }, []); // eslint-disable-line

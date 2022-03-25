@@ -92,7 +92,7 @@ export const actions = DevActions<Ctx>()
         border: -0.1,
         cropmarks: -0.2,
         label: {
-          topLeft: 'hook: useKeyboard(bus)',
+          topLeft: 'hook: useKeyboardState(bus)',
           bottomRight: `${rx.bus.instance(bus)}`,
         },
         width: 540,

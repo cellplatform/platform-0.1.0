@@ -46,6 +46,7 @@ export function useKeyboardEventPipe(args: KeyboardEventPipeHookArgs): t.Keyboar
 
       const name = e.type === 'keydown' ? 'onKeydown' : 'onKeyup';
       const is = toFlags(e);
+      const stage: t.KeyboardStage = is.down ? 'Down' : 'Up';
 
       const keypress: t.KeyboardKeypressProps = {
         ...Util.toBase(e),
@@ -58,7 +59,7 @@ export function useKeyboardEventPipe(args: KeyboardEventPipeHookArgs): t.Keyboar
       };
       bus.fire({
         type: 'sys.ui.keyboard/keypress',
-        payload: { instance, name, key, keypress, is },
+        payload: { instance, name, key, keypress, is, stage },
       });
     };
 

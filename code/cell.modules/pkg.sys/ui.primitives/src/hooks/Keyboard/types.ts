@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import * as t from '../../types';
 
 type Id = string;
+export type KeyboardStage = 'Down' | 'Up';
 export type KeyboardModifierEdges = ['Left'] | ['Right'] | ['Left' | 'Right'];
 
 export type KeyboardKeyFlags = {
@@ -52,9 +53,23 @@ export type KeyboardStateMonitor = Disposable & {
 };
 
 /**
- * HOOK keyboard state.
+ * HOOK Keyboard (Monitor/Observable).
+ * NB: does not cause redraws.
  */
 export type KeyboardHook = {
+  readonly alive: boolean;
+  readonly bus: Id;
+  readonly instance: Id;
+  readonly state$: Observable<KeyboardState>;
+  readonly state: KeyboardState;
+  events(args?: { dispose$?: Observable<any> }): KeyboardEvents;
+};
+
+/**
+ * HOOK Keyboard (State).
+ */
+export type KeyboardStateHook = KeyboardHook & {
+  readonly alive: boolean;
   readonly bus: Id;
   readonly instance: Id;
   readonly state: KeyboardState;
@@ -79,6 +94,19 @@ export type KeyboardEvents = Disposable & {
   readonly keypress$: Observable<KeyboardKeypress>;
   readonly down$: Observable<KeyboardKeypress>;
   readonly up$: Observable<KeyboardKeypress>;
+  readonly down: KeyboardKeyEvents;
+  readonly up: KeyboardKeyEvents;
+};
+
+export type KeyboardKeyHandler = (e: KeyboardKeypress) => void;
+export type KeyboardKeyHandlerMethod = (fn?: KeyboardKeyHandler) => KeyboardKeyHandlerResponse;
+export type KeyboardKeyHandlerResponse = { $: Observable<KeyboardKeypress> };
+
+export type KeyboardKeyEvents = {
+  key(key: string, fn?: KeyboardKeyHandler): KeyboardKeyHandlerResponse;
+  code(code: string, fn?: KeyboardKeyHandler): KeyboardKeyHandlerResponse;
+  enter: KeyboardKeyHandlerMethod;
+  escape: KeyboardKeyHandlerMethod;
 };
 
 /**
@@ -99,6 +127,7 @@ export type KeyboardKeypress = {
   readonly key: string;
   readonly keypress: KeyboardKeypressProps;
   readonly is: KeyboardKeyFlags;
+  readonly stage: KeyboardStage;
 };
 
 export type KeyboardKeypressProps = t.UIEventBase &
