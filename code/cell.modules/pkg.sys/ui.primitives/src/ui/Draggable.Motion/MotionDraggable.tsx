@@ -18,8 +18,7 @@ const View: React.FC<MotionDraggableProps> = (props) => {
   const { elastic } = props;
   const items = (props.items ?? []).filter(Boolean);
   const bus = props.bus as t.EventBus<n.MotionDraggableEvent>;
-  const rootRef = useRef<HTMLDivElement>(null);
-  const resize = useResizeObserver(rootRef);
+  const size = useResizeObserver();
 
   /**
    * Event controller.
@@ -27,13 +26,13 @@ const View: React.FC<MotionDraggableProps> = (props) => {
   useEffect(() => {
     const events = Events(bus);
 
-    events.size.req$.pipe(filter((e) => resize.ready)).subscribe((e) => {
+    events.size.req$.pipe(filter((e) => size.ready)).subscribe((e) => {
       const tx = e.tx;
-      const { width, height } = resize.rect;
+      const { width, height } = size.rect;
       bus.fire({ type: 'ui/MotionDraggable/size:res', payload: { tx, width, height } });
     });
 
-    events.status.req$.pipe(filter((e) => resize.ready)).subscribe(async (e) => {
+    events.status.req$.pipe(filter((e) => size.ready)).subscribe(async (e) => {
       const tx = e.tx;
       const list = items.map((item) => events.item.status.get(item.id));
       bus.fire({
@@ -51,7 +50,7 @@ const View: React.FC<MotionDraggableProps> = (props) => {
     });
 
     return () => events.dispose();
-  }, [resize]); // eslint-disable-line
+  }, [size]); // eslint-disable-line
 
   const styles = {
     base: css({ position: 'relative', pointerEvents: 'none' }),
@@ -59,9 +58,9 @@ const View: React.FC<MotionDraggableProps> = (props) => {
   };
 
   const elBody =
-    resize.ready &&
+    size.ready &&
     items.map((item) => {
-      const { width, height } = resize.rect;
+      const { width, height } = size.rect;
       const container: n.MotionDraggableContainer = { size: { width, height } };
       return (
         <div key={item.id} {...styles.item}>
@@ -73,7 +72,7 @@ const View: React.FC<MotionDraggableProps> = (props) => {
     });
 
   return (
-    <div ref={rootRef} {...css(styles.base, props.style)}>
+    <div ref={size.ref} {...css(styles.base, props.style)}>
       {elBody}
     </div>
   );

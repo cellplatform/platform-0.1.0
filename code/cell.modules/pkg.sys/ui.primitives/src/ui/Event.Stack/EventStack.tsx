@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 
 import { css, CssValue, defaultValue, useResizeObserver } from '../../common';
 import { CardStack, CardStackItem } from '../CardStack';
@@ -28,9 +28,7 @@ export const EventStack: React.FC<EventStackProps> = (props) => {
     duration: defaultValue(props.card?.duration, 300),
   };
 
-  const baseRef = useRef<HTMLDivElement>(null);
-  const resize = useResizeObserver(baseRef);
-
+  const size = useResizeObserver();
   const [showPayload, setShowPayload] = useState<boolean>(false);
   const toggleShowPayload = () => setShowPayload((prev) => !prev);
 
@@ -42,20 +40,18 @@ export const EventStack: React.FC<EventStackProps> = (props) => {
     }),
   };
 
-  const items: CardStackItem[] = (resize.ready ? events : []).map((item, i) => {
+  const items: CardStackItem[] = (size.ready ? events : []).map((item, i) => {
     const isTopCard = i === events.length - 1;
     const { id } = item;
-    const { width } = resize.rect;
+    const { width } = size.rect;
     const title = card.title;
     const el = card.factory({ ...item, title, showPayload, toggleShowPayload, width, isTopCard });
     return { id, el };
   });
 
   return (
-    <div ref={baseRef} {...css(styles.base, props.style)}>
-      {resize.ready && (
-        <CardStack items={items} maxDepth={card.maxDepth} duration={card.duration} />
-      )}
+    <div ref={size.ref} {...css(styles.base, props.style)}>
+      {size.ready && <CardStack items={items} maxDepth={card.maxDepth} duration={card.duration} />}
     </div>
   );
 };

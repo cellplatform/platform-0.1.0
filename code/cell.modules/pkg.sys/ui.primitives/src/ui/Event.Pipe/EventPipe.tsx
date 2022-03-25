@@ -62,10 +62,9 @@ export const EventPipe: React.FC<EventPipeProps> = (props) => {
     events = events.slice(events.length - max);
   }
 
-  const baseRef = useRef<HTMLDivElement>(null);
-  const resize = useResizeObserver(baseRef);
-  const isReady = resize.ready;
-  const baseSize = orientation === 'x' ? resize.rect.width : resize.rect.height;
+  const size = useResizeObserver();
+  const isReady = size.ready;
+  const baseSize = orientation === 'x' ? size.rect.width : size.rect.height;
 
   /**
    * Theme/Colors
@@ -126,7 +125,7 @@ export const EventPipe: React.FC<EventPipeProps> = (props) => {
   });
 
   return (
-    <div ref={baseRef} {...css(styles.base, props.style)}>
+    <div ref={size.ref} {...css(styles.base, props.style)}>
       <LazyMotion features={domAnimation}>
         <AnimatePresence>{isReady ? elEvents : []}</AnimatePresence>
       </LazyMotion>

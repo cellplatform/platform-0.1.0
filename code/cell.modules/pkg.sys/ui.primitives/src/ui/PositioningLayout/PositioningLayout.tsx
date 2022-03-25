@@ -29,8 +29,7 @@ export const PositioningLayout: React.FC<PositioningLayoutProps> = (props) => {
 
   const fireSizeRef = useRef<Subject<void>>(new Subject<void>());
   const layerRefs = useRef<Refs>({});
-  const rootRef = useRef<HTMLDivElement>(null);
-  const resize = useResizeObserver(rootRef, { root: props.rootResize });
+  const resize = useResizeObserver({ root: props.rootResize });
 
   /**
    * Lifecycle
@@ -120,7 +119,7 @@ export const PositioningLayout: React.FC<PositioningLayoutProps> = (props) => {
     });
 
   return (
-    <div ref={rootRef} {...css(styles.base, props.style)}>
+    <div ref={resize.ref} {...css(styles.base, props.style)}>
       {elLayers}
     </div>
   );

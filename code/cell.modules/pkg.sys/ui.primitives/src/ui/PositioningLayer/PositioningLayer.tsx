@@ -24,10 +24,10 @@ export type PositioningLayerProps = {
 export const PositioningLayer: React.FC<PositioningLayerProps> = (props) => {
   const [rootSize, setRootSize] = useState<t.DomRect | undefined>();
 
-  const rootRef = useRef<HTMLDivElement>(null);
-  const childRef = useRef<HTMLDivElement>(null);
-  const rootResize = useResizeObserver(rootRef, { root: props.rootResize });
-  const childResize = useResizeObserver(childRef, { root: rootResize });
+  const rootResize = useResizeObserver({ root: props.rootResize });
+  const childResize = useResizeObserver({ root: rootResize });
+  const rootRef = rootResize.ref;
+  const childRef = childResize.ref;
 
   const position = props.position ?? {};
   const grid = Calculate.grid({ container: rootSize, position });
@@ -46,7 +46,7 @@ export const PositioningLayer: React.FC<PositioningLayerProps> = (props) => {
       props.onSize?.({
         position,
         parent: size,
-        child: getDomRect(childRef.current),
+        child: getDomRect(childResize.ref.current),
       });
     });
 

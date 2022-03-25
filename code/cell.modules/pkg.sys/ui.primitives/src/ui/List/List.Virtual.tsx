@@ -34,7 +34,7 @@ export const View: React.FC<ListVirtualProps> = (props) => {
   const ctx = useVirtualContext({ total, event: props.event });
   const { bus, instance } = ctx;
 
-  const resize = useResizeObserver(ctx.list.ref);
+  const size = useResizeObserver({ ref: ctx.list.ref });
   const renderer = Renderer({ bus, instance, props, total });
   const orientation = renderer.orientation;
 
@@ -64,7 +64,6 @@ export const View: React.FC<ListVirtualProps> = (props) => {
   /**
    * [Render]
    */
-  const size = resize.rect;
   const styles = {
     base: css({
       position: 'relative',
@@ -86,12 +85,12 @@ export const View: React.FC<ListVirtualProps> = (props) => {
     return <ListVirtualItem {...rest} isScrolling={isScrolling} style={{ ...style, left, top }} />;
   };
 
-  const elBody = resize.ready && (
+  const elBody = size.ready && (
     <List
       key={ctx.redrawKey} // NB: Enable forced "redraws" of the list (via event-bus).
       ref={ctx.listRef}
-      width={size.width}
-      height={size.height}
+      width={size.rect.width}
+      height={size.rect.height}
       layout={orientation === 'y' ? 'vertical' : 'horizontal'}
       innerElementType={elListInner}
       useIsScrolling={true}

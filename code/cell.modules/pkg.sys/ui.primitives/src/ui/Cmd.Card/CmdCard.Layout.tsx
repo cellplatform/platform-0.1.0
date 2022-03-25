@@ -19,12 +19,12 @@ export type CmdCardLayoutProps = {
 export const CmdCardLayout: React.FC<CmdCardLayoutProps> = (props) => {
   const { bus, isOpen } = props;
 
-  const resize = useResizeObserver<HTMLDivElement>();
-  const size = resize.rect;
+  const size = useResizeObserver();
+  const { height } = size.rect;
 
   const FOOTER = 38;
   const duration = 200 / 1000;
-  const y = isOpen ? 0 - (size.height - FOOTER) : 0;
+  const y = isOpen ? 0 - (height - FOOTER) : 0;
 
   /**
    * [Render]
@@ -42,7 +42,7 @@ export const CmdCardLayout: React.FC<CmdCardLayoutProps> = (props) => {
         pointerEvents: 'none',
       }),
       main: css({
-        height: size.height - FOOTER,
+        height: height - FOOTER,
         backgroundColor: color.format(1),
         pointerEvents: 'auto',
         Flex: 'center-center', // TEMP 🐷
@@ -53,7 +53,7 @@ export const CmdCardLayout: React.FC<CmdCardLayoutProps> = (props) => {
   /**
    * TODO 🐷
    */
-  const elBody = resize.ready && (
+  const elBody = size.ready && (
     <LazyMotion features={domAnimation}>
       <m.div {...styles.body.base}>
         <m.div animate={{ y }} transition={{ duration }} {...styles.body.main}>
@@ -64,7 +64,7 @@ export const CmdCardLayout: React.FC<CmdCardLayoutProps> = (props) => {
   );
 
   return (
-    <div ref={resize.ref} {...css(styles.base, props.style)}>
+    <div ref={size.ref} {...css(styles.base, props.style)}>
       <Backdrop bus={bus} style={styles.backdrop} />
       {elBody}
     </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -35,9 +35,7 @@ export type MinSizeProps = {
 export const MinSize: React.FC<MinSizeProps> = (props) => {
   const { minWidth, minHeight, hideStrategy = MinSizeDefaults.hideStrategy } = props;
 
-  const baseRef = useRef<HTMLDivElement>(null);
-  const resize = useResizeObserver(baseRef, { root: props.rootResize });
-
+  const size = useResizeObserver({ root: props.rootResize });
   const [isRendered, setIsRendered] = useState<boolean>(false);
   const [is, setIs] = useState<t.MinSizeFlags>();
   const ok = Boolean(is?.ok);
@@ -50,7 +48,7 @@ export const MinSize: React.FC<MinSizeProps> = (props) => {
     /**
      * Bubble resize event.
      */
-    const resize$ = resize.$.pipe(takeUntil(dispose$));
+    const resize$ = size.$.pipe(takeUntil(dispose$));
     resize$.subscribe((size) => {
       const is = toMinSizeFlags({ size, minWidth, minHeight });
       setIs(is);
@@ -96,10 +94,10 @@ export const MinSize: React.FC<MinSizeProps> = (props) => {
 
   const elWarning = !ok && Boolean(is) ? props.warningElement : undefined;
 
-  const elDebugSize = props.showDebugSize && resize.ready && (
+  const elDebugSize = props.showDebugSize && size.ready && (
     <div {...styles.size.base}>
       <div {...styles.size.label}>
-        {resize.rect.width}x{resize.rect.height}
+        {size.rect.width}x{size.rect.height}
       </div>
     </div>
   );
@@ -120,7 +118,7 @@ export const MinSize: React.FC<MinSizeProps> = (props) => {
   })();
 
   return (
-    <div ref={baseRef} {...css(styles.base, props.style)}>
+    <div ref={size.ref} {...css(styles.base, props.style)}>
       <div {...styles.body}>{elChildren}</div>
       <div {...styles.warning}>{elWarning}</div>
       {elDebugSize}
