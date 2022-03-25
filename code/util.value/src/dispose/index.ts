@@ -1,1 +1,1 @@
-export * from './dispose';
+export * from './Dispose';

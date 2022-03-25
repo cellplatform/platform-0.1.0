@@ -161,6 +161,19 @@ describe('rx', () => {
       until$.next(456);
       expect(count).to.eql(1);
     });
+
+    it('rx.done() - fires and completes the subject', () => {
+      const dispose$ = new Subject<void>();
+
+      let count = 0;
+      dispose$.subscribe((e) => count++);
+
+      rx.done(dispose$);
+      rx.done(dispose$);
+      rx.done(dispose$);
+
+      expect(count).to.eql(1);
+    });
   });
 
   describe('asPromise', () => {
