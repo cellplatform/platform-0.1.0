@@ -18,7 +18,8 @@ export type ResizeObserverHook<H extends HTMLElement = HTMLElement> = {
 /**
  * Hook factory.
  */
-export type UseResizeObserverOptions = {
-  root?: t.ResizeObserver | t.ResizeObserverHook;
+export type UseResizeObserverOptions<H extends HTMLElement = HTMLElement> = {
+  ref?: RefObject<H>;
+  root?: t.ResizeObserver | t.ResizeObserverHook; // NB: pass if available for performance.
   onSize?: (size: t.DomRect) => void;
 };

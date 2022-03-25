@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, RefObject } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
@@ -37,14 +37,13 @@ import { DEFAULT, ResizeObserver } from '../resize/ResizeObserver';
  *
  */
 
-export function useResizeObserver<H extends HTMLElement = HTMLElement>(
-  ref?: RefObject<H>,
-  options: t.UseResizeObserverOptions = {},
+export function useResizeObserver<H extends HTMLElement = HTMLDivElement>(
+  options: t.UseResizeObserverOptions<H> = {},
 ): t.ResizeObserverHook<H> {
   const [rect, setRect] = useState<t.DomRect>(DEFAULT.RECT);
 
   const _ref = useRef<H>(null);
-  const targetRef = ref ?? _ref;
+  const targetRef = options.ref ?? _ref;
 
   const readyRef = useRef(false);
   const rootRef = useRef<t.ResizeObserver>(wrangleObserver(options.root) ?? ResizeObserver());
