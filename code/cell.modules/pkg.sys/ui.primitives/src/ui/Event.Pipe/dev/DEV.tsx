@@ -3,7 +3,7 @@ import { Observable, Subject } from 'rxjs';
 
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { EventPipe, EventPipeProps, EventPipeConstants, EventPipeTheme } from '..';
-import { useEventBusHistory } from '../../Event';
+import { useEventHistory } from '../../Event';
 import { t, rx, time, COLORS } from '../../common';
 
 const CONST = EventPipeConstants;
@@ -27,7 +27,7 @@ function fireSample(ctx: Ctx, msg?: string) {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.event.EventPipe')
+  .namespace('ui.EventPipe')
   .context((e) => {
     if (e.prev) return e.prev;
 
@@ -127,7 +127,7 @@ export default actions;
 export type SampleProps = EventPipeProps & { bus: t.EventBus<any>; reset$: Observable<void> };
 export const Sample: React.FC<SampleProps> = (props) => {
   const { bus, reset$ } = props;
-  const history = useEventBusHistory(bus, { reset$ });
+  const history = useEventHistory(bus, { reset$ });
   return (
     <EventPipe
       {...props}

@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t } from '../../common';
+import React from 'react';
+
+import { color, css, CssValue } from '../../common';
 
 export type MaskEdge = 'top' | 'bottom';
 type Milliseconds = number;

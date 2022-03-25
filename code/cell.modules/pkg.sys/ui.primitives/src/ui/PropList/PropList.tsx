@@ -1,9 +1,13 @@
 import React from 'react';
 
-import { COLORS, css, CssValue, defaultValue, t, Style } from '../../common';
+import { COLORS, css, CssValue, defaultValue, t, Style, FC } from '../../common';
 import { PropListItem } from './PropList.Item';
 import { PropListTitle } from './PropList.Title';
+import { FieldBuilder } from './Fields';
 
+/**
+ * Types
+ */
 export type PropListProps = {
   title?: string | React.ReactNode | null;
   titleEllipsis?: boolean;
@@ -16,7 +20,10 @@ export type PropListProps = {
   style?: CssValue;
 };
 
-export const PropList: React.FC<PropListProps> = (props) => {
+/**
+ * Component
+ */
+const View: React.FC<PropListProps> = (props) => {
   const { title } = props;
   const items = asItems(props.items);
   const width = typeof props.width === 'number' ? { fixed: props.width } : props.width;
@@ -119,3 +126,20 @@ function toRenderValue(input: any) {
 
   return input.toString();
 }
+
+/**
+ * Export (API)
+ */
+
+type Fields = {
+  builder<F extends string>(): t.PropListFieldBuilder<F>;
+};
+export const PropList = FC.decorate<PropListProps, Fields>(
+  View,
+  {
+    builder<F extends string>() {
+      return FieldBuilder<F>();
+    },
+  },
+  { displayName: 'PropList' },
+);

@@ -1,7 +1,8 @@
 import React from 'react';
 
-import { color, css, CssValue, Is, t, useUIEventPipe } from './common';
+import { color, css, CssValue, t, UIEvent } from './common';
 import { Renderers } from './renderers';
+import { useDynamicItemState } from './useDynamicState';
 
 /**
  * Types
@@ -13,19 +14,19 @@ type R = {
 };
 
 export type ListLayoutItemProps = {
-  event: t.ListEventArgs;
+  event: t.ListBusArgs;
   index: number;
   total: number;
   item: t.ListItem;
   orientation: t.ListOrientation;
-  selection?: t.ListSelection;
-  isFocused: boolean;
+  state?: t.ListStateLazy;
   bullet: {
     edge: t.ListBulletEdge;
     size: Pixels; // Offset size of the bullet row/column.
   };
   spacing: t.ListBulletSpacing;
   renderers: R;
+  isScrolling?: boolean;
   style?: CssValue;
   debug?: { border?: boolean };
 };
@@ -42,33 +43,17 @@ const DEFAULT_RENDERER: R = {
  */
 export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
   const { bus, instance } = props.event;
-  const {
-    item,
-    orientation,
-    index,
-    total,
-    renderers,
-    debug = {},
-    bullet,
-    selection,
-    isFocused,
-  } = props;
+  const { index, total, item, orientation, renderers, bullet, debug = {} } = props;
   const { data } = item;
 
   const ctx: t.CtxItem = { kind: 'Item', index, total, item };
-  const ui = useUIEventPipe<t.CtxItem, HTMLDivElement>({ bus, instance, ctx });
+  const ui = UIEvent.useEventPipe<t.CtxItem, HTMLDivElement>({ bus, instance, ctx });
+  const dynamic = useDynamicItemState({ index, total, orientation, bullet, state: props.state });
 
   const spacing = formatSpacing(props.spacing);
   const invertedOrientation = orientation === 'x' ? 'y' : 'x';
-  const is = Is.toItemFlags({
-    index,
-    total,
-    bullet,
-    orientation,
-    selection,
-    isFocused,
-  });
-
+  const scrolling = Boolean(props.isScrolling);
+  const is: t.ListBulletRenderFlags = { ...dynamic.is, scrolling };
   const args: t.ListBulletRendererArgs = {
     kind: 'Default',
     index,
@@ -149,9 +134,27 @@ export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
   };
 
   /**
+   * TODO 🐷 BUG
+   * - is.scrolling flag
+   *
+   *
+   */
+
+  /**
    * Main rendering.
    */
-  const elMain = <div {...css(styles.main, styles.debug)}>{renderContent(args)}</div>;
+  const elMain = (
+    <div
+      {...css(styles.main, styles.debug)}
+      ref={ui.ref}
+      onMouseDown={ui.mouse.onMouseDown}
+      onMouseUp={ui.mouse.onMouseUp}
+      onMouseEnter={ui.mouse.onMouseEnter}
+      onMouseLeave={ui.mouse.onMouseLeave}
+    >
+      {renderContent(args)}
+    </div>
+  );
 
   /**
    * Spacer rendering.
@@ -184,14 +187,7 @@ export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
    * Component.
    */
   return (
-    <div
-      {...css(styles.base, props.style)}
-      ref={ui.ref}
-      onMouseDown={ui.mouse.onMouseDown}
-      onMouseUp={ui.mouse.onMouseUp}
-      onMouseEnter={ui.mouse.onMouseEnter}
-      onMouseLeave={ui.mouse.onMouseLeave}
-    >
+    <div {...css(styles.base, props.style)} key={`item.${index}`}>
       {elSpacer.before}
       {elMain}
       {elSpacer.after}

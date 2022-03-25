@@ -1,5 +1,5 @@
 import { t } from '../../common';
-import * as k from '../types';
+import { ListState } from '../../List.State';
 
 /**
  * Boolean flags.
@@ -10,18 +10,19 @@ export const Is = {
   },
 
   /**
-   * Flags passed to an item renderer.
+   * Flags passed to an item renderer ("is").
    */
   toItemFlags(args: {
     index: number;
     total: number;
-    orientation: k.ListOrientation;
-    bullet: { edge: k.ListBulletEdge };
-    selection?: t.ListSelection;
-    isFocused?: boolean;
-  }): k.ListBulletRenderFlags {
-    const { index, total, orientation, bullet, selection, isFocused = false } = args;
-    const selected = selection ? selection.indexes.includes(index) : false;
+    orientation: t.ListOrientation;
+    bullet: { edge: t.ListBulletEdge };
+    state?: t.ListState;
+  }): t.ListBulletRenderFlags {
+    const { index, total, orientation, bullet, state } = args;
+
+    const selection = state?.selection?.indexes;
+    const selected = ListState.Selection.isSelected(selection, index);
 
     return {
       empty: total === 0,
@@ -32,9 +33,14 @@ export const Is = {
       horizontal: orientation === 'x',
       vertical: orientation === 'y',
       spacer: false,
+      scrolling: false, // NB: default - Overridden elsewhere {...is, scrolling: <actual> }.
       bullet: { near: bullet.edge === 'near', far: bullet.edge === 'far' },
-      focused: isFocused,
+      focused: state?.selection?.isFocused ?? false,
       selected,
+      mouse: {
+        over: state ? state.mouse?.over === index : false,
+        down: state ? state.mouse?.down === index : false,
+      },
     };
   },
 };

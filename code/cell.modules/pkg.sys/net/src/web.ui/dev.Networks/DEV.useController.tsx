@@ -4,13 +4,13 @@ import { filter, takeUntil } from 'rxjs/operators';
 
 import * as k from '../NetworkCard/types';
 import { DevVideoCard } from './DEV.Card.Video';
-import { css, LocalPeerCard, rx, t, PeerNetwork, CommandBar } from './DEV.common';
+import { css, LocalPeerCard, rx, t, PeerNetwork, CmdBar } from './DEV.common';
 
 /**
  * Hooks
  */
 export function useController(args: {
-  instance: t.InstanceId;
+  instance: t.Id;
   network: t.PeerNetwork;
   defaultChild?: JSX.Element;
 }) {
@@ -23,7 +23,7 @@ export function useController(args: {
   useEffect(() => {
     const { netbus } = network;
 
-    const commandBar = CommandBar.Events({ bus: network.bus, instance });
+    const commandBar = CmdBar.Events({ bus: network.bus, instance });
 
     const dispose$ = new Subject<void>();
     const dispose = () => {

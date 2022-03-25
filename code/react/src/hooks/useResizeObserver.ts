@@ -36,25 +36,25 @@ import { DEFAULT, ResizeObserver } from '../resize/ResizeObserver';
  *        const resize3 = useResizeObserver(myRef2, resize1);      // NB: Either the hook or the observer can be passed.
  *
  */
-export function useResizeObserver(
-  ref: React.RefObject<HTMLElement>,
-  options: {
-    root?: t.ResizeObserver | t.UseResizeObserver;
-    onSize?: (size: t.DomRect) => void;
-  } = {},
-): t.UseResizeObserver {
-  const [rect, setRect] = useState<t.DomRect>(DEFAULT.RECT);
-  const readyRef = useRef(false);
 
+export function useResizeObserver<H extends HTMLElement = HTMLDivElement>(
+  options: t.UseResizeObserverOptions<H> = {},
+): t.ResizeObserverHook<H> {
+  const [rect, setRect] = useState<t.DomRect>(DEFAULT.RECT);
+
+  const _ref = useRef<H>(null);
+  const targetRef = options.ref ?? _ref;
+
+  const readyRef = useRef(false);
   const rootRef = useRef<t.ResizeObserver>(wrangleObserver(options.root) ?? ResizeObserver());
   const change$ = useRef(new Subject<t.DomRect>());
   const refresh$ = useRef(new Subject<void>());
 
   useEffect(() => {
     const root = rootRef.current;
-    const element = root.watch(ref.current as HTMLElement);
+    const element = root.watch(targetRef.current as H);
 
-    // Listem to observer.
+    // Listen to observer.
     element.$.pipe(
       takeUntil(element.dispose$),
       filter((e) => e.payload.rect.x > -1),
@@ -71,9 +71,10 @@ export function useResizeObserver(
     // Finish up.
     readyRef.current = true;
     return () => element?.dispose();
-  }, [ref]); // eslint-disable-line
+  }, [targetRef]); // eslint-disable-line
 
   return {
+    ref: targetRef,
     ready: readyRef.current,
     $: change$.current.asObservable(),
     root: rootRef.current,
@@ -87,7 +88,7 @@ export function useResizeObserver(
  */
 
 const wrangleObserver = (
-  input?: t.ResizeObserver | t.UseResizeObserver,
+  input?: t.ResizeObserver | t.ResizeObserverHook,
 ): t.ResizeObserver | undefined => {
   return !input ? undefined : (input as any).root ?? input;
 };

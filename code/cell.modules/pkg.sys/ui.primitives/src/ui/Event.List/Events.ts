@@ -1,17 +1,16 @@
 import { animationFrameScheduler, Subject } from 'rxjs';
 import { filter, observeOn, takeUntil } from 'rxjs/operators';
 
-import { rx } from './common';
-import * as k from './types';
+import { rx, t } from './common';
 
 /**
  * Event API
  */
-export const EventListEvents: k.EventListEventsFactory = (args) => {
+export const EventListEvents: t.EventListEventsFactory = (args) => {
   const { instance } = args;
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
-  const bus = rx.busAsType<k.EventListEvent>(args.bus);
+  const bus = rx.busAsType<t.EventListEvent>(args.bus);
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
@@ -20,8 +19,8 @@ export const EventListEvents: k.EventListEventsFactory = (args) => {
     observeOn(animationFrameScheduler),
   );
 
-  const scroll: k.EventListEvents['scroll'] = {
-    $: rx.payload<k.EventListScrollEvent>($, 'sys.ui.EventList/Scroll'),
+  const scroll: t.EventListEvents['scroll'] = {
+    $: rx.payload<t.EventListScrollEvent>($, 'sys.ui.EventList/Scroll'),
     fire(target, options = {}) {
       const { align } = options;
       bus.fire({
@@ -31,8 +30,8 @@ export const EventListEvents: k.EventListEventsFactory = (args) => {
     },
   };
 
-  const click: k.EventListEvents['click'] = {
-    $: rx.payload<k.EventListClickedEvent>($, 'sys.ui.EventList/Clicked'),
+  const click: t.EventListEvents['click'] = {
+    $: rx.payload<t.EventListClickedEvent>($, 'sys.ui.EventList/Clicked'),
     fire(args) {
       const { index, item } = args;
       bus.fire({
@@ -42,5 +41,16 @@ export const EventListEvents: k.EventListEventsFactory = (args) => {
     },
   };
 
-  return { instance, $, dispose, dispose$, scroll, click };
+  /**
+   * API
+   */
+  return {
+    bus: rx.bus.instance(bus),
+    instance,
+    $,
+    dispose,
+    dispose$,
+    scroll,
+    click,
+  };
 };

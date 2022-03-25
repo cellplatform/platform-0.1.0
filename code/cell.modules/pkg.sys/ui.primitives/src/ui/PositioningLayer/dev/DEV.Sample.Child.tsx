@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -13,8 +13,7 @@ export type SampleChildProps = {
 export const SampleChild: React.FC<SampleChildProps> = (props) => {
   const { width, height } = props;
 
-  const rootRef = useRef<HTMLDivElement>(null);
-  const resize = useResizeObserver(rootRef);
+  const resize = useResizeObserver();
   const [size, setSize] = useState<t.DomRect | undefined>();
 
   useEffect(() => {
@@ -58,7 +57,7 @@ export const SampleChild: React.FC<SampleChildProps> = (props) => {
   );
 
   return (
-    <div ref={rootRef} {...css(styles.base, props.style)}>
+    <div ref={resize.ref} {...css(styles.base, props.style)}>
       {elSize}
     </div>
   );

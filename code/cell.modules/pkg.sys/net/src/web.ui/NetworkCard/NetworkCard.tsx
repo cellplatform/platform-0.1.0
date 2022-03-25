@@ -8,7 +8,7 @@ import { NetworkCardFooter } from './components/Footer';
 import { NetworkCardTitlebar } from './components/Titlebar';
 
 export type NetworkCardProps = {
-  instance: t.InstanceId;
+  instance: t.Id;
   network: t.PeerNetwork;
   child?: JSX.Element;
   style?: CssValue;

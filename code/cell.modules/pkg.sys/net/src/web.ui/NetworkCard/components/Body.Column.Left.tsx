@@ -5,7 +5,7 @@ import { css, CssValue, t, useLocalPeer } from '../common';
 import { BodyColumnHr, BodyColumnTitle } from './Body.Column';
 
 export type BodyColumnLeftProps = {
-  instance: t.InstanceId;
+  instance: t.Id;
   network: t.PeerNetwork;
   self: t.PeerId;
   style?: CssValue;

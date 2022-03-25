@@ -36,7 +36,7 @@ export function useActionsRedraw(args: {
         .pipe(takeUntil(dispose$), throttleTime(defaultValue(args.throttle, 0)), debounceTime(10))
         .subscribe(redraw);
 
-      // Redraw when specific model path's change.
+      // Redraw when specific model path has changed.
       changed$
         .pipe(
           takeUntil(dispose$),
@@ -45,7 +45,7 @@ export function useActionsRedraw(args: {
           throttleTime(defaultValue(args.throttle, 0)),
           debounceTime(0),
         )
-        .subscribe((e) => redraw());
+        .subscribe(redraw);
     }
 
     return () => dispose$.next();

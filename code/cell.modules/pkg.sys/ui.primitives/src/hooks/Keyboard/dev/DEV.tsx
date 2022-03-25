@@ -1,12 +1,12 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { KeyboardPipeHookArgs, KeyboardEvents, Keyboard } from '..';
+import { KeyboardEventPipeHookArgs, KeyboardEvents, Keyboard } from '..';
 import { t, rx } from './DEV.common';
 import { DevSample } from './DEV.Sample';
 
 type Ctx = {
   events: t.KeyboardEvents;
-  args: KeyboardPipeHookArgs;
+  args: KeyboardEventPipeHookArgs;
   render: boolean;
   state?: t.KeyboardState;
 };
@@ -36,9 +36,10 @@ export const actions = DevActions<Ctx>()
     const bus = ctx.args.bus;
 
     /**
-     * Example: raw state-monitor (without the hook)
+     * Example: raw state-monitor (without the hook).
      */
-    const keyboard = Keyboard.StateMonitor({ bus });
+    const keyboard = Keyboard.State.singleton(bus);
+
     keyboard.state$.subscribe((e) => {
       ctx.state = e;
       redraw();

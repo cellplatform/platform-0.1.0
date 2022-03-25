@@ -1,12 +1,12 @@
 import { animationFrameScheduler, Subject } from 'rxjs';
 import { filter, observeOn, takeUntil } from 'rxjs/operators';
 
-import { t, rx, Is, UIEvents } from './common';
+import { t, rx, Is } from './common';
 
 /**
  * Types
  */
-type O = Record<string, unknown>;
+type Index = number;
 type E = t.ListEvents;
 
 /**
@@ -17,14 +17,6 @@ export const ListEvents: t.ListEventsFactory = (args) => {
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
   const bus = rx.busAsType<t.ListEvent>(args.bus);
-
-  const dom = <Ctx extends O>(filter: (ctx: Ctx) => boolean) => {
-    return UIEvents<Ctx>({ bus, instance, dispose$, filter: (e) => filter(e.payload.ctx) });
-  };
-  const events = {
-    list: dom<t.CtxList>((ctx) => ctx.kind === 'List'),
-    item: dom<t.CtxItem>((ctx) => ctx.kind === 'Item'),
-  };
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
@@ -47,12 +39,45 @@ export const ListEvents: t.ListEventsFactory = (args) => {
   const redraw: E['redraw'] = {
     $: rx.payload<t.ListRedrawEvent>($, 'sys.ui.List/Redraw'),
     fire() {
-      bus.fire({ type: 'sys.ui.List/Redraw', payload: { instance } });
+      bus.fire({
+        type: 'sys.ui.List/Redraw',
+        payload: { instance },
+      });
     },
+  };
+
+  const focus: E['focus'] = {
+    $: rx.payload<t.ListFocusEvent>($, 'sys.ui.List/Focus'),
+    fire(isFocused) {
+      bus.fire({
+        type: 'sys.ui.List/Focus',
+        payload: { instance, focus: isFocused ?? true },
+      });
+    },
+  };
+
+  const item: E['item'] = (index: Index) => {
+    return {
+      changed: {
+        $: rx
+          .payload<t.ListItemChangedEvent>($, 'sys.ui.List/Item/Changed')
+          .pipe(filter((e) => e.index === index)),
+      },
+    };
   };
 
   /**
    * API
    */
-  return { instance, $, dispose, dispose$, scroll, redraw };
+  return {
+    bus: rx.bus.instance(bus),
+    instance,
+    $,
+    dispose,
+    dispose$,
+    scroll,
+    redraw,
+    focus,
+    item,
+  };
 };

@@ -21,8 +21,7 @@ export const DevVideosGroupLayout: React.FC<DevVideosGroupLayoutProps> = (props)
   const { bus, netbus } = props;
   const self = netbus.self;
 
-  const baseRef = useRef<HTMLDivElement>(null);
-  const resize = useResizeObserver(baseRef);
+  const resize = useResizeObserver();
   const local = useLocalPeer({ self, bus });
 
   const videoStreams = local.connections
@@ -85,7 +84,7 @@ export const DevVideosGroupLayout: React.FC<DevVideosGroupLayoutProps> = (props)
   );
 
   return (
-    <div ref={baseRef} {...css(styles.base, props.style)}>
+    <div ref={resize.ref} {...css(styles.base, props.style)}>
       {elBody}
       {elEmpty}
     </div>

@@ -10,7 +10,7 @@ import {
   Style,
   UriUtil,
   t,
-  useEventBusHistory,
+  useEventHistory,
 } from '../DEV.common';
 import { DevEventBusStack } from './DEV.NetbusCard.Stack';
 import { DevEventBusTextbox } from './DEV.NetbusCard.Textbox';
@@ -24,7 +24,7 @@ export type DevNetbusCardProps = {
 
 export const DevNetbusCard: React.FC<DevNetbusCardProps> = (props) => {
   const { showAsCard = true, netbus } = props;
-  const history = useEventBusHistory(netbus);
+  const history = useEventHistory(netbus);
   const items: PropListItem[] = [{ label: 'total events', value: history.total }];
 
   /**
@@ -71,7 +71,7 @@ export const DevNetbusCard: React.FC<DevNetbusCardProps> = (props) => {
       <PropList title={'Network Bus'} items={items} defaults={{ clipboard: false }} />
       <Hr thickness={5} opacity={0.1} margin={[10, 0, 15, 0]} />
       <DevEventBusTextbox onBroadcast={handleBroadcast} />
-      <DevEventBusStack history={history} />
+      <DevEventBusStack history={history.events} />
     </div>
   );
 

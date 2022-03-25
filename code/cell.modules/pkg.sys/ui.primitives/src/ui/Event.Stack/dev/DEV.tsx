@@ -2,8 +2,9 @@ import React from 'react';
 import { Observable, Subject } from 'rxjs';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
-import { EventStack, EventStackProps, useEventBusHistory } from '..';
+import { EventStack, EventStackProps } from '..';
 import { rx, t, time } from '../../common';
+import { useEventHistory } from '../../Event';
 
 type Ctx = {
   bus: t.EventBus<any>;
@@ -18,7 +19,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.event.EventStack')
+  .namespace('ui.EventStack')
   .context((e) => {
     if (e.prev) return e.prev;
 
@@ -103,6 +104,6 @@ export default actions;
 export type SampleProps = EventStackProps & { bus: t.EventBus<any>; reset$: Observable<void> };
 export const Sample: React.FC<SampleProps> = (props) => {
   const { bus, reset$ } = props;
-  const history = useEventBusHistory(bus, { reset$ });
+  const history = useEventHistory(bus, { reset$ });
   return <EventStack {...props} events={history.events} style={{ flex: 1 }} />;
 };

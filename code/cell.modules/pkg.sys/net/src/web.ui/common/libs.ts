@@ -15,17 +15,15 @@ export { Text } from 'sys.ui.primitives/lib/ui/Text';
 export { ObjectView } from 'sys.ui.primitives/lib/ui/ObjectView';
 export { Spinner } from 'sys.ui.primitives/lib/ui.ref/spinner/Spinner';
 
-export {
-  EventStack,
-  EventBusHistory,
-  useEventBusHistory,
-} from 'sys.ui.primitives/lib/ui/Event.Stack';
+export { EventStack } from 'sys.ui.primitives/lib/ui/Event.Stack';
 export { EventPipe } from 'sys.ui.primitives/lib/ui/Event.Pipe';
+
+export { useEventHistory } from 'sys.ui.primitives/lib/ui/Event';
 
 export { PositioningLayout } from 'sys.ui.primitives/lib/ui/PositioningLayout';
 
-export { CommandBar } from 'sys.ui.primitives/lib/ui/Command.Bar';
-export { CommandTextbox } from 'sys.ui.primitives/lib/ui/Command.Textbox';
+export { CmdBar } from 'sys.ui.primitives/lib/ui/Cmd.Bar';
+export { CmdTextbox } from 'sys.ui.primitives/lib/ui/Cmd.Textbox';
 
 export { AudioWaveform } from 'sys.ui.video/lib/ui/AudioWaveform';
 export { MediaStream, MediaEvent, VideoStream } from 'sys.ui.video/lib/ui/MediaStream';

@@ -13,7 +13,7 @@ export type AntechamberProps = {
   centerTop?: JSX.Element;
   centerBottom?: JSX.Element;
   maskColor?: string | number;
-  resize?: t.ResizeObserver | t.UseResizeObserver;
+  resize?: t.ResizeObserver | t.ResizeObserverHook;
   sealOpacity?: number;
   sealRotate?: number;
   slideDuration?: Milliseconds;
@@ -35,8 +35,7 @@ export const Antechamber: React.FC<AntechamberProps> = (props) => {
   } = props;
   const bevelHeight = 45;
 
-  const baseRef = useRef<HTMLDivElement>(null);
-  const size = useResizeObserver(baseRef, { root: props.resize, onSize: props.onSize });
+  const size = useResizeObserver({ root: props.resize, onSize: props.onSize });
 
   const backdropFilter = `blur(${backgroundBlur}px)`;
   const maskColor = color.format(props.maskColor ?? 0.75);
@@ -88,7 +87,7 @@ export const Antechamber: React.FC<AntechamberProps> = (props) => {
   );
 
   return (
-    <div ref={baseRef} {...css(styles.base, props.style)} className={'Sys-Primitives-Antechamber'}>
+    <div ref={size.ref} {...css(styles.base, props.style)} className={'Sys-Primitives-Antechamber'}>
       {elNotReady}
       {elReady}
     </div>

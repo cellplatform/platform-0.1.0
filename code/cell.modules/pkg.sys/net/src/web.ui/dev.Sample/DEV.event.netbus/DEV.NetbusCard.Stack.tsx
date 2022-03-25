@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { css, CssValue, EventBusHistory, EventPipe, EventStack } from '../DEV.common';
+import { css, CssValue, EventPipe, EventStack, t } from '../DEV.common';
 
 export type DevEventBusStackProps = {
-  history: EventBusHistory;
+  history: t.EventHistory;
   style?: CssValue;
 };
 
@@ -16,15 +16,15 @@ export const DevEventBusStack: React.FC<DevEventBusStackProps> = (props) => {
     pipe: css({ marginTop: 15, MarginX: 15 }),
   };
 
-  const body = history.total > 0 && (
+  const body = history.length > 0 && (
     <>
       <EventStack
-        events={history.events}
+        events={history}
         card={{ duration: 150, title: 'Distributed Event' }}
         style={styles.stack}
       />
       <EventPipe
-        events={history.events}
+        events={history}
         style={styles.pipe}
         onEventClick={(item) => {
           console.log('event', item.event);

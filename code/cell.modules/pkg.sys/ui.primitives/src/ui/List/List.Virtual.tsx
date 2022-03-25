@@ -1,20 +1,20 @@
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef } from 'react';
 import { VariableSizeList as List } from 'react-window';
 
-import { css, FC, t, useResizeObserver, useUIEventPipe } from './common';
+import { css, FC, t, useResizeObserver } from './common';
 import { ListEvents } from './Events';
-import { useListEventsController } from './hooks';
-import { ListProps, Util } from './List.Layout';
-import { ListVirtualRow, ListVirtualRowData } from './List.Virtual.Row';
+import { useVirtualContext } from './useCtx.Virtual';
+import { ListVirtualItem, ListVirtualItemProps } from './List.Virtual.Item';
+import { Renderer } from './Renderer';
 
 type Pixels = number;
 
 /**
  * Types
  */
-export type ListVirtualProps = ListProps & {
+export type ListVirtualProps = t.ListProps & {
   items: { total: number; getData: t.GetListItem; getSize: t.GetListItemSize };
-  event?: t.ListEventArgs;
+  event?: t.ListBusArgs;
   paddingNear?: Pixels;
   paddingFar?: Pixels;
 };
@@ -29,18 +29,13 @@ export type ListVirtualProps = ListProps & {
  */
 export const View: React.FC<ListVirtualProps> = (props) => {
   const { items, paddingNear = 0, paddingFar = 0, tabIndex } = props;
-
   const total = items.total;
-  const ctrl = useListEventsController({ event: props.event });
-  const { bus, instance } = ctrl;
 
-  const ctx: t.CtxList = { kind: 'List', total };
-  const ui = useUIEventPipe<t.CtxList, HTMLDivElement>({ bus, instance, ctx, focusRedraw: true });
-  const isFocused = ui.element.containsFocus;
+  const ctx = useVirtualContext({ total, event: props.event });
+  const { bus, instance } = ctx;
 
-  const resize = useResizeObserver(ui.ref);
-  const event = { bus, instance };
-  const renderer = Util.renderer({ props, total, event, isFocused });
+  const size = useResizeObserver({ ref: ctx.list.ref });
+  const renderer = Renderer({ bus, instance, props, total });
   const orientation = renderer.orientation;
 
   const getSize = (index: number) => {
@@ -55,16 +50,20 @@ export const View: React.FC<ListVirtualProps> = (props) => {
     return props.items.getSize(e);
   };
 
-  const getData = (index: number): ListVirtualRowData | undefined => {
+  const getData = (index: number): ListVirtualItemProps | undefined => {
     const item = items.getData?.(index);
     if (!item) return undefined;
-    return { item, render: () => renderer.item(item, index) };
+    return {
+      item,
+      render({ isScrolling }) {
+        return renderer.item({ index, item, isScrolling });
+      },
+    };
   };
 
   /**
    * [Render]
    */
-  const size = resize.rect;
   const styles = {
     base: css({
       position: 'relative',
@@ -80,20 +79,21 @@ export const View: React.FC<ListVirtualProps> = (props) => {
     return <div ref={ref} style={{ ...style, width, height }} {...rest} />;
   });
 
-  const Row = ({ style, ...rest }: any) => {
+  const Row = ({ style, isScrolling, ...rest }: any) => {
     const left = orientation === 'x' ? `${parseFloat(style.left) + paddingNear}px` : style.left;
     const top = orientation === 'y' ? `${parseFloat(style.top) + paddingNear}px` : style.top;
-    return <ListVirtualRow {...rest} style={{ ...style, left, top }} />;
+    return <ListVirtualItem {...rest} isScrolling={isScrolling} style={{ ...style, left, top }} />;
   };
 
-  const elBody = resize.ready && (
+  const elBody = size.ready && (
     <List
-      key={ctrl.key} // NB: Enable "redraws" of the list.
-      ref={ctrl.listRef}
-      width={size.width}
-      height={size.height}
+      key={ctx.redrawKey} // NB: Enable forced "redraws" of the list (via event-bus).
+      ref={ctx.listRef}
+      width={size.rect.width}
+      height={size.rect.height}
       layout={orientation === 'y' ? 'vertical' : 'horizontal'}
       innerElementType={elListInner}
+      useIsScrolling={true}
       itemCount={total}
       itemSize={getSize}
       itemData={getData}
@@ -105,15 +105,10 @@ export const View: React.FC<ListVirtualProps> = (props) => {
 
   return (
     <div
-      {...css(styles.base, props.style)}
-      ref={ui.ref}
       tabIndex={tabIndex}
-      onMouseDown={ui.mouse.onMouseDown}
-      onMouseUp={ui.mouse.onMouseUp}
-      onMouseEnter={ui.mouse.onMouseEnter}
-      onMouseLeave={ui.mouse.onMouseLeave}
-      onFocus={ui.focus.onFocus}
-      onBlur={ui.focus.onBlur}
+      ref={ctx.list.ref}
+      {...ctx.list.handlers}
+      {...css(styles.base, props.style)}
     >
       {elBody}
     </div>

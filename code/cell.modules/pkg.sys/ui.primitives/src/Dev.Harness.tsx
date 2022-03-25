@@ -4,7 +4,7 @@ import { t } from './common';
 
 const imports = {
   hookDragTarget: import('./hooks/DragTarget/dev/DEV'),
-  hookUIEvents: import('./hooks/UIEvents/dev/DEV'),
+  hookUIEvents: import('./hooks/UIEvent/dev/DEV'),
   hookKeyboard: import('./hooks/Keyboard/dev/DEV'),
 
   Bullet: import('./ui/Bullet/dev/DEV'),
@@ -18,9 +18,9 @@ const imports = {
   QRCode: import('./ui/QRCode/dev/DEV'),
   TextEditor: import('./ui/TextEditor/DEV'),
 
-  CommandTextbox: import('./ui/Command.Textbox/dev/DEV'),
-  CommandBar: import('./ui/Command.Bar/dev/DEV'),
-  CommandCard: import('./ui/Command.Card/dev/DEV'),
+  CmdTextbox: import('./ui/Cmd.Textbox/dev/DEV'),
+  CmdBar: import('./ui/Cmd.Bar/dev/DEV'),
+  CmdCard: import('./ui/Cmd.Card/dev/DEV'),
 
   MinSize: import('./ui/MinSize/dev/DEV'),
   PositioningLayer: import('./ui/PositioningLayer/dev/DEV'),
@@ -51,7 +51,7 @@ const imports = {
   TextCopy: import('./ui/Text.Copy/dev/DEV'),
   TextSyntax: import('./ui/Text.Syntax/dev/DEV'),
 
-  UnitTests: import('./ui.dev/DEV.UnitTests'),
+  UnitTests: import('./ui.dev/UnitTests'),
 };
 
 /**

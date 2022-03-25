@@ -43,7 +43,9 @@ export type KeyboardModifierKeys = {
 };
 
 export type KeyboardStateMonitor = Disposable & {
-  readonly key$: Observable<KeyboardKeypress>;
+  readonly bus: Id;
+  readonly instance: Id;
+  readonly keypress$: Observable<KeyboardKeypress>;
   readonly state$: Observable<KeyboardState>;
   readonly state: KeyboardState;
   reset(): void;
@@ -74,7 +76,7 @@ export type KeyboardPipeHook = {
  */
 export type KeyboardEvents = Disposable & {
   readonly $: Observable<KeyboardEvent>;
-  readonly key$: Observable<KeyboardKeypress>;
+  readonly keypress$: Observable<KeyboardKeypress>;
   readonly down$: Observable<KeyboardKeypress>;
   readonly up$: Observable<KeyboardKeypress>;
 };
@@ -94,6 +96,7 @@ export type KeyboardKeypressEvent = {
 export type KeyboardKeypress = {
   readonly instance: Id;
   readonly name: 'onKeydown' | 'onKeyup';
+  readonly key: string;
   readonly keypress: KeyboardKeypressProps;
   readonly is: KeyboardKeyFlags;
 };

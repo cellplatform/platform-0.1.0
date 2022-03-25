@@ -5,7 +5,7 @@ export { Observable } from 'rxjs';
 /**
  * @platform
  */
-export { EventBus, Event, DomRect, PartialDeep } from '@platform/types';
+export { EventBus, Event, DomRect, PartialDeep, Disposable } from '@platform/types';
 export {
   IHttpClientCellFileUpload,
   ManifestUrl,
@@ -13,7 +13,7 @@ export {
   NetworkBusMock,
 } from '@platform/cell.types';
 export { CssEdgesInput, CssShadow } from '@platform/css/lib/types';
-export { ResizeObserver, UseResizeObserver } from '@platform/react/lib/types';
+export { ResizeObserver, ResizeObserverHook } from '@platform/react/lib/types';
 export { TimeDelayPromise } from '@platform/util.value/lib/types';
 export { IIcon } from '@platform/ui.icon/lib/types';
 

@@ -1,0 +1,43 @@
+// import { useRef, useEffect } from 'react';
+// // import { VariableSizeList as List } from 'react-window';
+
+// import { rx, t } from './common';
+// import { EventListEvents } from './Events';
+// import * as k from './types';
+
+// type Id = string;
+
+// /**
+//  * Event behavior controller.
+//  */
+// export function useController(args: { bus?: t.EventBus<any>; instance?: Id }) {
+//   const { instance = 'default' } = args;
+//   const bus = rx.busAsType<k.EventListEvent>(args.bus || rx.bus());
+//   // const listRef = useRef<List>(null);
+
+//   /**
+//    * Lifecycle.
+//    */
+//   useEffect(() => {
+//     const events = EventListEvents({ bus, instance });
+
+//     /**
+//      * Scroll to an item.
+//      */
+//     events.scroll.$.subscribe((e) => {
+//       // const list = listRef.current;
+//       // if (!list) return;
+//       // const total = list.props.itemCount;
+//       // const { align = 'auto' } = e;
+//       // const index = e.target === 'Top' ? 0 : e.target === 'Bottom' ? total - 1 : e.target;
+//       // list?.scrollToItem(index, align);
+//     });
+
+//     return () => events.dispose();
+//   }, [bus, instance]); // eslint-disable-line
+
+//   return {
+//     instance,
+//     bus,
+//   };
+// }

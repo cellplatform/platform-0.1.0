@@ -10,7 +10,7 @@ import { css, CssValue, t } from './DEV.common';
 import { useController } from './DEV.useController';
 
 export type DevNetworkCardProps = {
-  instance: t.InstanceId;
+  instance: t.Id;
   network: t.PeerNetwork;
   child?: t.DevChildKind;
   showPlaceholder?: boolean;
@@ -29,13 +29,17 @@ export const DevNetworkCard: React.FC<DevNetworkCardProps> = (props) => {
     child: css({ flex: 1 }),
   };
 
-  const elDefaultChild = <DevCardPlaceholder style={styles.child} />;
-  const ctrl = useController({ network, instance, defaultChild: elDefaultChild });
+  const defaultChild = <DevCardPlaceholder style={styles.child} />;
+  const ctrl = useController({
+    network,
+    instance,
+    defaultChild,
+  });
 
   let elChild: undefined | JSX.Element;
 
   if (child === 'Placeholder' || (!ctrl.child && props.showPlaceholder)) {
-    elChild = elDefaultChild;
+    elChild = defaultChild;
   }
   if (child === 'Netbus') {
     elChild = <NetbusCard netbus={netbus} style={styles.child} />;
