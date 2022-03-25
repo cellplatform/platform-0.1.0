@@ -6,10 +6,10 @@ const Imports = {
   Keyboard: import('../keyboard/TEST'),
 
   EventHistory: import('../ui/Event.History/TEST'),
+  UIEvent: import('../hooks/UIEvent/TEST'),
 
-  TextSyntaxTokenizer: import('../ui/Text.Syntax/Tokenizer.TEST'),
-  UIEvent: import('../hooks/UIEvent/UIEvent.TEST'),
-  PropList: import('../ui/PropList/PropList.TEST'),
+  TextSyntaxTokenizer: import('../ui/Text.Syntax/TEST'),
+  PropList: import('../ui/PropList/TEST'),
   ListState: import('../ui/List.State/TEST'),
 
   CmdBar: import('../ui/Cmd.Bar/TEST'),
