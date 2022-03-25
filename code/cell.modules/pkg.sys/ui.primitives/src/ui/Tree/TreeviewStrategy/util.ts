@@ -1,12 +1,12 @@
 import { TreeQuery } from '@platform/state/lib/TreeQuery';
-import { dispose } from '@platform/util.value';
+import { Dispose } from '@platform/util.value';
 import { Subject } from 'rxjs';
 
 import { t } from '../common';
 import { TreeEvents } from '../TreeviewEvents';
 import { mutations } from './mutations';
 
-export { dispose };
+export { Dispose };
 
 type N = t.ITreeviewNode;
 type E = t.TreeviewEvent;
