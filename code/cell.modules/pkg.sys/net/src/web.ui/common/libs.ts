@@ -18,6 +18,8 @@ export { Spinner } from 'sys.ui.primitives/lib/ui.ref/spinner/Spinner';
 export { EventStack } from 'sys.ui.primitives/lib/ui/Event.Stack';
 export { EventPipe } from 'sys.ui.primitives/lib/ui/Event.Pipe';
 
+export { Keyboard } from 'sys.ui.primitives/lib/keyboard';
+
 export { useEventHistory } from 'sys.ui.primitives/lib/ui/Event';
 
 export { PositioningLayout } from 'sys.ui.primitives/lib/ui/PositioningLayout';
@@ -30,6 +32,7 @@ export { MediaStream, MediaEvent, VideoStream } from 'sys.ui.video/lib/ui/MediaS
 
 /**
  * TODO 🐷
- * - do not get from Textbox
+ * - do not get the <Textbox> get [sys.ui.dev]
+ * - should be a [sys.ui.primitives]
  */
 export { Textbox } from 'sys.ui.dev/lib/web.ui/Textbox';

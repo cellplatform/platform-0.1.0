@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
@@ -15,7 +15,7 @@ import {
   rx,
   Spinner,
   t,
-  useResizeObserver,
+  Keyboard,
 } from './DEV.common';
 import { DevFullscreen } from './DEV.Fullscreen';
 import { DevNetworkCard } from './DEV.NetworkCard';
@@ -24,22 +24,26 @@ export type DevSampleAppProps = { style?: CssValue };
 
 export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
   const [network, setNetwork] = useState<t.PeerNetwork>();
+
   const instance = 'instance.app';
+  const bus = network?.bus ? rx.busAsType<k.NetworkCardEvent>(network?.bus) : undefined;
 
   useEffect(() => {
     Util.createNetwork().then((e) => setNetwork(e));
   }, []);
 
   const [overlay, setOverlay] = useState<undefined | t.NetworkCardOverlay>();
+  const keys = Keyboard.useKeyboard({ bus, instance });
 
   /**
    * TEMP - Overlay  🐷
+   * Behavior/Controller
    */
   useEffect(() => {
     const dispose$ = new Subject<void>();
+    const keyboard = keys.events({ dispose$ });
 
-    if (network) {
-      const bus = rx.busAsType<k.NetworkCardEvent>(network.bus);
+    if (bus) {
       const $ = bus.$.pipe(
         takeUntil(dispose$),
         filter((e) => e.payload.instance === instance),
@@ -48,10 +52,19 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
       rx.payload<k.NetworkCardOverlayEvent>($, 'sys.net/ui.NetworkCard/Overlay')
         .pipe()
         .subscribe((e) => setOverlay(e));
+
+      const closeOverlay = () => {
+        bus.fire({
+          type: 'sys.net/ui.NetworkCard/Overlay',
+          payload: { instance, render: undefined },
+        });
+      };
+
+      keyboard.down.escape((e) => closeOverlay());
     }
 
-    return () => dispose$.next();
-  }, [network]);
+    return () => rx.done(dispose$);
+  }, [bus, keys]);
 
   /**
    * [Render]
