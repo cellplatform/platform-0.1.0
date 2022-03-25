@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { RecordButton, useRecordController } from 'sys.ui.video/lib/ui/RecordButton';
 
 import {
@@ -24,8 +24,7 @@ export const DevVideoFullscreen: React.FC<DevVideoFullscreenProps> = (props) => 
   const { stream, isSelf, isRecordable = false } = props;
   const bus = props.bus as t.EventBus<t.DevEvent>;
 
-  const mainRef = useRef<HTMLDivElement>(null);
-  const resize = useResizeObserver(mainRef);
+  const resize = useResizeObserver();
   const { width, height } = resize.rect;
 
   const record = useRecordController({ bus, stream });
@@ -51,7 +50,7 @@ export const DevVideoFullscreen: React.FC<DevVideoFullscreenProps> = (props) => 
   );
 
   const elMain = (
-    <div {...styles.main} ref={mainRef}>
+    <div ref={resize.ref} {...styles.main}>
       {elVideo}
     </div>
   );

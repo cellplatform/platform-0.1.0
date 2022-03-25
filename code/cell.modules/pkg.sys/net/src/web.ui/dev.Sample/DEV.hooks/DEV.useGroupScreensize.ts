@@ -17,7 +17,7 @@ export function useGroupScreensize(args: {
 }) {
   const { ref, kind } = args;
   const local = args.bus as t.EventBus<t.DevEvent>;
-  const resize = useResizeObserver(args.ref);
+  const resize = useResizeObserver({ ref: args.ref });
 
   useEffect(() => {
     const events = DevEvents(local);

@@ -24,8 +24,7 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
   const { network, stream, instance } = props;
   const bus = rx.busAsType<t.NetworkCardEvent>(network.bus);
 
-  const bodyRef = useRef<HTMLDivElement>(null);
-  const resize = useResizeObserver(bodyRef);
+  const resize = useResizeObserver();
 
   /**
    * [Render]
@@ -99,7 +98,7 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
   );
 
   const elBody = (
-    <div ref={bodyRef} {...styles.body}>
+    <div ref={resize.ref} {...styles.body}>
       {elVideo}
     </div>
   );
@@ -112,15 +111,7 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
 
   return (
     <Card style={css(styles.base, props.style)}>
-      <CardBody
-        header={{
-          el: elHeader,
-          height: 38,
-          padding: [8, 8, 8, 12],
-        }}
-      >
-        {elBody}
-      </CardBody>
+      <CardBody header={{ el: elHeader, height: 38, padding: [8, 8, 8, 12] }}>{elBody}</CardBody>
     </Card>
   );
 };
