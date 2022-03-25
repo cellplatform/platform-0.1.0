@@ -29,14 +29,17 @@ export const Backdrop: React.FC<BackdropProps> = (props) => {
     }),
     top: css({
       flex: 1,
-      Flex: 'center-center', // TEMP 🐷
+      position: 'relative',
+      display: 'flex',
     }),
     bottom: css({}),
   };
 
+  const elBody = props.children;
+
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.top}>{'backdrop'}</div>
+      <div {...styles.top}>{elBody}</div>
       <div {...styles.bottom}>
         <CmdBar bus={bus} />
       </div>

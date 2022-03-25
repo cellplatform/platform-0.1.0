@@ -3,7 +3,7 @@ import { NetworkBusMock } from 'sys.runtime.web';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { CmdCard, CmdCardProps } from '..';
-import { rx, t } from '../../common';
+import { rx, t, css, COLORS } from '../common';
 
 type Ctx = {
   bus: t.EventBus<any>;
@@ -73,7 +73,7 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       bus,
       netbus,
-      props: { bus, isOpen: false },
+      props: { bus, isOpen: false, withinCard: false },
       size: { width: 500, height: 320 },
       debug: { fireCount: 0, busKind: 'netbus' },
     };
@@ -113,6 +113,12 @@ export const actions = DevActions<Ctx>()
       if (e.changing) e.ctx.props.isOpen = e.changing.next;
       e.boolean.current = e.ctx.props.isOpen;
     });
+
+    e.boolean('[TODO] withinCard', (e) => {
+      if (e.changing) e.ctx.props.withinCard = e.changing.next;
+      e.boolean.current = e.ctx.props.withinCard;
+    });
+
     e.hr();
   })
 
@@ -145,13 +151,39 @@ export const actions = DevActions<Ctx>()
         width,
         height,
         label: {
-          topLeft: '<CmdCard>',
+          topLeft: '<Cmd.Card>',
           bottomRight: busKind === 'netbus' ? `${instance} (network)` : `${instance} (local)`,
         },
       },
     });
 
-    e.render(<CmdCard {...props} style={{ flex: 1 }} />);
+    e.render(
+      <CmdCard
+        {...props}
+        style={{ flex: 1 }}
+        renderBackdrop={(e) => {
+          const styles = {
+            base: css({
+              Absolute: 0,
+              Size: e.size,
+              Flex: 'center-center',
+              color: COLORS.WHITE,
+            }),
+          };
+          return <div {...styles.base}>{`"My Backdrop"`}</div>;
+        }}
+        renderBody={(e) => {
+          const styles = {
+            base: css({
+              Absolute: 0,
+              Size: e.size,
+              Flex: 'center-center',
+            }),
+          };
+          return <div {...styles.base}>{`"My Body"`}</div>;
+        }}
+      />,
+    );
   });
 
 export default actions;

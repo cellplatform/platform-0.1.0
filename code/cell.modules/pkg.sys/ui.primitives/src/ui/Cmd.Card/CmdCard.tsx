@@ -1,20 +1,34 @@
 import React from 'react';
 
-import { CssValue, t, FC } from './common';
-import { CmdCardLayout as Layout, CmdCardLayoutProps } from './CmdCard.Layout';
+import { CardProps } from '../Card';
+import { FC, t } from './common';
+import { CmdCardLayout as Layout, CmdCardLayoutProps } from './components/Layout';
 import { CmdCardEvents as Events } from './Events';
 
 /**
  * Types
  */
-export type CmdCardProps = CmdCardLayoutProps;
+export type CmdCardProps = CmdCardLayoutProps & { withinCard?: boolean };
 
 /**
  * Component
  */
 const View: React.FC<CmdCardProps> = (props) => {
-  const { bus, isOpen } = props;
-  return <Layout bus={bus} isOpen={isOpen} style={props.style} />;
+  const { withinCard = true } = props;
+
+  const cardProps: CardProps = typeof withinCard === 'object' ? withinCard : {};
+
+  /**
+   * TODO 🐷
+   * show wihtin card when required
+   */
+  console.group('🐷 TODO');
+  console.log('withinCard', withinCard);
+  console.log('cardProps', cardProps);
+  console.groupEnd();
+
+  const elLayout = <Layout {...props} />;
+  return elLayout;
 };
 
 /**
