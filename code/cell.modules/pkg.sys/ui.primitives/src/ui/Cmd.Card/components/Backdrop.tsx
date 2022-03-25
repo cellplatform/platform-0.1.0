@@ -24,7 +24,6 @@ export const Backdrop: React.FC<BackdropProps> = (props) => {
       position: 'relative',
       Flex: 'y-stretch-stretch',
       backgroundColor: COLORS.DARK,
-      borderRadius: 4,
       color: COLORS.WHITE,
       boxSizing: 'border-box',
     }),
@@ -37,7 +36,7 @@ export const Backdrop: React.FC<BackdropProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.top}>{'body'}</div>
+      <div {...styles.top}>{'backdrop'}</div>
       <div {...styles.bottom}>
         <CmdBar bus={bus} />
       </div>

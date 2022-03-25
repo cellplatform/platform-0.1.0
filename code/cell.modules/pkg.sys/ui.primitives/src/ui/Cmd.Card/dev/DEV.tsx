@@ -73,7 +73,7 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       bus,
       netbus,
-      props: { bus },
+      props: { bus, isOpen: false },
       size: { width: 500, height: 320 },
       debug: { fireCount: 0, busKind: 'netbus' },
     };
@@ -103,6 +103,16 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.1);
     e.button('fire', (e) => Util.fire(e.ctx, 1));
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Props');
+
+    e.boolean('isOpen', (e) => {
+      if (e.changing) e.ctx.props.isOpen = e.changing.next;
+      e.boolean.current = e.ctx.props.isOpen;
+    });
     e.hr();
   })
 

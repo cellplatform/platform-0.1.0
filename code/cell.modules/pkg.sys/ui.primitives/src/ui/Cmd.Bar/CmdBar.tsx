@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { color, css, CssValue, FC, t } from './common';
 import { CmdTextbox } from '../Cmd.Textbox';

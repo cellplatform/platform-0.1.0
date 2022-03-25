@@ -7,17 +7,14 @@ import { CmdCardEvents as Events } from './Events';
 /**
  * Types
  */
-export type CmdCardProps = {
-  bus: t.EventBus<any>;
-  style?: CssValue;
-};
+export type CmdCardProps = CmdCardLayoutProps;
 
 /**
  * Component
  */
 const View: React.FC<CmdCardProps> = (props) => {
-  const { bus } = props;
-  return <Layout bus={bus} style={props.style} />;
+  const { bus, isOpen } = props;
+  return <Layout bus={bus} isOpen={isOpen} style={props.style} />;
 };
 
 /**

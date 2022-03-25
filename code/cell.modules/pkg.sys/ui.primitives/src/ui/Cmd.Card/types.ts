@@ -1,7 +1,9 @@
-import * as t from '../../types';
-import { Disposable, EventBus } from '@platform/types';
+import { Disposable, EventBus, DomRect } from '@platform/types';
 
 type Id = string;
+
+export type CmdCardRender = (props: CmdCardRenderProps) => JSX.Element | null;
+export type CmdCardRenderProps = { size: DomRect };
 
 /**
  * EVENTS (API)

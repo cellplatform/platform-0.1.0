@@ -122,8 +122,8 @@ export const CmdTextbox: React.FC<CmdTextboxProps> = (props) => {
         onChange={(e) => {
           const { from, to } = e;
           if (!isControlled) setTextState(to);
-          setPending(true);
           props.onChange?.({ from, to });
+          setPending(true);
         }}
         onEnter={() => {
           const text = textTrimmed;
