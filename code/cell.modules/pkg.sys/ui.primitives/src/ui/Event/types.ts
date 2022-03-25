@@ -13,7 +13,7 @@ export type EventHistoryItem = {
 /**
  * A state hook that stores a set of events coming via an event-bus.
  */
-export type EventHistoryHookFactory = (
+export type UseEventHistory = (
   bus?: t.EventBus<any>,
   options?: EventHistoryOptions,
 ) => EventHistoryHook;

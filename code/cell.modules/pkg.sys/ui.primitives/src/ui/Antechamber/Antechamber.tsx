@@ -13,7 +13,7 @@ export type AntechamberProps = {
   centerTop?: JSX.Element;
   centerBottom?: JSX.Element;
   maskColor?: string | number;
-  resize?: t.ResizeObserver | t.UseResizeObserver;
+  resize?: t.ResizeObserver | t.ResizeObserverHook;
   sealOpacity?: number;
   sealRotate?: number;
   slideDuration?: Milliseconds;

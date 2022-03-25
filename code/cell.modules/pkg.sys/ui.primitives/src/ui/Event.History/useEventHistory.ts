@@ -6,7 +6,7 @@ import { EventHistoryMonitor } from './EventHistory.Monitor';
 /**
  * Captures a running history of events within a stateful array.
  */
-export const useEventHistory: t.EventHistoryHookFactory = (bus, options = {}) => {
+export const useEventHistory: t.UseEventHistory = (bus, options = {}) => {
   const { reset$ } = options;
   const [events, setEvents] = useState<t.EventHistoryItem[]>([]);
 

@@ -46,7 +46,7 @@ export const View: React.FC<EventListProps> = (props) => {
 type Fields = {
   Events: t.EventListEventsFactory;
   Layout: React.FC<EventListLayoutProps>;
-  useEventHistory: t.EventHistoryHookFactory;
+  useEventHistory: t.UseEventHistory;
 };
 export const EventList = FC.decorate<EventListProps, Fields>(
   View,
