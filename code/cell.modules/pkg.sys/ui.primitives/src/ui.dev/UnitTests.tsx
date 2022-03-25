@@ -3,7 +3,7 @@ import { DevActions, Test } from 'sys.ui.dev';
 import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
 const Imports = {
-  HookKeyboard: import('../hooks/Keyboard/Keyboard.TEST'),
+  Keyboard: import('../keyboard/TEST'),
 
   EventHistory: import('../ui/Event.History/TEST'),
 

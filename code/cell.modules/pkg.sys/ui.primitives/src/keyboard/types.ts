@@ -1,7 +1,7 @@
 import { Disposable } from '@platform/types';
 import { Observable } from 'rxjs';
 
-import * as t from '../../types';
+import * as t from '../types';
 
 type Id = string;
 export type KeyboardStage = 'Down' | 'Up';

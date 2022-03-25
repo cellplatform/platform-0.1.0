@@ -6,4 +6,4 @@ export * from './constants';
 export * from './Is';
 
 export { UIEvent } from '../../../hooks/UIEvent';
-export { Keyboard } from '../../../hooks/Keyboard';
+export { Keyboard } from '../../../keyboard';

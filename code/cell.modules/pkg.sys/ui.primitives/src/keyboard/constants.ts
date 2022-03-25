@@ -1,4 +1,4 @@
-import { slug } from '../common';
+import { slug } from './common';
 import { KeyboardState } from './types';
 
 export const SINGLETON_INSTANCE = `keyboard:singleton:${slug()}`;

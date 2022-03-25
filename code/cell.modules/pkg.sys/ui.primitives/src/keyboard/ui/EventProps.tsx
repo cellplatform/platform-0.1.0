@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { css, CssValue, FC, t } from '../../common';
-import { PropList } from '../../../ui/PropList';
+import { PropList } from '../../ui/PropList';
 
 export type EventPropsProps = {
   event: t.KeyboardKeypress;
