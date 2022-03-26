@@ -36,7 +36,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
   };
 
   const name = {
-    manifest: manifest.isMock ? `manifset (mock)` : 'manifest',
+    manifest: manifest.is.mock ? `manifset (mock)` : 'manifest',
   };
 
   const elUrl = (

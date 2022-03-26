@@ -36,7 +36,7 @@ export function useModule<M = any>(args: {
 
     const fireUnload = () => events.useModule.fire({ target, module: null });
 
-    if (!manifest.isMock && manifest.json && url && url.ok && url.params.entry) {
+    if (!manifest.is.mock && manifest.json && url && url.ok && url.params.entry) {
       fireLoad(manifest.json, url.params.entry);
     } else {
       fireUnload();

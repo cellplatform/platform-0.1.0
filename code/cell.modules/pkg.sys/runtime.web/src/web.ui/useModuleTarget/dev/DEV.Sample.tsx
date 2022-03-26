@@ -72,15 +72,15 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
     },
   };
 
-  const name = manifest.isMock ? `manifset (mock)` : 'manifest';
+  const name = manifest.is.mock ? `manifset (mock)` : 'manifest';
 
-  const elEmpty = manifest.isMock && (
+  const elEmpty = manifest.is.mock && (
     <div {...styles.empty.base}>
       <div {...styles.empty.body}>Load a manifest</div>
     </div>
   );
 
-  const elBody = !manifest.isMock && (
+  const elBody = !manifest.is.mock && (
     <div {...styles.body}>
       <div {...styles.left.base}>
         <ModuleInfo

@@ -23,11 +23,16 @@ const MOCK: t.ModuleManifest = {
 /**
  * Load the local manifest JSON file.
  */
-export function useManifest(options: { url?: string } = {}) {
-  const [json, setJson] = useState<t.ModuleManifest | undefined>();
 
+export const useManifest: t.UseManifestHook = (options = {}) => {
   const isLocalhost = location.hostname === 'localhost';
-  const isMock = isLocalhost && !options.url;
+
+  const is: t.ManifestHookFlags = {
+    mock: isLocalhost && !options.url,
+    localhost: isLocalhost,
+  };
+
+  const [json, setJson] = useState<t.ModuleManifest | undefined>();
 
   const getHref = () => {
     return options.url ?? `${location.host}/index.json`;
@@ -41,26 +46,27 @@ export function useManifest(options: { url?: string } = {}) {
    * Lifecycle
    */
   useEffect(() => {
-    if (isMock) {
-      return setJson(MOCK);
-    }
-
-    if (!isMock) {
+    if (is.mock) {
+      setJson(MOCK);
+    } else {
       pullManifest(getHref(), (json) => setJson(json));
     }
-  }, [options.url, isMock]); // eslint-disable-line
+  }, [options.url, is.mock]); // eslint-disable-line
 
   /**
    * Api
    */
   return {
-    isMock,
+    is,
     json,
     get url() {
       return getUrl();
     },
+    get version() {
+      return json?.module.version || '';
+    },
   };
-}
+};
 
 /**
  * Helpers
