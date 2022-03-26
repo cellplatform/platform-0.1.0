@@ -22,6 +22,7 @@ export type EventHistoryHook = {
   bus: Id;
   total: number;
   events: EventHistory;
+  reset(): void;
 };
 
 export type EventHistoryOptions = {

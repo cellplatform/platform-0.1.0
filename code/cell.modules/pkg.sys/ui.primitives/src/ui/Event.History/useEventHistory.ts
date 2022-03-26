@@ -1,26 +1,34 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Subject } from 'rxjs';
 
-import { t, rx } from '../../common';
+import { rx, t } from '../../common';
 import { EventHistoryMonitor } from './EventHistory.Monitor';
 
 /**
  * Captures a running history of events within a stateful array.
  */
 export const useEventHistory: t.UseEventHistory = (bus, options = {}) => {
-  const { reset$ } = options;
   const [events, setEvents] = useState<t.EventHistoryItem[]>([]);
+  const resetRef$ = useRef(new Subject<void>());
 
   useEffect(() => {
-    const monitor = EventHistoryMonitor(bus, options);
+    const reset$ = resetRef$.current;
+
+    const monitor = EventHistoryMonitor(bus, { ...options, reset$ });
     monitor.changed$.subscribe(() => setEvents(monitor.events));
+    options.reset$?.subscribe(() => reset$.next());
+
     return () => monitor.dispose();
-  }, [bus, reset$]); // eslint-disable-line
+  }, [bus, options.reset$]); // eslint-disable-line
 
   return {
     bus: bus ? rx.bus.instance(bus) : '',
     events,
     get total() {
       return events.length;
+    },
+    reset() {
+      resetRef$.current.next();
     },
   };
 };
