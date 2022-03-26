@@ -1,4 +1,4 @@
-import { Test, expect } from '../../web.test';
+import { Test, expect } from 'sys.ui.dev';
 
 export default Test.describe('sample', (e) => {
   e.it('tmp', async () => {
