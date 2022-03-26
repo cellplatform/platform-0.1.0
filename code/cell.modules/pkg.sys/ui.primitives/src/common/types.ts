@@ -20,4 +20,5 @@ export { IIcon } from '@platform/ui.icon/lib/types';
 /**
  * @system
  */
-export { WebRuntimeEvents, UseManifestHook } from 'sys.runtime.web/lib/types';
+export { WebRuntimeEvents } from 'sys.runtime.web/lib/types';
+export { UseManifestHook } from 'sys.runtime.web.ui/lib/types';

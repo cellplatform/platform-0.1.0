@@ -3,17 +3,7 @@ import { DevActions, Test } from 'sys.ui.dev';
 import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
 const Imports = {
-  Keyboard: import('../keyboard/TEST'),
-
-  EventHistory: import('../ui/Event.History/TEST'),
-  UIEvent: import('../hooks/UIEvent/TEST'),
-
-  TextSyntaxTokenizer: import('../ui/Text.Syntax/TEST'),
-  PropList: import('../ui/PropList/TEST'),
-  ListState: import('../ui/List.State/TEST'),
-
-  CmdBar: import('../ui/Cmd.Bar/TEST'),
-  CmdCard: import('../ui/Cmd.Card/TEST'),
+  Sample: import('./web.ui/Sample.TEST'),
 };
 
 type Ctx = { results?: TestSuiteRunResponse };
@@ -27,7 +17,6 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     e.ctx.results = await Test.run(Object.values(Imports));
-    // e.ctx.results = await Test.run(Imports.EventHistory);
   })
 
   .items((e) => {
