@@ -18,8 +18,9 @@ export * from './ui/List/types';
 export * from './ui/List.State/types';
 export * from './ui/DotTabstrip/types';
 export * from './ui/PropList/types';
-export * from './ui/QRCode/types';
 export * from './ui/MinSize/types';
+export * from './ui/QRCode/types';
+export * from './ui/Semver/types';
 
 export * from './ui/Cmd.Card/types';
 export * from './ui/Cmd.Bar/types';
