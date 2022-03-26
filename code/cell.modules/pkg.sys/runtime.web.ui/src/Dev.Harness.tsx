@@ -1,9 +1,17 @@
 import React from 'react';
 import { Harness } from 'sys.ui.dev';
-
 import { t } from './common';
 
 const imports = {
+  ModuleInfo: import('./web.ui/ModuleInfo/dev/DEV'),
+  ManifestSelector: import('./web.ui/ManifestSelector/dev/DEV'),
+  ManifestSemver: import('./web.ui/ManifestSemver/dev/DEV'),
+  Module: import('./web.ui/Module/dev/DEV'),
+
+  useManifest: import('./web.ui/useManifest/dev/DEV'),
+  useModuleTarget: import('./web.ui/useModuleTarget/dev/DEV'),
+  useModule: import('./web.ui/useModule/dev/DEV'),
+
   UnitTests: import('./Dev.UnitTests'),
 };
 

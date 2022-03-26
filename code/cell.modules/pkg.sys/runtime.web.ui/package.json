@@ -1,12 +1,11 @@
 {
-  "name": "sys.runtime.web",
-  "version": "0.0.2",
+  "name": "sys.runtime.web.ui",
+  "version": "0.0.0",
+  "main": "lib/index",
   "sideEffects": false,
   "compiler": {
-    "port": 5051
+    "port": 3039
   },
-  "main": "lib/index",
-  "types": "lib/index.d.ts",
   "scripts": {
     "start": "cell.compiler dev $@",
     "dev": "cell.compiler dev --no-exports $@",
@@ -19,13 +18,11 @@
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@"
   },
-  "dependencies": {
-    "@platform/cell.runtime.web": "0.1.72"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@platform/cell.compiler": "~0.4.1",
-    "react": "~17.0.2",
-    "react-dom": "~17.0.2"
+    "@platform/cell.compiler": "0.4.1",
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
   },
   "license": "MIT",
   "private": true

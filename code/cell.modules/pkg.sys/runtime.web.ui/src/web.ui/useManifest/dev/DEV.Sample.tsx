@@ -1,7 +1,8 @@
-import { ObjectView } from 'sys.ui.dev';
 import React from 'react';
-import { COLORS, color, css, CssValue, t } from '../../common';
+import { ObjectView } from 'sys.ui.dev';
+
 import { useManifest } from '..';
+import { color, COLORS, css, CssValue } from '../../common';
 import { ModuleInfo } from '../../ModuleInfo';
 
 export type DevSampleProps = {

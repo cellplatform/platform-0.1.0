@@ -1,9 +1,8 @@
 import { ObjectView } from 'sys.ui.dev';
 
-import React, { useEffect, useRef, useState } from 'react';
-import { COLORS, color, css, CssValue, t } from '../../common';
+import React from 'react';
+import { COLORS, color, css, CssValue, t, Spinner } from '../../common';
 import { useModule } from '..';
-import { Spinner } from 'sys.ui.primitives/lib/ui.ref/spinner/Spinner';
 
 export type DevSampleProps = {
   bus: t.EventBus;

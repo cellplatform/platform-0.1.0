@@ -6,8 +6,7 @@ import {
   ManifestSelectorStatefulProps,
   ManifestSelectorConstants,
 } from '..';
-import { WebRuntimeBus } from '../../../web.RuntimeBus';
-import { rx, t, Button, Filesystem } from '../common';
+import { rx, t, Button, Filesystem, WebRuntimeBus } from '../common';
 import { DevSampleTarget } from './DEV.SampleTarget';
 import { ModuleInfoStateful, ModuleInfoConstants } from '../../ModuleInfo';
 import { ModuleInfoFields } from '../../ModuleInfo/types';

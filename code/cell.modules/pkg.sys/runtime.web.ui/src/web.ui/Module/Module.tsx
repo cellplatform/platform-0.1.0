@@ -17,7 +17,7 @@ export const Module: React.FC<ModuleProps> = (props) => {
 
   const remote = useModule({ bus, id, url });
   const Component = remote.module?.default;
-  const isLoading = remote.loading;
+  // const isLoading = remote.loading;
 
   /**
    * TODO 🐷
