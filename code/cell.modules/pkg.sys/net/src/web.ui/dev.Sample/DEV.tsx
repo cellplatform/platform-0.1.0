@@ -1,5 +1,4 @@
 import React from 'react';
-import { WebRuntime } from 'sys.runtime.web';
 
 import { PeerNetwork } from '../../';
 import { DevActions, LocalStorage, ObjectView, TEST, toObject } from '../../web.test';
@@ -15,6 +14,7 @@ import {
   t,
   TARGET_NAME,
   time,
+  WebRuntime,
 } from './DEV.common';
 import { EventBridge } from './DEV.event';
 import { DevProps } from './DEV.Props';

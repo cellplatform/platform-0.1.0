@@ -29,4 +29,4 @@ export { NetworkBus } from '@platform/cell.runtime/lib/NetworkBus';
  * @system
  */
 export { Filesystem } from 'sys.fs';
-export { WebRuntime } from 'sys.runtime.web';
+export { WebRuntime } from 'sys.runtime.web.ui';

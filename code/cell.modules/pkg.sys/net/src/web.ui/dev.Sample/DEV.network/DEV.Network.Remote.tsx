@@ -1,7 +1,5 @@
 import React from 'react';
-import { color, css, CssValue, t, TARGET_NAME } from '../DEV.common';
-
-import { WebRuntime } from 'sys.runtime.web';
+import { color, css, CssValue, t, TARGET_NAME, WebRuntime } from '../DEV.common';
 
 export type DevNetworkRemoteProps = { bus: t.EventBus<any>; style?: CssValue };
 
