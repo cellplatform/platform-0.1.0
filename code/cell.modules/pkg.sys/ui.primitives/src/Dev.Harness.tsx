@@ -16,8 +16,9 @@ const imports = {
   DotTabstrip: import('./ui/DotTabstrip/dev/DEV'),
   Zoom: import('./ui/Zoom/DEV'),
   PropList: import('./ui/PropList/dev/DEV'),
-  QRCode: import('./ui/QRCode/dev/DEV'),
   TextEditor: import('./ui/TextEditor/DEV'),
+  QRCode: import('./ui/QRCode/dev/DEV'),
+  Semver: import('./ui/Semver/dev/DEV'),
 
   CmdTextbox: import('./ui/Cmd.Textbox/dev/DEV'),
   CmdBar: import('./ui/Cmd.Bar/dev/DEV'),

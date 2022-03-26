@@ -5,6 +5,7 @@ import * as t from './DEV.types';
  */
 export { Card } from 'sys.ui.primitives/lib/ui/Card';
 export { MediaStream, MediaEvent, VideoStream } from 'sys.ui.video/lib/ui/MediaStream';
+export { Semver } from 'sys.ui.primitives/lib/ui/Semver';
 
 /**
  * @local
