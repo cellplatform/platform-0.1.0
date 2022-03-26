@@ -4,7 +4,7 @@ import { UIEvent } from '.';
 import { rx } from '../common';
 
 export default Test.describe('hooks.UIEvent', (e) => {
-  e.it('bus/instance', async () => {
+  e.it('bus/instance', () => {
     const bus = rx.bus();
     const instance = 'my-instance';
     const events = UIEvent.Events({ bus, instance });

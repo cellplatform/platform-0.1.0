@@ -17,6 +17,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
   useEffect(() => {
     const dispose$ = new Subject<void>();
     const events = ui.events({ dispose$ });
+
     events.$.subscribe((e) => {
       // console.log('inside hook', e);
     });
