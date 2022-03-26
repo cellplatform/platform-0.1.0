@@ -23,6 +23,7 @@ export default () =>
         .expose('./DEV.sys.ui.dev', './src/exports/Dev')
         .expose('./DEV.sys.ui.video', './src/exports/Dev.Video')
         .expose('./DEV.sys.ui.primitives', './src/exports/Dev.Primitives')
-        .expose('./DEV.sys.runtime.web', './src/exports/Dev.Runtime')
+        .expose('./DEV.sys.runtime.web', './src/exports/Dev.Runtime.web')
+        .expose('./DEV.sys.runtime.web.ui', './src/exports/Dev.Runtime.web.ui')
         .expose('./DEV.sys.crdt', './src/exports/Dev.Crdt'),
     );
