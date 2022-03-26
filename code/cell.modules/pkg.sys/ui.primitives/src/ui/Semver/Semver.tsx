@@ -1,27 +1,35 @@
 import React from 'react';
 
-import { FC, t, WebRuntime } from '../common';
-import { Layout } from './Layout';
+import { color, COLORS, css, t } from '../../common';
 
-export { SemverProps } from './types';
-import { SemverManifest as Manifest, SemverManifestProps } from './Semver.Manifest';
-
-const { useManifest } = WebRuntime.ui;
-
-/**
- * Component
- */
-const View: React.FC<t.SemverProps> = (props) => <Layout {...props} />;
-
-/**
- * Export
- */
-type Fields = {
-  useManifest: t.UseManifestHook;
-  Manifest: React.FC<SemverManifestProps>;
+export type SemverProps = {
+  version?: string;
+  style?: t.CssValue;
 };
-export const Semver = FC.decorate<t.SemverProps, Fields>(
-  View,
-  { useManifest, Manifest },
-  { displayName: 'Semver' },
-);
+
+export const Semver: React.FC<SemverProps> = (props) => {
+  const text = props.version;
+  if (!text) return null;
+
+  /**
+   * [Render]
+   */
+  const styles = {
+    base: css({
+      position: 'relative',
+      display: 'inline-block',
+    }),
+    text: css({
+      fontFamily: 'monospace',
+      fontWeight: 'bold',
+      color: color.alpha(COLORS.DARK, 1),
+      letterSpacing: -0.5,
+    }),
+  };
+
+  return (
+    <div {...css(styles.base, props.style)}>
+      <div {...styles.text}>{text}</div>
+    </div>
+  );
+};

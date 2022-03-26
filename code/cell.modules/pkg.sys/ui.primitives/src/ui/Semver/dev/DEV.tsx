@@ -2,7 +2,9 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { Semver, SemverProps } from '..';
 
-type Ctx = { props: SemverProps };
+type Ctx = {
+  props: SemverProps;
+};
 
 /**
  * Actions
@@ -11,7 +13,9 @@ export const actions = DevActions<Ctx>()
   .namespace('ui.Semver')
   .context((e) => {
     if (e.prev) return e.prev;
-    const ctx: Ctx = { props: {} };
+    const ctx: Ctx = {
+      props: { version: '1.2.3' },
+    };
     return ctx;
   })
 
@@ -42,7 +46,7 @@ export const actions = DevActions<Ctx>()
       host: { background: -0.04 },
       layout: { cropmarks: -0.2 },
     });
-    e.render(<Semver.Manifest {...e.ctx.props} />);
+    e.render(<Semver {...e.ctx.props} />);
   });
 
 export default actions;
