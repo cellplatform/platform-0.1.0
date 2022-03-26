@@ -9,13 +9,14 @@ import {
   css,
   CssValue,
   EventBridge,
+  Keyboard,
   MediaStream,
   PeerNetwork,
   PositioningLayout,
   rx,
+  Semver,
   Spinner,
   t,
-  Keyboard,
 } from './DEV.common';
 import { DevFullscreen } from './DEV.Fullscreen';
 import { DevNetworkCard } from './DEV.NetworkCard';
@@ -33,7 +34,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
   }, []);
 
   const [overlay, setOverlay] = useState<undefined | t.NetworkCardOverlay>();
-  const keys = Keyboard.useKeyboard({ bus, instance });
+  const keybrd = Keyboard.useKeyboard({ bus, instance });
 
   /**
    * TEMP - Overlay  🐷
@@ -41,7 +42,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
    */
   useEffect(() => {
     const dispose$ = new Subject<void>();
-    const keyboard = keys.events({ dispose$ });
+    const keyboard = keybrd.events({ dispose$ });
 
     if (bus) {
       const $ = bus.$.pipe(
@@ -64,7 +65,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     }
 
     return () => rx.done(dispose$);
-  }, [bus, keys]);
+  }, [bus, keybrd]);
 
   /**
    * [Render]
@@ -80,7 +81,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
   };
 
   const Card: t.PositioningLayer = {
-    id: 'card',
+    id: 'layer.Card',
     position: { x: 'center', y: 'center' },
     render() {
       if (!network) return <Spinner />;
@@ -96,7 +97,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
   };
 
   const Overlay: t.PositioningLayer = {
-    id: 'overlay',
+    id: 'layer.Overlay',
     position: { x: 'stretch', y: 'stretch' },
     render({ size }) {
       if (!overlay?.render) return null;
@@ -109,10 +110,18 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     },
   };
 
+  const Version: t.PositioningLayer = {
+    id: 'layer.Version',
+    position: { x: 'right', y: 'top' },
+    render(e) {
+      return <Semver.Manifest style={{ marginTop: 10, marginRight: 15 }} />;
+    },
+  };
+
   return (
     <div {...css(styles.base, props.style)}>
       <PositioningLayout
-        layers={[Card, Overlay]}
+        layers={[Version, Card, Overlay]}
         style={styles.layout}
         childPointerEvents={'none'}
       />
