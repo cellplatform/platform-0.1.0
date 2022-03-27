@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { color, COLORS, style, css, CssValue, defaultValue, t } from '../../common';
+import { color, COLORS, css, CssValue, style, t } from '../../common';
 
 export type HrProps = {
   color?: string | number | 'MAGENTA' | 'CYAN';
@@ -37,14 +37,14 @@ export class Hr extends React.PureComponent<HrProps> {
   public render() {
     const props = this.props;
     const { dashed } = props;
-    const thickness = defaultValue(props.thickness, 1);
-    const opacity = defaultValue(props.opacity, 1);
-    const margin = defaultValue(props.margin, [20, 0]);
+    const thickness = props.thickness ?? 1;
+    const opacity = props.opacity ?? 1;
+    const margin = props.margin ?? [20, 0];
 
     let borderColor = props.color;
     borderColor = borderColor === 'MAGENTA' ? COLORS.CLI.MAGENTA : borderColor;
     borderColor = borderColor === 'CYAN' ? COLORS.CLI.CYAN : borderColor;
-    borderColor = color.format(borderColor || -1);
+    borderColor = color.format(borderColor ?? -1);
 
     const styles = {
       base: css({

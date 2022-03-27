@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { css, t } from '../common';
 import { Hr as HrComponent } from '../Hr';
 
@@ -10,12 +11,14 @@ export type HrProps = {
 
 export const Hr: React.FC<HrProps> = (props) => {
   const { item } = props;
+
   const styles = {
     base: css({
       boxSizing: 'border-box',
       paddingLeft: item.indent,
     }),
   };
+
   return (
     <div {...styles.base}>
       <HrComponent

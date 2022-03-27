@@ -204,6 +204,7 @@ export const actions = DevActions<Ctx>()
     e.hr(3, 0.15, [2, 50]);
     e.hr((config) => config.height(1).opacity(0.15).margin([15, 0]).indent(25));
     e.hr(1, 0.15, [15, 0], 'dashed');
+    e.hr(20, 0); // NB: transparent ("spacer")
     e.hr();
   })
 
