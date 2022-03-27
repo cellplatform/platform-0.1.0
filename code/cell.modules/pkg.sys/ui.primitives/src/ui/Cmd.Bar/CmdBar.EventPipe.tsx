@@ -38,10 +38,6 @@ export const CmdBarEventPipe: React.FC<CmdBarEventPipeProps> = (props) => {
   }, [bus]); // eslint-disable-line
 
   /**
-   * Handlers
-   */
-
-  /**
    * [Render]
    */
   const styles = {

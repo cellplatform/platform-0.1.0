@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { color, COLORS, css, CssValue, t } from '../common';
+import { color, COLORS, css, CssValue, t, rx } from '../common';
 import { CmdBar } from '../../Cmd.Bar';
 
 /**
  * Types
  */
 export type BackdropProps = {
-  bus: t.EventBus<any>;
+  bus?: t.EventBus<any>;
   style?: CssValue;
 };
 
@@ -21,11 +21,11 @@ export const Backdrop: React.FC<BackdropProps> = (props) => {
    */
   const styles = {
     base: css({
-      position: 'relative',
       Flex: 'y-stretch-stretch',
+      position: 'relative',
+      boxSizing: 'border-box',
       backgroundColor: COLORS.DARK,
       color: COLORS.WHITE,
-      boxSizing: 'border-box',
     }),
     top: css({
       flex: 1,
