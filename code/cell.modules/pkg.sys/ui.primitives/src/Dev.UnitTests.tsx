@@ -11,6 +11,7 @@ const Imports = {
   TextSyntaxTokenizer: import('./ui/Text.Syntax/TEST'),
   PropList: import('./ui/PropList/TEST'),
   ListState: import('./ui/List.State/TEST'),
+  Semver: import('./ui/Semver/TEST'),
 
   CmdBar: import('./ui/Cmd.Bar/TEST'),
   CmdCard: import('./ui/Cmd.Card/TEST'),
