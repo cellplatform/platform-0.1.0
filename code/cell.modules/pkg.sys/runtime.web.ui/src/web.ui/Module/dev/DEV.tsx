@@ -2,7 +2,7 @@ import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 import { Module, ModuleProps } from '..';
 import { ManifestSelectorStateful } from '../../Manifest.Selector';
-import { t, rx, Filesystem } from '../../../common';
+import { t, rx, Filesystem } from '../../common';
 
 const { DEFAULT } = ManifestSelectorStateful.constants;
 

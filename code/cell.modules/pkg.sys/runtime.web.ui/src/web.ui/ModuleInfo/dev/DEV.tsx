@@ -2,7 +2,7 @@ import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 
 import { ModuleInfo, ModuleInfoConstants, ModuleInfoProps, ModuleInfoStateful } from '..';
-import { Filesystem, rx, t } from '../../../common';
+import { Filesystem, rx, t } from '../../common';
 import { ManifestSelectorStateful } from '../../Manifest.Selector';
 import * as k from '../types';
 
