@@ -3,14 +3,17 @@ import { NetworkBusMock } from 'sys.runtime.web';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { CmdCard, CmdCardProps } from '..';
-import { rx, t, css, COLORS } from '../common';
+import { css, rx, slug, t } from '../common';
+import { CmdCardStateInfo, CmdCardStateInfoProps } from '../State.Info';
+import { DevSidePanel } from './DEV.SidePanel';
 
 type Ctx = {
-  bus: t.EventBus<any>;
+  localbus: t.EventBus<any>;
   netbus: t.NetworkBus<any>;
   props: CmdCardProps;
   size: { width: number; height: number };
   debug: Debug;
+  state: { info: CmdCardStateInfoProps };
 };
 
 type Debug = {
@@ -32,7 +35,7 @@ const Util = {
       const event: t.Event = { type: `FOO/sample/event-${count}`, payload: { count } };
       const { busKind } = ctx.debug;
       if (busKind === 'netbus') ctx.netbus.fire(event);
-      if (busKind === 'bus') ctx.bus.fire(event);
+      if (busKind === 'bus') ctx.localbus.fire(event);
     };
 
     new Array(total).fill(ctx).forEach(fire);
@@ -44,7 +47,7 @@ const Util = {
   toBus(ctx: Ctx) {
     const { busKind } = ctx.debug;
     let bus: t.EventBus<any> | undefined;
-    if (busKind === 'bus') bus = ctx.bus;
+    if (busKind === 'bus') bus = ctx.localbus;
     if (busKind === 'netbus') bus = ctx.netbus;
     if (!bus) throw new Error(`Bus kind '${busKind}' not supported.`);
 
@@ -54,8 +57,20 @@ const Util = {
 
   toProps(ctx: Ctx) {
     const { bus } = Util.toBus(ctx);
-    const props = { ...ctx.props, bus };
+
+    let props = { ...ctx.props };
+    if (typeof props.useState === 'object') {
+      props = {
+        ...props,
+        useState: { ...props.useState, bus },
+      };
+    }
+
     return props;
+  },
+
+  toState(ctx: Ctx) {
+    return ctx.props.useState as t.CmdCardState;
   },
 };
 
@@ -67,15 +82,22 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const bus = rx.bus();
+    const localbus = rx.bus();
     const netbus = NetworkBusMock({ local: 'local-id', remotes: ['peer-1', 'peer-2'] });
 
     const ctx: Ctx = {
-      bus,
+      localbus,
       netbus,
-      props: { bus, isOpen: false, withinCard: false },
+      props: {
+        event: { bus: rx.bus(), instance: `foo.${slug()}` },
+        useState: { bus: netbus, tmp: 0, isOpen: false },
+        showAsCard: false,
+      },
       size: { width: 500, height: 320 },
       debug: { fireCount: 0, busKind: 'netbus' },
+      state: {
+        info: {},
+      },
     };
     return ctx;
   })
@@ -109,21 +131,53 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Props');
 
-    e.boolean('isOpen', (e) => {
-      if (e.changing) e.ctx.props.isOpen = e.changing.next;
-      e.boolean.current = e.ctx.props.isOpen;
+    e.boolean('[TODO] isOpen', (e) => {
+      // if (e.changing) e.ctx.props.isOpen = e.changing.next;
+      // e.boolean.current = e.ctx.props.isOpen;
     });
 
-    e.boolean('[TODO] withinCard', (e) => {
-      if (e.changing) e.ctx.props.withinCard = e.changing.next;
-      e.boolean.current = e.ctx.props.withinCard;
+    e.boolean('showAsCard', (e) => {
+      if (e.changing) e.ctx.props.showAsCard = e.changing.next;
+      e.boolean.current = e.ctx.props.showAsCard;
     });
 
     e.hr();
   })
 
   .items((e) => {
+    e.title('State Info');
+
+    e.select((config) =>
+      config
+        .title('fields:')
+        .items(CmdCardStateInfo.fields.all)
+        .initial(undefined)
+        .clearable(true)
+        .view('buttons')
+        .multi(true)
+        .pipe((e) => {
+          if (e.changing) {
+            const next = e.changing.next.map(({ value }) => value) as t.CmdCardStateInfoFields[];
+            e.ctx.state.info.fields = next.length === 0 ? undefined : next;
+          }
+        }),
+    );
+
+    e.hr();
+  })
+
+  .items((e) => {
     e.title('Debug');
+
+    e.button('tmp (state increment)', (e) => {
+      const state = Util.toState(e.ctx);
+      state.tmp++;
+    });
+
+    e.button('toggle isOpen', (e) => {
+      const state = Util.toState(e.ctx);
+      state.isOpen = !Boolean(state.isOpen);
+    });
 
     e.hr();
     e.component((e) => {
@@ -133,7 +187,7 @@ export const actions = DevActions<Ctx>()
           data={Util.toProps(e.ctx)}
           style={{ MarginX: 15 }}
           fontSize={10}
-          expandPaths={['$']}
+          expandPaths={['$', '$.useState']}
         />
       );
     });
@@ -157,32 +211,17 @@ export const actions = DevActions<Ctx>()
       },
     });
 
+    const styles = {
+      base: css({ position: 'relative', flex: 1, display: 'flex' }),
+    };
+
+    const elStateInfo = <CmdCard.State.Info fields={e.ctx.state.info.fields} />;
+
     e.render(
-      <CmdCard
-        {...props}
-        style={{ flex: 1 }}
-        renderBackdrop={(e) => {
-          const styles = {
-            base: css({
-              Absolute: 0,
-              Size: e.size,
-              Flex: 'center-center',
-              color: COLORS.WHITE,
-            }),
-          };
-          return <div {...styles.base}>{`"My Backdrop"`}</div>;
-        }}
-        renderBody={(e) => {
-          const styles = {
-            base: css({
-              Absolute: 0,
-              Size: e.size,
-              Flex: 'center-center',
-            }),
-          };
-          return <div {...styles.base}>{`"My Body"`}</div>;
-        }}
-      />,
+      <div {...styles.base}>
+        <DevSidePanel top={elStateInfo}></DevSidePanel>
+        <CmdCard {...props} style={{ flex: 1 }} />
+      </div>,
     );
   });
 

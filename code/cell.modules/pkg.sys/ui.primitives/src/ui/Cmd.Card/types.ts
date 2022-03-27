@@ -1,15 +1,28 @@
-import { Disposable, EventBus, DomRect } from '@platform/types';
+import * as t from '../../common/types';
 
 type Id = string;
 
+export type CmdCardStateInfoFields = 'Module' | 'Module.Name' | 'Module.Version';
+
+export type CmdCardBusArgs = { bus: t.EventBus<any>; instance: Id };
+
 export type CmdCardRender = (props: CmdCardRenderProps) => JSX.Element | null;
-export type CmdCardRenderProps = { size: DomRect };
+export type CmdCardRenderProps = { size: t.DomRect };
+
+/**
+ * STATE
+ */
+export type CmdCardState = {
+  bus: t.EventBus<any>;
+  isOpen?: boolean;
+  tmp: number; // TEMP 🐷
+};
 
 /**
  * EVENTS (API)
  */
-export type CmdCardEventsFactory = (args: { bus: EventBus<any>; instance: Id }) => CmdCardEvents;
-export type CmdCardEvents = Disposable & {
+export type CmdCardEventsFactory = (args: { bus: t.EventBus<any>; instance: Id }) => CmdCardEvents;
+export type CmdCardEvents = t.Disposable & {
   bus: Id;
   instance: Id;
 };

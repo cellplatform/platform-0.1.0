@@ -35,11 +35,6 @@ export const CmdCardLayout: React.FC<CmdCardLayoutProps> = (props) => {
   const duration = 200 / 1000;
   const y = isOpen ? 0 - (size.height - FOOTER.HEIGHT) : 0;
 
-  // const cardProps: CardProps = typeof props.withinCard === 'object' ? props.withinCard : {};
-
-  // const TMP_BUS = rx.bus();
-  // const bus = TMP_BUS; // TEMP 🐷
-
   /**
    * [Render]
    */
