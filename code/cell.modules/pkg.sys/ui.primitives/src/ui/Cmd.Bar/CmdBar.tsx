@@ -15,7 +15,7 @@ export type CmdBarPart = 'Input' | 'Events';
 
 export type CmdBarProps = {
   events?: { bus: t.EventBus<any>; instance: Id };
-  bus: t.EventBus<any>;
+  bus?: t.EventBus<any>;
   inset?: boolean | CmdBarInsetProps;
   parts?: CmdBarPart[];
   cornerRadius?: [number, number, number, number];

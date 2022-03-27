@@ -7,7 +7,7 @@ import { EventPipe, EventPipeItemClickEventHandler } from '../Event.Pipe';
 import { css, CssValue, Icons, t } from './common';
 
 export type CmdBarEventPipeProps = {
-  bus: t.EventBus<any>;
+  bus?: t.EventBus<any>;
   iconEdge?: 'Left' | 'Right';
   style?: CssValue;
   onEventClick?: EventPipeItemClickEventHandler;
@@ -24,13 +24,18 @@ export const CmdBarEventPipe: React.FC<CmdBarEventPipeProps> = (props) => {
    */
   useEffect(() => {
     const dispose$ = new Subject<void>();
-    const bus$ = bus.$.pipe(takeUntil(dispose$));
+    history.reset(); // NB: Reset this history log when/if the bus instance changes.
 
-    bus$.subscribe(() => setRecentlyFired(true));
-    bus$.pipe(debounceTime(1500)).subscribe(() => setRecentlyFired(false));
+    if (bus) {
+      const bus$ = bus.$.pipe(takeUntil(dispose$));
+      bus$.subscribe(() => setRecentlyFired(true));
+      bus$.pipe(debounceTime(1500)).subscribe(() => setRecentlyFired(false));
+    }
 
-    return () => dispose$.next();
-  }, []); // eslint-disable-line
+    return () => {
+      dispose$.next();
+    };
+  }, [bus]); // eslint-disable-line
 
   /**
    * Handlers
