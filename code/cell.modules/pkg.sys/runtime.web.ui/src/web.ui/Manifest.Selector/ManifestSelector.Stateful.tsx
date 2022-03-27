@@ -1,10 +1,14 @@
 import React, { useRef } from 'react';
 
-import { CssValue, t, rx, slug, DEFAULT } from './common';
+import { CssValue, t, rx, slug, DEFAULT, FC } from './common';
 import { ManifestSelector } from './ManifestSelector';
 import { useStateController, useHistoryController } from './hooks';
 import { ModuleInfoFields } from '../ModuleInfo/types';
+import { ManifestSelectorConstants as constants } from './constants';
 
+/**
+ * Types
+ */
 type FilesystemId = string;
 type FilePath = string;
 type History = { fs: FilesystemId; path: FilePath };
@@ -21,7 +25,10 @@ export type ManifestSelectorStatefulProps = {
   onChanged?: t.ManifestSelectorChangedHandler;
 };
 
-export const ManifestSelectorStateful: React.FC<ManifestSelectorStatefulProps> = (props) => {
+/**
+ * Component
+ */
+const View: React.FC<ManifestSelectorStatefulProps> = (props) => {
   const { onChanged } = props;
   const id = useRef(slug());
   const bus = rx.busAsType<t.ManifestSelectorEvent>(props.bus);
@@ -75,6 +82,19 @@ export const ManifestSelectorStateful: React.FC<ManifestSelectorStatefulProps> =
     />
   );
 };
+
+/**
+ * Export
+ */
+
+type Fields = {
+  constants: typeof constants;
+};
+export const ManifestSelectorStateful = FC.decorate<ManifestSelectorStatefulProps, Fields>(
+  View,
+  { constants },
+  { displayName: 'ManifestSelectorStateful' },
+);
 
 /**
  * [Helpers]

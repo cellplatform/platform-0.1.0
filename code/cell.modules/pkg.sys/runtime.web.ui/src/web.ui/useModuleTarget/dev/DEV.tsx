@@ -1,10 +1,11 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 import { DevSample, DevSampleProps } from './DEV.Sample';
-import { ManifestSelectorStateful, ManifestSelectorConstants } from '../../ManifestSelector';
+import { ManifestSelectorStateful } from '../../Manifest.Selector';
 import { t, rx, WebRuntimeBus, Filesystem } from '../../common';
 
 const TARGET = 'foo';
+const { DEFAULT } = ManifestSelectorStateful.constants;
 
 type Ctx = {
   bus: t.EventBus;
@@ -24,7 +25,7 @@ export const actions = DevActions<Ctx>()
     const events = WebRuntimeBus.Events({ bus });
     Filesystem.IndexedDb.create({
       bus,
-      id: ManifestSelectorConstants.DEFAULT.HISTORY.FS,
+      id: DEFAULT.HISTORY.FS,
     });
 
     const ctx: Ctx = {

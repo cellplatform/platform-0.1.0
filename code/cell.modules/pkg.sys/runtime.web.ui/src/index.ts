@@ -1,10 +1,10 @@
-import { ManifestSelector, ManifestSelectorStateful } from './web.ui/ManifestSelector';
-import { useModuleTarget, useManifest } from './web.ui/hooks';
+import { WebRuntime as Base } from 'sys.runtime.web';
+
+import { useManifest, useModuleTarget } from './web.ui/hooks';
+import { ManifestSelector, ManifestSelectorStateful } from './web.ui/Manifest.Selector';
+import { ManifestSemver } from './web.ui/Manifest.Semver';
 import { Module } from './web.ui/Module';
 import { ModuleInfo } from './web.ui/ModuleInfo';
-import { ManifestSemver } from './web.ui/ManifestSemver';
-
-import { WebRuntime as Base } from 'sys.runtime.web';
 
 export const WebRuntimeUI = {
   useManifest,

@@ -3,8 +3,10 @@ import { DevActions } from 'sys.ui.dev';
 
 import { ModuleInfo, ModuleInfoConstants, ModuleInfoProps, ModuleInfoStateful } from '..';
 import { Filesystem, rx, t } from '../../../common';
-import { ManifestSelectorConstants, ManifestSelectorStateful } from '../../ManifestSelector';
+import { ManifestSelectorStateful } from '../../Manifest.Selector';
 import * as k from '../types';
+
+const { DEFAULT } = ManifestSelectorStateful.constants;
 
 type Ctx = {
   bus: t.EventBus;
@@ -15,12 +17,12 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.ModuleInfo')
+  .namespace('ui.Module.Info')
   .context((e) => {
     if (e.prev) return e.prev;
 
     const bus = rx.bus();
-    Filesystem.IndexedDb.create({ bus, id: ManifestSelectorConstants.DEFAULT.HISTORY.FS });
+    Filesystem.IndexedDb.create({ bus, id: DEFAULT.HISTORY.FS });
 
     const ctx: Ctx = { bus, props: { width: 300 } };
     return ctx;

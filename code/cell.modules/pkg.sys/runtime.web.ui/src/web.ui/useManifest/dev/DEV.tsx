@@ -2,8 +2,10 @@ import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 
 import { Filesystem, rx, t } from '../../common';
-import { ManifestSelectorConstants, ManifestSelectorStateful } from '../../ManifestSelector';
+import { ManifestSelectorStateful } from '../../Manifest.Selector';
 import { DevSample, DevSampleProps } from './DEV.Sample';
+
+const { DEFAULT } = ManifestSelectorStateful.constants;
 
 type Ctx = {
   bus: t.EventBus;
@@ -20,7 +22,7 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const bus = rx.bus();
-    Filesystem.IndexedDb.create({ bus, id: ManifestSelectorConstants.DEFAULT.HISTORY.FS });
+    Filesystem.IndexedDb.create({ bus, id: DEFAULT.HISTORY.FS });
 
     const ctx: Ctx = {
       bus,

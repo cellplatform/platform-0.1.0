@@ -1,10 +1,14 @@
 import React from 'react';
 
-import { color, css, CssValue, t, useDragTarget, COLORS, ManifestUrl } from './common';
+import { color, css, CssValue, t, useDragTarget, COLORS, ManifestUrl, FC } from './common';
 import { UrlTextbox } from './components/UrlTextbox';
 import { ModuleInfo } from '../ModuleInfo';
 import { ModuleInfoFields } from '../ModuleInfo/types';
+import { ManifestSelectorConstants as constants } from './constants';
 
+/**
+ * Types
+ */
 export type ManifestSelectorProps = {
   manifestUrl?: t.ManifestUrl;
   manifest?: t.ModuleManifest;
@@ -22,7 +26,10 @@ export type ManifestSelectorProps = {
   onKeyDown?: t.ManifestSelectorKeyboardHandler;
 };
 
-export const ManifestSelector: React.FC<ManifestSelectorProps> = (props) => {
+/**
+ * Component
+ */
+const View: React.FC<ManifestSelectorProps> = (props) => {
   const { manifest, showExports = true } = props;
   const remote = manifest?.module?.remote;
   const manifestUrl = (props.manifestUrl ?? '').trim();
@@ -113,3 +120,15 @@ export const ManifestSelector: React.FC<ManifestSelectorProps> = (props) => {
     </div>
   );
 };
+
+/**
+ * Export
+ */
+type Fields = {
+  constants: typeof constants;
+};
+export const ManifestSelector = FC.decorate<ManifestSelectorProps, Fields>(
+  View,
+  { constants },
+  { displayName: 'ManifestSelector' },
+);

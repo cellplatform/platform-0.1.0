@@ -10,7 +10,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.ManifestSemver')
+  .namespace('ui.Manifest.Semver')
   .context((e) => {
     if (e.prev) return e.prev;
     const ctx: Ctx = {

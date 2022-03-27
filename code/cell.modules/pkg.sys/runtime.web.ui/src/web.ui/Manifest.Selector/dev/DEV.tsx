@@ -1,18 +1,14 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
-import {
-  ManifestSelectorStateful,
-  ManifestSelectorStatefulProps,
-  ManifestSelectorConstants,
-} from '..';
+import { ManifestSelectorStateful, ManifestSelectorStatefulProps } from '..';
 import { rx, t, Button, Filesystem, WebRuntimeBus } from '../common';
 import { DevSampleTarget } from './DEV.SampleTarget';
 import { ModuleInfoStateful, ModuleInfoConstants } from '../../ModuleInfo';
 import { ModuleInfoFields } from '../../ModuleInfo/types';
 
 const TARGET = 'foo';
-const DEFAULT = ManifestSelectorConstants.DEFAULT;
+const { DEFAULT } = ManifestSelectorStateful.constants;
 
 type Ctx = {
   bus: t.EventBus;
@@ -33,7 +29,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.ManifestSelector')
+  .namespace('ui.Manifest.Selector')
 
   .context((e) => {
     if (e.prev) return e.prev;

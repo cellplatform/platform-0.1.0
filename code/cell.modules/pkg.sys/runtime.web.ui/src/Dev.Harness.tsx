@@ -4,8 +4,8 @@ import { t } from './common';
 
 const imports = {
   ModuleInfo: import('./web.ui/ModuleInfo/dev/DEV'),
-  ManifestSelector: import('./web.ui/ManifestSelector/dev/DEV'),
-  ManifestSemver: import('./web.ui/ManifestSemver/dev/DEV'),
+  ManifestSelector: import('./web.ui/Manifest.Selector/dev/DEV'),
+  ManifestSemver: import('./web.ui/Manifest.Semver/dev/DEV'),
   Module: import('./web.ui/Module/dev/DEV'),
 
   useManifest: import('./web.ui/useManifest/dev/DEV'),
