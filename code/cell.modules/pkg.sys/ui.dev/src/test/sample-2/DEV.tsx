@@ -83,9 +83,9 @@ export const actions = ComposedActions<Ctx>()
       layout: { width: 450, border: -0.1, cropmarks: -0.2, background: 1, label: 'sample-1' },
     });
 
-    const el = e.ctx.el || <Component count={e.ctx.count} />;
-
-    e.render(el);
+    e.render(() => {
+      return e.ctx.el || <Component count={e.ctx.count} />;
+    });
   });
 
 export default actions;

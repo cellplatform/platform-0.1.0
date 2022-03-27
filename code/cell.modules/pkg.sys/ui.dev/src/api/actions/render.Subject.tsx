@@ -27,6 +27,14 @@ export function renderSubject(args: { model: t.ActionsModelState<any> }) {
 
       type P = t.ActionHandlerSubjectArgs<any>;
 
+      const render: t.ActionHandlerSubjectRender<any> = (el, layout) => {
+        const elSubject = typeof el === 'function' ? el() : el;
+        if (elSubject && elSubject !== null) {
+          subject.items.push({ el: elSubject, layout });
+        }
+        return payload;
+      };
+
       const payload: P = {
         ctx: toObject(ctx),
         toObject,
@@ -34,10 +42,7 @@ export function renderSubject(args: { model: t.ActionsModelState<any> }) {
         layout,
         actions,
         settings: (args) => Handler.settings.handler({ env, payload })(args),
-        render(el?: JSX.Element, layout?: t.HostedLayout) {
-          if (el) subject.items.push({ el, layout });
-          return payload;
-        },
+        render,
         redraw,
       };
 
