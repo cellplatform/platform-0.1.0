@@ -17,6 +17,7 @@ import {
   Spinner,
   t,
   WebRuntime,
+  Button,
 } from './DEV.common';
 import { DevFullscreen } from './DEV.Fullscreen';
 import { DevNetworkCard } from './DEV.NetworkCard';
@@ -114,7 +115,21 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     id: 'layer.Version',
     position: { x: 'right', y: 'top' },
     render(e) {
-      return <WebRuntime.ui.ManifestSemver style={{ marginTop: 10, marginRight: 15 }} />;
+      const styles = {
+        base: css({ pointerEvents: 'auto' }),
+      };
+
+      return (
+        <Button
+          style={styles.base}
+          onClick={() => {
+            // 🌳 Jump into "DevHarness" mode.
+            location.href = `${location.origin}/?dev`;
+          }}
+        >
+          <WebRuntime.ui.ManifestSemver style={{ marginTop: 10, marginRight: 15 }} />
+        </Button>
+      );
     },
   };
 
