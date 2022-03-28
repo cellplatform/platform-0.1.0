@@ -20,7 +20,7 @@ import {
   Button,
 } from './DEV.common';
 import { DevFullscreen } from './DEV.Fullscreen';
-import { DevNetworkCard } from './DEV.NetworkCard';
+import { DevNetworkCard } from '../dev.Networks//DEV.NetworkCard';
 
 export type DevSampleAppProps = { style?: CssValue };
 
@@ -124,7 +124,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
           style={styles.base}
           onClick={() => {
             // 🌳 Jump into "DevHarness" mode.
-            location.href = `${location.origin}/?dev`;
+            location.href = `${location.origin}/?dev=Sample`;
           }}
         >
           <WebRuntime.ui.ManifestSemver style={{ marginTop: 10, marginRight: 15 }} />
