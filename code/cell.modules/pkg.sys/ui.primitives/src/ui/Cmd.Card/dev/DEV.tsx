@@ -1,8 +1,10 @@
 import React from 'react';
+import { Subject } from 'rxjs';
 import { NetworkBusMock } from 'sys.runtime.web';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { CmdCard, CmdCardProps } from '..';
+import { EventList } from '../../Event.List';
 import { css, rx, slug, t } from '../common';
 import { CmdCardStateInfo, CmdCardStateInfoProps } from '../State.Info';
 import { DevSidePanel } from './DEV.SidePanel';
@@ -19,6 +21,7 @@ type Ctx = {
 type Debug = {
   fireCount: number; // Total number of fires.
   busKind: 'bus' | 'netbus';
+  resetEventHistory$: Subject<void>;
 };
 
 /**
@@ -94,7 +97,7 @@ export const actions = DevActions<Ctx>()
         showAsCard: false,
       },
       size: { width: 500, height: 320 },
-      debug: { fireCount: 0, busKind: 'netbus' },
+      debug: { fireCount: 0, busKind: 'netbus', resetEventHistory$: new Subject<void>() },
       state: {
         info: {},
       },
@@ -125,6 +128,9 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.1);
     e.button('fire', (e) => Util.fire(e.ctx, 1));
+    e.button('reset', (e) => {
+      e.ctx.debug.resetEventHistory$.next();
+    });
     e.hr();
   })
 
@@ -195,8 +201,9 @@ export const actions = DevActions<Ctx>()
 
   .subject((e) => {
     const { width, height } = e.ctx.size;
-    const { instance, busKind } = Util.toBus(e.ctx);
+    const { bus, busKind } = Util.toBus(e.ctx);
     const props = Util.toProps(e.ctx);
+    const instance = rx.bus.instance(bus);
 
     e.settings({
       host: { background: -0.04 },
@@ -215,11 +222,13 @@ export const actions = DevActions<Ctx>()
       base: css({ position: 'relative', flex: 1, display: 'flex' }),
     };
 
+    const { resetEventHistory$ } = e.ctx.debug;
     const elStateInfo = <CmdCard.State.Info fields={e.ctx.state.info.fields} />;
+    const elEventList = <EventList bus={bus} reset$={resetEventHistory$} style={{ flex: 1 }} />;
 
     e.render(
       <div {...styles.base}>
-        <DevSidePanel top={elStateInfo}></DevSidePanel>
+        <DevSidePanel top={elStateInfo} bottom={elEventList} width={230} />
         <CmdCard {...props} style={{ flex: 1 }} />
       </div>,
     );

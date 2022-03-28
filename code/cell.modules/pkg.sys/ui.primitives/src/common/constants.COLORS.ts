@@ -7,6 +7,7 @@ export const COLORS = {
   MAGENTA: '#FE0064',
   PINK: '#FE0168',
   YELLOW: '#FFAB0A',
-  RED: '#FF0000',
   PURPLE: '#A11D8E',
+  RED: '#FF0000',
+  TEXT_RED: '#9F2819',
 };

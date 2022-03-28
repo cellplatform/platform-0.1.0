@@ -1,14 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { color, COLORS, css, CssValue, t } from '../../common';
-import { CmdCard } from '..';
+import React from 'react';
+import { css, CssValue } from '../../common';
 
 export type DevSidePanelProps = {
   top?: JSX.Element;
+  bottom?: JSX.Element;
+  width?: number;
   style?: CssValue;
 };
 
 export const DevSidePanel: React.FC<DevSidePanelProps> = (props) => {
-  const {} = props;
+  const { width } = props;
   const SPACING = 15;
 
   /**
@@ -21,15 +22,12 @@ export const DevSidePanel: React.FC<DevSidePanelProps> = (props) => {
       position: 'relative',
       marginLeft: SPACING,
       MarginY: SPACING,
-      minWidth: 250,
+      minWidth: width,
       fontSize: 11,
       boxSizing: 'border-box',
       Flex: 'y-stretch-stretch',
     }),
-    block: css({
-      padding: 10,
-      backgroundColor: 'rgba(255, 0, 0, 0.06)' /* RED */,
-    }),
+    block: css({ position: 'relative', display: 'flex' }),
     top: css({ flex: 1, marginBottom: 5 }),
     bottom: css({ flex: 1 }),
   };
@@ -38,7 +36,7 @@ export const DevSidePanel: React.FC<DevSidePanelProps> = (props) => {
     <div {...css(styles.base, props.style)}>
       <div {...styles.body}>
         <div {...css(styles.top, styles.block)}>{props.top}</div>
-        <div {...css(styles.bottom, styles.block)}>[TODO] bottom - {'<EventList>'}</div>
+        <div {...css(styles.bottom, styles.block)}>{props.bottom}</div>
       </div>
     </div>
   );

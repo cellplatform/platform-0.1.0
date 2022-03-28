@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from 'react';
 import { t, rx } from './common';
 
 /**
- *
+ * HOOK to manage state.
  */
 export function useStateController(args: {
   event: t.CmdCardBusArgs;
