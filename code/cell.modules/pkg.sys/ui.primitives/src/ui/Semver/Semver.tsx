@@ -55,10 +55,10 @@ const View: React.FC<SemverProps> = (props) => {
 type Fields = {
   default: string;
   semver: typeof semver;
-  CONSTANTS: typeof CONSTANTS;
+  constants: typeof CONSTANTS;
 };
 export const Semver = FC.decorate<SemverProps, Fields>(
   View,
-  { semver, CONSTANTS, default: '0.0.0' },
+  { semver, constants: CONSTANTS, default: '0.0.0' },
   { displayName: 'Semver' },
 );

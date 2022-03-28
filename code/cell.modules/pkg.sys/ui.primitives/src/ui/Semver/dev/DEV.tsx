@@ -82,7 +82,7 @@ export const actions = DevActions<Ctx>()
     e.select((config) => {
       config
         .title('releaseType')
-        .items(Semver.CONSTANTS.releaseTypes)
+        .items(Semver.constants.releaseTypes)
         .initial(config.ctx.debug.releaseType)
         .view('buttons')
         .pipe((e) => {

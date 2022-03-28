@@ -8,8 +8,8 @@ export default Test.describe('Semver', (e) => {
     });
 
     e.it('Semver.CONSTANTS', () => {
-      expect(Semver.CONSTANTS.default).to.eql('0.0.0');
-      expect(Semver.CONSTANTS.releaseTypes.includes('patch')).to.eql(true);
+      expect(Semver.constants.default).to.eql('0.0.0');
+      expect(Semver.constants.releaseTypes.includes('patch')).to.eql(true);
     });
   });
 });
