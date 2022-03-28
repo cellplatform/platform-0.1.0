@@ -24,7 +24,6 @@ export const CmdBarEventPipe: React.FC<CmdBarEventPipeProps> = (props) => {
    */
   useEffect(() => {
     const dispose$ = new Subject<void>();
-    history.reset(); // NB: Reset this history log when/if the bus instance changes.
 
     if (bus) {
       const bus$ = bus.$.pipe(takeUntil(dispose$));
@@ -36,6 +35,9 @@ export const CmdBarEventPipe: React.FC<CmdBarEventPipeProps> = (props) => {
       dispose$.next();
     };
   }, [bus]); // eslint-disable-line
+
+  // NB: Reset this history log when/if the bus instance changes.
+  useEffect(() => history.reset(), [bus]); // eslint-disable-line
 
   /**
    * [Render]
