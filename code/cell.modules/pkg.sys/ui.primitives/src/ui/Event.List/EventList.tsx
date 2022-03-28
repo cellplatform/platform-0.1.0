@@ -2,10 +2,11 @@ import React, { useRef, useEffect } from 'react';
 import { Observable } from 'rxjs';
 
 import { useEventHistory } from '../Event';
-import { css, CssValue, FC, rx, slug, t, CONSTANTS } from './common';
+import { css, CssValue, FC, rx, slug, t, CONSTANTS, color, COLORS } from './common';
 import { EventListLayout as Layout, EventListLayoutProps } from './components/Layout';
 import { EventListEvents as Events } from './Events';
 import { Empty } from './components/Empty';
+import { DebugBusInstance } from './components/Debug.BusInstance';
 
 type Internal = { bus: t.EventBus<any>; instance: string };
 
@@ -16,14 +17,19 @@ export type EventListProps = {
   bus: t.EventBus<any>;
   event?: Internal; // Optional, internally bus/instance used by the UI.
   reset$?: Observable<any>;
+  debug?: EventListDebugProps;
   style?: CssValue;
+};
+
+export type EventListDebugProps = {
+  showBus?: boolean;
 };
 
 /**
  * Component
  */
 export const View: React.FC<EventListProps> = (props) => {
-  const { bus, reset$ } = props;
+  const { bus, reset$, debug = {} } = props;
   const internal = useRef<Internal>(props.event ?? dummy());
 
   const history = useEventHistory(bus, { reset$ });
@@ -44,6 +50,7 @@ export const View: React.FC<EventListProps> = (props) => {
     <div {...css(styles.base, props.style)}>
       {isEmpty && <Empty />}
       {!isEmpty && <Layout event={internal.current} items={items} style={{ flex: 1 }} />}
+      {debug.showBus && <DebugBusInstance bus={bus} />}
     </div>
   );
 };

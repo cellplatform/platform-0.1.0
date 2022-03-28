@@ -18,7 +18,7 @@ export type EventListLayoutProps = {
 /**
  * Constants
  */
-const { ROW } = CONSTANTS;
+const { ROW, LIST } = CONSTANTS;
 
 /**
  * Component
@@ -60,7 +60,7 @@ export const EventListLayout: React.FC<EventListLayoutProps> = (props) => {
         spacing={ROW.SPACING}
         orientation={'y'}
         paddingNear={0}
-        paddingFar={10}
+        paddingFar={LIST.PADDING.RIGHT}
         bullet={{ size: 8 }}
         renderers={{
           bullet(e) {

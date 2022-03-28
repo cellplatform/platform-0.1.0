@@ -54,6 +54,13 @@ const Util = {
     if (busKind === 'netbus') return ctx.netbus;
     throw new Error(`Bus kind '${busKind}' not supported.`);
   },
+
+  /**
+   * Retrieve the {props.debug} object.
+   */
+  toPropsDebug(ctx: Ctx) {
+    return ctx.props.debug || (ctx.props.debug = {});
+  },
 };
 
 /**
@@ -73,7 +80,7 @@ export const actions = DevActions<Ctx>()
       bus,
       netbus,
       events,
-      props: { bus: netbus },
+      props: { bus: netbus, debug: { showBus: false } },
       debug: {
         fireCount: 0,
         busKind: 'netbus',
@@ -92,7 +99,17 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('bus');
+    e.title('Props');
+    e.boolean('[TODO] isSelectable', (e) => {
+      // if (e.changing) e.ctx.props = e.changing.next;
+      // e.boolean.current = e.ctx.props;
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('EventBus');
 
     e.select((config) => {
       config
@@ -108,22 +125,7 @@ export const actions = DevActions<Ctx>()
         });
     });
 
-    e.hr();
-  })
-
-  .items((e) => {
-    e.title('Props');
-    e.boolean('[TODO] isSelectable', (e) => {
-      // if (e.changing) e.ctx.props = e.changing.next;
-      // e.boolean.current = e.ctx.props;
-    });
-
-    e.hr();
-  })
-
-  .items((e) => {
-    e.title('Debug');
-
+    e.hr(1, 0.1);
     e.button('reset', (e) => e.ctx.debug.reset$.next());
     e.hr(1, 0.1);
     e.button('fire (1)', (e) => Util.fire(e.ctx, 1));
@@ -131,6 +133,18 @@ export const actions = DevActions<Ctx>()
     e.button('fire (100)', (e) => Util.fire(e.ctx, 100));
 
     e.hr();
+  })
+
+  .items((e) => {
+    e.title('Debug');
+
+    e.boolean('showBus ("instance")', (e) => {
+      const debug = Util.toPropsDebug(e.ctx);
+      if (e.changing) debug.showBus = e.changing.next;
+      e.boolean.current = Boolean(debug.showBus);
+    });
+
+    e.hr(1, 0.1);
 
     e.button('[TODO] scroll: Top', (e) => e.ctx.events.scroll.fire('Top'));
     e.button('[TODO] scroll: Bottom', (e) => e.ctx.events.scroll.fire('Bottom'));
