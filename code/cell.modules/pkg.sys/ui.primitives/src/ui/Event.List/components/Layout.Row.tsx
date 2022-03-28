@@ -1,10 +1,11 @@
 import React from 'react';
-import { css, CssValue, t, EventListConstants } from './common';
-import { CountLabel } from './components/Label.Count';
-import { TypeLabel } from './components/Label.Type';
-import { Bullet } from '../Bullet';
 
-const { ROW } = EventListConstants;
+import { Bullet } from '../../Bullet';
+import { CONSTANTS, css, CssValue, t } from '../common';
+import { CountLabel } from './Label.Count';
+import { TypeLabel } from './Label.Type';
+
+const { ROW } = CONSTANTS;
 type D = t.EventHistoryItem;
 
 export type EventListRowProps = {

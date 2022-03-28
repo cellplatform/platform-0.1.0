@@ -1,11 +1,14 @@
 import React from 'react';
 
-import { List } from '../List';
-import { color, css, CssValue, EventListConstants, t } from './common';
-import { EventListRow } from './EventList.Layout.Row';
+import { List } from '../../List';
+import { color, CONSTANTS, css, CssValue, t } from '../common';
+import { EventListRow } from './Layout.Row';
 
 type Id = string;
 
+/**
+ * Types
+ */
 export type EventListLayoutProps = {
   event: { bus: t.EventBus<any>; instance: Id }; // Internal component event-bus.
   items: t.EventHistoryItem[];
@@ -16,8 +19,11 @@ export type EventListLayoutProps = {
 /**
  * Constants
  */
-const { ROW } = EventListConstants;
+const { ROW } = CONSTANTS;
 
+/**
+ * Component
+ */
 export const EventListLayout: React.FC<EventListLayoutProps> = (props) => {
   const { bus, instance } = props.event;
   const { items = [], selection } = props;
