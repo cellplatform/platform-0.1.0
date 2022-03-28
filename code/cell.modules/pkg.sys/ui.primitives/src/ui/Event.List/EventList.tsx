@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 
 import { useEventHistory } from '../Event';
 import { CONSTANTS, css, FC, rx, slug, t } from './common';
-import { DebugBusInstance } from './components/Debug.BusInstance';
+import { DebugBusId } from './components/Debug.BusId';
 import { Empty } from './components/Empty';
 import { EventListLayout as Layout, EventListLayoutProps } from './components/Layout';
 import { EventListEvents as Events } from './Events';
@@ -42,7 +42,7 @@ export const View: React.FC<EventListProps> = (props) => {
     <div {...css(styles.base, props.style)}>
       {isEmpty && <Empty />}
       {elLayout}
-      {debug.busid && <DebugBusInstance bus={bus} />}
+      {Boolean(debug.busid) && <DebugBusId bus={bus} debug={debug} />}
     </div>
   );
 };

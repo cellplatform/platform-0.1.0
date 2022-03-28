@@ -80,7 +80,7 @@ export const actions = DevActions<Ctx>()
       bus,
       netbus,
       events,
-      props: { bus: netbus, debug: { busid: false } },
+      props: { bus: netbus, debug: { busid: 'BottomRight' } },
       debug: {
         fireCount: 0,
         busKind: 'netbus',

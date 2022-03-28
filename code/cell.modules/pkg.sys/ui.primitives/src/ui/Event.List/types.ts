@@ -19,9 +19,10 @@ export type EventListProps = {
   style?: t.CssValue;
 };
 export type EventListDebugProps = {
-  busid?: boolean;
+  busid?: boolean | EventListDebugEdge;
   tracelines?: boolean;
 };
+export type EventListDebugEdge = 'TopLeft' | 'TopRight' | 'BottomLeft' | 'BottomRight';
 
 /**
  * EVENTS (API)
