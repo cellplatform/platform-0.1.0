@@ -25,4 +25,4 @@ export { ObjectView } from '@platform/ui.object';
 /**
  * @system
  */
-export { WebRuntime } from 'sys.runtime.web.ui';
+export { WebRuntime } from 'sys.runtime.web';
