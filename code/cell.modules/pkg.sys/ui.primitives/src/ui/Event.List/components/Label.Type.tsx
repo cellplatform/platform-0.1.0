@@ -57,10 +57,10 @@ export const renderPart = (args: { parts: string[]; index: number; monochrome: b
       base: css({ fontWeight: 600, color: COLORS.DARK }),
       first: css({}),
       last: css({
-        color: monochrome ? color.alpha(COLORS.DARK, 0.7) : COLORS.TEXT_RED,
+        color: monochrome ? color.alpha(COLORS.DARK, 0.7) : COLORS.CYAN,
       }),
     },
-    slash: css({ fontWeight: 600, color: COLORS.TEXT_RED }),
+    slash: css({ fontWeight: 600, color: COLORS.MAGENTA }),
   };
 
   const elValue = (

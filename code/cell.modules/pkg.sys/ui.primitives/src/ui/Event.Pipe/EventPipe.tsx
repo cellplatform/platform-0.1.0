@@ -1,5 +1,5 @@
 import { AnimatePresence, domAnimation, LazyMotion, m } from 'framer-motion';
-import React, { useRef } from 'react';
+import React from 'react';
 
 import {
   color,
@@ -41,9 +41,7 @@ export type EventPipeProps = {
  */
 const THEMES: EventPipeTheme[] = ['Light', 'Dark'];
 const DEFAULT_THEME: EventPipeTheme = 'Light';
-const DEFAULT = {
-  THEME: DEFAULT_THEME,
-};
+const DEFAULT = { THEME: DEFAULT_THEME };
 export const EventPipeConstants = {
   DEFAULT,
   THEMES,

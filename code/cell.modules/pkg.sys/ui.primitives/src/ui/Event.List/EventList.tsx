@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Observable } from 'rxjs';
 
 import { useEventHistory } from '../Event';
@@ -23,11 +23,15 @@ export type EventListProps = {
  * Component
  */
 export const View: React.FC<EventListProps> = (props) => {
-  const { reset$ } = props;
+  const { bus, reset$ } = props;
   const internal = useRef<Internal>(props.event ?? dummy());
-  const history = useEventHistory(props.bus, { reset$ });
+
+  const history = useEventHistory(bus, { reset$ });
   const items = history.events;
   const isEmpty = items.length === 0;
+
+  // NB: Reset this history log when/if the bus instance changes.
+  useEffect(() => history.reset(), [bus]); // eslint-disable-line
 
   /**
    * [Render]
