@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { color, COLORS, css, t, FC, semver, CONSTANTS } from './common';
+import { color, COLORS, CONSTANTS, css, FC, semver, t } from './common';
 
 export type SemverProps = {
   version?: string;
