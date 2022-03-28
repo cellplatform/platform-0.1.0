@@ -4,10 +4,10 @@ import { expect, is, t, time, rx } from '../test';
 type E = { type: 'foo'; payload: { count?: number } };
 
 describe('NetworkBusMock', () => {
-  it('rx.instance(bus): "mock.net.bus.<Instance-ID>"', () => {
+  it('rx.instance(bus): "netbus.<Instance-ID>:mock"', () => {
     const bus = NetworkBusMock();
     const id = rx.bus.instance(bus);
-    expect(id.startsWith('net.bus.')).to.eql(true);
+    expect(id.startsWith('netbus.')).to.eql(true);
     expect(id.endsWith(':mock')).to.eql(true);
   });
 
