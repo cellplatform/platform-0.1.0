@@ -13,14 +13,20 @@ export const useEventHistory: t.UseEventHistory = (bus, options = {}) => {
 
   useEffect(() => {
     const reset$ = resetRef$.current;
-
     const monitor = EventHistoryMonitor(bus, { ...options, reset$ });
+
     monitor.changed$.subscribe(() => setEvents(monitor.events));
-    options.reset$?.subscribe(() => reset$.next());
+    options.reset$?.subscribe(() => {
+      reset$.next();
+      setEvents([]);
+    });
 
     return () => monitor.dispose();
   }, [bus, options.reset$]); // eslint-disable-line
 
+  /**
+   * API
+   */
   return {
     bus: bus ? rx.bus.instance(bus) : '',
     events,

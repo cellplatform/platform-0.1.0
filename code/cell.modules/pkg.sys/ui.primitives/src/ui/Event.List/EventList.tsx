@@ -5,6 +5,7 @@ import { useEventHistory } from '../Event';
 import { css, CssValue, FC, rx, slug, t, CONSTANTS } from './common';
 import { EventListLayout as Layout, EventListLayoutProps } from './components/Layout';
 import { EventListEvents as Events } from './Events';
+import { Empty } from './components/Empty';
 
 type Internal = { bus: t.EventBus<any>; instance: string };
 
@@ -25,6 +26,8 @@ export const View: React.FC<EventListProps> = (props) => {
   const { reset$ } = props;
   const internal = useRef<Internal>(props.event ?? dummy());
   const history = useEventHistory(props.bus, { reset$ });
+  const items = history.events;
+  const isEmpty = items.length === 0;
 
   /**
    * [Render]
@@ -35,7 +38,8 @@ export const View: React.FC<EventListProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
-      <Layout event={internal.current} items={history.events} style={{ flex: 1 }} />
+      {isEmpty && <Empty />}
+      {!isEmpty && <Layout event={internal.current} items={items} style={{ flex: 1 }} />}
     </div>
   );
 };

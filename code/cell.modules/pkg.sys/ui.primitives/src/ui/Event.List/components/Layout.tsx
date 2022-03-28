@@ -12,7 +12,6 @@ type Id = string;
 export type EventListLayoutProps = {
   event: { bus: t.EventBus<any>; instance: Id }; // Internal component event-bus.
   items: t.EventHistoryItem[];
-  selection?: t.ListSelectionState;
   style?: CssValue;
 };
 
@@ -26,7 +25,7 @@ const { ROW } = CONSTANTS;
  */
 export const EventListLayout: React.FC<EventListLayoutProps> = (props) => {
   const { bus, instance } = props.event;
-  const { items = [], selection } = props;
+  const { items = [] } = props;
   const total = items.length;
 
   /**
@@ -49,19 +48,20 @@ export const EventListLayout: React.FC<EventListLayoutProps> = (props) => {
    */
   const styles = {
     base: css({ position: 'relative' }),
-    body: css({ Absolute: [0, 0, 0, 12] }),
+    body: css({ Absolute: 0 }),
   };
 
   return (
     <div {...css(styles.base, props.style)}>
       <List.Virtual
-        event={{ bus, instance }}
         style={styles.body}
-        spacing={ROW.SPACING}
+        event={{ bus, instance }}
         items={{ total, getData, getSize }}
+        spacing={ROW.SPACING}
         orientation={'y'}
-        paddingNear={10}
+        paddingNear={0}
         paddingFar={10}
+        bullet={{ size: 8 }}
         renderers={{
           bullet(e) {
             return (
@@ -80,9 +80,6 @@ export const EventListLayout: React.FC<EventListLayoutProps> = (props) => {
             const { first, last, selected, mouse } = e.is;
             const down = mouse.down;
             const data = e.data as t.EventHistoryItem;
-            // const selected = selectedIndex === undefined ? undefined : index === selectedIndex;
-
-            // e.is.m
 
             return (
               <EventListRow

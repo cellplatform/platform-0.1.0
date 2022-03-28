@@ -19,8 +19,6 @@ export type EventListRowProps = {
 export const EventListRow: React.FC<EventListRowProps> = (props) => {
   const { index, data, is } = props;
 
-  console.log('render', index);
-
   /**
    * [Render]
    */
@@ -39,7 +37,6 @@ export const EventListRow: React.FC<EventListRowProps> = (props) => {
     }),
     dot: css({
       Flex: 'y-center-center',
-      backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
       marginRight: 6,
     }),
     label: css({
@@ -64,7 +61,6 @@ export const EventListRow: React.FC<EventListRowProps> = (props) => {
         <TypeLabel
           text={data.event.type}
           style={styles.label}
-          // monochrome={is.selected === false}
           onClick={(e) => props.onClick?.({ index, data })}
         />
         <CountLabel count={data.count} style={styles.right} />
