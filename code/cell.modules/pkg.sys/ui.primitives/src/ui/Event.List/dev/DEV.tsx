@@ -80,7 +80,7 @@ export const actions = DevActions<Ctx>()
       bus,
       netbus,
       events,
-      props: { bus: netbus, debug: { showBus: false } },
+      props: { bus: netbus, debug: { busid: false } },
       debug: {
         fireCount: 0,
         busKind: 'netbus',
@@ -138,10 +138,16 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Debug');
 
-    e.boolean('showBus ("instance")', (e) => {
+    e.boolean('busid ("instance")', (e) => {
       const debug = Util.toPropsDebug(e.ctx);
-      if (e.changing) debug.showBus = e.changing.next;
-      e.boolean.current = Boolean(debug.showBus);
+      if (e.changing) debug.busid = e.changing.next;
+      e.boolean.current = Boolean(debug.busid);
+    });
+
+    e.boolean('tracelines', (e) => {
+      const debug = Util.toPropsDebug(e.ctx);
+      if (e.changing) debug.tracelines = e.changing.next;
+      e.boolean.current = Boolean(debug.tracelines);
     });
 
     e.hr(1, 0.1);

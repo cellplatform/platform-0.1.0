@@ -5,7 +5,6 @@ export type TypeLabelProps = {
   text: string;
   monochrome?: boolean;
   style?: CssValue;
-
   onClick?: (e: { text: string }) => void;
 };
 

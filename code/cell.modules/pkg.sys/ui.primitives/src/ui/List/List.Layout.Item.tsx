@@ -28,7 +28,7 @@ export type ListLayoutItemProps = {
   renderers: R;
   isScrolling?: boolean;
   style?: CssValue;
-  debug?: { border?: boolean };
+  debug?: t.ListPropsDebug;
 };
 
 /**
@@ -68,7 +68,7 @@ export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
   /**
    * [Render]
    */
-  const debugBorder = debug.border ? `solid 1px ${color.format(-0.06)}` : undefined;
+  const tracelines = debug.tracelines ? `solid 1px ${color.format(-0.06)}` : undefined;
   const styles = {
     base: css({ Flex: `${orientation}-stretch-stretch` }),
     main: css({ Flex: `${invertedOrientation}-stretch-stretch` }),
@@ -87,10 +87,10 @@ export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
     },
 
     debug: css({
-      borderTop: is.vertical && debugBorder,
-      borderBottom: is.vertical && is.last && debugBorder,
-      borderLeft: is.horizontal && debugBorder,
-      borderRight: is.horizontal && is.last && debugBorder,
+      borderTop: is.vertical && tracelines,
+      borderBottom: is.vertical && is.last && tracelines,
+      borderLeft: is.horizontal && tracelines,
+      borderRight: is.horizontal && is.last && tracelines,
     }),
   };
 
@@ -117,10 +117,10 @@ export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
         width: is.horizontal ? offset : undefined,
       }),
       debug: css({
-        borderTop: is.vertical && debugBorder,
-        borderBottom: is.vertical && is.last && edge === 'after' && debugBorder,
-        borderLeft: is.horizontal && debugBorder,
-        borderRight: is.horizontal && is.last && edge === 'after' && debugBorder,
+        borderTop: is.vertical && tracelines,
+        borderBottom: is.vertical && is.last && edge === 'after' && tracelines,
+        borderLeft: is.horizontal && tracelines,
+        borderRight: is.horizontal && is.last && edge === 'after' && tracelines,
       }),
     };
 

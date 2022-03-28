@@ -3,12 +3,9 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { List } from '..';
 import { ALL, DEFAULTS, rx, slug, t, time, value } from '../common';
-
 import { sampleBodyFactory, sampleBulletFactory } from './DEV.Renderers';
-import { ListState } from '../../List.State';
-
-import { DataSample, Ctx, RenderCtx } from './DEV.types';
 import { DevSample } from './DEV.Sample';
+import { Ctx, DataSample, RenderCtx } from './DEV.types';
 
 /**
  * Types
@@ -33,6 +30,10 @@ const Util = {
     const event = { bus: ctx.bus, instance: ctx.instance };
     const tabIndex = debug.canFocus ? -1 : undefined;
     return { ...props, event, tabIndex };
+  },
+
+  toPropsDebug(ctx: Ctx): t.ListPropsDebug {
+    return ctx.props.debug || (ctx.props.debug = {});
   },
 };
 
@@ -64,7 +65,7 @@ export const actions = DevActions<Ctx>()
         bullet: { edge: 'near', size: 60 },
         renderers: renderer,
         spacing: 10,
-        debug: { border: true },
+        debug: { tracelines: true },
       },
       renderCtx: {
         get total() {
@@ -205,12 +206,10 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Debug');
 
-    e.boolean('border (trace lines)', (e) => {
-      if (e.changing) {
-        const debug = e.ctx.props.debug || (e.ctx.props.debug = {});
-        debug.border = e.changing.next;
-      }
-      e.boolean.current = e.ctx.props.debug?.border ?? false;
+    e.boolean('tracelines', (e) => {
+      const debug = Util.toPropsDebug(e.ctx);
+      if (e.changing) debug.tracelines = e.changing.next;
+      e.boolean.current = Boolean(debug.tracelines);
     });
 
     e.hr(1, 0.1);

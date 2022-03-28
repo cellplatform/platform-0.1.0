@@ -10,8 +10,9 @@ type Id = string;
  * Types
  */
 export type EventListLayoutProps = {
-  event: { bus: t.EventBus<any>; instance: Id }; // Internal component event-bus.
+  event: t.EventListBusArgs;
   items: t.EventHistoryItem[];
+  debug?: t.EventListDebugProps;
   style?: CssValue;
 };
 
@@ -24,8 +25,8 @@ const { ROW, LIST } = CONSTANTS;
  * Component
  */
 export const EventListLayout: React.FC<EventListLayoutProps> = (props) => {
+  const { items = [], debug = {} } = props;
   const { bus, instance } = props.event;
-  const { items = [] } = props;
   const total = items.length;
 
   /**
@@ -62,6 +63,7 @@ export const EventListLayout: React.FC<EventListLayoutProps> = (props) => {
         paddingNear={0}
         paddingFar={LIST.PADDING.RIGHT}
         bullet={{ size: 8 }}
+        debug={{ tracelines: debug.tracelines }}
         renderers={{
           bullet(e) {
             return (

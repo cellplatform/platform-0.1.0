@@ -27,8 +27,9 @@ export type ListProps = {
   spacing?: number | t.ListBulletSpacing; // Number (defaults to) => { before }
   tabIndex?: number;
   style?: CssValue;
-  debug?: { border?: boolean };
+  debug?: ListPropsDebug;
 };
+export type ListPropsDebug = { tracelines?: boolean };
 
 /**
  * Items

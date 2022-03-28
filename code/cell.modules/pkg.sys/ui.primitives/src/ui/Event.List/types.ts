@@ -8,6 +8,22 @@ type Index = number;
 export type EventListAlign = 'auto' | 'smart' | 'center' | 'end' | 'start';
 
 /**
+ * Component Properties
+ */
+export type EventListBusArgs = { bus: t.EventBus<any>; instance: string };
+export type EventListProps = {
+  bus: t.EventBus<any>;
+  event?: EventListBusArgs; // Optional, internally bus/instance used by the UI.
+  reset$?: Observable<any>;
+  debug?: EventListDebugProps;
+  style?: t.CssValue;
+};
+export type EventListDebugProps = {
+  busid?: boolean;
+  tracelines?: boolean;
+};
+
+/**
  * EVENTS (API)
  */
 export type EventListEventsFactory = (args: {

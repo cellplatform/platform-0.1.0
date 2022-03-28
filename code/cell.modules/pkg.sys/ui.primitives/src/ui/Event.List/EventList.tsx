@@ -1,36 +1,24 @@
-import React, { useRef, useEffect } from 'react';
-import { Observable } from 'rxjs';
+import React, { useEffect, useRef } from 'react';
 
 import { useEventHistory } from '../Event';
-import { css, CssValue, FC, rx, slug, t, CONSTANTS, color, COLORS } from './common';
+import { CONSTANTS, css, FC, rx, slug, t } from './common';
+import { DebugBusInstance } from './components/Debug.BusInstance';
+import { Empty } from './components/Empty';
 import { EventListLayout as Layout, EventListLayoutProps } from './components/Layout';
 import { EventListEvents as Events } from './Events';
-import { Empty } from './components/Empty';
-import { DebugBusInstance } from './components/Debug.BusInstance';
-
-type Internal = { bus: t.EventBus<any>; instance: string };
+import { EventListProps } from './types';
 
 /**
  * Types
  */
-export type EventListProps = {
-  bus: t.EventBus<any>;
-  event?: Internal; // Optional, internally bus/instance used by the UI.
-  reset$?: Observable<any>;
-  debug?: EventListDebugProps;
-  style?: CssValue;
-};
-
-export type EventListDebugProps = {
-  showBus?: boolean;
-};
+export { EventListProps };
 
 /**
  * Component
  */
 export const View: React.FC<EventListProps> = (props) => {
   const { bus, reset$, debug = {} } = props;
-  const internal = useRef<Internal>(props.event ?? dummy());
+  const internal = useRef<t.EventListBusArgs>(props.event ?? dummy());
 
   const history = useEventHistory(bus, { reset$ });
   const items = history.events;
@@ -46,11 +34,15 @@ export const View: React.FC<EventListProps> = (props) => {
     base: css({ position: 'relative', display: 'flex' }),
   };
 
+  const elLayout = !isEmpty && (
+    <Layout event={internal.current} items={items} debug={debug} style={{ flex: 1 }} />
+  );
+
   return (
     <div {...css(styles.base, props.style)}>
       {isEmpty && <Empty />}
-      {!isEmpty && <Layout event={internal.current} items={items} style={{ flex: 1 }} />}
-      {debug.showBus && <DebugBusInstance bus={bus} />}
+      {elLayout}
+      {debug.busid && <DebugBusInstance bus={bus} />}
     </div>
   );
 };
@@ -74,7 +66,7 @@ export const EventList = FC.decorate<EventListProps, Fields>(
  * [Helpers]
  */
 
-function dummy(): Internal {
+function dummy(): t.EventListBusArgs {
   return {
     bus: rx.bus(),
     instance: `EventList.${slug()}:internal`,
