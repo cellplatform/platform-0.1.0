@@ -97,4 +97,29 @@ export default Test.describe('EventHistoryMonitor', (e) => {
     expect(monitor.total).to.eql(0);
     expect(count).to.eql(1);
   });
+
+  e.describe('enabled', (e) => {
+    e.it('enabled by default', () => {
+      const bus = rx.bus();
+      expect(EventHistoryMonitor(bus).enabled).to.eql(true);
+    });
+
+    e.it('disabled (boolean)', () => {
+      const bus = rx.bus();
+      const monitor = EventHistoryMonitor(bus, { enabled: false });
+      expect(monitor.enabled).to.eql(false);
+
+      bus.fire({ type: 'FOO', payload: {} });
+      expect(monitor.total).to.eql(0);
+    });
+
+    e.it('disabled (via function)', () => {
+      const bus = rx.bus();
+      const monitor = EventHistoryMonitor(bus, { enabled: () => false });
+      expect(monitor.enabled).to.eql(false);
+
+      bus.fire({ type: 'FOO', payload: {} });
+      expect(monitor.total).to.eql(0);
+    });
+  });
 });

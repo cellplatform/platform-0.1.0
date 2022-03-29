@@ -8,6 +8,8 @@ import { EventHistoryMonitor } from './EventHistory.Monitor';
  * Captures a running history of events within a stateful array.
  */
 export const useEventHistory: t.UseEventHistory = (bus, options = {}) => {
+  const { enabled = true } = options;
+
   const [events, setEvents] = useState<t.EventHistoryItem[]>([]);
   const resetRef$ = useRef(new Subject<void>());
 
@@ -30,6 +32,7 @@ export const useEventHistory: t.UseEventHistory = (bus, options = {}) => {
   return {
     bus: bus ? rx.bus.instance(bus) : '',
     events,
+    enabled,
     get total() {
       return events.length;
     },

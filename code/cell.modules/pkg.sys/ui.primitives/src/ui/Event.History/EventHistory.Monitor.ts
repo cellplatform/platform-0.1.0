@@ -26,6 +26,7 @@ export function EventHistoryMonitor(bus?: t.EventBus<any>, options: t.EventHisto
   if (bus) {
     const $ = bus.$.pipe(
       takeUntil(dispose$),
+      filter((e) => api.enabled),
       filter((e) => (options.filter ? options.filter(e) : true)),
     );
 
@@ -38,10 +39,13 @@ export function EventHistoryMonitor(bus?: t.EventBus<any>, options: t.EventHisto
       changed();
     });
 
-    options.reset$?.pipe(takeUntil(dispose$)).subscribe(() => reset());
+    options.reset$?.pipe(takeUntil(dispose$)).subscribe(reset);
   }
 
-  return {
+  /**
+   * API
+   */
+  const api = {
     dispose,
     dispose$,
     bus: bus ? rx.bus.instance(bus) : '',
@@ -50,5 +54,11 @@ export function EventHistoryMonitor(bus?: t.EventBus<any>, options: t.EventHisto
     get total() {
       return events.length;
     },
+    get enabled() {
+      const { enabled } = options;
+      return typeof enabled === 'function' ? enabled() : enabled ?? true;
+    },
   };
+
+  return api;
 }
