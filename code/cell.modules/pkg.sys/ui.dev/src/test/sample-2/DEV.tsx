@@ -83,6 +83,9 @@ export const actions = ComposedActions<Ctx>()
       layout: { width: 450, border: -0.1, cropmarks: -0.2, background: 1, label: 'sample-1' },
     });
 
+    /**
+     * NOTE: Render within "factory method" (closure).
+     */
     e.render(() => {
       return e.ctx.el || <Component count={e.ctx.count} />;
     });
