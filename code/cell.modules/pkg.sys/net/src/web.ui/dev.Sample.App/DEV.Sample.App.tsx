@@ -116,19 +116,14 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     position: { x: 'right', y: 'top' },
     render(e) {
       const styles = {
-        base: css({ pointerEvents: 'auto' }),
+        base: css({ pointerEvents: 'auto', marginTop: 10, marginRight: 15 }),
+        semver: css({ cursor: 'pointer' }),
       };
-
+      const href = `${location.origin}/?dev=Sample`;
       return (
-        <Button
-          style={styles.base}
-          onClick={() => {
-            // 🌳 Jump into "DevHarness" mode.
-            location.href = `${location.origin}/?dev=Sample`;
-          }}
-        >
-          <WebRuntime.ui.ManifestSemver style={{ marginTop: 10, marginRight: 15 }} />
-        </Button>
+        <a {...css(styles.base)} href={href}>
+          <WebRuntime.ui.ManifestSemver style={styles.semver} />
+        </a>
       );
     },
   };

@@ -19,5 +19,10 @@ const query = () => {
   return q;
 };
 
-const el = query().has('dev') ? <DevHarness /> : <DevSampleApp />;
+const isDev = query().has('dev');
+const el = isDev ? <DevHarness /> : <DevSampleApp />;
 ReactDOM.render(el, document.getElementById('root'));
+
+if (isDev) {
+  document.title = `${document.title} (dev)`;
+}
