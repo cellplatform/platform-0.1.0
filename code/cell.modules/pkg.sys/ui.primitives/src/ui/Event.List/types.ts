@@ -10,10 +10,10 @@ export type EventListAlign = 'auto' | 'smart' | 'center' | 'end' | 'start';
 /**
  * Component Properties
  */
-export type EventListBusArgs = { bus: t.EventBus<any>; instance: string };
+export type EventListInstance = { bus: t.EventBus<any>; id: Id };
 export type EventListProps = {
   bus: t.EventBus<any>;
-  event?: EventListBusArgs; // Optional, internally bus/instance used by the UI.
+  instance?: EventListInstance; // Optional, internally bus/instance used by the UI.
   reset$?: Observable<any>;
   debug?: EventListDebugProps;
   style?: t.CssValue;

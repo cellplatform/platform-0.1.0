@@ -8,7 +8,7 @@ type Id = string;
 type Index = number;
 type Pixels = number;
 
-export type ListBusArgs = { bus: EventBus<any>; instance: Id };
+export type ListInstance = { bus: EventBus<any>; id: Id };
 export type ListItemAlign = 'auto' | 'smart' | 'center' | 'end' | 'start';
 
 export type ListOrientation = 'x' | 'y'; // x:horizontal, y:vertical
@@ -19,7 +19,7 @@ export type ListBulletSpacing = { before?: Pixels; after?: Pixels };
  * <List> properties.
  */
 export type ListProps = {
-  event?: t.ListBusArgs;
+  instance?: t.ListInstance;
   renderers?: { bullet?: t.ListBulletRenderer; body?: t.ListBulletRenderer };
   state?: t.ListStateLazy;
   orientation?: t.ListOrientation;
@@ -82,7 +82,7 @@ export type GetListItem = (index: number) => ListItem | undefined;
 /**
  * EVENTS (API)
  */
-export type ListEventsFactory = (args: { bus: EventBus<any>; instance: Id }) => ListEvents;
+export type ListEventsFactory = (args: { instance: ListInstance }) => ListEvents;
 export type ListEvents = Disposable & {
   bus: Id;
   instance: Id;

@@ -15,12 +15,12 @@ export type ListLayoutProps = t.ListProps & {
  * Simple (non-virtualized) layout
  */
 export const ListLayout: React.FC<ListLayoutProps> = (props) => {
-  const { items = [], tabIndex, state } = props;
+  const { items = [], tabIndex } = props;
   const total = items.length;
 
-  const ctx = useContext({ total, event: props.event });
-  const { bus, instance } = ctx;
-  const renderer = Renderer({ bus, instance, props, total });
+  const ctx = useContext({ total, instance: props.instance });
+  const { instance } = ctx;
+  const renderer = Renderer({ instance, props, total });
 
   /**
    * [Render]

@@ -29,7 +29,6 @@ export * from './ui/PositioningLayer/types';
 export * from './ui/PositioningLayout/types';
 
 export * from './ui/Event/types';
-export * from './ui/Event.List/types';
 
 export * from './ui/Tree/types';
 export * from './ui/StackPanel/types';

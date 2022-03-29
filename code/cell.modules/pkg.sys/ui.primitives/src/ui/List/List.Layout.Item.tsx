@@ -14,7 +14,7 @@ type R = {
 };
 
 export type ListLayoutItemProps = {
-  event: t.ListBusArgs;
+  instance: t.ListInstance;
   index: number;
   total: number;
   item: t.ListItem;
@@ -42,12 +42,12 @@ const DEFAULT_RENDERER: R = {
  * Component
  */
 export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
-  const { bus, instance } = props.event;
+  const { bus, id } = props.instance;
   const { index, total, item, orientation, renderers, bullet, debug = {} } = props;
   const { data } = item;
 
   const ctx: t.CtxItem = { kind: 'Item', index, total, item };
-  const ui = UIEvent.useEventPipe<t.CtxItem, HTMLDivElement>({ bus, instance, ctx });
+  const ui = UIEvent.useEventPipe<t.CtxItem, HTMLDivElement>({ bus, instance: id, ctx });
   const dynamic = useDynamicItemState({ index, total, orientation, bullet, state: props.state });
 
   const spacing = formatSpacing(props.spacing);

@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { List } from '../../List';
-import { color, CONSTANTS, css, CssValue, t } from '../common';
-import { EventListRow } from './Layout.Row';
+import { List } from '../List';
+import { color, CONSTANTS, css, CssValue, t } from './common';
+import { EventListRow } from './components/Layout.Row';
 
 type Id = string;
 
@@ -10,23 +10,23 @@ type Id = string;
  * Types
  */
 export type EventListLayoutProps = {
-  event: t.EventListInstance;
+  event: { bus: t.EventBus<any>; instance: Id }; // Internal component event-bus.
   items: t.EventHistoryItem[];
-  debug?: t.EventListDebugProps;
+  selection?: t.ListSelectionState;
   style?: CssValue;
 };
 
 /**
  * Constants
  */
-const { ROW, LIST } = CONSTANTS;
+const { ROW } = CONSTANTS;
 
 /**
  * Component
  */
 export const EventListLayout: React.FC<EventListLayoutProps> = (props) => {
-  const { items = [], debug = {} } = props;
-  const { bus, id: instance } = props.event;
+  const { bus, instance } = props.event;
+  const { items = [], selection } = props;
   const total = items.length;
 
   /**
@@ -49,21 +49,19 @@ export const EventListLayout: React.FC<EventListLayoutProps> = (props) => {
    */
   const styles = {
     base: css({ position: 'relative' }),
-    body: css({ Absolute: 0 }),
+    body: css({ Absolute: [0, 0, 0, 12] }),
   };
 
   return (
     <div {...css(styles.base, props.style)}>
       <List.Virtual
-        style={styles.body}
         instance={{ bus, id: instance }}
-        items={{ total, getData, getSize }}
+        style={styles.body}
         spacing={ROW.SPACING}
+        items={{ total, getData, getSize }}
         orientation={'y'}
-        paddingNear={0}
-        paddingFar={LIST.PADDING.RIGHT}
-        bullet={{ size: 8 }}
-        debug={{ tracelines: debug.tracelines }}
+        paddingNear={10}
+        paddingFar={10}
         renderers={{
           bullet(e) {
             return (
@@ -82,6 +80,9 @@ export const EventListLayout: React.FC<EventListLayoutProps> = (props) => {
             const { first, last, selected, mouse } = e.is;
             const down = mouse.down;
             const data = e.data as t.EventHistoryItem;
+            // const selected = selectedIndex === undefined ? undefined : index === selectedIndex;
+
+            // e.is.m
 
             return (
               <EventListRow

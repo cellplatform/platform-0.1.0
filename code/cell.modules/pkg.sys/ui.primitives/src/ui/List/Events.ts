@@ -1,7 +1,7 @@
 import { animationFrameScheduler, Subject } from 'rxjs';
 import { filter, observeOn, takeUntil } from 'rxjs/operators';
 
-import { t, rx, Is } from './common';
+import { Is, rx, t } from './common';
 
 /**
  * Types
@@ -13,10 +13,10 @@ type E = t.ListEvents;
  * Event (API)
  */
 export const ListEvents: t.ListEventsFactory = (args) => {
-  const { instance } = args;
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
-  const bus = rx.busAsType<t.ListEvent>(args.bus);
+  const bus = rx.busAsType<t.ListEvent>(args.instance.bus);
+  const instance = args.instance.id;
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),

@@ -1,12 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 
 import { useEventHistory } from '../Event';
-import { CONSTANTS, css, FC, rx, slug, t } from './common';
+import { CONSTANTS, css, FC, t } from './common';
 import { DebugBusId } from './components/Debug.BusId';
 import { Empty } from './components/Empty';
 import { EventListLayout as Layout, EventListLayoutProps } from './components/Layout';
 import { EventListEvents as Events } from './Events';
 import { EventListProps } from './types';
+import { Util } from './Util';
 
 /**
  * Types
@@ -18,7 +19,7 @@ export { EventListProps };
  */
 export const View: React.FC<EventListProps> = (props) => {
   const { bus, reset$, debug = {} } = props;
-  const internal = useRef<t.EventListBusArgs>(props.event ?? dummy());
+  const instance = useRef<t.EventListInstance>(props.instance ?? Util.dummyInstance());
 
   const history = useEventHistory(bus, { reset$ });
   const items = history.events;
@@ -35,7 +36,7 @@ export const View: React.FC<EventListProps> = (props) => {
   };
 
   const elLayout = !isEmpty && (
-    <Layout event={internal.current} items={items} debug={debug} style={{ flex: 1 }} />
+    <Layout event={instance.current} items={items} debug={debug} style={{ flex: 1 }} />
   );
 
   return (
@@ -61,14 +62,3 @@ export const EventList = FC.decorate<EventListProps, Fields>(
   { Events, Layout, useEventHistory, constants: CONSTANTS },
   { displayName: 'EventList' },
 );
-
-/**
- * [Helpers]
- */
-
-function dummy(): t.EventListBusArgs {
-  return {
-    bus: rx.bus(),
-    instance: `EventList.${slug()}:internal`,
-  };
-}
