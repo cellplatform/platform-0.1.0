@@ -27,8 +27,8 @@ export const actions = DevActions<Ctx>()
   .context((e) => e.prev ?? {})
 
   .init(async (e) => {
-    e.ctx.results = await Test.run(Object.values(Imports));
-    // e.ctx.results = await Test.run(Imports.TextSyntaxTokenizer);
+    // e.ctx.results = await Test.run(Object.values(Imports));
+    e.ctx.results = await Test.run(Imports.CmdBar);
   })
 
   .items((e) => {

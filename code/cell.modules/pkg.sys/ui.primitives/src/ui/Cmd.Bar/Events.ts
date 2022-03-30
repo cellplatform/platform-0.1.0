@@ -7,10 +7,12 @@ import { rx, t } from './common';
  * Event API.
  */
 export const CmdBarEvents: t.CmdBarEventsFactory = (args) => {
-  const { instance } = args;
   const dispose$ = new Subject<void>();
-  const dispose = () => dispose$.next();
-  const bus = rx.busAsType<t.CmdBarEvent>(args.bus);
+  const dispose = () => rx.done(dispose$);
+  args.dispose$?.subscribe(dispose);
+
+  const instance = args.instance.id;
+  const bus = rx.busAsType<t.CmdBarEvent>(args.instance.bus);
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
@@ -42,8 +44,7 @@ export const CmdBarEvents: t.CmdBarEventsFactory = (args) => {
   };
 
   return {
-    bus: rx.bus.instance(bus),
-    instance,
+    instance: { bus: rx.bus.instance(bus), id: instance },
     $,
     dispose,
     dispose$,

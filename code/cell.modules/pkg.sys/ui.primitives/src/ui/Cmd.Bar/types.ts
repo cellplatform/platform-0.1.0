@@ -1,16 +1,28 @@
-import { Disposable, EventBus } from '@platform/types';
 import { Observable } from 'rxjs';
+import * as t from '../../common/types';
 
 type Id = string;
+export type CmdBarInstance = { bus: t.EventBus<any>; id: Id };
+
+/**
+ * State
+ */
+export type CmdBarState = {
+  history?: t.EventHistory;
+  text?: string;
+  spinning?: boolean;
+};
 
 /**
  * Event API.
  */
-export type CmdBarEventsFactory = (args: { bus: EventBus<any>; instance: Id }) => CmdBarEvents;
+export type CmdBarEventsFactory = (args: {
+  instance: CmdBarInstance;
+  dispose$?: Observable<any>;
+}) => CmdBarEvents;
 
-export type CmdBarEvents = Disposable & {
-  bus: Id;
-  instance: Id;
+export type CmdBarEvents = t.Disposable & {
+  instance: { bus: Id; id: Id };
   $: Observable<CmdBarEvent>;
   action: {
     $: Observable<CmdBarAction>;
