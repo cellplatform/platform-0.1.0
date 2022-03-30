@@ -32,6 +32,7 @@ export const items: PropListItem[] = [
   { label: 'boolean', value: true },
   { label: 'boolean (switch)', value: { data: true, kind: 'Switch' } },
   { label: 'clipboard function', value: { data: 'hello', clipboard: () => Math.random() } },
+  { label: '<Text.Syntax>', value: { data: '{object}, [1,2,3]', monospace: true } },
   {
     label: 'monospace (fontSize: 9)',
     value: { data: 'thing', clipboard: true, monospace: true, color: COLORS.CYAN, fontSize: 9 },

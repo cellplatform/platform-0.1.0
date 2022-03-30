@@ -36,6 +36,7 @@ export const SimpleValue: React.FC<SimpleValueProps> = (props) => {
       cursor,
       textAlign: 'right',
       fontFamily: is.monospace ? 'monospace' : undefined,
+      fontWeight: is.monospace ? 'bolder' : undefined,
       fontSize: value.fontSize !== undefined ? value.fontSize : undefined,
     }),
   };
