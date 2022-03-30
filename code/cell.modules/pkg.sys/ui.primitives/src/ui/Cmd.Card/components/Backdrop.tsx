@@ -6,7 +6,9 @@ import { CmdBar } from '../../Cmd.Bar';
  * Types
  */
 export type BackdropProps = {
-  bus?: t.EventBus<any>;
+  instance: t.CmdCardInstance;
+  size: t.DomRect;
+  state: t.CmdCardState;
   style?: CssValue;
 };
 
@@ -14,7 +16,7 @@ export type BackdropProps = {
  * Component
  */
 export const Backdrop: React.FC<BackdropProps> = (props) => {
-  const { bus } = props;
+  const { instance, state, size } = props;
 
   /**
    * [Render]
@@ -35,13 +37,13 @@ export const Backdrop: React.FC<BackdropProps> = (props) => {
     bottom: css({}),
   };
 
-  const elBody = props.children;
+  const elBody = state.backdrop.render?.({ size });
 
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.top}>{elBody}</div>
       <div {...styles.bottom}>
-        <CmdBar bus={bus} />
+        <CmdBar instance={instance} state={state.commandbar} />
       </div>
     </div>
   );

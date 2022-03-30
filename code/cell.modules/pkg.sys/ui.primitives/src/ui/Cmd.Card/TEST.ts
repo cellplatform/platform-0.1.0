@@ -8,10 +8,11 @@ export default Test.describe('Cmd.Card', (e) => {
   e.describe('Events', (e) => {
     e.it('exposed from <CmdCard.Events>', () => {
       const bus = rx.bus();
-      const events = CmdCard.Events({ bus, instance });
+      const id = 'foo';
+      const events = CmdCard.Events({ instance: { bus, id } });
 
-      expect(events.instance).to.eql(instance);
-      expect(events.bus).to.eql(rx.bus.instance(bus));
+      expect(events.instance.id).to.eql(id);
+      expect(events.instance.bus).to.eql(rx.bus.instance(bus));
     });
   });
 });

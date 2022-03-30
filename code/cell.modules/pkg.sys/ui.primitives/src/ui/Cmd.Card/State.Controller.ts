@@ -1,0 +1,79 @@
+import { BehaviorSubject, Observable } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+import { CmdBarStateController } from '../Cmd.Bar/State.Controller';
+import { Patch, t } from './common';
+import { CmdCardEvents } from './Events';
+import { Util } from './Util';
+
+type S = t.CmdCardState;
+
+/**
+ * State controller for the <CmdCard>.
+ */
+export function CmdCardStateController(args: {
+  instance: t.CmdCardInstance;
+  bus?: t.EventBus<any>;
+  initial?: S;
+  dispose$?: Observable<any>;
+}) {
+  const { bus } = args;
+
+  const fire = (e: t.CmdCardEvent) => args.instance.bus.fire(e);
+  const instance = args.instance.id;
+
+  const events = CmdCardEvents({ instance: args.instance, dispose$: args.dispose$ });
+  const { dispose, dispose$ } = events;
+
+  /**
+   * State.
+   */
+  let _state: S = args.initial ?? Util.defaultState();
+  const state$ = new BehaviorSubject<S>(_state);
+  const change = (fn: (prev: S) => S) => {
+    _state = fn(_state);
+    state$.next(_state);
+  };
+
+  /**
+   * <CmdBar> sub-controller.
+   */
+  const bar = CmdBarStateController({ instance: args.instance, bus, dispose$ });
+  bar.state$.subscribe((bar) => {
+    change((prev) => ({ ...prev, commandbar: bar }));
+  });
+
+  /**
+   * EVENT HANDLERS
+   */
+
+  /**
+   * Retrieve current state
+   */
+  events.state.req$.subscribe((e) => {
+    fire({
+      type: 'sys.ui.CmdCard/state:res',
+      payload: { instance, tx: e.tx, state: api.state },
+    });
+  });
+
+  /**
+   * Update state (via immutable patches).
+   */
+  events.state.patch$.subscribe((e) => {
+    change(() => Patch.apply(api.state, e.patches));
+  });
+
+  /**
+   * API
+   */
+  const api = {
+    dispose$,
+    dispose,
+    state$: state$.pipe(takeUntil(dispose$)),
+    get state() {
+      return _state;
+    },
+  };
+  return api;
+}

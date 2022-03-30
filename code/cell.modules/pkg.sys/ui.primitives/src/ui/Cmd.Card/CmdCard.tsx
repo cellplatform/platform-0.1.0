@@ -3,16 +3,17 @@ import React from 'react';
 import { FC, t, CssValue, css } from './common';
 import { CmdCardLayout as Layout, CmdCardLayoutProps } from './components/Layout';
 import { CmdCardEvents as Events } from './Events';
-import { useStateController } from './useStateController';
-import { State, CmdCardState } from './State';
+
+import { State } from './State';
 import { Card } from '../Card';
+import { Util } from './Util';
 
 /**
  * Types
  */
 export type CmdCardProps = {
-  event: t.CmdCardBusArgs;
-  useState?: true | t.CmdCardState;
+  instance: t.CmdCardInstance;
+  state?: t.CmdCardState;
   showAsCard?: boolean;
   style?: CssValue;
 };
@@ -21,38 +22,21 @@ export type CmdCardProps = {
  * Component
  */
 const View: React.FC<CmdCardProps> = (props) => {
-  const { event, showAsCard = true } = props;
-
-  const controller = useStateController({
-    event,
-    enabled: props.useState !== undefined,
-    state: typeof props.useState === 'object' ? props.useState : undefined,
-  });
-
-  const { state } = controller;
+  const { instance, showAsCard = true } = props;
+  const state = props.state ?? Util.defaultState();
 
   /**
-   * [Redner]
+   * [Render]
    */
-  const borderRadius = showAsCard ? 4 : 0;
+  const radius = showAsCard ? 4 : 0;
   const styles = {
     base: css({ display: 'flex' }),
     layout: css({ flex: 1 }),
   };
 
   return (
-    <Card
-      showAsCard={showAsCard}
-      style={css(styles.base, props.style)}
-      border={{ radius: borderRadius }}
-    >
-      <Layout
-        event={event}
-        bus={state.bus}
-        isOpen={state.isOpen}
-        style={styles.layout}
-        borderRadius={borderRadius - 1}
-      />
+    <Card showAsCard={showAsCard} style={css(styles.base, props.style)} border={{ radius }}>
+      <Layout instance={instance} state={state} style={styles.layout} borderRadius={radius - 1} />
     </Card>
   );
 };
@@ -63,7 +47,7 @@ const View: React.FC<CmdCardProps> = (props) => {
 type Fields = {
   Layout: React.FC<CmdCardLayoutProps>;
   Events: t.CmdCardEventsFactory;
-  State: CmdCardState;
+  State: typeof State;
 };
 export const CmdCard = FC.decorate<CmdCardProps, Fields>(
   View,

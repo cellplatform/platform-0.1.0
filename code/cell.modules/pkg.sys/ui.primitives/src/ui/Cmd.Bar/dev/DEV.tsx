@@ -96,7 +96,7 @@ export const actions = DevActions<Ctx>()
     });
 
     const controller = CmdBar.State.Controller({ instance, bus });
-    controller.changed$.subscribe((state) => {
+    controller.state$.subscribe((state) => {
       e.ctx.props.state = state;
       e.redraw();
     });
@@ -171,6 +171,7 @@ export const actions = DevActions<Ctx>()
     e.hr(1, 0.1);
     e.button('fire (1)', (e) => Util.fire(e.ctx, 1));
     e.button('fire (100)', (e) => Util.fire(e.ctx, 100));
+    e.button('fire (1,000)', (e) => Util.fire(e.ctx, 1000));
     e.hr();
   })
 

@@ -26,10 +26,10 @@ export function CmdBarStateController(args: {
    * State.
    */
   let _state: t.CmdBarState = args.initial ?? Util.defaultState();
-  const changed$ = new BehaviorSubject<t.CmdBarState>(_state);
+  const state$ = new BehaviorSubject<t.CmdBarState>(_state);
   const change = (fn: (prev: S) => S) => {
     _state = fn(_state);
-    changed$.next(_state);
+    state$.next(_state);
   };
 
   /**
@@ -55,7 +55,7 @@ export function CmdBarStateController(args: {
   const api = {
     dispose$,
     dispose,
-    changed$: changed$.pipe(takeUntil(dispose$)),
+    state$: state$.pipe(takeUntil(dispose$)),
     get state() {
       return _state;
     },

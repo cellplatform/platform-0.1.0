@@ -5,29 +5,34 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { CmdCard, CmdCardProps } from '..';
 import { EventList } from '../../Event.List';
-import { css, rx, slug, t } from '../common';
-import { CmdCardStateInfo, CmdCardStateInfoProps } from '../State.Info';
+import { css, rx, slug, t, Patch } from '../common';
+import { CmdCardStateInfoProps } from '../components/State.Info';
+import { Util } from '../Util';
 import { DevSidePanel } from './DEV.SidePanel';
+import { DevSample } from './DEV.Sample';
 
 type Ctx = {
   localbus: t.EventBus<any>;
   netbus: t.NetworkBus<any>;
   props: CmdCardProps;
-  size: { width: number; height: number };
   debug: Debug;
-  state: { info: CmdCardStateInfoProps };
+  size: { width: number; height: number };
+  events: t.CmdCardEvents;
+  state?: t.CmdCardState;
+  onStateChange?: (e: t.CmdCardState) => void;
 };
 
 type Debug = {
   fireCount: number; // Total number of fires.
   busKind: 'bus' | 'netbus';
-  resetEventHistory$: Subject<void>;
+  resetHistory$: Subject<void>;
+  state: { info: CmdCardStateInfoProps };
 };
 
 /**
  * Helpers
  */
-const Util = {
+const Dev = {
   /**
    * Fire an event.
    */
@@ -53,27 +58,22 @@ const Util = {
     if (busKind === 'bus') bus = ctx.localbus;
     if (busKind === 'netbus') bus = ctx.netbus;
     if (!bus) throw new Error(`Bus kind '${busKind}' not supported.`);
-
-    const instance = rx.bus.instance(bus);
-    return { bus, instance, busKind };
+    return { bus, busKind };
   },
 
   toProps(ctx: Ctx) {
-    const { bus } = Util.toBus(ctx);
-
-    let props = { ...ctx.props };
-    if (typeof props.useState === 'object') {
-      props = {
-        ...props,
-        useState: { ...props.useState, bus },
-      };
-    }
+    let props: CmdCardProps = { ...ctx.props };
+    props = { ...props };
 
     return props;
   },
 
   toState(ctx: Ctx) {
-    return ctx.props.useState as t.CmdCardState;
+    return ctx.props.state || (ctx.props.state = Util.defaultState());
+  },
+
+  localbus(ctx: Ctx) {
+    return rx.busAsType<t.CmdCardEvent>(ctx.localbus);
   },
 };
 
@@ -87,26 +87,28 @@ export const actions = DevActions<Ctx>()
 
     const localbus = rx.bus();
     const netbus = NetworkBusMock({ local: 'local-id', remotes: ['peer-1', 'peer-2'] });
+    const instance: t.CmdCardInstance = { bus: localbus, id: `foo.${slug()}` };
+    const events = CmdCard.Events({ instance });
 
     const ctx: Ctx = {
       localbus,
       netbus,
-      props: {
-        event: { bus: rx.bus(), instance: `foo.${slug()}` },
-        useState: { bus: netbus, tmp: 0, isOpen: false },
-        showAsCard: false,
-      },
       size: { width: 500, height: 320 },
-      debug: { fireCount: 0, busKind: 'netbus', resetEventHistory$: new Subject<void>() },
-      state: {
-        info: {},
+      props: { instance, showAsCard: true },
+      debug: {
+        fireCount: 0,
+        busKind: 'netbus',
+        resetHistory$: new Subject<void>(),
+        state: { info: {} },
       },
+      events,
+      onStateChange: (state) => e.change.ctx((ctx) => (ctx.state = state)),
     };
     return ctx;
   })
 
   .init(async (e) => {
-    const { ctx, bus } = e;
+    const { ctx } = e;
   })
 
   .items((e) => {
@@ -127,10 +129,11 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr(1, 0.1);
-    e.button('fire', (e) => Util.fire(e.ctx, 1));
-    e.button('reset', (e) => {
-      e.ctx.debug.resetEventHistory$.next();
-    });
+    e.button('fire (1)', (e) => Dev.fire(e.ctx, 1));
+    e.button('fire (100)', (e) => Dev.fire(e.ctx, 100));
+    e.button('fire (1,000)', (e) => Dev.fire(e.ctx, 1000));
+    e.hr(1, 0.1);
+    e.button('reset', (e) => e.ctx.debug.resetHistory$.next());
     e.hr();
   })
 
@@ -151,12 +154,12 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('State Info');
+    e.title('State');
 
     e.select((config) =>
       config
         .title('fields:')
-        .items(CmdCardStateInfo.fields.all)
+        .items(CmdCard.State.Info.fields.all)
         .initial(undefined)
         .clearable(true)
         .view('buttons')
@@ -164,7 +167,7 @@ export const actions = DevActions<Ctx>()
         .pipe((e) => {
           if (e.changing) {
             const next = e.changing.next.map(({ value }) => value) as t.CmdCardStateInfoFields[];
-            e.ctx.state.info.fields = next.length === 0 ? undefined : next;
+            e.ctx.debug.state.info.fields = next.length === 0 ? undefined : next;
           }
         }),
     );
@@ -174,15 +177,40 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Debug');
+    e.button('redraw', (e) => e.redraw());
+    e.hr(1, 0.1);
 
-    e.button('tmp (state increment)', (e) => {
-      const state = Util.toState(e.ctx);
-      state.tmp++;
+    e.button('tmp ', async (e) => {
+      await e.ctx.events.state.mutate(async (state) => {
+        const styles = {
+          base: css({ Absolute: 0, padding: 15 }),
+        };
+
+        let count = 0;
+        state.body.render = (e) => {
+          count++;
+          return <div {...styles.base}>hello body {count}</div>;
+        };
+
+        state.backdrop.render = (e) => {
+          return <div {...styles.base}>hello backdrop {count}</div>;
+        };
+      });
     });
 
-    e.button('toggle isOpen', (e) => {
-      const state = Util.toState(e.ctx);
-      state.isOpen = !Boolean(state.isOpen);
+    e.button('spinning (toggle)', async (e) => {
+      await e.ctx.events.state.mutate(async (state) => {
+        state.commandbar.spinning = !Boolean(state.commandbar.spinning);
+      });
+    });
+
+    e.button('isOpen (toggle)', async (e) => {
+      await e.ctx.events.state.mutate(async (state) => {
+        // state.commandbar.spinning = !Boolean(state.commandbar.spinning);
+        state.isOpen = !Boolean(state.isOpen);
+      });
+
+      // const state = Dev.toState(e.ctx);
     });
 
     e.hr();
@@ -190,29 +218,46 @@ export const actions = DevActions<Ctx>()
       return (
         <ObjectView
           name={'props'}
-          data={Util.toProps(e.ctx)}
+          data={Dev.toProps(e.ctx)}
           style={{ MarginX: 15 }}
           fontSize={10}
-          expandPaths={['$', '$.useState']}
+          expandPaths={['$']}
+        />
+      );
+    });
+    e.hr(1, 0.1);
+    e.component((e) => {
+      return (
+        <ObjectView
+          name={'state'}
+          data={e.ctx.state}
+          style={{ MarginX: 15 }}
+          fontSize={10}
+          expandPaths={['$']}
         />
       );
     });
   })
 
   .subject((e) => {
+    const { debug } = e.ctx;
     const { width, height } = e.ctx.size;
-    const { bus, busKind } = Util.toBus(e.ctx);
-    const props = Util.toProps(e.ctx);
+    const { bus, busKind } = Dev.toBus(e.ctx);
+    const props = Dev.toProps(e.ctx);
     const instance = rx.bus.instance(bus);
+
+    const SIDEPANEL = { WIDTH: 230 };
 
     e.settings({
       host: { background: -0.04 },
+      actions: { width: 330 },
       layout: {
         cropmarks: -0.2,
+        offset: [0 - SIDEPANEL.WIDTH, 0],
         width,
         height,
         label: {
-          topLeft: '<Cmd.Card>',
+          topLeft: '<CmdCard>',
           bottomRight: busKind === 'netbus' ? `${instance} (network)` : `${instance} (local)`,
         },
       },
@@ -222,14 +267,13 @@ export const actions = DevActions<Ctx>()
       base: css({ position: 'relative', flex: 1, display: 'flex' }),
     };
 
-    const { resetEventHistory$ } = e.ctx.debug;
-    const elStateInfo = <CmdCard.State.Info fields={e.ctx.state.info.fields} />;
-    const elEventList = <EventList bus={bus} reset$={resetEventHistory$} style={{ flex: 1 }} />;
+    const elStateInfo = <CmdCard.State.Info {...debug.state.info} />;
+    const elEventList = <EventList style={{ flex: 1 }} bus={bus} reset$={debug.resetHistory$} />;
 
     e.render(
       <div {...styles.base}>
-        <DevSidePanel top={elStateInfo} bottom={elEventList} width={230} />
-        <CmdCard {...props} style={{ flex: 1 }} />
+        <DevSidePanel top={elStateInfo} bottom={elEventList} width={SIDEPANEL.WIDTH} />
+        <DevSample bus={bus} props={props} onStateChange={e.ctx.onStateChange} />
       </div>,
     );
   });
