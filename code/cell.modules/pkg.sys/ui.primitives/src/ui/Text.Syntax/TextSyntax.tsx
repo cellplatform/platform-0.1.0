@@ -4,21 +4,27 @@ import { css, CssValue, Style, t, COLORS, color } from '../../common';
 import { DefaultTokenizer } from './Tokenizer';
 import * as k from './types';
 
+/**
+ * Types
+ */
 export type TextSyntaxProps = {
   text?: string;
   inlineBlock?: boolean;
   margin?: t.CssEdgesInput;
   padding?: t.CssEdgesInput;
-  tokenizer?: k.SyntaxLabelTokenizer;
-  colors?: Partial<k.SyntaxLabelColors>;
+  tokenizer?: k.TextSyntaxTokenizer;
+  colors?: Partial<k.TextSyntaxColors>;
   style?: CssValue;
 };
 
-const BASE: k.SyntaxLabelColors = {
+/**
+ * Constants
+ */
+const BASE: k.TextSyntaxColors = {
   Brace: COLORS.MAGENTA,
   Predicate: COLORS.MAGENTA,
-  Word: COLORS.CYAN,
   Colon: color.alpha(COLORS.DARK, 0.6),
+  Word: { Base: COLORS.DARK, Element: COLORS.CYAN },
 };
 
 /**
@@ -41,8 +47,9 @@ export const TextSyntax: React.FC<TextSyntaxProps> = (props) => {
   };
 
   const elements = tokens.map((token, i) => {
+    const style = { color: color.format(toColor(colors, token)) };
     return (
-      <span key={i} style={{ color: color.format(colors[token.kind]) }}>
+      <span key={i} style={style}>
         {token.text}
       </span>
     );
@@ -50,3 +57,12 @@ export const TextSyntax: React.FC<TextSyntaxProps> = (props) => {
 
   return <div {...css(styles.base, props.style)}>{elements}</div>;
 };
+
+/**
+ * [Helpers]
+ */
+
+function toColor(colors: k.TextSyntaxColors, token: k.TextSyntaxToken) {
+  if (token.kind === 'Word') return token.within ? colors.Word.Element : colors.Word.Base;
+  return colors[token.kind];
+}
