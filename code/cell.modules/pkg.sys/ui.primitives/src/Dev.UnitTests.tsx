@@ -28,7 +28,7 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     e.ctx.results = await Test.run(Object.values(Imports));
-    // e.ctx.results = await Test.run(Imports.EventHistory);
+    // e.ctx.results = await Test.run(Imports.TextSyntaxTokenizer);
   })
 
   .items((e) => {
