@@ -22,8 +22,7 @@ export function useController(args: {
    */
   useEffect(() => {
     const { netbus } = network;
-
-    const commandBar = CmdBar.Events({ bus: network.bus, instance });
+    const commandBar = CmdBar.Events({ instance: { bus: network.bus, id: instance } });
 
     const dispose$ = new Subject<void>();
     const dispose = () => {

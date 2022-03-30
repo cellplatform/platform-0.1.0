@@ -14,11 +14,9 @@ export const NetworkCardFooter: React.FC<NetworkCardFooterProps> = (props) => {
 
   return (
     <CmdBar
-      events={{ bus, instance }}
-      bus={network.netbus}
+      instance={{ bus, id: instance }}
       backgroundColor={color.alpha(COLORS.DARK, 0.85)}
       cornerRadius={[0, 0, 3, 3]}
-      inset={true}
     />
   );
 };
