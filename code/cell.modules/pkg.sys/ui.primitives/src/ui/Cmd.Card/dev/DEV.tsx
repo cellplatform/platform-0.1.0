@@ -5,11 +5,11 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { CmdCard, CmdCardProps } from '..';
 import { EventList } from '../../Event.List';
-import { css, rx, slug, t, Patch } from '../common';
+import { css, rx, slug, t } from '../common';
 import { CmdCardStateInfoProps } from '../components/State.Info';
 import { Util } from '../Util';
-import { DevSidePanel } from './DEV.SidePanel';
 import { DevSample } from './DEV.Sample';
+import { DevSidePanel } from './DEV.SidePanel';
 
 type Ctx = {
   localbus: t.EventBus<any>;
