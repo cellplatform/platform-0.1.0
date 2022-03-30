@@ -30,4 +30,5 @@ export type EventHistoryOptions = {
   onChange?: (e: EventHistory) => void;
   filter?: <E extends t.Event = t.Event>(e: E) => boolean;
   reset$?: t.Observable<any>;
+  dispose$?: t.Observable<any>;
 };

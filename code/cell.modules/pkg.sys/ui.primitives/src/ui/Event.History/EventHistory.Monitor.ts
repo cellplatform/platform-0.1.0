@@ -4,16 +4,14 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { rx, slug, t, time } from '../../common';
 
 /**
- * Monitor
+ * Monitor an [EventBus] recording a log of events.
  */
 export function EventHistoryMonitor(bus?: t.EventBus<any>, options: t.EventHistoryOptions = {}) {
   const events: t.EventHistoryItem[] = []; // NB: Event array is appended (not immutable) for performance reasons.
 
   const dispose$ = new Subject<void>();
-  const dispose = () => {
-    dispose$.next();
-    dispose$.complete();
-  };
+  const dispose = () => rx.done(dispose$);
+  options.dispose$?.subscribe(dispose);
 
   const changed$ = new Subject<t.EventHistoryItem[]>();
   const changed = () => changed$.next(events);
