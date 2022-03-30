@@ -80,7 +80,14 @@ export const actions = ComposedActions<Ctx>()
   .subject((e) => {
     e.settings({
       host: { background: -0.04 },
-      layout: { width: 450, border: -0.1, cropmarks: -0.2, background: 1, label: 'sample-1' },
+      layout: {
+        width: 450,
+        border: -0.1,
+        cropmarks: -0.2,
+        background: 1,
+        label: 'sample-1',
+        offset: [-50, -300],
+      },
     });
 
     /**

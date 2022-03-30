@@ -15,6 +15,7 @@ export type HostedLayout = {
   cropmarks?: boolean | number;
   label?: ReactNode | Partial<HostedLabel>;
   labelColor?: string | number;
+  offset?: [number, number]; // x,y
   position?:
     | StringOrNumber
     | [StringOrNumberOrNil, StringOrNumberOrNil]

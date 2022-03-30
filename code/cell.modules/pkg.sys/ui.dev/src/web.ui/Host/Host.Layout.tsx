@@ -80,6 +80,8 @@ export const HostLayout: React.FC<HostLayoutProps> = (props) => {
       backgroundColor: formatColor(layout.background),
       marginBottom: orientation === 'y' && margin ? margin : undefined,
       marginRight: orientation === 'x' && margin ? margin : undefined,
+      marginLeft: layout.offset?.[0],
+      marginTop: layout.offset?.[1],
     });
 
     return (
