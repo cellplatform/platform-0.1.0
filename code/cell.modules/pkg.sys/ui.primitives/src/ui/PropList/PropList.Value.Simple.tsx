@@ -2,6 +2,7 @@ import React, { CSSProperties } from 'react';
 
 import { color, COLORS, css, defaultValue, t } from '../../common';
 import { CopyIcon } from './PropList.Value.common';
+import { Text } from '../Text';
 
 export type SimpleValueProps = {
   defaults: t.PropListDefaults;
@@ -43,7 +44,9 @@ export const SimpleValue: React.FC<SimpleValueProps> = (props) => {
 
   return (
     <div {...css(styles.base)}>
-      <div {...styles.text}>{text}</div>
+      <div {...styles.text}>
+        <Text.Syntax text={text?.toString()} />
+      </div>
       {is.copyActive && !message && <CopyIcon />}
     </div>
   );
