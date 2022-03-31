@@ -3,6 +3,7 @@ import React from 'react';
 import { FC, t, CssValue, css } from './common';
 import { CmdCardLayout as Layout, CmdCardLayoutProps } from './components/Layout';
 import { CmdCardEvents as Events } from './Events';
+import { CmdStateInfo } from './components/Info';
 
 import { State } from './State';
 import { Card } from '../Card';
@@ -48,9 +49,10 @@ type Fields = {
   Layout: React.FC<CmdCardLayoutProps>;
   Events: t.CmdCardEventsFactory;
   State: typeof State;
+  Info: typeof CmdStateInfo;
 };
 export const CmdCard = FC.decorate<CmdCardProps, Fields>(
   View,
-  { Layout, Events, State },
+  { Layout, Events, State, Info: CmdStateInfo },
   { displayName: 'CmdCard' },
 );

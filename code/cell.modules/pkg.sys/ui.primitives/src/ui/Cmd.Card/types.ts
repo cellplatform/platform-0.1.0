@@ -4,7 +4,7 @@ type Id = string;
 type Milliseconds = number;
 
 export type CmdCardInstance = { bus: t.EventBus<any>; id: Id };
-export type CmdCardStateInfoFields = 'Title' | 'Version' | 'State';
+export type CmdCardStateInfoFields = 'Title' | 'Version' | 'State' | 'State.Controller';
 
 export type CmdCardRender = (props: CmdCardRenderProps) => JSX.Element | null;
 export type CmdCardRenderProps = { size: t.DomRect };
@@ -17,6 +17,7 @@ export type CmdCardState = {
   body: {
     isOpen?: boolean; // TEMP 🐷
     render?: CmdCardRender;
+    show?: 'FullScreen' | 'CommandBar' | 'Hidden';
   };
   backdrop: {
     render?: CmdCardRender;

@@ -6,10 +6,11 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { CmdCard, CmdCardProps } from '..';
 import { EventList } from '../../Event.List';
 import { css, rx, slug, t } from '../common';
-import { CmdCardStateInfoProps } from '../components/State.Info';
+import { CmdCardInfoProps } from '../components/Info';
 import { Util } from '../Util';
 import { DevSample } from './DEV.Sample';
 import { DevSidePanel } from './DEV.SidePanel';
+import { SampleRenderer } from './DEV.Renderers';
 
 type Ctx = {
   localbus: t.EventBus<any>;
@@ -18,16 +19,17 @@ type Ctx = {
   debug: Debug;
   size: { width: number; height: number };
   events: t.CmdCardEvents;
-  state?: t.CmdCardState;
-  onStateChange?: (e: t.CmdCardState) => void;
+  state: {
+    current: t.CmdCardState;
+    onChange?: (e: t.CmdCardState) => void;
+  };
+  info: CmdCardInfoProps;
 };
-
 type Debug = {
   fireCount: number; // Total number of fires.
   busKind: 'bus' | 'netbus';
   resetHistory$: Subject<void>;
-  state: { info: CmdCardStateInfoProps };
-  sidebar: boolean;
+  showSidebar: boolean;
 };
 
 /**
@@ -96,15 +98,24 @@ export const actions = DevActions<Ctx>()
       netbus,
       size: { width: 500, height: 320 },
       props: { instance, showAsCard: true },
+      events,
+      state: {
+        current: Util.defaultState(),
+        onChange: (state) => e.change.ctx((ctx) => (ctx.state.current = state)),
+      },
       debug: {
         fireCount: 0,
         busKind: 'netbus',
         resetHistory$: new Subject<void>(),
-        state: { info: {} },
-        sidebar: true,
+        showSidebar: true,
       },
-      events,
-      onStateChange: (state) => e.change.ctx((ctx) => (ctx.state = state)),
+      info: {
+        state: { isControllerEnabled: true },
+        onStateControllerToggle({ to }) {
+          e.change.ctx((ctx) => (ctx.info.state.isControllerEnabled = to));
+          e.redraw();
+        },
+      },
     };
     return ctx;
   })
@@ -142,11 +153,6 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Props');
 
-    e.boolean('[TODO] isOpen', (e) => {
-      // if (e.changing) e.ctx.props.isOpen = e.changing.next;
-      // e.boolean.current = e.ctx.props.isOpen;
-    });
-
     e.boolean('showAsCard', (e) => {
       if (e.changing) e.ctx.props.showAsCard = e.changing.next;
       e.boolean.current = e.ctx.props.showAsCard;
@@ -160,8 +166,8 @@ export const actions = DevActions<Ctx>()
 
     e.select((config) =>
       config
-        .title('fields:')
-        .items(CmdCard.State.Info.fields.all)
+        .title('fields: ')
+        .items(CmdCard.Info.fields.all)
         .initial(undefined)
         .clearable(true)
         .view('buttons')
@@ -169,10 +175,53 @@ export const actions = DevActions<Ctx>()
         .pipe((e) => {
           if (e.changing) {
             const next = e.changing.next.map(({ value }) => value) as t.CmdCardStateInfoFields[];
-            e.ctx.debug.state.info.fields = next.length === 0 ? undefined : next;
+            e.ctx.info.fields = next.length === 0 ? undefined : next;
           }
         }),
     );
+
+    e.hr(1, 0.1);
+
+    e.button('spinning (toggle)', async (e) => {
+      await e.ctx.events.state.mutate(async (state) => {
+        state.commandbar.spinning = !Boolean(state.commandbar.spinning);
+      });
+    });
+
+    e.button('[TODO] isOpen (toggle)', async (e) => {
+      /**
+       * TODO 🐷
+       * - sync AND async [mutate] handler/param type.
+       */
+      return await e.ctx.events.state.mutate(async (state) => {
+        state.body.isOpen = !Boolean(state.body.isOpen);
+      });
+    });
+
+    e.button('sample renderers (toggle)', async (e) => {
+      return await e.ctx.events.state.mutate(async (state) => {
+        const exists = Boolean(state.body.render);
+        state.body.render = exists ? undefined : SampleRenderer.body;
+        state.backdrop.render = exists ? undefined : SampleRenderer.backdrop;
+      });
+    });
+
+    e.select((config) => {
+      config
+        .title('body.show')
+        .items(['Hidden', 'CommandBar', 'FullScreen'])
+        .initial(config.ctx.state.current.body.show)
+        .view('buttons')
+        .pipe(async (e) => {
+          if (e.changing) {
+            const next = e.changing?.next[0].value;
+            console.log('next', next);
+            await e.ctx.events.state.mutate(async (state) => {
+              state.body.show = next;
+            });
+          }
+        });
+    });
 
     e.hr();
   })
@@ -180,9 +229,9 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Debug');
 
-    e.boolean('sidebar', (e) => {
-      if (e.changing) e.ctx.debug.sidebar = e.changing.next;
-      e.boolean.current = e.ctx.debug.sidebar;
+    e.boolean('show sidebar (info)', (e) => {
+      if (e.changing) e.ctx.debug.showSidebar = e.changing.next;
+      e.boolean.current = e.ctx.debug.showSidebar;
     });
     e.button('redraw', (e) => e.redraw());
 
@@ -195,38 +244,6 @@ export const actions = DevActions<Ctx>()
     size(200, 100);
     size(500, 320);
     size(800, 600);
-
-    e.hr(1, 0.1);
-
-    e.button('tmp ', async (e) => {
-      await e.ctx.events.state.mutate(async (state) => {
-        const styles = {
-          base: css({ Absolute: 0, padding: 15 }),
-        };
-
-        let count = 0;
-        state.body.render = (e) => {
-          count++;
-          return <div {...styles.base}>hello body {count}</div>;
-        };
-
-        state.backdrop.render = (e) => {
-          return <div {...styles.base}>hello backdrop {count}</div>;
-        };
-      });
-    });
-
-    e.button('spinning (toggle)', async (e) => {
-      await e.ctx.events.state.mutate(async (state) => {
-        state.commandbar.spinning = !Boolean(state.commandbar.spinning);
-      });
-    });
-
-    e.button('isOpen (toggle)', async (e) => {
-      await e.ctx.events.state.mutate(async (state) => {
-        state.body.isOpen = !Boolean(state.body.isOpen);
-      });
-    });
 
     e.hr();
     e.component((e) => {
@@ -262,18 +279,21 @@ export const actions = DevActions<Ctx>()
     const instance = rx.bus.instance(bus);
 
     const SIDEPANEL = { WIDTH: 230 };
+    const showSidebar = debug.showSidebar && width < 600;
+
+    const bottomRight = busKind === 'netbus' ? `${instance} (network)` : `${instance} (local)`;
 
     e.settings({
       host: { background: -0.04 },
       actions: { width: 330 },
       layout: {
         cropmarks: -0.2,
-        offset: debug.sidebar ? [0 - SIDEPANEL.WIDTH, 0] : undefined,
+        offset: showSidebar ? [0 - SIDEPANEL.WIDTH, 0] : undefined,
         width,
         height,
         label: {
           topLeft: '<CmdCard>',
-          bottomRight: busKind === 'netbus' ? `${instance} (network)` : `${instance} (local)`,
+          bottomRight: width > 300 ? bottomRight : undefined,
         },
       },
     });
@@ -282,16 +302,24 @@ export const actions = DevActions<Ctx>()
       base: css({ position: 'relative', flex: 1, display: 'flex' }),
     };
 
-    const elStateInfo = <CmdCard.State.Info {...debug.state.info} />;
+    const elInfo = <CmdCard.Info {...e.ctx.info} />;
     const elEventList = <EventList style={{ flex: 1 }} bus={bus} reset$={debug.resetHistory$} />;
-    const elSidebar = debug.sidebar && (
-      <DevSidePanel top={elStateInfo} bottom={elEventList} width={SIDEPANEL.WIDTH} />
+    const elSidebar = showSidebar && (
+      <DevSidePanel top={elInfo} bottom={elEventList} width={SIDEPANEL.WIDTH} />
     );
 
     e.render(
       <div {...styles.base}>
         {elSidebar}
-        <DevSample bus={bus} props={props} onStateChange={e.ctx.onStateChange} />
+        <DevSample
+          bus={bus}
+          props={props}
+          state={{
+            initial: e.ctx.state.current,
+            isControllerEnabled: e.ctx.info.state.isControllerEnabled,
+            onChange: e.ctx.state.onChange,
+          }}
+        />
       </div>,
     );
   });

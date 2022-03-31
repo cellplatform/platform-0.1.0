@@ -1,9 +1,7 @@
 import { domAnimation, LazyMotion, m } from 'framer-motion';
 import React from 'react';
 
-import { R, color, css, CssValue, t } from '../common';
-
-let TMP = 0; // TEMP 🐷
+import { R, color, css, CssValue, t, CONST } from '../common';
 
 type Milliseconds = number;
 
@@ -16,10 +14,13 @@ export type BodyProps = {
 };
 
 export const Body: React.FC<BodyProps> = (props) => {
+  const { FOOTER } = CONST;
   const { state, size } = props;
   const duration = (props.duration ?? 200) / 1000;
 
-  const FOOTER = { HEIGHT: 38 };
+  const { show = 'CommandBar' } = state.body;
+  console.log('show', show);
+
   const y = state.body.isOpen ? 0 - (size.height - FOOTER.HEIGHT) : 0;
 
   /**
@@ -36,15 +37,6 @@ export const Body: React.FC<BodyProps> = (props) => {
   };
 
   /**
-   * TODO 🐷 TEMP
-   */
-  const tmp = {
-    base: css({ Absolute: 0, Flex: 'center-center', pointerEvents: 'none' }),
-  };
-  TMP++;
-  const elTmp = <div {...tmp.base}>render body: {TMP}</div>;
-
-  /**
    * Body content.
    */
   const elContent = state.body.render?.({ size });
@@ -54,7 +46,6 @@ export const Body: React.FC<BodyProps> = (props) => {
       <m.div {...css(styles.base, props.style)}>
         <m.div animate={{ y }} transition={{ duration }} {...styles.inner}>
           {elContent}
-          {elTmp}
         </m.div>
       </m.div>
     </LazyMotion>

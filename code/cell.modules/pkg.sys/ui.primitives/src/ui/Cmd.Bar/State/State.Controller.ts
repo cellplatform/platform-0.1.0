@@ -1,10 +1,10 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { EventHistory } from '../Event.History';
-import { t } from './common';
-import { CmdBarEvents } from './Events';
-import { Util } from './Util';
+import { EventHistory } from '../../Event.History';
+import { t } from '../common';
+import { CmdBarEvents } from '../Events';
+import { Util } from '../Util';
 
 type S = t.CmdBarState;
 
@@ -19,6 +19,7 @@ export function CmdBarStateController(args: {
   dispose$?: Observable<any>;
 }) {
   const { instance, bus, logHistory = true } = args;
+
   const events = CmdBarEvents({ instance, dispose$: args.dispose$ });
   const { dispose, dispose$ } = events;
 

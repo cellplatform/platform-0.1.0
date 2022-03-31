@@ -8,7 +8,7 @@ export const Util = {
     return {
       commandbar: {},
       backdrop: {},
-      body: {},
+      body: { show: 'CommandBar' },
     };
   },
 };

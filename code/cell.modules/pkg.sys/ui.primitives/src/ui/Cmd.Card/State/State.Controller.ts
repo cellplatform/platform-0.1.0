@@ -1,28 +1,32 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { CmdBarStateController } from '../Cmd.Bar/State.Controller';
-import { Patch, t } from './common';
-import { CmdCardEvents } from './Events';
-import { Util } from './Util';
+import { CmdBarState } from '../../Cmd.Bar/State';
+import { Patch, t } from '../common';
+import { CmdCardEvents } from '../Events';
+import { Util } from '../Util';
 
 type S = t.CmdCardState;
 
-/**
- * State controller for the <CmdCard>.
- */
-export function CmdCardStateController(args: {
+export type StateControllerArgs = {
   instance: t.CmdCardInstance;
   bus?: t.EventBus<any>;
   initial?: S;
   dispose$?: Observable<any>;
-}) {
+};
+
+/**
+ * State controller for the <CmdCard>.
+ */
+export function StateController(args: StateControllerArgs) {
   const { bus } = args;
-
-  const fire = (e: t.CmdCardEvent) => args.instance.bus.fire(e);
   const instance = args.instance.id;
+  const fire = (e: t.CmdCardEvent) => args.instance.bus.fire(e);
 
-  const events = CmdCardEvents({ instance: args.instance, dispose$: args.dispose$ });
+  const events = CmdCardEvents({
+    instance: args.instance,
+    dispose$: args.dispose$,
+  });
   const { dispose, dispose$ } = events;
 
   /**
@@ -38,7 +42,12 @@ export function CmdCardStateController(args: {
   /**
    * <CmdBar> sub-controller.
    */
-  const bar = CmdBarStateController({ instance: args.instance, bus, dispose$ });
+  const bar = CmdBarState.Controller({
+    dispose$,
+    bus,
+    instance: args.instance,
+    initial: _state.commandbar,
+  });
   bar.state$.subscribe((bar) => {
     change((prev) => ({ ...prev, commandbar: bar }));
   });

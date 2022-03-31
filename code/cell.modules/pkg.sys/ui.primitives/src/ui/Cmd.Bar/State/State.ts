@@ -1,7 +1,7 @@
 import { CmdBarStateController as Controller } from './State.Controller';
-import { Util } from './Util';
+import { Util } from '../Util';
 
-export const State = {
+export const CmdBarState = {
   Controller,
   changed: Util.stateChanged,
 };

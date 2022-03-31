@@ -1,8 +1,7 @@
 import { animationFrameScheduler, Subject } from 'rxjs';
 import { filter, observeOn, takeUntil } from 'rxjs/operators';
 
-import { rx, t, Patch, slug } from './common';
-import { Util } from './Util';
+import { rx, t, Patch, slug } from '../common';
 
 /**
  * Event API
@@ -66,11 +65,12 @@ export const CmdCardEvents: t.CmdCardEventsFactory = (args) => {
   /**
    * API
    */
-  return {
+  const api: t.CmdCardEvents = {
     instance: { bus: rx.bus.instance(bus), id: instance },
     $,
     dispose,
     dispose$,
     state,
   };
+  return api;
 };

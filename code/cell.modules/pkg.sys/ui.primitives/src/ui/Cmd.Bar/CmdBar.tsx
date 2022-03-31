@@ -4,7 +4,7 @@ import { CmdTextbox } from '../Cmd.Textbox';
 import { CmdBarEventPipe, CmdBarEventPipeProps } from './CmdBar.EventPipe';
 import { color, css, CssValue, FC, t } from './common';
 import { CmdBarEvents } from './Events';
-import { State } from './State';
+import { CmdBarState } from './State';
 
 /**
  * Types
@@ -146,14 +146,14 @@ export const View: React.FC<CmdBarProps> = (props) => {
 type Fields = {
   EventPipe: React.FC<CmdBarEventPipeProps>;
   Events: t.CmdBarEventsFactory;
-  State: typeof State;
+  State: typeof CmdBarState;
 };
 export const CmdBar = FC.decorate<CmdBarProps, Fields>(
   View,
   {
     EventPipe: CmdBarEventPipe,
     Events: CmdBarEvents,
-    State,
+    State: CmdBarState,
   },
   { displayName: 'CmdBar' },
 );
