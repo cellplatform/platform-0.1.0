@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { PeerNetwork } from '../../';
-import { DevActions, LocalStorage, ObjectView, TEST, toObject } from '../../web.test';
+import { DevActions, LocalStorage, ObjectView, TEST, toObject } from '../../test';
 import {
   css,
   cuid,

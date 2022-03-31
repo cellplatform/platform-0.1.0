@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { DevActions, ObjectView, TEST } from '../../web.test';
+import { DevActions, ObjectView, TEST } from '../../test';
 import {
   color,
   COLORS,

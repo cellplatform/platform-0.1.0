@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { TEST } from '../../web.test';
+import { TEST } from '../../test';
 import * as k from '../NetworkCard/types';
 import {
   color,

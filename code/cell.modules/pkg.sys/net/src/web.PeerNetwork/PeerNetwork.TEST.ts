@@ -1,5 +1,5 @@
 import { PeerNetwork } from '.';
-import { cuid, expect, rx, TEST, Test } from '../web.test';
+import { cuid, expect, rx, TEST, Test } from '../test';
 
 const signal = TEST.SIGNAL;
 

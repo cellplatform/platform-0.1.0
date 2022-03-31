@@ -2,7 +2,7 @@ import React from 'react';
 
 import { NetbusCard, NetbusCardProps } from '..';
 import { PeerNetwork } from '../../../web.PeerNetwork';
-import { DevActions, ObjectView, TEST } from '../../../web.test';
+import { DevActions, ObjectView, TEST } from '../../../test';
 
 type Ctx = {
   props: NetbusCardProps;
