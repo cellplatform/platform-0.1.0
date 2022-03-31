@@ -12,6 +12,7 @@ type BulletBody = {
   borderColor?: Color;
   backgroundColor?: Color;
   backgroundBlur?: Pixels;
+  transition?: Milliseconds;
 };
 
 type BulletOuter = {
@@ -45,15 +46,17 @@ export type BulletProps = {
 /**
  * Constants
  */
+
+const DEFAULT_BODY: BulletBody = {
+  radius: 15,
+  borderColor: -0.1,
+  backgroundColor: 'rgba(255, 0, 0, 0.1)', // RED.
+  backgroundBlur: 1, // Pixel.
+};
 const DEFAULTS = {
   size: 15,
   radius: 1,
-  body: {
-    radius: 15,
-    borderColor: -0.1,
-    backgroundColor: 'rgba(255, 0, 0, 0.1)', // RED.
-    backgroundBlur: 1, // Pixel.
-  },
+  body: DEFAULT_BODY,
 };
 export const BulletConstants = { DEFAULTS };
 
@@ -62,6 +65,7 @@ export const BulletConstants = { DEFAULTS };
  */
 export const Bullet: React.FC<BulletProps> = (props) => {
   const { size = DEFAULTS.size, body = DEFAULTS.body, outer, hover } = props;
+  const time = `${body.transition}ms`;
 
   /**
    * [Render]
@@ -79,6 +83,9 @@ export const Bullet: React.FC<BulletProps> = (props) => {
       border: Util.toBorder(body.borderColor),
       backgroundColor: color.format(body.backgroundColor),
       backdropFilter: Util.toBlur(body.backgroundBlur),
+      transition: body.transition
+        ? `background-color ${time}, border-radius ${time}, backdrop-filter ${time}`
+        : undefined,
     }),
     outer:
       outer &&
