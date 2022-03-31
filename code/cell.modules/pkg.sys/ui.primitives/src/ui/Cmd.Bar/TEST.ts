@@ -17,7 +17,7 @@ export default Test.describe('Cmd.Bar', (e) => {
   });
 
   e.describe('State.Controller', (e) => {
-    e.it('logs history (from bus property, not instance)', async () => {
+    e.it('logs history (from bus property)', async () => {
       const sample: t.Event = { type: 'FOO', payload: {} };
       const instance = { bus: rx.bus(), id: 'foo' };
       const bus = rx.bus();
@@ -33,15 +33,17 @@ export default Test.describe('Cmd.Bar', (e) => {
       bus.fire(sample);
       await time.wait(60);
 
-      const history = controller.state.history ?? [];
-      expect(history.length).to.eql(1);
-      expect(history[0].event).to.eql(sample);
+      expect(controller.state.history?.total).to.eql(1);
+
+      const events = controller.state.history?.events ?? [];
+      expect(events.length).to.eql(1);
+      expect(events[0].event).to.eql(sample);
 
       dispose$.next();
       bus.fire(sample);
       bus.fire(sample);
       await time.wait(60);
-      expect(controller.state.history?.length).to.eql(1); // NB: no change after dispose.
+      expect(controller.state.history?.events.length).to.eql(1); // NB: no change after dispose.
     });
   });
 });

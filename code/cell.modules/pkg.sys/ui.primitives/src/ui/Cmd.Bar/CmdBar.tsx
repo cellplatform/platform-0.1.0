@@ -122,7 +122,12 @@ export const View: React.FC<CmdBarProps> = (props) => {
       appendDivider();
       elements.push(
         <div {...styles.events} key={elements.length}>
-          {<CmdBarEventPipe history={state?.history} iconEdge={isFirst ? 'Left' : 'Right'} />}
+          {
+            <CmdBarEventPipe
+              history={state?.history?.events}
+              iconEdge={isFirst ? 'Left' : 'Right'}
+            />
+          }
         </div>,
       );
     }

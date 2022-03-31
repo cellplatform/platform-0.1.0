@@ -206,11 +206,8 @@ export const actions = DevActions<Ctx>()
 
     e.button('isOpen (toggle)', async (e) => {
       await e.ctx.events.state.mutate(async (state) => {
-        // state.commandbar.spinning = !Boolean(state.commandbar.spinning);
-        state.isOpen = !Boolean(state.isOpen);
+        state.body.isOpen = !Boolean(state.body.isOpen);
       });
-
-      // const state = Dev.toState(e.ctx);
     });
 
     e.hr();

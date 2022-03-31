@@ -13,10 +13,14 @@ export type CmdCardRenderProps = { size: t.DomRect };
  * STATE
  */
 export type CmdCardState = {
-  isOpen?: boolean; // TEMP 🐷
   commandbar: t.CmdBarState;
-  body: { render?: CmdCardRender };
-  backdrop: { render?: CmdCardRender };
+  body: {
+    isOpen?: boolean; // TEMP 🐷
+    render?: CmdCardRender;
+  };
+  backdrop: {
+    render?: CmdCardRender;
+  };
 };
 
 export type CmdCardStateMutator = (prev: CmdCardState) => Promise<void>;

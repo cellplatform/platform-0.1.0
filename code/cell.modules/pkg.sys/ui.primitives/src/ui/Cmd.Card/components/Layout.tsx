@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { css, CssValue, t, useResizeObserver } from '../common';
-import { Backdrop } from './Backdrop';
-import { Body } from './Body';
+import { BackdropMemo } from './Backdrop';
+import { BodyMemo } from './Body';
 
 /**
  * Types
@@ -32,11 +32,11 @@ export const CmdCardLayout: React.FC<CmdCardLayoutProps> = (props) => {
   };
 
   const elBody = resize.ready && (
-    <Body instance={instance} state={state} size={size} style={styles.body} />
+    <BodyMemo instance={instance} state={state} size={size} style={styles.body} />
   );
 
   const elBackdrop = resize.ready && (
-    <Backdrop instance={instance} state={state} size={size} style={styles.backdrop} />
+    <BackdropMemo instance={instance} state={state} size={size} style={styles.backdrop} />
   );
 
   return (

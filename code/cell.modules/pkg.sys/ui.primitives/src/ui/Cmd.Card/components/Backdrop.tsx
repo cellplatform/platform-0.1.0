@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { color, COLORS, css, CssValue, t, rx } from '../common';
+import React from 'react';
+
 import { CmdBar } from '../../Cmd.Bar';
+import { COLORS, css, CssValue, R, t } from '../common';
 
 /**
  * Types
@@ -48,3 +49,13 @@ export const Backdrop: React.FC<BackdropProps> = (props) => {
     </div>
   );
 };
+
+/**
+ * [Memoized]
+ */
+export const BackdropMemo = React.memo(Backdrop, (prev, next) => {
+  if (!R.equals(prev.size, next.size)) return false;
+  if (!R.equals(prev.state.backdrop, next.state.backdrop)) return false;
+  if (CmdBar.State.changed(prev.state.commandbar, next.state.commandbar)) return false;
+  return true;
+});

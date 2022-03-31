@@ -1,7 +1,7 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { EventHistoryMonitor } from '../Event.History';
+import { EventHistory } from '../Event.History';
 import { t } from './common';
 import { CmdBarEvents } from './Events';
 import { Util } from './Util';
@@ -36,9 +36,12 @@ export function CmdBarStateController(args: {
    * Event history monitor.
    */
   if (bus && logHistory) {
-    const monitor = EventHistoryMonitor(bus, { dispose$ });
-    monitor.changed$.pipe(debounceTime(50)).subscribe((history) => {
-      change((prev) => ({ ...prev, history }));
+    const monitor = EventHistory.Monitor(bus, { dispose$ });
+    monitor.changed$.pipe(debounceTime(50)).subscribe((events) => {
+      change((prev) => {
+        const total = events.length;
+        return { ...prev, history: { events, total } };
+      });
     });
   }
 
@@ -46,7 +49,8 @@ export function CmdBarStateController(args: {
    * Text change monitor.
    */
   events.text.changed$.subscribe((e) => {
-    change((prev) => ({ ...prev, text: e.to }));
+    const text = e.to;
+    change((prev) => ({ ...prev, text }));
   });
 
   /**

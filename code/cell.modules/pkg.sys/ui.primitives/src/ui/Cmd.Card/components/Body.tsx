@@ -1,9 +1,9 @@
 import { domAnimation, LazyMotion, m } from 'framer-motion';
 import React from 'react';
 
-import { color, css, CssValue, t } from '../common';
+import { R, color, css, CssValue, t } from '../common';
 
-let renderCount__TMP = 0; // TEMP 🐷
+let TMP = 0; // TEMP 🐷
 
 type Milliseconds = number;
 
@@ -20,7 +20,7 @@ export const Body: React.FC<BodyProps> = (props) => {
   const duration = (props.duration ?? 200) / 1000;
 
   const FOOTER = { HEIGHT: 38 };
-  const y = state.isOpen ? 0 - (size.height - FOOTER.HEIGHT) : 0;
+  const y = state.body.isOpen ? 0 - (size.height - FOOTER.HEIGHT) : 0;
 
   /**
    * [Render]
@@ -41,8 +41,8 @@ export const Body: React.FC<BodyProps> = (props) => {
   const tmp = {
     base: css({ Absolute: 0, Flex: 'center-center', pointerEvents: 'none' }),
   };
-  renderCount__TMP++;
-  const elTmp = <div {...tmp.base}>render: {renderCount__TMP}</div>;
+  TMP++;
+  const elTmp = <div {...tmp.base}>render body: {TMP}</div>;
 
   /**
    * Body content.
@@ -60,3 +60,12 @@ export const Body: React.FC<BodyProps> = (props) => {
     </LazyMotion>
   );
 };
+
+/**
+ * [Memoized]
+ */
+export const BodyMemo = React.memo(Body, (prev, next) => {
+  if (!R.equals(prev.size, next.size)) return false;
+  if (!R.equals(prev.state.body, next.state.body)) return false;
+  return true;
+});

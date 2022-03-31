@@ -8,7 +8,7 @@ export type CmdBarInstance = { bus: t.EventBus<any>; id: Id };
  * State
  */
 export type CmdBarState = {
-  history?: t.EventHistory;
+  history?: { events: t.EventHistory; total: number };
   text?: string;
   spinning?: boolean;
 };
