@@ -35,4 +35,4 @@ export { MediaStream, MediaEvent, VideoStream } from 'sys.ui.video/lib/ui/MediaS
  * - do not get the <Textbox> get [sys.ui.dev]
  * - should be a [sys.ui.primitives]
  */
-export { Textbox } from 'sys.ui.dev/lib/web.ui/Textbox';
+export { Textbox } from 'sys.ui.dev/lib/ui/Textbox';
