@@ -1,7 +1,7 @@
 export * from '../common';
 export { PeerNetwork } from '../..';
 
-export { useLocalPeer } from '../../web.hooks';
+export { useLocalPeer } from '../../ui.hooks';
 export { LocalPeerCard } from '../LocalPeerCard';
 
 /**
@@ -10,7 +10,7 @@ export { LocalPeerCard } from '../LocalPeerCard';
 export { Card } from 'sys.ui.primitives/lib/ui/Card';
 
 /**
- * @local :: Types
+ * @local : Types
  */
 import * as k from './types';
 export { k };

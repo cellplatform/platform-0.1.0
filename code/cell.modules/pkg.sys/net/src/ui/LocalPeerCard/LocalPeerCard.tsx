@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { interval, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { useLocalPeer } from '../../web.hooks';
+import { useLocalPeer } from '../../ui.hooks';
 import { CmdTextbox, Card, css, CssValue, Hr, PropList, t } from '../common';
 import { LocalPeerCardConstants } from './constants';
 import { Connect, connect } from './LocalPeerCard.connect';

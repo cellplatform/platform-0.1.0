@@ -14,7 +14,7 @@ export * from '../common';
 export * from '../NetworkCard';
 export { PeerNetwork } from '../..';
 
-export { useLocalPeer } from '../../web.hooks';
+export { useLocalPeer } from '../../ui.hooks';
 export { LocalPeerCard } from '../LocalPeerCard';
 export { CardBody } from '../primitives';
 export { t };
