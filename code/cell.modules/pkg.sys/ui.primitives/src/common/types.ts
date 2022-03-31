@@ -5,7 +5,7 @@ export { Observable } from 'rxjs';
 /**
  * @platform
  */
-export { EventBus, Event, DomRect, PartialDeep, Disposable } from '@platform/types';
+export { EventBus, Event, DomRect, PartialDeep, Disposable, LazyBool } from '@platform/types';
 export {
   IHttpClientCellFileUpload,
   ManifestUrl,
@@ -22,3 +22,9 @@ export { IIcon } from '@platform/ui.icon/lib/types';
  */
 export { WebRuntimeEvents } from 'sys.runtime.web/lib/types';
 export { UseManifestHook } from 'sys.runtime.web.ui/lib/types';
+
+/**
+ * TODO 🐷
+ * - move to [sys.json]...inline into "sys" code base.
+ */
+export { Patch, PatchChange, PatchSet, StateChangeOperation } from '@platform/state/lib/types';
