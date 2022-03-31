@@ -3,14 +3,14 @@ import { Harness } from 'sys.ui.dev';
 import { t } from './common';
 
 const imports = {
-  ModuleInfo: import('./web.ui/ModuleInfo/dev/DEV'),
-  ManifestSelector: import('./web.ui/Manifest.Selector/dev/DEV'),
-  ManifestSemver: import('./web.ui/Manifest.Semver/dev/DEV'),
-  Module: import('./web.ui/Module/dev/DEV'),
+  ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
+  ManifestSelector: import('./ui/Manifest.Selector/dev/DEV'),
+  ManifestSemver: import('./ui/Manifest.Semver/dev/DEV'),
+  Module: import('./ui/Module/dev/DEV'),
 
-  useManifest: import('./web.ui/useManifest/dev/DEV'),
-  useModuleTarget: import('./web.ui/useModuleTarget/dev/DEV'),
-  useModule: import('./web.ui/useModule/dev/DEV'),
+  useManifest: import('./ui/useManifest/dev/DEV'),
+  useModuleTarget: import('./ui/useModuleTarget/dev/DEV'),
+  useModule: import('./ui/useModule/dev/DEV'),
 
   UnitTests: import('./Dev.UnitTests'),
 };

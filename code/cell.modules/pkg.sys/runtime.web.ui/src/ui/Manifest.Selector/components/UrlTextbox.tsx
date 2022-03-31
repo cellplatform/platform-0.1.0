@@ -1,5 +1,5 @@
 import React from 'react';
-import { Textbox } from 'sys.ui.dev/lib/web.ui/Textbox';
+import { Textbox } from 'sys.ui.dev/lib/ui/Textbox';
 
 import { Icons } from '../../Icons';
 import { color, COLORS, css, CssValue, t } from '../common';

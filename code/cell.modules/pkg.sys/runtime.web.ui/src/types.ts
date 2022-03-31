@@ -1,3 +1,3 @@
-export * from './web.ui/Manifest.Selector/types';
-export * from './web.ui/ModuleInfo/types';
-export * from './web.ui/useManifest/types';
+export * from './ui/Manifest.Selector/types';
+export * from './ui/ModuleInfo/types';
+export * from './ui/useManifest/types';
