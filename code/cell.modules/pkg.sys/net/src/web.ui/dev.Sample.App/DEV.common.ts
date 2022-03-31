@@ -1,1 +1,1 @@
-export * from '../dev.Networks/DEV.common';
+export * from '../DEV.Networks/DEV.common';

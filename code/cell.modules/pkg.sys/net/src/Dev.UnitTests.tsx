@@ -3,11 +3,11 @@ import { DevActions, Test } from 'sys.ui.dev';
 import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
 const Imports = {
-  PeerNetwork: import('../../web.PeerNetwork/PeerNetwork.TEST'),
-  PeerNetworkUri: import('../../common/util.Uri.TEST'),
-  PeerNetbus: import('../../web.PeerNetbus/PeerNetbus.TEST'),
-  PeerEvents: import('../../web.PeerNetwork.events/PeerEvents.TEST'),
-  PeerStrategy: import('../../web.PeerNetwork/strategy/PeerStrategy/PeerStrategy.TEST'),
+  PeerNetwork: import('./web.PeerNetwork/PeerNetwork.TEST'),
+  PeerNetworkUri: import('./common/util.Uri.TEST'),
+  PeerNetbus: import('./web.PeerNetbus/PeerNetbus.TEST'),
+  PeerEvents: import('./web.PeerNetwork.events/PeerEvents.TEST'),
+  PeerStrategy: import('./web.PeerNetwork/strategy/PeerStrategy/PeerStrategy.TEST'),
 };
 
 type Ctx = { results?: TestSuiteRunResponse };

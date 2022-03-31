@@ -22,7 +22,7 @@ export { t };
 /**
  * @development
  */
-export { EventBridge } from '../dev.Sample/DEV.event';
+export { EventBridge } from '../DEV.Sample/DEV.event';
 
 /**
  * Constants

@@ -8,9 +8,10 @@ const imports = {
   LocalPeerCard: import('./web.ui/LocalPeerCard/dev/DEV'),
   NetbusCard: import('./web.ui/NetbusCard/dev/DEV'),
   Label: import('./web.ui/Label/dev/DEV'),
-  Networks: import('./web.ui/dev.Networks/DEV'),
-  UnitTests: import('./web.ui/dev.UnitTests/DEV'),
-  Sample: import('./web.ui/dev.Sample/DEV'),
+  Networks: import('./web.ui/DEV.Networks/DEV'),
+  Sample: import('./web.ui/DEV.Sample/DEV'),
+
+  UnitTests: import('./Dev.UnitTests'),
 };
 
 /**
