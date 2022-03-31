@@ -25,6 +25,7 @@ export const DevSample: React.FC<DevSampleProps> = (args) => {
     bus,
     initial: args.state.initial,
     enabled: args.state.isControllerEnabled,
+    onChange: args.state.onChange,
   });
 
   /**

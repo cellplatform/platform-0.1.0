@@ -5,8 +5,8 @@ import { rx, t } from '../common';
 import { StateController, StateControllerArgs } from './State.Controller';
 
 export type UseStateControllerArgs = StateControllerArgs & {
-  onStateChange?: (e: t.CmdCardState) => void;
   enabled?: boolean;
+  onChange?: (e: t.CmdCardState) => void;
 };
 
 /**
@@ -24,7 +24,7 @@ export function useStateController(args: UseStateControllerArgs) {
 
     controller.state$.pipe(filter(() => enabled)).subscribe((state) => {
       setState(state);
-      args.onStateChange?.(state);
+      args.onChange?.(state);
     });
 
     return () => controller.dispose();

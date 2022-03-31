@@ -7,7 +7,7 @@ import { CmdCard, CmdCardProps } from '..';
 import { EventList } from '../../Event.List';
 import { css, rx, slug, t } from '../common';
 import { CmdCardInfoProps } from '../components/Info';
-import { Util } from '../Util';
+import { defaultState } from '../Util';
 import { DevSample } from './DEV.Sample';
 import { DevSidePanel } from './DEV.SidePanel';
 import { SampleRenderer } from './DEV.Renderers';
@@ -35,7 +35,7 @@ type Debug = {
 /**
  * Helpers
  */
-const Dev = {
+const Util = {
   /**
    * Fire an event.
    */
@@ -72,7 +72,7 @@ const Dev = {
   },
 
   toState(ctx: Ctx) {
-    return ctx.props.state || (ctx.props.state = Util.defaultState());
+    return ctx.props.state || (ctx.props.state = defaultState());
   },
 
   localbus(ctx: Ctx) {
@@ -100,8 +100,13 @@ export const actions = DevActions<Ctx>()
       props: { instance, showAsCard: true },
       events,
       state: {
-        current: Util.defaultState(),
-        onChange: (state) => e.change.ctx((ctx) => (ctx.state.current = state)),
+        current: defaultState({
+          body: { render: SampleRenderer.body },
+          backdrop: { render: SampleRenderer.backdrop },
+        }),
+        onChange(state) {
+          e.change.ctx((ctx) => (ctx.state.current = state));
+        },
       },
       debug: {
         fireCount: 0,
@@ -142,9 +147,9 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr(1, 0.1);
-    e.button('fire (1)', (e) => Dev.fire(e.ctx, 1));
-    e.button('fire (100)', (e) => Dev.fire(e.ctx, 100));
-    e.button('fire (1,000)', (e) => Dev.fire(e.ctx, 1000));
+    e.button('fire (1)', (e) => Util.fire(e.ctx, 1));
+    e.button('fire (100)', (e) => Util.fire(e.ctx, 100));
+    e.button('fire (1,000)', (e) => Util.fire(e.ctx, 1000));
     e.hr(1, 0.1);
     e.button('reset', (e) => e.ctx.debug.resetHistory$.next());
     e.hr();
@@ -199,10 +204,11 @@ export const actions = DevActions<Ctx>()
     });
 
     e.button('sample renderers (toggle)', async (e) => {
+      const { body, backdrop } = SampleRenderer;
       return await e.ctx.events.state.mutate(async (state) => {
         const exists = Boolean(state.body.render);
-        state.body.render = exists ? undefined : SampleRenderer.body;
-        state.backdrop.render = exists ? undefined : SampleRenderer.backdrop;
+        state.body.render = exists ? undefined : body;
+        state.backdrop.render = exists ? undefined : backdrop;
       });
     });
 
@@ -237,12 +243,13 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.1);
 
-    const size = (width: number, height: number) => {
-      e.button(`size: ${width} x ${height}`, (e) => (e.ctx.size = { width, height }));
+    const size = (width: number, height: number, suffix?: string) => {
+      const label = `size: ${width} x ${height}${suffix ?? ''}`;
+      e.button(label, (e) => (e.ctx.size = { width, height }));
     };
 
-    size(200, 100);
-    size(500, 320);
+    size(200, 100, ' - too small');
+    size(500, 320, ' - (default)');
     size(800, 600);
 
     e.hr();
@@ -250,7 +257,7 @@ export const actions = DevActions<Ctx>()
       return (
         <ObjectView
           name={'props'}
-          data={Dev.toProps(e.ctx)}
+          data={Util.toProps(e.ctx)}
           style={{ MarginX: 15 }}
           fontSize={10}
           expandPaths={['$']}
@@ -262,7 +269,7 @@ export const actions = DevActions<Ctx>()
       return (
         <ObjectView
           name={'state'}
-          data={e.ctx.state}
+          data={e.ctx.state.current}
           style={{ MarginX: 15 }}
           fontSize={10}
           expandPaths={['$']}
@@ -274,8 +281,8 @@ export const actions = DevActions<Ctx>()
   .subject((e) => {
     const { debug } = e.ctx;
     const { width, height } = e.ctx.size;
-    const { bus, busKind } = Dev.toBus(e.ctx);
-    const props = Dev.toProps(e.ctx);
+    const { bus, busKind } = Util.toBus(e.ctx);
+    const props = Util.toProps(e.ctx);
     const instance = rx.bus.instance(bus);
 
     const SIDEPANEL = { WIDTH: 230 };

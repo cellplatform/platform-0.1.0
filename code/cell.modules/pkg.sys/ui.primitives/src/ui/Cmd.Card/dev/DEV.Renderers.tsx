@@ -12,7 +12,7 @@ export const renderSampleBackdrop: t.CmdCardRender = (e) => {
       Flex: 'center-center',
       color: color.format(1),
       border: `dashed 1px ${color.format(0.3)}`,
-      backgroundColor: 'rgba(255, 0, 0, 0.03)' /* RED */,
+      backgroundColor: 'rgba(255, 0, 0, 0.06)' /* RED */,
       borderRadius: 5,
     }),
   };
@@ -28,8 +28,8 @@ export const renderSampleBody: t.CmdCardRender = (e) => {
       Absolute: 10,
       Size: e.size,
       Flex: 'center-center',
-      border: `dashed 1px ${color.format(-0.3)}`,
-      backgroundColor: 'rgba(255, 0, 0, 0.03)' /* RED */,
+      border: `dashed 1px ${color.format(-0.2)}`,
+      backgroundColor: 'rgba(255, 0, 0, 0.02)' /* RED */,
       borderRadius: 15,
     }),
   };
