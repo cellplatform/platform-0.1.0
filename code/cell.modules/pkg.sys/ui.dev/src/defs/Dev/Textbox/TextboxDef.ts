@@ -1,7 +1,7 @@
 import { filter } from 'rxjs/operators';
 
 import { Context, Handler, Model, rx, t, is, toObject } from '../common';
-import { Textbox as Component } from '../../../web.ui/Action.Dev';
+import { Textbox as Component } from '../../../ui/Action.Dev';
 import { config } from './TextboxDef.config';
 
 type T = t.ActionTextbox;

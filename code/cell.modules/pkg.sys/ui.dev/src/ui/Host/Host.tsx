@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { t, CssValue } from '../../common';
-import { useActionsRedraw } from '../../web.hooks';
+import { useActionsRedraw } from '../../ui.hooks';
 import { HostLayout, ActionsVisible } from './Host.Layout';
 
 export type HostProps = {

@@ -1,6 +1,6 @@
 import { t } from '../common';
 import { config } from './TitleDef.config';
-import { Title as Component } from '../../../web.ui/Action.Display';
+import { Title as Component } from '../../../ui/Action.Display';
 
 export const TitleDef: t.ActionDef<t.ActionTitle> = {
   kind: 'display/title',

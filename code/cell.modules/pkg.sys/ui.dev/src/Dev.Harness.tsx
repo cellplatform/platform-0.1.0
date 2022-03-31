@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { t } from './common';
-import { Harness } from './web.ui/Harness';
+import { Harness } from './ui/Harness';
 
 const imports = {
   sample1: import('./test/sample-1/DEV'),
@@ -9,11 +9,11 @@ const imports = {
   sample3: import('./test/sample-3/DEV'),
   sample4: import('./test/sample-4/DEV'),
 
-  Harness: import('./web.ui/Harness/dev/DEV'),
-  Textbox: import('./web.ui/Textbox/dev/DEV'),
-  OptionButtons: import('./web.ui/OptionButtons/dev/DEV'),
+  Harness: import('./ui/Harness/dev/DEV'),
+  Textbox: import('./ui/Textbox/dev/DEV'),
+  OptionButtons: import('./ui/OptionButtons/dev/DEV'),
 
-  TestSuite: import('./web.ui/TestSuite/dev/DEV'),
+  TestSuite: import('./ui/TestSuite/dev/DEV'),
 };
 
 /**

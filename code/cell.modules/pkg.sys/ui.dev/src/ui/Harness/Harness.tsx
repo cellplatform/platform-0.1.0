@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { css, CssValue, defaultValue, rx, t } from '../../common';
-import { useActionsPropertyInput, useActionsRedraw, useSelectionManager } from '../../web.hooks';
+import { useActionsPropertyInput, useActionsRedraw, useSelectionManager } from '../../ui.hooks';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { Host } from '../Host';
 import { HarnessActions } from './Harness.Actions';
