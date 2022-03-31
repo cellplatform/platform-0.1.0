@@ -27,6 +27,7 @@ type Debug = {
   busKind: 'bus' | 'netbus';
   resetHistory$: Subject<void>;
   state: { info: CmdCardStateInfoProps };
+  sidebar: boolean;
 };
 
 /**
@@ -100,6 +101,7 @@ export const actions = DevActions<Ctx>()
         busKind: 'netbus',
         resetHistory$: new Subject<void>(),
         state: { info: {} },
+        sidebar: true,
       },
       events,
       onStateChange: (state) => e.change.ctx((ctx) => (ctx.state = state)),
@@ -177,7 +179,23 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Debug');
+
+    e.boolean('sidebar', (e) => {
+      if (e.changing) e.ctx.debug.sidebar = e.changing.next;
+      e.boolean.current = e.ctx.debug.sidebar;
+    });
     e.button('redraw', (e) => e.redraw());
+
+    e.hr(1, 0.1);
+
+    const size = (width: number, height: number) => {
+      e.button(`size: ${width} x ${height}`, (e) => (e.ctx.size = { width, height }));
+    };
+
+    size(200, 100);
+    size(500, 320);
+    size(800, 600);
+
     e.hr(1, 0.1);
 
     e.button('tmp ', async (e) => {
@@ -250,7 +268,7 @@ export const actions = DevActions<Ctx>()
       actions: { width: 330 },
       layout: {
         cropmarks: -0.2,
-        offset: [0 - SIDEPANEL.WIDTH, 0],
+        offset: debug.sidebar ? [0 - SIDEPANEL.WIDTH, 0] : undefined,
         width,
         height,
         label: {
@@ -266,10 +284,13 @@ export const actions = DevActions<Ctx>()
 
     const elStateInfo = <CmdCard.State.Info {...debug.state.info} />;
     const elEventList = <EventList style={{ flex: 1 }} bus={bus} reset$={debug.resetHistory$} />;
+    const elSidebar = debug.sidebar && (
+      <DevSidePanel top={elStateInfo} bottom={elEventList} width={SIDEPANEL.WIDTH} />
+    );
 
     e.render(
       <div {...styles.base}>
-        <DevSidePanel top={elStateInfo} bottom={elEventList} width={SIDEPANEL.WIDTH} />
+        {elSidebar}
         <DevSample bus={bus} props={props} onStateChange={e.ctx.onStateChange} />
       </div>,
     );
