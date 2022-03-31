@@ -15,7 +15,7 @@ export const DevFullscreen: React.FC<DevFullscreenProps> = (props) => {
   const { instance, blur = 5 } = props;
   const bus = rx.busAsType<t.NetworkCardEvent>(props.bus);
 
-  const TOOLBAR = { HEIGHT: 32, MARGIN: 3 };
+  const TOOLBAR = { HEIGHT: 32, MARGIN: 10 };
 
   /**
    * [Render]
