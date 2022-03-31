@@ -2,7 +2,7 @@ import React from 'react';
 
 import { List } from '../../List';
 import { color, CONSTANTS, css, CssValue, t } from '../common';
-import { EventListRow } from './Layout.Row';
+import { EventListRow } from './Row';
 
 type Id = string;
 

@@ -26,7 +26,7 @@ export type EventHistoryHook = {
 };
 
 export type EventHistoryOptions = {
-  enabled?: boolean | (() => boolean);
+  enabled?: t.LazyBool;
   onChange?: (e: EventHistory) => void;
   filter?: <E extends t.Event = t.Event>(e: E) => boolean;
   reset$?: t.Observable<any>;
