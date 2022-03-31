@@ -9,7 +9,7 @@ export const LOREM =
 const styles = {
   label: css({
     boxSizing: 'border-box',
-    backgroundColor: 'rgba(255, 0, 0, 0.1)',
+    backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
     flex: 1,
     height: 40,
     padding: 3,
@@ -18,7 +18,7 @@ const styles = {
     color: COLORS.MAGENTA,
   }),
   value: css({
-    backgroundColor: 'rgba(255, 0, 0, 0.1)',
+    backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
     Flex: 'center-center',
     flex: 1,
     height: 30,
@@ -31,6 +31,7 @@ export const items: PropListItem[] = [
   { label: 'number', value: { data: 123456, clipboard: 'Value: 123456', monospace: true } },
   { label: 'boolean', value: true },
   { label: 'boolean (switch)', value: { data: true, kind: 'Switch' } },
+  { label: 'boolean (switch) - disabled', value: { data: undefined, kind: 'Switch' } },
   { label: 'clipboard function', value: { data: 'hello', clipboard: () => Math.random() } },
   { label: '<Text.Syntax>', value: { data: '{object}, [1,2,3]', monospace: true } },
   {

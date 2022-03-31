@@ -11,6 +11,7 @@ export type SimpleValueProps = {
   cursor?: CSSProperties['cursor'];
   isOver?: boolean;
   isCopyable?: boolean;
+  onClick: () => void;
 };
 
 export const SimpleValue: React.FC<SimpleValueProps> = (props) => {
