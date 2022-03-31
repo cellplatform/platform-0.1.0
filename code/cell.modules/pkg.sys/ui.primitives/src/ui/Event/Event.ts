@@ -1,4 +1,4 @@
-import { useEventHistory, EventHistoryMonitor as HistoryMonitor } from '../Event.History';
+import { useEventHistory, EventHistory as History } from '../Event.History';
 import { EventList as List } from '../Event.List';
 
 /**
@@ -6,6 +6,6 @@ import { EventList as List } from '../Event.List';
  */
 export const Event = {
   List,
-  HistoryMonitor,
+  History,
   useEventHistory,
 };
