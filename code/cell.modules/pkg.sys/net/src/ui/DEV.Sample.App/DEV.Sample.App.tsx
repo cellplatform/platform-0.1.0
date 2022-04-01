@@ -17,6 +17,7 @@ import {
   Spinner,
   t,
   WebRuntime,
+  Button,
 } from './DEV.common';
 import { DevFullscreen } from './DEV.Fullscreen';
 import { DevNetworkCard } from '../DEV.Networks/DEV.NetworkCard';
@@ -115,14 +116,16 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     position: { x: 'right', y: 'top' },
     render(e) {
       const styles = {
-        base: css({ pointerEvents: 'auto', marginTop: 10, marginRight: 15 }),
+        base: css({ pointerEvents: 'auto', marginTop: 8, marginRight: 15 }),
         semver: css({ cursor: 'pointer' }),
       };
       const href = `${location.origin}/?dev=Sample`;
       return (
-        <a {...css(styles.base)} href={href}>
-          <WebRuntime.ui.ManifestSemver style={styles.semver} />
-        </a>
+        <Button style={styles.base}>
+          <a href={href}>
+            <WebRuntime.ui.ManifestSemver style={styles.semver} />
+          </a>
+        </Button>
       );
     },
   };
