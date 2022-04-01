@@ -3,16 +3,9 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { List } from '..';
 import { ALL, DEFAULTS, rx, slug, t, time, value } from '../common';
-
 import { sampleBodyFactory, sampleBulletFactory } from './DEV.Renderers';
-import { ListState } from '../../List.State';
-
-import { DataSample, Ctx, RenderCtx } from './DEV.types';
 import { DevSample } from './DEV.Sample';
-
-/**
- * Types
- */
+import { Ctx, DataSample, RenderCtx } from './DEV.types';
 
 /**
  * Helpers
@@ -30,9 +23,13 @@ const Util = {
 
   toProps(ctx: Ctx): t.ListProps {
     const { props, debug } = ctx;
-    const event = { bus: ctx.bus, instance: ctx.instance };
+    const instance = { bus: ctx.bus, id: ctx.id };
     const tabIndex = debug.canFocus ? -1 : undefined;
-    return { ...props, event, tabIndex };
+    return { ...props, instance, tabIndex };
+  },
+
+  toPropsDebug(ctx: Ctx): t.ListPropsDebug {
+    return ctx.props.debug || (ctx.props.debug = {});
   },
 };
 
@@ -50,13 +47,13 @@ export const actions = DevActions<Ctx>()
       body: sampleBodyFactory(getRenderCtx),
     };
 
+    const id = `demo.${slug()}`;
     const bus = rx.bus();
-    const instance = `demo.${slug()}`;
-    const events = List.Virtual.Events({ bus, instance });
+    const events = List.Virtual.Events({ instance: { bus, id } });
 
     const ctx: Ctx = {
+      id,
       bus,
-      instance,
       events,
       items: [],
       props: {
@@ -64,7 +61,7 @@ export const actions = DevActions<Ctx>()
         bullet: { edge: 'near', size: 60 },
         renderers: renderer,
         spacing: 10,
-        debug: { border: true },
+        debug: { tracelines: true },
       },
       renderCtx: {
         get total() {
@@ -90,7 +87,7 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx } = e;
-    const { bus, instance } = ctx;
+    const { bus, id: instance } = ctx;
 
     const TOTAL = 10;
     new Array(TOTAL).fill(ctx).forEach(() => Util.addItem(ctx));
@@ -205,12 +202,10 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Debug');
 
-    e.boolean('border (trace lines)', (e) => {
-      if (e.changing) {
-        const debug = e.ctx.props.debug || (e.ctx.props.debug = {});
-        debug.border = e.changing.next;
-      }
-      e.boolean.current = e.ctx.props.debug?.border ?? false;
+    e.boolean('tracelines', (e) => {
+      const debug = Util.toPropsDebug(e.ctx);
+      if (e.changing) debug.tracelines = e.changing.next;
+      e.boolean.current = Boolean(debug.tracelines);
     });
 
     e.hr(1, 0.1);

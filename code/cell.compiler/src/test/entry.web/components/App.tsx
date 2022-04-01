@@ -7,11 +7,6 @@ type Css = React.CSSProperties;
 
 export type IAppState = { url?: string };
 
-const bundle = WebRuntime.bundle;
-console.log('module', WebRuntime.module);
-console.log('bundle', WebRuntime.bundle);
-console.log("bundle.path('/static/images/wax.png')", bundle.path('/static/images/wax.png'));
-
 /**
  * Test Application
  *
@@ -59,7 +54,7 @@ export const App = () => {
     <div style={styles.base}>
       <h1>App</h1>
       <Award width={60} style={styles.award} />
-      <img src={bundle.path('/static/images/wax.png')} style={styles.seal} />
+      <img src={'/static/images/wax.png'} style={styles.seal} />
     </div>
   );
 };

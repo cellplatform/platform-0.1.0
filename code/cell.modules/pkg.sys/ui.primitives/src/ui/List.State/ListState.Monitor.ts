@@ -1,10 +1,11 @@
 import { Observable, Subject, takeUntil } from 'rxjs';
 
-import { t } from '../common';
+import { t, rx } from '../common';
 import { ListMouseMonitor } from './Mouse';
 import { ListSelectionMonitor } from './Selection';
 
-type ListStateMonitorArgs = t.ListBusArgs & {
+type ListStateMonitorArgs = {
+  instance: t.ListInstance;
   selection?: t.ListSelectionConfig;
   reset$?: Observable<any>;
   getCtx: () => t.ListStateCtx;
@@ -14,10 +15,11 @@ type ListStateMonitorArgs = t.ListBusArgs & {
  * Root level monitor for managing list state.
  */
 export function ListStateMonitor(args: ListStateMonitorArgs) {
-  const { bus, instance, getCtx } = args;
+  const { instance, getCtx } = args;
+  const { bus, id } = instance;
 
-  const mouse = ListMouseMonitor({ bus, instance });
-  const selection = ListSelectionMonitor({ bus, instance, getCtx, config: args.selection });
+  const mouse = ListMouseMonitor({ instance });
+  const selection = ListSelectionMonitor({ instance, getCtx, config: args.selection });
 
   const dispose$ = mouse.dispose$;
   const dispose = () => {
@@ -48,6 +50,7 @@ export function ListStateMonitor(args: ListStateMonitorArgs) {
    * API
    */
   return {
+    instance: { bus: rx.bus.instance(bus), id },
     dispose,
     dispose$,
     changed$,

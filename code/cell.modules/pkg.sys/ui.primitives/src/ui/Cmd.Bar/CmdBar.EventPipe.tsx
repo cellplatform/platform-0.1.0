@@ -1,46 +1,45 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { useEventHistory } from '../Event';
 import { EventPipe, EventPipeItemClickEventHandler } from '../Event.Pipe';
-import { css, CssValue, Icons, t } from './common';
+import { css, CssValue, Icons, rx, t } from './common';
 
 export type CmdBarEventPipeProps = {
-  bus: t.EventBus<any>;
+  history?: t.EventHistory;
   iconEdge?: 'Left' | 'Right';
   style?: CssValue;
   onEventClick?: EventPipeItemClickEventHandler;
 };
 
 export const CmdBarEventPipe: React.FC<CmdBarEventPipeProps> = (props) => {
-  const { bus, iconEdge = 'Right' } = props;
+  const { iconEdge = 'Right', history = [] } = props;
+  const total = history.length;
 
-  const history = useEventHistory(bus);
   const [recentlyFired, setRecentlyFired] = useState(false);
+  const changedRef$ = useRef(new Subject<t.EventHistory>());
 
   /**
    * Lifecycle
    */
+  useEffect(() => changedRef$.current.next(history), [total]); // eslint-disable-line
   useEffect(() => {
     const dispose$ = new Subject<void>();
-    const bus$ = bus.$.pipe(takeUntil(dispose$));
-
-    bus$.subscribe(() => setRecentlyFired(true));
-    bus$.pipe(debounceTime(1500)).subscribe(() => setRecentlyFired(false));
-
-    return () => dispose$.next();
+    const $ = changedRef$.current.pipe(takeUntil(dispose$));
+    $.subscribe(() => setRecentlyFired(true));
+    $.pipe(debounceTime(1500)).subscribe(() => setRecentlyFired(false));
+    return () => rx.done(dispose$);
   }, []); // eslint-disable-line
-
-  /**
-   * Handlers
-   */
 
   /**
    * [Render]
    */
   const styles = {
-    base: css({ flex: 1, boxSizing: 'border-box', Flex: 'x-center-center' }),
+    base: css({
+      flex: 1,
+      Flex: 'x-center-center',
+      boxSizing: 'border-box',
+    }),
     pipe: css({ flex: 1 }),
     icon: css({
       marginLeft: iconEdge === 'Right' ? 5 : 0,
@@ -51,11 +50,9 @@ export const CmdBarEventPipe: React.FC<CmdBarEventPipeProps> = (props) => {
     }),
   };
 
-  // console.log('history.events', history.events);
-
   const elPipe = (
     <EventPipe
-      events={history.events}
+      events={history}
       style={styles.pipe}
       theme={'Dark'}
       onEventClick={props.onEventClick}

@@ -11,14 +11,15 @@ export * from '@platform/ui.image/lib/types';
 export * from './hooks/DragTarget/types';
 export * from './hooks/Focus/types';
 export * from './hooks/UIEvent/types';
-export * from './hooks/Keyboard/types';
+
+export * from './keyboard/types';
 
 export * from './ui/List/types';
 export * from './ui/List.State/types';
 export * from './ui/DotTabstrip/types';
 export * from './ui/PropList/types';
-export * from './ui/QRCode/types';
 export * from './ui/MinSize/types';
+export * from './ui/QRCode/types';
 
 export * from './ui/Cmd.Card/types';
 export * from './ui/Cmd.Bar/types';
@@ -28,7 +29,6 @@ export * from './ui/PositioningLayer/types';
 export * from './ui/PositioningLayout/types';
 
 export * from './ui/Event/types';
-export * from './ui/Event.List/types';
 
 export * from './ui/Tree/types';
 export * from './ui/StackPanel/types';

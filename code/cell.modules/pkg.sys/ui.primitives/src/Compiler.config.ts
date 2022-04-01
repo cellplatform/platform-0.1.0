@@ -2,7 +2,7 @@ import { Compiler, Package } from '@platform/cell.compiler';
 
 export default () =>
   Compiler.config()
-    .namespace('ui.primitives')
+    .namespace('sys.ui.primitives')
     .version(Package.version)
 
     .variant('web', (config) =>

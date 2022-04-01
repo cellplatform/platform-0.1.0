@@ -3,7 +3,7 @@ import '@platform/css/reset.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { DevHarness } from '../Dev.Harness';
-import { DevSampleApp } from '../web.ui/dev.Networks/DEV.Sample.App';
+import { DevSampleApp } from '../ui/DEV.Sample.App';
 
 const query = () => {
   const url = new URL(location.href);
@@ -19,5 +19,10 @@ const query = () => {
   return q;
 };
 
-const el = query().has('dev') ? <DevHarness /> : <DevSampleApp />;
+const isDev = query().has('dev');
+const el = isDev ? <DevHarness /> : <DevSampleApp />;
 ReactDOM.render(el, document.getElementById('root'));
+
+if (isDev) {
+  document.title = `${document.title} (dev)`;
+}

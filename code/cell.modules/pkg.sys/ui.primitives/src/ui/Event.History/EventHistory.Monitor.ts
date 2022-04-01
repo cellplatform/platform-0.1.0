@@ -4,16 +4,14 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { rx, slug, t, time } from '../../common';
 
 /**
- * Monitor
+ * Monitor an [EventBus] recording a log of events.
  */
 export function EventHistoryMonitor(bus?: t.EventBus<any>, options: t.EventHistoryOptions = {}) {
-  const events: t.EventHistoryItem[] = []; // NB: Event array is appended (not immutable) for performance reasons.
+  const events: t.EventHistory = []; // NB: Event array is appended (not immutable) for performance reasons.
 
   const dispose$ = new Subject<void>();
-  const dispose = () => {
-    dispose$.next();
-    dispose$.complete();
-  };
+  const dispose = () => rx.done(dispose$);
+  options.dispose$?.subscribe(dispose);
 
   const changed$ = new Subject<t.EventHistoryItem[]>();
   const changed = () => changed$.next(events);
@@ -26,6 +24,7 @@ export function EventHistoryMonitor(bus?: t.EventBus<any>, options: t.EventHisto
   if (bus) {
     const $ = bus.$.pipe(
       takeUntil(dispose$),
+      filter((e) => api.enabled),
       filter((e) => (options.filter ? options.filter(e) : true)),
     );
 
@@ -38,17 +37,30 @@ export function EventHistoryMonitor(bus?: t.EventBus<any>, options: t.EventHisto
       changed();
     });
 
-    options.reset$?.pipe(takeUntil(dispose$)).subscribe(() => reset());
+    options.reset$?.pipe(takeUntil(dispose$)).subscribe(reset);
   }
 
-  return {
+  /**
+   * API
+   */
+  const api = {
+    reset,
     dispose,
     dispose$,
     bus: bus ? rx.bus.instance(bus) : '',
     changed$: changed$.pipe(takeUntil(dispose$)),
     events,
+    get enabled() {
+      const { enabled } = options;
+      return typeof enabled === 'function' ? enabled() : enabled ?? true;
+    },
     get total() {
       return events.length;
     },
+    get latest(): t.EventHistoryItem | undefined {
+      return events[events.length - 1];
+    },
   };
+
+  return api;
 }

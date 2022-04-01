@@ -5,12 +5,12 @@ import { NetworkBus } from '.';
 type E = { type: 'foo'; payload: { count?: number } };
 
 describe('NetworkBus', () => {
-  it('rx.instance(bus): "net.bus.<Instance-ID>"', () => {
+  it('rx.instance(bus): "netbus.<Instance-ID>"', () => {
     const pump: t.NetworkPump<E> = { in: (fn) => null, out: (e) => null };
     const netbus = NetworkBus({ pump, local: async () => 'local', remotes: async () => [] });
 
     const id = rx.bus.instance(netbus);
-    expect(id.startsWith('net.bus.')).to.eql(true);
+    expect(id.startsWith('netbus.')).to.eql(true);
   });
 
   it('$ (observable)', () => {

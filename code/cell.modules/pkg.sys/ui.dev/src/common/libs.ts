@@ -9,7 +9,6 @@ export {
   rx,
   time,
   defaultValue,
-  dispose,
   is,
   asArray,
   slug,

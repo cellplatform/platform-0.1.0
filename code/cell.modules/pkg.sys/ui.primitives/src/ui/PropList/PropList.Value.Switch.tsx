@@ -5,9 +5,12 @@ import { Switch } from '../../ui.ref/button/Switch';
 
 export type SwitchValueProps = {
   value: t.PropListValue;
+  onClick: () => void;
 };
 
 export const SwitchValue: React.FC<SwitchValueProps> = (props) => {
-  const data = props.value.data as boolean;
-  return <Switch height={16} value={data} />;
+  const value = props.value.data as boolean | undefined;
+  return (
+    <Switch height={12} value={value} isEnabled={value !== undefined} onClick={props.onClick} />
+  );
 };

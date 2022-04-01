@@ -6,18 +6,18 @@ import { ListEvents } from './Events';
 /**
  * Controller for common behavior between different kinds of list.
  */
-export function useContext(args: { total: number; event?: t.ListBusArgs }) {
+export function useContext(args: { total: number; instance?: t.ListInstance }) {
   const { total } = args;
 
   const [count, setCount] = useState(0);
-  const eventRef = useRef<t.ListBusArgs>(args.event ?? dummy());
-  const { instance } = eventRef.current;
-  const bus = rx.busAsType<t.ListEvent>(eventRef.current.bus);
+  const instanceRef = useRef<t.ListInstance>(args.instance ?? dummyInstance());
+  const id = instanceRef.current.id;
+  const bus = rx.busAsType<t.ListEvent>(instanceRef.current.bus);
 
   Keyboard.useEventPipe({ bus }); // Ensure keyboard events are being piped into the bus.
 
   const ctx: t.CtxList = { kind: 'List', total };
-  const ui = UIEvent.useEventPipe<t.CtxList, HTMLDivElement>({ bus, instance, ctx });
+  const ui = UIEvent.useEventPipe<t.CtxList, HTMLDivElement>({ bus, instance: id, ctx });
   const { onMouseDown, onMouseUp, onMouseEnter, onMouseLeave } = ui.mouse;
   const { onFocus, onBlur } = ui.focus;
 
@@ -25,7 +25,7 @@ export function useContext(args: { total: number; event?: t.ListBusArgs }) {
    * [ListEvents] controller.
    */
   useEffect(() => {
-    const events = ListEvents({ bus, instance });
+    const events = ListEvents({ instance: { bus, id } });
 
     /**
      * Force redraw.
@@ -43,11 +43,10 @@ export function useContext(args: { total: number; event?: t.ListBusArgs }) {
 
     // Finish up.
     return () => events.dispose();
-  }, [bus, instance]); // eslint-disable-line
+  }, [bus, id]); // eslint-disable-line
 
   return {
-    bus,
-    instance,
+    instance: { bus, id },
     redrawKey: `redraw.${count}`,
     list: {
       ref: ui.ref,
@@ -60,9 +59,9 @@ export function useContext(args: { total: number; event?: t.ListBusArgs }) {
  * [Helpers]
  */
 
-export function dummy(): t.ListBusArgs {
+export function dummyInstance(): t.ListInstance {
   return {
     bus: rx.bus(),
-    instance: `list.dummy.${slug()}`,
+    id: `list.dummy.${slug()}`,
   };
 }

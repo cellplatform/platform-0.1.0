@@ -9,8 +9,8 @@ export type DataSample = {
 };
 
 export type Ctx = {
+  id: string; // "Instance" id.
   bus: t.EventBus<any>;
-  instance: string;
   items: t.ListItem<DataSample>[];
   props: t.ListProps; // Common properties.
   renderCtx: RenderCtx;

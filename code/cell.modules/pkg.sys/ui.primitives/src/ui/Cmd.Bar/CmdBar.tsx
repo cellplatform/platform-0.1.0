@@ -1,12 +1,10 @@
 import React, { useEffect } from 'react';
 
-import { color, css, CssValue, FC, t } from './common';
 import { CmdTextbox } from '../Cmd.Textbox';
 import { CmdBarEventPipe, CmdBarEventPipeProps } from './CmdBar.EventPipe';
-import { CmdBarInset, CmdBarInsetProps } from './CmdBar.Inset';
+import { color, css, CssValue, FC, t } from './common';
 import { CmdBarEvents } from './Events';
-
-type Id = string;
+import { CmdBarState } from './State';
 
 /**
  * Types
@@ -14,9 +12,8 @@ type Id = string;
 export type CmdBarPart = 'Input' | 'Events';
 
 export type CmdBarProps = {
-  events?: { bus: t.EventBus<any>; instance: Id };
-  bus: t.EventBus<any>;
-  inset?: boolean | CmdBarInsetProps;
+  instance: t.CmdBarInstance;
+  state?: t.CmdBarState;
   parts?: CmdBarPart[];
   cornerRadius?: [number, number, number, number];
   backgroundColor?: string | number;
@@ -36,7 +33,7 @@ export const CmdBarConstants = { PARTS };
  * Component
  */
 export const View: React.FC<CmdBarProps> = (props) => {
-  const { bus, inset } = props;
+  const { instance, state } = props;
   const { parts = ['Input', 'Events'] } = props;
 
   const borderRadius = props.cornerRadius
@@ -48,10 +45,10 @@ export const View: React.FC<CmdBarProps> = (props) => {
   /**
    * Lifecycle
    */
-  React.useEffect(() => {
-    if (props.events) setEvents(CmdBarEvents(props.events));
+  useEffect(() => {
+    if (instance) setEvents(CmdBarEvents({ instance }));
     return () => events?.dispose();
-  }, [props.events]); // eslint-disable-line
+  }, [instance]); // eslint-disable-line
 
   /**
    * [Render]
@@ -67,7 +64,13 @@ export const View: React.FC<CmdBarProps> = (props) => {
     inset: css({ Absolute: 0 }),
     body: css({ flex: 1, Flex: 'x-stretch-stretch' }),
     input: css({ flex: 2, paddingTop: 10, paddingBottom: 4 }),
-    events: css({ flex: 1, display: 'flex' }),
+    events: css({
+      flex: 1,
+      display: 'flex',
+      overflow: 'hidden',
+      position: 'relative',
+      paddingRight: 10,
+    }),
     divider: {
       spacer: css({ width: 10 }),
       border: css({
@@ -95,9 +98,10 @@ export const View: React.FC<CmdBarProps> = (props) => {
       elements.push(
         <div {...styles.input} key={elements.length}>
           <CmdTextbox
+            text={state?.text ?? ''}
             theme={'Dark'}
             placeholder={props.textbox?.placeholder}
-            spinner={props.textbox?.spinner}
+            spinner={props.textbox?.spinner ?? state?.spinning}
             onChange={(e) => {
               const { from, to } = e;
               events?.text.changed({ from, to });
@@ -108,6 +112,7 @@ export const View: React.FC<CmdBarProps> = (props) => {
               events?.action.fire({ text });
               props.onAction?.(e);
             }}
+            style={{ paddingLeft: 8 }}
           />
         </div>,
       );
@@ -117,31 +122,20 @@ export const View: React.FC<CmdBarProps> = (props) => {
       appendDivider();
       elements.push(
         <div {...styles.events} key={elements.length}>
-          {<CmdBarEventPipe bus={bus} iconEdge={isFirst ? 'Left' : 'Right'} />}
+          {
+            <CmdBarEventPipe
+              history={state?.history?.events}
+              iconEdge={isFirst ? 'Left' : 'Right'}
+            />
+          }
         </div>,
       );
     }
   });
 
-  const elBody = (
-    <div {...styles.body}>
-      <div {...styles.divider.spacer} />
-      {elements}
-      <div {...styles.divider.spacer} />
-    </div>
-  );
-
-  const insetProps = {
-    cornerRadius: props.cornerRadius,
-    ...(typeof inset === 'object' ? inset : {}),
-  };
-
-  const elInsetBorder = inset && <CmdBarInset {...insetProps} style={styles.inset} />;
-
   return (
     <div {...css(styles.base, props.style)}>
-      {elInsetBorder}
-      {elBody}
+      <div {...styles.body}>{elements}</div>
     </div>
   );
 };
@@ -150,16 +144,16 @@ export const View: React.FC<CmdBarProps> = (props) => {
  * Export
  */
 type Fields = {
-  Inset: React.FC<CmdBarInsetProps>;
   EventPipe: React.FC<CmdBarEventPipeProps>;
   Events: t.CmdBarEventsFactory;
+  State: typeof CmdBarState;
 };
 export const CmdBar = FC.decorate<CmdBarProps, Fields>(
   View,
   {
-    Inset: CmdBarInset,
     EventPipe: CmdBarEventPipe,
     Events: CmdBarEvents,
+    State: CmdBarState,
   },
   { displayName: 'CmdBar' },
 );

@@ -6,7 +6,9 @@ import { Handler } from './Handler';
  * Render the subject(s) under test.
  */
 export function renderSubject(args: { model: t.ActionsModelState<any> }) {
-  type R = t.ActionSubject<any>;
+  type P = t.ActionHandlerSubjectArgs<any>;
+  type S = t.ActionSubject<any>;
+
   const { model } = args;
   const redraw = () => model.state.redraw$.next();
 
@@ -17,7 +19,7 @@ export function renderSubject(args: { model: t.ActionsModelState<any> }) {
   }
 
   const fn = model.state.subject;
-  const subject: R = { ctx, items: [], layout: {} };
+  const subject: S = { ctx, items: [], layout: {} };
 
   if (fn) {
     model.change((draft) => {
@@ -25,7 +27,11 @@ export function renderSubject(args: { model: t.ActionsModelState<any> }) {
       const env = draft.env.viaSubject;
       const { host, layout, actions } = Handler.params.action({ ctx, env });
 
-      type P = t.ActionHandlerSubjectArgs<any>;
+      const render: t.ActionSubjectRender<any> = (el, layout) => {
+        const elSubject = typeof el === 'function' ? el({ ctx }) : el;
+        if (elSubject && elSubject !== null) subject.items.push({ el: elSubject, layout });
+        return payload;
+      };
 
       const payload: P = {
         ctx: toObject(ctx),
@@ -34,10 +40,7 @@ export function renderSubject(args: { model: t.ActionsModelState<any> }) {
         layout,
         actions,
         settings: (args) => Handler.settings.handler({ env, payload })(args),
-        render(el?: JSX.Element, layout?: t.HostedLayout) {
-          if (el) subject.items.push({ el, layout });
-          return payload;
-        },
+        render,
         redraw,
       };
 

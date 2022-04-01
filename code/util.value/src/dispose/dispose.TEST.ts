@@ -1,17 +1,17 @@
 import { expect } from 'chai';
 import { Subject } from 'rxjs';
 
-import { dispose } from '.';
+import { Dispose } from '.';
 
-describe('IDisposable', () => {
+describe('Disposable', () => {
   it('create', () => {
-    const obj = dispose.create();
+    const obj = Dispose.create();
     expect(typeof obj.dispose).to.eql('function');
     expect(typeof obj.dispose$.subscribe).to.eql('function');
   });
 
   it('event: dispose$', () => {
-    const obj = dispose.create();
+    const obj = Dispose.create();
 
     let count = 0;
     obj.dispose$.subscribe(() => count++);
@@ -23,10 +23,10 @@ describe('IDisposable', () => {
   });
 
   it('until', () => {
-    const obj1 = dispose.create();
+    const obj1 = Dispose.create();
 
     const $ = new Subject<void>();
-    const obj2 = dispose.until(obj1, $);
+    const obj2 = Dispose.until(obj1, $);
 
     let count = 0;
     obj1.dispose$.subscribe(() => count++);
@@ -36,6 +36,19 @@ describe('IDisposable', () => {
     $.next();
     $.next();
     $.next();
+    expect(count).to.eql(1);
+  });
+
+  it('done - fires and completes the subject', () => {
+    const dispose$ = new Subject<void>();
+
+    let count = 0;
+    dispose$.subscribe((e) => count++);
+
+    Dispose.done(dispose$);
+    Dispose.done(dispose$);
+    Dispose.done(dispose$);
+
     expect(count).to.eql(1);
   });
 });

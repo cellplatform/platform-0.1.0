@@ -5,7 +5,6 @@ export type TypeLabelProps = {
   text: string;
   monochrome?: boolean;
   style?: CssValue;
-
   onClick?: (e: { text: string }) => void;
 };
 
@@ -54,14 +53,13 @@ export const renderPart = (args: { parts: string[]; index: number; monochrome: b
   const styles = {
     base: css({ userSelect: 'auto' }),
     value: {
-      base: css({ fontWeight: 500, color: COLORS.DARK }),
+      base: css({ fontWeight: 600, color: COLORS.DARK }),
       first: css({}),
       last: css({
-        fontWeight: 600,
         color: monochrome ? color.alpha(COLORS.DARK, 0.7) : COLORS.CYAN,
       }),
     },
-    slash: css({ color: color.alpha(COLORS.DARK, 0.2), MarginX: 1 }),
+    slash: css({ fontWeight: 600, color: COLORS.MAGENTA }),
   };
 
   const elValue = (

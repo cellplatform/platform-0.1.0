@@ -8,18 +8,18 @@ import { useContext } from './useCtx';
 /**
  * Controller for a virtual scrolling list.
  */
-export function useVirtualContext(args: { total: number; event?: t.ListBusArgs }) {
+export function useVirtualContext(args: { total: number; instance?: t.ListInstance }) {
   const listRef = useRef<List>(null);
-  const { total, event } = args;
+  const { total } = args;
 
-  const ctx = useContext({ total, event });
-  const { bus, instance } = ctx;
+  const ctx = useContext({ total, instance: args.instance });
+  const instance = ctx.instance;
 
   /**
    * Event API Behavior
    */
   useEffect(() => {
-    const events = ListEvents({ bus, instance });
+    const events = ListEvents({ instance });
 
     /**
      * Scroll to an item.
@@ -44,7 +44,7 @@ export function useVirtualContext(args: { total: number; event?: t.ListBusArgs }
 
     // Finish up.
     return () => events.dispose();
-  }, [listRef, bus, instance]); // eslint-disable-line
+  }, [listRef, instance.bus, instance.id]); // eslint-disable-line
 
   /**
    * API

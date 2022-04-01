@@ -10,7 +10,8 @@ import { ListSelection } from './ListSelection';
 type O = Record<string, unknown>;
 type Index = number;
 
-export type ListSelectionMonitorArgs = t.ListBusArgs & {
+export type ListSelectionMonitorArgs = {
+  instance: t.ListInstance;
   config?: t.ListSelectionConfig;
   reset$?: Observable<any>;
   getCtx: () => t.ListStateCtx;
@@ -22,14 +23,20 @@ export type ListSelectionMonitorArgs = t.ListBusArgs & {
 export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
   const { instance, config = {} } = args;
   const { multi = false, clearOnBlur = false, allowEmpty = false } = config;
-  const bus = rx.busAsType<t.ListEvent>(args.bus);
+  const bus = rx.busAsType<t.ListEvent>(instance.bus);
+  const id = instance.id;
 
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
   args.reset$?.pipe(takeUntil(dispose$)).subscribe(() => Change.reset());
 
   const dom = <Ctx extends O>(filter: (ctx: Ctx) => boolean) =>
-    UIEvent.Events<Ctx>({ bus, instance, dispose$, filter: (e) => filter(e.payload.ctx) });
+    UIEvent.Events<Ctx>({
+      bus,
+      instance: id,
+      dispose$,
+      filter: (e) => filter(e.payload.ctx),
+    });
   const item = dom<t.CtxItem>((ctx) => ctx.kind === 'Item');
   const list = dom<t.CtxList>((ctx) => ctx.kind === 'List');
 
@@ -244,6 +251,7 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
    * API
    */
   return {
+    instance: { bus: rx.bus.instance(bus), id },
     dispose,
     dispose$,
     changed$: changed$.asObservable(),

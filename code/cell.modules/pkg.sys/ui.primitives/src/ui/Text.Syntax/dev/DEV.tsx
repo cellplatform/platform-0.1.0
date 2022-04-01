@@ -17,7 +17,7 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
     const ctx: Ctx = {
       props: {
-        text: '<Component>',
+        text: 'hello, <Component>...',
         inlineBlock: true,
       },
       debug: { repeat: 1, monospace: true, customColors: false },

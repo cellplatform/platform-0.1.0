@@ -3,7 +3,7 @@ import { DevActions } from 'sys.ui.dev';
 
 import { PropList, PropListProps } from '..';
 import { COLORS, css, Icons } from './common';
-import { items, LOREM } from './DEV.items';
+import { items, LOREM } from './DEV.Sample.Items';
 
 type Ctx = { props: PropListProps };
 

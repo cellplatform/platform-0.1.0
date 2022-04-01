@@ -1,21 +1,24 @@
 type Color = string | number;
 
-export type SyntaxLabelTokenizer = (text: string) => SyntaxLabelTokens;
+export type TextSyntaxTokenizer = (text: string) => TextSyntaxTokens;
 
-export type SyntaxLabelTokens = {
+export type TextSyntaxTokens = {
   text: string;
-  parts: SyntaxLabelToken[];
+  parts: TextSyntaxToken[];
 };
 
-export type SyntaxLabelTokenKind = 'Brace' | 'Predicate' | 'Word' | 'Colon';
-export type SyntaxLabelToken = {
+export type TextSyntaxTokenKind = 'Brace' | 'Predicate' | 'Word' | 'Colon';
+export type TextSyntaxBraceKind = '<>' | '{}' | '[]';
+
+export type TextSyntaxToken = {
   text: string;
-  kind: SyntaxLabelTokenKind;
+  kind: TextSyntaxTokenKind;
+  within?: TextSyntaxBraceKind;
 };
 
-export type SyntaxLabelColors = {
+export type TextSyntaxColors = {
   Brace: Color;
   Predicate: Color;
-  Word: Color;
   Colon: Color;
+  Word: { Base: Color; Element: Color };
 };

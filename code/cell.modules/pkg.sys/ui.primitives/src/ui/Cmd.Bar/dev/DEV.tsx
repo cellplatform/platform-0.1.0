@@ -3,9 +3,7 @@ import { NetworkBusMock } from 'sys.runtime.web';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { CmdBar, CmdBarConstants, CmdBarPart, CmdBarProps } from '..';
-import { COLORS, rx, t } from '../../common';
-
-import { CmdBarInsetProps } from '../CmdBar.Inset';
+import { COLORS, rx, slug, t } from '../common';
 
 type Ctx = {
   bus: t.EventBus<any>;
@@ -68,13 +66,18 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
+    const id = `foo.${slug()}`;
     const bus = rx.bus();
     const netbus = NetworkBusMock({ local: 'local-id', remotes: ['peer-1', 'peer-2'] });
+    const instance = { bus, id };
 
     const ctx: Ctx = {
       bus,
       netbus,
-      props: { bus, textbox: { placeholder: 'my command' } },
+      props: {
+        instance,
+        textbox: { placeholder: 'my command' },
+      },
       debug: { fireCount: 0, busKind: 'netbus' },
     };
 
@@ -82,24 +85,25 @@ export const actions = DevActions<Ctx>()
   })
 
   .init(async (e) => {
-    const { ctx, bus } = e;
+    const { ctx } = e;
+    const bus = Util.toBus(e.ctx).bus;
 
-    const instance = 'foo.instance';
-    const events = CmdBar.Events({ bus, instance });
-    ctx.props.events = { bus, instance };
+    const { instance } = ctx.props;
+    const events = CmdBar.Events({ instance });
 
     events.$.subscribe((e) => {
       console.log('CmdBar.Events.$', e);
+    });
+
+    const controller = CmdBar.State.Controller({ instance, bus });
+    controller.state$.subscribe((state) => {
+      e.ctx.props.state = state;
+      e.redraw();
     });
   })
 
   .items((e) => {
     e.title('Props');
-
-    e.boolean('inset', (e) => {
-      if (e.changing) e.ctx.props.inset = e.changing.next;
-      e.boolean.current = e.ctx.props.inset as boolean;
-    });
 
     e.select((config) =>
       config
@@ -165,7 +169,9 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr(1, 0.1);
-    e.button('fire', (e) => Util.fire(e.ctx, 1));
+    e.button('fire (1)', (e) => Util.fire(e.ctx, 1));
+    e.button('fire (100)', (e) => Util.fire(e.ctx, 100));
+    e.button('fire (1,000)', (e) => Util.fire(e.ctx, 1000));
     e.hr();
   })
 
@@ -187,10 +193,22 @@ export const actions = DevActions<Ctx>()
         />
       );
     });
+    e.hr(1, 0.1);
+    e.component((e) => {
+      return (
+        <ObjectView
+          name={'props.state'}
+          data={Util.toProps(e.ctx).state}
+          style={{ MarginX: 15 }}
+          fontSize={10}
+          expandPaths={['$']}
+        />
+      );
+    });
   })
 
   .subject((e) => {
-    const { instance, busKind } = Util.toBus(e.ctx);
+    const { bus, instance, busKind } = Util.toBus(e.ctx);
     const props = Util.toProps(e.ctx);
 
     e.settings({
@@ -207,14 +225,12 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    const bg = props.inset ? ({ cornerRadius: [0, 0, 5, 5] } as CmdBarInsetProps) : undefined;
-
     e.render(
       <CmdBar
         {...props}
-        onAction={(e) => console.log('onAction:', e)}
-        inset={bg}
+        // state={e.ctx.state}
         style={{ flex: 1 }}
+        onAction={(e) => console.log('onAction:', e)}
       />,
     );
   });

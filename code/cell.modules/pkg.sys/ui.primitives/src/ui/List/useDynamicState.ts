@@ -16,10 +16,10 @@ export function useDynamicState(args: {
   selection?: t.ListSelectionConfig;
 }) {
   const { total, props, selection } = args;
-  const { event, orientation } = props;
+  const { instance, orientation } = props;
   const { multi, clearOnBlur, allowEmpty, keyboard } = selection ?? {};
-  const bus = event?.bus;
-  const instance = event?.instance ?? '';
+  const bus = instance?.bus;
+  const id = instance?.id ?? '';
 
   const [state, setState] = useState<t.ListStateLazy | undefined>();
 
@@ -31,7 +31,6 @@ export function useDynamicState(args: {
     if (bus) {
       const getCtx = (): t.ListStateCtx => ({ orientation, total });
       const monitor = ListState.Monitor({
-        bus,
         instance,
         getCtx,
         selection: { multi, clearOnBlur, allowEmpty, keyboard },
@@ -49,8 +48,7 @@ export function useDynamicState(args: {
    
    */
   return {
-    bus: bus ? rx.bus.instance(event.bus) : '',
-    instance,
+    instance: { bus: bus ? rx.bus.instance(bus) : '', id },
     state,
   };
 }

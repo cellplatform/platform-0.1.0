@@ -1,30 +1,32 @@
-import React, { useRef } from 'react';
-import { Observable } from 'rxjs';
+import React, { useEffect, useRef } from 'react';
 
 import { useEventHistory } from '../Event';
-import { css, CssValue, FC, rx, slug, t } from './common';
-import { EventListLayout as Layout, EventListLayoutProps } from './EventList.Layout';
+import { CONSTANTS, css, FC, t } from './common';
+import { DebugBusId } from './components/Debug.BusId';
+import { Empty } from './components/Empty';
+import { EventListLayout as Layout, EventListLayoutProps } from './components/Layout';
 import { EventListEvents as Events } from './Events';
-
-type Internal = { bus: t.EventBus<any>; instance: string };
+import { EventListProps } from './types';
+import { Util } from './Util';
 
 /**
  * Types
  */
-export type EventListProps = {
-  bus: t.EventBus<any>;
-  event?: Internal; // Optional, internally used UI event-bus.
-  reset$?: Observable<any>;
-  style?: CssValue;
-};
+export { EventListProps };
 
 /**
  * Component
  */
 export const View: React.FC<EventListProps> = (props) => {
-  const { reset$ } = props;
-  const internal = useRef<Internal>(props.event ?? dummy());
-  const history = useEventHistory(props.bus, { reset$ });
+  const { bus, reset$, debug = {} } = props;
+  const instance = useRef<t.EventListInstance>(props.instance ?? Util.dummyInstance());
+
+  const history = useEventHistory(bus, { reset$ });
+  const items = history.events;
+  const isEmpty = items.length === 0;
+
+  // NB: Reset this history log when/if the bus instance changes.
+  useEffect(() => history.reset(), [bus]); // eslint-disable-line
 
   /**
    * [Render]
@@ -33,9 +35,15 @@ export const View: React.FC<EventListProps> = (props) => {
     base: css({ position: 'relative', display: 'flex' }),
   };
 
+  const elLayout = !isEmpty && (
+    <Layout event={instance.current} items={items} debug={debug} style={{ flex: 1 }} />
+  );
+
   return (
     <div {...css(styles.base, props.style)}>
-      <Layout event={internal.current} items={history.events} style={{ flex: 1 }} />
+      {isEmpty && <Empty />}
+      {elLayout}
+      {Boolean(debug.busid) && <DebugBusId bus={bus} debug={debug} />}
     </div>
   );
 };
@@ -47,20 +55,10 @@ type Fields = {
   Events: t.EventListEventsFactory;
   Layout: React.FC<EventListLayoutProps>;
   useEventHistory: t.UseEventHistory;
+  constants: typeof CONSTANTS;
 };
 export const EventList = FC.decorate<EventListProps, Fields>(
   View,
-  { Events, Layout, useEventHistory },
+  { Events, Layout, useEventHistory, constants: CONSTANTS },
   { displayName: 'EventList' },
 );
-
-/**
- * [Helpers]
- */
-
-function dummy(): Internal {
-  return {
-    bus: rx.bus(),
-    instance: `EventList.${slug()}:internal`,
-  };
-}

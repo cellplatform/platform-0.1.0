@@ -1,1 +1,1 @@
-export * from 'sys.ui.dev/lib/web.ui/OptionButtons';
+export * from 'sys.ui.dev/lib/ui/OptionButtons';

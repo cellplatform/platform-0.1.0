@@ -1,1 +1,1 @@
-export * from './SyntaxLabel';
+export * from './TextSyntax';

@@ -8,12 +8,13 @@ type S = t.ListMouse;
 /**
  * Maintains the state of the mouse over the set of <List> items.
  */
-export function ListMouseMonitor(event: t.ListBusArgs) {
-  const { bus, instance } = event;
+export function ListMouseMonitor(args: { instance: t.ListInstance }) {
+  const { instance } = args;
+  const { bus, id } = args.instance;
 
   const events = UIEvent.Events<t.CtxItem>({
     bus,
-    instance,
+    instance: instance.id,
     filter: (e) => e.payload.ctx.kind === 'Item',
   });
   const { dispose, dispose$, mouse } = events;
@@ -66,8 +67,7 @@ export function ListMouseMonitor(event: t.ListBusArgs) {
    * API
    */
   return {
-    bus: rx.bus.instance(bus),
-    instance,
+    instance: { bus: rx.bus.instance(bus), id },
     dispose,
     dispose$,
     changed$: changed$.pipe(takeUntil(dispose$)),

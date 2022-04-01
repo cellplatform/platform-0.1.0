@@ -2,6 +2,7 @@ import React, { CSSProperties } from 'react';
 
 import { color, COLORS, css, defaultValue, t } from '../../common';
 import { CopyIcon } from './PropList.Value.common';
+import { Text } from '../Text';
 
 export type SimpleValueProps = {
   defaults: t.PropListDefaults;
@@ -10,6 +11,7 @@ export type SimpleValueProps = {
   cursor?: CSSProperties['cursor'];
   isOver?: boolean;
   isCopyable?: boolean;
+  onClick: () => void;
 };
 
 export const SimpleValue: React.FC<SimpleValueProps> = (props) => {
@@ -35,6 +37,7 @@ export const SimpleValue: React.FC<SimpleValueProps> = (props) => {
       cursor,
       textAlign: 'right',
       fontFamily: is.monospace ? 'monospace' : undefined,
+      fontWeight: is.monospace ? 'bolder' : undefined,
       fontSize: value.fontSize !== undefined ? value.fontSize : undefined,
     }),
   };
@@ -43,7 +46,9 @@ export const SimpleValue: React.FC<SimpleValueProps> = (props) => {
 
   return (
     <div {...css(styles.base)}>
-      <div {...styles.text}>{text}</div>
+      <div {...styles.text}>
+        <Text.Syntax text={text?.toString()} />
+      </div>
       {is.copyActive && !message && <CopyIcon />}
     </div>
   );

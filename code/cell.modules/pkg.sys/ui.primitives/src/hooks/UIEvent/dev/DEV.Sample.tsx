@@ -4,8 +4,6 @@ import { Subject } from 'rxjs';
 import { UIEventPipeHookArgs, useUIEventPipe } from '..';
 import { Card, css, CssValue, TextSyntax } from './DEV.common';
 
-import { useKeyboardEventPipe } from '../../Keyboard';
-
 export type EventCtx = { index: number; message: string };
 
 export type DevSampleProps = {
@@ -19,6 +17,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
   useEffect(() => {
     const dispose$ = new Subject<void>();
     const events = ui.events({ dispose$ });
+
     events.$.subscribe((e) => {
       // console.log('inside hook', e);
     });

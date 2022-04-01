@@ -14,7 +14,6 @@ type Pixels = number;
  */
 export type ListVirtualProps = t.ListProps & {
   items: { total: number; getData: t.GetListItem; getSize: t.GetListItemSize };
-  event?: t.ListBusArgs;
   paddingNear?: Pixels;
   paddingFar?: Pixels;
 };
@@ -31,11 +30,11 @@ export const View: React.FC<ListVirtualProps> = (props) => {
   const { items, paddingNear = 0, paddingFar = 0, tabIndex } = props;
   const total = items.total;
 
-  const ctx = useVirtualContext({ total, event: props.event });
-  const { bus, instance } = ctx;
+  const ctx = useVirtualContext({ total, instance: props.instance });
+  const { instance } = ctx;
 
   const size = useResizeObserver({ ref: ctx.list.ref });
-  const renderer = Renderer({ bus, instance, props, total });
+  const renderer = Renderer({ instance, props, total });
   const orientation = renderer.orientation;
 
   const getSize = (index: number) => {

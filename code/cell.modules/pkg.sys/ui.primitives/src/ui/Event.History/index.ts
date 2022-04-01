@@ -1,2 +1,2 @@
+export * from './EventHistory';
 export * from './useEventHistory';
-export * from './EventHistory.Monitor';

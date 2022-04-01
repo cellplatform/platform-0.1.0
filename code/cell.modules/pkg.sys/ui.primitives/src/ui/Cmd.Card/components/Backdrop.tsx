@@ -1,12 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { color, COLORS, css, CssValue, t } from '../common';
+import React from 'react';
+
 import { CmdBar } from '../../Cmd.Bar';
+import { COLORS, css, CssValue, R, t } from '../common';
 
 /**
  * Types
  */
 export type BackdropProps = {
-  bus: t.EventBus<any>;
+  instance: t.CmdCardInstance;
+  size: t.DomRect;
+  state: t.CmdCardState;
   style?: CssValue;
 };
 
@@ -14,32 +17,45 @@ export type BackdropProps = {
  * Component
  */
 export const Backdrop: React.FC<BackdropProps> = (props) => {
-  const { bus } = props;
+  const { instance, state, size } = props;
 
   /**
    * [Render]
    */
   const styles = {
     base: css({
-      position: 'relative',
       Flex: 'y-stretch-stretch',
+      position: 'relative',
+      boxSizing: 'border-box',
       backgroundColor: COLORS.DARK,
       color: COLORS.WHITE,
-      boxSizing: 'border-box',
     }),
     top: css({
       flex: 1,
-      Flex: 'center-center', // TEMP 🐷
+      position: 'relative',
+      display: 'flex',
     }),
     bottom: css({}),
   };
 
+  const elBody = state.backdrop.render?.({ size });
+
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.top}>{'backdrop'}</div>
+      <div {...styles.top}>{elBody}</div>
       <div {...styles.bottom}>
-        <CmdBar bus={bus} />
+        <CmdBar instance={instance} state={state.commandbar} />
       </div>
     </div>
   );
 };
+
+/**
+ * [Memoized]
+ */
+export const BackdropMemo = React.memo(Backdrop, (prev, next) => {
+  if (!R.equals(prev.size, next.size)) return false;
+  if (!R.equals(prev.state.backdrop, next.state.backdrop)) return false;
+  if (CmdBar.State.changed(prev.state.commandbar, next.state.commandbar)) return false;
+  return true;
+});

@@ -72,8 +72,8 @@ export const PropListValue: React.FC<PropListValueProps> = (props) => {
   const renderValue = () => {
     const kind = (value as t.PropListValueKinds).kind;
 
-    if (typeof value.data === 'boolean' && kind === 'Switch') {
-      return <SwitchValue value={value} />;
+    if (kind === 'Switch') {
+      return <SwitchValue value={value} onClick={handleClick} />;
     }
 
     if (item.isSimple || message) {
@@ -85,6 +85,7 @@ export const PropListValue: React.FC<PropListValueProps> = (props) => {
           isCopyable={isCopyable}
           cursor={cursor}
           defaults={props.defaults}
+          onClick={handleClick}
         />
       );
     }
@@ -99,7 +100,6 @@ export const PropListValue: React.FC<PropListValueProps> = (props) => {
       title={item.tooltip}
       onMouseEnter={() => setIsOver(true)}
       onMouseLeave={() => setIsOver(false)}
-      onClick={handleClick}
     >
       {renderValue()}
     </div>

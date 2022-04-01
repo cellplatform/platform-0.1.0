@@ -5,7 +5,7 @@ import { ObjectView } from 'sys.ui.dev';
 import { Button } from 'sys.ui.primitives/lib/ui.ref/button/Button';
 import { Card } from 'sys.ui.primitives/lib/ui/Card';
 
-import { color, css, CssValue, t } from '../../common';
+import { color, css, CssValue, t, COLORS } from '../../common';
 import { SimpleDoc } from './DEV.types';
 
 export type DocCardProps = {
@@ -35,7 +35,12 @@ export const DocCard: React.FC<DocCardProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({ width, padding: 5, fontSize: 13 }),
+    base: css({
+      position: 'relative',
+      width,
+      padding: 5,
+      fontSize: 13,
+    }),
     object: css({ margin: 5 }),
     toolbar: css({
       marginTop: 15,
@@ -43,9 +48,19 @@ export const DocCard: React.FC<DocCardProps> = (props) => {
       Flex: 'horizontal-stretch-spaceBetween',
       borderTop: `solid 1px ${color.format(-0.1)}`,
     }),
+    count: css({
+      Absolute: [-33, 0, 0, 0],
+      height: 20,
+      color: color.alpha(COLORS.DARK, 0.3),
+      Flex: 'center-center',
+      fontFamily: 'monospace',
+      fontWeight: 'bold',
+      fontSize: 32,
+    }),
   };
   return (
     <Card style={css(styles.base, props.style)}>
+      <div {...styles.count}>{doc.current.count}</div>
       <ObjectView data={current} style={styles.object} />
       <div {...styles.toolbar}>
         <Button

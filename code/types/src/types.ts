@@ -1,3 +1,4 @@
+export * from './types.bool';
 export * from './types.dispose';
 export * from './types.dom';
 export * from './types.event';

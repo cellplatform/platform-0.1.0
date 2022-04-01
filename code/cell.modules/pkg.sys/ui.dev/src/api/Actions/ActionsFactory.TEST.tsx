@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { ActionsFactory } from '.';
-import { ActionPanelProps } from '../../web.ui/ActionPanel';
+import { ActionPanelProps } from '../../ui/ActionPanel';
 import { DevDefs, DisplayDefs } from '../../defs';
 import { DEFAULT, expect, is, rx, StateObject, t, toObject } from '../../test';
 

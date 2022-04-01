@@ -1,2 +1,2 @@
-export * from './CmdCard';
-export * from './Events';
+export { CmdCard, CmdCardProps } from './CmdCard';
+export { CmdCardEvents } from './Events';

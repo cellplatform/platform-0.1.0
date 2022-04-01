@@ -87,6 +87,7 @@ export const CmdTextbox: React.FC<CmdTextboxProps> = (props) => {
       }),
       divider: css({ width: 4 }),
     },
+    spinner: css({ top: -2 }),
   };
 
   const elLeft = (
@@ -95,7 +96,10 @@ export const CmdTextbox: React.FC<CmdTextboxProps> = (props) => {
     </div>
   );
 
-  const elSpinner = spinner && <Spinner size={22} color={isDark ? COLORS.WHITE : COLORS.DARK} />;
+  const elSpinner = spinner && (
+    <Spinner size={18} color={isDark ? COLORS.WHITE : COLORS.DARK} style={styles.spinner} />
+  );
+
   const elIcon = textTrimmed && pending && !elSpinner && (
     <Button isEnabled={isInvokable}>
       <Icons.Arrow.Forward size={20} color={COL_ICON.PENDING} />

@@ -3,9 +3,10 @@ import { Harness } from 'sys.ui.dev';
 import { t } from './common';
 
 const imports = {
+  Keyboard: import('./keyboard/dev/DEV'),
+
   hookDragTarget: import('./hooks/DragTarget/dev/DEV'),
   hookUIEvents: import('./hooks/UIEvent/dev/DEV'),
-  hookKeyboard: import('./hooks/Keyboard/dev/DEV'),
 
   Bullet: import('./ui/Bullet/dev/DEV'),
   List: import('./ui/List/dev/DEV'),
@@ -15,8 +16,9 @@ const imports = {
   DotTabstrip: import('./ui/DotTabstrip/dev/DEV'),
   Zoom: import('./ui/Zoom/DEV'),
   PropList: import('./ui/PropList/dev/DEV'),
-  QRCode: import('./ui/QRCode/dev/DEV'),
   TextEditor: import('./ui/TextEditor/DEV'),
+  QRCode: import('./ui/QRCode/dev/DEV'),
+  Semver: import('./ui/Semver/dev/DEV'),
 
   CmdTextbox: import('./ui/Cmd.Textbox/dev/DEV'),
   CmdBar: import('./ui/Cmd.Bar/dev/DEV'),
@@ -41,7 +43,7 @@ const imports = {
 
   Button: import('./ui.ref/button/Button.dev/DEV'),
   Switch: import('./ui.ref/button/Switch.dev/DEV'),
-  OptionButtons: import('sys.ui.dev/lib/web.ui/OptionButtons/dev/DEV'),
+  OptionButtons: import('sys.ui.dev/lib/ui/OptionButtons/dev/DEV'),
 
   Svg: import('./ui/Image.Svg/dev/DEV'),
 
@@ -51,7 +53,7 @@ const imports = {
   TextCopy: import('./ui/Text.Copy/dev/DEV'),
   TextSyntax: import('./ui/Text.Syntax/dev/DEV'),
 
-  UnitTests: import('./ui.dev/UnitTests'),
+  UnitTests: import('./Dev.UnitTests'),
 };
 
 /**

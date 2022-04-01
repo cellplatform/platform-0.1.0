@@ -80,12 +80,22 @@ export const actions = ComposedActions<Ctx>()
   .subject((e) => {
     e.settings({
       host: { background: -0.04 },
-      layout: { width: 450, border: -0.1, cropmarks: -0.2, background: 1, label: 'sample-1' },
+      layout: {
+        width: 450,
+        border: -0.1,
+        cropmarks: -0.2,
+        background: 1,
+        label: 'sample-1',
+        offset: [-50, -300],
+      },
     });
 
-    const el = e.ctx.el || <Component count={e.ctx.count} />;
-
-    e.render(el);
+    /**
+     * NOTE: Render within "factory method" (closure).
+     */
+    e.render(() => {
+      return e.ctx.el || <Component count={e.ctx.count} />;
+    });
   });
 
 export default actions;

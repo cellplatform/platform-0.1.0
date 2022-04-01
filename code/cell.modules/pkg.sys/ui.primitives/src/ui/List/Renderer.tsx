@@ -4,15 +4,8 @@ import { CssValue, DEFAULTS, t } from './common';
 import { ListLayoutItem } from './List.Layout.Item';
 import { Renderers } from './renderers';
 
-type Id = string;
-
-export function Renderer(args: {
-  bus: t.EventBus<any>;
-  instance: Id;
-  total: number;
-  props: t.ListProps;
-}) {
-  const { bus, instance, props, total } = args;
+export function Renderer(args: { instance: t.ListInstance; total: number; props: t.ListProps }) {
+  const { instance, props, total } = args;
   const { state, orientation = DEFAULTS.Orientation, bullet = {} } = props;
 
   const renderers = {
@@ -28,7 +21,7 @@ export function Renderer(args: {
       return (
         <ListLayoutItem
           key={`item.${index}`}
-          event={{ bus, instance }}
+          instance={instance}
           index={index}
           total={total}
           renderers={renderers}
