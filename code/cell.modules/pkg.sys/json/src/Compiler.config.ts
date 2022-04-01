@@ -2,18 +2,15 @@ import { Compiler, Package } from '@platform/cell.compiler';
 
 export default () =>
   Compiler.config()
-    .namespace('__NAME__')
+    .namespace('sys.json')
     .version(Package.version)
 
     .variant('web', (config) =>
       config
         .target('web')
-        .port(3000)
+        .port(3037)
 
         .entry('main', './src/entry/main')
-        .entry('service.worker', './src/workers/service.worker')
-        .entry('web.worker', './src/workers/web.worker')
-
         .declarations('./src/**/*')
 
         .static('static')

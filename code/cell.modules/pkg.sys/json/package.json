@@ -1,5 +1,5 @@
 {
-  "name": "__NAME__",
+  "name": "sys.json",
   "version": "0.0.0",
   "main": "lib/index",
   "sideEffects": false,
@@ -17,9 +17,9 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@platform/cell.compiler": "~latest",
-    "react": "~latest",
-    "react-dom": "~latest"
+    "@platform/cell.compiler": "~0.4.1",
+    "react": "~18.0.0",
+    "react-dom": "~18.0.0"
   },
   "license": "MIT",
   "private": true
