@@ -24,11 +24,13 @@ export { useEventHistory } from 'sys.ui.primitives/lib/ui/Event';
 
 export { PositioningLayout } from 'sys.ui.primitives/lib/ui/PositioningLayout';
 
-export { CmdBar } from 'sys.ui.primitives/lib/ui/Cmd.Bar';
 export { CmdTextbox } from 'sys.ui.primitives/lib/ui/Cmd.Textbox';
 
 export { AudioWaveform } from 'sys.ui.video/lib/ui/AudioWaveform';
 export { MediaStream, MediaEvent, VideoStream } from 'sys.ui.video/lib/ui/MediaStream';
+
+export { CmdCard } from 'sys.ui.primitives/lib/ui/Cmd.Card';
+export { CmdBar } from 'sys.ui.primitives/lib/ui/Cmd.Bar';
 
 /**
  * TODO 🐷

@@ -51,9 +51,7 @@ export function useController(args: {
      * Event handlers
      * (with a UI render factory as an example plugin entry point).
      */
-    const styles = {
-      child: css({ flex: 1 }),
-    };
+    const styles = { child: css({ flex: 1 }) };
 
     rx.payload<k.NetworkCardPeerClickEvent>($, 'sys.net/ui.NetworkCard/PeerClick')
       .pipe(filter((e) => Boolean(e.media)))
@@ -75,17 +73,20 @@ export function useController(args: {
     /**
      * List for actions from the [CommandBar] textbox.
      */
-    commandBar.action.$.subscribe((e) => {
+    commandBar.action.$.subscribe(async (e) => {
       /**
+       * 🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳
        * TODO 🐷
        * - parse and interpret the command text.
+       *
+       * 🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳
        */
       const remote = e.text;
 
       const self = network.self;
       const isReliable = true;
       const autoStartVideo = true;
-      return LocalPeerCard.connect({ bus, remote, self, isReliable, autoStartVideo });
+      await LocalPeerCard.connect({ bus, remote, self, isReliable, autoStartVideo });
     });
 
     return () => dispose();

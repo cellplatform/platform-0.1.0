@@ -8,12 +8,11 @@ export type NetworkCardBodyProps = {
   instance: t.Id;
   network: t.PeerNetwork;
   self: t.PeerId;
-  peers: t.PeerConnectionStatus[];
   style?: CssValue;
 };
 
 export const NetworkCardBody: React.FC<NetworkCardBodyProps> = (props) => {
-  const { self, network, peers } = props;
+  const { self, network } = props;
   const bus = network.bus;
 
   /**
@@ -47,12 +46,7 @@ export const NetworkCardBody: React.FC<NetworkCardBodyProps> = (props) => {
         style={styles.column}
       />
       {elDivTraceEdges}
-      <BodyColumnRight
-        instance={props.instance}
-        network={network}
-        peers={peers}
-        style={styles.column}
-      />
+      <BodyColumnRight instance={props.instance} network={network} style={styles.column} />
       {elDivider}
       {elDebug}
     </div>

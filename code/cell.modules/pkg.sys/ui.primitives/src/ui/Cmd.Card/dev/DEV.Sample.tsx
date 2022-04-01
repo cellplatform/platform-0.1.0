@@ -21,8 +21,8 @@ export const DevSample: React.FC<DevSampleProps> = (args) => {
    * [State]
    */
   const { state } = CmdCard.State.useController({
-    instance,
     bus,
+    instance,
     initial: args.state.initial,
     enabled: args.state.isControllerEnabled,
     onChange: args.state.onChange,

@@ -3,8 +3,10 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { TEST } from '../../test';
+import { DevNetworkCard } from '../DEV.Networks/DEV.NetworkCard';
 import * as k from '../NetworkCard/types';
 import {
+  Button,
   color,
   css,
   CssValue,
@@ -17,10 +19,8 @@ import {
   Spinner,
   t,
   WebRuntime,
-  Button,
 } from './DEV.common';
 import { DevFullscreen } from './DEV.Fullscreen';
-import { DevNetworkCard } from '../DEV.Networks/DEV.NetworkCard';
 
 export type DevSampleAppProps = { style?: CssValue };
 

@@ -37,8 +37,6 @@ export const useManifest: t.UseManifestHook = (options = {}) => {
   const getHref = () => options.url || `//${location.host}/index.json`;
   const getUrl = () => ManifestUrl.parse(getHref());
 
-  console.log('getHref()', getHref()); // TEMP 🐷
-
   /**
    * Lifecycle
    */

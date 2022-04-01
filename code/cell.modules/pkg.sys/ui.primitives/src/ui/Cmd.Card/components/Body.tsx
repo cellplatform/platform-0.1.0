@@ -29,10 +29,11 @@ export const Body: React.FC<BodyProps> = (props) => {
   const styles = {
     base: css({ pointerEvents: 'none' }),
     inner: css({
+      pointerEvents: 'auto',
       position: 'relative',
       height: size.height - FOOTER.HEIGHT,
       backgroundColor: color.format(1),
-      pointerEvents: 'auto',
+      display: 'flex',
     }),
   };
 

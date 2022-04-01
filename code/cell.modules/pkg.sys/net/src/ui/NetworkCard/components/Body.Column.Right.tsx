@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { Label } from '../../Label';
-import { css, List, CssValue, t, color, R, k, rx } from '../common';
+import { color, css, CssValue, k, List, R, rx, t } from '../common';
 import { BodyColumnTitle } from './Body.Column';
 
 export type BodyColumnRightProps = {
   instance: t.Id;
   network: t.PeerNetwork;
-  peers: t.PeerConnectionStatus[];
   style?: CssValue;
 };
 
@@ -16,9 +17,21 @@ export const BodyColumnRight: React.FC<BodyColumnRightProps> = (props) => {
   const bus = rx.busAsType<k.NetworkCardEvent>(network.bus);
 
   type P = { id: string; connections: t.PeerConnectionStatus[] };
-  const grouped = R.groupBy(({ peer }) => peer.remote.id, props.peers);
-  const peers: P[] = Object.keys(grouped).map((id) => ({ id, connections: grouped[id] }));
+  const [peers, setPeers] = useState<P[]>([]);
   const hasPeers = peers.length > 0;
+
+  const updatePeers = (connections: t.PeerConnectionStatus[]) => {
+    const grouped = R.groupBy(({ peer }) => peer.remote.id, connections);
+    const items: P[] = Object.keys(grouped).map((id) => ({ id, connections: grouped[id] }));
+    setPeers(items);
+  };
+
+  useEffect(() => {
+    const dispose$ = new Subject<void>();
+    const status$ = network.status.$.pipe(takeUntil(dispose$));
+    status$.subscribe((e) => updatePeers(e.connections));
+    return () => dispose$.next();
+  }, []); // eslint-disable-line
 
   /**
    * [Render]
@@ -39,6 +52,7 @@ export const BodyColumnRight: React.FC<BodyColumnRightProps> = (props) => {
 
   const elPeersList = (
     <List.Layout
+      instance={{ bus, id: instance }}
       style={{ marginLeft: 0 }}
       orientation={'y'}
       bullet={{ edge: 'near', size: 12 }}
