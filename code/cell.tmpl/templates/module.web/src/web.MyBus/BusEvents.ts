@@ -10,8 +10,9 @@ type Id = string;
 export function BusEvents(args: {
   instance: { bus: t.EventBus<any>; id: Id };
   filter?: (e: t.MyEvent) => boolean;
+  dispose$?: t.Observable<any>;
 }): t.MyEvents {
-  const { dispose, dispose$ } = rx.disposable();
+  const { dispose, dispose$ } = rx.disposable(args.dispose$);
 
   const bus = rx.busAsType<t.MyEvent>(args.instance.bus);
   const instance = args.instance.id;
