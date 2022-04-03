@@ -1,5 +1,5 @@
 import { filter, takeUntil } from 'rxjs/operators';
-import { rx, slug, t } from './common';
+import { rx, slug, t, DEFAULT } from './common';
 
 type Id = string;
 
@@ -8,10 +8,10 @@ type Id = string;
  */
 export function JsonEvents(args: {
   instance: t.JsonBusInstance;
-  id?: Id;
-  filter?: (e: t.JsonEvent) => boolean;
+  filter?: t.JsonEventFilter;
+  dispose$?: t.Observable<any>;
 }): t.JsonEvents {
-  const { dispose, dispose$ } = rx.disposable();
+  const { dispose, dispose$ } = rx.disposable(args.dispose$);
 
   const bus = rx.busAsType<t.JsonEvent>(args.instance.bus);
   const instance = args.instance.id;
@@ -51,6 +51,33 @@ export function JsonEvents(args: {
   };
 
   /**
+   * State.
+   */
+  const state: t.JsonEvents['state'] = {
+    req$: rx.payload<t.JsonStateReqEvent>($, 'sys.json/state:req'),
+    res$: rx.payload<t.JsonStateResEvent>($, 'sys.json/state:res'),
+    async get(options = {}) {
+      const { timeout = 3000, key = DEFAULT.KEY } = options;
+      const tx = slug();
+
+      const op = 'state.get';
+      const res$ = state.res$.pipe(filter((e) => e.tx === tx));
+      const first = rx.asPromise.first<t.JsonStateResEvent>(res$, { op, timeout });
+
+      bus.fire({
+        type: 'sys.json/state:req',
+        payload: { tx, instance, key },
+      });
+
+      const res = await first;
+      if (res.payload) return res.payload;
+
+      const error = res.error?.message ?? 'Failed';
+      return { tx, instance, key, error };
+    },
+  };
+
+  /**
    * API
    */
   return {
@@ -60,6 +87,7 @@ export function JsonEvents(args: {
     dispose$,
     is,
     info,
+    state,
   };
 }
 
