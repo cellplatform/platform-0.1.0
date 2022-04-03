@@ -11,7 +11,7 @@ export default () =>
     .variant('web', (config) =>
       config
         .target('web')
-        .port(Package.compiler.port)
+        .port(3037)
 
         .entry('main', './src/entry/dom')
         .static('static')

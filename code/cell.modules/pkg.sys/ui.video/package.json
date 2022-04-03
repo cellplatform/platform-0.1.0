@@ -2,9 +2,6 @@
   "name": "sys.ui.video",
   "version": "0.0.54",
   "sideEffects": false,
-  "compiler": {
-    "port": 3037
-  },
   "scripts": {
     "start": "cell.compiler dev $@",
     "dev": "cell.compiler dev --no-exports $@",

@@ -4,9 +4,6 @@
   "version": "0.0.119",
   "main": "lib/index",
   "sideEffects": false,
-  "compiler": {
-    "port": 5050
-  },
   "scripts": {
     "start": "cell.compiler dev $@",
     "dev": "cell.compiler dev --no-exports $@",

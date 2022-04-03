@@ -3,9 +3,6 @@
   "version": "0.0.92",
   "main": "lib/index",
   "sideEffects": false,
-  "compiler": {
-    "port": 3038
-  },
   "scripts": {
     "start": "cell.compiler dev $@",
     "dev": "cell.compiler dev --no-exports $@",

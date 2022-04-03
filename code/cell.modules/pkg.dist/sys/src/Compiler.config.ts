@@ -8,7 +8,7 @@ export default () =>
     .variant('web', (config) =>
       config
         .target('web')
-        .port(Package.compiler.port)
+        .port(5050)
 
         .static('static')
         .files((e) => e.redirect(false, '*.worker.js').access('public', '**/*.{png,jpg,svg}'))

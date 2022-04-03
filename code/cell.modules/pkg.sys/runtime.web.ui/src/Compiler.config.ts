@@ -8,7 +8,7 @@ export default () =>
     .variant('web', (config) =>
       config
         .target('web')
-        .port(Package.compiler.port)
+        .port(5051)
 
         .entry('main', './src/entry/main')
 
