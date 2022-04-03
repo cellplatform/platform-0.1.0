@@ -10,16 +10,11 @@ export const Dispose = {
     const dispose$ = new Subject<void>();
     const disposable: Disposable = {
       dispose$: dispose$.asObservable(),
-      dispose: () => {
-        dispose$.next();
-        dispose$.complete();
+      dispose() {
+        Dispose.done(dispose$);
       },
     };
-
-    if (until$) {
-      until$.subscribe(() => disposable.dispose());
-    }
-
+    until$?.subscribe(() => disposable.dispose());
     return disposable;
   },
 
@@ -27,9 +22,7 @@ export const Dispose = {
    * Listens to an observable and disposes of the object when fires.
    */
   until(disposable: Disposable, until$?: Observable<any>): Disposable {
-    if (until$) {
-      until$.subscribe(() => disposable.dispose());
-    }
+    until$?.subscribe(() => disposable.dispose());
     return disposable;
   },
 
