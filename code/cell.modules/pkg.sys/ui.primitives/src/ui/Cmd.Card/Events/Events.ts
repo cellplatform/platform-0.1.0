@@ -1,5 +1,4 @@
-import { animationFrameScheduler, Subject } from 'rxjs';
-import { filter, observeOn, takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
 import { rx, t, Patch, slug } from '../common';
 
@@ -7,9 +6,7 @@ import { rx, t, Patch, slug } from '../common';
  * Event API
  */
 export const CmdCardEvents: t.CmdCardEventsFactory = (args) => {
-  const dispose$ = new Subject<void>();
-  const dispose = () => rx.done(dispose$);
-  args.dispose$?.subscribe(dispose);
+  const { dispose, dispose$ } = rx.disposable(args.dispose$);
 
   const instance = args.instance.id;
   const bus = rx.busAsType<t.CmdCardEvent>(args.instance.bus);
@@ -18,7 +15,6 @@ export const CmdCardEvents: t.CmdCardEventsFactory = (args) => {
     takeUntil(dispose$),
     filter((e) => e.type.startsWith('sys.ui.CmdCard/')),
     filter((e) => e.payload.instance === instance),
-    observeOn(animationFrameScheduler),
   );
 
   const state: t.CmdCardEvents['state'] = {
