@@ -3,7 +3,7 @@ import { DevActions, Test } from 'sys.ui.dev';
 import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
 const Imports = {
-  Sample: import('./ui/Sample.TEST'),
+  JsonBus: import('./web.JsonBus/TEST'),
 };
 
 type Ctx = { results?: TestSuiteRunResponse };

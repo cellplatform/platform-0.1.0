@@ -1,5 +1,4 @@
 import { filter, takeUntil } from 'rxjs/operators';
-
 import { rx, slug, t } from './common';
 
 type Id = string;
@@ -7,15 +6,16 @@ type Id = string;
 /**
  * Event API for the "WebRuntime"
  */
-export function BusEvents(args: {
-  instance: { bus: t.EventBus<any>; id: Id };
-  filter?: (e: t.MyEvent) => boolean;
-}): t.MyEvents {
+export function JsonEvents(args: {
+  instance: t.JsonBusInstance;
+  id?: Id;
+  filter?: (e: t.JsonEvent) => boolean;
+}): t.JsonEvents {
   const { dispose, dispose$ } = rx.disposable();
 
-  const bus = rx.busAsType<t.MyEvent>(args.instance.bus);
+  const bus = rx.busAsType<t.JsonEvent>(args.instance.bus);
   const instance = args.instance.id;
-  const is = BusEvents.is;
+  const is = JsonEvents.is;
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
@@ -26,19 +26,19 @@ export function BusEvents(args: {
   /**
    * Base information about the module.
    */
-  const info: t.MyEvents['info'] = {
-    req$: rx.payload<t.MyInfoReqEvent>($, 'my.namespace/info:req'),
-    res$: rx.payload<t.MyInfoResEvent>($, 'my.namespace/info:res'),
+  const info: t.JsonEvents['info'] = {
+    req$: rx.payload<t.JsonInfoReqEvent>($, 'sys.json/info:req'),
+    res$: rx.payload<t.JsonInfoResEvent>($, 'sys.json/info:res'),
     async get(options = {}) {
       const { timeout = 3000 } = options;
       const tx = slug();
 
       const op = 'info';
       const res$ = info.res$.pipe(filter((e) => e.tx === tx));
-      const first = rx.asPromise.first<t.MyInfoResEvent>(res$, { op, timeout });
+      const first = rx.asPromise.first<t.JsonInfoResEvent>(res$, { op, timeout });
 
       bus.fire({
-        type: 'my.namespace/info:req',
+        type: 'sys.json/info:req',
         payload: { tx, instance },
       });
 
@@ -46,10 +46,13 @@ export function BusEvents(args: {
       if (res.payload) return res.payload;
 
       const error = res.error?.message ?? 'Failed';
-      return { tx, instance: instance, error };
+      return { tx, instance, error };
     },
   };
 
+  /**
+   * API
+   */
   return {
     instance: { bus: rx.bus.instance(bus), id: instance },
     $,
@@ -64,7 +67,7 @@ export function BusEvents(args: {
  * Event matching.
  */
 const matcher = (startsWith: string) => (input: any) => rx.isEvent(input, { startsWith });
-BusEvents.is = {
-  base: matcher('my.namespace/'),
-  instance: (e: t.Event, instance: Id) => BusEvents.is.base(e) && e.payload?.instance === instance,
+JsonEvents.is = {
+  base: matcher('sys.json/'),
+  instance: (e: t.Event, instance: Id) => JsonEvents.is.base(e) && e.payload?.instance === instance,
 };

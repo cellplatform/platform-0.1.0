@@ -1,21 +1,18 @@
-import { BusEvents } from './BusEvents';
-import { DEFAULT, pkg, rx, slug, t } from './common';
-
-type Id = string;
+import { JsonEvents } from './Json.Events';
+import { pkg, rx, slug, t } from './common';
 
 /**
  * Event controller.
  */
-export function BusController(args: {
-  instance: { bus: t.EventBus<any>; id: Id };
-  filter?: (e: t.MyEvent) => boolean;
+export function JsonController(args: {
+  instance: t.JsonBusInstance;
+  filter?: (e: t.JsonEvent) => boolean;
 }) {
   const { filter } = args;
 
-  const bus = rx.busAsType<t.MyEvent>(args.instance.bus);
+  const bus = rx.busAsType<t.JsonEvent>(args.instance.bus);
   const instance = args.instance.id;
-  
-  const events = BusEvents({ instance: args.instance, filter });
+  const events = JsonEvents({ instance: args.instance, filter });
   const { dispose, dispose$ } = events;
 
   /**
@@ -25,10 +22,10 @@ export function BusController(args: {
     const { tx = slug() } = e;
 
     const { name = '', version = '' } = pkg;
-    const info: t.MyInfo = { module: { name, version } };
+    const info: t.JsonInfo = { module: { name, version } };
 
     bus.fire({
-      type: 'my.namespace/info:res',
+      type: 'sys.json/info:res',
       payload: { tx, instance, info },
     });
   });
