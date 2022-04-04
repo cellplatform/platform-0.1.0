@@ -68,19 +68,97 @@ export default Test.describe('JsonBus', (e) => {
         expect(res.instance).to.eql(instance.id);
         expect(res.info?.module.name).to.eql(pkg.name);
         expect(res.info?.module.version).to.eql(pkg.version);
+        expect(res.info?.keys).to.eql([]);
       });
     });
 
-    e.describe('state.get: req/res', (e) => {
-      e.it('initial (no key, no state)', async () => {
+    e.describe('get', (e) => {
+      e.it('get === state.get.fire', () => {
+        const { dispose, events } = setup();
+        expect(events.get).to.equal(events.state.get.fire);
+        dispose();
+      });
+
+      e.it('no key ("default"), no state', async () => {
         const { dispose, events, instance } = setup();
-        const res = await events.state.get();
+        const res = await events.get();
         dispose();
 
         expect(res.instance).to.eql(instance.id);
         expect(res.key).to.eql(DEFAULT.KEY);
-        expect(res.state).to.eql(undefined);
+        expect(res.value).to.eql(undefined);
         expect(res.error).to.eql(undefined);
+      });
+    });
+
+    e.describe('put', (e) => {
+      e.it('put === state.put.fire', () => {
+        const { dispose, events } = setup();
+        expect(events.put).to.equal(events.state.put.fire);
+        dispose();
+      });
+
+      e.it('put<T> (default key)', async () => {
+        const { dispose, events, controller, instance } = setup();
+
+        // BEFORE state
+        expect((await events.get()).value).to.eql(undefined);
+        expect((await events.info.get()).info?.keys).to.eql([]);
+
+        const fired: t.JsonStateChange[] = [];
+        controller.changed$.subscribe((e) => fired.push(e));
+
+        type T = { count: number };
+        const value: T = { count: 123 };
+        const res = await events.put<T>(value);
+
+        expect(res.instance).to.eql(instance.id);
+        expect(res.key).to.eql(DEFAULT.KEY);
+
+        // AFTER state
+        expect((await events.get()).value).to.eql(value);
+        expect((await events.info.get()).info?.keys).to.eql([DEFAULT.KEY]);
+
+        expect(fired.length).to.eql(1);
+        expect(fired[0].key).to.eql(DEFAULT.KEY);
+        expect(fired[0].op).to.eql('put');
+        expect(fired[0].value).to.eql(value);
+
+        dispose();
+      });
+
+      e.it('put (all types)', async () => {
+        const { dispose, events } = setup();
+
+        async function test(value: t.Json) {
+          await events.put(value);
+          expect((await events.get()).value).to.eql(value);
+        }
+
+        await test(null);
+        await test(undefined);
+        await test(true);
+        await test(false);
+        await test(123);
+        await test('text');
+        await test({ count: 123 });
+        await test([{ count: 123 }, null, 'hello']);
+
+        dispose();
+      });
+
+      e.it('put (specific key)', async () => {
+        const { dispose, events } = setup();
+        expect((await events.info.get()).info?.keys).to.eql([]);
+
+        const key = 'foo.bar/baz';
+        const value = { msg: 'hello' };
+        await events.put(value, { key });
+
+        expect((await events.info.get()).info?.keys).to.eql([key]); // BEFORE
+        expect((await events.get({ key })).value).to.eql(value);
+
+        dispose();
       });
     });
   });

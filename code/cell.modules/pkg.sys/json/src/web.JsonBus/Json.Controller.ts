@@ -5,7 +5,6 @@ import { DEFAULT, pkg, rx, t } from './common';
 import { JsonEvents } from './Json.Events';
 
 type Cache = { [key: string]: t.Json };
-type Change = { key: string; state: t.Json };
 
 /**
  * Controller that manages a cache of immutable JSON state values.
@@ -26,22 +25,24 @@ export function JsonController(args: {
   const { dispose, dispose$ } = events;
 
   /**
-   * State.
+   * State
    */
   const cache: Cache = {};
-  const changed$ = new Subject<Change>();
-  const change = (key: string, fn: (prev: t.Json) => t.Json) => {
+  const changed$ = new Subject<t.JsonStateChange>();
+  const change = (op: t.JsonStateOperation, key: string, fn: (prev: t.Json) => t.Json) => {
     cache[key] = fn(cache[key]);
-    changed$.next({ key, state: cache[key] });
+    changed$.next({ key, op, value: cache[key] });
+    if (cache[key] === undefined) delete cache[key];
   };
 
   /**
    * Info (Module)
    */
-  events.info.req$.pipe(delay(0)).subscribe((e) => {
+  events.info.req$.subscribe((e) => {
     const { tx } = e;
     const { name = '', version = '' } = pkg;
-    const info: t.JsonInfo = { module: { name, version } };
+    const keys = Object.keys(cache);
+    const info: t.JsonInfo = { module: { name, version }, keys };
     bus.fire({
       type: 'sys.json/info:res',
       payload: { tx, instance, info },
@@ -49,14 +50,26 @@ export function JsonController(args: {
   });
 
   /**
-   * State.get
+   * State.get (READ)
    */
-  events.state.req$.pipe(delay(0)).subscribe(async (e) => {
+  events.state.get.req$.subscribe((e) => {
     const { tx, key = DEFAULT.KEY } = e;
     const state = cache[key];
     bus.fire({
       type: 'sys.json/state:res',
-      payload: { instance, tx, key, state },
+      payload: { instance, tx, key, value: state },
+    });
+  });
+
+  /**
+   * State.put (UPDATE/OVERWRITE)
+   */
+  events.state.put.req$.subscribe((e) => {
+    const { tx, key = DEFAULT.KEY } = e;
+    change('put', key, (prev) => e.value);
+    bus.fire({
+      type: 'sys.json/state.put:res',
+      payload: { instance, tx, key },
     });
   });
 

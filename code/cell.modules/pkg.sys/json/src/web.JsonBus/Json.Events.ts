@@ -1,6 +1,7 @@
 import { filter, takeUntil } from 'rxjs/operators';
 import { rx, slug, t, DEFAULT } from './common';
 
+type J = t.Json;
 type Id = string;
 
 /**
@@ -30,7 +31,7 @@ export function JsonEvents(args: {
     req$: rx.payload<t.JsonInfoReqEvent>($, 'sys.json/info:req'),
     res$: rx.payload<t.JsonInfoResEvent>($, 'sys.json/info:res'),
     async get(options = {}) {
-      const { timeout = 3000 } = options;
+      const { timeout = DEFAULT.TIMEOUT } = options;
       const tx = slug();
 
       const op = 'info';
@@ -54,26 +55,53 @@ export function JsonEvents(args: {
    * State.
    */
   const state: t.JsonEvents['state'] = {
-    req$: rx.payload<t.JsonStateReqEvent>($, 'sys.json/state:req'),
-    res$: rx.payload<t.JsonStateResEvent>($, 'sys.json/state:res'),
-    async get(options = {}) {
-      const { timeout = 3000, key = DEFAULT.KEY } = options;
-      const tx = slug();
+    get: {
+      req$: rx.payload<t.JsonStateReqEvent>($, 'sys.json/state:req'),
+      res$: rx.payload<t.JsonStateResEvent>($, 'sys.json/state:res'),
+      async fire(options = {}) {
+        const { timeout = DEFAULT.TIMEOUT, key = DEFAULT.KEY } = options;
+        const tx = slug();
 
-      const op = 'state.get';
-      const res$ = state.res$.pipe(filter((e) => e.tx === tx));
-      const first = rx.asPromise.first<t.JsonStateResEvent>(res$, { op, timeout });
+        const op = 'state.get';
+        const res$ = state.get.res$.pipe(filter((e) => e.tx === tx));
+        const first = rx.asPromise.first<t.JsonStateResEvent>(res$, { op, timeout });
 
-      bus.fire({
-        type: 'sys.json/state:req',
-        payload: { tx, instance, key },
-      });
+        bus.fire({
+          type: 'sys.json/state:req',
+          payload: { tx, instance, key },
+        });
 
-      const res = await first;
-      if (res.payload) return res.payload;
+        const res = await first;
+        if (res.payload) return res.payload;
 
-      const error = res.error?.message ?? 'Failed';
-      return { tx, instance, key, error };
+        const error = res.error?.message ?? 'Failed';
+        return { tx, instance, key, error };
+      },
+    },
+
+    put: {
+      req$: rx.payload<t.JsonStatePutReqEvent>($, 'sys.json/state.put:req'),
+      res$: rx.payload<t.JsonStatePutResEvent>($, 'sys.json/state.put:res'),
+      async fire<T extends J = J>(value: T, options: t.JsonEventsPutOptions = {}) {
+        // return null as any; // TEMP 🐷
+        const { timeout = DEFAULT.TIMEOUT, key = DEFAULT.KEY } = options;
+        const tx = slug();
+
+        const op = 'state.put';
+        const res$ = state.put.res$.pipe(filter((e) => e.tx === tx));
+        const first = rx.asPromise.first<t.JsonStatePutResEvent>(res$, { op, timeout });
+
+        bus.fire({
+          type: 'sys.json/state.put:req',
+          payload: { tx, instance, key, value },
+        });
+
+        const res = await first;
+        if (res.payload) return res.payload;
+
+        const error = res.error?.message ?? 'Failed';
+        return { tx, instance, key, error };
+      },
     },
   };
 
@@ -88,6 +116,8 @@ export function JsonEvents(args: {
     is,
     info,
     state,
+    get: state.get.fire,
+    put: state.put.fire,
   };
 }
 
