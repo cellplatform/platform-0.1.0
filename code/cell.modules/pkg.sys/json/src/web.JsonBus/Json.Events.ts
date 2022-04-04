@@ -61,7 +61,8 @@ export function JsonEvents(args: {
     get: {
       req$: rx.payload<t.JsonStateReqEvent>($, 'sys.json/state:req'),
       res$: rx.payload<t.JsonStateResEvent>($, 'sys.json/state:res'),
-      async fire(options = {}) {
+      async fire<T extends J = J>(options: t.JsonEventsGetOptions = {}) {
+        type R = t.JsonStateRes<T>;
         const { timeout = DEFAULT.TIMEOUT, key = DEFAULT.KEY } = options;
         const tx = slug();
 
@@ -75,10 +76,10 @@ export function JsonEvents(args: {
         });
 
         const res = await first;
-        if (res.payload) return res.payload;
+        if (res.payload) return res.payload as R;
 
         const error = res.error?.message ?? 'Failed';
-        return { tx, instance, key, error };
+        return { tx, instance, key, error } as R;
       },
     },
 
@@ -160,6 +161,19 @@ export function JsonEvents(args: {
   };
 
   /**
+   * API for a specific key/path.
+   */
+  function key<T extends J = J>(
+    keyInput?: string,
+    options: t.JsonEventsKeyOptions<T> = {},
+  ): t.JsonEventsKey<T> {
+    const key = keyInput ?? DEFAULT.KEY;
+    const { timeout = DEFAULT.TIMEOUT } = options;
+
+    return { key, timeout };
+  }
+
+  /**
    * API
    */
   return {
@@ -170,9 +184,6 @@ export function JsonEvents(args: {
     is,
     info,
     state,
-    get: state.get.fire,
-    put: state.put.fire,
-    patch: state.patch.fire,
   };
 }
 

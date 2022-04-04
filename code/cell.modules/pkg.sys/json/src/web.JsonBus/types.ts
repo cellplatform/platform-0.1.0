@@ -4,6 +4,7 @@ type J = t.JsonMap;
 type Id = string;
 type Milliseconds = number;
 type Semver = string;
+type KeyPath = string;
 
 export type JsonBusInstance = { bus: t.EventBus<any>; id: Id };
 export type JsonEventFilter = (e: t.JsonEvent) => boolean;
@@ -32,12 +33,12 @@ export type JsonEvents = t.Disposable & {
     get: {
       req$: t.Observable<JsonStateReq>;
       res$: t.Observable<JsonStateRes>;
-      fire(options?: JsonEventsGetOptions): Promise<JsonStateRes>;
+      fire<T extends J = J>(options?: JsonEventsGetOptions): Promise<JsonStateRes<T>>;
     };
     put: {
       req$: t.Observable<JsonStatePutReq>;
       res$: t.Observable<JsonStatePutRes>;
-      fire<T extends J = J>(value: T, options?: JsonEventsPutOptions): Promise<JsonStateRes>;
+      fire<T extends J = J>(value: T, options?: JsonEventsPutOptions): Promise<JsonStatePutRes>;
     };
     patch: {
       req$: t.Observable<JsonStatePatchReq>;
@@ -49,20 +50,29 @@ export type JsonEvents = t.Disposable & {
     };
   };
 
-  get(options?: JsonEventsGetOptions): Promise<JsonStateRes>;
-  put<T extends J = J>(value: T, options?: JsonEventsPutOptions): Promise<JsonStateRes>;
-  patch<T extends J = J>(
-    handler: JsonStateMutator<T>,
-    options?: JsonEventsPatchOptions<T>,
-  ): Promise<JsonStatePatchRes>;
+  // get<T extends J = J>(options?: JsonEventsGetOptions): Promise<JsonStateRes<T>>;
+  // put<T extends J = J>(value: T, options?: JsonEventsPutOptions): Promise<JsonStatePutRes>;
+  // patch<T extends J = J>(
+  //   handler: JsonStateMutator<T>,
+  //   options?: JsonEventsPatchOptions<T>,
+  // ): Promise<JsonStatePatchRes>;
+
+  // key<T extends J = J>(key?: string, options?: JsonEventsKeyOptions<T>): JsonEventsKey<T>;
 };
 
-export type JsonEventsGetOptions = { timeout?: Milliseconds; key?: string };
-export type JsonEventsPutOptions = { timeout?: Milliseconds; key?: string };
+export type JsonEventsGetOptions = { timeout?: Milliseconds; key?: KeyPath };
+export type JsonEventsPutOptions = { timeout?: Milliseconds; key?: KeyPath };
 export type JsonEventsPatchOptions<T extends J> = {
   timeout?: Milliseconds;
-  key?: string;
+  key?: KeyPath;
   initial?: T;
+};
+
+export type JsonEventsKeyOptions<T extends J> = { timeout?: Milliseconds; initial?: T };
+export type JsonEventsKey<T extends J = J> = {
+  key: KeyPath;
+  timeout: Milliseconds;
+  // get(options?: JsonEventsGetOptions): Promise<JsonStateRes>;
 };
 
 /**
