@@ -1,5 +1,5 @@
-import { t, expect, rx, Test, pkg, slug } from '../test';
 import { Json } from '.';
+import { expect, pkg, rx, slug, t, Test, time } from '../test';
 import { DEFAULT } from './common';
 
 export default Test.describe('JsonBus', (e) => {
@@ -121,28 +121,8 @@ export default Test.describe('JsonBus', (e) => {
 
         expect(fired.length).to.eql(1);
         expect(fired[0].key).to.eql(DEFAULT.KEY);
-        expect(fired[0].op).to.eql('put');
+        expect(fired[0].op).to.eql('replace');
         expect(fired[0].value).to.eql(value);
-
-        dispose();
-      });
-
-      e.it('put (all types)', async () => {
-        const { dispose, events } = setup();
-
-        async function test(value: t.Json) {
-          await events.put(value);
-          expect((await events.get()).value).to.eql(value);
-        }
-
-        await test(null);
-        await test(undefined);
-        await test(true);
-        await test(false);
-        await test(123);
-        await test('text');
-        await test({ count: 123 });
-        await test([{ count: 123 }, null, 'hello']);
 
         dispose();
       });
@@ -158,6 +138,84 @@ export default Test.describe('JsonBus', (e) => {
         expect((await events.info.get()).info?.keys).to.eql([key]); // BEFORE
         expect((await events.get({ key })).value).to.eql(value);
 
+        dispose();
+      });
+    });
+
+    e.describe('patch', (e) => {
+      type T = { count: number };
+
+      e.it('patch === state.patch.fire', () => {
+        const { dispose, events } = setup();
+        expect(events.patch).to.equal(events.state.patch.fire);
+        dispose();
+      });
+
+      e.it('throw: no current state', async () => {
+        const { dispose, events } = setup();
+
+        const res1 = await events.state.patch.fire((prev) => null);
+        const res2 = await events.state.patch.fire((prev) => null, { key: 'foo' });
+        dispose();
+
+        // Failed to patch, could not retrieve current state
+        expect(res1.error).to.include('Failed to patch, could not retrieve current state');
+        expect(res2.error).to.include('key="foo"');
+      });
+
+      e.it('patch results', async () => {
+        const { dispose, events, instance } = setup();
+
+        await events.put<T>({ count: 123 });
+        const res = await events.state.patch.fire<T>((prev) => prev.count++);
+
+        expect(res.key).to.eql(DEFAULT.KEY);
+        expect(res.instance).to.eql(instance.id);
+        expect(res.error).to.eql(undefined);
+
+        expect((await events.get()).value).to.eql({ count: 124 });
+        dispose();
+      });
+
+      e.it('patch with {initial} value option', async () => {
+        const { dispose, events, instance } = setup();
+
+        const initial: T = { count: 10 };
+        const res = await events.state.patch.fire<T>((prev) => (prev.count -= 5), { initial });
+
+        expect(res.key).to.eql(DEFAULT.KEY);
+        expect(res.instance).to.eql(instance.id);
+        expect(res.error).to.eql(undefined);
+
+        expect((await events.get()).value).to.eql({ count: 5 });
+        dispose();
+      });
+
+      e.it('patch on key object', async () => {
+        const { dispose, events } = setup();
+
+        const key = 'foo.bar';
+        const initial: T = { count: 10 };
+        await events.state.patch.fire<T>((prev) => (prev.count += 1), { initial, key });
+        await events.state.patch.fire<T>((prev) => (prev.count += 4), { key });
+
+        expect((await events.get({ key })).value).to.eql({ count: 15 });
+        dispose();
+      });
+
+      e.it('async patch mutator', async () => {
+        const { dispose, events } = setup();
+
+        const initial: T = { count: 10 };
+        await events.state.patch.fire<T>(
+          async (prev) => {
+            await time.wait(5);
+            prev.count += 10;
+          },
+          { initial },
+        );
+
+        expect((await events.get()).value).to.eql({ count: 20 });
         dispose();
       });
     });

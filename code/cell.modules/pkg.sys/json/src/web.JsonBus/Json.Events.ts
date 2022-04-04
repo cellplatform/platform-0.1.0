@@ -1,7 +1,7 @@
 import { filter, takeUntil } from 'rxjs/operators';
-import { rx, slug, t, DEFAULT } from './common';
+import { rx, slug, t, DEFAULT, Patch } from './common';
 
-type J = t.Json;
+type J = t.JsonMap;
 type Id = string;
 
 /**
@@ -55,6 +55,9 @@ export function JsonEvents(args: {
    * State.
    */
   const state: t.JsonEvents['state'] = {
+    /**
+     * GET
+     */
     get: {
       req$: rx.payload<t.JsonStateReqEvent>($, 'sys.json/state:req'),
       res$: rx.payload<t.JsonStateResEvent>($, 'sys.json/state:res'),
@@ -63,7 +66,7 @@ export function JsonEvents(args: {
         const tx = slug();
 
         const op = 'state.get';
-        const res$ = state.get.res$.pipe(filter((e) => e.tx === tx));
+        const res$ = state.get.res$.pipe(filter((e) => e.tx === tx && e.key === key));
         const first = rx.asPromise.first<t.JsonStateResEvent>(res$, { op, timeout });
 
         bus.fire({
@@ -79,21 +82,72 @@ export function JsonEvents(args: {
       },
     },
 
+    /**
+     * PUT
+     */
     put: {
       req$: rx.payload<t.JsonStatePutReqEvent>($, 'sys.json/state.put:req'),
       res$: rx.payload<t.JsonStatePutResEvent>($, 'sys.json/state.put:res'),
       async fire<T extends J = J>(value: T, options: t.JsonEventsPutOptions = {}) {
-        // return null as any; // TEMP 🐷
         const { timeout = DEFAULT.TIMEOUT, key = DEFAULT.KEY } = options;
         const tx = slug();
 
         const op = 'state.put';
-        const res$ = state.put.res$.pipe(filter((e) => e.tx === tx));
+        const res$ = state.put.res$.pipe(filter((e) => e.tx === tx && e.key === key));
         const first = rx.asPromise.first<t.JsonStatePutResEvent>(res$, { op, timeout });
 
         bus.fire({
           type: 'sys.json/state.put:req',
           payload: { tx, instance, key, value },
+        });
+
+        const res = await first;
+        if (res.payload) return res.payload;
+
+        const error = res.error?.message ?? 'Failed';
+        return { tx, instance, key, error };
+      },
+    },
+
+    /**
+     * PATCH
+     */
+    patch: {
+      req$: rx.payload<t.JsonStatePatchReqEvent>($, 'sys.json/state.patch:req'),
+      res$: rx.payload<t.JsonStatePatchResEvent>($, 'sys.json/state.patch:res'),
+      async fire<T extends J = J>(
+        handler: t.JsonStateMutator<T>,
+        options: t.JsonEventsPatchOptions<T> = {},
+      ): Promise<t.JsonStatePatchRes> {
+        const { timeout = DEFAULT.TIMEOUT, key = DEFAULT.KEY, initial } = options;
+        const tx = slug();
+
+        const response = (error?: string): t.JsonStatePatchRes => {
+          return { tx, instance, key, error };
+        };
+
+        const current = await state.get.fire({ timeout, key });
+        if (current.error) return response(current.error);
+
+        if (!current.value && initial) {
+          const res = await state.put.fire<T>(initial, { key, timeout });
+          if (res.error) return response(res.error);
+        }
+
+        const value = current.value ?? initial;
+        if (!value) {
+          const error = `Failed to patch, could not retrieve current state (key="${key}"). Ensure the [sys.json] controller has been started (instance="${instance}").`;
+          return response(error);
+        }
+
+        const op = 'state.patch';
+        const res$ = state.patch.res$.pipe(filter((e) => e.tx === tx && e.key === key));
+        const first = rx.asPromise.first<t.JsonStatePatchResEvent>(res$, { op, timeout });
+
+        const change = await Patch.changeAsync<T>(value as any, handler);
+        bus.fire({
+          type: 'sys.json/state.patch:req',
+          payload: { tx, instance, key, op: change.op, patches: change.patches },
         });
 
         const res = await first;
@@ -118,6 +172,7 @@ export function JsonEvents(args: {
     state,
     get: state.get.fire,
     put: state.put.fire,
+    patch: state.patch.fire,
   };
 }
 

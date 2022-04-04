@@ -2,7 +2,7 @@
  * @platform
  */
 export { css, color, CssValue, Style, formatColor } from '@platform/css';
-export { rx, slug } from '@platform/util.value';
+export { rx, slug, time } from '@platform/util.value';
 
 /**
  * @system

@@ -1,10 +1,11 @@
 import { Observable, Subject } from 'rxjs';
-import { delay, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
-import { DEFAULT, pkg, rx, t } from './common';
+import { DEFAULT, Patch, pkg, rx, t } from './common';
 import { JsonEvents } from './Json.Events';
 
-type Cache = { [key: string]: t.Json };
+type J = t.JsonMap;
+type Cache = { [key: string]: J };
 
 /**
  * Controller that manages a cache of immutable JSON state values.
@@ -29,7 +30,7 @@ export function JsonController(args: {
    */
   const cache: Cache = {};
   const changed$ = new Subject<t.JsonStateChange>();
-  const change = (op: t.JsonStateOperation, key: string, fn: (prev: t.Json) => t.Json) => {
+  const change = (op: t.JsonStateChangeOperation, key: string, fn: (prev: J) => J) => {
     cache[key] = fn(cache[key]);
     changed$.next({ key, op, value: cache[key] });
     if (cache[key] === undefined) delete cache[key];
@@ -66,9 +67,22 @@ export function JsonController(args: {
    */
   events.state.put.req$.subscribe((e) => {
     const { tx, key = DEFAULT.KEY } = e;
-    change('put', key, (prev) => e.value);
+    change('replace', key, (prev) => e.value);
     bus.fire({
       type: 'sys.json/state.put:res',
+      payload: { instance, tx, key },
+    });
+  });
+
+  /**
+   * State.patch (UPDATE)
+   */
+  events.state.patch.req$.subscribe((e) => {
+    const { tx, key, op } = e;
+    const state = cache[key];
+    change(op, key, () => Patch.apply(state, e.patches));
+    bus.fire({
+      type: 'sys.json/state.patch:res',
       payload: { instance, tx, key },
     });
   });
