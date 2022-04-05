@@ -1,7 +1,7 @@
 import { map, filter, takeUntil } from 'rxjs/operators';
 import { rx, slug, t, DEFAULT, Patch } from './common';
 
-type J = t.JsonMap;
+type J = Record<string, unknown>;
 type Id = string;
 type Milliseconds = number;
 type KeyPath = string;
@@ -188,8 +188,8 @@ export function JsonBusEvents(args: {
    * JSON (key-pathed convenience method).
    */
   const json = <T extends J = J>(
-    args: t.JsonEventsMethodsOptions<T> = {},
-  ): t.JsonEventsMethods<T> => {
+    args: t.JsonStateMethodsOptions<T> = {},
+  ): t.JsonStateMethods<T> => {
     type O = { timeout?: Milliseconds };
     const asTimeout = (options: O) => options.timeout ?? args.timeout ?? DEFAULT.TIMEOUT;
     const { key, initial } = args;

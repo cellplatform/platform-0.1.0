@@ -1,6 +1,6 @@
 import * as t from '../common/types';
 
-type J = t.JsonMap;
+type J = Record<string, unknown>;
 type Id = string;
 type Milliseconds = number;
 type KeyPath = string;
@@ -27,7 +27,7 @@ export type JsonEvents = t.Disposable & {
   is: { base(input: any): boolean };
   info: JsonEventsInfo;
   state: JsonEventsState;
-  json<T extends J = J>(options?: JsonEventsMethodsOptions<T>): JsonEventsMethods<T>;
+  json<T extends J = J>(options?: JsonStateMethodsOptions<T>): JsonStateMethods<T>;
 };
 
 export type JsonEventsInfo = {
@@ -71,12 +71,12 @@ export type JsonEventsState = {
 /**
  * JSON (key-pathed convenience method).
  */
-export type JsonEventsMethodsOptions<T extends J> = {
+export type JsonStateMethodsOptions<T extends J> = {
   key?: KeyPath;
   timeout?: Milliseconds;
   initial?: T | (() => T);
 };
-export type JsonEventsMethods<T extends J = J> = {
+export type JsonStateMethods<T extends J = J> = {
   get(options?: { timeout?: Milliseconds }): Promise<JsonStateGetRes<T>>;
   put(value: T, options?: { timeout?: Milliseconds }): Promise<JsonStatePutRes>;
   patch(fn: JsonStateMutator<T>, options?: { timeout?: Milliseconds }): Promise<JsonStatePatchRes>;

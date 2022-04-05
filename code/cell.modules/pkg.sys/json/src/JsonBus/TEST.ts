@@ -2,8 +2,20 @@ import { JsonBus } from '.';
 import { expect, pkg, rx, slug, t, Test, time } from '../test';
 import { DEFAULT } from './common';
 
-const Create = {
+const Setup = {
   instance: (): t.JsonBusInstance => ({ bus: rx.bus(), id: `foo.${slug()}` }),
+  controller() {
+    const instance = Setup.instance();
+    const controller = JsonBus.Controller({ instance });
+    const events = JsonBus.Events({ instance });
+
+    const dispose = () => {
+      controller.dispose();
+      events.dispose();
+    };
+
+    return { instance, controller, dispose, events };
+  },
 };
 
 export default Test.describe('JsonBus', (e) => {
@@ -13,7 +25,7 @@ export default Test.describe('JsonBus', (e) => {
     const is = JsonBus.Events.is;
 
     e.it('is (static/instance)', () => {
-      const instance = Create.instance();
+      const instance = Setup.instance();
       const events = JsonBus.Events({ instance });
       expect(events.is).to.equal(is);
     });
@@ -35,21 +47,8 @@ export default Test.describe('JsonBus', (e) => {
   });
 
   e.describe('Controller/Events', (e) => {
-    const setup = () => {
-      const instance = Create.instance();
-      const controller = JsonBus.Controller({ instance });
-      const events = JsonBus.Events({ instance });
-
-      const dispose = () => {
-        controller.dispose();
-        events.dispose();
-      };
-
-      return { instance, controller, dispose, events };
-    };
-
     e.it('instance details', async () => {
-      const { instance, controller, events, dispose } = setup();
+      const { instance, controller, events, dispose } = Setup.controller();
       const busid = rx.bus.instance(instance.bus);
 
       expect(controller.instance.bus).to.equal(busid);
@@ -63,7 +62,7 @@ export default Test.describe('JsonBus', (e) => {
 
     e.describe('info (module)', (e) => {
       e.it('info', async () => {
-        const { instance, events, dispose } = setup();
+        const { instance, events, dispose } = Setup.controller();
         const res = await events.info.get();
         dispose();
 
@@ -76,7 +75,7 @@ export default Test.describe('JsonBus', (e) => {
 
     e.describe('state.get', (e) => {
       e.it('no key ("default"), no state', async () => {
-        const { dispose, events, instance } = setup();
+        const { dispose, events, instance } = Setup.controller();
         const res = await events.state.get.fire();
         dispose();
 
@@ -87,7 +86,7 @@ export default Test.describe('JsonBus', (e) => {
       });
 
       e.it('get <typed>', async () => {
-        const { dispose, events } = setup();
+        const { dispose, events } = Setup.controller();
         await events.state.put.fire<T>({ count: 123 });
         expect((await events.state.get.fire<T>()).value?.count).to.eql(123);
 
@@ -95,7 +94,7 @@ export default Test.describe('JsonBus', (e) => {
       });
 
       e.it('get - initial {object}', async () => {
-        const { dispose, events } = setup();
+        const { dispose, events } = Setup.controller();
 
         const res1 = await events.state.get.fire<T>({ key: '1', initial: { count: 1 } });
         const res2 = await events.state.get.fire<T>({ key: '2', initial: () => ({ count: 2 }) });
@@ -112,7 +111,7 @@ export default Test.describe('JsonBus', (e) => {
 
     e.describe('state.put', (e) => {
       e.it('put<T> (default key)', async () => {
-        const { dispose, events, controller, instance } = setup();
+        const { dispose, events, controller, instance } = Setup.controller();
 
         // BEFORE state
         expect((await events.state.get.fire()).value).to.eql(undefined);
@@ -140,7 +139,7 @@ export default Test.describe('JsonBus', (e) => {
       });
 
       e.it('put (specific key)', async () => {
-        const { dispose, events } = setup();
+        const { dispose, events } = Setup.controller();
         expect((await events.info.get()).info?.keys).to.eql([]);
 
         const key = 'foo.bar/baz';
@@ -156,7 +155,7 @@ export default Test.describe('JsonBus', (e) => {
 
     e.describe('state.patch', (e) => {
       e.it('mutator (sync)', async () => {
-        const { dispose, events, instance } = setup();
+        const { dispose, events, instance } = Setup.controller();
 
         await events.state.put.fire<T>({ count: 123 });
         const res = await events.state.patch.fire<T>((prev) => prev.count++);
@@ -170,7 +169,7 @@ export default Test.describe('JsonBus', (e) => {
       });
 
       e.it('mutator (async)', async () => {
-        const { dispose, events } = setup();
+        const { dispose, events } = Setup.controller();
 
         const initial: T = { count: 10 };
         await events.state.patch.fire<T>(
@@ -186,7 +185,7 @@ export default Test.describe('JsonBus', (e) => {
       });
 
       e.it('patch with {initial} value option', async () => {
-        const { dispose, events } = setup();
+        const { dispose, events } = Setup.controller();
 
         const initial: T = { count: 10 };
         const patch = events.state.patch;
@@ -201,7 +200,7 @@ export default Test.describe('JsonBus', (e) => {
       });
 
       e.it('patch on key object', async () => {
-        const { dispose, events } = setup();
+        const { dispose, events } = Setup.controller();
 
         const key = 'foo.bar';
         const initial: T = { count: 10 };
@@ -213,7 +212,7 @@ export default Test.describe('JsonBus', (e) => {
       });
 
       e.it('throw: no current state', async () => {
-        const { dispose, events } = setup();
+        const { dispose, events } = Setup.controller();
 
         const res1 = await events.state.patch.fire((prev) => null);
         const res2 = await events.state.patch.fire((prev) => null, { key: 'foo' });
@@ -227,7 +226,7 @@ export default Test.describe('JsonBus', (e) => {
 
     e.describe('json (method)', (e) => {
       e.it('events.json<T>(...).get(...)', async () => {
-        const { events, dispose } = setup();
+        const { events, dispose } = Setup.controller();
 
         await events.state.put.fire<T>({ count: 123 });
         const res1 = await events.json<T>().get();
@@ -246,7 +245,7 @@ export default Test.describe('JsonBus', (e) => {
       });
 
       e.it('events.json<T>(...).put(...)', async () => {
-        const { events, dispose } = setup();
+        const { events, dispose } = Setup.controller();
 
         const key = 'foo';
         const res1 = await events.json<T>().put({ count: 123 });
@@ -263,7 +262,7 @@ export default Test.describe('JsonBus', (e) => {
       });
 
       e.it('events.json<T>(...).patch(...)', async () => {
-        const { events, dispose } = setup();
+        const { events, dispose } = Setup.controller();
 
         const key = 'foo';
         const initial: T = { count: 10 };
@@ -284,7 +283,7 @@ export default Test.describe('JsonBus', (e) => {
 
     e.describe('changed$', (e) => {
       e.it('fires - replace / update', async () => {
-        const { events, dispose } = setup();
+        const { events, dispose } = Setup.controller();
 
         const fired: t.JsonStateChange[] = [];
         events.changed$.subscribe((e) => fired.push(e));
@@ -315,7 +314,7 @@ export default Test.describe('JsonBus', (e) => {
       });
 
       e.it('does not repeat fire when patche yields no changes', async () => {
-        const { events, dispose } = setup();
+        const { events, dispose } = Setup.controller();
 
         const fired: t.JsonStateChange[] = [];
         events.changed$.subscribe((e) => fired.push(e));

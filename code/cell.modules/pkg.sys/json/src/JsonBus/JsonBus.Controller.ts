@@ -4,11 +4,11 @@ import { takeUntil } from 'rxjs/operators';
 import { DEFAULT, Patch, pkg, rx, t } from './common';
 import { JsonBusEvents } from './JsonBus.Events';
 
-type J = t.JsonMap;
-type Cache = { [key: string]: J };
+type J = Record<string, unknown>;
+type Cache = { [key: string]: any };
 
 /**
- * Controller that manages a cache of immutable JSON state values.
+ * Controller that manages a cache of immutable JSON state objects.
  *
  * Standard:
  *    RFC-6902 JSON patch standard
