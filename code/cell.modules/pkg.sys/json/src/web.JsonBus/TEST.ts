@@ -2,10 +2,12 @@ import { Json } from '.';
 import { expect, pkg, rx, slug, t, Test, time } from '../test';
 import { DEFAULT } from './common';
 
+const Create = {
+  instance: (): t.JsonBusInstance => ({ bus: rx.bus(), id: `foo.${slug()}` }),
+};
+
 export default Test.describe('JsonBus', (e) => {
-  const Create = {
-    instance: (): t.JsonBusInstance => ({ bus: rx.bus(), id: `foo.${slug()}` }),
-  };
+  type T = { count: number };
 
   e.describe('is', (e) => {
     const is = Json.Events.is;
@@ -46,10 +48,6 @@ export default Test.describe('JsonBus', (e) => {
       return { instance, controller, dispose, events };
     };
 
-    e.it.skip('events.changed$', async () => {
-      //
-    });
-
     e.it('instance details', async () => {
       const { instance, controller, events, dispose } = setup();
       const busid = rx.bus.instance(instance.bus);
@@ -77,8 +75,6 @@ export default Test.describe('JsonBus', (e) => {
     });
 
     e.describe('state.get', (e) => {
-      type T = { count: number };
-
       e.it('no key ("default"), no state', async () => {
         const { dispose, events, instance } = setup();
         const res = await events.state.get.fire();
@@ -125,7 +121,6 @@ export default Test.describe('JsonBus', (e) => {
         const fired: t.JsonStateChange[] = [];
         controller.changed$.subscribe((e) => fired.push(e));
 
-        type T = { count: number };
         const value: T = { count: 123 };
         const res = await events.state.put.fire<T>(value);
 
@@ -160,8 +155,6 @@ export default Test.describe('JsonBus', (e) => {
     });
 
     e.describe('state.patch', (e) => {
-      type T = { count: number };
-
       e.it('mutator (sync)', async () => {
         const { dispose, events, instance } = setup();
 
@@ -233,8 +226,6 @@ export default Test.describe('JsonBus', (e) => {
     });
 
     e.describe('json (method)', (e) => {
-      type T = { count: number };
-
       e.it('events.json<T>(...).get(...)', async () => {
         const { events, dispose } = setup();
 
@@ -286,6 +277,60 @@ export default Test.describe('JsonBus', (e) => {
 
         expect((await events.state.get.fire()).value).to.eql({ count: 2 });
         expect((await events.state.get.fire({ key })).value).to.eql({ count: 9 });
+
+        dispose();
+      });
+    });
+
+    e.describe('changed$', (e) => {
+      e.it('fires - replace / update', async () => {
+        const { events, dispose } = setup();
+
+        const fired: t.JsonStateChange[] = [];
+        events.changed$.subscribe((e) => fired.push(e));
+        const json = events.json<T>();
+
+        await json.get();
+        expect(fired).to.eql([]);
+
+        await json.put({ count: 1 });
+        expect(fired.length).to.eql(1);
+        expect(fired[0].op).to.eql('replace');
+        expect(fired[0].value).to.eql({ count: 1 });
+
+        // NB: a PUT operation will always cause the event to fire, even when the values
+        //    are identical. PATCH operations are more granular (for performance reasons).
+        await json.put({ count: 1 });
+        expect(fired.length).to.eql(2);
+        expect(fired[1].op).to.eql('replace');
+        expect(fired[1].value).to.eql({ count: 1 });
+
+        await json.patch((prev) => prev.count++);
+
+        expect(fired.length).to.eql(3);
+        expect(fired[2].op).to.eql('update');
+        expect(fired[2].value).to.eql({ count: 2 });
+
+        dispose();
+      });
+
+      e.it('does not repeat fire when patche yields no changes', async () => {
+        const { events, dispose } = setup();
+
+        const fired: t.JsonStateChange[] = [];
+        events.changed$.subscribe((e) => fired.push(e));
+        const json = events.json<T>({ initial: { count: 0 } });
+
+        await json.patch((prev) => prev.count++);
+
+        expect(fired.length).to.eql(2); // NB: First event is the {initial} PUT.
+        expect(fired[0].op).to.eql('replace');
+        expect(fired[1].op).to.eql('update');
+        expect(fired[0].value).to.eql({ count: 0 });
+        expect(fired[1].value).to.eql({ count: 1 });
+
+        await json.patch(() => null); //   NB: do nothing.
+        expect(fired.length).to.eql(2); // NB: no change.
 
         dispose();
       });

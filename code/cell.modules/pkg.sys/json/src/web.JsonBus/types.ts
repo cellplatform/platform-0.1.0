@@ -21,8 +21,9 @@ export type JsonInfo = {
  * EVENT (API)
  */
 export type JsonEvents = t.Disposable & {
-  $: t.Observable<t.JsonEvent>;
   instance: { bus: Id; id: Id };
+  $: t.Observable<t.JsonEvent>;
+  changed$: t.Observable<t.JsonStateChange>;
   is: { base(input: any): boolean };
   info: JsonEventsInfo;
   state: JsonEventsState;

@@ -25,14 +25,22 @@ export function JsonController(args: {
   });
   const { dispose, dispose$ } = events;
 
+  const _changed$ = new Subject<t.JsonStateChange>();
+  const changed$ = _changed$.pipe(takeUntil(dispose$));
+  changed$.subscribe((change) =>
+    bus.fire({
+      type: 'sys.json/state:changed',
+      payload: { instance, change },
+    }),
+  );
+
   /**
    * State
    */
   const cache: Cache = {};
-  const changed$ = new Subject<t.JsonStateChange>();
   const change = (op: t.JsonStateChangeOperation, key: string, fn: (prev: J) => J) => {
     cache[key] = fn(cache[key]);
-    changed$.next({ key, op, value: cache[key] });
+    _changed$.next({ key, op, value: cache[key] });
     if (cache[key] === undefined) delete cache[key];
   };
 
@@ -67,7 +75,7 @@ export function JsonController(args: {
    */
   events.state.put.req$.subscribe((e) => {
     const { tx, key = DEFAULT.KEY } = e;
-    change('replace', key, (prev) => e.value);
+    change('replace', key, () => e.value);
     bus.fire({
       type: 'sys.json/state.put:res',
       payload: { instance, tx, key },
@@ -78,9 +86,9 @@ export function JsonController(args: {
    * State.patch (UPDATE)
    */
   events.state.patch.req$.subscribe((e) => {
-    const { tx, key, op } = e;
+    const { tx, key, op, patches } = e;
     const state = cache[key];
-    change(op, key, () => Patch.apply(state, e.patches));
+    if (patches.next.length > 0) change(op, key, () => Patch.apply(state, patches));
     bus.fire({
       type: 'sys.json/state.patch:res',
       payload: { instance, tx, key },
@@ -94,6 +102,6 @@ export function JsonController(args: {
     instance: { bus: rx.bus.instance(bus), id: instance },
     dispose,
     dispose$,
-    changed$: changed$.pipe(takeUntil(dispose$)),
+    changed$,
   };
 }

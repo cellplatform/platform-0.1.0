@@ -1,4 +1,4 @@
-import { filter, takeUntil } from 'rxjs/operators';
+import { map, filter, takeUntil } from 'rxjs/operators';
 import { rx, slug, t, DEFAULT, Patch } from './common';
 
 type J = t.JsonMap;
@@ -25,6 +25,10 @@ export function JsonEvents(args: {
     filter((e) => is.instance(e, instance)),
     filter((e) => args.filter?.(e) ?? true),
   );
+
+  const changed$ = rx
+    .payload<t.JsonStateChangedEvent>($, 'sys.json/state:changed')
+    .pipe(map((e) => e.change));
 
   /**
    * Base information about the module.
@@ -207,6 +211,7 @@ export function JsonEvents(args: {
   return {
     instance: { bus: rx.bus.instance(bus), id: instance },
     $,
+    changed$,
     dispose,
     dispose$,
     is,
