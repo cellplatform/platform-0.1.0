@@ -46,6 +46,10 @@ export default Test.describe('JsonBus', (e) => {
       return { instance, controller, dispose, events };
     };
 
+    e.it.skip('events.changed$', async () => {
+      //
+    });
+
     e.it('instance details', async () => {
       const { instance, controller, events, dispose } = setup();
       const busid = rx.bus.instance(instance.bus);
@@ -72,7 +76,9 @@ export default Test.describe('JsonBus', (e) => {
       });
     });
 
-    e.describe('get', (e) => {
+    e.describe('state.get', (e) => {
+      type T = { count: number };
+
       e.it('no key ("default"), no state', async () => {
         const { dispose, events, instance } = setup();
         const res = await events.state.get.fire();
@@ -85,22 +91,30 @@ export default Test.describe('JsonBus', (e) => {
       });
 
       e.it('get <typed>', async () => {
-        const { dispose, events, instance } = setup();
-        //
-        type T = { count: number };
-
+        const { dispose, events } = setup();
         await events.state.put.fire<T>({ count: 123 });
         expect((await events.state.get.fire<T>()).value?.count).to.eql(123);
 
         dispose();
       });
 
-      e.it('get (setting initial value)', async () => {
-        //
+      e.it('get - initial {object}', async () => {
+        const { dispose, events } = setup();
+
+        const res1 = await events.state.get.fire<T>({ key: '1', initial: { count: 1 } });
+        const res2 = await events.state.get.fire<T>({ key: '2', initial: () => ({ count: 2 }) });
+
+        expect(res1.value?.count).to.eql(1);
+        expect(res2.value?.count).to.eql(2);
+
+        expect((await events.json<T>({ key: '1' }).get()).value?.count).to.eql(1);
+        expect((await events.json<T>({ key: '2' }).get()).value?.count).to.eql(2);
+
+        dispose();
       });
     });
 
-    e.describe('put', (e) => {
+    e.describe('state.put', (e) => {
       e.it('put<T> (default key)', async () => {
         const { dispose, events, controller, instance } = setup();
 
@@ -145,22 +159,10 @@ export default Test.describe('JsonBus', (e) => {
       });
     });
 
-    e.describe('patch', (e) => {
+    e.describe('state.patch', (e) => {
       type T = { count: number };
 
-      e.it('throw: no current state', async () => {
-        const { dispose, events } = setup();
-
-        const res1 = await events.state.patch.fire((prev) => null);
-        const res2 = await events.state.patch.fire((prev) => null, { key: 'foo' });
-        dispose();
-
-        // Failed to patch, could not retrieve current state
-        expect(res1.error).to.include('Failed to patch, could not retrieve current state');
-        expect(res2.error).to.include('key="foo"');
-      });
-
-      e.it('patch results', async () => {
+      e.it('mutator (sync)', async () => {
         const { dispose, events, instance } = setup();
 
         await events.state.put.fire<T>({ count: 123 });
@@ -174,17 +176,34 @@ export default Test.describe('JsonBus', (e) => {
         dispose();
       });
 
-      e.it('patch with {initial} value option', async () => {
-        const { dispose, events, instance } = setup();
+      e.it('mutator (async)', async () => {
+        const { dispose, events } = setup();
 
         const initial: T = { count: 10 };
-        const res = await events.state.patch.fire<T>((prev) => (prev.count -= 5), { initial });
+        await events.state.patch.fire<T>(
+          async (prev) => {
+            await time.wait(5);
+            prev.count += 10;
+          },
+          { initial },
+        );
 
-        expect(res.key).to.eql(DEFAULT.KEY);
-        expect(res.instance).to.eql(instance.id);
-        expect(res.error).to.eql(undefined);
+        expect((await events.state.get.fire()).value).to.eql({ count: 20 });
+        dispose();
+      });
 
-        expect((await events.state.get.fire()).value).to.eql({ count: 5 });
+      e.it('patch with {initial} value option', async () => {
+        const { dispose, events } = setup();
+
+        const initial: T = { count: 10 };
+        const patch = events.state.patch;
+
+        await patch.fire<T>((prev) => (prev.count -= 5), { key: '1', initial });
+        expect((await events.state.get.fire({ key: '1' })).value).to.eql({ count: 5 });
+
+        await patch.fire<T>((prev) => (prev.count += 5), { key: '2', initial: () => initial });
+        expect((await events.state.get.fire({ key: '2' })).value).to.eql({ count: 15 });
+
         dispose();
       });
 
@@ -200,38 +219,76 @@ export default Test.describe('JsonBus', (e) => {
         dispose();
       });
 
-      e.it('async patch mutator', async () => {
+      e.it('throw: no current state', async () => {
         const { dispose, events } = setup();
 
-        const initial: T = { count: 10 };
-        await events.state.patch.fire<T>(
-          async (prev) => {
-            await time.wait(5);
-            prev.count += 10;
-          },
-          { initial },
-        );
-
-        expect((await events.state.get.fire()).value).to.eql({ count: 20 });
+        const res1 = await events.state.patch.fire((prev) => null);
+        const res2 = await events.state.patch.fire((prev) => null, { key: 'foo' });
         dispose();
+
+        // Failed to patch, could not retrieve current state
+        expect(res1.error).to.include('Failed to patch, could not retrieve current state');
+        expect(res2.error).to.include('key="foo"');
       });
     });
 
-    // e.describe('key( ... )', (e) => {
-    //   e.it('key property', () => {
-    //     const { events, dispose } = setup();
+    e.describe('json (method)', (e) => {
+      type T = { count: number };
 
-    //     const res1 = events.key('foo', { timeout: 1234 });
-    //     const res2 = events.key();
+      e.it('events.json<T>(...).get(...)', async () => {
+        const { events, dispose } = setup();
 
-    //     expect(res1.key).to.eql('foo');
-    //     expect(res2.key).to.eql(DEFAULT.KEY);
+        await events.state.put.fire<T>({ count: 123 });
+        const res1 = await events.json<T>().get();
+        const res2 = await events.json<T>({ key: '1', initial: { count: 1 } }).get();
+        const res3 = await events.json<T>({ key: '2', initial: () => ({ count: 2 }) }).get();
 
-    //     expect(res1.timeout).to.eql(1234);
-    //     expect(res2.timeout).to.eql(DEFAULT.TIMEOUT);
+        expect(res1.key).to.eql(DEFAULT.KEY);
+        expect(res2.key).to.eql('1');
+        expect(res3.key).to.eql('2');
 
-    //     dispose();
-    //   });
-    // });
+        expect(res1.value?.count).to.eql(123);
+        expect(res2.value?.count).to.eql(1);
+        expect(res3.value?.count).to.eql(2);
+
+        dispose();
+      });
+
+      e.it('events.json<T>(...).put(...)', async () => {
+        const { events, dispose } = setup();
+
+        const key = 'foo';
+        const res1 = await events.json<T>().put({ count: 123 });
+        const res2 = await events.json<T>({ key }).put({ count: 456 });
+
+        expect(res1.key).to.eql(DEFAULT.KEY);
+        expect(res2.key).to.eql(key);
+
+        expect((await events.info.get()).info?.keys).to.eql([DEFAULT.KEY, key]);
+        expect((await events.state.get.fire()).value).to.eql({ count: 123 });
+        expect((await events.state.get.fire({ key })).value).to.eql({ count: 456 });
+
+        dispose();
+      });
+
+      e.it('events.json<T>(...).patch(...)', async () => {
+        const { events, dispose } = setup();
+
+        const key = 'foo';
+        const initial: T = { count: 10 };
+        await events.state.put.fire<T>({ count: 1 });
+
+        const res1 = await events.json<T>().patch((prev) => prev.count++);
+        const res2 = await events.json<T>({ key, initial }).patch((prev) => prev.count--);
+
+        expect(res1.key).to.eql(DEFAULT.KEY);
+        expect(res2.key).to.eql(key);
+
+        expect((await events.state.get.fire()).value).to.eql({ count: 2 });
+        expect((await events.state.get.fire({ key })).value).to.eql({ count: 9 });
+
+        dispose();
+      });
+    });
   });
 });

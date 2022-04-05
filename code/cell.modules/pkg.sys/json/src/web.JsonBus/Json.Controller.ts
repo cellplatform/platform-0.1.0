@@ -57,7 +57,7 @@ export function JsonController(args: {
     const { tx, key = DEFAULT.KEY } = e;
     const state = cache[key];
     bus.fire({
-      type: 'sys.json/state:res',
+      type: 'sys.json/state.get:res',
       payload: { instance, tx, key, value: state },
     });
   });
