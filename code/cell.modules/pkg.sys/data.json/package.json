@@ -1,5 +1,5 @@
 {
-  "name": "sys.json",
+  "name": "sys.data.json",
   "version": "0.0.0",
   "main": "lib/index",
   "sideEffects": false,

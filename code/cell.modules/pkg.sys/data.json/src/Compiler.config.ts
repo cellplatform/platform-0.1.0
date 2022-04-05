@@ -2,7 +2,7 @@ import { Compiler, Package } from '@platform/cell.compiler';
 
 export default () =>
   Compiler.config()
-    .namespace('sys.json')
+    .namespace('sys.data.json')
     .version(Package.version)
 
     .variant('web', (config) =>
