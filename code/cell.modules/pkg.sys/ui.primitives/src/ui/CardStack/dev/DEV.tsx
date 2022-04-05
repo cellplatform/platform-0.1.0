@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 import { CardStack, CardStackProps, CardStackItem, CardStackItemRender } from '..';
-import { slug } from './common';
+import { slug } from './DEV.common';
 import { SampleCard } from './DEV.Sample.Card';
 
 type Ctx = {

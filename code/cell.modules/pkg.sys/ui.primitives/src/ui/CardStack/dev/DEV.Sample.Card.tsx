@@ -1,7 +1,8 @@
 import React from 'react';
 
 import { Card } from '../../Card';
-import { PropList, PropListItem } from '../../PropList';
+import { PropList } from '../../PropList';
+import { t } from './DEV.common';
 
 export type SampleCardProps = {
   id: string;
@@ -9,7 +10,7 @@ export type SampleCardProps = {
 };
 
 export const SampleCard: React.FC<SampleCardProps> = (props) => {
-  const items: PropListItem[] = [
+  const items: t.PropListItem[] = [
     { label: 'id', value: props.id },
     { label: 'message', value: 'hello' },
   ];

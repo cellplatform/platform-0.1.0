@@ -1,10 +1,11 @@
 import React from 'react';
-import { color, css, CssValue, t } from './common';
+
 import {
   PositioningLayerConfig,
-  PositioningLayerConfigChangeEventHandler,
+  PositioningLayerConfigChangeHandler,
 } from '../PositioningLayer/PositioningLayer.Config';
-import { PropList, PropListItem } from '../PropList';
+import { PropList } from '../PropList';
+import { color, css, CssValue, t } from './common';
 
 type Index = number;
 
@@ -21,13 +22,13 @@ export type LayerPropertiesProps = {
 export const LayerProperties: React.FC<LayerPropertiesProps> = (props) => {
   const { index, layer } = props;
 
-  const items: PropListItem[] = [
+  const items: t.PropListItem[] = [
     { label: 'foo', value: 123 },
     { label: 'foo', value: 123 },
     { label: 'foo', value: 123 },
   ];
 
-  const handlePositionChange: PositioningLayerConfigChangeEventHandler = (e) => {
+  const handlePositionChange: PositioningLayerConfigChangeHandler = (e) => {
     const position = e.next;
     props.onChange?.({ index, layer: { ...layer, position } });
   };

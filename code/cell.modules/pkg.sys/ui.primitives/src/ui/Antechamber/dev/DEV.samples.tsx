@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { color, css, CssValue, t } from '../../common';
 import { TextInput } from '../../../ui.ref/text/TextInput';
 
 import { Antechamber, AntechamberProps } from '..';
-import { PropList, PropListItem } from '../../PropList';
+import { PropList } from '../../PropList';
 
 /**
  * Sample
@@ -30,7 +30,7 @@ export const Sample: React.FC<SampleProps> = (props) => {
     }),
   };
 
-  const items: PropListItem[] = [
+  const items: t.PropListItem[] = [
     { label: 'hello', value: '👋' },
     { label: 'message', value: 'foobar' },
     { label: 'number', value: 12345 },

@@ -1,2 +1,2 @@
 export * from './PropList';
-export * from './types';
+// export * from './types';

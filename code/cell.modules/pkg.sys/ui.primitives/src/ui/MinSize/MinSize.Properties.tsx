@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { PropList, PropListItem } from '../PropList';
+import { PropList } from '../PropList';
 import { COLORS, css, CssValue, t, toMinSizeFlags, value } from './common';
 import { MinSizeProps } from './MinSize';
 
@@ -27,7 +27,7 @@ export const MinSizeProperties: React.FC<MinSizePropertiesProps> = (props) => {
     base: css({ position: 'relative' }),
   };
 
-  const items: PropListItem[] = [
+  const items: t.PropListItem[] = [
     {
       label: 'width',
       value: {

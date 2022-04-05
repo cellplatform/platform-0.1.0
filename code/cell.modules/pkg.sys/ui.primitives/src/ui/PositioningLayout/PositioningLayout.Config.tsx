@@ -1,6 +1,7 @@
 import React from 'react';
-import { R, color, css, CssValue, t } from './common';
-import { PropList, PropListItem } from '../PropList';
+
+import { PropList } from '../PropList';
+import { css, CssValue, t } from './common';
 import { PositioningLayoutProps } from './PositioningLayout';
 
 type Index = number;
@@ -16,7 +17,7 @@ export const PositioningLayoutConfig: React.FC<PositioningLayoutConfigProps> = (
   const { layers = [] } = props.props;
   const total = layers.length;
 
-  const items: PropListItem[] = [
+  const items: t.PropListItem[] = [
     {
       label: 'total',
       value: total === 0 ? '<none>' : `${total} ${total === 1 ? 'layer' : 'layers'}`,
