@@ -14,6 +14,7 @@ export type TextSyntaxProps = {
   tokenizer?: TextSyntaxTokenizer;
   colors?: Partial<TextSyntaxColors>;
   theme?: TextSyntaxTheme;
+  ellipsis?: boolean;
   style?: t.CssValue;
 };
 

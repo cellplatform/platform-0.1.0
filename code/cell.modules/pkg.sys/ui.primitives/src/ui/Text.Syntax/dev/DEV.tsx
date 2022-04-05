@@ -5,7 +5,12 @@ import { css, COLORS } from '../common';
 
 type Ctx = {
   props: TextSyntaxProps;
-  debug: { repeat: number; monospace: boolean; customColors: boolean };
+  debug: {
+    repeat: number;
+    monospace: boolean;
+    customColors: boolean;
+    fixedWidth: boolean;
+  };
 };
 
 /**
@@ -17,11 +22,17 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
     const ctx: Ctx = {
       props: {
-        text: 'hello, <Component>...',
+        text: 'hello, <Component>.',
         inlineBlock: true,
+        ellipsis: true,
         theme: 'Light',
       },
-      debug: { repeat: 1, monospace: true, customColors: false },
+      debug: {
+        repeat: 1,
+        monospace: true,
+        customColors: false,
+        fixedWidth: false,
+      },
     };
     return ctx;
   })
@@ -31,11 +42,16 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('<SyntaxLabel>');
+    e.title('Props');
 
     e.boolean('inlineBlock', (e) => {
       if (e.changing) e.ctx.props.inlineBlock = e.changing.next;
       e.boolean.current = e.ctx.props.inlineBlock;
+    });
+
+    e.boolean('ellipsis', (e) => {
+      if (e.changing) e.ctx.props.ellipsis = e.changing.next;
+      e.boolean.current = e.ctx.props.ellipsis;
     });
 
     e.select((config) => {
@@ -66,6 +82,10 @@ export const actions = DevActions<Ctx>()
     add('[List]');
     add('foo:bar');
     add('{One} <Two> foo:bar [List]');
+    add(
+      'Lorem ipsum...(long)',
+      '<Lorem> {ipsum} dolor:sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque.',
+    );
 
     e.hr();
   })
@@ -94,6 +114,11 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.debug.customColors;
     });
 
+    e.boolean('fixed width', (e) => {
+      if (e.changing) e.ctx.debug.fixedWidth = e.changing.next;
+      e.boolean.current = e.ctx.debug.fixedWidth;
+    });
+
     e.hr();
   })
 
@@ -118,6 +143,7 @@ export const actions = DevActions<Ctx>()
         fontFamily: monospace ? 'monospace' : 'sans-serif',
         fontWeight: monospace ? 'bold' : 'normal',
         fontSize: 16,
+        width: debug.fixedWidth ? 300 : undefined,
       }),
       multi: css({
         marginRight: inlineBlock ? 8 : 0,
@@ -128,6 +154,7 @@ export const actions = DevActions<Ctx>()
     const elements = Array.from({ length: repeat }).map((v, i) => {
       const style = css(styles.base, repeat > 1 ? styles.multi : undefined);
       const colors = customColors ? { Brace: 'orange' } : undefined;
+
       return <TextSyntax key={i} {...props} colors={colors} style={style} />;
     });
 

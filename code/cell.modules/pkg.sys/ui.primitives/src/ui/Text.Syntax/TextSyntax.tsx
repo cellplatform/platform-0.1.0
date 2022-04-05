@@ -13,6 +13,7 @@ const View: React.FC<TextSyntaxProps> = (props) => {
   const {
     text = '',
     inlineBlock = true,
+    ellipsis = true,
     tokenizer = DefaultTokenizer,
     theme = DEFAULT.THEME,
   } = props;
@@ -33,6 +34,13 @@ const View: React.FC<TextSyntaxProps> = (props) => {
       ...Style.toPadding(props.padding),
       ...Style.toMargins(props.margin),
     }),
+    ellipsis:
+      ellipsis &&
+      css({
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+      }),
   };
 
   const elements = tokens.map((token, i) => {
@@ -44,7 +52,7 @@ const View: React.FC<TextSyntaxProps> = (props) => {
     );
   });
 
-  return <div {...css(styles.base, props.style)}>{elements}</div>;
+  return <div {...css(styles.base, styles.ellipsis, props.style)}>{elements}</div>;
 };
 
 /**

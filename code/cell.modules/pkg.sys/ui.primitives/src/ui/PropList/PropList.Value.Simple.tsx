@@ -42,6 +42,9 @@ export const SimpleValue: React.FC<SimpleValueProps> = (props) => {
       fontWeight: is.monospace ? 'bolder' : undefined,
       fontSize: value.fontSize !== undefined ? value.fontSize : undefined,
     }),
+    syntax: css({
+      width: '100%', // NB: used to enable ellipsis support.
+    }),
   };
 
   const text = message ? message : value.data?.toString();
@@ -50,7 +53,7 @@ export const SimpleValue: React.FC<SimpleValueProps> = (props) => {
   return (
     <div {...css(styles.base)}>
       <div {...styles.text} onClick={props.onClick}>
-        {isString && <Text.Syntax text={text} theme={props.theme} />}
+        {isString && <Text.Syntax text={text} theme={props.theme} style={styles.syntax} />}
         {!isString && text}
       </div>
       {is.copyActive && !message && <CopyIcon />}
