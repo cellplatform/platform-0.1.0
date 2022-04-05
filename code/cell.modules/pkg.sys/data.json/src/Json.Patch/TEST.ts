@@ -1,7 +1,58 @@
-import { Test, expect, time, t } from '../test';
+import { isDraft } from 'immer';
+
 import { Patch } from '.';
+import { expect, t, Test, time } from '../test';
 
 export default Test.describe('Patch', (e) => {
+  e.describe('toObject', (e) => {
+    type T = { count: number; items?: any[] };
+
+    e.it('{ object }', () => {
+      let original: T | undefined;
+      Patch.change<T>({ count: 0 }, (draft) => {
+        draft.count = 123;
+        expect(draft.count).to.eql(123);
+        original = Patch.toObject<T>(draft);
+      });
+      expect(isDraft(original)).to.eql(false);
+      expect(original?.count).to.eql(0);
+    });
+
+    e.it('[ array ]', () => {
+      let obj: T = { count: 0, items: [] };
+      let list: any;
+
+      const change1 = Patch.change(obj, (draft) => {
+        draft.items = [{ id: 1 }, { items: [[{ msg: 'hello' }]] }];
+      });
+
+      obj = Patch.apply(obj, change1.patches);
+
+      Patch.change(obj, (draft) => {
+        const items = draft.items || [];
+        expect(items.length).to.eql(2);
+        expect(isDraft(items[0])).to.eql(true);
+        expect(isDraft(items[1])).to.eql(true);
+        expect(draft.items).to.eql([{ id: 1 }, { items: [[{ msg: 'hello' }]] }]);
+
+        list = Patch.toObject(draft.items);
+      });
+
+      expect(list).to.eql([{ id: 1 }, { items: [[{ msg: 'hello' }]] }]);
+      expect(isDraft(list[0])).to.eql(false);
+      expect(isDraft(list[1])).to.eql(false);
+    });
+
+    e.it('undefined', () => {
+      const obj: T = { count: 0 };
+      let list: any;
+      Patch.change(obj, (draft) => {
+        list = Patch.toObject(draft.items);
+      });
+      expect(list).to.eql(undefined);
+    });
+  });
+
   e.describe('toPatchSet', (e) => {
     e.it('empty', () => {
       const test = (forward?: any, backward?: any) => {

@@ -18,6 +18,7 @@ export type ArrayPatch = {
 type A = t.ArrayPatch;
 
 export type Patch = {
+  toObject<T extends O>(input: any): T;
   toPatchSet(forward?: A | A[], backward?: A | A[]): t.PatchSet;
   isEmpty(patches: t.PatchSet): boolean;
   change<T extends O>(from: T, fn: t.PatchChanger<T> | T): t.PatchChange<T>;

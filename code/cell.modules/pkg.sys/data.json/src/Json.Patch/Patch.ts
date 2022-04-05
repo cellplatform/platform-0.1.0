@@ -1,11 +1,18 @@
-import { applyPatches, createDraft, finishDraft, produceWithPatches, enablePatches } from 'immer';
+import {
+  applyPatches,
+  createDraft,
+  enablePatches,
+  finishDraft,
+  isDraft,
+  original,
+  produceWithPatches,
+} from 'immer';
+
 import { t } from '../common';
 
 type O = Record<string, unknown>;
 
-if (typeof enablePatches === 'function') {
-  enablePatches();
-}
+if (typeof enablePatches === 'function') enablePatches();
 
 /**
  * Patch
@@ -18,6 +25,15 @@ if (typeof enablePatches === 'function') {
  *
  */
 export const Patch: t.Patch = {
+  /**
+   * Convert a draft (proxied instance) object into a simple object.
+   *
+   * See: https://immerjs.github.io/immer/docs/original
+   */
+  toObject<T extends O>(input: any) {
+    return isDraft(input) ? (original<T>(input) as T) : input;
+  },
+
   toPatchSet(forward, backward) {
     return {
       prev: backward ? toPatches(backward) : [],
