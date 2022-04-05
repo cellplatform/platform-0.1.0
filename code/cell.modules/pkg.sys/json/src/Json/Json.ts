@@ -1,5 +1,5 @@
 import { JsonBus as Bus } from '../JsonBus';
-import { Patch } from '../common';
+import { Patch } from '../Patch';
 
 export const Json = {
   Bus,

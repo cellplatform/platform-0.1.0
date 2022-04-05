@@ -5,6 +5,7 @@ import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 const Imports = {
   Json: import('./Json/TEST'),
   JsonBus: import('./JsonBus/TEST'),
+  Patch: import('./Patch/TEST'),
 };
 
 type Ctx = { results?: TestSuiteRunResponse };
@@ -18,6 +19,7 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     e.ctx.results = await Test.run(Object.values(Imports));
+    // e.ctx.results = await Test.run([Imports.Patch]);
   })
 
   .items((e) => {

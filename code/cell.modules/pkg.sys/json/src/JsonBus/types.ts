@@ -10,10 +10,9 @@ export type JsonBusInstance = { bus: t.EventBus<any>; id: Id };
 export type JsonEventFilter = (e: t.JsonEvent) => boolean;
 export type JsonStateChange<T extends J = J> = {
   key: KeyPath;
-  op: JsonStateChangeOperation;
+  op: t.PatchOperationKind;
   value: T;
 };
-export type JsonStateChangeOperation = 'update' | 'replace';
 export type JsonStateMutator<T extends J = J> = (prev: T) => any | Promise<any>;
 
 export type JsonInfo = {
@@ -168,7 +167,7 @@ export type JsonStatePatchReq = {
   instance: Id;
   tx: Id;
   key: KeyPath;
-  op: JsonStateChangeOperation;
+  op: t.PatchOperationKind;
   patches: t.PatchSet;
 };
 

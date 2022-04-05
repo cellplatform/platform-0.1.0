@@ -1,6 +1,10 @@
-import * as t from './common';
+import * as t from '../common/types';
 
 type O = Record<string, unknown>;
+
+export type PatchOperationKind = 'update' | 'replace';
+export type PatchChanger<T extends O> = (draft: T) => void;
+export type PatchChangerAsync<T extends O> = (draft: T) => Promise<void>;
 
 /**
  * Inline copy of the `immer` Patch type.
@@ -16,15 +20,15 @@ type A = t.ArrayPatch;
 export type Patch = {
   toPatchSet(forward?: A | A[], backward?: A | A[]): t.PatchSet;
   isEmpty(patches: t.PatchSet): boolean;
-  change<T extends O>(from: T, fn: t.StateChanger<T> | T): t.PatchChange<T>;
-  changeAsync<T extends O>(from: T, fn: t.StateChangerAsync<T>): Promise<t.PatchChange<T>>;
+  change<T extends O>(from: T, fn: t.PatchChanger<T> | T): t.PatchChange<T>;
+  changeAsync<T extends O>(from: T, fn: t.PatchChangerAsync<T>): Promise<t.PatchChange<T>>;
   apply<T extends O>(from: T, patches: t.PatchOperation[] | t.PatchSet): T;
 };
 
 export type PatchChange<T extends O> = {
   to: T;
-  op: t.StateChangeOperation;
-  patches: PatchSet;
+  op: PatchOperationKind;
+  patches: t.PatchSet;
 };
 
 /**

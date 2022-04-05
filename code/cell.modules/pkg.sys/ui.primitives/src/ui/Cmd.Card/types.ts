@@ -1,7 +1,6 @@
 import * as t from '../../common/types';
 
 type Id = string;
-type Milliseconds = number;
 
 export type CmdCardInstance = { bus: t.EventBus<any>; id: Id };
 export type CmdCardStateInfoFields = 'Title' | 'Version' | 'State' | 'State.Controller';

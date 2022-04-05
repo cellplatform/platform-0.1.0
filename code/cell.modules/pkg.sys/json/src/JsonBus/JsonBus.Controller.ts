@@ -43,7 +43,7 @@ export function JsonBusController(args: {
    * State
    */
   const cache: Cache = {};
-  const change = (op: t.JsonStateChangeOperation, key: string, fn: (prev: J) => J) => {
+  const change = (op: t.PatchOperationKind, key: string, fn: (prev: J) => J) => {
     cache[key] = fn(cache[key]);
     _changed$.next({ key, op, value: cache[key] });
     if (cache[key] === undefined) delete cache[key];
