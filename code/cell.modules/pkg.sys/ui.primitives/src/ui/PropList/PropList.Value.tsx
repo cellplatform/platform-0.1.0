@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
-import { css, CssValue, defaultValue, t, time, copyToClipboard } from '../../common';
-import { SwitchValue } from './PropList.Value.Switch';
-import { SimpleValue } from './PropList.Value.Simple';
+import { copyToClipboard, css, CssValue, t, time } from '../../common';
 import { FormatItem } from './FormatItem';
+import { SimpleValue } from './PropList.Value.Simple';
+import { SwitchValue } from './PropList.Value.Switch';
 
 export type PropListValueProps = {
   item: t.PropListItem;
@@ -35,32 +35,28 @@ export const PropListValue: React.FC<PropListValueProps> = (props) => {
 
   const showMessage = (message: React.ReactNode, delay?: number) => {
     setMessage(message);
-    time.delay(defaultValue(delay, 1500), () => setMessage(undefined));
+    time.delay(delay ?? 1500, () => setMessage(undefined));
   };
 
   const handleClick = () => {
+    const { clipboard, value } = item;
     let message: React.ReactNode;
     let delay: number | undefined;
 
-    const { clipboard, value } = item;
-    const { onClick } = value;
-
-    if (onClick) {
-      onClick({
-        item,
-        value,
-        message: (text, msecs) => {
-          message = text;
-          delay = msecs;
-        },
-      });
-    }
+    value.onClick?.({
+      item,
+      value,
+      message(text, msecs) {
+        message = text;
+        delay = msecs;
+      },
+    });
 
     if (clipboard && isCopyable) {
       const value = typeof clipboard === 'function' ? clipboard() : clipboard;
       copyToClipboard(value);
       if (!message) {
-        const text = (value || '').trim();
+        const text = (value || '').toString().trim();
         const isHttp = text.startsWith('http://') || text.startsWith('https://');
         message = isHttp ? 'copied url' : 'copied';
       }

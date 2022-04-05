@@ -46,7 +46,7 @@ export const SimpleValue: React.FC<SimpleValueProps> = (props) => {
 
   return (
     <div {...css(styles.base)}>
-      <div {...styles.text}>
+      <div {...styles.text} onClick={props.onClick}>
         <Text.Syntax text={text?.toString()} />
       </div>
       {is.copyActive && !message && <CopyIcon />}
