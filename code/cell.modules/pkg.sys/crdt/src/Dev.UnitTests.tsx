@@ -3,9 +3,9 @@ import { DevActions, Test } from 'sys.ui.dev';
 import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
 const Imports = {
-  Automerge: import('../../web.Automerge/Automerge.lib.TEST'),
-  AutomergeDoc: import('../../web.Automerge/AutomergeDoc.TEST'),
-  CrdtBus: import('../../web.CrdtBus/TEST'),
+  Automerge: import('./lib.Automerge/Automerge.lib.TEST'),
+  AutomergeDoc: import('./lib.Automerge/AutomergeDoc.TEST'),
+  CrdtBus: import('./Crdt.Bus/TEST'),
 };
 
 type CtxRunTests = () => Promise<TestSuiteRunResponse>;

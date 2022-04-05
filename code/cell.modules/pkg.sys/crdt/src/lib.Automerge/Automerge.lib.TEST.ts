@@ -1,6 +1,6 @@
-import { Test, expect } from '../web.test';
-import { rx, Automerge, Filesystem, t } from '../common';
 import { AutomergeDoc } from '.';
+import { Automerge, Filesystem, rx, t } from '../common';
+import { expect, Test } from '../test';
 
 /**
  * https://github.com/automerge/automerge

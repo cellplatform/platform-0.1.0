@@ -1,1 +1,1 @@
-export { CrdtBus } from './web.CrdtBus';
+export { CrdtBus } from './Crdt.Bus';

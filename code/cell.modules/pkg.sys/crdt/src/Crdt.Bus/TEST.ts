@@ -1,5 +1,5 @@
 import { CrdtBus } from '.';
-import { Automerge, cuid, expect, Is, pkg, rx, t, Test, TestNetwork, time } from '../web.test';
+import { Automerge, cuid, expect, Is, pkg, rx, t, Test, TestNetwork, time } from '../test';
 
 type Doc = { count: number; msg?: string };
 

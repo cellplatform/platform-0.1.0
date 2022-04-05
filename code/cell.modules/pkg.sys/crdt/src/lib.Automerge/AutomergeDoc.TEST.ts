@@ -1,6 +1,6 @@
 import { AutomergeDoc } from '.';
 import { Automerge } from '../common';
-import { expect, Test } from '../web.test';
+import { expect, Test } from '../test';
 
 export default Test.describe('AutomergeDoc (helpers)', (e) => {
   //

@@ -3,4 +3,4 @@ export { expect } from 'chai';
 
 export * from '../common';
 export * from './TestNetwork';
-export { AutomergeDoc } from '../web.Automerge';
+export { AutomergeDoc } from '../lib.Automerge';

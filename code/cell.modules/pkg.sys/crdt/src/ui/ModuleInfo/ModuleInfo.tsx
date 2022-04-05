@@ -1,8 +1,8 @@
 import React from 'react';
-import { color, css, CssValue, t, PropList, PropListItem, pkg } from '../../common';
 
-import * as k from './types';
+import { css, CssValue, pkg, PropList } from '../../common';
 import { ModuleInfoConstants } from './constants';
+import * as k from './types';
 
 export type ModuleInfoProps = {
   fields?: k.ModuleInfoFields[];
