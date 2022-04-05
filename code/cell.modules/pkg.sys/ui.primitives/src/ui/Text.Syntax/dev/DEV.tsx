@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 import { TextSyntax, TextSyntaxProps } from '..';
-import { css } from '../../common';
+import { css, COLORS } from '../common';
 
 type Ctx = {
   props: TextSyntaxProps;
@@ -19,6 +19,7 @@ export const actions = DevActions<Ctx>()
       props: {
         text: 'hello, <Component>...',
         inlineBlock: true,
+        theme: 'Light',
       },
       debug: { repeat: 1, monospace: true, customColors: false },
     };
@@ -35,6 +36,17 @@ export const actions = DevActions<Ctx>()
     e.boolean('inlineBlock', (e) => {
       if (e.changing) e.ctx.props.inlineBlock = e.changing.next;
       e.boolean.current = e.ctx.props.inlineBlock;
+    });
+
+    e.select((config) => {
+      config
+        .view('buttons')
+        .title('theme')
+        .items(TextSyntax.constants.THEMES)
+        .initial(config.ctx.props.theme)
+        .pipe((e) => {
+          if (e.changing) e.ctx.props.theme = e.changing?.next[0].value;
+        });
     });
 
     e.hr();
@@ -90,9 +102,15 @@ export const actions = DevActions<Ctx>()
     const { inlineBlock } = props;
     const { repeat, monospace, customColors } = debug;
 
+    const theme = props.theme ?? TextSyntax.constants.DEFAULT.THEME;
+    const isLight = theme === 'Light';
+
     e.settings({
-      host: { background: -0.04 },
-      layout: { border: -0.1, cropmarks: -0.2 },
+      host: { background: isLight ? -0.04 : COLORS.DARK },
+      layout: {
+        cropmarks: isLight ? -0.2 : 0.6,
+        labelColor: isLight ? -0.5 : 0.8,
+      },
     });
 
     const styles = {

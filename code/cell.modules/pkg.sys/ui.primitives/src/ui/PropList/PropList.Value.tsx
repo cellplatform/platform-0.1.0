@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 
-import { copyToClipboard, css, CssValue, t, time } from '../../common';
-import { FormatItem } from './FormatItem';
+import { copyToClipboard, css, CssValue, t, time } from './common';
+
 import { SimpleValue } from './PropList.Value.Simple';
 import { SwitchValue } from './PropList.Value.Switch';
+import { Util } from './Util';
 
 export type PropListValueProps = {
   item: t.PropListItem;
   isFirst?: boolean;
   isLast?: boolean;
   defaults: t.PropListDefaults;
+  theme?: t.PropListTheme;
   style?: CssValue;
 };
 
 export const PropListValue: React.FC<PropListValueProps> = (props) => {
-  const item = FormatItem(props.item);
+  const item = Util.format(props.item);
   const value = item.value;
   const isCopyable = item.isCopyable(props.defaults);
 
@@ -22,16 +24,6 @@ export const PropListValue: React.FC<PropListValueProps> = (props) => {
   const [message, setMessage] = useState<React.ReactNode>();
 
   const cursor = item.value.onClick ? 'pointer' : undefined;
-
-  const styles = {
-    base: css({
-      flex: 1,
-      position: 'relative',
-      Flex: 'center-end',
-      userSelect: 'none',
-      fontWeight: item.value.bold ? 'bold' : undefined,
-    }),
-  };
 
   const showMessage = (message: React.ReactNode, delay?: number) => {
     setMessage(message);
@@ -65,6 +57,23 @@ export const PropListValue: React.FC<PropListValueProps> = (props) => {
     if (message) showMessage(message, delay);
   };
 
+  /**
+   * [Render]
+   */
+  const styles = {
+    base: css({
+      flex: 1,
+      position: 'relative',
+      Flex: 'center-end',
+      userSelect: 'none',
+      fontWeight: item.value.bold ? 'bold' : undefined,
+    }),
+    component: css({
+      flex: 1,
+      display: 'flex',
+    }),
+  };
+
   const renderValue = () => {
     const kind = (value as t.PropListValueKinds).kind;
 
@@ -81,12 +90,19 @@ export const PropListValue: React.FC<PropListValueProps> = (props) => {
           isCopyable={isCopyable}
           cursor={cursor}
           defaults={props.defaults}
+          theme={props.theme}
           onClick={handleClick}
         />
       );
     }
 
-    if (item.isComponent) return item.value.data;
+    if (item.isComponent) {
+      return (
+        <div {...styles.component} onClick={handleClick}>
+          {item.value.data}
+        </div>
+      );
+    }
     return null;
   };
 

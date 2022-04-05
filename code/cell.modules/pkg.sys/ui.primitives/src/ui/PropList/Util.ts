@@ -1,9 +1,14 @@
-import { t } from '../../common';
+import { t } from './common';
+import { format } from './Util.format';
+import { theme } from './Util.theme';
 
 /**
  * [Helpers]
  */
 export const Util = {
+  format,
+  theme,
+
   asItems(input: t.PropListProps['items']) {
     if (Array.isArray(input)) {
       return input;

@@ -1,39 +1,28 @@
 import React, { useMemo } from 'react';
 
-import { css, CssValue, Style, t, COLORS, color } from '../../common';
+import { FC, css, Style, t, constants, color, DEFAULT } from './common';
 import { DefaultTokenizer } from './Tokenizer';
-import * as k from './types';
 
-/**
- * Types
- */
-export type TextSyntaxProps = {
-  text?: string;
-  inlineBlock?: boolean;
-  margin?: t.CssEdgesInput;
-  padding?: t.CssEdgesInput;
-  tokenizer?: k.TextSyntaxTokenizer;
-  colors?: Partial<k.TextSyntaxColors>;
-  style?: CssValue;
-};
-
-/**
- * Constants
- */
-const BASE: k.TextSyntaxColors = {
-  Brace: COLORS.MAGENTA,
-  Predicate: COLORS.MAGENTA,
-  Colon: color.alpha(COLORS.DARK, 0.6),
-  Word: { Base: COLORS.DARK, Element: COLORS.CYAN },
-};
+import { TextSyntaxProps } from './types';
+export { TextSyntaxProps };
 
 /**
  * Label that provides common syntax highlighting.
  */
-export const TextSyntax: React.FC<TextSyntaxProps> = (props) => {
-  const { text = '', inlineBlock = true, tokenizer = DefaultTokenizer } = props;
+const View: React.FC<TextSyntaxProps> = (props) => {
+  const {
+    text = '',
+    inlineBlock = true,
+    tokenizer = DefaultTokenizer,
+    theme = DEFAULT.THEME,
+  } = props;
+
+  const colors = {
+    ...(theme === 'Light' ? constants.COLORS.LIGHT : constants.COLORS.DARK),
+    ...props.colors,
+  };
+
   const tokens = useMemo(() => tokenizer(text).parts, [tokenizer, text]);
-  const colors = { ...BASE, ...props.colors };
 
   /**
    * [Render]
@@ -62,7 +51,19 @@ export const TextSyntax: React.FC<TextSyntaxProps> = (props) => {
  * [Helpers]
  */
 
-function toColor(colors: k.TextSyntaxColors, token: k.TextSyntaxToken) {
+function toColor(colors: t.TextSyntaxColors, token: t.TextSyntaxToken) {
   if (token.kind === 'Word') return token.within ? colors.Word.Element : colors.Word.Base;
   return colors[token.kind];
 }
+
+/**
+ * Export
+ */
+type Fields = {
+  constants: typeof constants;
+};
+export const TextSyntax = FC.decorate<TextSyntaxProps, Fields>(
+  View,
+  { constants },
+  { displayName: 'TextSyntax' },
+);

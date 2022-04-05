@@ -1,8 +1,9 @@
 import React, { CSSProperties } from 'react';
 
-import { color, COLORS, css, defaultValue, t } from '../../common';
+import { color, COLORS, css, t } from './common';
 import { CopyIcon } from './PropList.Value.common';
 import { Text } from '../Text';
+import { Util } from './Util';
 
 export type SimpleValueProps = {
   defaults: t.PropListDefaults;
@@ -11,6 +12,7 @@ export type SimpleValueProps = {
   cursor?: CSSProperties['cursor'];
   isOver?: boolean;
   isCopyable?: boolean;
+  theme?: t.PropListTheme;
   onClick: () => void;
 };
 
@@ -19,7 +21,7 @@ export const SimpleValue: React.FC<SimpleValueProps> = (props) => {
 
   const is = toFlags(props);
   const textColor = toTextColor(props);
-  const cursor = defaultValue(props.cursor, is.copyActive ? 'pointer' : 'default');
+  const cursor = props.cursor ?? is.copyActive ? 'pointer' : 'default';
 
   const styles = {
     base: css({
@@ -43,11 +45,13 @@ export const SimpleValue: React.FC<SimpleValueProps> = (props) => {
   };
 
   const text = message ? message : value.data?.toString();
+  const isString = typeof text === 'string';
 
   return (
     <div {...css(styles.base)}>
       <div {...styles.text} onClick={props.onClick}>
-        <Text.Syntax text={text?.toString()} />
+        {isString && <Text.Syntax text={text} theme={props.theme} />}
+        {!isString && text}
       </div>
       {is.copyActive && !message && <CopyIcon />}
     </div>
@@ -60,18 +64,20 @@ export const SimpleValue: React.FC<SimpleValueProps> = (props) => {
 
 function toTextColor(props: SimpleValueProps) {
   if (props.value.color !== undefined) return color.format(props.value.color);
-  if (props.message) return color.format(-0.3);
+
+  const theme = Util.theme(props.theme);
+  if (props.message) return theme.color.alpha(0.3);
 
   const is = toFlags(props);
   if (is.copyActive) return COLORS.BLUE;
   if (is.boolean) return COLORS.PURPLE;
 
-  return COLORS.DARK;
+  return theme.color.base;
 }
 
 function toFlags(props: SimpleValueProps) {
   const { value, isOver, isCopyable, defaults } = props;
-  let monospace = defaultValue(value.monospace, defaults.monospace);
+  let monospace = value.monospace ?? defaults.monospace;
   if (typeof value.data === 'boolean') monospace = true;
   return {
     boolean: typeof value.data === 'boolean',

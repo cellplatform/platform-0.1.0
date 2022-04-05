@@ -3,6 +3,7 @@ import * as t from '../../common/types';
 /**
  * Component
  */
+export type PropListTheme = 'Dark' | 'Light';
 export type PropListProps = {
   title?: string | React.ReactNode | null;
   titleEllipsis?: boolean;
@@ -15,8 +16,6 @@ export type PropListProps = {
   theme?: t.PropListTheme;
   style?: t.CssValue;
 };
-
-export type PropListTheme = 'Dark' | 'Light';
 
 /**
  * Factory

@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { t } from '../../common';
+import { t } from './common';
 
-export function FormatItem(item: t.PropListItem) {
+export function format(item: t.PropListItem) {
   const { label, tooltip, visible } = item;
   let _value: t.PropListValue | undefined;
 

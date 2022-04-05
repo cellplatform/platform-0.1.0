@@ -1,15 +1,18 @@
 import React from 'react';
-import { css, CssValue, defaultValue, t } from '../../common';
+import { css, CssValue, t, COLORS } from './common';
+import { Util } from './Util';
 
 export type PropListTitleProps = {
   children?: React.ReactNode;
   defaults: t.PropListDefaults;
   ellipsis?: boolean;
+  theme?: t.PropListTheme;
   style?: CssValue;
 };
 
 export const PropListTitle: React.FC<PropListTitleProps> = (props) => {
-  const ellipsis = defaultValue(props.ellipsis, true);
+  const ellipsis = props.ellipsis ?? true;
+  const theme = Util.theme(props.theme);
 
   const styles = {
     base: css({
@@ -18,6 +21,7 @@ export const PropListTitle: React.FC<PropListTitleProps> = (props) => {
       flex: 1,
       fontWeight: 'bold',
       fontSize: 13,
+      color: theme.color.base,
     }),
     ellipsis: css({
       whiteSpace: 'nowrap',

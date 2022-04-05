@@ -2,7 +2,7 @@ import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 
 import { PropList, PropListProps } from '..';
-import { COLORS, css, Icons } from './common';
+import { COLORS, css, Icons } from './DEV.common';
 import { items, LOREM } from './DEV.Sample.Items';
 
 type Ctx = { props: PropListProps };
@@ -16,11 +16,12 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
     return {
       props: {
+        items,
         title: 'MyTitle',
         titleEllipsis: true,
         defaults: { clipboard: false },
-        items,
         theme: 'Light',
+        // theme: 'Dark',
       },
     };
   })

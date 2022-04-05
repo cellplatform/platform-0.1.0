@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { t } from '../../common';
+import { t } from './common';
 import { Switch } from '../../ui.ref/button/Switch';
 
 export type SwitchValueProps = {

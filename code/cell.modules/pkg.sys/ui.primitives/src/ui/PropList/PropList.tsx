@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { COLORS, css, defaultValue, FC, Style, t } from '../../common';
+import { COLORS, css, FC, Style, t, constants } from './common';
 import { FieldBuilder } from './Fields';
 import { PropListItem } from './PropList.Item';
 import { PropListTitle } from './PropList.Title';
@@ -12,10 +12,7 @@ export { PropListProps };
 /**
  * Constants
  */
-const THEMES: t.PropListTheme[] = ['Light', 'Dark'];
-const DEFAULT_THEME: t.PropListTheme = 'Light';
-const DEFAULT = { THEME: DEFAULT_THEME };
-const constants = { DEFAULT, THEMES };
+const { DEFAULT } = constants;
 
 /**
  * Component
@@ -25,8 +22,6 @@ const View: React.FC<PropListProps> = (props) => {
   const items = Util.asItems(props.items);
   const width = typeof props.width === 'number' ? { fixed: props.width } : props.width;
   const height = typeof props.height === 'number' ? { fixed: props.height } : props.height;
-
-  console.log('theme', theme);
 
   const defaults: t.PropListDefaults = {
     clipboard: true,
@@ -40,8 +35,8 @@ const View: React.FC<PropListProps> = (props) => {
 
       width: width?.fixed === undefined ? '100%' : width?.fixed,
       height: height?.fixed,
-      minWidth: defaultValue(width?.min, 10),
-      minHeight: defaultValue(height?.min, 10),
+      minWidth: width?.min ?? 10,
+      minHeight: height?.min ?? 10,
       maxWidth: width?.max,
       maxHeight: height?.max,
 
@@ -53,7 +48,7 @@ const View: React.FC<PropListProps> = (props) => {
 
   const elItems = items
     .filter((item) => Boolean(item))
-    .filter((item) => defaultValue(item?.visible, true))
+    .filter((item) => item?.visible ?? true)
     .map((item, i) => {
       return (
         <PropListItem
@@ -62,12 +57,18 @@ const View: React.FC<PropListProps> = (props) => {
           isFirst={i == 0}
           isLast={i === items.length - 1}
           defaults={defaults}
+          theme={theme}
         />
       );
     });
 
   const elTitle = title && (
-    <PropListTitle style={styles.title} ellipsis={props.titleEllipsis} defaults={defaults}>
+    <PropListTitle
+      style={styles.title}
+      theme={theme}
+      ellipsis={props.titleEllipsis}
+      defaults={defaults}
+    >
       {title}
     </PropListTitle>
   );

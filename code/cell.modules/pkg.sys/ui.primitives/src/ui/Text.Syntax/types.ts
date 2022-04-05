@@ -1,5 +1,25 @@
+import * as t from '../../common/types';
+
 type Color = string | number;
 
+/**
+ * Component
+ */
+export type TextSyntaxTheme = 'Dark' | 'Light';
+export type TextSyntaxProps = {
+  text?: string;
+  inlineBlock?: boolean;
+  margin?: t.CssEdgesInput;
+  padding?: t.CssEdgesInput;
+  tokenizer?: TextSyntaxTokenizer;
+  colors?: Partial<TextSyntaxColors>;
+  theme?: TextSyntaxTheme;
+  style?: t.CssValue;
+};
+
+/**
+ * Tokenization
+ */
 export type TextSyntaxTokenizer = (text: string) => TextSyntaxTokens;
 
 export type TextSyntaxTokens = {
