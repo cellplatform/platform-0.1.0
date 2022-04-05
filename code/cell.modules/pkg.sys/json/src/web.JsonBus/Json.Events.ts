@@ -7,7 +7,12 @@ type Milliseconds = number;
 type KeyPath = string;
 
 /**
- * Event API for the "WebRuntime"
+ * Event API
+ *
+ * Standard:
+ *    RFC-6902 JSON patch standard
+ *    https://tools.ietf.org/html/rfc6902
+ *
  */
 export function JsonEvents(args: {
   instance: t.JsonBusInstance;

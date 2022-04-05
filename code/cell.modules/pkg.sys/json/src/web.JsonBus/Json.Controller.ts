@@ -9,6 +9,11 @@ type Cache = { [key: string]: J };
 
 /**
  * Controller that manages a cache of immutable JSON state values.
+ *
+ * Standard:
+ *    RFC-6902 JSON patch standard
+ *    https://tools.ietf.org/html/rfc6902
+ *
  */
 export function JsonController(args: {
   instance: t.JsonBusInstance;

@@ -8,7 +8,6 @@ export { rx, slug, time } from '@platform/util.value';
  * @system
  */
 export { WebRuntime } from 'sys.runtime.web';
-export { PropList, PropListItem } from 'sys.ui.primitives/lib/ui/PropList';
 
 /**
  * TODO 🐷
