@@ -2,7 +2,7 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { DEFAULT, Patch, pkg, rx, t } from './common';
-import { JsonEvents } from './Json.Events';
+import { JsonBusEvents } from './JsonBus.Events';
 
 type J = t.JsonMap;
 type Cache = { [key: string]: J };
@@ -15,7 +15,7 @@ type Cache = { [key: string]: J };
  *    https://tools.ietf.org/html/rfc6902
  *
  */
-export function JsonController(args: {
+export function JsonBusController(args: {
   instance: t.JsonBusInstance;
   filter?: t.JsonEventFilter;
   dispose$?: Observable<any>;
@@ -23,7 +23,7 @@ export function JsonController(args: {
   const bus = rx.busAsType<t.JsonEvent>(args.instance.bus);
   const instance = args.instance.id;
 
-  const events = JsonEvents({
+  const events = JsonBusEvents({
     instance: args.instance,
     dispose$: args.dispose$,
     filter: args.filter,

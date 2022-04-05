@@ -1,4 +1,4 @@
-import { Json } from '.';
+import { JsonBus } from '.';
 import { expect, pkg, rx, slug, t, Test, time } from '../test';
 import { DEFAULT } from './common';
 
@@ -10,11 +10,11 @@ export default Test.describe('JsonBus', (e) => {
   type T = { count: number };
 
   e.describe('is', (e) => {
-    const is = Json.Events.is;
+    const is = JsonBus.Events.is;
 
     e.it('is (static/instance)', () => {
       const instance = Create.instance();
-      const events = Json.Events({ instance });
+      const events = JsonBus.Events({ instance });
       expect(events.is).to.equal(is);
     });
 
@@ -37,8 +37,8 @@ export default Test.describe('JsonBus', (e) => {
   e.describe('Controller/Events', (e) => {
     const setup = () => {
       const instance = Create.instance();
-      const controller = Json.Controller({ instance });
-      const events = Json.Events({ instance });
+      const controller = JsonBus.Controller({ instance });
+      const events = JsonBus.Events({ instance });
 
       const dispose = () => {
         controller.dispose();

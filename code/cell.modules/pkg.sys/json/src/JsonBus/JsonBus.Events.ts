@@ -14,7 +14,7 @@ type KeyPath = string;
  *    https://tools.ietf.org/html/rfc6902
  *
  */
-export function JsonEvents(args: {
+export function JsonBusEvents(args: {
   instance: t.JsonBusInstance;
   filter?: t.JsonEventFilter;
   dispose$?: t.Observable<any>;
@@ -23,7 +23,7 @@ export function JsonEvents(args: {
 
   const bus = rx.busAsType<t.JsonEvent>(args.instance.bus);
   const instance = args.instance.id;
-  const is = JsonEvents.is;
+  const is = JsonBusEvents.is;
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
@@ -230,7 +230,12 @@ export function JsonEvents(args: {
  * Event matching.
  */
 const matcher = (startsWith: string) => (input: any) => rx.isEvent(input, { startsWith });
-JsonEvents.is = {
+const is = {
   base: matcher('sys.json/'),
-  instance: (e: t.Event, instance: Id) => JsonEvents.is.base(e) && e.payload?.instance === instance,
+  instance: (e: t.Event, instance: Id) => is.base(e) && e.payload?.instance === instance,
 };
+
+/**
+ * Decorate
+ */
+JsonBusEvents.is = is;
