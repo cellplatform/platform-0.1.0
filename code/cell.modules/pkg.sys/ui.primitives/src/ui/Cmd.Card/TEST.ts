@@ -29,15 +29,28 @@ export default Test.describe('Cmd.Card', (e) => {
     e.describe('state', (e) => {
       e.it('get (default state)', async () => {
         const { dispose, events } = Setup.controller();
-        const res = await events.state2.get();
+        const res = await events.state.get();
         expect(res.value).to.eql(Util.defaultState());
         dispose();
       });
 
       e.it('patch', async () => {
         const { dispose, events } = Setup.controller();
-        await events.state2.patch((prev) => (prev.commandbar.text = 'hello'));
-        expect((await events.state2.get()).value?.commandbar.text).to.eql('hello');
+        await events.state.patch((prev) => (prev.commandbar.text = 'hello'));
+        expect((await events.state.get()).value?.commandbar.text).to.eql('hello');
+        dispose();
+      });
+
+      e.it('state$ (Observable)', async () => {
+        const { dispose, events } = Setup.controller();
+
+        const fired: t.CmdCardState[] = [];
+        events.state$.subscribe((e) => fired.push(e));
+
+        await events.state.patch((prev) => (prev.commandbar.text = 'hello'));
+        expect(fired.length).to.eql(2);
+        expect(fired[1].commandbar.text).to.eql('hello');
+
         dispose();
       });
     });

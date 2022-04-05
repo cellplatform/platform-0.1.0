@@ -1,7 +1,9 @@
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, takeUntil, map } from 'rxjs/operators';
 
-import { rx, t, Json, slug } from '../common';
+import { rx, t, Json } from '../common';
 import { Util } from '../Util';
+
+type S = t.CmdCardState;
 
 /**
  * Event API
@@ -18,63 +20,22 @@ export const CmdCardEvents: t.CmdCardEventsFactory = (args) => {
     filter((e) => e.payload.instance === instance),
   );
 
-  /**
-   * TODO 🐷
-   */
-  const json = Json.Bus.Events({ instance: args.instance, dispose$ });
-  const state2 = json.json<t.CmdCardState>({ initial: Util.defaultState() });
-
-  const state: t.CmdCardEvents['state'] = {
-    req$: rx.payload<t.CmdCardStateReqEvent>($, 'sys.ui.CmdCard/state:req'),
-    res$: rx.payload<t.CmdCardStateResEvent>($, 'sys.ui.CmdCard/state:res'),
-    patch$: rx.payload<t.CmdCardStatePatchEvent>($, 'sys.ui.CmdCard/state:patch'),
-
-    async get(options = {}) {
-      const { timeout = 3000 } = options;
-      const tx = slug();
-
-      const op = 'info';
-      const res$ = state.res$.pipe(filter((e) => e.tx === tx));
-      const first = rx.asPromise.first<t.CmdCardStateResEvent>(res$, { op, timeout });
-
-      bus.fire({
-        type: 'sys.ui.CmdCard/state:req',
-        payload: { tx, instance },
-      });
-
-      const res = await first;
-      if (res.payload) return res.payload;
-
-      const error = res.error?.message ?? 'Failed';
-      return { tx, instance, error };
-    },
-
-    async mutate(handler) {
-      const current = await state.get();
-      if (current.error) throw new Error(current.error);
-      if (!current.state) {
-        const err = `Failed to mutate, could not retrieve current state. Ensure the controller has been started.`;
-        throw new Error(err);
-      }
-
-      const { op, patches } = await Json.Patch.changeAsync(current.state, handler);
-      bus.fire({
-        type: 'sys.ui.CmdCard/state:patch',
-        payload: { instance, op, patches },
-      });
-    },
-  };
+  const events = Json.Bus.Events({ instance: args.instance, dispose$ });
+  const state = events.json<S>({ initial: args.initial ?? Util.defaultState });
+  const state$ = rx
+    .payload<t.CmdCardStateChangedEvent>($, 'sys.ui.CmdCard/state:changed')
+    .pipe(map((e) => e.state));
 
   /**
    * API
    */
   const api: t.CmdCardEvents = {
-    instance: { bus: rx.bus.instance(bus), id: instance },
+    instance: events.instance,
     $,
     dispose,
     dispose$,
     state,
-    state2,
+    state$,
   };
   return api;
 };

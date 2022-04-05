@@ -26,10 +26,4 @@ export { UseManifestHook } from 'sys.runtime.web.ui/lib/types';
  * TODO 🐷
  * - still nedded?
  */
-export {
-  Patch,
-  PatchChange,
-  PatchSet,
-  StateChangeOperation,
-  JsonStateMethods,
-} from 'sys.json/lib/types';
+export { Patch, PatchChange, PatchSet, StateChangeOperation, JsonState } from 'sys.json/lib/types';

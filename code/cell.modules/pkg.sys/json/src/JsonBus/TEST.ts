@@ -334,10 +334,10 @@ export default Test.describe('JsonBus', (e) => {
         dispose();
       });
 
-      e.it('changes on subset of methods', async () => {
+      e.it('fires on method/key subset', async () => {
         const { events, dispose } = Setup.controller();
 
-        const json1 = events.json<T>({ key: '1' });
+        const json1 = events.json<T>();
         const json2 = events.json<T>({ key: '2' });
 
         const fired1: t.JsonStateChange[] = [];
@@ -356,8 +356,10 @@ export default Test.describe('JsonBus', (e) => {
         expect(fired1[0].value).to.eql({ count: 1 });
         expect(fired2[1].value).to.eql({ count: 3 });
 
-        expect(fired1.every((e) => e.key === '1')).to.eql(true);
+        expect(fired1.every((e) => e.key === DEFAULT.KEY)).to.eql(true);
         expect(fired2.every((e) => e.key === '2')).to.eql(true);
+
+        dispose();
       });
     });
   });

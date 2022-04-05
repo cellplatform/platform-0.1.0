@@ -1,5 +1,4 @@
-import { BehaviorSubject, Observable } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 import { CmdBarState } from '../../Cmd.Bar/State';
 import { Json, t } from '../common';
@@ -30,64 +29,42 @@ export function StateController(args: StateControllerArgs) {
   const { dispose, dispose$ } = events;
 
   /**
-   * Sub-controller
-   */
-  Json.Bus.Controller({
-    instance: args.instance,
-    dispose$: args.dispose$,
-  });
-
-  /**
    * State.
    */
   let _state: S = args.initial ?? Util.defaultState();
-  const state$ = new BehaviorSubject<S>(_state);
   const change = (fn: (prev: S) => S) => {
-    _state = fn(_state);
-    state$.next(_state);
+    const state = (_state = fn(_state));
+    fire({
+      type: 'sys.ui.CmdCard/state:changed',
+      payload: { instance, state },
+    });
   };
 
   /**
-   * <CmdBar> sub-controller.
+   * Sub-controllers
    */
+  Json.Bus.Controller({ instance: args.instance, dispose$ });
   const bar = CmdBarState.Controller({
     dispose$,
     bus,
     instance: args.instance,
     initial: _state.commandbar,
   });
-  bar.state$.subscribe((bar) => {
-    change((prev) => ({ ...prev, commandbar: bar }));
-  });
 
   /**
-   * EVENT HANDLERS
+   * Event Listeners.
    */
-
-  /**
-   * Retrieve current state
-   */
-  events.state.req$.subscribe((e) => {
-    fire({
-      type: 'sys.ui.CmdCard/state:res',
-      payload: { instance, tx: e.tx, state: api.state },
-    });
-  });
-
-  /**
-   * Update state (via immutable patches).
-   */
-  events.state.patch$.subscribe((e) => {
-    change(() => Json.Patch.apply(api.state, e.patches));
-  });
+  events.state.$.subscribe(({ value }) => change((prev) => ({ ...prev, ...value })));
+  bar.state$.subscribe((bar) => change((prev) => ({ ...prev, commandbar: bar })));
 
   /**
    * API
    */
   const api = {
+    instance: events.instance,
     dispose$,
     dispose,
-    state$: state$.pipe(takeUntil(dispose$)),
+    state$: events.state$,
     get state() {
       return _state;
     },

@@ -190,10 +190,13 @@ export function JsonBusEvents(args: {
   const json = <T extends J = J>(args: t.JsonStateOptions<T> = {}): t.JsonState<T> => {
     type O = { timeout?: Milliseconds };
     const asTimeout = (options: O) => options.timeout ?? args.timeout ?? DEFAULT.TIMEOUT;
-    const { key, initial } = args;
-
+    const { key = DEFAULT.KEY, initial } = args;
+    const $ = changed$.pipe(
+      filter((e) => e.key === key),
+      map((e) => e as t.JsonStateChange<T>),
+    );
     return {
-      $: changed$.pipe(filter((e) => e.key === key)),
+      $,
       get(options = {}) {
         const timeout = asTimeout(options);
         return get.fire<T>({ key, timeout, initial });

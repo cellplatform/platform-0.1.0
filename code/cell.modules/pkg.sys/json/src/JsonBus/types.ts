@@ -8,7 +8,11 @@ type Semver = string;
 
 export type JsonBusInstance = { bus: t.EventBus<any>; id: Id };
 export type JsonEventFilter = (e: t.JsonEvent) => boolean;
-export type JsonStateChange = { key: KeyPath; op: JsonStateChangeOperation; value: t.Json };
+export type JsonStateChange<T extends J = J> = {
+  key: KeyPath;
+  op: JsonStateChangeOperation;
+  value: T;
+};
 export type JsonStateChangeOperation = 'update' | 'replace';
 export type JsonStateMutator<T extends J = J> = (prev: T) => any | Promise<any>;
 
@@ -77,7 +81,7 @@ export type JsonStateOptions<T extends J> = {
   initial?: T | (() => T);
 };
 export type JsonState<T extends J = J> = {
-  $: t.Observable<t.JsonStateChange>;
+  $: t.Observable<t.JsonStateChange<T>>;
   get(options?: { timeout?: Milliseconds }): Promise<JsonStateGetRes<T>>;
   put(value: T, options?: { timeout?: Milliseconds }): Promise<JsonStatePutRes>;
   patch(fn: JsonStateMutator<T>, options?: { timeout?: Milliseconds }): Promise<JsonStatePatchRes>;
