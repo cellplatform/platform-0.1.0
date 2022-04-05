@@ -4,28 +4,21 @@ import { COLORS, css, CssValue, defaultValue, t, Style, FC } from '../../common'
 import { PropListItem } from './PropList.Item';
 import { PropListTitle } from './PropList.Title';
 import { FieldBuilder } from './Fields';
+import { Util } from './Util';
+import { PropListProps } from './types';
+
+export { PropListProps };
 
 /**
  * Types
  */
-export type PropListProps = {
-  title?: string | React.ReactNode | null;
-  titleEllipsis?: boolean;
-  items?: (t.PropListItem | undefined)[] | Record<string, unknown>;
-  defaults?: t.PropListDefaults;
-  padding?: t.CssEdgesInput;
-  margin?: t.CssEdgesInput;
-  width?: number | { fixed?: number; min?: number; max?: number };
-  height?: number | { fixed?: number; min?: number; max?: number };
-  style?: CssValue;
-};
 
 /**
  * Component
  */
 const View: React.FC<PropListProps> = (props) => {
   const { title } = props;
-  const items = asItems(props.items);
+  const items = Util.asItems(props.items);
   const width = typeof props.width === 'number' ? { fixed: props.width } : props.width;
   const height = typeof props.height === 'number' ? { fixed: props.height } : props.height;
 
@@ -82,55 +75,8 @@ const View: React.FC<PropListProps> = (props) => {
 };
 
 /**
- * [Helpers]
- */
-
-function asItems(input: PropListProps['items']) {
-  if (Array.isArray(input)) {
-    return input;
-  }
-
-  if (typeof input === 'object') {
-    return Object.keys(input).map((key) => {
-      const item: t.PropListItem = { label: key, value: toRenderValue(input[key]) };
-      return item;
-    });
-  }
-
-  return [];
-}
-
-function toRenderValue(input: any) {
-  if (input === null) {
-    return null;
-  }
-  if (input === undefined) {
-    return undefined;
-  }
-
-  /**
-   * TODO 🐷
-   * Expand this out to be more nuanced in display value types
-   * eg, color-coding, spans etc:
-   *  - {object}
-   *  - [Array]
-   */
-
-  if (Array.isArray(input)) {
-    return `[Array](${input.length})`;
-  }
-
-  if (typeof input === 'object') {
-    return `{object}`;
-  }
-
-  return input.toString();
-}
-
-/**
  * Export (API)
  */
-
 type Fields = {
   builder<F extends string>(): t.PropListFieldBuilder<F>;
 };
