@@ -313,7 +313,7 @@ export default Test.describe('JsonBus', (e) => {
         dispose();
       });
 
-      e.it('does not repeat fire when patche yields no changes', async () => {
+      e.it('does not repeat fire when patch yields no changes', async () => {
         const { events, dispose } = Setup.controller();
 
         const fired: t.JsonStateChange[] = [];
@@ -332,6 +332,32 @@ export default Test.describe('JsonBus', (e) => {
         expect(fired.length).to.eql(2); // NB: no change.
 
         dispose();
+      });
+
+      e.it('changes on subset of methods', async () => {
+        const { events, dispose } = Setup.controller();
+
+        const json1 = events.json<T>({ key: '1' });
+        const json2 = events.json<T>({ key: '2' });
+
+        const fired1: t.JsonStateChange[] = [];
+        const fired2: t.JsonStateChange[] = [];
+
+        json1.$.subscribe((e) => fired1.push(e));
+        json2.$.subscribe((e) => fired2.push(e));
+
+        await json1.put({ count: 1 });
+        await json2.put({ count: 2 });
+        await json2.patch((prev) => prev.count++);
+
+        expect(fired1.length).to.eql(1);
+        expect(fired2.length).to.eql(2);
+
+        expect(fired1[0].value).to.eql({ count: 1 });
+        expect(fired2[1].value).to.eql({ count: 3 });
+
+        expect(fired1.every((e) => e.key === '1')).to.eql(true);
+        expect(fired2.every((e) => e.key === '2')).to.eql(true);
       });
     });
   });

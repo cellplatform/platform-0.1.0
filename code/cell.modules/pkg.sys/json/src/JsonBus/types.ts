@@ -27,7 +27,7 @@ export type JsonEvents = t.Disposable & {
   is: { base(input: any): boolean };
   info: JsonEventsInfo;
   state: JsonEventsState;
-  json<T extends J = J>(options?: JsonStateMethodsOptions<T>): JsonStateMethods<T>;
+  json<T extends J = J>(options?: JsonStateOptions<T>): JsonState<T>;
 };
 
 export type JsonEventsInfo = {
@@ -71,12 +71,13 @@ export type JsonEventsState = {
 /**
  * JSON (key-pathed convenience method).
  */
-export type JsonStateMethodsOptions<T extends J> = {
+export type JsonStateOptions<T extends J> = {
   key?: KeyPath;
   timeout?: Milliseconds;
   initial?: T | (() => T);
 };
-export type JsonStateMethods<T extends J = J> = {
+export type JsonState<T extends J = J> = {
+  $: t.Observable<t.JsonStateChange>;
   get(options?: { timeout?: Milliseconds }): Promise<JsonStateGetRes<T>>;
   put(value: T, options?: { timeout?: Milliseconds }): Promise<JsonStatePutRes>;
   patch(fn: JsonStateMutator<T>, options?: { timeout?: Milliseconds }): Promise<JsonStatePatchRes>;

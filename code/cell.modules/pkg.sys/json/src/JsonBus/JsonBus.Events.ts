@@ -187,14 +187,13 @@ export function JsonBusEvents(args: {
   /**
    * JSON (key-pathed convenience method).
    */
-  const json = <T extends J = J>(
-    args: t.JsonStateMethodsOptions<T> = {},
-  ): t.JsonStateMethods<T> => {
+  const json = <T extends J = J>(args: t.JsonStateOptions<T> = {}): t.JsonState<T> => {
     type O = { timeout?: Milliseconds };
     const asTimeout = (options: O) => options.timeout ?? args.timeout ?? DEFAULT.TIMEOUT;
     const { key, initial } = args;
 
     return {
+      $: changed$.pipe(filter((e) => e.key === key)),
       get(options = {}) {
         const timeout = asTimeout(options);
         return get.fire<T>({ key, timeout, initial });
