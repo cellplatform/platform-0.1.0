@@ -20,17 +20,29 @@ export const actions = DevActions<Ctx>()
         titleEllipsis: true,
         defaults: { clipboard: false },
         items,
+        theme: 'Light',
       },
     };
   })
 
   .items((e) => {
-    e.title('Defaults');
+    e.title('Props');
 
-    e.boolean('clipboard', (e) => {
+    e.boolean('defaults.clipboard', (e) => {
       const props = e.ctx.props;
       if (e.changing) props.defaults = { ...props.defaults, clipboard: e.changing.next };
       e.boolean.current = Boolean(props.defaults?.clipboard);
+    });
+
+    e.select((config) => {
+      config
+        .view('buttons')
+        .title('theme')
+        .items(PropList.constants.THEMES)
+        .initial(config.ctx.props.theme)
+        .pipe((e) => {
+          if (e.changing) e.ctx.props.theme = e.changing?.next[0].value;
+        });
     });
 
     e.hr();
@@ -79,12 +91,20 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    const { props } = e.ctx;
+    const theme = props.theme ?? PropList.constants.DEFAULT.THEME;
+    const isLight = theme === 'Light';
+
     e.settings({
-      layout: { cropmarks: -0.2, width: 260 },
-      host: { background: -0.04 },
+      host: { background: isLight ? -0.04 : COLORS.DARK },
+      layout: {
+        cropmarks: isLight ? -0.2 : 0.6,
+        labelColor: isLight ? -0.5 : 0.8,
+        width: 260,
+      },
     });
 
-    e.render(<PropList {...e.ctx.props} style={{ flex: 1 }} />);
+    e.render(<PropList {...props} style={{ flex: 1 }} />);
   });
 
 export default actions;

@@ -12,8 +12,11 @@ export type PropListProps = {
   margin?: t.CssEdgesInput;
   width?: number | { fixed?: number; min?: number; max?: number };
   height?: number | { fixed?: number; min?: number; max?: number };
+  theme?: t.PropListTheme;
   style?: t.CssValue;
 };
+
+export type PropListTheme = 'Dark' | 'Light';
 
 /**
  * Factory

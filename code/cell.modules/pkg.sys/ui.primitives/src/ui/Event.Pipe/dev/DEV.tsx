@@ -98,14 +98,12 @@ export const actions = DevActions<Ctx>()
     const { props, bus, debug } = e.ctx;
 
     const size = 300;
-    const theme = props.theme as EventPipeTheme;
+    const theme = props.theme ?? EventPipe.constants.DEFAULT.THEME;
     const isLight = theme === 'Light';
     const { orientation } = props;
 
     e.settings({
-      host: {
-        background: isLight ? -0.04 : COLORS.DARK,
-      },
+      host: { background: isLight ? -0.04 : COLORS.DARK },
       layout: {
         cropmarks: isLight ? -0.2 : 0.6,
         labelColor: isLight ? -0.5 : 0.8,

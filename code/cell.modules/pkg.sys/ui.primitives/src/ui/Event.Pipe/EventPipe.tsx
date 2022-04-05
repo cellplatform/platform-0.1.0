@@ -43,10 +43,7 @@ export type EventPipeProps = {
 const THEMES: EventPipeTheme[] = ['Light', 'Dark'];
 const DEFAULT_THEME: EventPipeTheme = 'Light';
 const DEFAULT = { THEME: DEFAULT_THEME };
-const constants = {
-  DEFAULT,
-  THEMES,
-};
+const constants = { DEFAULT, THEMES };
 
 /**
  * Component
