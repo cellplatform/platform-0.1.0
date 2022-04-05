@@ -2,7 +2,7 @@ import { Compiler, Package } from '@platform/cell.compiler';
 
 export default () =>
   Compiler.config()
-    .namespace('sys.crdt')
+    .namespace('sys.data.crdt')
     .version(Package.version)
 
     .variant('web', (config) =>

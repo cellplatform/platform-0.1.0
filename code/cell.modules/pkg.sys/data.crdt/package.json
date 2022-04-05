@@ -1,5 +1,5 @@
 {
-  "name": "sys.crdt",
+  "name": "sys.data.crdt",
   "version": "0.0.92",
   "main": "lib/index",
   "sideEffects": false,

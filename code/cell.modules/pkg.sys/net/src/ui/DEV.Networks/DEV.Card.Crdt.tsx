@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { CrdtBus } from 'sys.crdt';
-import { CrdtDocEvents } from 'sys.crdt/lib/types';
+import { CrdtBus } from 'sys.data.crdt';
+import { CrdtDocEvents } from 'sys.data.crdt/lib/types';
 
 import { Button, Card, CardBody, css, CssValue, ObjectView, t } from './DEV.common';
 
