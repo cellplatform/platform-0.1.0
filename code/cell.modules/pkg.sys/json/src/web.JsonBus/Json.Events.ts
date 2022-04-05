@@ -60,20 +60,15 @@ export function JsonEvents(args: {
     req$: rx.payload<t.JsonStateGetReqEvent>($, 'sys.json/state.get:req'),
     res$: rx.payload<t.JsonStateGetResEvent>($, 'sys.json/state.get:res'),
     async fire<T extends J = J>(
-      options: { timeout?: Milliseconds; key?: KeyPath; initial?: T | (() => T) } = {},
+      options: { tx?: Id; timeout?: Milliseconds; key?: KeyPath; initial?: T | (() => T) } = {},
     ) {
+      const { timeout = DEFAULT.TIMEOUT, key = DEFAULT.KEY, tx = slug() } = options;
       type R = t.JsonStateGetRes<T>;
-      const response = (value?: T, error?: string): R => {
-        return { tx, instance, key, value, error };
-      };
-
-      const { timeout = DEFAULT.TIMEOUT, key = DEFAULT.KEY } = options;
-      const tx = slug();
-
-      const op = 'state.get';
-      const res$ = get.res$.pipe(filter((e) => e.tx === tx && e.key === key));
+      const response = (value?: T, error?: string): R => ({ tx, instance, key, value, error });
 
       const fire = async (): Promise<R> => {
+        const op = 'state.get';
+        const res$ = get.res$.pipe(filter((e) => e.tx === tx && e.key === key));
         const first = rx.asPromise.first<t.JsonStateGetResEvent>(res$, { op, timeout });
         bus.fire({
           type: 'sys.json/state.get:req',
@@ -93,7 +88,7 @@ export function JsonEvents(args: {
       if (!res.value && options.initial !== undefined) {
         const initial = typeof options.initial === 'function' ? options.initial() : options.initial;
         if (initial) {
-          const write = await put.fire(initial, { key, timeout });
+          const write = await put.fire(initial, { tx, key, timeout });
           if (write.error) return response(undefined, write.error);
           return response(initial);
         }
@@ -109,9 +104,11 @@ export function JsonEvents(args: {
   const put: t.JsonEventsState['put'] = {
     req$: rx.payload<t.JsonStatePutReqEvent>($, 'sys.json/state.put:req'),
     res$: rx.payload<t.JsonStatePutResEvent>($, 'sys.json/state.put:res'),
-    async fire<T extends J = J>(value: T, options: { timeout?: Milliseconds; key?: KeyPath } = {}) {
-      const { timeout = DEFAULT.TIMEOUT, key = DEFAULT.KEY } = options;
-      const tx = slug();
+    async fire<T extends J = J>(
+      value: T,
+      options: { tx?: Id; timeout?: Milliseconds; key?: KeyPath } = {},
+    ) {
+      const { timeout = DEFAULT.TIMEOUT, key = DEFAULT.KEY, tx = slug() } = options;
 
       const op = 'state.put';
       const res$ = put.res$.pipe(filter((e) => e.tx === tx && e.key === key));
@@ -138,16 +135,15 @@ export function JsonEvents(args: {
     res$: rx.payload<t.JsonStatePatchResEvent>($, 'sys.json/state.patch:res'),
     async fire<T extends J = J>(
       fn: t.JsonStateMutator<T>,
-      options: { timeout?: Milliseconds; key?: KeyPath; initial?: T | (() => T) } = {},
+      options: { tx?: Id; timeout?: Milliseconds; key?: KeyPath; initial?: T | (() => T) } = {},
     ): Promise<t.JsonStatePatchRes> {
-      const { timeout = DEFAULT.TIMEOUT, key = DEFAULT.KEY, initial } = options;
-      const tx = slug();
+      const { timeout = DEFAULT.TIMEOUT, key = DEFAULT.KEY, tx = slug(), initial } = options;
 
       const response = (error?: string): t.JsonStatePatchRes => {
         return { tx, instance, key, error };
       };
 
-      const current = await get.fire({ timeout, key, initial });
+      const current = await get.fire({ tx, timeout, key, initial });
       if (current.error) return response(current.error);
 
       const value = current.value;
