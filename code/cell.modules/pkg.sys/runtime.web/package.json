@@ -2,9 +2,6 @@
   "name": "sys.runtime.web",
   "version": "0.0.2",
   "sideEffects": false,
-  "compiler": {
-    "port": 5051
-  },
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {

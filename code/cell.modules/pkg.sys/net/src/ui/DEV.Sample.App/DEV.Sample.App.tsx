@@ -116,16 +116,16 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     position: { x: 'right', y: 'top' },
     render(e) {
       const styles = {
-        base: css({ pointerEvents: 'auto', marginTop: 8, marginRight: 15 }),
-        semver: css({ cursor: 'pointer' }),
+        base: css({ pointerEvents: 'auto', marginRight: 10 }),
+        semver: css({ cursor: 'pointer', opacity: 0.5 }),
       };
       const href = `${location.origin}/?dev=Sample`;
       return (
-        <Button style={styles.base}>
-          <a href={href}>
-            <WebRuntime.ui.ManifestSemver style={styles.semver} />
-          </a>
-        </Button>
+        <a href={href} {...styles.base}>
+          <Button>
+            <WebRuntime.ui.ManifestSemver style={styles.semver} fontSize={11} />
+          </Button>
+        </a>
       );
     },
   };

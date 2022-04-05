@@ -24,7 +24,7 @@ export type Patch = {
 export type PatchChange<T extends O> = {
   to: T;
   op: t.StateChangeOperation;
-  patches: t.PatchSet;
+  patches: PatchSet;
 };
 
 /**

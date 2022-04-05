@@ -1,8 +1,7 @@
-import { BehaviorSubject, Observable } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 import { CmdBarState } from '../../Cmd.Bar/State';
-import { Patch, t } from '../common';
+import { Json, t } from '../common';
 import { CmdCardEvents } from '../Events';
 import { Util } from '../Util';
 
@@ -23,63 +22,49 @@ export function StateController(args: StateControllerArgs) {
   const instance = args.instance.id;
   const fire = (e: t.CmdCardEvent) => args.instance.bus.fire(e);
 
-  const events = CmdCardEvents({
+  const card = CmdCardEvents({
     instance: args.instance,
     dispose$: args.dispose$,
   });
-  const { dispose, dispose$ } = events;
+  const { dispose, dispose$ } = card;
 
   /**
    * State.
    */
   let _state: S = args.initial ?? Util.defaultState();
-  const state$ = new BehaviorSubject<S>(_state);
   const change = (fn: (prev: S) => S) => {
-    _state = fn(_state);
-    state$.next(_state);
+    const state = (_state = fn(_state));
+    fire({
+      type: 'sys.ui.CmdCard/state:changed',
+      payload: { instance, state },
+    });
   };
 
   /**
-   * <CmdBar> sub-controller.
+   * Sub-controllers
    */
+  Json.Bus.Controller({ instance: args.instance, dispose$ });
   const bar = CmdBarState.Controller({
     dispose$,
     bus,
     instance: args.instance,
     initial: _state.commandbar,
   });
-  bar.state$.subscribe((bar) => {
-    change((prev) => ({ ...prev, commandbar: bar }));
-  });
 
   /**
-   * EVENT HANDLERS
+   * Event Listeners.
    */
-
-  /**
-   * Retrieve current state
-   */
-  events.state.req$.subscribe((e) => {
-    fire({
-      type: 'sys.ui.CmdCard/state:res',
-      payload: { instance, tx: e.tx, state: api.state },
-    });
-  });
-
-  /**
-   * Update state (via immutable patches).
-   */
-  events.state.patch$.subscribe((e) => {
-    change(() => Patch.apply(api.state, e.patches));
-  });
+  card.state.$.subscribe(({ value }) => change((prev) => ({ ...prev, ...value })));
+  bar.state$.subscribe((bar) => change((prev) => ({ ...prev, commandbar: bar })));
 
   /**
    * API
    */
   const api = {
+    instance: card.instance,
     dispose$,
     dispose,
-    state$: state$.pipe(takeUntil(dispose$)),
+    state$: card.state$,
     get state() {
       return _state;
     },

@@ -1,27 +1,20 @@
 import * as t from '../common/types';
 
-type InstanceId = string;
+type Id = string;
 type Milliseconds = number;
-type SemVer = string;
+type Semver = string;
 
 export type MyInfo = {
-  module: { name: string; version: SemVer };
+  module: { name: string; version: Semver };
 };
 
 /**
- * EVENTS
- */
-
-export type MyEvent = MyInfoReqEvent | MyInfoResEvent;
-
-/**
- * Event API
+ * EVENT (API)
  */
 export type MyEvents = t.Disposable & {
   $: t.Observable<t.MyEvent>;
-  id: InstanceId;
+  instance: { bus: Id; id: Id };
   is: { base(input: any): boolean };
-
   info: {
     req$: t.Observable<t.MyInfoReq>;
     res$: t.Observable<t.MyInfoRes>;
@@ -30,13 +23,18 @@ export type MyEvents = t.Disposable & {
 };
 
 /**
+ * EVENT (DEFINITIONS)
+ */
+export type MyEvent = MyInfoReqEvent | MyInfoResEvent;
+
+/**
  * Module info.
  */
 export type MyInfoReqEvent = {
   type: 'my.namespace/info:req';
   payload: MyInfoReq;
 };
-export type MyInfoReq = { tx: string; id: InstanceId };
+export type MyInfoReq = { tx: string; instance: Id };
 
 export type MyInfoResEvent = {
   type: 'my.namespace/info:res';
@@ -44,7 +42,7 @@ export type MyInfoResEvent = {
 };
 export type MyInfoRes = {
   tx: string;
-  id: InstanceId;
+  instance: Id;
   info?: MyInfo;
   error?: string;
 };

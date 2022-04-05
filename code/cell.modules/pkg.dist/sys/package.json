@@ -1,12 +1,9 @@
 {
   "name": "sys",
   "description": "Standard federated-function endpoing for 'system' modules",
-  "version": "0.0.118",
+  "version": "0.0.119",
   "main": "lib/index",
   "sideEffects": false,
-  "compiler": {
-    "port": 5050
-  },
   "scripts": {
     "start": "cell.compiler dev $@",
     "dev": "cell.compiler dev --no-exports $@",

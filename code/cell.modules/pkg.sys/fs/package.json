@@ -4,9 +4,6 @@
   "main": "lib/web/index",
   "types": "lib/web/index.d.ts",
   "sideEffects": false,
-  "compiler": {
-    "port": 3041
-  },
   "scripts": {
     "start": "cell.compiler dev $@",
     "dev": "cell.compiler dev --no-exports $@",

@@ -3,7 +3,7 @@ import { css, CssValue, t, k, COLORS } from './common';
 import { Icons } from '../Icons';
 import {} from 'sys.ui.dev';
 
-import { Test } from 'sys.ui.dev/lib/web.ui/TestSuite';
+import { Test } from 'sys.ui.dev/lib/ui/TestSuite';
 import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
 import { CodeEditor } from '../CodeEditor';

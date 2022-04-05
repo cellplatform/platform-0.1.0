@@ -43,7 +43,7 @@ describe('rx', () => {
       source$.next(5);
       source$.next(6);
 
-      await time.wait(10);
+      await time.wait(50);
       expect(results.length).to.eql(3);
       expect(results[0]).to.eql([1, 2, 3]);
       expect(results[1]).to.eql([4]);

@@ -26,9 +26,4 @@ export { ObjectView } from '@platform/ui.object';
  * @system
  */
 export { WebRuntime } from 'sys.runtime.web';
-
-/**
- * TODO 🐷
- * - move to [sys.json]...inline into "sys" code base.
- */
-export { Patch } from '@platform/state/lib/Patch';
+export { Json } from 'sys.json';

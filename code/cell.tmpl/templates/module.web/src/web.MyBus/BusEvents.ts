@@ -1,25 +1,26 @@
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { DEFAULT, rx, slug, t } from './common';
+import { rx, slug, t } from './common';
 
-type InstanceId = string;
+type Id = string;
 
 /**
  * Event API for the "WebRuntime"
  */
 export function BusEvents(args: {
-  bus: t.EventBus<any>;
-  id?: InstanceId;
+  instance: { bus: t.EventBus<any>; id: Id };
   filter?: (e: t.MyEvent) => boolean;
+  dispose$?: t.Observable<any>;
 }): t.MyEvents {
-  const { dispose, dispose$ } = rx.disposable();
-  const id = args.id ?? DEFAULT.id;
-  const bus = rx.busAsType<t.MyEvent>(args.bus);
+  const { dispose, dispose$ } = rx.disposable(args.dispose$);
+
+  const bus = rx.busAsType<t.MyEvent>(args.instance.bus);
+  const instance = args.instance.id;
   const is = BusEvents.is;
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
-    filter((e) => is.instance(e, id)),
+    filter((e) => is.instance(e, instance)),
     filter((e) => args.filter?.(e) ?? true),
   );
 
@@ -39,18 +40,25 @@ export function BusEvents(args: {
 
       bus.fire({
         type: 'my.namespace/info:req',
-        payload: { tx, id },
+        payload: { tx, instance },
       });
 
       const res = await first;
       if (res.payload) return res.payload;
 
       const error = res.error?.message ?? 'Failed';
-      return { tx, id, error };
+      return { tx, instance: instance, error };
     },
   };
 
-  return { $, id, is, dispose, dispose$, info };
+  return {
+    instance: { bus: rx.bus.instance(bus), id: instance },
+    $,
+    dispose,
+    dispose$,
+    is,
+    info,
+  };
 }
 
 /**
@@ -59,5 +67,5 @@ export function BusEvents(args: {
 const matcher = (startsWith: string) => (input: any) => rx.isEvent(input, { startsWith });
 BusEvents.is = {
   base: matcher('my.namespace/'),
-  instance: (e: t.Event, id: InstanceId) => BusEvents.is.base(e) && e.payload?.id === id,
+  instance: (e: t.Event, instance: Id) => BusEvents.is.base(e) && e.payload?.instance === instance,
 };

@@ -8,7 +8,7 @@ export default () =>
     .variant('web', (config) =>
       config
         .target('web')
-        .port(Package.compiler.port)
+        .port(5055)
 
         .entry('main', './src/entry/dom')
         .entry('service.worker', './src/web.workers/service.worker')

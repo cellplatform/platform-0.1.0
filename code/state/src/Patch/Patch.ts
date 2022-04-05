@@ -15,7 +15,6 @@ if (typeof enablePatches === 'function') {
  *
  *    This subset of `op` values is what the [immer] state library uses.
  *    https://github.com/immerjs/immer
- *
  */
 export const Patch: t.Patch = {
   toPatchSet(forward, backward) {

@@ -9,7 +9,7 @@ export default () =>
     .variant('web', (config) =>
       config
         .target('web')
-        .port(Package.compiler.port)
+        .port(3034)
 
         .entry('main', './src/entry/dom')
         // .entry('service.worker', './src/workers/service.worker')

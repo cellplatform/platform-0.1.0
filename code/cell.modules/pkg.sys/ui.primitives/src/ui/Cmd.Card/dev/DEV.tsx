@@ -8,9 +8,9 @@ import { EventList } from '../../Event.List';
 import { css, rx, slug, t } from '../common';
 import { CmdCardInfoProps } from '../components/Info';
 import { defaultState } from '../Util';
+import { SampleRenderer } from './DEV.Renderers';
 import { DevSample } from './DEV.Sample';
 import { DevSidePanel } from './DEV.SidePanel';
-import { SampleRenderer } from './DEV.Renderers';
 
 type Ctx = {
   localbus: t.EventBus<any>;
@@ -91,7 +91,13 @@ export const actions = DevActions<Ctx>()
     const localbus = rx.bus();
     const netbus = NetworkBusMock({ local: 'local-id', remotes: ['peer-1', 'peer-2'] });
     const instance: t.CmdCardInstance = { bus: localbus, id: `foo.${slug()}` };
-    const events = CmdCard.Events({ instance });
+
+    const initial = defaultState({
+      body: { render: SampleRenderer.body },
+      backdrop: { render: SampleRenderer.backdrop },
+    });
+
+    const events = CmdCard.Events({ instance, initial });
 
     const ctx: Ctx = {
       localbus,
@@ -100,10 +106,7 @@ export const actions = DevActions<Ctx>()
       props: { instance, showAsCard: true },
       events,
       state: {
-        current: defaultState({
-          body: { render: SampleRenderer.body },
-          backdrop: { render: SampleRenderer.backdrop },
-        }),
+        current: initial,
         onChange(state) {
           e.change.ctx((ctx) => (ctx.state.current = state));
         },
@@ -188,24 +191,20 @@ export const actions = DevActions<Ctx>()
     e.hr(1, 0.1);
 
     e.button('spinning (toggle)', async (e) => {
-      await e.ctx.events.state.mutate(async (state) => {
+      await e.ctx.events.state.patch((state) => {
         state.commandbar.spinning = !Boolean(state.commandbar.spinning);
       });
     });
 
     e.button('[TODO] isOpen (toggle)', async (e) => {
-      /**
-       * TODO 🐷
-       * - sync AND async [mutate] handler/param type.
-       */
-      return await e.ctx.events.state.mutate(async (state) => {
+      await e.ctx.events.state.patch((state) => {
         state.body.isOpen = !Boolean(state.body.isOpen);
       });
     });
 
     e.button('sample renderers (toggle)', async (e) => {
       const { body, backdrop } = SampleRenderer;
-      return await e.ctx.events.state.mutate(async (state) => {
+      await e.ctx.events.state.patch((state) => {
         const exists = Boolean(state.body.render);
         state.body.render = exists ? undefined : body;
         state.backdrop.render = exists ? undefined : backdrop;
@@ -221,10 +220,7 @@ export const actions = DevActions<Ctx>()
         .pipe(async (e) => {
           if (e.changing) {
             const next = e.changing?.next[0].value;
-            console.log('next', next);
-            await e.ctx.events.state.mutate(async (state) => {
-              state.body.show = next;
-            });
+            await e.ctx.events.state.patch((state) => (state.body.show = next));
           }
         });
     });

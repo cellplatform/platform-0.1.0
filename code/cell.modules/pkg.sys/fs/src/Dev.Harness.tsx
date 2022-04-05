@@ -3,12 +3,11 @@ import { Harness } from 'sys.ui.dev';
 import { t } from './web/common';
 
 const imports = {
-  ModuleInfo: import('./web.ui/ModuleInfo/dev/DEV'),
-  PathList: import('./web.ui/PathList/dev/DEV'),
-  FileDropTarget: import('./web.ui/FileDropTarget/dev/DEV'),
-
-  FsDriverIndexedDb: import('./web.ui/FsDriver.IndexedDb/dev/DEV'),
-  FsIndexedDb: import('./web.ui/FsBus.IndexedDb/dev/DEV'),
+  ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
+  PathList: import('./ui/PathList/dev/DEV'),
+  FileDropTarget: import('./ui/FileDropTarget/dev/DEV'),
+  FsDriverIndexedDb: import('./ui/FsDriver.IndexedDb/dev/DEV'),
+  FsIndexedDb: import('./ui/FsBus.IndexedDb/dev/DEV'),
 };
 
 /**

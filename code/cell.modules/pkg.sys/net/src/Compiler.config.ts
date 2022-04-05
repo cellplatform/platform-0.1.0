@@ -3,7 +3,7 @@ import { Compiler, Config, Package } from '@platform/cell.compiler';
 const web = (config: Config) =>
   config
     .target('web')
-    .port(Package.compiler.port)
+    .port(3040)
     .entry('main', './src/entry/main')
 
     // .declarations('./src/**/*')

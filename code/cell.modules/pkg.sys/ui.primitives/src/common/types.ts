@@ -1,6 +1,5 @@
-export * from '../types';
-
 export { Observable } from 'rxjs';
+export * from '../types';
 
 /**
  * @platform
@@ -22,9 +21,4 @@ export { IIcon } from '@platform/ui.icon/lib/types';
  */
 export { WebRuntimeEvents } from 'sys.runtime.web/lib/types';
 export { UseManifestHook } from 'sys.runtime.web.ui/lib/types';
-
-/**
- * TODO 🐷
- * - move to [sys.json]...inline into "sys" code base.
- */
-export { Patch, PatchChange, PatchSet, StateChangeOperation } from '@platform/state/lib/types';
+export { JsonState } from 'sys.json/lib/types';
