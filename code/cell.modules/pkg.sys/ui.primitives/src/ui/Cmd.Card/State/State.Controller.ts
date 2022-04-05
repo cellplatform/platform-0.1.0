@@ -2,7 +2,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { CmdBarState } from '../../Cmd.Bar/State';
-import { Patch, t } from '../common';
+import { Json, t } from '../common';
 import { CmdCardEvents } from '../Events';
 import { Util } from '../Util';
 
@@ -28,6 +28,14 @@ export function StateController(args: StateControllerArgs) {
     dispose$: args.dispose$,
   });
   const { dispose, dispose$ } = events;
+
+  /**
+   * Sub-controller
+   */
+  Json.Bus.Controller({
+    instance: args.instance,
+    dispose$: args.dispose$,
+  });
 
   /**
    * State.
@@ -70,7 +78,7 @@ export function StateController(args: StateControllerArgs) {
    * Update state (via immutable patches).
    */
   events.state.patch$.subscribe((e) => {
-    change(() => Patch.apply(api.state, e.patches));
+    change(() => Json.Patch.apply(api.state, e.patches));
   });
 
   /**

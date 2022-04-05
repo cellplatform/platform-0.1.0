@@ -1,6 +1,7 @@
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { rx, t, Patch, slug } from '../common';
+import { rx, t, Json, slug } from '../common';
+import { Util } from '../Util';
 
 /**
  * Event API
@@ -16,6 +17,12 @@ export const CmdCardEvents: t.CmdCardEventsFactory = (args) => {
     filter((e) => e.type.startsWith('sys.ui.CmdCard/')),
     filter((e) => e.payload.instance === instance),
   );
+
+  /**
+   * TODO 🐷
+   */
+  const json = Json.Bus.Events({ instance: args.instance, dispose$ });
+  const state2 = json.json<t.CmdCardState>({ initial: Util.defaultState() });
 
   const state: t.CmdCardEvents['state'] = {
     req$: rx.payload<t.CmdCardStateReqEvent>($, 'sys.ui.CmdCard/state:req'),
@@ -50,7 +57,7 @@ export const CmdCardEvents: t.CmdCardEventsFactory = (args) => {
         throw new Error(err);
       }
 
-      const { op, patches } = await Patch.changeAsync(current.state, handler);
+      const { op, patches } = await Json.Patch.changeAsync(current.state, handler);
       bus.fire({
         type: 'sys.ui.CmdCard/state:patch',
         payload: { instance, op, patches },
@@ -67,6 +74,7 @@ export const CmdCardEvents: t.CmdCardEventsFactory = (args) => {
     dispose,
     dispose$,
     state,
+    state2,
   };
   return api;
 };

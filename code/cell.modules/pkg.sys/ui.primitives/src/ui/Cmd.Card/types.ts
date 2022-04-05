@@ -44,6 +44,7 @@ export type CmdCardEvents = t.Disposable & {
     get(options?: { timeout?: Milliseconds }): Promise<CmdCardStateRes>;
     mutate(handler: CmdCardStateMutator): Promise<void>;
   };
+  state2: t.JsonStateMethods<CmdCardState>;
 };
 
 /**

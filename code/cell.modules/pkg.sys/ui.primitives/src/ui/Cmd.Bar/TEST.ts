@@ -7,12 +7,10 @@ import { rx, t, time } from './common';
 export default Test.describe('Cmd.Bar', (e) => {
   e.describe('Events', (e) => {
     e.it('exposed from <CmdBar.Events>', () => {
-      const bus = rx.bus();
-      const id = 'foo';
-      const events = CmdBar.Events({ instance: { bus, id } });
-
-      expect(events.instance.id).to.eql(id);
-      expect(events.instance.bus).to.eql(rx.bus.instance(bus));
+      const instance = { bus: rx.bus(), id: 'foo' };
+      const events = CmdBar.Events({ instance });
+      expect(events.instance.id).to.eql(instance.id);
+      expect(events.instance.bus).to.eql(rx.bus.instance(instance.bus));
     });
   });
 
