@@ -1,7 +1,6 @@
 {
-  "name": "sys",
-  "description": "Standard federated-function endpoing for 'system' modules",
-  "version": "0.0.121",
+  "name": "sys.data.json",
+  "version": "0.0.0",
   "main": "lib/index",
   "sideEffects": false,
   "scripts": {
@@ -10,20 +9,19 @@
     "test": "ts test $@",
     "lint": "ts lint $@",
     "build": "ts build --no-esm $@",
-    "build.all": "sh script.sh/build.all.sh",
     "bundle": "cell.compiler bundle --bump $@",
     "watch": "cell.compiler watch $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cell.compiler serve $@",
-    "deploy": "ts-node -T script.ts/deploy.vercel.run",
-    "bbd": "yarn build.all && yarn deploy"
+    "serve": "cell.compiler serve $@"
   },
-  "dependencies": {},
+  "dependencies": {
+    "immer": "9.0.12"
+  },
   "devDependencies": {
     "@platform/cell.compiler": "~0.4.1",
-    "react": "~17.0.2",
-    "react-dom": "~17.0.2"
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
   },
   "license": "MIT",
   "private": true

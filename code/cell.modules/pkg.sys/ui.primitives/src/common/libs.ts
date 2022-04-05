@@ -26,4 +26,4 @@ export { ObjectView } from '@platform/ui.object';
  * @system
  */
 export { WebRuntime } from 'sys.runtime.web';
-export { Json } from 'sys.json';
+export { Json } from 'sys.data.json';
