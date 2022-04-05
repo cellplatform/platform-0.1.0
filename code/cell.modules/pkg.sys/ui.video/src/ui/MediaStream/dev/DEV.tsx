@@ -13,7 +13,7 @@ import { DevLayoutMediaComponents } from './DEV.Layout.MediaComponents';
 import { PositioningLayout } from 'sys.ui.primitives/lib/ui/PositioningLayout';
 import { DevOuter } from './DEV.Layout.Outer';
 
-import { PathListStateful } from 'sys.fs/lib/web.ui/PathList';
+import { PathListStateful } from 'sys.fs/lib/ui/PathList';
 
 type SaveTarget = 'Fs.IndexedDb' | 'Download';
 
