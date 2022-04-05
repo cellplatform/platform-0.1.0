@@ -4,8 +4,8 @@ import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
 const Imports = {
   Json: import('./Json/TEST'),
-  JsonBus: import('./JsonBus/TEST'),
-  Patch: import('./Patch/TEST'),
+  JsonBus: import('./Json.Bus/TEST'),
+  JsonPatch: import('./Json.Patch/TEST'),
 };
 
 type Ctx = { results?: TestSuiteRunResponse };

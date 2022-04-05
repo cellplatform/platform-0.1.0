@@ -1,3 +1,4 @@
 export { Json, JsonMap } from '@platform/types';
-export * from './JsonBus/types';
-export * from './Patch/types';
+
+export * from './Json.Bus/types';
+export * from './Json.Patch/types';
