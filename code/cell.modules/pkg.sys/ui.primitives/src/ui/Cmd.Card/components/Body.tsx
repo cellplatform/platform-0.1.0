@@ -1,7 +1,7 @@
 import { domAnimation, LazyMotion, m } from 'framer-motion';
 import React from 'react';
 
-import { R, color, css, CssValue, t, CONST } from '../common';
+import { R, color, css, CssValue, t, constants } from '../common';
 
 type Milliseconds = number;
 
@@ -14,7 +14,7 @@ export type BodyProps = {
 };
 
 export const Body: React.FC<BodyProps> = (props) => {
-  const { FOOTER } = CONST;
+  const { FOOTER } = constants;
   const { state, size } = props;
   const duration = (props.duration ?? 200) / 1000;
 

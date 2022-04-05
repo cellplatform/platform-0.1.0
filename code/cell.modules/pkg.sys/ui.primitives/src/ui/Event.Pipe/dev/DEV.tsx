@@ -2,11 +2,9 @@ import React from 'react';
 import { Observable, Subject } from 'rxjs';
 
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { EventPipe, EventPipeProps, EventPipeConstants, EventPipeTheme } from '..';
+import { EventPipe, EventPipeProps, EventPipeTheme } from '..';
 import { useEventHistory } from '../../Event';
 import { t, rx, time, COLORS } from '../../common';
-
-const CONST = EventPipeConstants;
 
 type Ctx = {
   bus: t.EventBus<any>;
@@ -82,7 +80,7 @@ export const actions = DevActions<Ctx>()
       config
         .view('buttons')
         .title('theme')
-        .items(CONST.THEMES)
+        .items(EventPipe.constants.THEMES)
         .initial(config.ctx.props.theme)
         .pipe((e) => {
           if (e.changing) e.ctx.props.theme = e.changing?.next[0].value;

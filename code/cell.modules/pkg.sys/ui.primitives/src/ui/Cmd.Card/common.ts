@@ -1,5 +1,5 @@
 export * from '../../common';
 
-export const CONST = {
+export const constants = {
   FOOTER: { HEIGHT: 38 },
 };

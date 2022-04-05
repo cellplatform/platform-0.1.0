@@ -27,7 +27,7 @@ export type CmdBarProps = {
  * Constants
  */
 const PARTS: CmdBarPart[] = ['Input', 'Events'];
-export const CmdBarConstants = { PARTS };
+const constants = { PARTS };
 
 /**
  * Component
@@ -144,6 +144,7 @@ export const View: React.FC<CmdBarProps> = (props) => {
  * Export
  */
 type Fields = {
+  constants: typeof constants;
   EventPipe: React.FC<CmdBarEventPipeProps>;
   Events: t.CmdBarEventsFactory;
   State: typeof CmdBarState;
@@ -151,6 +152,7 @@ type Fields = {
 export const CmdBar = FC.decorate<CmdBarProps, Fields>(
   View,
   {
+    constants: constants,
     EventPipe: CmdBarEventPipe,
     Events: CmdBarEvents,
     State: CmdBarState,

@@ -2,7 +2,7 @@ import React from 'react';
 import { NetworkBusMock } from 'sys.runtime.web';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
-import { CmdBar, CmdBarConstants, CmdBarPart, CmdBarProps } from '..';
+import { CmdBar, CmdBarPart, CmdBarProps } from '..';
 import { COLORS, rx, slug, t } from '../common';
 
 type Ctx = {
@@ -108,7 +108,7 @@ export const actions = DevActions<Ctx>()
     e.select((config) =>
       config
         .title('parts:')
-        .items(CmdBarConstants.PARTS)
+        .items(CmdBar.constants.PARTS)
         .initial(undefined)
         .clearable(true)
         .view('buttons')

@@ -1,6 +1,6 @@
 import { domAnimation, LazyMotion, m } from 'framer-motion';
 import React from 'react';
-import { color, css, CssValue } from '../../common';
+import { color, css, CssValue, FC } from '../../common';
 
 type Pixels = number;
 type Color = string | number;
@@ -58,12 +58,12 @@ const DEFAULTS = {
   radius: 1,
   body: DEFAULT_BODY,
 };
-export const BulletConstants = { DEFAULTS };
+const constants = { DEFAULTS };
 
 /**
  * Component
  */
-export const Bullet: React.FC<BulletProps> = (props) => {
+export const View: React.FC<BulletProps> = (props) => {
   const { size = DEFAULTS.size, body = DEFAULTS.body, outer, hover } = props;
   const time = `${body.transition}ms`;
 
@@ -134,3 +134,16 @@ const Util = {
     return typeof value === 'number' ? `blur(${Math.abs(value)}px)` : undefined;
   },
 };
+
+/**
+ * Export
+ */
+
+type Fields = {
+  constants: typeof constants;
+};
+export const Bullet = FC.decorate<BulletProps, Fields>(
+  View,
+  { constants },
+  { displayName: 'Bullet' },
+);

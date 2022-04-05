@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { color, COLORS, css, CssValue, t } from '../common';
-import { TextInput } from '../../ui.ref/text/TextInput';
-import { Icons } from '../Icons';
+
 import { Button } from '../../ui.ref/button/Button';
 import { Spinner } from '../../ui.ref/spinner/Spinner';
+import { TextInput } from '../../ui.ref/text/TextInput';
+import { color, COLORS, css, CssValue, FC, t } from '../common';
+import { Icons } from '../Icons';
 
 /**
  * Types
