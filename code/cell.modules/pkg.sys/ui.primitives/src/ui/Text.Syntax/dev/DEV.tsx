@@ -1,7 +1,8 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
+
 import { TextSyntax, TextSyntaxProps } from '..';
-import { css, COLORS } from '../common';
+import { COLORS, css } from '../common';
 
 type Ctx = {
   props: TextSyntaxProps;
@@ -26,6 +27,7 @@ export const actions = DevActions<Ctx>()
         inlineBlock: true,
         ellipsis: true,
         theme: 'Light',
+        // theme: 'Dark',
       },
       debug: {
         repeat: 1,
@@ -81,6 +83,7 @@ export const actions = DevActions<Ctx>()
     add('{Object}');
     add('[List]');
     add('foo:bar');
+    add('<foo:bar>');
     add('{One} <Two> foo:bar [List]');
     add(
       'Lorem ipsum...(long)',

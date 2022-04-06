@@ -11,9 +11,9 @@ const LIGHT: t.TextSyntaxColors = {
   Word: { Base: COLORS.DARK, Element: COLORS.CYAN },
 };
 const DARK: t.TextSyntaxColors = {
-  Brace: COLORS.MAGENTA,
-  Predicate: COLORS.MAGENTA,
-  Colon: color.alpha(COLORS.WHITE, 0.6),
+  Brace: color.lighten(COLORS.MAGENTA, 10),
+  Predicate: color.lighten(COLORS.MAGENTA, 10),
+  Colon: color.alpha(COLORS.WHITE, 0.8),
   Word: { Base: COLORS.WHITE, Element: COLORS.CYAN },
 };
 

@@ -4,6 +4,8 @@ import { FC, css, Style, t, constants, color, DEFAULT } from './common';
 import { DefaultTokenizer } from './Tokenizer';
 
 import { TextSyntaxProps } from './types';
+import { Util } from './Util';
+
 export { TextSyntaxProps };
 
 /**
@@ -44,7 +46,7 @@ const View: React.FC<TextSyntaxProps> = (props) => {
   };
 
   const elements = tokens.map((token, i) => {
-    const style = { color: color.format(toColor(colors, token)) };
+    const style = { color: color.format(Util.toColor(colors, tokens, i)) };
     return (
       <span key={i} style={style}>
         {token.text}
@@ -54,15 +56,6 @@ const View: React.FC<TextSyntaxProps> = (props) => {
 
   return <div {...css(styles.base, styles.ellipsis, props.style)}>{elements}</div>;
 };
-
-/**
- * [Helpers]
- */
-
-function toColor(colors: t.TextSyntaxColors, token: t.TextSyntaxToken) {
-  if (token.kind === 'Word') return token.within ? colors.Word.Element : colors.Word.Base;
-  return colors[token.kind];
-}
 
 /**
  * Export
