@@ -25,13 +25,8 @@ export type CmdCardInfoState = {
 /**
  * Constants
  */
-const ALL_FIELDS: t.CmdCardStateInfoFields[] = ['Title', 'State', 'State.Controller', 'Version'];
-const DEFAULT_FIELDS: t.CmdCardStateInfoFields[] = [
-  'Title',
-  'State',
-  'State.Controller',
-  'Version',
-];
+const ALL_FIELDS: t.CmdCardStateInfoFields[] = ['Title', 'State.Controller'];
+const DEFAULT_FIELDS: t.CmdCardStateInfoFields[] = ['Title', 'State.Controller'];
 const DEFAULT = {
   title: 'CommandCard Info',
   fields: {
@@ -48,10 +43,6 @@ export const View: React.FC<CmdCardInfoProps> = (props) => {
 
   const title = fields.includes('Title') ? state.title ?? DEFAULT.title : undefined;
   const items = PropList.builder<k.CmdCardStateInfoFields>()
-    .field('State', {
-      label: 'State',
-      value: { data: '{FOO}', monospace: true },
-    })
     .field('State.Controller', {
       label: 'State.Controller',
       value: {
@@ -63,10 +54,6 @@ export const View: React.FC<CmdCardInfoProps> = (props) => {
           props.onStateControllerToggle?.({ from, to });
         },
       },
-    })
-    .field('Version', {
-      label: 'Version',
-      value: { data: '{FOO}', monospace: true },
     })
     .items(fields);
 

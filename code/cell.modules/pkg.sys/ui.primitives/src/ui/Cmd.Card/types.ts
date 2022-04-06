@@ -3,7 +3,7 @@ import * as t from '../../common/types';
 type Id = string;
 
 export type CmdCardInstance = { bus: t.EventBus<any>; id: Id };
-export type CmdCardStateInfoFields = 'Title' | 'Version' | 'State' | 'State.Controller';
+export type CmdCardStateInfoFields = 'Title' | 'State.Controller';
 
 export type CmdCardRender = (props: CmdCardRenderProps) => JSX.Element | null;
 export type CmdCardRenderProps = { size: t.DomRect };

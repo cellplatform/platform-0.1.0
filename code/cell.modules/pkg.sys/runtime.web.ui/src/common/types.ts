@@ -19,7 +19,4 @@ export {
  * @system
  */
 export { PropListItem, PropListValue } from 'sys.ui.primitives/lib/types';
-
-// export * from 'sys.runtime.web/lib/types';
-
 export { WebRuntimeEvents } from 'sys.runtime.web/lib/types';

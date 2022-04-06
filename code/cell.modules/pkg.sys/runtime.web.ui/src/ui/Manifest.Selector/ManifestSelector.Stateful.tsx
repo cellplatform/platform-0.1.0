@@ -3,7 +3,6 @@ import React, { useRef } from 'react';
 import { CssValue, t, rx, slug, DEFAULT, FC } from './common';
 import { ManifestSelector } from './ManifestSelector';
 import { useStateController, useHistoryController } from './hooks';
-import { ModuleInfoFields } from '../ModuleInfo/types';
 import { ManifestSelectorConstants as constants } from './constants';
 
 /**
@@ -17,7 +16,7 @@ export type ManifestSelectorStatefulProps = {
   bus: t.EventBus<any>;
   canDrop?: boolean;
   showExports?: boolean;
-  fields?: ModuleInfoFields[];
+  fields?: t.ModuleInfoFields[];
   history?: boolean | Partial<History>;
   focusOnLoad?: boolean;
   style?: CssValue;

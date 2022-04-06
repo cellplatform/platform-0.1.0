@@ -4,7 +4,7 @@ import { useManifest, useModuleTarget } from './ui/hooks';
 import { ManifestSelector, ManifestSelectorStateful } from './ui/Manifest.Selector';
 import { ManifestSemver } from './ui/Manifest.Semver';
 import { Module } from './ui/Module';
-import { ModuleInfo } from './ui/ModuleInfo';
+import { ModuleInfo } from './ui/Module.Info';
 
 export const WebRuntimeUI = {
   useManifest,

@@ -14,11 +14,11 @@ export { ManifestUrl } from '@platform/cell.schema';
  * @system
  */
 export { Filesystem } from 'sys.fs';
+export { WebRuntimeBus } from 'sys.runtime.web';
 
 export { useDragTarget } from 'sys.ui.primitives/lib/hooks/DragTarget';
 export { Button } from 'sys.ui.primitives/lib/ui.ref/button/Button';
 export { HashChip } from 'sys.ui.primitives/lib/ui/HashChip';
-export { PropList, PropListItem } from 'sys.ui.primitives/lib/ui/PropList';
+export { PropList } from 'sys.ui.primitives/lib/ui/PropList';
 export { Spinner } from 'sys.ui.primitives/lib/ui.ref/spinner/Spinner';
-
-export { WebRuntimeBus } from 'sys.runtime.web';
+export { CmdCard } from 'sys.ui.primitives/lib/ui/Cmd.Card';

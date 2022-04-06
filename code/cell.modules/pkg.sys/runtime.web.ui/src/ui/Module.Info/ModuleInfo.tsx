@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { color, css, CssValue, t, HashChip, PropList, PropListItem } from '../../common';
+import { color, css, CssValue, t, HashChip, PropList } from '../../common';
 import { toPropsList } from './props/toList';
 import * as k from './types';
 import { DEFAULT } from './constants';
@@ -61,7 +61,12 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
     </div>
   );
 
-  const items: PropListItem[] = toPropsList({ url: manifestUrl, manifest, fields, onExportClick });
+  const items: t.PropListItem[] = toPropsList({
+    url: manifestUrl,
+    manifest,
+    fields,
+    onExportClick,
+  });
   const elEmpty = !manifest && <div {...styles.empty}>Module not loaded.</div>;
   const elProps = !elEmpty && (
     <PropList title={elTitle} items={items} defaults={{ clipboard: false }} />

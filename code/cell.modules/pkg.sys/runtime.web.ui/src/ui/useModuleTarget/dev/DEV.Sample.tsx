@@ -3,7 +3,7 @@ import { ObjectView, Test } from 'sys.ui.dev';
 
 import { useModuleTarget } from '..';
 import { Button, color, COLORS, css, CssValue, ManifestUrl, t, WebRuntimeBus } from '../../common';
-import { ModuleInfo } from '../../ModuleInfo';
+import { ModuleInfo } from '../../Module.Info';
 import { useManifest } from '../../useManifest';
 
 type Path = string;

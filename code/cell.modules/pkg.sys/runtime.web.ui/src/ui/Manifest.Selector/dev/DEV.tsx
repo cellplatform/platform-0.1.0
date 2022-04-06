@@ -4,8 +4,8 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { ManifestSelectorStateful, ManifestSelectorStatefulProps } from '..';
 import { rx, t, Button, Filesystem, WebRuntimeBus } from '../common';
 import { DevSampleTarget } from './DEV.SampleTarget';
-import { ModuleInfoStateful, ModuleInfoConstants } from '../../ModuleInfo';
-import { ModuleInfoFields } from '../../ModuleInfo/types';
+import { ModuleInfoStateful, ModuleInfoConstants } from '../../Module.Info';
+import { ModuleInfoFields } from '../../Module.Info/types';
 
 const TARGET = 'foo';
 const { DEFAULT } = ManifestSelectorStateful.constants;
