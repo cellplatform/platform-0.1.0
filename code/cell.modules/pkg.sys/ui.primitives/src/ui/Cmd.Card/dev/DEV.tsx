@@ -30,6 +30,7 @@ type Debug = {
   busKind: 'bus' | 'netbus';
   resetHistory$: Subject<void>;
   showSidebar: boolean;
+  render: boolean;
 };
 
 /**
@@ -112,6 +113,7 @@ export const actions = DevActions<Ctx>()
         },
       },
       debug: {
+        render: true,
         fireCount: 0,
         busKind: 'netbus',
         resetHistory$: new Subject<void>(),
@@ -231,6 +233,11 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Debug');
 
+    e.boolean('render', (e) => {
+      if (e.changing) e.ctx.debug.render = e.changing.next;
+      e.boolean.current = e.ctx.debug.render;
+    });
+
     e.boolean('show sidebar (info)', (e) => {
       if (e.changing) e.ctx.debug.showSidebar = e.changing.next;
       e.boolean.current = e.ctx.debug.showSidebar;
@@ -311,7 +318,7 @@ export const actions = DevActions<Ctx>()
       <DevSidePanel top={elInfo} bottom={elEventList} width={SIDEPANEL.WIDTH} />
     );
 
-    e.render(
+    const el = debug.render && (
       <div {...styles.base}>
         {elSidebar}
         <DevSample
@@ -323,8 +330,10 @@ export const actions = DevActions<Ctx>()
             onChange: e.ctx.state.onChange,
           }}
         />
-      </div>,
+      </div>
     );
+
+    e.render(el);
   });
 
 export default actions;

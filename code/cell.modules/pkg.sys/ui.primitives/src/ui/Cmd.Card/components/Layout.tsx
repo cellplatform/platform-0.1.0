@@ -11,6 +11,7 @@ export type CmdCardLayoutProps = {
   instance: t.CmdCardInstance;
   state: t.CmdCardState;
   borderRadius?: number | string;
+  resize?: t.ResizeObserverHook;
   style?: CssValue;
 };
 
@@ -19,7 +20,7 @@ export type CmdCardLayoutProps = {
  */
 export const CmdCardLayout: React.FC<CmdCardLayoutProps> = (props) => {
   const { instance, state, borderRadius } = props;
-  const resize = useResizeObserver();
+  const resize = useResizeObserver({ root: props.resize });
   const size = resize.rect;
 
   /**

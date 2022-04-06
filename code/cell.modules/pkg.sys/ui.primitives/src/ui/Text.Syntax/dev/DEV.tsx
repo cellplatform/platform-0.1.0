@@ -27,7 +27,6 @@ export const actions = DevActions<Ctx>()
         inlineBlock: true,
         ellipsis: true,
         theme: 'Light',
-        // theme: 'Dark',
       },
       debug: {
         repeat: 1,
