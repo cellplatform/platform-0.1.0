@@ -17,7 +17,6 @@ type Ctx = {
   netbus: t.NetworkBus<any>;
   props: CmdCardProps;
   debug: Debug;
-  size: { width: number; height: number };
   events: t.CmdCardEvents;
   state: {
     current: t.CmdCardState;
@@ -31,6 +30,7 @@ type Debug = {
   resetHistory$: Subject<void>;
   showSidebar: boolean;
   render: boolean;
+  size: { width: number; height: number };
 };
 
 /**
@@ -103,7 +103,7 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       localbus,
       netbus,
-      size: { width: 500, height: 320 },
+
       props: { instance, showAsCard: true },
       events,
       state: {
@@ -118,6 +118,7 @@ export const actions = DevActions<Ctx>()
         busKind: 'netbus',
         resetHistory$: new Subject<void>(),
         showSidebar: true,
+        size: { width: 500, height: 320 },
       },
       info: {
         state: { isControllerEnabled: true },
@@ -248,7 +249,7 @@ export const actions = DevActions<Ctx>()
 
     const size = (width: number, height: number, suffix?: string) => {
       const label = `size: ${width} x ${height}${suffix ?? ''}`;
-      e.button(label, (e) => (e.ctx.size = { width, height }));
+      e.button(label, (e) => (e.ctx.debug.size = { width, height }));
     };
 
     size(200, 100, ' - too small');
@@ -283,14 +284,13 @@ export const actions = DevActions<Ctx>()
 
   .subject((e) => {
     const { debug } = e.ctx;
-    const { width, height } = e.ctx.size;
+    const { width, height } = debug.size;
     const { bus, busKind } = Util.toBus(e.ctx);
     const props = Util.toProps(e.ctx);
     const instance = rx.bus.instance(bus);
 
     const SIDEPANEL = { WIDTH: 230 };
     const showSidebar = debug.showSidebar && width < 600;
-
     const bottomRight = busKind === 'netbus' ? `${instance} (network)` : `${instance} (local)`;
 
     e.settings({

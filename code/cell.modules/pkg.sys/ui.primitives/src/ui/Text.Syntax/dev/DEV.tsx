@@ -77,17 +77,26 @@ export const actions = DevActions<Ctx>()
     };
 
     add('"" (empty)', '');
-    add('my plain text');
+    add('hello, <Component>.');
+    e.hr(1, 0.1);
     add('<Component>');
     add('{Object}');
     add('[List]');
     add('foo:bar');
     add('<foo:bar>');
     add('{One} <Two> foo:bar [List]');
+    e.hr(1, 0.1);
+    add('short: "my plain text."');
     add(
-      'Lorem ipsum...(long)',
+      'long: "Lorem ipsum..."',
       '<Lorem> {ipsum} dolor:sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque.',
     );
+
+    e.hr(1, 0.1);
+    e.boolean('fixed width', (e) => {
+      if (e.changing) e.ctx.debug.fixedWidth = e.changing.next;
+      e.boolean.current = e.ctx.debug.fixedWidth;
+    });
 
     e.hr();
   })
@@ -114,11 +123,6 @@ export const actions = DevActions<Ctx>()
     e.boolean('customColors', (e) => {
       if (e.changing) e.ctx.debug.customColors = e.changing.next;
       e.boolean.current = e.ctx.debug.customColors;
-    });
-
-    e.boolean('fixed width', (e) => {
-      if (e.changing) e.ctx.debug.fixedWidth = e.changing.next;
-      e.boolean.current = e.ctx.debug.fixedWidth;
     });
 
     e.hr();

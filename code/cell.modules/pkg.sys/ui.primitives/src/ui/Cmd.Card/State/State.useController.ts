@@ -10,7 +10,7 @@ export type UseStateControllerArgs = StateControllerArgs & {
 };
 
 /**
- * CommandCard controller state.
+ * <CmdCard> controller state.
  */
 export function useStateController(args: UseStateControllerArgs) {
   const { bus, instance, enabled = true } = args;

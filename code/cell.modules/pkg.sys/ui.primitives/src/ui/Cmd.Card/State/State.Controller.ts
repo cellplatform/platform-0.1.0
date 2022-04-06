@@ -22,11 +22,11 @@ export function StateController(args: StateControllerArgs) {
   const instance = args.instance.id;
   const fire = (e: t.CmdCardEvent) => args.instance.bus.fire(e);
 
-  const card = CmdCardEvents({
+  const events = CmdCardEvents({
     instance: args.instance,
     dispose$: args.dispose$,
   });
-  const { dispose, dispose$ } = card;
+  const { dispose, dispose$ } = events;
 
   /**
    * State.
@@ -54,17 +54,17 @@ export function StateController(args: StateControllerArgs) {
   /**
    * Event Listeners.
    */
-  card.state.$.subscribe(({ value }) => change((prev) => ({ ...prev, ...value })));
+  events.state.$.subscribe(({ value }) => change((prev) => ({ ...prev, ...value })));
   bar.state$.subscribe((bar) => change((prev) => ({ ...prev, commandbar: bar })));
 
   /**
    * API
    */
   const api = {
-    instance: card.instance,
+    instance: events.instance,
     dispose$,
     dispose,
-    state$: card.state$,
+    state$: events.state$,
     get state() {
       return _state;
     },

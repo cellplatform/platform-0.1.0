@@ -18,9 +18,7 @@ export type CmdCardState = {
     render?: CmdCardRender;
     show?: 'FullScreen' | 'CommandBar' | 'Hidden';
   };
-  backdrop: {
-    render?: CmdCardRender;
-  };
+  backdrop: { render?: CmdCardRender };
 };
 
 /**
