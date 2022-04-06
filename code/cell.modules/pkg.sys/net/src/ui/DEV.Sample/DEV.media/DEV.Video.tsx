@@ -8,7 +8,6 @@ import {
   CssValue,
   Icons,
   PropList,
-  PropListItem,
   VideoStream,
   MediaStream,
   Button,
@@ -96,7 +95,7 @@ export const DevVideo: React.FC<DevVideoProps> = (props) => {
     </div>
   );
 
-  const items: PropListItem[] = [
+  const items: t.PropListItem[] = [
     {
       label: 'mic',
       value: {

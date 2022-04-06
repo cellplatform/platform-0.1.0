@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { COLORS, css, Icons, PropListItem, t, time } from '../common';
+import { COLORS, css, Icons, t, time } from '../common';
 import * as k from './types';
 
 export const toItems = (
@@ -13,8 +13,8 @@ export const toItems = (
   const elapsed = time.elapsed(status.createdAt || -1);
   const lifetime = elapsed.sec < 60 ? 'less than a minute' : elapsed.toString();
 
-  const items: PropListItem[] = [];
-  const push = (...input: PropListItem[]) => items.push(...input);
+  const items: t.PropListItem[] = [];
+  const push = (...input: t.PropListItem[]) => items.push(...input);
 
   fields.forEach((field) => {
     if (field === 'PeerId') {

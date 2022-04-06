@@ -8,7 +8,7 @@ export { TextInput } from '@platform/ui.text/lib/components/TextInput';
  */
 export { Hr } from 'sys.ui.primitives/lib/ui/Hr';
 export { Button, ButtonProps } from 'sys.ui.primitives/lib/ui.ref/button/Button';
-export { PropList, PropListItem } from 'sys.ui.primitives/lib/ui/PropList';
+export { PropList } from 'sys.ui.primitives/lib/ui/PropList';
 export { Card } from 'sys.ui.primitives/lib/ui/Card';
 export { List } from 'sys.ui.primitives/lib/ui/List';
 export { Text } from 'sys.ui.primitives/lib/ui/Text';

@@ -11,7 +11,6 @@ import {
   isLocalhost,
   PeerNetwork,
   PropList,
-  PropListItem,
   t,
   Textbox,
   UAParser,
@@ -55,7 +54,7 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
   };
 
   // Derive the remote user-agent device details.
-  const device: PropListItem | undefined = (() => {
+  const device: t.PropListItem | undefined = (() => {
     const text = connection.peer.remote.userAgent;
     if (!text) return undefined;
 
@@ -69,7 +68,7 @@ export const DevDataConnection: React.FC<DevDataConnectionProps> = (props) => {
     };
   })();
 
-  const mainItems: (PropListItem | undefined)[] = [
+  const mainItems: (t.PropListItem | undefined)[] = [
     ...PropUtil.common(connection),
     device,
     {

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Button, css, CssValue, Hr, PropList, PropListItem, t } from '../DEV.common';
+import { Button, css, CssValue, Hr, PropList, t } from '../DEV.common';
 import { DevNetworkConnectionsModal } from '../DEV.network';
 
 /**
@@ -26,7 +26,7 @@ export const DevMediaConnections: React.FC<DevMediaConnectionsProps> = (props) =
     },
   };
 
-  const items: PropListItem[] = connections.map((connection, i) => {
+  const items: t.PropListItem[] = connections.map((connection, i) => {
     return { label: connection.id, value: connection.kind };
   });
 
