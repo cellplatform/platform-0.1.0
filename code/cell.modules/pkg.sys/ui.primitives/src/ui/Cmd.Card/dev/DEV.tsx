@@ -6,7 +6,7 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { CmdCard, CmdCardProps } from '..';
 import { EventList } from '../../Event.List';
 import { css, rx, slug, t } from '../common';
-import { CmdCardInfoProps } from '../components/Info';
+import { CmdCardInfoProps } from '../ui/Info';
 import { defaultState } from '../Util';
 import { SampleRenderer } from './DEV.Renderers';
 import { DevSample } from './DEV.Sample';

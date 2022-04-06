@@ -2,9 +2,9 @@ import React, { useEffect, useRef } from 'react';
 
 import { useEventHistory } from '../Event';
 import { CONSTANTS, css, FC, t } from './common';
-import { DebugBusId } from './components/Debug.BusId';
-import { Empty } from './components/Empty';
-import { EventListLayout as Layout, EventListLayoutProps } from './components/Layout';
+import { DebugBusId } from './ui/Debug.BusId';
+import { Empty } from './ui/Empty';
+import { EventListLayout as Layout, EventListLayoutProps } from './ui/Layout';
 import { EventListEvents as Events } from './Events';
 import { EventListProps } from './types';
 import { Util } from './Util';
