@@ -91,7 +91,7 @@ export const actions = DevActions<Ctx>()
 
     const localbus = rx.bus();
     const netbus = NetworkBusMock({ local: 'local-id', remotes: ['peer-1', 'peer-2'] });
-    const instance: t.CmdCardInstance = { bus: localbus, id: `foo.${slug()}` };
+    const instance: t.CmdCardInstance = { bus: rx.bus(), id: `foo.${slug()}` };
 
     const initial = defaultState({
       body: { render: SampleRenderer.body },
@@ -291,7 +291,7 @@ export const actions = DevActions<Ctx>()
 
     const SIDEPANEL = { WIDTH: 230 };
     const showSidebar = debug.showSidebar && width < 600;
-    const bottomRight = busKind === 'netbus' ? `${instance} (network)` : `${instance} (local)`;
+    const bottomRight = busKind === 'netbus' ? `${instance}` : `${instance} (local)`;
 
     e.settings({
       host: { background: -0.04 },
