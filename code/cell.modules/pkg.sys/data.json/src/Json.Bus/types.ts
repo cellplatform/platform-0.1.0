@@ -1,6 +1,6 @@
 import * as t from '../common/types';
 
-type J = Record<string, unknown>;
+type O = Record<string, unknown>;
 type Id = string;
 type Milliseconds = number;
 type KeyPath = string;
@@ -8,12 +8,13 @@ type Semver = string;
 
 export type JsonBusInstance = { bus: t.EventBus<any>; id: Id };
 export type JsonEventFilter = (e: t.JsonEvent) => boolean;
-export type JsonStateChange<T extends J = J> = {
+export type JsonStateChange<T extends O = O> = {
   key: KeyPath;
   op: t.PatchOperationKind;
   value: T;
 };
-export type JsonStateMutator<T extends J = J> = (prev: T) => any | Promise<any>;
+export type JsonMutation<T extends O = O> = (prev: T, ctx: JsonMutationCtx) => any | Promise<any>;
+export type JsonMutationCtx = t.PatchMutationCtx;
 
 /**
  * Module Status Info
@@ -33,7 +34,7 @@ export type JsonEvents = t.Disposable & {
   is: { base(input: any): boolean };
   info: JsonEventsInfo;
   state: JsonEventsState;
-  json<T extends J = J>(options?: JsonStateOptions<T>): JsonState<T>;
+  json<T extends O = O>(options?: JsonStateOptions<T>): JsonState<T>;
 };
 
 export type JsonEventsInfo = {
@@ -49,7 +50,7 @@ export type JsonEventsState = {
   get: {
     req$: t.Observable<JsonStateGetReq>;
     res$: t.Observable<JsonStateGetRes>;
-    fire<T extends J = J>(options?: {
+    fire<T extends O = O>(options?: {
       tx?: Id;
       timeout?: Milliseconds;
       key?: KeyPath;
@@ -59,7 +60,7 @@ export type JsonEventsState = {
   put: {
     req$: t.Observable<JsonStatePutReq>;
     res$: t.Observable<JsonStatePutRes>;
-    fire<T extends J = J>(
+    fire<T extends O = O>(
       value: T,
       options?: { tx?: Id; timeout?: Milliseconds; key?: KeyPath },
     ): Promise<JsonStatePutRes>;
@@ -67,8 +68,8 @@ export type JsonEventsState = {
   patch: {
     req$: t.Observable<JsonStatePatchReq>;
     res$: t.Observable<JsonStatePatchRes>;
-    fire<T extends J = J>(
-      fn: JsonStateMutator<T>,
+    fire<T extends O = O>(
+      fn: JsonMutation<T>,
       options?: { tx?: Id; timeout?: Milliseconds; key?: KeyPath; initial?: T | (() => T) },
     ): Promise<JsonStatePatchRes>;
   };
@@ -77,21 +78,22 @@ export type JsonEventsState = {
 /**
  * JSON (a key-pathed API into a document).
  */
-export type JsonStateOptions<T extends J> = {
+export type JsonStateOptions<T extends O> = {
   key?: KeyPath;
   timeout?: Milliseconds;
   initial?: T | (() => T);
 };
-export type JsonState<T extends J = J> = {
+export type JsonState<T extends O = O> = {
   $: t.Observable<t.JsonStateChange<T>>;
   get(options?: { timeout?: Milliseconds }): Promise<JsonStateGetRes<T>>;
   put(value: T, options?: { timeout?: Milliseconds }): Promise<JsonStatePutRes>;
-  patch(fn: JsonStateMutator<T>, options?: { timeout?: Milliseconds }): Promise<JsonStatePatchRes>;
-  lens<L extends J = J>(target: (root: T) => L): JsonStateLens<L>;
+  patch(fn: JsonMutation<T>, options?: { timeout?: Milliseconds }): Promise<JsonStatePatchRes>;
+  lens<L extends O = O>(target: (root: T) => L): JsonLens<L>;
 };
-export type JsonStateLens<L extends J = J> = {
+
+export type JsonLens<L extends O = O> = {
   get(options?: { timeout?: Milliseconds }): Promise<L>;
-  patch(fn: JsonStateMutator<L>, options?: { timeout?: Milliseconds }): Promise<void>;
+  patch(fn: JsonMutation<L>, options?: { timeout?: Milliseconds }): Promise<void>;
 };
 
 /**
@@ -137,11 +139,11 @@ export type JsonStateGetReqEvent = {
 };
 export type JsonStateGetReq = { instance: Id; tx: Id; key: string };
 
-export type JsonStateGetResEvent<T extends J = J> = {
+export type JsonStateGetResEvent<T extends O = O> = {
   type: 'sys.json/state.get:res';
   payload: JsonStateGetRes<T>;
 };
-export type JsonStateGetRes<T extends J = J> = {
+export type JsonStateGetRes<T extends O = O> = {
   instance: Id;
   tx: Id;
   key: KeyPath;
@@ -152,11 +154,11 @@ export type JsonStateGetRes<T extends J = J> = {
 /**
  * PUT: update/overwrite the current state.
  */
-export type JsonStatePutReqEvent<T extends J = J> = {
+export type JsonStatePutReqEvent<T extends O = O> = {
   type: 'sys.json/state.put:req';
   payload: JsonStatePutReq<T>;
 };
-export type JsonStatePutReq<T extends J = J> = { instance: Id; tx: Id; key: KeyPath; value: T };
+export type JsonStatePutReq<T extends O = O> = { instance: Id; tx: Id; key: KeyPath; value: T };
 
 export type JsonStatePutResEvent = {
   type: 'sys.json/state.put:res';

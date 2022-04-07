@@ -3,8 +3,11 @@ import * as t from '../common/types';
 type O = Record<string, unknown>;
 
 export type PatchOperationKind = 'update' | 'replace';
-export type PatchChanger<T extends O> = (draft: T) => void;
-export type PatchChangerAsync<T extends O> = (draft: T) => Promise<void>;
+export type PatchMutation<T extends O> = (draft: T, ctx: PatchMutationCtx) => void;
+export type PatchMutationAsync<T extends O> = (draft: T, ctx: PatchMutationCtx) => Promise<void>;
+export type PatchMutationCtx = {
+  toObject<T extends O>(input: any): T;
+};
 
 /**
  * Inline copy of the `immer` Patch type.
@@ -21,8 +24,8 @@ export type Patch = {
   toObject<T extends O>(input: any): T;
   toPatchSet(forward?: A | A[], backward?: A | A[]): t.PatchSet;
   isEmpty(patches: t.PatchSet): boolean;
-  change<T extends O>(from: T, fn: t.PatchChanger<T> | T): t.PatchChange<T>;
-  changeAsync<T extends O>(from: T, fn: t.PatchChangerAsync<T>): Promise<t.PatchChange<T>>;
+  change<T extends O>(from: T, fn: t.PatchMutation<T> | T): t.PatchChange<T>;
+  changeAsync<T extends O>(from: T, fn: t.PatchMutationAsync<T>): Promise<t.PatchChange<T>>;
   apply<T extends O>(from: T, patches: t.PatchOperation[] | t.PatchSet): T;
 };
 

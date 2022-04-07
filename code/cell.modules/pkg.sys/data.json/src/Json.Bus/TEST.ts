@@ -1,6 +1,6 @@
 import { JsonBus } from '.';
 import { expect, pkg, rx, slug, t, Test, time, expectError } from '../test';
-import { DEFAULT } from './common';
+import { DEFAULT, Patch } from './common';
 
 const Setup = {
   instance: (): t.JsonBusInstance => ({ bus: rx.bus(), id: `foo.${slug()}` }),
@@ -158,7 +158,7 @@ export default Test.describe('JsonBus', (e) => {
         const { dispose, events, instance } = Setup.controller();
 
         await events.state.put.fire<T>({ count: 123 });
-        const res = await events.state.patch.fire<T>((prev) => prev.count++);
+        const res = await events.state.patch.fire<T>((prev, ctx) => prev.count++);
 
         expect(res.key).to.eql(DEFAULT.KEY);
         expect(res.instance).to.eql(instance.id);
@@ -269,18 +269,13 @@ export default Test.describe('JsonBus', (e) => {
         await events.state.put.fire<T>({ count: 1 });
 
         const res1 = await events.json<T>().patch((prev) => prev.count++);
-        const res2 = await events.json<T>({ key, initial }).patch((prev) => prev.count--);
+        const res2 = await events.json<T>({ key, initial }).patch((prev, ctx) => prev.count--);
 
         expect(res1.key).to.eql(DEFAULT.KEY);
         expect(res2.key).to.eql(key);
 
         expect((await events.state.get.fire()).value).to.eql({ count: 2 });
         expect((await events.state.get.fire({ key })).value).to.eql({ count: 9 });
-
-        events.json<T>().patch((prev) => {
-          console.log('prev', prev);
-          prev.count++;
-        });
 
         dispose();
       });
@@ -368,7 +363,7 @@ export default Test.describe('JsonBus', (e) => {
       });
     });
 
-    e.describe.only('json.lens (method)', (e) => {
+    e.describe('json.lens (method)', (e) => {
       type T = { child: { count: number } };
 
       e.describe('lens.get', (e) => {
@@ -405,11 +400,8 @@ export default Test.describe('JsonBus', (e) => {
           const initial: T = { child: { count: 0 } };
 
           const lens = events.json<T>({ initial }).lens((root) => root.child);
-          await lens.patch((target) => (target.count += 5));
+          await lens.patch((target, ctx) => (target.count += 5));
 
-          const res = await lens.get();
-          console.log('-------------------------------------------');
-          console.log('res', res);
           expect(await lens.get()).to.eql({ count: 5 });
           dispose();
         });

@@ -21,4 +21,4 @@ export { IIcon } from '@platform/ui.icon/lib/types';
  */
 export { WebRuntimeEvents } from 'sys.runtime.web/lib/types';
 export { UseManifestHook } from 'sys.runtime.web.ui/lib/types';
-export { JsonState } from 'sys.data.json/lib/types';
+export { JsonState, JsonLens, JsonMutation } from 'sys.data.json/lib/types';

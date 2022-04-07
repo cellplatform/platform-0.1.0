@@ -15,6 +15,15 @@ type O = Record<string, unknown>;
 if (typeof enablePatches === 'function') enablePatches();
 
 /**
+ * Convert a draft (proxied instance) object into a simple object.
+ *
+ * See: https://immerjs.github.io/immer/docs/original
+ */
+function toObject<T extends O>(input: any): T {
+  return isDraft(input) ? (original<T>(input) as T) : input;
+}
+
+/**
  * Patch
  * Standard:
  *    RFC-6902 JSON patch standard
@@ -25,14 +34,7 @@ if (typeof enablePatches === 'function') enablePatches();
  *
  */
 export const Patch: t.Patch = {
-  /**
-   * Convert a draft (proxied instance) object into a simple object.
-   *
-   * See: https://immerjs.github.io/immer/docs/original
-   */
-  toObject<T extends O>(input: any) {
-    return isDraft(input) ? (original<T>(input) as T) : input;
-  },
+  toObject,
 
   toPatchSet(forward, backward) {
     return {
@@ -47,10 +49,11 @@ export const Patch: t.Patch = {
       : isEmptyArray(input.prev) && isEmptyArray(input.next);
   },
 
-  change<T extends O>(from: T, fn: t.PatchChanger<T> | T) {
+  change<T extends O>(from: T, fn: t.PatchMutation<T> | T) {
     if (typeof fn === 'function') {
       const [to, forward, backward] = produceWithPatches<T>(from, (draft) => {
-        fn(draft as T);
+        const ctx: t.PatchMutationCtx = { toObject };
+        fn(draft as T, ctx);
         return undefined; // NB: No return value (to prevent replacement).
       });
       const patches = Patch.toPatchSet(forward, backward);
@@ -64,9 +67,10 @@ export const Patch: t.Patch = {
     }
   },
 
-  async changeAsync<T extends O>(from: T, fn: t.PatchChangerAsync<T>) {
+  async changeAsync<T extends O>(from: T, fn: t.PatchMutationAsync<T>) {
     const draft = createDraft(from) as T;
-    await fn(draft);
+    const ctx: t.PatchMutationCtx = { toObject };
+    await fn(draft, ctx);
 
     let patches: t.PatchSet = { prev: [], next: [] };
     const to = finishDraft(draft, (next, prev) => (patches = Patch.toPatchSet(next, prev))) as T;

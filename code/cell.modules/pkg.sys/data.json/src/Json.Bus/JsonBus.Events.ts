@@ -1,4 +1,3 @@
-import { ROBOTO } from '@platform/ui.text';
 import { map, filter, takeUntil } from 'rxjs/operators';
 import { rx, slug, t, DEFAULT, Patch } from './common';
 
@@ -6,6 +5,8 @@ type J = Record<string, unknown>;
 type Id = string;
 type Milliseconds = number;
 type KeyPath = string;
+
+const { toObject } = Patch;
 
 /**
  * Event API
@@ -144,7 +145,7 @@ export function JsonBusEvents(args: {
     req$: rx.payload<t.JsonStatePatchReqEvent>($, 'sys.json/state.patch:req'),
     res$: rx.payload<t.JsonStatePatchResEvent>($, 'sys.json/state.patch:res'),
     async fire<T extends J = J>(
-      fn: t.JsonStateMutator<T>,
+      fn: t.JsonMutation<T>,
       options: { tx?: Id; timeout?: Milliseconds; key?: KeyPath; initial?: T | (() => T) } = {},
     ): Promise<t.JsonStatePatchRes> {
       const { timeout = DEFAULT.TIMEOUT, key = DEFAULT.KEY, tx = slug(), initial } = options;
@@ -192,7 +193,7 @@ export function JsonBusEvents(args: {
     root: t.JsonState<R>;
     target: (root: R) => L;
     timeout?: Milliseconds;
-  }): t.JsonStateLens<L> {
+  }): t.JsonLens<L> {
     type O = { timeout?: Milliseconds };
     const asTimeout = (options: O) => options.timeout ?? args.timeout ?? DEFAULT.TIMEOUT;
     const nil = (value: any) => typeof value !== 'object' || value === null;
@@ -206,7 +207,7 @@ export function JsonBusEvents(args: {
       },
     };
 
-    const lens: t.JsonStateLens<L> = {
+    const lens: t.JsonLens<L> = {
       async get(options = {}) {
         const timeout = asTimeout(options);
 
@@ -222,10 +223,11 @@ export function JsonBusEvents(args: {
       async patch(fn, options = {}) {
         const timeout = asTimeout(options);
         await lens.get({ ...options, timeout }); // NB: Ensure root and target objects area available.
-        const handler: t.JsonStateMutator<R> = (root) => {
+        const handler: t.JsonMutation<R> = (root) => {
           const target = args.target(root);
           ThrowIf.noTarget(target);
-          fn(target);
+          const ctx: t.JsonMutationCtx = { toObject };
+          fn(target, ctx);
         };
         const { error } = await args.root.patch(handler, { ...options, timeout });
         if (error) throw new Error(error);

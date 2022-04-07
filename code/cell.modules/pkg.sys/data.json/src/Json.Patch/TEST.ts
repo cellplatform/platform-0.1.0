@@ -117,7 +117,7 @@ export default Test.describe('Patch', (e) => {
     });
   });
 
-  e.describe('change (aka "produce")', (e) => {
+  e.describe('change (aka "produce" patches)', (e) => {
     e.it('change (op: "update" change)', () => {
       const obj = { msg: 'hello', child: { foo: [123] } };
 
@@ -162,6 +162,18 @@ export default Test.describe('Patch', (e) => {
       expect(res.op).to.eql('update');
       expect(res.patches.prev.map((c) => c.path)).to.eql(['child/foo/length', 'msg']);
       expect(res.patches.next.map((c) => c.path)).to.eql(['child/foo/1', 'msg']);
+    });
+
+    e.it('ctx parameter - { toObject }', async () => {
+      const obj = {};
+
+      Patch.change(obj, async (draft, ctx) => {
+        expect(ctx.toObject).to.equal(Patch.toObject);
+      });
+
+      await Patch.changeAsync(obj, async (draft, ctx) => {
+        expect(ctx.toObject).to.equal(Patch.toObject);
+      });
     });
   });
 
