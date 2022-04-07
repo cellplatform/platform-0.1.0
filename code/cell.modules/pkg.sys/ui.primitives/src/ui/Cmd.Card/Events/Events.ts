@@ -1,7 +1,6 @@
 import { filter, takeUntil, map } from 'rxjs/operators';
 
-import { rx, t, Json } from '../common';
-import { Util } from './Util';
+import { rx, t, Json, Util } from '../common';
 
 type S = t.CmdCardState;
 
@@ -29,7 +28,7 @@ export const CmdCardEvents: t.CmdCardEventsFactory = (args) => {
   /**
    * API
    */
-  const api: t.CmdCardEvents = {
+  const api: t.CmdCardEventsDisposable = {
     instance: events.instance,
     $,
     dispose,

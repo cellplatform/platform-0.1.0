@@ -1,35 +1,21 @@
 import React from 'react';
 
 import { CmdCard, CmdCardProps } from '..';
-import { t } from '../common';
+import { useSampleState, UseSampleStateArgs } from './DEV.Sample.State';
 
 export type DevSampleProps = {
-  bus: t.EventBus<any>;
   props: CmdCardProps;
-  state: {
-    initial: t.CmdCardState;
-    isControllerEnabled?: boolean;
-    onChange?: (e: t.CmdCardState) => void;
-  };
+  useSampleState: UseSampleStateArgs;
 };
 
 export const DevSample: React.FC<DevSampleProps> = (args) => {
-  const { props, bus } = args;
-  const { instance } = props;
+  /**
+   * State
+   */
+  const controller = useSampleState(args.props.instance, args.useSampleState);
 
   /**
-   * [State]
+   * Component.
    */
-  const { state } = CmdCard.State.useController({
-    bus,
-    instance,
-    initial: args.state.initial,
-    enabled: args.state.isControllerEnabled,
-    onChange: args.state.onChange,
-  });
-
-  /**
-   * [Render]
-   */
-  return <CmdCard {...props} state={state} style={{ flex: 1 }} />;
+  return <CmdCard {...args.props} state={controller.state} style={{ flex: 1 }} />;
 };

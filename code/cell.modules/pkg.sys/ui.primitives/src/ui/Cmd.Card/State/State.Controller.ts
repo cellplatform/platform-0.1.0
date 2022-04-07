@@ -1,9 +1,8 @@
 import { Observable } from 'rxjs';
 
 import { CmdBarState } from '../../Cmd.Bar/State';
-import { Json, t } from '../common';
+import { Json, t, Util } from '../common';
 import { CmdCardEvents } from '../Events';
-import { Util } from '../Util';
 
 type S = t.CmdCardState;
 

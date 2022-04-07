@@ -1,13 +1,12 @@
 import React from 'react';
 
-import { FC, t, CssValue, css, constants, useResizeObserver } from './common';
+import { FC, t, CssValue, css, constants, useResizeObserver, Util } from './common';
 import { CmdCardLayout as Layout, CmdCardLayoutProps } from './ui/Layout';
 import { CmdCardEvents as Events } from './Events';
 import { CmdStateInfo } from './ui/Info';
 
 import { State } from './State';
 import { Card } from '../Card';
-import { Util } from './Util';
 
 /**
  * Types

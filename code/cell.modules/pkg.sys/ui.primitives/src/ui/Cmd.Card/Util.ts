@@ -1,20 +1,32 @@
-import { t, R } from './common';
-
-/**
- * Genrate a new "default state" object.
- */
-export function defaultState(partial?: t.PartialDeep<t.CmdCardState>): t.CmdCardState {
-  const state: t.CmdCardState = {
-    commandbar: {},
-    backdrop: {},
-    body: { show: 'CommandBar' },
-  };
-  return partial ? R.mergeDeepRight(state, partial as any) : state;
-}
+import { rx, t, R } from '../../common';
 
 /**
  * [Helpers]
  */
 export const Util = {
-  defaultState,
+  renderNull() {
+    return null;
+  },
+
+  /**
+   * Genrate a new "default state" object.
+   */
+  defaultState(partial?: t.PartialDeep<t.CmdCardState>): t.CmdCardState {
+    const render = Util.renderNull;
+    const state: t.CmdCardState = {
+      commandbar: {},
+      backdrop: { render, state: {} },
+      body: { render, state: {}, show: 'CommandBar' },
+    };
+    return partial ? R.mergeDeepRight(state, partial as any) : state;
+  },
+
+  instance: {
+    /**
+     * Compare instance details.
+     */
+    changed(prev: t.CmdCardInstance, next: t.CmdCardInstance) {
+      return rx.bus.instance(prev.bus) !== rx.bus.instance(next.bus) || prev.id !== next.id;
+    },
+  },
 };

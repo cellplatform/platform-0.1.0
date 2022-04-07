@@ -2,26 +2,29 @@ import { domAnimation, LazyMotion, m } from 'framer-motion';
 import React from 'react';
 
 import { R, color, css, CssValue, t, constants } from '../common';
+import { useRenderPart } from '../hooks';
+import { Util } from '../Util';
 
 type Milliseconds = number;
 
 export type BodyProps = {
   instance: t.CmdCardInstance;
-  state: t.CmdCardState;
   size: t.DomRect;
+  state: t.CmdCardState;
   duration?: Milliseconds;
   style?: CssValue;
 };
 
 export const Body: React.FC<BodyProps> = (props) => {
   const { FOOTER } = constants;
-  const { state, size } = props;
+  const { instance, state, size } = props;
   const duration = (props.duration ?? 200) / 1000;
 
+  const y = state.body.isOpen ? 0 - (size.height - FOOTER.HEIGHT) : 0;
   const { show = 'CommandBar' } = state.body;
   console.log('show', show);
 
-  const y = state.body.isOpen ? 0 - (size.height - FOOTER.HEIGHT) : 0;
+  const content = useRenderPart('Body', { instance, size, state });
 
   /**
    * [Render]
@@ -40,13 +43,12 @@ export const Body: React.FC<BodyProps> = (props) => {
   /**
    * Body content.
    */
-  const elContent = state.body.render?.({ size });
 
   return (
     <LazyMotion features={domAnimation}>
       <m.div {...css(styles.base, props.style)}>
         <m.div animate={{ y }} transition={{ duration }} {...styles.inner}>
-          {elContent}
+          {content.render()}
         </m.div>
       </m.div>
     </LazyMotion>
@@ -57,6 +59,7 @@ export const Body: React.FC<BodyProps> = (props) => {
  * [Memoized]
  */
 export const BodyMemo = React.memo(Body, (prev, next) => {
+  if (Util.instance.changed(prev.instance, next.instance)) return false;
   if (!R.equals(prev.size, next.size)) return false;
   if (!R.equals(prev.state.body, next.state.body)) return false;
   return true;

@@ -1,7 +1,6 @@
 import { Test, expect } from 'sys.ui.dev';
 import { CmdCard } from '.';
-import { t, rx, slug } from './common';
-import { Util } from './Util';
+import { t, rx, slug, Util } from './common';
 
 const Setup = {
   instance: (): t.CmdCardInstance => ({ bus: rx.bus(), id: `foo.${slug()}` }),
