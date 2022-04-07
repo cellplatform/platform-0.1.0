@@ -7,7 +7,9 @@ import { expect } from './libs';
  *
  *        it('should throw', () =>
  *            expectError(async () => {
- *              ! ...code that throws here...
+ *
+ *                 <...code that throws here...>
+ *
  *          }, 'my error message'));
  *
  */
