@@ -1,3 +1,4 @@
+import { ROBOTO } from '@platform/ui.text';
 import { map, filter, takeUntil } from 'rxjs/operators';
 import { rx, slug, t, DEFAULT, Patch } from './common';
 
@@ -185,17 +186,69 @@ export function JsonBusEvents(args: {
   const state: t.JsonEventsState = { get, put, patch };
 
   /**
+   * A lens into a sub-set of the object.
+   */
+  function toLens<R extends J, L extends J>(args: {
+    root: t.JsonState<R>;
+    target: (root: R) => L;
+    timeout?: Milliseconds;
+  }): t.JsonStateLens<L> {
+    type O = { timeout?: Milliseconds };
+    const asTimeout = (options: O) => options.timeout ?? args.timeout ?? DEFAULT.TIMEOUT;
+    const nil = (value: any) => typeof value !== 'object' || value === null;
+
+    const ThrowIf = {
+      noRoot(root?: any) {
+        if (nil(root)) throw new Error(`Lens root object could not be derived`);
+      },
+      noTarget(target?: any) {
+        if (nil(target)) throw new Error(`Lens target child could not be derived from the root`);
+      },
+    };
+
+    const lens: t.JsonStateLens<L> = {
+      async get(options = {}) {
+        const timeout = asTimeout(options);
+
+        const root = (await args.root.get({ ...options, timeout })).value as R;
+        ThrowIf.noRoot(root);
+
+        const target = args.target(root);
+        ThrowIf.noTarget(target);
+
+        return target;
+      },
+
+      async patch(fn, options = {}) {
+        const timeout = asTimeout(options);
+        await lens.get({ ...options, timeout }); // NB: Ensure root and target objects area available.
+        const handler: t.JsonStateMutator<R> = (root) => {
+          const target = args.target(root);
+          ThrowIf.noTarget(target);
+          fn(target);
+        };
+        const { error } = await args.root.patch(handler, { ...options, timeout });
+        if (error) throw new Error(error);
+      },
+    };
+
+    return lens;
+  }
+
+  /**
    * JSON (key-pathed convenience method).
    */
   const json = <T extends J = J>(args: t.JsonStateOptions<T> = {}): t.JsonState<T> => {
     type O = { timeout?: Milliseconds };
     const asTimeout = (options: O) => options.timeout ?? args.timeout ?? DEFAULT.TIMEOUT;
     const { key = DEFAULT.KEY, initial } = args;
+
     const $ = changed$.pipe(
       filter((e) => e.key === key),
       map((e) => e as t.JsonStateChange<T>),
     );
-    return {
+
+    const root: t.JsonState<T> = {
       $,
       get(options = {}) {
         const timeout = asTimeout(options);
@@ -209,7 +262,13 @@ export function JsonBusEvents(args: {
         const timeout = asTimeout(options);
         return patch.fire<T>(fn, { key, timeout, initial });
       },
+      lens<L extends J = J>(target: (root: T) => L) {
+        const timeout = asTimeout({});
+        return toLens<T, L>({ root, target, timeout });
+      },
     };
+
+    return root;
   };
 
   /**

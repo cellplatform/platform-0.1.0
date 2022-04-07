@@ -15,6 +15,9 @@ export type JsonStateChange<T extends J = J> = {
 };
 export type JsonStateMutator<T extends J = J> = (prev: T) => any | Promise<any>;
 
+/**
+ * Module Status Info
+ */
 export type JsonInfo = {
   module: { name: string; version: Semver };
   keys: string[];
@@ -72,7 +75,7 @@ export type JsonEventsState = {
 };
 
 /**
- * JSON (key-pathed convenience method).
+ * JSON (a key-pathed API into a document).
  */
 export type JsonStateOptions<T extends J> = {
   key?: KeyPath;
@@ -84,6 +87,11 @@ export type JsonState<T extends J = J> = {
   get(options?: { timeout?: Milliseconds }): Promise<JsonStateGetRes<T>>;
   put(value: T, options?: { timeout?: Milliseconds }): Promise<JsonStatePutRes>;
   patch(fn: JsonStateMutator<T>, options?: { timeout?: Milliseconds }): Promise<JsonStatePatchRes>;
+  lens<L extends J = J>(target: (root: T) => L): JsonStateLens<L>;
+};
+export type JsonStateLens<L extends J = J> = {
+  get(options?: { timeout?: Milliseconds }): Promise<L>;
+  patch(fn: JsonStateMutator<L>, options?: { timeout?: Milliseconds }): Promise<void>;
 };
 
 /**
