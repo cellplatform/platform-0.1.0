@@ -59,7 +59,7 @@ export const Body: React.FC<BodyProps> = (props) => {
  * [Memoized]
  */
 export const BodyMemo = React.memo(Body, (prev, next) => {
-  if (Util.instance.changed(prev.instance, next.instance)) return false;
+  if (Util.instance.isChanged(prev.instance, next.instance)) return false;
   if (!R.equals(prev.size, next.size)) return false;
   if (!R.equals(prev.state.body, next.state.body)) return false;
   return true;

@@ -1,5 +1,7 @@
 import { rx, t, R } from '../../common';
 
+type O = Record<string, unknown>;
+
 /**
  * [Helpers]
  */
@@ -15,8 +17,15 @@ export const Util = {
     const render = Util.renderNull;
     const state: t.CmdCardState = {
       commandbar: {},
-      backdrop: { render, state: {} },
-      body: { render, state: {}, show: 'CommandBar' },
+      backdrop: {
+        render,
+        state: {},
+      },
+      body: {
+        render,
+        state: {},
+        show: 'CommandBar',
+      },
     };
     return partial ? R.mergeDeepRight(state, partial as any) : state;
   },
@@ -25,7 +34,7 @@ export const Util = {
     /**
      * Compare instance details.
      */
-    changed(prev: t.CmdCardInstance, next: t.CmdCardInstance) {
+    isChanged(prev: t.CmdCardInstance, next: t.CmdCardInstance) {
       return rx.bus.instance(prev.bus) !== rx.bus.instance(next.bus) || prev.id !== next.id;
     },
   },

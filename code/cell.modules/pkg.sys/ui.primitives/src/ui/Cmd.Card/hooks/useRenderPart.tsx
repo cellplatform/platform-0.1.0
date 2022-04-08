@@ -21,7 +21,7 @@ export function useRenderPart<S extends O = O>(
   const { instance, state, size } = args;
   const { bus } = instance;
   const busid = rx.bus.instance(instance.bus);
-  const cardRef = useRef<undefined | t.CmdCardEventsDisposable>();
+  const cardRef = useRef<undefined | t.CmdCardEvents>();
 
   useEffect(() => {
     return () => {

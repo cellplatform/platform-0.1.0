@@ -2,12 +2,19 @@ import { filter, takeUntil, map } from 'rxjs/operators';
 
 import { rx, t, Json, Util } from '../common';
 
+type O = Record<string, unknown>;
 type S = t.CmdCardState;
+
+export type CmdCardEventsArgs<A extends O, B extends O> = {
+  instance: t.CmdCardInstance;
+  dispose$?: t.Observable<any>;
+  initial?: t.CmdCardState<A, B> | (() => t.CmdCardState<A, B>);
+};
 
 /**
  * Event API
  */
-export const CmdCardEvents: t.CmdCardEventsFactory = (args) => {
+export function CmdCardEvents<A extends O = any, B extends O = any>(args: CmdCardEventsArgs<A, B>) {
   const { dispose, dispose$ } = rx.disposable(args.dispose$);
 
   const instance = args.instance.id;
@@ -28,7 +35,7 @@ export const CmdCardEvents: t.CmdCardEventsFactory = (args) => {
   /**
    * API
    */
-  const api: t.CmdCardEventsDisposable = {
+  const api: t.CmdCardEvents = {
     instance: events.instance,
     $,
     dispose,
@@ -37,4 +44,4 @@ export const CmdCardEvents: t.CmdCardEventsFactory = (args) => {
     state$,
   };
   return api;
-};
+}

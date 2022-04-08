@@ -54,7 +54,7 @@ export const Backdrop: React.FC<BackdropProps> = (props) => {
  * [Memoized]
  */
 export const BackdropMemo = React.memo(Backdrop, (prev, next) => {
-  if (Util.instance.changed(prev.instance, next.instance)) return false;
+  if (Util.instance.isChanged(prev.instance, next.instance)) return false;
   if (!R.equals(prev.size, next.size)) return false;
   if (!R.equals(prev.state.backdrop, next.state.backdrop)) return false;
   if (CmdBar.State.changed(prev.state.commandbar, next.state.commandbar)) return false;

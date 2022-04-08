@@ -4,7 +4,15 @@ export * from '../types';
 /**
  * @platform
  */
-export { EventBus, Event, DomRect, PartialDeep, Disposable, LazyBool } from '@platform/types';
+export {
+  EventBus,
+  Event,
+  DomRect,
+  PartialDeep,
+  Disposable,
+  LazyBool,
+  JsonMap,
+} from '@platform/types';
 export {
   IHttpClientCellFileUpload,
   ManifestUrl,

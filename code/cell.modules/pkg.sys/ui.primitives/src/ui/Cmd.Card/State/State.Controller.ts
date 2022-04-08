@@ -4,6 +4,7 @@ import { CmdBarState } from '../../Cmd.Bar/State';
 import { Json, t, Util } from '../common';
 import { CmdCardEvents } from '../Events';
 
+type O = Record<string, unknown>;
 type S = t.CmdCardState;
 
 export type StateControllerArgs = {
@@ -16,12 +17,12 @@ export type StateControllerArgs = {
 /**
  * State controller for the <CmdCard>.
  */
-export function StateController(args: StateControllerArgs) {
+export function StateController<A extends O = any, B extends O = any>(args: StateControllerArgs) {
   const { bus } = args;
   const instance = args.instance.id;
   const fire = (e: t.CmdCardEvent) => args.instance.bus.fire(e);
 
-  const events = CmdCardEvents({
+  const events = CmdCardEvents<A, B>({
     instance: args.instance,
     dispose$: args.dispose$,
   });

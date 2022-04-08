@@ -62,7 +62,7 @@ const View: React.FC<CmdCardProps> = (props) => {
 type Fields = {
   constants: typeof constants;
   Layout: React.FC<CmdCardLayoutProps>;
-  Events: t.CmdCardEventsFactory;
+  Events: typeof Events;
   State: typeof State;
   Info: typeof CmdStateInfo;
 };

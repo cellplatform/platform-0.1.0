@@ -10,9 +10,9 @@ export type CmdCardPart = 'Body' | 'Backdrop';
 export type CmdCardRender<S extends O = O> = (props: CmdCardRenderProps<S>) => JSX.Element | null;
 export type CmdCardRenderProps<S extends O> = {
   bus: t.EventBus<any>;
-  size: t.DomRect;
-  card: t.CmdCardEvents;
+  card: t.CmdCardEventsSafe;
   state: CmdCardRenderState<S>;
+  size: t.DomRect;
 };
 export type CmdCardRenderState<S extends O> = {
   current: S;
@@ -22,40 +22,36 @@ export type CmdCardRenderState<S extends O> = {
 /**
  * STATE
  */
-export type CmdCardState = {
+export type CmdCardState<A extends O = any, B extends O = any> = {
   commandbar: t.CmdBarState;
-  body: CmdCardStateBody;
-  backdrop: CmdCardStateBackdrop;
+  body: CmdCardStateBody<A>;
+  backdrop: CmdCardStateBackdrop<B>;
 };
 
-export type CmdCardStateBackdrop = {
-  render: CmdCardRender<any>;
-  state?: O;
+export type CmdCardStateBackdrop<S extends O = any> = {
+  render: CmdCardRender<S>;
+  state: S;
 };
 
-export type CmdCardStateBody<S extends O = O> = {
+export type CmdCardStateBody<S extends O = any> = {
   isOpen?: boolean; // TEMP 🐷
   show?: 'FullScreen' | 'CommandBar' | 'Hidden';
-  render: CmdCardRender<any>;
-  state?: O;
+  render: CmdCardRender<S>;
+  state: S;
 };
 
 /**
  * EVENTS (API)
  */
-export type CmdCardEventsFactory = (args: CmdCardEventsFactoryArgs) => CmdCardEventsDisposable;
-export type CmdCardEventsFactoryArgs = {
-  instance: CmdCardInstance;
-  dispose$?: t.Observable<any>;
-  initial?: t.CmdCardState | (() => t.CmdCardState);
-};
-export type CmdCardEventsDisposable = t.Disposable & CmdCardEvents;
-export type CmdCardEvents = {
-  instance: { bus: Id; id: Id };
-  $: t.Observable<t.CmdCardEvent>;
-  dispose$: t.Observable<void>;
-  state$: t.Observable<t.CmdCardState>;
-  state: t.JsonState<CmdCardState>;
+export type CmdCardEvents<A extends O = any, B extends O = any> = t.Disposable &
+  CmdCardEventsSafe<A, B>;
+
+export type CmdCardEventsSafe<A extends O = any, B extends O = any> = {
+  readonly instance: { bus: Id; id: Id };
+  readonly $: t.Observable<t.CmdCardEvent>;
+  readonly dispose$: t.Observable<void>;
+  readonly state: t.JsonState<CmdCardState<A, B>>;
+  readonly state$: t.Observable<t.CmdCardState<A, B>>;
 };
 
 /**

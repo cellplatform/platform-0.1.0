@@ -7,7 +7,7 @@ import { CmdCard, CmdCardProps } from '..';
 import { EventList } from '../../Event.List';
 import { css, rx, slug, t, Util } from '../common';
 import { CmdCardInfoProps } from '../ui/Info';
-import { SampleRenderer } from './DEV.Renderers';
+import { SampleRenderer, A, B } from './DEV.Renderers';
 import { DevSample } from './DEV.Sample';
 import { DevSidePanel } from './DEV.SidePanel';
 
@@ -16,7 +16,7 @@ type Ctx = {
   netbus: t.NetworkBus<any>;
   props: CmdCardProps;
   debug: Debug;
-  events: t.CmdCardEventsDisposable;
+  events: t.CmdCardEvents<A, B>;
   state: {
     current: t.CmdCardState;
     onChange?: (e: t.CmdCardState) => void;
@@ -65,9 +65,7 @@ const Helpers = {
   },
 
   toProps(ctx: Ctx) {
-    let props: CmdCardProps = { ...ctx.props };
-    props = { ...props };
-
+    const props: CmdCardProps = { ...ctx.props };
     return props;
   },
 
@@ -132,6 +130,10 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx } = e;
+
+    // ctx.props.instance.bus.$.subscribe((e) => {
+    //   console.log('e', e);
+    // });
   })
 
   .items((e) => {
