@@ -44,7 +44,7 @@ export function StateController<A extends O = any, B extends O = any>(args: Stat
    * Sub-controllers
    */
   Json.Bus.Controller({ instance: args.instance, dispose$ });
-  const bar = CmdBarState.Controller({
+  const commandbar = CmdBarState.Controller({
     dispose$,
     bus,
     instance: args.instance,
@@ -55,7 +55,7 @@ export function StateController<A extends O = any, B extends O = any>(args: Stat
    * Event Listeners.
    */
   events.state.$.subscribe(({ value }) => change((prev) => ({ ...prev, ...value })));
-  bar.state$.subscribe((bar) => change((prev) => ({ ...prev, commandbar: bar })));
+  commandbar.state$.subscribe((commandbar) => change((prev) => ({ ...prev, commandbar })));
 
   /**
    * API
