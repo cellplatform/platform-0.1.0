@@ -12,6 +12,12 @@ export default Test.describe('Cmd.Bar', (e) => {
       expect(events.instance.id).to.eql(instance.id);
       expect(events.instance.bus).to.eql(rx.bus.instance(instance.bus));
     });
+
+    e.it('clone (non-disposable)', () => {
+      const events = CmdBar.Events({ instance: { bus: rx.bus(), id: 'foo' } });
+      const clone = events.clone();
+      expect((clone as any).dispose).to.eql(undefined);
+    });
   });
 
   e.describe('State.Controller', (e) => {

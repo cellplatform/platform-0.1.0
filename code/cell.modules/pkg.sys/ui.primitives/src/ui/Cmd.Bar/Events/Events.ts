@@ -6,7 +6,10 @@ import { rx, t } from '../common';
 /**
  * Event API.
  */
-export const CmdBarEvents: t.CmdBarEventsFactory = (args) => {
+export function CmdBarEvents(args: {
+  instance: t.CmdBarInstance;
+  dispose$?: t.Observable<any>;
+}): t.CmdBarEventsDisposable {
   const dispose$ = new Subject<void>();
   const dispose = () => rx.done(dispose$);
   args.dispose$?.subscribe(dispose);
@@ -21,7 +24,7 @@ export const CmdBarEvents: t.CmdBarEventsFactory = (args) => {
     observeOn(animationFrameScheduler),
   );
 
-  const action: t.CmdBarEvents['action'] = {
+  const action: t.CmdBarEventsDisposable['action'] = {
     $: rx.payload<t.CmdBarActionEvent>($, 'sys.ui.CmdBar/Action'),
     fire(args) {
       const { text } = args;
@@ -32,7 +35,7 @@ export const CmdBarEvents: t.CmdBarEventsFactory = (args) => {
     },
   };
 
-  const text: t.CmdBarEvents['text'] = {
+  const text: t.CmdBarEventsDisposable['text'] = {
     changed$: rx.payload<t.CmdBarTextChangeEvent>($, 'sys.ui.CmdBar/TextChanged'),
     changed(args) {
       const { from, to } = args;
@@ -46,13 +49,18 @@ export const CmdBarEvents: t.CmdBarEventsFactory = (args) => {
   /**
    * API
    */
-  const api: t.CmdBarEvents = {
+  const api: t.CmdBarEventsDisposable = {
     instance: { bus: rx.bus.instance(bus), id: instance },
     $,
     dispose,
     dispose$,
     action,
     text,
+    clone() {
+      const clone = { ...api };
+      delete (clone as any).dispose;
+      return clone;
+    },
   };
   return api;
-};
+}

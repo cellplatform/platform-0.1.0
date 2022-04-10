@@ -40,7 +40,7 @@ export const View: React.FC<CmdBarProps> = (props) => {
     ?.map((value) => (value === 0 ? '0' : `${value}px`))
     .join(' ');
 
-  const [events, setEvents] = React.useState<t.CmdBarEvents | undefined>();
+  const [events, setEvents] = React.useState<t.CmdBarEventsDisposable | undefined>();
 
   /**
    * Lifecycle
@@ -146,7 +146,7 @@ export const View: React.FC<CmdBarProps> = (props) => {
 type Fields = {
   constants: typeof constants;
   EventPipe: React.FC<CmdBarEventPipeProps>;
-  Events: t.CmdBarEventsFactory;
+  Events: typeof CmdBarEvents;
   State: typeof CmdBarState;
 };
 export const CmdBar = FC.decorate<CmdBarProps, Fields>(

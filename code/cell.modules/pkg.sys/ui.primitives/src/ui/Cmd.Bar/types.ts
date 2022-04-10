@@ -1,4 +1,3 @@
-import { Observable } from 'rxjs';
 import * as t from '../../common/types';
 
 type Id = string;
@@ -14,28 +13,30 @@ export type CmdBarState = {
 };
 
 /**
- * Event API.
+ * [Event] API.
  */
 export type CmdBarEventsFactory = (args: {
   instance: CmdBarInstance;
-  dispose$?: Observable<any>;
-}) => CmdBarEvents;
+  dispose$?: t.Observable<any>;
+}) => CmdBarEventsDisposable;
 
-export type CmdBarEvents = t.Disposable & {
+export type CmdBarEventsDisposable = t.Disposable & CmdBarEvents & { clone(): CmdBarEvents };
+export type CmdBarEvents = {
   instance: { bus: Id; id: Id };
-  $: Observable<CmdBarEvent>;
+  $: t.Observable<CmdBarEvent>;
+  dispose$: t.Observable<void>;
   action: {
-    $: Observable<CmdBarAction>;
+    $: t.Observable<CmdBarAction>;
     fire(args: { text: string }): void;
   };
   text: {
-    changed$: Observable<CmdBarTextChange>;
+    changed$: t.Observable<CmdBarTextChange>;
     changed(args: { from: string; to: string }): void;
   };
 };
 
 /**
- * EVENT Definitions
+ * [EVENT] Definitions
  */
 export type CmdBarEvent = CmdBarActionEvent | CmdBarTextChangeEvent;
 
