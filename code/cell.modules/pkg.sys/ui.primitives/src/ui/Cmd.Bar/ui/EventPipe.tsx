@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { EventPipe, EventPipeItemClickEventHandler } from '../Event.Pipe';
-import { css, CssValue, Icons, rx, t } from './common';
+import { EventPipe, EventPipeItemClickEventHandler } from '../../Event.Pipe';
+import { css, CssValue, Icons, rx, t } from '../common';
 
 export type CmdBarEventPipeProps = {
   history?: t.EventHistory;

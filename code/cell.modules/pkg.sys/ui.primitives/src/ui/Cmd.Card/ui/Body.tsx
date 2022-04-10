@@ -2,7 +2,7 @@ import { domAnimation, LazyMotion, m } from 'framer-motion';
 import React from 'react';
 
 import { R, color, css, CssValue, t, constants } from '../common';
-import { useRenderPart } from '../hooks';
+import { useRenderPart } from './useRenderPart';
 import { Util } from '../Util';
 
 type Milliseconds = number;

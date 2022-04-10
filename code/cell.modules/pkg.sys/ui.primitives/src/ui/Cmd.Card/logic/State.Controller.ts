@@ -1,6 +1,6 @@
 import { CmdBar } from '../../Cmd.Bar';
 import { Json, t, Util, time } from '../common';
-import { CmdCardEvents } from '../events';
+import { CmdCardEvents } from '../logic';
 
 type O = Record<string, unknown>;
 type S = t.CmdCardState;

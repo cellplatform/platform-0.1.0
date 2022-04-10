@@ -6,6 +6,10 @@ import { t, rx, slug } from '../common';
 type Ctx = {
   props: ModuleCardProps;
   debug: Debug;
+  state: {
+    current?: t.CmdCardState;
+    onChange?: (e: t.CmdCardState) => void;
+  };
 };
 type Debug = {
   size: { width: number; height: number };
@@ -25,6 +29,12 @@ export const actions = DevActions<Ctx>()
       },
       debug: {
         size: { width: 500, height: 320 },
+      },
+      state: {
+        onChange(state) {
+          console.log('onChange', state);
+          e.change.ctx((ctx) => (ctx.state.current = state));
+        },
       },
     };
     return ctx;
@@ -55,6 +65,18 @@ export const actions = DevActions<Ctx>()
           style={{ MarginX: 15 }}
           fontSize={10}
           expandPaths={['$']}
+        />
+      );
+    });
+    e.hr(1, 0.1);
+    e.component((e) => {
+      return (
+        <ObjectView
+          name={'state'}
+          data={e.ctx.state.current}
+          style={{ MarginX: 15 }}
+          fontSize={10}
+          expandPaths={['$', '$.backdrop', '$.body']}
         />
       );
     });

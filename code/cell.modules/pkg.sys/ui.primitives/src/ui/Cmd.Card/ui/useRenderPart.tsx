@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 import { rx, t } from '../common';
-import { CmdCardEvents } from '../events';
+import { CmdCardEvents } from '../logic';
 
 type O = Record<string, unknown>;
 

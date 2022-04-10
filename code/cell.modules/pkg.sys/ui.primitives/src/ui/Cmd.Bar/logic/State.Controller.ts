@@ -3,7 +3,7 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 
 import { EventHistory } from '../../Event.History';
 import { t } from '../common';
-import { CmdBarEvents } from '../events';
+import { CmdBarEvents } from '../logic';
 import { Util } from '../Util';
 
 type S = t.CmdBarState;

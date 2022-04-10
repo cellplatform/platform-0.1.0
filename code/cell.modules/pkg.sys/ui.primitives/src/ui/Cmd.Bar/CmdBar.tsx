@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 
 import { CmdTextbox } from '../Cmd.Textbox';
-import { CmdBarEventPipe, CmdBarEventPipeProps } from './CmdBar.EventPipe';
+import { CmdBarEventPipe } from './ui/EventPipe';
 import { color, css, CssValue, FC, t } from './common';
-import { CmdBarEvents } from './events';
-import { CmdBarState } from './state';
+import { CmdBarEvents, CmdBarState } from './logic';
 
 /**
  * Types
@@ -145,15 +144,13 @@ export const View: React.FC<CmdBarProps> = (props) => {
  */
 type Fields = {
   constants: typeof constants;
-  EventPipe: React.FC<CmdBarEventPipeProps>;
   Events: typeof CmdBarEvents;
   State: typeof CmdBarState;
 };
 export const CmdBar = FC.decorate<CmdBarProps, Fields>(
   View,
   {
-    constants: constants,
-    EventPipe: CmdBarEventPipe,
+    constants,
     Events: CmdBarEvents,
     State: CmdBarState,
   },

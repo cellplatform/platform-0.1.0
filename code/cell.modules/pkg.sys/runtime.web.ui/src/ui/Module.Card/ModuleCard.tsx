@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FC, color, COLORS, css, CssValue, t, CmdCard, constants } from './common';
-// import { ModuleCardEvents as Events } from './Events';
-// import { State } from './State';
+import { ModuleCardController as Controller } from './ModuleCard.Controller';
 
 /**
  * Types
@@ -10,6 +9,7 @@ export type ModuleCardProps = {
   instance: t.ModuleCardInstance;
   state?: t.ModuleCardState;
   style?: CssValue;
+  onChange?: (e: t.ModuleCardState) => void;
 };
 
 /**
@@ -18,24 +18,18 @@ export type ModuleCardProps = {
 export const View: React.FC<ModuleCardProps> = (props) => {
   const { instance } = props;
 
-  /**
-   * TODO 🐷
-   */
-
-  // const { state } = State.useController({
-  //   enabled: props.state === undefined, // NB: pass-through if not enabled (controlled externally)
-  //   instance: props.instance,
-  //   initial: props.state,
-  //   // bus,
-  //   // onChange: args.state.onChange,
-  // });
-
-  const state = undefined;
+  const controller = CmdCard.State.useController({
+    instance,
+    initial: props.state,
+    enabled: props.state === undefined,
+    onChange: props.onChange,
+    controller: Controller,
+  });
 
   /**
    * [Render]
    */
-  return <CmdCard instance={instance} state={state} style={props.style} />;
+  return <CmdCard instance={instance} state={controller.state} style={props.style} />;
 };
 
 /**
@@ -43,9 +37,10 @@ export const View: React.FC<ModuleCardProps> = (props) => {
  */
 type Fields = {
   constants: typeof constants;
+  Controller: typeof Controller;
 };
 export const ModuleCard = FC.decorate<ModuleCardProps, Fields>(
   View,
-  { constants },
+  { constants, Controller },
   { displayName: 'ModuleCard' },
 );

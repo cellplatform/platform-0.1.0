@@ -1,2 +1,2 @@
 export { CmdCard, CmdCardProps } from './CmdCard';
-export { CmdCardEvents } from './events';
+export { CmdCardEvents } from './logic';

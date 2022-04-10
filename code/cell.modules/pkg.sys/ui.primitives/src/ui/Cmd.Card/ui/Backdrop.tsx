@@ -3,7 +3,7 @@ import React from 'react';
 import { CmdBar } from '../../Cmd.Bar';
 import { COLORS, css, CssValue, R, t } from '../common';
 import { Util } from '../Util';
-import { useRenderPart } from '../hooks';
+import { useRenderPart } from './useRenderPart';
 
 /**
  * Types

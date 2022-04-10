@@ -6,7 +6,7 @@ import { StateController } from './State.Controller';
 
 export type UseStateControllerArgs = t.CmdCardStateControllerArgs & {
   enabled?: boolean;
-  controller?: (args: t.CmdCardStateControllerArgs) => t.CmdCardEventsDisposable; // Wrapper controller (the call-site's behavioral logic)
+  controller?: (args: t.CmdCardStateControllerArgs) => t.CmdCardStateController; // Wrapper controller (the call-site's behavioral logic)
   onChange?: (e: t.CmdCardState) => void;
 };
 

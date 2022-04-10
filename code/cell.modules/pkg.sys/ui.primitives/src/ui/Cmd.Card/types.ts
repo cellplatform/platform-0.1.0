@@ -46,6 +46,7 @@ export type CmdCardStateBody<S extends O = any> = {
   state: S;
 };
 
+export type CmdCardStateController = CmdCardEventsDisposable;
 export type CmdCardStateControllerArgs = {
   instance: t.CmdCardInstance;
   initial?: t.CmdCardState;
