@@ -10,15 +10,15 @@ type S = t.CmdCardState;
  */
 export function StateController<A extends O = any, B extends O = any>(
   args: t.CmdCardStateControllerArgs,
-) {
+): t.CmdCardStateController {
   const instance = args.instance.id;
   const fire = (e: t.CmdCardEvent) => args.instance.bus.fire(e);
 
-  const events = CmdCardEvents<A, B>({
+  const card = CmdCardEvents<A, B>({
     instance: args.instance,
     dispose$: args.dispose$,
   });
-  const { dispose$ } = events;
+  const { dispose$ } = card;
 
   /**
    * State.
@@ -47,11 +47,12 @@ export function StateController<A extends O = any, B extends O = any>(
   /**
    * Event Listeners.
    */
-  events.state.$.subscribe(({ value }) => change((prev) => ({ ...prev, ...value })));
+  card.state.$.subscribe(({ value }) => change((prev) => ({ ...prev, ...value })));
+
   commandbar.text.changed$.subscribe((e) => {
     change((prev) => {
-      const commandbar = { ...prev.commandbar, text: e.to };
-      return { ...prev, commandbar };
+      const text = e.to;
+      return { ...prev, commandbar: { ...prev.commandbar, text } };
     });
   });
 
@@ -59,5 +60,5 @@ export function StateController<A extends O = any, B extends O = any>(
    * API
    */
   time.delay(0, () => change(() => _state));
-  return events;
+  return card;
 }

@@ -24,7 +24,7 @@ export function CmdBarEvents(args: {
     observeOn(animationFrameScheduler),
   );
 
-  const action: t.CmdBarEventsDisposable['action'] = {
+  const action: t.CmdBarEvents['action'] = {
     $: rx.payload<t.CmdBarActionEvent>($, 'sys.ui.CmdBar/Action'),
     fire(args) {
       const { text } = args;
@@ -35,7 +35,7 @@ export function CmdBarEvents(args: {
     },
   };
 
-  const text: t.CmdBarEventsDisposable['text'] = {
+  const text: t.CmdBarEvents['text'] = {
     changed$: rx.payload<t.CmdBarTextChangeEvent>($, 'sys.ui.CmdBar/TextChanged'),
     changed(args) {
       const { from, to } = args;
