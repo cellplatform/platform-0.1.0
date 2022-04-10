@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { rx, t } from '../common';
-import { CmdCardEvents } from '../Events';
+import { CmdCardEvents } from '../events';
 
 type O = Record<string, unknown>;
 
@@ -21,7 +21,9 @@ export function useRenderPart<S extends O = O>(
   const { instance, state, size } = args;
   const { bus } = instance;
   const busid = rx.bus.instance(instance.bus);
-  const cardRef = useRef<undefined | t.CmdCardEvents>();
+  const cardRef = useRef<undefined | t.CmdCardEventsDisposable>();
+
+  console.log('use part', part);
 
   useEffect(() => {
     return () => {
@@ -37,13 +39,12 @@ export function useRenderPart<S extends O = O>(
   const props: P = {
     bus,
     size,
+
     get card() {
-      if (!cardRef.current) {
-        cardRef.current = CmdCardEvents({ instance, initial: state });
-        delete (cardRef.current as any).dispose;
-      }
-      return cardRef.current;
+      if (!cardRef.current) cardRef.current = CmdCardEvents({ instance, initial: state });
+      return cardRef.current.clone(); // NB: a un-disposable clone.
     },
+
     get state() {
       const api: P['state'] = {
         current: toPart<S>(state, part),
@@ -63,6 +64,7 @@ export function useRenderPart<S extends O = O>(
     part,
     props,
     render(): JSX.Element | undefined | null {
+      console.log('render', part, state);
       if (part === 'Body') return state.body.render?.(props);
       if (part === 'Backdrop') return state.backdrop.render?.(props);
       return null;

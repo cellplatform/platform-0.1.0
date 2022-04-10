@@ -10,13 +10,19 @@ export type CmdCardPart = 'Body' | 'Backdrop';
 export type CmdCardRender<S extends O = O> = (props: CmdCardRenderProps<S>) => JSX.Element | null;
 export type CmdCardRenderProps<S extends O> = {
   bus: t.EventBus<any>;
-  card: t.CmdCardEventsSafe;
+  card: t.CmdCardEvents;
   state: CmdCardRenderState<S>;
   size: t.DomRect;
 };
 export type CmdCardRenderState<S extends O> = {
   current: S;
   patch(fn: t.JsonMutation<S>): Promise<void>;
+};
+
+export type CmdCardRenderController = (args: CmdCardRenderControllerArgs) => void | (() => any); // NB. Disposer.
+export type CmdCardRenderControllerArgs = {
+  bus: t.EventBus<any>;
+  card: t.CmdCardEvents;
 };
 
 /**
@@ -40,13 +46,21 @@ export type CmdCardStateBody<S extends O = any> = {
   state: S;
 };
 
+export type CmdCardStateControllerArgs = {
+  instance: t.CmdCardInstance;
+  initial?: t.CmdCardState;
+  dispose$?: t.Observable<any>;
+};
+
 /**
  * EVENTS (API)
  */
-export type CmdCardEvents<A extends O = any, B extends O = any> = t.Disposable &
-  CmdCardEventsSafe<A, B>;
+export type CmdCardEventsDisposable<A extends O = any, B extends O = any> = t.Disposable &
+  CmdCardEvents<A, B> & {
+    clone(): CmdCardEvents<A, B>;
+  };
 
-export type CmdCardEventsSafe<A extends O = any, B extends O = any> = {
+export type CmdCardEvents<A extends O = any, B extends O = any> = {
   readonly instance: { bus: Id; id: Id };
   readonly $: t.Observable<t.CmdCardEvent>;
   readonly dispose$: t.Observable<void>;
@@ -60,7 +74,7 @@ export type CmdCardEventsSafe<A extends O = any, B extends O = any> = {
 export type CmdCardEvent = CmdCardStateChangedEvent;
 
 /**
- * Retrieve the current state.
+ * Fires when the current state has changed.
  */
 export type CmdCardStateChangedEvent = {
   type: 'sys.ui.CmdCard/state:changed';

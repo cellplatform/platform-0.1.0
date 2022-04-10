@@ -15,7 +15,7 @@ const DebugCount = {
 /**
  * BODY
  */
-const renderBody: t.CmdCardRender<A> = (e) => {
+const renderSampleBody: t.CmdCardRender<A> = (e) => {
   DebugCount.body++;
   const { size } = e;
 
@@ -54,7 +54,7 @@ const renderBody: t.CmdCardRender<A> = (e) => {
 /**
  * BACKDROP
  */
-const renderBackdrop: t.CmdCardRender<B> = (e) => {
+const renderSampleBackdrop: t.CmdCardRender<B> = (e) => {
   DebugCount.backdrop++;
 
   const styles = {
@@ -90,6 +90,6 @@ const renderBackdrop: t.CmdCardRender<B> = (e) => {
  * INDEX
  */
 export const SampleRenderer = {
-  backdrop: renderBackdrop,
-  body: renderBody,
+  backdrop: renderSampleBackdrop,
+  body: renderSampleBody,
 };

@@ -16,9 +16,9 @@ type Ctx = {
   netbus: t.NetworkBus<any>;
   props: CmdCardProps;
   debug: Debug;
-  events: t.CmdCardEvents<A, B>;
+  events: t.CmdCardEventsDisposable<A, B>;
   state: {
-    current: t.CmdCardState;
+    current?: t.CmdCardState;
     onChange?: (e: t.CmdCardState) => void;
   };
   info: CmdCardInfoProps;
@@ -90,12 +90,12 @@ export const actions = DevActions<Ctx>()
     const netbus = NetworkBusMock({ local: 'local-id', remotes: ['peer-1', 'peer-2'] });
     const instance: t.CmdCardInstance = { bus: rx.bus(), id: `foo.${slug()}` };
 
-    const initial = Util.defaultState({
-      body: { render: SampleRenderer.body },
-      backdrop: { render: SampleRenderer.backdrop },
-    });
+    // const initial = Util.defaultState({
+    //   body: { render: SampleRenderer.body },
+    //   backdrop: { render: SampleRenderer.backdrop },
+    // });
 
-    const events = CmdCard.Events({ instance, initial });
+    const events = CmdCard.Events({ instance });
 
     const ctx: Ctx = {
       localbus,
@@ -104,7 +104,7 @@ export const actions = DevActions<Ctx>()
       props: { instance, showAsCard: true },
       events,
       state: {
-        current: initial,
+        // current: initial,
         onChange(state) {
           e.change.ctx((ctx) => (ctx.state.current = state));
         },
@@ -219,7 +219,7 @@ export const actions = DevActions<Ctx>()
       config
         .title('body.show')
         .items(['Hidden', 'CommandBar', 'FullScreen'])
-        .initial(config.ctx.state.current.body.show)
+        .initial('CommandBar')
         .view('buttons')
         .pipe(async (e) => {
           if (e.changing) {
@@ -328,12 +328,8 @@ export const actions = DevActions<Ctx>()
         {elSidebar}
         <DevSample
           props={props}
-          useSampleState={{
-            bus,
-            initial: e.ctx.state.current,
-            isControllerEnabled: e.ctx.info.state.isControllerEnabled,
-            onChange: e.ctx.state.onChange,
-          }}
+          isControllerEnabled={e.ctx.info.state.isControllerEnabled}
+          onStateChange={e.ctx.state.onChange}
         />
       </div>
     );

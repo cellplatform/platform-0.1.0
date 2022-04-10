@@ -3,8 +3,8 @@ import React, { useEffect } from 'react';
 import { CmdTextbox } from '../Cmd.Textbox';
 import { CmdBarEventPipe, CmdBarEventPipeProps } from './CmdBar.EventPipe';
 import { color, css, CssValue, FC, t } from './common';
-import { CmdBarEvents } from './Events';
-import { CmdBarState } from './State';
+import { CmdBarEvents } from './events';
+import { CmdBarState } from './state';
 
 /**
  * Types

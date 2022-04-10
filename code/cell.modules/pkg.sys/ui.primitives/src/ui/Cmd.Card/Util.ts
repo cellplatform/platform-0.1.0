@@ -6,30 +6,37 @@ type O = Record<string, unknown>;
  * [Helpers]
  */
 export const Util = {
-  renderNull() {
+  /**
+   * Generate a new "default state" object.
+   */
+  defaultState<A extends O = any, B extends O = any>(
+    partial?: t.PartialDeep<t.CmdCardState<A, B>>,
+  ): t.CmdCardState<A, B> {
+    const base: t.CmdCardState<A, B> = {
+      commandbar: {},
+      body: {
+        render: Util.renderNull,
+        state: {} as any,
+        show: 'CommandBar',
+      },
+      backdrop: {
+        render: Util.renderNull,
+        state: {} as any,
+      },
+    };
+    return partial ? R.mergeDeepRight(base, partial as any) : base;
+  },
+
+  /**
+   * Render nothing.
+   */
+  renderNull(): JSX.Element | null {
     return null;
   },
 
   /**
-   * Genrate a new "default state" object.
+   * Component instance helpers.
    */
-  defaultState(partial?: t.PartialDeep<t.CmdCardState>): t.CmdCardState {
-    const render = Util.renderNull;
-    const state: t.CmdCardState = {
-      commandbar: {},
-      backdrop: {
-        render,
-        state: {},
-      },
-      body: {
-        render,
-        state: {},
-        show: 'CommandBar',
-      },
-    };
-    return partial ? R.mergeDeepRight(state, partial as any) : state;
-  },
-
   instance: {
     /**
      * Compare instance details.

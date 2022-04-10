@@ -2,10 +2,10 @@ import React from 'react';
 
 import { FC, t, CssValue, css, constants, useResizeObserver, Util } from './common';
 import { CmdCardLayout as Layout, CmdCardLayoutProps } from './ui/Layout';
-import { CmdCardEvents as Events } from './Events';
+import { CmdCardEvents as Events } from './events';
 import { CmdStateInfo } from './ui/Info';
 
-import { State } from './State';
+import { State } from './state';
 import { Card } from '../Card';
 
 /**

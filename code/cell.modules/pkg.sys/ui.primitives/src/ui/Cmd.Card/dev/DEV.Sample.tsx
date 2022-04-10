@@ -1,18 +1,28 @@
 import React from 'react';
 
 import { CmdCard, CmdCardProps } from '..';
-import { useSampleState, UseSampleStateArgs } from './DEV.Sample.State';
+import { t } from '../common';
+import { DevSampleController } from './DEV.Sample.controller';
 
 export type DevSampleProps = {
   props: CmdCardProps;
-  useSampleState: UseSampleStateArgs;
+  isControllerEnabled?: boolean;
+  onStateChange?: (e: t.CmdCardState) => void;
 };
 
+/**
+ * Sample View
+ */
 export const DevSample: React.FC<DevSampleProps> = (args) => {
   /**
    * State
    */
-  const controller = useSampleState(args.props.instance, args.useSampleState);
+  const controller = CmdCard.State.useController({
+    instance: args.props.instance,
+    enabled: args.isControllerEnabled,
+    onChange: args.onStateChange,
+    controller: DevSampleController,
+  });
 
   /**
    * Component.

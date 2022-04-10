@@ -1,24 +1,16 @@
-import { Observable } from 'rxjs';
-
-import { CmdBarState } from '../../Cmd.Bar/State';
-import { Json, t, Util } from '../common';
-import { CmdCardEvents } from '../Events';
+import { CmdBar } from '../../Cmd.Bar';
+import { Json, t, Util, time } from '../common';
+import { CmdCardEvents } from '../events';
 
 type O = Record<string, unknown>;
 type S = t.CmdCardState;
 
-export type StateControllerArgs = {
-  instance: t.CmdCardInstance;
-  bus?: t.EventBus<any>;
-  initial?: S;
-  dispose$?: Observable<any>;
-};
-
 /**
  * State controller for the <CmdCard>.
  */
-export function StateController<A extends O = any, B extends O = any>(args: StateControllerArgs) {
-  const { bus } = args;
+export function StateController<A extends O = any, B extends O = any>(
+  args: t.CmdCardStateControllerArgs,
+) {
   const instance = args.instance.id;
   const fire = (e: t.CmdCardEvent) => args.instance.bus.fire(e);
 
@@ -26,7 +18,7 @@ export function StateController<A extends O = any, B extends O = any>(args: Stat
     instance: args.instance,
     dispose$: args.dispose$,
   });
-  const { dispose, dispose$ } = events;
+  const { dispose$ } = events;
 
   /**
    * State.
@@ -44,30 +36,28 @@ export function StateController<A extends O = any, B extends O = any>(args: Stat
    * Sub-controllers
    */
   Json.Bus.Controller({ instance: args.instance, dispose$ });
-  const commandbar = CmdBarState.Controller({
+  CmdBar.State.Controller({
     dispose$,
-    bus,
     instance: args.instance,
     initial: _state.commandbar,
   });
+
+  const commandbar = CmdBar.Events({ instance: args.instance, dispose$ });
 
   /**
    * Event Listeners.
    */
   events.state.$.subscribe(({ value }) => change((prev) => ({ ...prev, ...value })));
-  commandbar.state$.subscribe((commandbar) => change((prev) => ({ ...prev, commandbar })));
+  commandbar.text.changed$.subscribe((e) => {
+    change((prev) => {
+      const commandbar = { ...prev.commandbar, text: e.to };
+      return { ...prev, commandbar };
+    });
+  });
 
   /**
    * API
    */
-  const api = {
-    instance: events.instance,
-    dispose$,
-    dispose,
-    state$: events.state$,
-    get state() {
-      return _state;
-    },
-  };
-  return api;
+  time.delay(0, () => change(() => _state));
+  return events;
 }

@@ -1,5 +1,4 @@
 import { filter, takeUntil, map } from 'rxjs/operators';
-
 import { rx, t, Json, Util } from '../common';
 
 type O = Record<string, unknown>;
@@ -35,13 +34,18 @@ export function CmdCardEvents<A extends O = any, B extends O = any>(args: CmdCar
   /**
    * API
    */
-  const api: t.CmdCardEvents = {
+  const api: t.CmdCardEventsDisposable<A, B> = {
     instance: events.instance,
     $,
     dispose,
     dispose$,
     state,
     state$,
+    clone() {
+      const clone = { ...api };
+      delete (clone as any).dispose;
+      return clone;
+    },
   };
   return api;
 }

@@ -22,7 +22,6 @@ export const Body: React.FC<BodyProps> = (props) => {
 
   const y = state.body.isOpen ? 0 - (size.height - FOOTER.HEIGHT) : 0;
   const { show = 'CommandBar' } = state.body;
-  console.log('show', show);
 
   const content = useRenderPart('Body', { instance, size, state });
 

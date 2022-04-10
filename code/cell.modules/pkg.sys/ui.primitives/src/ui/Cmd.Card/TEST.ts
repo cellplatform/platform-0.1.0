@@ -25,6 +25,12 @@ export default Test.describe('Cmd.Card', (e) => {
       expect(events.instance.bus).to.eql(rx.bus.instance(instance.bus));
     });
 
+    e.it('clone (non-disposable)', () => {
+      const events = CmdCard.Events({ instance: { bus: rx.bus(), id: 'foo' } });
+      const clone = events.clone();
+      expect((clone as any).dispose).to.eql(undefined);
+    });
+
     e.describe('state', (e) => {
       e.it('get (default state)', async () => {
         const { dispose, events } = Setup.controller();

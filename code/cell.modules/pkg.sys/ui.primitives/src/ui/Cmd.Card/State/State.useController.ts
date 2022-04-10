@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import { filter } from 'rxjs/operators';
 
 import { rx, t } from '../common';
-import { StateController, StateControllerArgs } from './State.Controller';
+import { StateController } from './State.Controller';
 
-export type UseStateControllerArgs = StateControllerArgs & {
+export type UseStateControllerArgs = t.CmdCardStateControllerArgs & {
   enabled?: boolean;
+  controller?: (args: t.CmdCardStateControllerArgs) => t.CmdCardEventsDisposable; // Wrapper controller (the call-site's behavioral logic)
   onChange?: (e: t.CmdCardState) => void;
 };
 
@@ -13,28 +14,32 @@ export type UseStateControllerArgs = StateControllerArgs & {
  * <CmdCard> controller state.
  */
 export function useStateController(args: UseStateControllerArgs) {
-  const { bus, instance, enabled = true } = args;
+  const { instance, enabled = true } = args;
+  const busid = rx.bus.instance(instance.bus);
   const [state, setState] = useState<undefined | t.CmdCardState>(args.initial);
 
   /**
    * [Lifecycle]
    */
   useEffect(() => {
-    const controller = StateController({ bus, instance, initial: state });
+    const controller =
+      typeof args.controller === 'function'
+        ? args.controller(args)
+        : StateController({ instance, initial: state });
 
-    controller.state$.pipe(filter(() => enabled)).subscribe((state) => {
-      setState(state);
-      args.onChange?.(state);
+    controller.state$.pipe(filter(() => enabled)).subscribe((next) => {
+      setState(next);
+      args.onChange?.(next);
     });
 
     return () => controller.dispose();
-  }, [instance.id, bus, enabled]); // eslint-disable-line
+  }, [instance.id, busid, enabled]); // eslint-disable-line
 
   /**
    * API
    */
   return {
-    instance: { bus: bus ? rx.bus.instance(bus) : '', id: instance.id },
+    instance: { bus: busid, id: instance.id },
     enabled,
     state,
   };
