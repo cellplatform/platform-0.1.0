@@ -1,5 +1,6 @@
-import { map, filter, takeUntil } from 'rxjs/operators';
-import { rx, slug, t, DEFAULT, Patch } from './common';
+import { filter, map, takeUntil } from 'rxjs/operators';
+
+import { DEFAULT, Patch, rx, slug, t } from './common';
 
 type J = Record<string, unknown>;
 type Id = string;
@@ -97,7 +98,7 @@ export function JsonBusEvents(args: {
 
       // Value not found, look for an initial value.
       if (!res.value && options.initial !== undefined) {
-        const initial = typeof options.initial === 'function' ? options.initial() : options.initial;
+        const initial = Util.toInitial(options.initial);
         if (initial) {
           const write = await put.fire(initial, { tx, key, timeout });
           if (write.error) return response(undefined, write.error);
@@ -240,18 +241,28 @@ export function JsonBusEvents(args: {
   /**
    * JSON (key-pathed convenience method).
    */
-  const json = <T extends J = J>(args: t.JsonStateOptions<T> = {}): t.JsonState<T> => {
+  const json = <T extends J = J>(
+    initial: T | (() => T),
+    args: t.JsonStateOptions<T> = {},
+  ): t.JsonState<T> => {
     type O = { timeout?: Milliseconds };
     const asTimeout = (options: O) => options.timeout ?? args.timeout ?? DEFAULT.TIMEOUT;
-    const { key = DEFAULT.KEY, initial } = args;
+    const { key = DEFAULT.KEY } = args;
 
     const $ = changed$.pipe(
       filter((e) => e.key === key),
       map((e) => e as t.JsonStateChange<T>),
     );
 
+    let _current: T | undefined;
+    $.subscribe((e) => (_current = e.value));
+
     const root: t.JsonState<T> = {
       $,
+      get current() {
+        if (_current === undefined) _current = Util.toInitial(initial);
+        return _current;
+      },
       get(options = {}) {
         const timeout = asTimeout(options);
         return get.fire<T>({ key, timeout, initial });
@@ -302,3 +313,12 @@ const is = {
  * Decorate
  */
 JsonBusEvents.is = is;
+
+/**
+ * Helpers
+ */
+const Util = {
+  toInitial<T extends J = J>(initial?: T | (() => T)) {
+    return typeof initial === 'function' ? initial() : initial;
+  },
+};

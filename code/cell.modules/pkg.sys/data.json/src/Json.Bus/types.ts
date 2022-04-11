@@ -34,7 +34,7 @@ export type JsonEvents = t.Disposable & {
   is: { base(input: any): boolean };
   info: JsonEventsInfo;
   state: JsonEventsState;
-  json<T extends O = O>(options?: JsonStateOptions<T>): JsonState<T>;
+  json<T extends O = O>(initial: T | (() => T), options?: JsonStateOptions<T>): JsonState<T>;
 };
 
 export type JsonEventsInfo = {
@@ -81,10 +81,10 @@ export type JsonEventsState = {
 export type JsonStateOptions<T extends O> = {
   key?: KeyPath;
   timeout?: Milliseconds;
-  initial?: T | (() => T);
 };
 export type JsonState<T extends O = O> = {
-  $: t.Observable<t.JsonStateChange<T>>;
+  readonly $: t.Observable<t.JsonStateChange<T>>;
+  readonly current: T | undefined;
   get(options?: { timeout?: Milliseconds }): Promise<JsonStateGetRes<T>>;
   put(value: T, options?: { timeout?: Milliseconds }): Promise<JsonStatePutRes>;
   patch(fn: JsonMutation<T>, options?: { timeout?: Milliseconds }): Promise<JsonStatePatchRes>;
