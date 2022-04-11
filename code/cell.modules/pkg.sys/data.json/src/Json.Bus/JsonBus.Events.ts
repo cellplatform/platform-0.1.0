@@ -199,37 +199,22 @@ export function JsonBusEvents(args: {
     const asTimeout = (options: O) => options.timeout ?? args.timeout ?? DEFAULT.TIMEOUT;
     const nil = (value: any) => typeof value !== 'object' || value === null;
 
-    const ThrowIf = {
-      noRoot(root?: any) {
-        if (nil(root)) throw new Error(`Lens root object could not be derived`);
-      },
-      noTarget(target?: any) {
-        if (nil(target)) throw new Error(`Lens target child could not be derived from the root`);
-      },
-    };
-
     const lens: t.JsonLens<L> = {
-      async get(options = {}) {
-        const timeout = asTimeout(options);
-
-        const root = (await args.root.get({ ...options, timeout })).value as R;
-        ThrowIf.noRoot(root);
-
-        const target = args.target(root);
-        ThrowIf.noTarget(target);
-
-        return target;
+      get current() {
+        return args.target(args.root.current);
       },
 
       async patch(fn, options = {}) {
         const timeout = asTimeout(options);
-        await lens.get({ ...options, timeout }); // NB: Ensure root and target objects area available.
+
         const handler: t.JsonMutation<R> = (root) => {
           const target = args.target(root);
-          ThrowIf.noTarget(target);
+          if (nil(target)) throw new Error(`Lens target child could not be derived from the root`);
+
           const ctx: t.JsonMutationCtx = { toObject };
           fn(target, ctx);
         };
+
         const { error } = await args.root.patch(handler, { ...options, timeout });
         if (error) throw new Error(error);
       },
@@ -243,7 +228,7 @@ export function JsonBusEvents(args: {
    */
   const json = <T extends J = J>(
     initial: T | (() => T),
-    args: t.JsonStateOptions<T> = {},
+    args: t.JsonStateOptions = {},
   ): t.JsonState<T> => {
     type O = { timeout?: Milliseconds };
     const asTimeout = (options: O) => options.timeout ?? args.timeout ?? DEFAULT.TIMEOUT;
@@ -261,7 +246,7 @@ export function JsonBusEvents(args: {
       $,
       get current() {
         if (_current === undefined) _current = Util.toInitial(initial);
-        return _current;
+        return _current as T;
       },
       get(options = {}) {
         const timeout = asTimeout(options);

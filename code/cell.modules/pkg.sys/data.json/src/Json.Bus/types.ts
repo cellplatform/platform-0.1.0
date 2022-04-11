@@ -34,7 +34,7 @@ export type JsonEvents = t.Disposable & {
   is: { base(input: any): boolean };
   info: JsonEventsInfo;
   state: JsonEventsState;
-  json<T extends O = O>(initial: T | (() => T), options?: JsonStateOptions<T>): JsonState<T>;
+  json<T extends O = O>(initial: T | (() => T), options?: JsonStateOptions): JsonState<T>;
 };
 
 export type JsonEventsInfo = {
@@ -78,13 +78,10 @@ export type JsonEventsState = {
 /**
  * JSON (a key-pathed API into a document).
  */
-export type JsonStateOptions<T extends O> = {
-  key?: KeyPath;
-  timeout?: Milliseconds;
-};
+export type JsonStateOptions = { key?: KeyPath; timeout?: Milliseconds };
 export type JsonState<T extends O = O> = {
   readonly $: t.Observable<t.JsonStateChange<T>>;
-  readonly current: T | undefined;
+  readonly current: T;
   get(options?: { timeout?: Milliseconds }): Promise<JsonStateGetRes<T>>;
   put(value: T, options?: { timeout?: Milliseconds }): Promise<JsonStatePutRes>;
   patch(fn: JsonMutation<T>, options?: { timeout?: Milliseconds }): Promise<JsonStatePatchRes>;
@@ -92,7 +89,7 @@ export type JsonState<T extends O = O> = {
 };
 
 export type JsonLens<L extends O = O> = {
-  get(options?: { timeout?: Milliseconds }): Promise<L>;
+  readonly current: L;
   patch(fn: JsonMutation<L>, options?: { timeout?: Milliseconds }): Promise<void>;
 };
 

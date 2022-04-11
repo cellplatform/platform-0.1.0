@@ -407,30 +407,16 @@ export default Test.describe('JsonBus', (e) => {
     e.describe('json.lens (method)', (e) => {
       type T = { child: { count: number } };
 
-      e.describe('lens.get', (e) => {
-        e.it('get (child target)', async () => {
+      e.describe('lens.current', (e) => {
+        e.it('lens.current', async () => {
           const { events, dispose } = Setup.controller();
-          const initial: T = { child: { count: 10 } };
+          const initial: T = { child: { count: 0 } };
+
           const lens = events.json<T>(initial).lens((root) => root.child);
-          const res = await lens.get();
-          expect(res).to.eql(initial.child);
-          dispose();
-        });
+          expect(lens.current).to.eql({ count: 0 });
 
-        e.it('throw: root object not derived', async () => {
-          const { events, dispose } = Setup.controller();
-          const json = events.json<T>(undefined as any); // NB: No initial object.
-          const lens = json.lens((root) => root.child);
-          await expectError(lens.get, 'Lens root object could not be derived');
-          dispose();
-        });
-
-        e.it('throw: child target not derived', async () => {
-          const { events, dispose } = Setup.controller();
-          const initial: T = { child: { count: 10 } };
-          const json = events.json<T>(initial);
-          const lens = json.lens((root) => null as any); // NB: fake not returning the lens target.
-          await expectError(lens.get, 'Lens target child could not be derived');
+          await lens.patch((target, ctx) => (target.count += 5));
+          expect(lens.current).to.eql({ count: 5 });
           dispose();
         });
       });
@@ -443,18 +429,12 @@ export default Test.describe('JsonBus', (e) => {
           const lens = events.json<T>(initial).lens((root) => root.child);
           await lens.patch((target, ctx) => (target.count += 5));
 
-          expect(await lens.get()).to.eql({ count: 5 });
+          expect(lens.current).to.eql({ count: 5 });
           dispose();
         });
 
         e.it('throw: root/target objects not derived', async () => {
           const { events, dispose } = Setup.controller();
-
-          // NB: No initial (root) object.
-          await expectError(async () => {
-            const lens = events.json<T>(undefined as any).lens((root) => root.child);
-            await lens.patch((doc) => doc.count++);
-          }, 'Lens root object could not be derived');
 
           // NB: no target supplied from factory.
           await expectError(async () => {
