@@ -200,6 +200,8 @@ export function JsonBusEvents(args: {
     const nil = (value: any) => typeof value !== 'object' || value === null;
 
     const lens: t.JsonLens<L> = {
+      $: args.root.$.pipe(map((e) => args.target(e.value))),
+
       get current() {
         return args.target(args.root.current);
       },

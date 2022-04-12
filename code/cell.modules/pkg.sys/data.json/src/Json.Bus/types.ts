@@ -89,6 +89,7 @@ export type JsonState<T extends O = O> = {
 };
 
 export type JsonLens<L extends O = O> = {
+  readonly $: t.Observable<L>;
   readonly current: L;
   patch(fn: JsonMutation<L>, options?: { timeout?: Milliseconds }): Promise<void>;
 };

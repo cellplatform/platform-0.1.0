@@ -407,18 +407,45 @@ export default Test.describe('JsonBus', (e) => {
     e.describe('json.lens (method)', (e) => {
       type T = { child: { count: number } };
 
-      e.describe('lens.current', (e) => {
-        e.it('lens.current', async () => {
-          const { events, dispose } = Setup.controller();
-          const initial: T = { child: { count: 0 } };
+      e.it('lens.current', async () => {
+        const { events, dispose } = Setup.controller();
+        const initial: T = { child: { count: 0 } };
 
-          const lens = events.json<T>(initial).lens((root) => root.child);
-          expect(lens.current).to.eql({ count: 0 });
+        const lens = events.json<T>(initial).lens((root) => root.child);
+        expect(lens.current).to.eql({ count: 0 });
 
-          await lens.patch((target, ctx) => (target.count += 5));
-          expect(lens.current).to.eql({ count: 5 });
-          dispose();
-        });
+        await lens.patch((target) => (target.count += 5));
+        expect(lens.current).to.eql({ count: 5 });
+        dispose();
+      });
+
+      e.it('lens.$', async () => {
+        const { events, dispose } = Setup.controller();
+        const initial: T = { child: { count: 0 } };
+
+        const lens = events.json<T>(initial).lens((root) => root.child);
+
+        const fired: T['child'][] = [];
+        lens.$.subscribe((e) => fired.push(e));
+
+        await lens.patch((target) => (target.count += 5));
+        expect(fired.length).to.eql(2);
+        expect(fired[0]).to.eql({ count: 0 });
+        expect(fired[1]).to.eql({ count: 5 });
+
+        dispose();
+      });
+
+      e.it('lens (target [root])', async () => {
+        const { events, dispose } = Setup.controller();
+        const initial: T = { child: { count: 0 } };
+
+        const lens = events.json<T>(initial).lens((root) => root);
+        expect(lens.current).to.eql(initial);
+
+        await lens.patch((target, ctx) => (target.child.count += 5));
+        expect(lens.current).to.eql({ child: { count: 5 } });
+        dispose();
       });
 
       e.describe('lens.patch', (e) => {
