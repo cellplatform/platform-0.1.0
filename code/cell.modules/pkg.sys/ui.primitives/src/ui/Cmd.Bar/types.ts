@@ -1,16 +1,8 @@
 import * as t from '../../common/types';
 
 type Id = string;
-export type CmdBarInstance = { bus: t.EventBus<any>; id: Id };
 
-/**
- * State
- */
-export type CmdBarState = {
-  history?: { events: t.EventHistory; total: number };
-  text?: string;
-  spinning?: boolean;
-};
+export type CmdBarInstance = { bus: t.EventBus<any>; id: Id };
 
 /**
  * [Event] API.
@@ -27,11 +19,11 @@ export type CmdBarEvents = {
   dispose$: t.Observable<void>;
   action: {
     $: t.Observable<CmdBarAction>;
-    fire(args: { text: string }): void;
+    fire(args: { text: string; kind: t.CmdTextboxActionKind }): void;
   };
   text: {
     changed$: t.Observable<CmdBarTextChange>;
-    changed(args: { from: string; to: string }): void;
+    change(args: { from: string; to: string }): void;
   };
 };
 
@@ -47,7 +39,11 @@ export type CmdBarActionEvent = {
   type: 'sys.ui.CmdBar/Action';
   payload: CmdBarAction;
 };
-export type CmdBarAction = { instance: Id; text: string };
+export type CmdBarAction = {
+  instance: Id;
+  text: string;
+  kind: t.CmdTextboxActionKind;
+};
 
 /**
  * Fires when the textbox changes.

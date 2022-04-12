@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { CmdTextbox } from '../Cmd.Textbox';
 import { CmdBarEventPipe } from './ui/EventPipe';
 import { color, css, CssValue, FC, t } from './common';
-import { CmdBarEvents, CmdBarState } from './logic';
+import { CmdBarEvents, CmdBarController } from './logic';
 
 /**
  * Types
@@ -12,11 +12,11 @@ export type CmdBarPart = 'Input' | 'Events';
 
 export type CmdBarProps = {
   instance: t.CmdBarInstance;
-  state?: t.CmdBarState;
   parts?: CmdBarPart[];
   cornerRadius?: [number, number, number, number];
   backgroundColor?: string | number;
-  textbox?: { placeholder?: string; spinner?: boolean };
+  text?: string;
+  textbox?: { placeholder?: string; spinning?: boolean; pending?: boolean };
   style?: CssValue;
   onChange?: t.CmdTextboxChangeEventHandler;
   onAction?: t.CmdTextboxActionEventHandler;
@@ -32,7 +32,7 @@ const constants = { PARTS };
  * Component
  */
 export const View: React.FC<CmdBarProps> = (props) => {
-  const { instance, state } = props;
+  const { instance } = props;
   const { parts = ['Input', 'Events'] } = props;
 
   const borderRadius = props.cornerRadius
@@ -97,21 +97,22 @@ export const View: React.FC<CmdBarProps> = (props) => {
       elements.push(
         <div {...styles.input} key={elements.length}>
           <CmdTextbox
-            text={state?.text ?? ''}
             theme={'Dark'}
+            text={props.text ?? ''}
             placeholder={props.textbox?.placeholder}
-            spinner={props.textbox?.spinner ?? state?.spinning}
+            spinner={props.textbox?.spinning}
+            pending={props.textbox?.pending}
+            style={{ paddingLeft: 8 }}
             onChange={(e) => {
               const { from, to } = e;
-              events?.text.changed({ from, to });
               props.onChange?.(e);
+              events?.text.change({ from, to });
             }}
             onAction={(e) => {
-              const { text } = e;
-              events?.action.fire({ text });
+              const { kind, text } = e;
               props.onAction?.(e);
+              events?.action.fire({ kind, text });
             }}
-            style={{ paddingLeft: 8 }}
           />
         </div>,
       );
@@ -121,12 +122,7 @@ export const View: React.FC<CmdBarProps> = (props) => {
       appendDivider();
       elements.push(
         <div {...styles.events} key={elements.length}>
-          {
-            <CmdBarEventPipe
-              history={state?.history?.events}
-              iconEdge={isFirst ? 'Left' : 'Right'}
-            />
-          }
+          {<CmdBarEventPipe history={[]} iconEdge={isFirst ? 'Left' : 'Right'} />}
         </div>,
       );
     }
@@ -145,14 +141,14 @@ export const View: React.FC<CmdBarProps> = (props) => {
 type Fields = {
   constants: typeof constants;
   Events: typeof CmdBarEvents;
-  State: typeof CmdBarState;
+  Controller: typeof CmdBarController;
 };
 export const CmdBar = FC.decorate<CmdBarProps, Fields>(
   View,
   {
     constants,
     Events: CmdBarEvents,
-    State: CmdBarState,
+    Controller: CmdBarController,
   },
   { displayName: 'CmdBar' },
 );

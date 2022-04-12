@@ -56,6 +56,10 @@ const Util = {
     const props = { ...ctx.props, bus };
     return props;
   },
+
+  toTextbox(ctx: Ctx) {
+    return ctx.props.textbox || (ctx.props.textbox = {});
+  },
 };
 
 /**
@@ -76,7 +80,13 @@ export const actions = DevActions<Ctx>()
       netbus,
       props: {
         instance,
-        textbox: { placeholder: 'my command' },
+        textbox: { placeholder: 'my command', pending: false, spinning: false },
+        onChange({ to }) {
+          e.change.ctx((ctx) => (ctx.props.text = to));
+        },
+        onAction(e) {
+          console.log('!onAction', e);
+        },
       },
       debug: { fireCount: 0, busKind: 'netbus' },
     };
@@ -88,18 +98,19 @@ export const actions = DevActions<Ctx>()
     const { ctx } = e;
     const bus = Util.toBus(e.ctx).bus;
 
-    const { instance } = ctx.props;
-    const events = CmdBar.Events({ instance });
+    // const { instance } = ctx.props;
+    // const events = CmdBar.Events({ instance });
 
-    events.$.subscribe((e) => {
-      console.log('CmdBar.Events.$', e);
-    });
+    // events.$.subscribe((e) => {
+    //   console.log('CmdBar.Events.$', e);
+    // });
 
-    const controller = CmdBar.State.Controller({ instance, bus });
-    controller.state$.subscribe((state) => {
-      e.ctx.props.state = state;
-      e.redraw();
-    });
+    // const controller = CmdBar.State.Controller({ instance, bus });
+    // controller.state.$.subscribe((state) => {
+    //   console.log('-------------------------------------------');
+    //   // e.ctx.props.state = state;
+    //   e.redraw();
+    // });
   })
 
   .items((e) => {
@@ -127,12 +138,16 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Props.Textbox');
 
-    const toTextbox = (ctx: Ctx) => ctx.props.textbox || (ctx.props.textbox = {});
+    e.boolean('spinning', (e) => {
+      const textbox = Util.toTextbox(e.ctx);
+      if (e.changing) textbox.spinning = e.changing.next;
+      e.boolean.current = textbox.spinning;
+    });
 
-    e.boolean('spinner', (e) => {
-      const textbox = toTextbox(e.ctx);
-      if (e.changing) textbox.spinner = e.changing.next;
-      e.boolean.current = textbox.spinner;
+    e.boolean('pending', (e) => {
+      const textbox = Util.toTextbox(e.ctx);
+      if (e.changing) textbox.pending = e.changing.next;
+      e.boolean.current = textbox.pending;
     });
 
     e.textbox((config) =>
@@ -141,7 +156,7 @@ export const actions = DevActions<Ctx>()
         .initial(config.ctx.props.textbox?.placeholder || '<nothing>')
         .pipe((e) => {
           if (e.changing?.action === 'invoke') {
-            const textbox = toTextbox(e.ctx);
+            const textbox = Util.toTextbox(e.ctx);
             e.textbox.current = e.changing.next || undefined;
             textbox.placeholder = e.textbox.current;
           }
@@ -193,18 +208,6 @@ export const actions = DevActions<Ctx>()
         />
       );
     });
-    e.hr(1, 0.1);
-    e.component((e) => {
-      return (
-        <ObjectView
-          name={'props.state'}
-          data={Util.toProps(e.ctx).state}
-          style={{ MarginX: 15 }}
-          fontSize={10}
-          expandPaths={['$']}
-        />
-      );
-    });
   })
 
   .subject((e) => {
@@ -225,14 +228,7 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    e.render(
-      <CmdBar
-        {...props}
-        // state={e.ctx.state}
-        style={{ flex: 1 }}
-        onAction={(e) => console.log('onAction:', e)}
-      />,
-    );
+    e.render(<CmdBar {...props} style={{ flex: 1 }} />);
   });
 
 export default actions;

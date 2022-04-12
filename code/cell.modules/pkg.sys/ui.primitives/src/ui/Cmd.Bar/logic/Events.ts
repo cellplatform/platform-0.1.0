@@ -1,7 +1,7 @@
 import { animationFrameScheduler, Subject } from 'rxjs';
 import { filter, observeOn, takeUntil } from 'rxjs/operators';
 
-import { rx, t } from '../common';
+import { rx, t, Json } from '../common';
 
 /**
  * Event API.
@@ -24,20 +24,22 @@ export function CmdBarEvents(args: {
     observeOn(animationFrameScheduler),
   );
 
+  const events = Json.Bus.Events({ instance: args.instance, dispose$ });
+
   const action: t.CmdBarEvents['action'] = {
     $: rx.payload<t.CmdBarActionEvent>($, 'sys.ui.CmdBar/Action'),
     fire(args) {
-      const { text } = args;
+      const { text, kind } = args;
       bus.fire({
         type: 'sys.ui.CmdBar/Action',
-        payload: { instance, text },
+        payload: { instance, text, kind },
       });
     },
   };
 
   const text: t.CmdBarEvents['text'] = {
     changed$: rx.payload<t.CmdBarTextChangeEvent>($, 'sys.ui.CmdBar/TextChanged'),
-    changed(args) {
+    change(args) {
       const { from, to } = args;
       bus.fire({
         type: 'sys.ui.CmdBar/TextChanged',
@@ -50,7 +52,7 @@ export function CmdBarEvents(args: {
    * API
    */
   const api: t.CmdBarEventsDisposable = {
-    instance: { bus: rx.bus.instance(bus), id: instance },
+    instance: events.instance,
     $,
     dispose,
     dispose$,
