@@ -48,6 +48,16 @@ export function CmdBarEvents(args: {
     },
   };
 
+  const focus: t.CmdBarEvents['focus'] = {
+    $: rx.payload<t.CmdBarFocusEvent>($, 'sys.ui.CmdBar/Focus'),
+    fire(focus = true) {
+      bus.fire({
+        type: 'sys.ui.CmdBar/Focus',
+        payload: { instance, focus },
+      });
+    },
+  };
+
   /**
    * API
    */
@@ -58,6 +68,7 @@ export function CmdBarEvents(args: {
     dispose$,
     action,
     text,
+    focus,
     clone() {
       const clone = { ...api };
       delete (clone as any).dispose;

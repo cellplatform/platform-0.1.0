@@ -10,6 +10,7 @@ type Ctx = {
   netbus: t.NetworkBus<any>;
   props: CmdBarProps;
   debug: Debug;
+  events: t.CmdBarEvents;
 };
 
 type Debug = {
@@ -75,6 +76,8 @@ export const actions = DevActions<Ctx>()
     const netbus = NetworkBusMock({ local: 'local-id', remotes: ['peer-1', 'peer-2'] });
     const instance = { bus, id };
 
+    const events = CmdBar.Events({ instance });
+
     const ctx: Ctx = {
       bus,
       netbus,
@@ -89,6 +92,7 @@ export const actions = DevActions<Ctx>()
         },
       },
       debug: { fireCount: 0, busKind: 'netbus' },
+      events,
     };
 
     return ctx;
@@ -96,21 +100,6 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx } = e;
-    const bus = Util.toBus(e.ctx).bus;
-
-    // const { instance } = ctx.props;
-    // const events = CmdBar.Events({ instance });
-
-    // events.$.subscribe((e) => {
-    //   console.log('CmdBar.Events.$', e);
-    // });
-
-    // const controller = CmdBar.State.Controller({ instance, bus });
-    // controller.state.$.subscribe((state) => {
-    //   console.log('-------------------------------------------');
-    //   // e.ctx.props.state = state;
-    //   e.redraw();
-    // });
   })
 
   .items((e) => {
@@ -132,10 +121,8 @@ export const actions = DevActions<Ctx>()
         }),
     );
 
-    e.hr();
-  })
+    e.hr(1, 0.1);
 
-  .items((e) => {
     e.title('Props.Textbox');
 
     e.boolean('spinning', (e) => {
@@ -167,7 +154,16 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('bus');
+    e.title('Events');
+
+    e.button('⚡️ Focus', (e) => e.ctx.events.focus.fire());
+    e.button('⚡️ Focus (blur)', (e) => e.ctx.events.focus.fire(false));
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('EventBus');
 
     e.select((config) => {
       config

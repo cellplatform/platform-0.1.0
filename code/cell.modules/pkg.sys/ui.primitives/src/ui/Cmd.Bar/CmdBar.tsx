@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
-import { CmdTextbox } from '../Cmd.Textbox';
+import { CmdTextbox, CmdTextboxProps } from '../Cmd.Textbox';
 import { CmdBarEventPipe } from './ui/EventPipe';
 import { color, css, CssValue, FC, t } from './common';
 import { CmdBarEvents, CmdBarController } from './logic';
