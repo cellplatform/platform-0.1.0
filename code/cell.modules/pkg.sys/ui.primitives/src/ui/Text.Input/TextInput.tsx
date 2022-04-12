@@ -1,13 +1,10 @@
-import { css, CssValue } from '@platform/css';
-import { MeasureSize } from '@platform/react';
-import { defaultValue, time } from '@platform/util.value';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { R, t, DEFAULT } from './common';
+import { R, t, DEFAULT, time, css, MeasureSize } from './common';
 import { HtmlInput } from './TextInput.Html';
-import { toTextInputCss, toTextCss, Util } from './util';
+import { Util } from './Util';
 
 export { TextInputProps } from './types';
 
@@ -26,10 +23,10 @@ export class TextInput extends React.PureComponent<t.TextInputProps, TextInputSt
    * [Static]
    */
   public static DefaultTextStyle = DEFAULT.TEXT.STYLE;
-  public static toTextCss = toTextCss;
+  public static toTextCss = Util.toTextCss;
   public static measure = (props: t.TextInputProps) => {
     const { value: content, valueStyle = DEFAULT.TEXT.STYLE } = props;
-    const style = toTextCss(valueStyle);
+    const style = Util.toTextCss(valueStyle);
     return MeasureSize.measure({ content, ...style });
   };
 
@@ -106,7 +103,7 @@ export class TextInput extends React.PureComponent<t.TextInputProps, TextInputSt
    */
   public focus(isFocused?: boolean) {
     if (this.input) {
-      if (defaultValue(isFocused, true)) {
+      if (isFocused ?? true) {
         this.input.focus();
       } else {
         this.blur();
@@ -161,7 +158,7 @@ export class TextInput extends React.PureComponent<t.TextInputProps, TextInputSt
    */
 
   public render() {
-    const isEnabled = defaultValue(this.props.isEnabled, true);
+    const isEnabled = this.props.isEnabled ?? true;
     const {
       value = '',
       isPassword = false,
@@ -346,7 +343,7 @@ export const toWidth = (props: t.TextInputProps) => {
   }
 
   const value = props.value;
-  const maxWidth = defaultValue(props.maxWidth, -1);
+  const maxWidth = props.maxWidth ?? -1;
 
   let width = TextInput.measure(props).width;
   width = value === undefined || value === '' ? toMinWidth(props) : width;
@@ -376,8 +373,8 @@ export const toMinWidth = (props: t.TextInputProps): number => {
 };
 
 export const placeholderStyle = (props: t.TextInputProps) => {
-  const isEnabled = defaultValue(props.isEnabled, true);
+  const isEnabled = props.isEnabled ?? true;
   const { valueStyle = DEFAULT.TEXT.STYLE, placeholderStyle } = props;
   const styles = { ...R.clone(valueStyle), ...placeholderStyle };
-  return toTextInputCss(isEnabled, styles);
+  return Util.toTextInputCss(isEnabled, styles);
 };

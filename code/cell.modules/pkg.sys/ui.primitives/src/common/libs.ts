@@ -12,6 +12,7 @@ export { log } from '@platform/log/lib/client';
 export { css, color, CssValue, formatColor, Style } from '@platform/css';
 export {
   Mouse,
+  MeasureSize,
   useResizeObserver,
   useEventListener,
   drag,

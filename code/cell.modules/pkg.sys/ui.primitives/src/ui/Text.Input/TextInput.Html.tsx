@@ -3,9 +3,9 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { R, t, DEFAULT } from './common';
-import { toTextInputCss } from './util';
+import { Util } from './Util';
 
-import { color as colorUtil, css, CssValue } from '@platform/css';
+import { color, css } from '@platform/css';
 import { events, containsFocus } from '@platform/react';
 
 export type IHtmlInputState = { value?: string };
@@ -173,11 +173,11 @@ export class HtmlInput extends React.PureComponent<t.IHtmlInputProps, IHtmlInput
       styles.base = {
         ...styles.base,
         '::selection': {
-          backgroundColor: colorUtil.format(selectionBackground),
+          backgroundColor: color.format(selectionBackground),
         },
       } as any;
     }
-    styles.base = R.merge(styles.base, toTextInputCss(isEnabled, valueStyle));
+    styles.base = R.merge(styles.base, Util.toTextInputCss(isEnabled, valueStyle));
     styles.base.opacity = isEnabled ? 1 : disabledOpacity;
 
     return (
@@ -320,18 +320,13 @@ export class HtmlInput extends React.PureComponent<t.IHtmlInputProps, IHtmlInput
  */
 
 export const getChangedCharacter = (from: string, to: string) => {
-  if (to.length === from.length) {
-    return '';
-  }
-  if (to.length < from.length) {
-    return '';
-  }
+  if (to.length === from.length) return '';
+  if (to.length < from.length) return '';
+
   let index = 0;
   for (const toChar of to) {
     const fromChar = from[index];
-    if (toChar !== fromChar) {
-      return toChar; // Exit - changed character found.
-    }
+    if (toChar !== fromChar) return toChar; // Exit - changed character found.
     index += 1;
   }
   return ''; // No change.
@@ -341,7 +336,7 @@ export const formatValue = (args: { value?: string; maxLength?: number }) => {
   const { maxLength } = args;
   let value = args.value || '';
   if (maxLength !== undefined && value.length > maxLength) {
-    value = value.substr(0, maxLength);
+    value = value.substring(0, maxLength);
   }
   return value;
 };

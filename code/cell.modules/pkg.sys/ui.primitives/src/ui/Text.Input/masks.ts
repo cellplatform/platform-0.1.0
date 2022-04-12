@@ -1,9 +1,8 @@
-import { ITextInputMask } from './types';
-import { value } from '@platform/util.value';
+import { value, t } from './common';
 
 /**
  * Ensure entered text is only a number.
  */
-export const isNumeric = (e: ITextInputMask): boolean => {
+export function isNumeric(e: t.ITextInputMask) {
   return value.isNumeric(e.char);
-};
+}
