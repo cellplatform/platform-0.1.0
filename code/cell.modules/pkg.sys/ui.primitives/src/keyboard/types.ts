@@ -5,7 +5,7 @@ import * as t from '../types';
 
 type Id = string;
 export type KeyboardStage = 'Down' | 'Up';
-export type KeyboardModifierEdges = ['Left'] | ['Right'] | ['Left' | 'Right'];
+export type KeyboardModifierEdges = [] | ['Left'] | ['Right'] | ['Left' | 'Right'];
 
 export type KeyboardKeyFlags = {
   readonly down: boolean;
@@ -21,29 +21,24 @@ export type KeyboardKeyFlags = {
 /**
  * State.
  */
-export type KeyboardKey = {
-  key: string;
-  code: string;
-  is: KeyboardKeyFlags;
-};
+export type KeyboardKey = { key: string; code: string; is: KeyboardKeyFlags };
 export type KeyboardState = {
   current: {
     modified: boolean;
-    modifiers: KeyboardModifierKeys;
-    modifierFlags: KeyboardModifierKeyFlags;
+    modifierKeys: KeyboardModifierKeys;
+    modifiers: KeyboardModifierFlags;
     pressed: KeyboardKey[];
   };
   last?: t.KeyboardKeypress;
 };
 
-export type KeyboardModifierKeyState = false | KeyboardModifierEdges;
 export type KeyboardModifierKeys = {
-  shift: KeyboardModifierKeyState;
-  ctrl: KeyboardModifierKeyState;
-  alt: KeyboardModifierKeyState;
-  meta: KeyboardModifierKeyState;
+  shift: KeyboardModifierEdges;
+  ctrl: KeyboardModifierEdges;
+  alt: KeyboardModifierEdges;
+  meta: KeyboardModifierEdges;
 };
-export type KeyboardModifierKeyFlags = {
+export type KeyboardModifierFlags = {
   shift: boolean;
   ctrl: boolean;
   alt: boolean;

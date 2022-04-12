@@ -61,7 +61,7 @@ export function KeyboardStateMonitor(args: {
     ) => {
       if (!(code === `${match}Left` || code === `${match}Right`)) return;
 
-      let values = (target[targetField] === false ? [] : target[targetField]) as string[];
+      let values = target[targetField] as string[];
       const isLeft = code.endsWith('Left');
       const isRight = code.endsWith('Right');
 
@@ -74,17 +74,17 @@ export function KeyboardStateMonitor(args: {
       }
 
       values = R.uniq(values);
-      target[targetField] = (values.length === 0 ? false : values) as t.KeyboardModifierKeyState;
+      target[targetField] = (values.length === 0 ? [] : values) as t.KeyboardModifierEdges;
     };
 
     change((state) => {
-      const modifiers = state.current.modifiers;
+      const modifiers = state.current.modifierKeys;
       update(modifiers, 'shift', 'Shift');
       update(modifiers, 'ctrl', 'Control');
       update(modifiers, 'alt', 'Alt');
       update(modifiers, 'meta', 'Meta');
       state.current.modified = Object.values(modifiers).some((v) => Boolean(v));
-      state.current.modifierFlags = Util.toModifierFlags(modifiers);
+      state.current.modifiers = Util.toModifierFlags(modifiers);
     });
   };
 
@@ -147,10 +147,8 @@ export function KeyboardStateMonitor(args: {
  */
 
 export const Util = {
-  toModifierFlags(input: t.KeyboardModifierKeys): t.KeyboardModifierKeyFlags {
-    const flag = (value: t.KeyboardModifierKeyState) => {
-      return Array.isArray(value) ? value.length > 0 : Boolean(value);
-    };
+  toModifierFlags(input: t.KeyboardModifierKeys): t.KeyboardModifierFlags {
+    const flag = (value: t.KeyboardModifierEdges) => (value || []).length > 0;
     return {
       shift: flag(input.shift),
       alt: flag(input.alt),
