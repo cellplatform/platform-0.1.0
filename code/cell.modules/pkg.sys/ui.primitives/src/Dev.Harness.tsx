@@ -16,7 +16,6 @@ const imports = {
   DotTabstrip: import('./ui/DotTabstrip/dev/DEV'),
   Zoom: import('./ui/Zoom/DEV'),
   PropList: import('./ui/PropList/dev/DEV'),
-  TextEditor: import('./ui/TextEditor/DEV'),
   QRCode: import('./ui/QRCode/dev/DEV'),
   Semver: import('./ui/Semver/dev/DEV'),
 
@@ -52,6 +51,7 @@ const imports = {
 
   TextCopy: import('./ui/Text.Copy/dev/DEV'),
   TextSyntax: import('./ui/Text.Syntax/dev/DEV'),
+  TextInput: import('./ui/Text.Input/dev/DEV'),
 
   UnitTests: import('./Dev.UnitTests'),
 };
