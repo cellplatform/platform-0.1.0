@@ -2,18 +2,18 @@ import { useEffect, useState } from 'react';
 import { filter } from 'rxjs/operators';
 
 import { rx, t } from '../common';
-import { StateController } from './State.Controller';
+import { CmdCardController } from './Controller';
 
-export type UseStateControllerArgs = t.CmdCardStateControllerArgs & {
+export type UseCmdCardControllerArgs = t.CmdCardControllerArgs & {
   enabled?: boolean;
-  controller?: (args: t.CmdCardStateControllerArgs) => t.CmdCardStateController; // Wrapper controller (the call-site's behavioral logic)
+  controller?: (args: t.CmdCardControllerArgs) => t.CmdCardEventsDisposable; // Wrapper controller (the call-site's behavioral logic)
   onChange?: (e: t.CmdCardState) => void;
 };
 
 /**
- * <CmdCard> controller state.
+ * Stateful <CmdCard> controller.
  */
-export function useStateController(args: UseStateControllerArgs) {
+export function useCmdCardController(args: UseCmdCardControllerArgs) {
   const { instance, enabled = true } = args;
   const busid = rx.bus.instance(instance.bus);
   const [state, setState] = useState<undefined | t.CmdCardState>(args.initial);
@@ -25,11 +25,11 @@ export function useStateController(args: UseStateControllerArgs) {
     const controller =
       typeof args.controller === 'function'
         ? args.controller(args)
-        : StateController({ instance, initial: state });
+        : CmdCardController({ instance, initial: state });
 
-    controller.state$.pipe(filter(() => enabled)).subscribe((next) => {
-      setState(next);
-      args.onChange?.(next);
+    controller.state.$.pipe(filter(() => enabled)).subscribe((next) => {
+      setState(next.value);
+      args.onChange?.(next.value);
     });
 
     return () => controller.dispose();

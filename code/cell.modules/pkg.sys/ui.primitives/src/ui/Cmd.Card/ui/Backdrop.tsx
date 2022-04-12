@@ -21,6 +21,7 @@ export type BackdropProps = {
 export const Backdrop: React.FC<BackdropProps> = (props) => {
   const { instance, state, size } = props;
   const content = useRenderPart('Backdrop', { instance, size, state });
+  const textbox = state.commandbar.textbox;
 
   /**
    * [Render]
@@ -44,7 +45,15 @@ export const Backdrop: React.FC<BackdropProps> = (props) => {
     <div {...css(styles.base, props.style)}>
       <div {...styles.top}>{content.render()}</div>
       <div {...styles.bottom}>
-        <CmdBar instance={instance} state={state.commandbar} />
+        <CmdBar
+          instance={instance}
+          text={state.commandbar.text}
+          textbox={{
+            spinning: textbox.spinning,
+            placeholder: textbox.placeholder,
+            pending: textbox.pending,
+          }}
+        />
       </div>
     </div>
   );
@@ -57,6 +66,6 @@ export const BackdropMemo = React.memo(Backdrop, (prev, next) => {
   if (Util.instance.isChanged(prev.instance, next.instance)) return false;
   if (!R.equals(prev.size, next.size)) return false;
   if (!R.equals(prev.state.backdrop, next.state.backdrop)) return false;
-  if (CmdBar.State.changed(prev.state.commandbar, next.state.commandbar)) return false;
+  if (!R.equals(prev.state.commandbar, next.state.commandbar)) return false;
   return true;
 });

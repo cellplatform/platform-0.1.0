@@ -13,7 +13,7 @@ export const Util = {
     partial?: t.PartialDeep<t.CmdCardState<A, B>>,
   ): t.CmdCardState<A, B> {
     const base: t.CmdCardState<A, B> = {
-      commandbar: {},
+      ready: false,
       body: {
         render: Util.renderNull,
         state: {} as any,
@@ -23,8 +23,16 @@ export const Util = {
         render: Util.renderNull,
         state: {} as any,
       },
+      commandbar: {
+        text: '',
+        textbox: { pending: false, spinning: false, placeholder: 'command' },
+      },
     };
     return partial ? R.mergeDeepRight(base, partial as any) : base;
+  },
+
+  wrangleStateInput(input?: t.CmdCardState | (() => t.CmdCardState)) {
+    return typeof input === 'function' ? input() : input;
   },
 
   /**

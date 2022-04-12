@@ -6,7 +6,7 @@ const Setup = {
   instance: (): t.CmdCardInstance => ({ bus: rx.bus(), id: `foo.${slug()}` }),
   controller() {
     const instance = Setup.instance();
-    const controller = CmdCard.State.Controller({ instance });
+    const controller = CmdCard.Controller({ instance });
     const events = CmdCard.Events({ instance });
     const dispose = () => {
       controller.dispose();
@@ -31,6 +31,19 @@ export default Test.describe('Cmd.Card', (e) => {
       expect((clone as any).dispose).to.eql(undefined);
     });
 
+    e.it('initial', () => {
+      const render = () => null;
+      const initial = () => Util.defaultState({ body: { render } });
+
+      const test = (initial: t.CmdCardControllerArgs['initial']) => {
+        const events = CmdCard.Events({ instance: { bus: rx.bus(), id: 'foo' }, initial });
+        expect(events.state.current.body.render).to.equal(render);
+      };
+
+      test(initial());
+      test(initial);
+    });
+
     e.describe('state', (e) => {
       e.it('get (default state)', async () => {
         const { dispose, events } = Setup.controller();
@@ -50,7 +63,7 @@ export default Test.describe('Cmd.Card', (e) => {
         const { dispose, events } = Setup.controller();
 
         const fired: t.CmdCardState[] = [];
-        events.state$.subscribe((e) => fired.push(e));
+        events.state.$.subscribe((e) => fired.push(e.value));
 
         await events.state.patch((prev) => (prev.commandbar.text = 'hello'));
         expect(fired.length).to.eql(2);
@@ -58,6 +71,21 @@ export default Test.describe('Cmd.Card', (e) => {
 
         dispose();
       });
+    });
+  });
+
+  e.describe('Controller', (e) => {
+    e.it('initial', () => {
+      const render = () => null;
+      const initial = () => Util.defaultState({ body: { render } });
+
+      const test = (initial: t.CmdCardControllerArgs['initial']) => {
+        const events = CmdCard.Controller({ instance: { bus: rx.bus(), id: 'foo' }, initial });
+        expect(events.state.current.body.render).to.equal(render);
+      };
+
+      test(initial());
+      test(initial);
     });
   });
 });

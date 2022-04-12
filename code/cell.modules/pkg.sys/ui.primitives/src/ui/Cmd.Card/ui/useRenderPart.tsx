@@ -23,8 +23,6 @@ export function useRenderPart<S extends O = O>(
   const busid = rx.bus.instance(instance.bus);
   const cardRef = useRef<undefined | t.CmdCardEventsDisposable>();
 
-  console.log('use part', part);
-
   useEffect(() => {
     return () => {
       cardRef.current?.dispose();
@@ -46,10 +44,11 @@ export function useRenderPart<S extends O = O>(
     },
 
     get state() {
+      let _lens: t.JsonLens<S> | undefined;
       const api: P['state'] = {
         current: toPart<S>(state, part),
         async patch(fn) {
-          const lens = props.card.state.lens<S>((root) => toPart(root, part));
+          const lens = _lens || (_lens = props.card.state.lens<S>((root) => toPart(root, part)));
           await lens.patch(fn);
         },
       };
@@ -64,7 +63,6 @@ export function useRenderPart<S extends O = O>(
     part,
     props,
     render(): JSX.Element | undefined | null {
-      console.log('render', part, state);
       if (part === 'Body') return state.body.render?.(props);
       if (part === 'Backdrop') return state.backdrop.render?.(props);
       return null;

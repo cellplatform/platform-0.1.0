@@ -196,7 +196,8 @@ export const actions = DevActions<Ctx>()
 
     e.button('spinning (toggle)', async (e) => {
       await e.ctx.events.state.patch((state) => {
-        state.commandbar.spinning = !Boolean(state.commandbar.spinning);
+        const textbox = state.commandbar.textbox;
+        textbox.spinning = !Boolean(textbox.spinning);
       });
     });
 

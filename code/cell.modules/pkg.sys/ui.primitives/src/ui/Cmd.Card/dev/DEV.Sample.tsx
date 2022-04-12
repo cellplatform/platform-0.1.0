@@ -12,10 +12,10 @@ export type DevSampleProps = {
 };
 
 /**
- * Sample View
+ * UI (Component)
  */
 export const DevSample: React.FC<DevSampleProps> = (args) => {
-  const controller = CmdCard.State.useController({
+  const controller = CmdCard.useController({
     instance: args.props.instance,
     enabled: args.isControllerEnabled,
     onChange: args.onStateChange,
@@ -26,19 +26,25 @@ export const DevSample: React.FC<DevSampleProps> = (args) => {
 };
 
 /**
- * Sample Controller ("Wrapper")
+ * CONTROLLER (logic "wrapper")
  */
-export function DevSampleController(args: t.CmdCardStateControllerArgs) {
+export function DevSampleController(args: t.CmdCardControllerArgs) {
   const initial = Util.defaultState({
     body: { render: SampleRenderer.body },
     backdrop: { render: SampleRenderer.backdrop },
   });
 
-  const card = CmdCard.State.Controller({ ...args, initial });
+  const card = CmdCard.Controller({ ...args, initial });
 
-  card.state$.subscribe((e) => {
-    console.log('ff', e);
-  });
+  console.group('🌳 DevSampleController');
+  console.log('card', card);
+  console.log('card.state', card.state.current);
+  console.log('initial', initial);
+  console.groupEnd();
+
+  // card.state$.subscribe((e) => {
+  //   console.log('ff', e);
+  // });
 
   return card;
 }

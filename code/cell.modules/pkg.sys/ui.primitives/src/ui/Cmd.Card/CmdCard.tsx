@@ -2,7 +2,7 @@ import React from 'react';
 
 import { FC, t, CssValue, css, constants, useResizeObserver, Util } from './common';
 import { CmdCardLayout, CmdCardLayoutProps } from './ui/Layout';
-import { CmdCardEvents, CmdCardState } from './logic';
+import { CmdCardEvents, CmdCardController, useCmdCardController } from './logic';
 import { CmdStateInfo } from './ui/Info';
 
 import { Card } from '../Card';
@@ -60,19 +60,21 @@ const View: React.FC<CmdCardProps> = (props) => {
  */
 type Fields = {
   constants: typeof constants;
+  Info: typeof CmdStateInfo;
   Layout: React.FC<CmdCardLayoutProps>;
   Events: typeof CmdCardEvents;
-  State: typeof CmdCardState;
-  Info: typeof CmdStateInfo;
+  Controller: typeof CmdCardController;
+  useController: typeof useCmdCardController;
 };
 export const CmdCard = FC.decorate<CmdCardProps, Fields>(
   View,
   {
     constants,
+    Info: CmdStateInfo,
     Layout: CmdCardLayout,
     Events: CmdCardEvents,
-    State: CmdCardState,
-    Info: CmdStateInfo,
+    Controller: CmdCardController,
+    useController: useCmdCardController,
   },
   { displayName: 'CmdCard' },
 );
