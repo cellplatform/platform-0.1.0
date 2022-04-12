@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 
 import { Button } from '../../ui.ref/button/Button';
 import { Spinner } from '../../ui.ref/spinner/Spinner';
-import { TextInput } from '../../ui.ref/text/TextInput';
-import { color, COLORS, css, CssValue, FC, t } from '../common';
+import { color, COLORS, css, CssValue, t } from '../common';
 import { Icons } from '../Icons';
+import { TextInput } from '../Text.Input';
 
 /**
  * Types
@@ -61,17 +61,13 @@ export const CmdTextbox: React.FC<CmdTextboxProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({
-      Flex: 'x-stretch-stretch',
-      minWidth: 240,
-      color: COL_BASE,
-    }),
+    base: css({ minWidth: 240, color: COL_BASE, Flex: 'x-stretch-stretch' }),
     textbox: {
       base: css({ flex: 1, Flex: 'x-center-center' }),
       input: css({
-        top: -5,
-        flex: 1,
         position: 'relative',
+        flex: 1,
+        top: -5,
         borderBottom: `dashed 1px ${color.format(isDark ? 0.2 : -0.1)}`,
       }),
     },
