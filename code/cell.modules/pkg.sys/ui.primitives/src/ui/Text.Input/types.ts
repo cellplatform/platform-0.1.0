@@ -2,6 +2,10 @@ import { Subject } from 'rxjs';
 
 import * as t from '../../common/types';
 
+type Id = string;
+
+export type TextInputInstance = { bus: t.EventBus<any>; id: Id };
+
 /**
  * Component
  */
@@ -36,6 +40,7 @@ export type IHtmlInputState = {
 export type TextInputProps = t.TextInputFocusAction &
   t.ITextInputEvents &
   IInputValue & {
+    instance?: TextInputInstance;
     events$?: Subject<t.TextInputEvent>;
     isEnabled?: boolean;
     isPassword?: boolean;
@@ -101,7 +106,7 @@ export type TextProps = TextStyle & {
  */
 export type ITextModifierKeys = {
   alt: boolean;
-  control: boolean;
+  ctrl: boolean;
   shift: boolean;
   meta: boolean;
 };

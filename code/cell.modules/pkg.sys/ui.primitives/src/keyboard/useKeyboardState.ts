@@ -2,11 +2,8 @@ import { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { R, rx, t } from '../common';
-import { DEFAULT } from './constants';
+import { rx, t } from '../common';
 import { KeyboardHookArgs, useKeyboard } from './useKeyboard';
-
-type Id = string;
 
 export type KeyboardStateHookArgs = KeyboardHookArgs;
 

@@ -30,6 +30,7 @@ export type KeyboardState = {
   current: {
     modified: boolean;
     modifiers: KeyboardModifierKeys;
+    modifierFlags: KeyboardModifierKeyFlags;
     pressed: KeyboardKey[];
   };
   last?: t.KeyboardKeypress;
@@ -41,6 +42,12 @@ export type KeyboardModifierKeys = {
   ctrl: KeyboardModifierKeyState;
   alt: KeyboardModifierKeyState;
   meta: KeyboardModifierKeyState;
+};
+export type KeyboardModifierKeyFlags = {
+  shift: boolean;
+  ctrl: boolean;
+  alt: boolean;
+  meta: boolean;
 };
 
 export type KeyboardStateMonitor = Disposable & {

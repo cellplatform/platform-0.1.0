@@ -84,6 +84,7 @@ export function KeyboardStateMonitor(args: {
       update(modifiers, 'alt', 'Alt');
       update(modifiers, 'meta', 'Meta');
       state.current.modified = Object.values(modifiers).some((v) => Boolean(v));
+      state.current.modifierFlags = Util.toModifierFlags(modifiers);
     });
   };
 
@@ -140,3 +141,21 @@ export function KeyboardStateMonitor(args: {
     },
   };
 }
+
+/**
+ * Helpers
+ */
+
+export const Util = {
+  toModifierFlags(input: t.KeyboardModifierKeys): t.KeyboardModifierKeyFlags {
+    const flag = (value: t.KeyboardModifierKeyState) => {
+      return Array.isArray(value) ? value.length > 0 : Boolean(value);
+    };
+    return {
+      shift: flag(input.shift),
+      alt: flag(input.alt),
+      ctrl: flag(input.ctrl),
+      meta: flag(input.meta),
+    };
+  },
+};

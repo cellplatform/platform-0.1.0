@@ -26,7 +26,7 @@ export class HtmlInput extends React.PureComponent<t.IHtmlInputProps, IHtmlInput
 
   private readonly modifierKeys: t.ITextModifierKeys = {
     alt: false,
-    control: false,
+    ctrl: false,
     shift: false,
     meta: false,
   };

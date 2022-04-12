@@ -11,6 +11,7 @@ const STATE: KeyboardState = {
   current: {
     modified: false,
     modifiers: { shift: false, ctrl: false, alt: false, meta: false },
+    modifierFlags: { shift: false, ctrl: false, alt: false, meta: false },
     pressed: [],
   },
 };

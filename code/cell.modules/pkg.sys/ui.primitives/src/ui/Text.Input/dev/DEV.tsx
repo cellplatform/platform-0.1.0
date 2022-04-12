@@ -1,6 +1,7 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { TextInput, TextInputProps } from '..';
+import { t, rx, slug } from '../common';
 
 type Ctx = { props: TextInputProps };
 
@@ -15,6 +16,7 @@ export const actions = DevActions<Ctx>()
 
     const ctx: Ctx = {
       props: {
+        instance: { bus: rx.bus(), id: `foo.${slug()}` },
         placeholder: 'my placeholder',
         placeholderStyle: {
           italic: true,
@@ -22,6 +24,7 @@ export const actions = DevActions<Ctx>()
         },
         focusOnLoad: true,
         focusAction: 'SELECT',
+        // focusAction: 'END',
         onChange(e) {
           change.ctx((ctx) => (ctx.props.value = e.to));
         },
@@ -69,14 +72,11 @@ export const actions = DevActions<Ctx>()
       host: { background: -0.04 },
       layout: {
         label: '<TextInput>',
-        // position: [150, 80],
-        width: 400,
-        // border: -0.1,
+        width: 200,
         cropmarks: -0.2,
-        // background: 1,
       },
     });
-    e.render(<TextInput {...e.ctx.props} />);
+    e.render(<TextInput {...e.ctx.props} style={{ flex: 1 }} />);
   });
 
 export default actions;

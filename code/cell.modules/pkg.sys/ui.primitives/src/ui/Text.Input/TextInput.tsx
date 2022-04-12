@@ -3,8 +3,9 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { R, t, DEFAULT, time, css, MeasureSize } from './common';
-import { HtmlInput } from './TextInput.Html';
+import { HtmlInput } from './TextInput.Html____';
 import { Util } from './Util';
+import { HtmlInput2 } from './ui/Html';
 
 export { TextInputProps } from './types';
 
@@ -214,9 +215,43 @@ export class TextInput extends React.PureComponent<t.TextInputProps, TextInputSt
       </div>
     );
 
-    const elInput = (
-      <HtmlInput
-        ref={this.inputRef}
+    // const elInput = (
+    //   <HtmlInput
+    //     ref={this.inputRef}
+    //     style={styles.input}
+    //     className={this.props.className}
+    //     isEnabled={isEnabled}
+    //     isPassword={isPassword}
+    //     disabledOpacity={disabledOpacity}
+    //     value={value}
+    //     maxLength={this.props.maxLength}
+    //     mask={this.props.mask}
+    //     valueStyle={valueStyle}
+    //     selectOnFocus={this.props.selectOnFocus}
+    //     focusOnLoad={this.props.focusOnLoad}
+    //     focusAction={this.props.focusAction}
+    //     onKeyPress={this.props.onKeyPress}
+    //     onKeyDown={this.props.onKeyDown}
+    //     onKeyUp={this.props.onKeyUp}
+    //     onFocus={this.props.onFocus}
+    //     onBlur={this.props.onBlur}
+    //     onChange={this.handleChange}
+    //     onEnter={this.props.onEnter}
+    //     onEscape={this.props.onEscape}
+    //     onTab={this.props.onTab}
+    //     onDblClick={this.handleInputDblClick}
+    //     spellCheck={this.props.spellCheck}
+    //     autoCapitalize={this.props.autoCapitalize}
+    //     autoCorrect={this.props.autoCorrect}
+    //     autoComplete={this.props.autoComplete}
+    //     selectionBackground={this.props.selectionBackground}
+    //     events$={this.events$}
+    //   />
+    // );
+
+    const elInput = this.props.instance && (
+      <HtmlInput2
+        instance={this.props.instance}
         style={styles.input}
         className={this.props.className}
         isEnabled={isEnabled}
@@ -262,6 +297,7 @@ export class TextInput extends React.PureComponent<t.TextInputProps, TextInputSt
         <div {...css(styles.inner)}>
           {elPlaceholder}
           {elReadOnly}
+          {/* {elInput} */}
           {elInput}
         </div>
       </div>
