@@ -41,7 +41,7 @@ export type TextCopyProps = {
 /**
  * Component
  */
-export const View: React.FC<TextCopyProps> = (props) => {
+const View: React.FC<TextCopyProps> = (props) => {
   const { children, inlineBlock = true, downOffset = 1, icon } = props;
 
   const [isOver, setOver] = useState(false);

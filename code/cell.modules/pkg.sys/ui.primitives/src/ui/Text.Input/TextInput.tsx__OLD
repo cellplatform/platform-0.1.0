@@ -341,7 +341,7 @@ export class TextInput extends React.PureComponent<t.TextInputProps, TextInputSt
     }
   };
 
-  private labelDblClickHandler = (target: t.ITextInputLabelDblClick['target']) => {
+  private labelDblClickHandler = (target: t.TextInputLabelDblClick['target']) => {
     return (e: React.MouseEvent) => {
       /**
        * TODO 🐷

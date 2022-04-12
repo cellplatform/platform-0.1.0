@@ -38,7 +38,7 @@ const DEFAULT = {
 /**
  * Component
  */
-export const View: React.FC<CmdCardInfoProps> = (props) => {
+const View: React.FC<CmdCardInfoProps> = (props) => {
   const { width, minWidth = 230, maxWidth, fields = DEFAULT_FIELDS, state } = props;
 
   const title = fields.includes('Title') ? state.title ?? DEFAULT.title : undefined;

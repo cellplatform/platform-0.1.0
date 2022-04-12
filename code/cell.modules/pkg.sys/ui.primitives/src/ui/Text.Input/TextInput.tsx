@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 
-import { css, DEFAULT, R, rx, t, time } from './common';
+import { css, DEFAULT, R, rx, t, time, FC } from './common';
 import { HtmlInput } from './TextInput.Html';
 import { TextInputProps } from './types';
 import { Util } from './Util';
+import { TextInputEvents, TextInputMasks } from './logic';
 
 export { TextInputProps };
 
-export const TextInput: React.FC<TextInputProps> = (props) => {
+/**
+ * Component
+ */
+const View: React.FC<TextInputProps> = (props) => {
   const {
     value = '',
     isPassword = false,
@@ -43,7 +47,7 @@ export const TextInput: React.FC<TextInputProps> = (props) => {
     // Fire the BEFORE event.
     let isCancelled = false;
     fire({
-      type: 'TEXT_INPUT/changing',
+      type: 'sys.ui.TextInput/Changing',
       payload: {
         ...e,
         get isCancelled() {
@@ -58,21 +62,24 @@ export const TextInput: React.FC<TextInputProps> = (props) => {
     if (isCancelled) return;
 
     // Fire AFTER event.
-    fire({
-      type: 'TEXT_INPUT/changed',
-      payload: e,
-    });
+    fire({ type: 'sys.ui.TextInput/Changed', payload: e });
     props.onChange?.(e);
   };
 
-  const labelDblClickHandler = (target: t.ITextInputLabelDblClick['target']) => {
+  const handleInputDblClick = (e: React.MouseEvent) => {
+    // NB: When the <input> is dbl-clicked and there is no value
+    //     it is deduced that the placeholder was clicked.
+    if (!hasValue) labelDblClickHandler('PLACEHOLDER')(e);
+  };
+
+  const labelDblClickHandler = (target: t.TextInputLabelDblClick['target']) => {
     return (e: React.MouseEvent) => {
       /**
        * TODO 🐷
        * - old event structure
        */
       // fire({
-      //   type: 'TEXT_INPUT/label/dblClick',
+      //   type: 'sys.ui.TextInput/label/dblClick',
       //   payload: {
       //     target,
       //     type: 'DOUBLE_CLICK',
@@ -84,14 +91,6 @@ export const TextInput: React.FC<TextInputProps> = (props) => {
       //   },
       // });
     };
-  };
-
-  const handleInputDblClick = (e: React.MouseEvent) => {
-    if (!hasValue) {
-      // NB: When the <input> is dbl-clicked and there is no value
-      //     it is deduced that the placeholder was clicked.
-      labelDblClickHandler('PLACEHOLDER')(e);
-    }
   };
 
   /**
@@ -120,7 +119,7 @@ export const TextInput: React.FC<TextInputProps> = (props) => {
 
   const elPlaceholder = !hasValue && placeholder && (
     <div
-      {...css(styles.placeholder, placeholderStyle(props))}
+      {...css(styles.placeholder, Util.css.toPlaceholder(props))}
       onDoubleClick={labelDblClickHandler('PLACEHOLDER')}
     >
       {placeholder}
@@ -217,7 +216,7 @@ export const toMinWidth = (props: t.TextInputProps): number => {
     return (
       Util.measure.text({
         children: props.placeholder,
-        style: placeholderStyle(props),
+        style: Util.css.toPlaceholder(props),
       }).width + 10
     );
   }
@@ -225,8 +224,15 @@ export const toMinWidth = (props: t.TextInputProps): number => {
   return -1;
 };
 
-export const placeholderStyle = (props: t.TextInputProps) => {
-  const { isEnabled = true, valueStyle = DEFAULT.TEXT.STYLE, placeholderStyle } = props;
-  const styles = { ...R.clone(valueStyle), ...placeholderStyle };
-  return Util.toTextInputCss(isEnabled, styles);
+/**
+ * Export
+ */
+type Fields = {
+  Events: typeof TextInputEvents;
+  Masks: typeof TextInputMasks;
 };
+export const TextInput = FC.decorate<TextInputProps, Fields>(
+  View,
+  { Events: TextInputEvents, Masks: TextInputMasks },
+  { displayName: 'TextInput' },
+);

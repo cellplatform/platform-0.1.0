@@ -17,7 +17,7 @@ export { EventListProps };
 /**
  * Component
  */
-export const View: React.FC<EventListProps> = (props) => {
+const View: React.FC<EventListProps> = (props) => {
   const { bus, reset$, debug = {} } = props;
   const instance = useRef<t.EventListInstance>(props.instance ?? Util.dummyInstance());
 

@@ -3,7 +3,10 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { TextInput, TextInputProps } from '..';
 import { t, rx, slug } from '../common';
 
-type Ctx = { props: TextInputProps };
+type Ctx = {
+  props: TextInputProps;
+  debug: { isNumericMask: boolean };
+};
 
 /**
  * Actions
@@ -19,13 +22,9 @@ export const actions = DevActions<Ctx>()
         instance: { bus: rx.bus(), id: `foo.${slug()}` },
         isEnabled: true,
         placeholder: 'my placeholder',
-        placeholderStyle: {
-          italic: true,
-          opacity: 0.3,
-        },
+        placeholderStyle: { italic: true, opacity: 0.3 },
         focusOnLoad: true,
-        focusAction: 'SELECT',
-        // focusAction: 'END',
+        focusAction: 'Select',
 
         autoCapitalize: false,
         autoComplete: false,
@@ -36,6 +35,8 @@ export const actions = DevActions<Ctx>()
           change.ctx((ctx) => (ctx.props.value = e.to));
         },
       },
+
+      debug: { isNumericMask: false },
     };
     return ctx;
   })
@@ -94,6 +95,21 @@ export const actions = DevActions<Ctx>()
     );
 
     e.hr();
+  })
+
+  .items((e) => {
+    e.title('Mask');
+
+    e.boolean('isNumeric', (e) => {
+      if (e.changing) e.ctx.debug.isNumericMask = e.changing.next;
+      e.boolean.current = e.ctx.debug.isNumericMask;
+    });
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Debug');
+    e.hr(1, 0.1);
 
     e.component((e) => {
       return (
@@ -109,7 +125,10 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const { props } = e.ctx;
+    const { props, debug } = e.ctx;
+
+    let mask: t.TextInputMaskHandler | undefined;
+    if (debug.isNumericMask) mask = TextInput.Masks.isNumeric;
 
     e.settings({
       host: { background: -0.04 },
@@ -119,7 +138,7 @@ export const actions = DevActions<Ctx>()
         cropmarks: -0.2,
       },
     });
-    e.render(<TextInput {...props} style={{ flex: 1 }} />);
+    e.render(<TextInput {...props} mask={mask} style={{ flex: 1 }} />);
   });
 
 export default actions;

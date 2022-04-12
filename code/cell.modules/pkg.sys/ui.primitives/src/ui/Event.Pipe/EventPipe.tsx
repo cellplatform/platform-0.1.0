@@ -48,7 +48,7 @@ const constants = { DEFAULT, THEMES };
 /**
  * Component
  */
-export const View: React.FC<EventPipeProps> = (props) => {
+const View: React.FC<EventPipeProps> = (props) => {
   const { orientation = 'x', thickness = 8, theme = 'Light' } = props;
   const slideDuration = defaultValue(props.duration?.slide, 300) / 1000;
   const max = defaultValue(props.event?.max, 10);

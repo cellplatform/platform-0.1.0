@@ -15,7 +15,7 @@ export const SYSTEM_FONT = {
  * [Defaults]
  */
 
-export const TEXT_STYLE: t.ITextInputStyle = {
+export const TEXT_STYLE: t.TextInputStyle = {
   opacity: 1,
   color: -1,
   disabledColor: -1,

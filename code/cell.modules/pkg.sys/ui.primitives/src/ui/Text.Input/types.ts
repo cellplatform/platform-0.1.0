@@ -10,7 +10,7 @@ export type TextInputInstance = { bus: t.EventBus<any>; id: Id };
  * Component
  */
 
-export type IInputValue = {
+export type TextInputValue = {
   value?: string;
   maxLength?: number;
   mask?: t.TextInputMaskHandler;
@@ -18,7 +18,7 @@ export type IInputValue = {
 
 export type IHtmlInputProps = t.TextInputFocusAction &
   t.ITextInputEvents &
-  IInputValue & {
+  TextInputValue & {
     instance: t.TextInputInstance;
     events$: Subject<t.TextInputEvent>;
     className?: string;
@@ -26,7 +26,7 @@ export type IHtmlInputProps = t.TextInputFocusAction &
     isPassword?: boolean;
     disabledOpacity?: number;
     style?: t.CssValue;
-    valueStyle?: t.ITextInputStyle;
+    valueStyle?: t.TextInputStyle;
     selectionBackground?: number | string;
     spellCheck?: boolean;
     autoCapitalize?: boolean;
@@ -40,7 +40,7 @@ export type IHtmlInputState = {
 
 export type TextInputProps = t.TextInputFocusAction &
   t.ITextInputEvents &
-  IInputValue & {
+  TextInputValue & {
     instance?: TextInputInstance;
     events$?: Subject<t.TextInputEvent>;
     isEnabled?: boolean;
@@ -52,8 +52,8 @@ export type TextInputProps = t.TextInputFocusAction &
     maxWidth?: number;
     autoSize?: boolean;
     placeholder?: string | React.ReactElement;
-    valueStyle?: t.ITextInputStyle;
-    placeholderStyle?: t.ITextInputStyle;
+    valueStyle?: t.TextInputStyle;
+    placeholderStyle?: t.TextInputStyle;
     spellCheck?: boolean;
     autoCapitalize?: boolean;
     autoCorrect?: boolean;
@@ -72,6 +72,8 @@ export type TextInputProps = t.TextInputFocusAction &
 /**
  * Style
  */
+export type TextInputStyle = t.TextStyle & { disabledColor?: number | string };
+
 export type TextStyle = {
   color?: number | string;
   fontSize?: number;
@@ -105,48 +107,38 @@ export type TextProps = TextStyle & {
 /**
  * Input
  */
-export type ITextModifierKeys = {
-  alt: boolean;
-  ctrl: boolean;
-  shift: boolean;
-  meta: boolean;
-};
 
 export type TextInputFocusAction = {
   selectOnFocus?: boolean;
   focusOnLoad?: boolean;
-  focusAction?: 'SELECT' | 'END';
+  focusAction?: 'Select' | 'To:End';
 };
 
-export type ITextInputMask = {
-  text: string;
-  char: string;
-};
+export type ITextInputMask = { text: string; char: string };
 export type TextInputMaskHandler = (e: ITextInputMask) => boolean; // True - OK, False - disallow.
-
-export type ITextInputStyle = t.TextStyle & { disabledColor?: number | string };
 
 /**
  * [Events]
  */
 export type TextInputChangeEvent = {
+  instance: Id;
   from: string;
   to: string;
   char: string;
   isMax: boolean | null;
-  modifierKeys: ITextModifierKeys;
+  modifierKeys: t.KeyboardModifierFlags;
 };
 export type TextInputChangeEventHandler = (e: TextInputChangeEvent) => void;
 
 export type TextInputTabEvent = {
   isCancelled: boolean;
   cancel(): void;
-  modifierKeys: ITextModifierKeys;
+  modifierKeys: t.KeyboardModifierFlags;
 };
 export type TextInputTabEventHandler = (e: TextInputTabEvent) => void;
 
 export type TextInputKeyEvent = React.KeyboardEvent<HTMLInputElement> & {
-  modifierKeys: ITextModifierKeys;
+  modifierKeys: t.KeyboardModifierFlags;
 };
 export type TextInputKeyEventHandler = (e: TextInputKeyEvent) => void;
 
@@ -163,49 +155,72 @@ export type ITextInputEvents = {
 };
 
 /**
- * [Events]
+ * EVENTS (API)
+ */
+type E = TextInputEvents;
+export type TextInputEventsDisposable = t.Disposable & E & { clone(): E };
+export type TextInputEvents = {
+  readonly instance: { bus: Id; id: Id };
+  readonly $: t.Observable<t.TextInputEvent>;
+  readonly dispose$: t.Observable<void>;
+  readonly changing$: t.Observable<TextInputChanging>;
+  readonly changed$: t.Observable<TextInputChanged>;
+};
+
+/**
+ * EVENT (Definitions)
  */
 export type TextInputEvent =
-  | ITextInputChangingEvent
-  | ITextInputChangedEvent
-  | ITextInputKeypressEvent
-  | ITextInputFocusEvent
-  | ITextInputLabelDblClickEvent;
+  | TextInputChangingEvent
+  | TextInputChangedEvent
+  | TextInputKeypressEvent
+  | TextInputFocusEvent
+  | TextInputLabelDblClickEvent;
 
-export type ITextInputChangingEvent = {
-  type: 'TEXT_INPUT/changing';
-  payload: ITextInputChanging;
+export type TextInputChangingEvent = {
+  type: 'sys.ui.TextInput/Changing';
+  payload: TextInputChanging;
 };
-export type ITextInputChanging = TextInputChangeEvent & {
+export type TextInputChanging = TextInputChangeEvent & {
+  instance: Id;
   isCancelled: boolean;
   cancel(): void;
 };
 
-export type ITextInputChangedEvent = {
-  type: 'TEXT_INPUT/changed';
-  payload: ITextInputChanged;
+export type TextInputChangedEvent = {
+  type: 'sys.ui.TextInput/Changed';
+  payload: TextInputChanged;
 };
-export type ITextInputChanged = TextInputChangeEvent;
+export type TextInputChanged = TextInputChangeEvent;
 
-export type ITextInputKeypressEvent = {
-  type: 'TEXT_INPUT/keypress';
-  payload: ITextInputKeypress;
+export type TextInputKeypressEvent = {
+  type: 'sys.ui.TextInput/Keypress';
+  payload: TextInputKeypress;
 };
-export type ITextInputKeypress = {
+export type TextInputKeypress = {
+  instance: Id;
   isPressed: boolean;
   key: TextInputKeyEvent['key'];
   event: TextInputKeyEvent;
 };
 
-export type ITextInputFocusEvent = {
-  type: 'TEXT_INPUT/focus';
-  payload: ITextInputFocus;
+export type TextInputFocusEvent = {
+  type: 'sys.ui.TextInput/Focus';
+  payload: TextInputFocus;
 };
-export type ITextInputFocus = { isFocused: boolean };
+export type TextInputFocus = {
+  instance: Id;
+  isFocused: boolean;
+};
 
-export type ITextInputLabelDblClickEvent = {
-  type: 'TEXT_INPUT/label/dblClick';
-  payload: ITextInputLabelDblClick;
+export type TextInputLabelDblClickEvent = {
+  type: 'sys.ui.TextInput/Label/DoubleClick';
+  payload: TextInputLabelDblClick;
 };
+export type TextInputLabelDblClick = {
+  instance: Id;
+  target: 'READ_ONLY' | 'PLACEHOLDER';
+};
+
+// TEMP 🐷
 // export type ITextInputLabelDblClick = t.MouseEvent & { target: 'READ_ONLY' | 'PLACEHOLDER' };
-export type ITextInputLabelDblClick = { target: 'READ_ONLY' | 'PLACEHOLDER' };

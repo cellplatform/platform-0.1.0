@@ -2,7 +2,6 @@ import { filter, takeUntil } from 'rxjs/operators';
 
 import { Json, rx, t, Util } from '../common';
 
-type O = Record<string, unknown>;
 type S = t.CmdCardState;
 
 /**
@@ -33,9 +32,7 @@ export function CmdCardEvents(args: t.CmdCardEventsArgs) {
     dispose$,
     state,
     clone() {
-      const clone = { ...api };
-      delete (clone as any).dispose;
-      return clone;
+      return { ...api, dispose: undefined };
     },
   };
   return api;

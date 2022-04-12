@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { Keyboard } from '../../keyboard';
-import { color, css, DEFAULT, R, t, time } from './common';
-import { Util } from './Util';
+import { Keyboard } from '../../../keyboard';
+import { color, css, DEFAULT, R, t, time } from '../common';
+import { Util } from '../Util';
 
 type P = t.IHtmlInputProps;
 
 export const HtmlInput: React.FC<P> = (props) => {
   const {
+    instance,
     isEnabled = true,
     disabledOpacity = 0.2,
     isPassword,
@@ -16,16 +17,15 @@ export const HtmlInput: React.FC<P> = (props) => {
     selectionBackground,
   } = props;
 
-  const instance = props.instance.id;
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const keyboard = Keyboard.useKeyboardState({ bus: props.instance.bus, instance });
+  const keyboard = Keyboard.useKeyboardState({ bus: instance.bus, instance: instance.id });
   const cloneModifierKeys = () => ({ ...keyboard.state.current.modifiers });
 
   const [value, setValue] = useState('');
   const updateValue = (args: { value?: string; maxLength?: number } = {}) => {
     const { value = props.value, maxLength = props.maxLength } = args;
-    setValue(Util.value.format({ value, maxLength }));
+    setValue(Util.formatValue({ value, maxLength }));
   };
 
   /**
@@ -44,8 +44,8 @@ export const HtmlInput: React.FC<P> = (props) => {
     // Derive values.
     const from = value;
     let to = ((e.target as any).value as string) || '';
-    to = Util.value.format({ value: to, maxLength });
-    const char = Util.value.getChangedChar(from, to);
+    to = Util.formatValue({ value: to, maxLength });
+    const char = Util.getChangedCharacter(from, to);
     const isMax = maxLength === undefined ? null : to.length === maxLength;
 
     // Check whether an input-filter will mask the value.
@@ -56,7 +56,7 @@ export const HtmlInput: React.FC<P> = (props) => {
     // Update state and alert listeners.
     if (from !== to) {
       updateValue({ value: to, maxLength });
-      onChange?.({ instance, from, to, isMax, char, modifierKeys: cloneModifierKeys() });
+      onChange?.({ from, to, isMax, char, modifierKeys: cloneModifierKeys() });
     }
   };
 
@@ -98,20 +98,20 @@ export const HtmlInput: React.FC<P> = (props) => {
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     const { focusAction, onFocus, selectOnFocus } = props;
-    if (focusAction === 'Select' || selectOnFocus) selectAll();
-    if (focusAction === 'To:End') cursorToEnd();
+    if (focusAction === 'SELECT' || selectOnFocus) selectAll();
+    if (focusAction === 'END') cursorToEnd();
     onFocus?.(e);
     fire({
-      type: 'sys.ui.TextInput/Focus',
-      payload: { instance, isFocused: true },
+      type: 'TEXT_INPUT/focus',
+      payload: { isFocused: true },
     });
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     props.onBlur?.(e);
     fire({
-      type: 'sys.ui.TextInput/Focus',
-      payload: { instance, isFocused: false },
+      type: 'TEXT_INPUT/focus',
+      payload: { isFocused: false },
     });
   };
 
@@ -131,14 +131,14 @@ export const HtmlInput: React.FC<P> = (props) => {
 
   const fireKeyboard = (event: t.TextInputKeyEvent, isPressed: boolean) => {
     fire({
-      type: 'sys.ui.TextInput/Keypress',
-      payload: { instance, key: event.key, isPressed, event },
+      type: 'TEXT_INPUT/keypress',
+      payload: { key: event.key, isPressed, event },
     });
   };
 
   const fire = (event: t.TextInputEvent) => {
     props.events$.next(event);
-    props.instance.bus.fire(event);
+    instance.bus.fire(event);
   };
 
   const focus = () => inputRef.current?.focus();
@@ -200,7 +200,7 @@ export const HtmlInput: React.FC<P> = (props) => {
     } as any;
   }
 
-  styles.base = R.merge(styles.base, Util.css.toTextInput(isEnabled, valueStyle));
+  styles.base = R.merge(styles.base, Util.toTextInputCss(isEnabled, valueStyle));
   styles.base.opacity = isEnabled ? 1 : disabledOpacity;
 
   return (

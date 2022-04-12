@@ -31,7 +31,7 @@ const constants = { PARTS };
 /**
  * Component
  */
-export const View: React.FC<CmdBarProps> = (props) => {
+const View: React.FC<CmdBarProps> = (props) => {
   const { instance } = props;
   const { parts = ['Input', 'Events'] } = props;
 

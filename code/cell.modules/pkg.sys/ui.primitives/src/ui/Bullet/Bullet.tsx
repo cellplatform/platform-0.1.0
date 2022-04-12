@@ -63,7 +63,7 @@ const constants = { DEFAULTS };
 /**
  * Component
  */
-export const View: React.FC<BulletProps> = (props) => {
+const View: React.FC<BulletProps> = (props) => {
   const { size = DEFAULTS.size, body = DEFAULTS.body, outer, hover } = props;
   const time = `${body.transition}ms`;
 
