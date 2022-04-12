@@ -6,12 +6,10 @@ type O = Record<string, unknown>;
 /**
  * State controller for the <CmdCard>.
  */
-export function CmdCardController<A extends O = any, B extends O = any>(
-  args: t.CmdCardControllerArgs,
-): t.CmdCardEventsDisposable {
+export function CmdCardController(args: t.CmdCardControllerArgs): t.CmdCardEventsDisposable {
   const { instance } = args;
 
-  const card = CmdCardEvents<A, B>({
+  const card = CmdCardEvents({
     instance: args.instance,
     dispose$: args.dispose$,
     initial: args.initial,

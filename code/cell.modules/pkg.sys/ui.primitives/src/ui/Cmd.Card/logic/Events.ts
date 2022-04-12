@@ -8,9 +8,7 @@ type S = t.CmdCardState;
 /**
  * Event API
  */
-export function CmdCardEvents<A extends O = any, B extends O = any>(
-  args: t.CmdCardEventsArgs<A, B>,
-) {
+export function CmdCardEvents(args: t.CmdCardEventsArgs) {
   const { dispose, dispose$ } = rx.disposable(args.dispose$);
 
   const instance = args.instance.id;
@@ -23,12 +21,12 @@ export function CmdCardEvents<A extends O = any, B extends O = any>(
   );
 
   const events = Json.Bus.Events({ instance: args.instance, dispose$ });
-  const state = events.json<S>(args.initial ?? Util.defaultState, { key: 'CmdCard' });
+  const state = events.json<S>(args.initial ?? Util.state.default, { key: 'CmdCard' });
 
   /**
    * API
    */
-  const api: t.CmdCardEventsDisposable<A, B> = {
+  const api: t.CmdCardEventsDisposable = {
     instance: events.instance,
     $,
     dispose,

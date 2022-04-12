@@ -31,14 +31,14 @@ export type CmdCardRenderControllerArgs = {
 /**
  * STATE
  */
-export type CmdCardState<A extends O = any, B extends O = any> = {
+export type CmdCardState = {
   ready: boolean;
   commandbar: {
     text?: string;
     textbox: { pending: boolean; spinning: boolean; placeholder: string };
   };
-  body: CmdCardStateBody<A>;
-  backdrop: CmdCardStateBackdrop<B>;
+  body: CmdCardStateBody;
+  backdrop: CmdCardStateBackdrop;
 };
 
 export type CmdCardStateBackdrop<S extends O = any> = {
@@ -65,22 +65,18 @@ export type CmdCardControllerArgs = {
 /**
  * EVENTS (API)
  */
-export type CmdCardEventsArgs<A extends O, B extends O> = {
+export type CmdCardEventsArgs = {
   instance: t.CmdCardInstance;
   dispose$?: t.Observable<any>;
-  initial?: t.CmdCardState<A, B> | (() => t.CmdCardState<A, B>);
+  initial?: t.CmdCardState | (() => t.CmdCardState);
 };
 
-export type CmdCardEventsDisposable<A extends O = any, B extends O = any> = t.Disposable &
-  CmdCardEvents<A, B> & {
-    clone(): CmdCardEvents<A, B>;
-  };
-
-export type CmdCardEvents<A extends O = any, B extends O = any> = {
+export type CmdCardEventsDisposable = t.Disposable & CmdCardEvents & { clone(): CmdCardEvents };
+export type CmdCardEvents = {
   readonly instance: { bus: Id; id: Id };
   readonly $: t.Observable<t.CmdCardEvent>;
   readonly dispose$: t.Observable<void>;
-  readonly state: t.JsonState<CmdCardState<A, B>>;
+  readonly state: t.JsonState<CmdCardState>;
 };
 
 /**

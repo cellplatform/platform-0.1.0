@@ -16,7 +16,7 @@ type Ctx = {
   netbus: t.NetworkBus<any>;
   props: CmdCardProps;
   debug: Debug;
-  events: t.CmdCardEventsDisposable<A, B>;
+  events: t.CmdCardEventsDisposable;
   state: {
     current?: t.CmdCardState;
     onChange?: (e: t.CmdCardState) => void;
@@ -70,7 +70,7 @@ const Helpers = {
   },
 
   toState(ctx: Ctx) {
-    return ctx.props.state || (ctx.props.state = Util.defaultState());
+    return ctx.props.state || (ctx.props.state = Util.state.default());
   },
 
   localbus(ctx: Ctx) {
@@ -90,11 +90,6 @@ export const actions = DevActions<Ctx>()
     const netbus = NetworkBusMock({ local: 'local-id', remotes: ['peer-1', 'peer-2'] });
     const instance: t.CmdCardInstance = { bus: rx.bus(), id: `foo.${slug()}` };
 
-    // const initial = Util.defaultState({
-    //   body: { render: SampleRenderer.body },
-    //   backdrop: { render: SampleRenderer.backdrop },
-    // });
-
     const events = CmdCard.Events({ instance });
 
     const ctx: Ctx = {
@@ -104,7 +99,6 @@ export const actions = DevActions<Ctx>()
       props: { instance, showAsCard: true },
       events,
       state: {
-        // current: initial,
         onChange(state) {
           e.change.ctx((ctx) => (ctx.state.current = state));
         },
@@ -130,10 +124,6 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx } = e;
-
-    // ctx.props.instance.bus.$.subscribe((e) => {
-    //   console.log('e', e);
-    // });
   })
 
   .items((e) => {

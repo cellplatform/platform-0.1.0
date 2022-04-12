@@ -33,7 +33,7 @@ export default Test.describe('Cmd.Card', (e) => {
 
     e.it('initial', () => {
       const render = () => null;
-      const initial = () => Util.defaultState({ body: { render } });
+      const initial = () => Util.state.default({ body: { render } });
 
       const test = (initial: t.CmdCardControllerArgs['initial']) => {
         const events = CmdCard.Events({ instance: { bus: rx.bus(), id: 'foo' }, initial });
@@ -48,7 +48,7 @@ export default Test.describe('Cmd.Card', (e) => {
       e.it('get (default state)', async () => {
         const { dispose, events } = Setup.controller();
         const res = await events.state.get();
-        expect(res.value).to.eql(Util.defaultState());
+        expect(res.value).to.eql(Util.state.default());
         dispose();
       });
 
@@ -77,7 +77,7 @@ export default Test.describe('Cmd.Card', (e) => {
   e.describe('Controller', (e) => {
     e.it('initial', () => {
       const render = () => null;
-      const initial = () => Util.defaultState({ body: { render } });
+      const initial = () => Util.state.default({ body: { render } });
 
       const test = (initial: t.CmdCardControllerArgs['initial']) => {
         const events = CmdCard.Controller({ instance: { bus: rx.bus(), id: 'foo' }, initial });

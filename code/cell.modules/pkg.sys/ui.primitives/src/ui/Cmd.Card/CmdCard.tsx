@@ -22,7 +22,7 @@ export type CmdCardProps = {
  */
 const View: React.FC<CmdCardProps> = (props) => {
   const { instance, showAsCard = true } = props;
-  const state = props.state ?? Util.defaultState();
+  const state = props.state ?? Util.state.default();
   const resize = useResizeObserver();
 
   /**
