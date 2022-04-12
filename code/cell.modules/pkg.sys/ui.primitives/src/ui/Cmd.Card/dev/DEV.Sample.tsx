@@ -1,7 +1,8 @@
 import React from 'react';
+import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 
 import { CmdCard, CmdCardProps } from '..';
-import { t } from '../common';
+import { CmdBar, t } from '../common';
 import { Util } from '../Util';
 import { SampleRenderer } from './DEV.Renderers';
 
@@ -29,18 +30,43 @@ export const DevSample: React.FC<DevSampleProps> = (args) => {
  * CONTROLLER (logic "wrapper")
  */
 export function DevSampleController(args: t.CmdCardControllerArgs) {
+  const { instance } = args;
+
   const initial = Util.defaultState({
     body: { render: SampleRenderer.body },
     backdrop: { render: SampleRenderer.backdrop },
   });
 
   const card = CmdCard.Controller({ ...args, initial });
+  const { dispose$ } = card;
+  const patch = card.state.patch;
 
-  console.group('🌳 DevSampleController');
-  console.log('card', card);
-  console.log('card.state', card.state.current);
-  console.log('initial', initial);
-  console.groupEnd();
+  const commandbar = CmdBar.Events({ instance, dispose$ });
+  const text$ = card.state.$.pipe(
+    map((e) => e.value.commandbar.text ?? ''),
+    distinctUntilChanged((prev, next) => prev === next),
+  );
+
+  /**
+   * TODO 🐷
+   * - complete this state change logic.
+   * - move to proper place within "real" controllers.
+   * - show example of doing something "useful" within this sample "wrapper" controller
+   */
+  text$.subscribe(async (text) => {
+    await patch((state) => {
+      state.commandbar.textbox.pending = Boolean(text);
+    });
+  });
+
+  commandbar.action.$.pipe(
+    filter((e) => e.kind === 'Key:Enter'),
+    filter((e) => Boolean(e.text)),
+  ).subscribe(async (e) => {
+    // console.log('e', e);
+
+    await patch((state) => (state.commandbar.textbox.spinning = true));
+  });
 
   // card.state$.subscribe((e) => {
   //   console.log('ff', e);

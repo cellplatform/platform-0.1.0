@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { CmdBar } from '../../Cmd.Bar';
-import { COLORS, css, CssValue, R, t } from '../common';
+import { COLORS, css, CssValue, R, t, CmdBar } from '../common';
 import { Util } from '../Util';
 import { useRenderPart } from './useRenderPart';
 
@@ -21,7 +20,6 @@ export type BackdropProps = {
 export const Backdrop: React.FC<BackdropProps> = (props) => {
   const { instance, state, size } = props;
   const content = useRenderPart('Backdrop', { instance, size, state });
-  const textbox = state.commandbar.textbox;
 
   /**
    * [Render]
@@ -48,11 +46,7 @@ export const Backdrop: React.FC<BackdropProps> = (props) => {
         <CmdBar
           instance={instance}
           text={state.commandbar.text}
-          textbox={{
-            spinning: textbox.spinning,
-            placeholder: textbox.placeholder,
-            pending: textbox.pending,
-          }}
+          textbox={state.commandbar.textbox}
         />
       </div>
     </div>

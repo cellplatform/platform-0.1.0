@@ -1,9 +1,7 @@
-import { CmdBar } from '../../Cmd.Bar';
-import { Json, t, Util, time } from '../common';
+import { CmdBar, Json, t, time } from '../common';
 import { CmdCardEvents } from '../logic';
 
 type O = Record<string, unknown>;
-type S = t.CmdCardState;
 
 /**
  * State controller for the <CmdCard>.
@@ -19,9 +17,10 @@ export function CmdCardController<A extends O = any, B extends O = any>(
     initial: args.initial,
   });
   const { dispose$ } = card;
+  const patch = card.state.patch;
 
   /**
-   * Sub-controllers
+   * Sub-controllers.
    */
   Json.Bus.Controller({ instance, dispose$ });
   const commandbar = CmdBar.Controller({ instance, dispose$ });
@@ -29,17 +28,13 @@ export function CmdCardController<A extends O = any, B extends O = any>(
   /**
    * Event Listeners.
    */
-  card.state.$.subscribe(({ value }) => {
-    console.log('state change'); // TEMP 🐷
-  });
-
   commandbar.text.changed$.subscribe(async (e) => {
-    await card.state.patch((state) => (state.commandbar.text = e.to));
+    await patch((state) => (state.commandbar.text = e.to));
   });
 
   /**
    * API
    */
-  time.delay(0, () => card.state.patch((state) => (state.ready = true)));
+  time.delay(0, () => patch((state) => (state.ready = true)));
   return card;
 }
