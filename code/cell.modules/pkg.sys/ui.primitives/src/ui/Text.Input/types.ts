@@ -169,7 +169,7 @@ export type TextInputFocusEvent = {
 };
 export type TextInputFocus = {
   instance: Id;
-  isFocused: boolean;
+  focused: boolean;
 };
 
 /**

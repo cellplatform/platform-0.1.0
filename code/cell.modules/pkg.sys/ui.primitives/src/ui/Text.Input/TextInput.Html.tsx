@@ -128,7 +128,7 @@ export const HtmlInput: React.FC<HtmlInputProps> = (props) => {
     onFocus?.(e);
     fire({
       type: 'sys.ui.TextInput/Focus',
-      payload: { instance, isFocused: true },
+      payload: { instance, focused: true },
     });
   };
 
@@ -136,7 +136,7 @@ export const HtmlInput: React.FC<HtmlInputProps> = (props) => {
     props.onBlur?.(e);
     fire({
       type: 'sys.ui.TextInput/Focus',
-      payload: { instance, isFocused: false },
+      payload: { instance, focused: false },
     });
   };
 
