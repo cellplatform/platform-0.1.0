@@ -4,7 +4,7 @@ export const TextInputMasks = {
   /**
    * Ensure entered text is only a number.
    */
-  isNumeric(e: t.ITextInputMask) {
+  isNumeric(e: t.TextInputMask) {
     return value.isNumeric(e.char);
   },
 };

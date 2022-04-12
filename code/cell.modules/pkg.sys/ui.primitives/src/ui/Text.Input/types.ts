@@ -9,37 +9,8 @@ export type TextInputInstance = { bus: t.EventBus<any>; id: Id };
 /**
  * Component
  */
-
-export type TextInputValue = {
-  value?: string;
-  maxLength?: number;
-  mask?: t.TextInputMaskHandler;
-};
-
-export type IHtmlInputProps = t.TextInputFocusAction &
-  t.ITextInputEvents &
-  TextInputValue & {
-    instance: t.TextInputInstance;
-    events$: Subject<t.TextInputEvent>;
-    className?: string;
-    isEnabled?: boolean;
-    isPassword?: boolean;
-    disabledOpacity?: number;
-    style?: t.CssValue;
-    valueStyle?: t.TextInputStyle;
-    selectionBackground?: number | string;
-    spellCheck?: boolean;
-    autoCapitalize?: boolean;
-    autoCorrect?: boolean;
-    autoComplete?: boolean;
-    onDblClick?: React.MouseEventHandler;
-  };
-export type IHtmlInputState = {
-  value?: string;
-};
-
 export type TextInputProps = t.TextInputFocusAction &
-  t.ITextInputEvents &
+  t.TextInputEventHandlers &
   TextInputValue & {
     instance?: TextInputInstance;
     events$?: Subject<t.TextInputEvent>;
@@ -74,39 +45,14 @@ export type TextInputProps = t.TextInputFocusAction &
  */
 export type TextInputStyle = t.TextStyle & { disabledColor?: number | string };
 
-export type TextStyle = {
-  color?: number | string;
-  fontSize?: number;
-  fontWeight?: 'LIGHT' | 'NORMAL' | 'BOLD';
-  fontFamily?: string;
-  align?: 'LEFT' | 'CENTER' | 'RIGHT';
-  italic?: boolean;
-  letterSpacing?: number | string;
-  lineHeight?: number | string;
-  opacity?: number;
-  textShadow?: string | Array<number | string>; // [0:offset-y, 1:color.format()]
-  uppercase?: boolean;
-};
-
-export type TextProps = TextStyle & {
-  className?: string;
-  children?: React.ReactNode;
-  block?: boolean;
-  tooltip?: string;
-  cursor?: string;
-  isSelectable?: boolean;
-  style?: t.CssValue;
-  onClick?: React.MouseEventHandler;
-  onDoubleClick?: React.MouseEventHandler;
-  onMouseDown?: React.MouseEventHandler;
-  onMouseUp?: React.MouseEventHandler;
-  onMouseEnter?: React.MouseEventHandler;
-  onMouseLeave?: React.MouseEventHandler;
-};
-
 /**
  * Input
  */
+export type TextInputValue = {
+  value?: string;
+  maxLength?: number;
+  mask?: t.TextInputMaskHandler;
+};
 
 export type TextInputFocusAction = {
   selectOnFocus?: boolean;
@@ -114,23 +60,31 @@ export type TextInputFocusAction = {
   focusAction?: 'Select' | 'To:End';
 };
 
-export type ITextInputMask = { text: string; char: string };
-export type TextInputMaskHandler = (e: ITextInputMask) => boolean; // True - OK, False - disallow.
+export type TextInputMask = { text: string; char: string };
+export type TextInputMaskHandler = (e: TextInputMask) => boolean; // True - OK, False - disallow.
 
 /**
- * [Events]
+ * EVENTS (API)
  */
-export type TextInputChangeEvent = {
-  instance: Id;
-  from: string;
-  to: string;
-  char: string;
-  isMax: boolean | null;
-  modifierKeys: t.KeyboardModifierFlags;
+type E = TextInputEvents;
+export type TextInputEventsDisposable = t.Disposable & E & { clone(): E };
+export type TextInputEvents = {
+  readonly instance: { bus: Id; id: Id };
+  readonly $: t.Observable<t.TextInputEvent>;
+  readonly dispose$: t.Observable<void>;
+  readonly text: {
+    readonly changing$: t.Observable<TextInputChanging>;
+    readonly changed$: t.Observable<TextInputChanged>;
+  };
 };
+
+/**
+ * EVENT (Callback Definitions)
+ */
 export type TextInputChangeEventHandler = (e: TextInputChangeEvent) => void;
 
 export type TextInputTabEvent = {
+  instance: Id;
   isCancelled: boolean;
   cancel(): void;
   modifierKeys: t.KeyboardModifierFlags;
@@ -138,11 +92,12 @@ export type TextInputTabEvent = {
 export type TextInputTabEventHandler = (e: TextInputTabEvent) => void;
 
 export type TextInputKeyEvent = React.KeyboardEvent<HTMLInputElement> & {
+  instance: Id;
   modifierKeys: t.KeyboardModifierFlags;
 };
 export type TextInputKeyEventHandler = (e: TextInputKeyEvent) => void;
 
-export type ITextInputEvents = {
+export type TextInputEventHandlers = {
   onChange?: TextInputChangeEventHandler;
   onKeyPress?: TextInputKeyEventHandler;
   onKeyDown?: TextInputKeyEventHandler;
@@ -155,19 +110,6 @@ export type ITextInputEvents = {
 };
 
 /**
- * EVENTS (API)
- */
-type E = TextInputEvents;
-export type TextInputEventsDisposable = t.Disposable & E & { clone(): E };
-export type TextInputEvents = {
-  readonly instance: { bus: Id; id: Id };
-  readonly $: t.Observable<t.TextInputEvent>;
-  readonly dispose$: t.Observable<void>;
-  readonly changing$: t.Observable<TextInputChanging>;
-  readonly changed$: t.Observable<TextInputChanged>;
-};
-
-/**
  * EVENT (Definitions)
  */
 export type TextInputEvent =
@@ -177,6 +119,9 @@ export type TextInputEvent =
   | TextInputFocusEvent
   | TextInputLabelDblClickEvent;
 
+/**
+ * Change.
+ */
 export type TextInputChangingEvent = {
   type: 'sys.ui.TextInput/Changing';
   payload: TextInputChanging;
@@ -193,6 +138,18 @@ export type TextInputChangedEvent = {
 };
 export type TextInputChanged = TextInputChangeEvent;
 
+export type TextInputChangeEvent = {
+  instance: Id;
+  from: string;
+  to: string;
+  char: string;
+  isMax: boolean | null;
+  modifierKeys: t.KeyboardModifierFlags;
+};
+
+/**
+ * Keypress
+ */
 export type TextInputKeypressEvent = {
   type: 'sys.ui.TextInput/Keypress';
   payload: TextInputKeypress;
@@ -204,6 +161,9 @@ export type TextInputKeypress = {
   event: TextInputKeyEvent;
 };
 
+/**
+ * Focus
+ */
 export type TextInputFocusEvent = {
   type: 'sys.ui.TextInput/Focus';
   payload: TextInputFocus;
@@ -213,6 +173,9 @@ export type TextInputFocus = {
   isFocused: boolean;
 };
 
+/**
+ * Mouse
+ */
 export type TextInputLabelDblClickEvent = {
   type: 'sys.ui.TextInput/Label/DoubleClick';
   payload: TextInputLabelDblClick;

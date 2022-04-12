@@ -1,17 +1,5 @@
-import { Observable, Subject, BehaviorSubject, firstValueFrom, timeout, of, interval } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-  tap,
-  catchError,
-} from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
+
 import { rx, t } from '../common';
 
 export type TextInputEventsArgs = {
@@ -23,8 +11,6 @@ export type TextInputEventsArgs = {
  * Event API
  */
 export function TextInputEvents(args: TextInputEventsArgs) {
-  //
-
   const { dispose, dispose$ } = rx.disposable(args.dispose$);
 
   const instance = args.instance.id;
@@ -32,9 +18,14 @@ export function TextInputEvents(args: TextInputEventsArgs) {
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
-    filter((e) => e.type.startsWith('sys.ui.CmdCard/')),
-    // filter((e) => e.payload.instance === instance),
+    filter((e) => e.type.startsWith('sys.ui.TextInput/')),
+    filter((e) => e.payload.instance === instance),
   );
+
+  const text: t.TextInputEvents['text'] = {
+    changing$: rx.payload<t.TextInputChangingEvent>($, 'sys.ui.TextInput/Changing'),
+    changed$: rx.payload<t.TextInputChangedEvent>($, 'sys.ui.TextInput/Changed'),
+  };
 
   /**
    * API
@@ -44,8 +35,7 @@ export function TextInputEvents(args: TextInputEventsArgs) {
     $,
     dispose,
     dispose$,
-    changing$: rx.payload<t.TextInputChangingEvent>($, 'sys.ui.TextInput/Changing'),
-    changed$: rx.payload<t.TextInputChangedEvent>($, 'sys.ui.TextInput/Changed'),
+    text,
     clone() {
       return { ...api, dispose: undefined };
     },

@@ -1,5 +1,5 @@
 import { color as Color, DEFAULT, MeasureSize, R, SYSTEM_FONT, t } from './common';
-import { TextInputStyle, TextStyle } from './types';
+import { TextInputStyle } from './types';
 
 /**
  * Helpers
@@ -74,7 +74,7 @@ export const Util = {
     /**
      * Converts <Text> style props to a CSS object.
      */
-    toText(props: TextStyle) {
+    toText(props: t.TextStyle) {
       const {
         fontSize,
         color,

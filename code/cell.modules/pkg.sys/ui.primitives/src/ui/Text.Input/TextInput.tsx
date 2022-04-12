@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 
-import { css, DEFAULT, R, rx, t, time, FC } from './common';
+import { css, DEFAULT, FC, rx, t, time } from './common';
+import { TextInputEvents, TextInputMasks } from './logic';
 import { HtmlInput } from './TextInput.Html';
 import { TextInputProps } from './types';
 import { Util } from './Util';
-import { TextInputEvents, TextInputMasks } from './logic';
 
 export { TextInputProps };
 
@@ -160,7 +160,7 @@ const View: React.FC<TextInputProps> = (props) => {
       onEnter={props.onEnter}
       onEscape={props.onEscape}
       onTab={props.onTab}
-      onDblClick={handleInputDblClick}
+      onDoubleClick={handleInputDblClick}
       spellCheck={props.spellCheck}
       autoCapitalize={props.autoCapitalize}
       autoCorrect={props.autoCorrect}

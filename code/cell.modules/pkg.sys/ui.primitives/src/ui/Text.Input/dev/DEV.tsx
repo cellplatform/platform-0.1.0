@@ -4,6 +4,7 @@ import { TextInput, TextInputProps } from '..';
 import { t, rx, slug } from '../common';
 
 type Ctx = {
+  events: t.TextInputEvents;
   props: TextInputProps;
   debug: { isNumericMask: boolean };
 };
@@ -17,9 +18,13 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
     const change = e.change;
 
+    const instance = { bus: rx.bus(), id: `foo.${slug()}` };
+    const events = TextInput.Events({ instance });
+
     const ctx: Ctx = {
+      events,
       props: {
-        instance: { bus: rx.bus(), id: `foo.${slug()}` },
+        instance,
         isEnabled: true,
         placeholder: 'my placeholder',
         placeholderStyle: { italic: true, opacity: 0.3 },
@@ -43,6 +48,10 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx, bus } = e;
+
+    ctx.events.$.subscribe((e) => {
+      console.log('events.$:', e);
+    });
   })
 
   .items((e) => {

@@ -32,6 +32,7 @@ export * from './ui/Event/types';
 export * from './ui/Tree/types';
 export * from './ui/StackPanel/types';
 
+export * from './ui/Text/types';
 export * from './ui/Text.Copy/types';
 export * from './ui/Text.Syntax/types';
 export * from './ui/Text.Input/types';

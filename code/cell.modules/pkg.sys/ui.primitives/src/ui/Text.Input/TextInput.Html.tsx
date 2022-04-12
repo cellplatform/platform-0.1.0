@@ -1,12 +1,36 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Subject } from 'rxjs';
 
 import { Keyboard } from '../../keyboard';
 import { color, css, DEFAULT, R, t, time } from './common';
 import { Util } from './Util';
 
-type P = t.IHtmlInputProps;
+/**
+ * Types
+ */
+export type IHtmlInputProps = t.TextInputFocusAction &
+  t.TextInputEventHandlers &
+  t.TextInputValue & {
+    instance: t.TextInputInstance;
+    events$: Subject<t.TextInputEvent>;
+    className?: string;
+    isEnabled?: boolean;
+    isPassword?: boolean;
+    disabledOpacity?: number;
+    style?: t.CssValue;
+    valueStyle?: t.TextInputStyle;
+    selectionBackground?: number | string;
+    spellCheck?: boolean;
+    autoCapitalize?: boolean;
+    autoCorrect?: boolean;
+    autoComplete?: boolean;
+    onDoubleClick?: React.MouseEventHandler;
+  };
 
-export const HtmlInput: React.FC<P> = (props) => {
+/**
+ * Component
+ */
+export const HtmlInput: React.FC<IHtmlInputProps> = (props) => {
   const {
     isEnabled = true,
     disabledOpacity = 0.2,
@@ -70,6 +94,7 @@ export const HtmlInput: React.FC<P> = (props) => {
     if (onTab && e.key === 'Tab') {
       let isCancelled = false;
       onTab({
+        instance,
         modifierKeys: cloneModifierKeys(),
         get isCancelled() {
           return isCancelled;
@@ -91,7 +116,8 @@ export const HtmlInput: React.FC<P> = (props) => {
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const event = { ...e, modifierKeys: cloneModifierKeys() };
+    const modifierKeys = cloneModifierKeys();
+    const event = { ...e, instance, modifierKeys };
     if (e.key === 'Enter') props.onEnter?.(event);
     props.onKeyPress?.(event);
   };
@@ -120,13 +146,13 @@ export const HtmlInput: React.FC<P> = (props) => {
    */
 
   const toKeyboardEvent = (e: React.KeyboardEvent<HTMLInputElement>): t.TextInputKeyEvent => {
-    const event = {
+    return {
       ...e,
+      instance,
       modifierKeys: cloneModifierKeys(),
       preventDefault: () => e.preventDefault(),
       stopPropagation: () => e.stopPropagation(),
     };
-    return event;
   };
 
   const fireKeyboard = (event: t.TextInputKeyEvent, isPressed: boolean) => {
@@ -222,7 +248,7 @@ export const HtmlInput: React.FC<P> = (props) => {
       onKeyPress={handleKeyPress}
       onKeyDown={handleKeydown}
       onKeyUp={handleKeyup}
-      onDoubleClick={props.onDblClick}
+      onDoubleClick={props.onDoubleClick}
     />
   );
 };
