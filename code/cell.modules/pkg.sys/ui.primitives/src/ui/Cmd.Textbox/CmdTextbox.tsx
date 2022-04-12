@@ -13,6 +13,7 @@ export type CmdTextboxProps = {
   text?: string; // NB: undefined === handle state internally ("uncontrolled").
   placeholder?: string;
   spinner?: boolean;
+  pending?: boolean;
   theme?: t.CmdTextboxTheme;
   style?: CssValue;
   onChange?: t.CmdTextboxChangeEventHandler;
@@ -34,10 +35,9 @@ export const CmdTextboxContants = { DEFAULT, THEMES };
  * Component
  */
 export const CmdTextbox: React.FC<CmdTextboxProps> = (props) => {
-  const { theme = 'Light', spinner } = props;
+  const { theme = 'Light', spinner, pending = false } = props;
   const isControlled = typeof props.text === 'string';
 
-  const [pending, setPending] = useState(false);
   const [textState, setTextState] = useState('');
   const text = isControlled ? props.text : textState;
   const textTrimmed = (text || '').trim();
@@ -101,12 +101,12 @@ export const CmdTextbox: React.FC<CmdTextboxProps> = (props) => {
     <Spinner size={18} color={isDark ? COLORS.WHITE : COLORS.DARK} style={styles.spinner} />
   );
 
-  const elIcon = textTrimmed && pending && !elSpinner && (
+  const elActionIcon = pending && !elSpinner && (
     <Button isEnabled={isInvokable}>
       <Icons.Arrow.Forward size={20} color={COL_ICON.PENDING} />
     </Button>
   );
-  const elRight = <div {...styles.right.base}>{elSpinner || elIcon}</div>;
+  const elRight = <div {...styles.right.base}>{elSpinner || elActionIcon}</div>;
 
   const elTextbox = (
     <div {...styles.textbox.base}>
@@ -128,12 +128,10 @@ export const CmdTextbox: React.FC<CmdTextboxProps> = (props) => {
           const { from, to } = e;
           if (!isControlled) setTextState(to);
           props.onChange?.({ from, to });
-          setPending(true);
         }}
         onEnter={() => {
           const text = textTrimmed;
-          if (text) props.onAction?.({ text });
-          setPending(false);
+          if (text) props.onAction?.({ text, kind: 'Key:Enter' });
         }}
       />
     </div>
