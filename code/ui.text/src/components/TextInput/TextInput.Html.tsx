@@ -8,7 +8,7 @@ import { toTextInputCss } from './util';
 import { color as colorUtil, css, CssValue } from '@platform/css';
 import { events, containsFocus } from '@platform/react';
 
-export const DEFAULT_TEXT_STYLE: t.ITextInputStyle = {
+export const DEFAULT_TEXT_STYLE: t.TextInputStyle = {
   opacity: 1,
   color: -1,
   disabledColor: -1,
@@ -35,7 +35,7 @@ export type IHtmlInputProps = t.TextInputFocusAction &
     isPassword?: boolean;
     disabledOpacity?: number;
     style?: CssValue;
-    valueStyle?: t.ITextInputStyle;
+    valueStyle?: t.TextInputStyle;
     selectionBackground?: number | string;
     spellCheck?: boolean;
     autoCapitalize?: boolean;
