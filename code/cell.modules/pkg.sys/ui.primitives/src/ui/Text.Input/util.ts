@@ -52,6 +52,39 @@ export const Util = {
    * CSS helpers
    */
   css: {
+    toWidth(props: t.TextInputProps) {
+      if (!props.autoSize) return props.width;
+
+      const value = props.value;
+      const maxWidth = props.maxWidth ?? -1;
+
+      let width = Util.measure.input(props).width;
+      width = value === undefined || value === '' ? Util.css.toMinWidth(props) : width;
+      width =
+        typeof maxWidth === 'number' && maxWidth !== -1 && width > maxWidth ? maxWidth : width;
+
+      const charWidth = Util.measure.input({ ...props, value: 'W' }).width;
+      return width + charWidth; // NB: Adding an additional char-width prevents overflow jumping on char-enter.
+    },
+
+    toMinWidth(props: t.TextInputProps): number {
+      const { minWidth, placeholder, value } = props;
+
+      if (minWidth !== undefined) return minWidth as number;
+
+      // NB: If min-width not specified, use placeholder width.
+      if (!value && placeholder) {
+        return (
+          Util.measure.text({
+            children: props.placeholder,
+            style: Util.css.toPlaceholder(props),
+          }).width + 10
+        );
+      }
+
+      return -1;
+    },
+
     /**
      * Convert TextInput props to placeholder style.
      */

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Subject } from 'rxjs';
 
 import { css, DEFAULT, FC, rx, t, time } from './common';
 import { TextInputEvents, TextInputMasks } from './logic';
@@ -32,7 +31,7 @@ const View: React.FC<TextInputProps> = (props) => {
    */
   useEffect(() => {
     const { autoSize } = props;
-    if (autoSize) time.delay(0, () => setWidth(toWidth(props))); // NB: Delay is so size measurement returns accurate number.
+    if (autoSize) time.delay(0, () => setWidth(Util.css.toWidth(props))); // NB: Delay is so size measurement returns accurate number.
     if (!autoSize) setWidth(undefined);
   }, [value, props.autoSize]); // eslint-disable-line
 
@@ -184,41 +183,6 @@ const View: React.FC<TextInputProps> = (props) => {
       </div>
     </div>
   );
-};
-
-/**
- * [Helpers]
- */
-export const toWidth = (props: t.TextInputProps) => {
-  if (!props.autoSize) return props.width;
-
-  const value = props.value;
-  const maxWidth = props.maxWidth ?? -1;
-
-  let width = Util.measure.input(props).width;
-  width = value === undefined || value === '' ? toMinWidth(props) : width;
-  width = typeof maxWidth === 'number' && maxWidth !== -1 && width > maxWidth ? maxWidth : width;
-
-  const charWidth = Util.measure.input({ ...props, value: 'W' }).width;
-  return width + charWidth; // NB: Adding an additional char-width prevents overflow jumping on char-enter.
-};
-
-export const toMinWidth = (props: t.TextInputProps): number => {
-  const { minWidth, placeholder, value } = props;
-
-  if (minWidth !== undefined) return minWidth as number;
-
-  // NB: If min-width not specified, use placeholder width.
-  if (!value && placeholder) {
-    return (
-      Util.measure.text({
-        children: props.placeholder,
-        style: Util.css.toPlaceholder(props),
-      }).width + 10
-    );
-  }
-
-  return -1;
 };
 
 /**
