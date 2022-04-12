@@ -66,27 +66,16 @@ const View: React.FC<TextInputProps> = (props) => {
   const handleInputDblClick = (e: React.MouseEvent) => {
     // NB: When the <input> is dbl-clicked and there is no value
     //     it is deduced that the placeholder was clicked.
-    if (!hasValue) labelDblClickHandler('PLACEHOLDER')(e);
+    if (!hasValue) labelDoubleClickHandler('Placeholder')(e);
   };
 
-  const labelDblClickHandler = (target: t.TextInputLabelDblClick['target']) => {
+  const labelDoubleClickHandler = (target: t.TextInputLabelDoubleClick['target']) => {
     return (e: React.MouseEvent) => {
-      /**
-       * TODO 🐷
-       * - old event structure
-       */
-      // fire({
-      //   type: 'sys.ui.TextInput/label/dblClick',
-      //   payload: {
-      //     target,
-      //     type: 'DOUBLE_CLICK',
-      //     button: e.button === 2 ? 'LEFT' : 'RIGHT',
-      //     cancel: () => {
-      //       e.preventDefault();
-      //       e.stopPropagation();
-      //     },
-      //   },
-      // });
+      const button = e.button === 2 ? 'Left' : 'Right';
+      fire({
+        type: 'sys.ui.TextInput/Label/DoubleClick',
+        payload: { instance: instance.id, target, button },
+      });
     };
   };
 
@@ -117,7 +106,7 @@ const View: React.FC<TextInputProps> = (props) => {
   const elPlaceholder = !hasValue && placeholder && (
     <div
       {...css(styles.placeholder, Util.css.toPlaceholder(props))}
-      onDoubleClick={labelDblClickHandler('PLACEHOLDER')}
+      onDoubleClick={labelDoubleClickHandler('Placeholder')}
     >
       {placeholder}
     </div>
@@ -126,7 +115,7 @@ const View: React.FC<TextInputProps> = (props) => {
   const elReadOnly = isReadOnly && !elPlaceholder && (
     <div
       {...css(valueStyle, styles.placeholder, styles.readonly)}
-      onDoubleClick={labelDblClickHandler('READ_ONLY')}
+      onDoubleClick={labelDoubleClickHandler('ReadOnly')}
     >
       {value}
     </div>

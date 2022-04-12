@@ -116,7 +116,7 @@ export type TextInputEvent =
   | TextInputChangedEvent
   | TextInputKeypressEvent
   | TextInputFocusEvent
-  | TextInputLabelDblClickEvent;
+  | TextInputLabelDoubleClickEvent;
 
 /**
  * Change.
@@ -175,14 +175,12 @@ export type TextInputFocus = {
 /**
  * Mouse
  */
-export type TextInputLabelDblClickEvent = {
+export type TextInputLabelDoubleClickEvent = {
   type: 'sys.ui.TextInput/Label/DoubleClick';
-  payload: TextInputLabelDblClick;
+  payload: TextInputLabelDoubleClick;
 };
-export type TextInputLabelDblClick = {
+export type TextInputLabelDoubleClick = {
   instance: Id;
-  target: 'READ_ONLY' | 'PLACEHOLDER';
+  target: 'ReadOnly' | 'Placeholder';
+  button: 'Left' | 'Right';
 };
-
-// TEMP 🐷
-// export type ITextInputLabelDblClick = t.MouseEvent & { target: 'READ_ONLY' | 'PLACEHOLDER' };
