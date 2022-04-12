@@ -109,15 +109,17 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    const { props } = e.ctx;
+
     e.settings({
       host: { background: -0.04 },
       layout: {
         label: '<TextInput>',
-        width: 200,
+        width: props.autoSize ? undefined : 200,
         cropmarks: -0.2,
       },
     });
-    e.render(<TextInput {...e.ctx.props} style={{ flex: 1 }} />);
+    e.render(<TextInput {...props} style={{ flex: 1 }} />);
   });
 
 export default actions;

@@ -19,6 +19,7 @@ export type IInputValue = {
 export type IHtmlInputProps = t.TextInputFocusAction &
   t.ITextInputEvents &
   IInputValue & {
+    instance: t.TextInputInstance;
     events$: Subject<t.TextInputEvent>;
     className?: string;
     isEnabled?: boolean;

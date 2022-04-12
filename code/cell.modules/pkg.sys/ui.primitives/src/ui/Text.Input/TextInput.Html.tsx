@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { Keyboard } from '../../../keyboard';
-import { color, css, DEFAULT, R, t, time } from '../common';
-import { Util } from '../Util';
+import { Keyboard } from '../../keyboard';
+import { color, css, DEFAULT, R, t, time } from './common';
+import { Util } from './Util';
 
-type P = t.IHtmlInputProps & { instance: t.TextInputInstance };
+type P = t.IHtmlInputProps;
 
-export const HtmlInput2: React.FC<P> = (props) => {
+export const HtmlInput: React.FC<P> = (props) => {
   const {
     instance,
     isEnabled = true,
