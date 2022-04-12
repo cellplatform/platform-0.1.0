@@ -3,9 +3,9 @@ import { CssValue } from '@platform/css';
 export type TextStyle = {
   color?: number | string;
   fontSize?: number;
-  fontWeight?: 'LIGHT' | 'NORMAL' | 'BOLD';
+  fontWeight?: 'Light' | 'Normal' | 'Bold';
   fontFamily?: string;
-  align?: 'LEFT' | 'CENTER' | 'RIGHT';
+  align?: 'Left' | 'Center' | 'Right';
   italic?: boolean;
   letterSpacing?: number | string;
   lineHeight?: number | string;

@@ -8,11 +8,10 @@ import { Util } from './Util';
 /**
  * Types
  */
-export type IHtmlInputProps = t.TextInputFocusAction &
+export type HtmlInputProps = t.TextInputFocusAction &
   t.TextInputEventHandlers &
   t.TextInputValue & {
     instance: t.TextInputInstance;
-    events$: Subject<t.TextInputEvent>;
     className?: string;
     isEnabled?: boolean;
     isPassword?: boolean;
@@ -30,7 +29,7 @@ export type IHtmlInputProps = t.TextInputFocusAction &
 /**
  * Component
  */
-export const HtmlInput: React.FC<IHtmlInputProps> = (props) => {
+export const HtmlInput: React.FC<HtmlInputProps> = (props) => {
   const {
     isEnabled = true,
     disabledOpacity = 0.2,
@@ -158,15 +157,11 @@ export const HtmlInput: React.FC<IHtmlInputProps> = (props) => {
   const fireKeyboard = (event: t.TextInputKeyEvent, isPressed: boolean) => {
     fire({
       type: 'sys.ui.TextInput/Keypress',
-      payload: { instance, key: event.key, isPressed, event },
+      payload: { instance, key: event.key, pressed: isPressed, event },
     });
   };
 
-  const fire = (event: t.TextInputEvent) => {
-    props.events$.next(event);
-    props.instance.bus.fire(event);
-  };
-
+  const fire = (event: t.TextInputEvent) => props.instance.bus.fire(event);
   const focus = () => inputRef.current?.focus();
   const blur = () => inputRef.current?.blur();
   const selectAll = () => inputRef.current?.select();

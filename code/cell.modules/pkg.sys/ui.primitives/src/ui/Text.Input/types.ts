@@ -13,7 +13,6 @@ export type TextInputProps = t.TextInputFocusAction &
   t.TextInputEventHandlers &
   TextInputValue & {
     instance?: TextInputInstance;
-    events$?: Subject<t.TextInputEvent>;
     isEnabled?: boolean;
     isPassword?: boolean;
     isReadOnly?: boolean;
@@ -156,7 +155,7 @@ export type TextInputKeypressEvent = {
 };
 export type TextInputKeypress = {
   instance: Id;
-  isPressed: boolean;
+  pressed: boolean;
   key: TextInputKeyEvent['key'];
   event: TextInputKeyEvent;
 };

@@ -23,9 +23,7 @@ const View: React.FC<TextInputProps> = (props) => {
     disabledOpacity = DEFAULT.DISABLED_OPACITY,
   } = props;
 
-  const events$ = props.events$ ?? new Subject<t.TextInputEvent>();
   const instance: t.TextInputInstance = props.instance ?? { bus: rx.bus(), id: 'default' };
-
   const hasValue = value.length > 0;
   const [width, setWidth] = useState<string | number | undefined>();
 
@@ -41,7 +39,7 @@ const View: React.FC<TextInputProps> = (props) => {
   /**
    * [Handlers]
    */
-  const fire = (e: t.TextInputEvent) => events$?.next(e);
+  const fire = (e: t.TextInputEvent) => instance.bus.fire(e);
 
   const handleChange = (e: t.TextInputChangeEvent) => {
     // Fire the BEFORE event.
@@ -138,7 +136,6 @@ const View: React.FC<TextInputProps> = (props) => {
   const elInput = (
     <HtmlInput
       instance={instance}
-      events$={events$}
       style={styles.input}
       className={props.className}
       isEnabled={isEnabled}
