@@ -17,6 +17,7 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       props: {
         instance: { bus: rx.bus(), id: `foo.${slug()}` },
+        isEnabled: true,
         placeholder: 'my placeholder',
         placeholderStyle: {
           italic: true,
@@ -25,6 +26,12 @@ export const actions = DevActions<Ctx>()
         focusOnLoad: true,
         focusAction: 'SELECT',
         // focusAction: 'END',
+
+        autoCapitalize: false,
+        autoComplete: false,
+        autoCorrect: false,
+        autoSize: false,
+
         onChange(e) {
           change.ctx((ctx) => (ctx.props.value = e.to));
         },
@@ -39,6 +46,40 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Props');
+
+    e.boolean('isEnabled', (e) => {
+      if (e.changing) e.ctx.props.isEnabled = e.changing.next;
+      e.boolean.current = e.ctx.props.isEnabled;
+    });
+
+    e.hr(1, 0.1);
+
+    e.boolean('autoCapitalize', (e) => {
+      if (e.changing) e.ctx.props.autoCapitalize = e.changing.next;
+      e.boolean.current = e.ctx.props.autoCapitalize;
+    });
+
+    e.boolean('autoComplete', (e) => {
+      if (e.changing) e.ctx.props.autoComplete = e.changing.next;
+      e.boolean.current = e.ctx.props.autoComplete;
+    });
+
+    e.boolean('autoCorrect', (e) => {
+      if (e.changing) e.ctx.props.autoCorrect = e.changing.next;
+      e.boolean.current = e.ctx.props.autoCorrect;
+    });
+
+    e.boolean('autoSize', (e) => {
+      if (e.changing) e.ctx.props.autoSize = e.changing.next;
+      e.boolean.current = e.ctx.props.autoSize;
+    });
+
+    e.boolean('spellCheck', (e) => {
+      if (e.changing) e.ctx.props.spellCheck = e.changing.next;
+      e.boolean.current = e.ctx.props.spellCheck;
+    });
+
+    e.hr(1, 0.1);
 
     e.textbox((config) =>
       config

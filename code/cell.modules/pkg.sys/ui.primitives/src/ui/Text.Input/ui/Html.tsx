@@ -192,14 +192,14 @@ export const HtmlInput2: React.FC<P> = (props) => {
       opacity: 1,
     },
   };
+
   if (selectionBackground) {
     styles.base = {
       ...styles.base,
-      '::selection': {
-        backgroundColor: color.format(selectionBackground),
-      },
+      '::selection': { backgroundColor: color.format(selectionBackground) },
     } as any;
   }
+
   styles.base = R.merge(styles.base, Util.toTextInputCss(isEnabled, valueStyle));
   styles.base.opacity = isEnabled ? 1 : disabledOpacity;
 
