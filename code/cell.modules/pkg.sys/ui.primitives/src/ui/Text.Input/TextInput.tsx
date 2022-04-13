@@ -5,6 +5,7 @@ import { TextInputEvents, TextInputMasks } from './logic';
 import { HtmlInput } from './TextInput.Html';
 import { TextInputProps } from './types';
 import { Util } from './Util';
+import { Event } from '../Event';
 
 export { TextInputProps };
 
@@ -25,6 +26,8 @@ const View: React.FC<TextInputProps> = (props) => {
   const instance: t.TextInputInstance = props.instance ?? { bus: rx.bus(), id: 'default' };
   const hasValue = value.length > 0;
   const [width, setWidth] = useState<string | number | undefined>();
+
+  const events = Event.useEventsRef(() => TextInputEvents({ instance }));
 
   /**
    * [Lifecycle]
@@ -69,11 +72,11 @@ const View: React.FC<TextInputProps> = (props) => {
     if (!hasValue) labelDoubleClickHandler('Placeholder')(e);
   };
 
-  const labelDoubleClickHandler = (target: t.TextInputLabelDoubleClick['target']) => {
+  const labelDoubleClickHandler = (target: t.TextInputLabelDoubleClicked['target']) => {
     return (e: React.MouseEvent) => {
       const button = e.button === 2 ? 'Left' : 'Right';
       fire({
-        type: 'sys.ui.TextInput/Label/DoubleClick',
+        type: 'sys.ui.TextInput/Label/DoubleClicked',
         payload: { instance: instance.id, target, button },
       });
     };
@@ -124,6 +127,7 @@ const View: React.FC<TextInputProps> = (props) => {
   const elInput = (
     <HtmlInput
       instance={instance}
+      events={events}
       style={styles.input}
       className={props.className}
       isEnabled={isEnabled}

@@ -157,7 +157,7 @@ export const actions = DevActions<Ctx>()
     e.title('Events');
 
     e.button('⚡️ Focus', (e) => e.ctx.events.focus.fire());
-    e.button('⚡️ Focus (blur)', (e) => e.ctx.events.focus.fire(false));
+    e.button('⚡️ Blur', (e) => e.ctx.events.focus.fire(false));
 
     e.hr();
   })

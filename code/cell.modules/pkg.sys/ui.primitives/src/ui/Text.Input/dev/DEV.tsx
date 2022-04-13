@@ -6,7 +6,7 @@ import { t, rx, slug } from '../common';
 type Ctx = {
   events: t.TextInputEvents;
   props: TextInputProps;
-  debug: { isNumericMask: boolean };
+  debug: { render: boolean; isNumericMask: boolean };
 };
 
 /**
@@ -41,7 +41,7 @@ export const actions = DevActions<Ctx>()
         },
       },
 
-      debug: { isNumericMask: false },
+      debug: { render: true, isNumericMask: false },
     };
     return ctx;
   })
@@ -50,7 +50,7 @@ export const actions = DevActions<Ctx>()
     const { ctx, bus } = e;
 
     ctx.events.$.subscribe((e) => {
-      console.log('events.$:', e);
+      // console.log('events.$:', e);
     });
   })
 
@@ -107,6 +107,31 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
+    e.title('Events');
+
+    e.button('⚡️ Status', async (e) => {
+      const res = await e.ctx.events.status.get();
+      console.group('🌳 Status');
+      console.log('status', res.status);
+      console.log('size', res.status?.size);
+      console.groupEnd();
+    });
+
+    e.hr(1, 0.1);
+
+    e.button('⚡️ Focus', (e) => e.ctx.events.focus.fire());
+    e.button('⚡️ Blur', (e) => e.ctx.events.focus.fire(false));
+
+    e.hr(1, 0.1);
+
+    e.button('⚡️ Select (All)', (e) => e.ctx.events.select.fire());
+    e.button('⚡️ Cursor: Start', (e) => e.ctx.events.cursor.start());
+    e.button('⚡️ Cursor: End', (e) => e.ctx.events.cursor.end());
+
+    e.hr();
+  })
+
+  .items((e) => {
     e.title('Mask');
 
     e.boolean('isNumeric', (e) => {
@@ -118,6 +143,12 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Debug');
+
+    e.boolean('render', (e) => {
+      if (e.changing) e.ctx.debug.render = e.changing.next;
+      e.boolean.current = e.ctx.debug.render;
+    });
+
     e.hr(1, 0.1);
 
     e.component((e) => {
@@ -147,7 +178,9 @@ export const actions = DevActions<Ctx>()
         cropmarks: -0.2,
       },
     });
-    e.render(<TextInput {...props} mask={mask} style={{ flex: 1 }} />);
+
+    const el = debug.render && <TextInput {...props} mask={mask} style={{ flex: 1 }} />;
+    e.render(el);
   });
 
 export default actions;

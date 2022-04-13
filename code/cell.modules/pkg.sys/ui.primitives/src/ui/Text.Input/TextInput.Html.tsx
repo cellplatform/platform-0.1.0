@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
+import { useFocus } from '../../hooks/Focus';
 import { Keyboard } from '../../keyboard';
-import { color, css, DEFAULT, R, t, time } from './common';
+import { color, css, DEFAULT, R, rx, t, time } from './common';
 import { Util } from './Util';
 
 /**
@@ -12,6 +14,7 @@ export type HtmlInputProps = t.TextInputFocusAction &
   t.TextInputEventHandlers &
   t.TextInputValue & {
     instance: t.TextInputInstance;
+    events: t.TextInputEvents;
     className?: string;
     isEnabled?: boolean;
     isPassword?: boolean;
@@ -31,16 +34,18 @@ export type HtmlInputProps = t.TextInputFocusAction &
  */
 export const HtmlInput: React.FC<HtmlInputProps> = (props) => {
   const {
+    events,
     isEnabled = true,
     disabledOpacity = 0.2,
     isPassword,
     maxLength,
-    valueStyle = DEFAULT.TEXT.STYLE,
     selectionBackground,
+    valueStyle = DEFAULT.TEXT.STYLE,
   } = props;
 
   const instance = props.instance.id;
   const inputRef = useRef<HTMLInputElement>(null);
+  const focusState = useFocus(inputRef, { redraw: false });
 
   const keyboard = Keyboard.useKeyboardState({ bus: props.instance.bus, instance });
   const cloneModifierKeys = () => ({ ...keyboard.state.current.modifiers });
@@ -55,8 +60,50 @@ export const HtmlInput: React.FC<HtmlInputProps> = (props) => {
    * [Lifecycle]
    */
   useEffect(() => {
+    const dispose$ = new Subject<void>();
+
+    events.focus.$.pipe(takeUntil(dispose$)).subscribe((e) => {
+      if (e.focused) focus();
+      if (!e.focused) blur();
+    });
+    events.cursor.$.pipe(takeUntil(dispose$)).subscribe((e) => {
+      console.log('e', e);
+      if (e.action === 'Cursor:Start') cursorToStart();
+      if (e.action === 'Cursor:End') cursorToEnd();
+    });
+    events.select.$.pipe(takeUntil(dispose$)).subscribe((e) => {
+      selectAll();
+    });
+
     if (props.focusOnLoad) time.delay(0, () => focus());
+
+    return () => rx.done(dispose$);
   }, []); // eslint-disable-line
+
+  useEffect(() => {
+    const toStatus = (): t.TextInputStatus => {
+      const input = inputRef.current;
+      const size = { width: input?.offsetWidth ?? -1, height: input?.offsetHeight ?? -1 };
+      return {
+        instance: events.instance,
+        focused: focusState.withinFocus,
+        empty: value.length === 0,
+        value,
+        size,
+      };
+    };
+
+    const dispose$ = new Subject<void>();
+    events.status.req$.pipe(takeUntil(dispose$)).subscribe((e) => {
+      const { tx } = e;
+      fire({
+        type: 'sys.ui.TextInput/Status:res',
+        payload: { tx, instance, status: toStatus() },
+      });
+    });
+
+    return () => rx.done(dispose$);
+  }, [value]); // eslint-disable-line
 
   /**
    * [Handlers]
@@ -124,7 +171,8 @@ export const HtmlInput: React.FC<HtmlInputProps> = (props) => {
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     const { focusAction, onFocus, selectOnFocus } = props;
     if (focusAction === 'Select' || selectOnFocus) selectAll();
-    if (focusAction === 'To:End') cursorToEnd();
+    if (focusAction === 'Cursor:Start') cursorToStart();
+    if (focusAction === 'Cursor:End') cursorToEnd();
     onFocus?.(e);
     fire({
       type: 'sys.ui.TextInput/Focus',
@@ -169,9 +217,9 @@ export const HtmlInput: React.FC<HtmlInputProps> = (props) => {
   const cursorToStart = () => {
     const el = inputRef.current as any;
     if (el) {
+      el.focus();
       if (el.setSelectionRange) {
         // Modern browsers.
-        el.focus();
         el.setSelectionRange(0, 0);
       } else if (el.createTextRange) {
         // IE8 and below.
@@ -187,6 +235,7 @@ export const HtmlInput: React.FC<HtmlInputProps> = (props) => {
   const cursorToEnd = () => {
     const el = inputRef.current as any;
     if (el) {
+      el.focus();
       if (typeof el.selectionStart === 'number') {
         el.selectionStart = el.selectionEnd = el.value.length;
       } else if (typeof el.createTextRange !== 'undefined') {

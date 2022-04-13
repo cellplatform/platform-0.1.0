@@ -73,10 +73,10 @@ export type CmdCardEventsArgs = {
 
 export type CmdCardEventsDisposable = t.Disposable & CmdCardEvents & { clone(): CmdCardEvents };
 export type CmdCardEvents = {
-  readonly instance: { bus: Id; id: Id };
-  readonly $: t.Observable<t.CmdCardEvent>;
-  readonly dispose$: t.Observable<void>;
-  readonly state: t.JsonState<CmdCardState>;
+  instance: { bus: Id; id: Id };
+  $: t.Observable<t.CmdCardEvent>;
+  dispose$: t.Observable<void>;
+  state: t.JsonState<CmdCardState>;
 };
 
 /**
