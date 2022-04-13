@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 
-import { CmdTextbox, CmdTextboxProps } from '../Cmd.Textbox';
+import { CmdTextbox } from '../Cmd.Textbox';
 import { CmdBarEventPipe } from './ui/EventPipe';
 import { color, css, CssValue, FC, t } from './common';
 import { CmdBarEvents, CmdBarController } from './logic';
@@ -97,6 +97,7 @@ const View: React.FC<CmdBarProps> = (props) => {
       elements.push(
         <div {...styles.input} key={elements.length}>
           <CmdTextbox
+            instance={instance}
             theme={'Dark'}
             text={props.text ?? ''}
             placeholder={props.textbox?.placeholder}

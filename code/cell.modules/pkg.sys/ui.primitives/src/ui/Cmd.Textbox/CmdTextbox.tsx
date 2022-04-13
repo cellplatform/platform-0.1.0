@@ -10,6 +10,7 @@ import { TextInput } from '../Text.Input';
  * Types
  */
 export type CmdTextboxProps = {
+  instance?: { bus: t.EventBus<any>; id: string };
   text?: string; // NB: undefined === handle state internally ("uncontrolled").
   placeholder?: string;
   spinner?: boolean;
@@ -107,6 +108,7 @@ export const CmdTextbox: React.FC<CmdTextboxProps> = (props) => {
   const elTextbox = (
     <div {...styles.textbox.base}>
       <TextInput
+        instance={props.instance}
         style={styles.textbox.input}
         value={text}
         placeholder={props.placeholder ?? DEFAULT.PLACEHOLDER}

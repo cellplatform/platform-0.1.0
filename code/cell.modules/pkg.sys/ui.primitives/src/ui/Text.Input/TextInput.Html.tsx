@@ -63,11 +63,10 @@ export const HtmlInput: React.FC<HtmlInputProps> = (props) => {
     const dispose$ = new Subject<void>();
 
     events.focus.$.pipe(takeUntil(dispose$)).subscribe((e) => {
-      if (e.focused) focus();
-      if (!e.focused) blur();
+      if (e.focus) focus();
+      if (!e.focus) blur();
     });
     events.cursor.$.pipe(takeUntil(dispose$)).subscribe((e) => {
-      console.log('e', e);
       if (e.action === 'Cursor:Start') cursorToStart();
       if (e.action === 'Cursor:End') cursorToEnd();
     });
@@ -176,7 +175,7 @@ export const HtmlInput: React.FC<HtmlInputProps> = (props) => {
     onFocus?.(e);
     fire({
       type: 'sys.ui.TextInput/Focus',
-      payload: { instance, focused: true },
+      payload: { instance, focus: true },
     });
   };
 
@@ -184,7 +183,7 @@ export const HtmlInput: React.FC<HtmlInputProps> = (props) => {
     props.onBlur?.(e);
     fire({
       type: 'sys.ui.TextInput/Focus',
-      payload: { instance, focused: false },
+      payload: { instance, focus: false },
     });
   };
 

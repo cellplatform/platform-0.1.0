@@ -94,7 +94,7 @@ export type TextInputEvents = {
 
   focus: {
     $: t.Observable<TextInputFocus>;
-    fire(focused?: boolean): void;
+    fire(focus?: boolean): void;
   };
 
   select: {
@@ -228,7 +228,7 @@ export type TextInputFocusEvent = {
 };
 export type TextInputFocus = {
   instance: Id;
-  focused: boolean;
+  focus: boolean;
 };
 
 /**

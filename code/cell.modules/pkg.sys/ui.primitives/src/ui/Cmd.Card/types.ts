@@ -77,6 +77,12 @@ export type CmdCardEvents = {
   $: t.Observable<t.CmdCardEvent>;
   dispose$: t.Observable<void>;
   state: t.JsonState<CmdCardState>;
+  commandbar: {
+    focus(): void;
+    blur(): void;
+    select(): void;
+    cursor: { start(): void; end(): void };
+  };
 };
 
 /**

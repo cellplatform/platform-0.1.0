@@ -31,10 +31,10 @@ export function TextInputEvents(args: TextInputEventsArgs) {
 
   const focus: E['focus'] = {
     $: rx.payload<t.TextInputFocusEvent>($, 'sys.ui.TextInput/Focus'),
-    fire(focused = true) {
+    fire(focus = true) {
       bus.fire({
         type: 'sys.ui.TextInput/Focus',
-        payload: { instance, focused },
+        payload: { instance, focus },
       });
     },
   };

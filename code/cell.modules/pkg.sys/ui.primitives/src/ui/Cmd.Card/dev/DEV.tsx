@@ -224,6 +224,19 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
+    e.title('Events');
+
+    e.button('⚡️ Focus', (e) => e.ctx.events.commandbar.focus());
+    e.button('⚡️ Blur', (e) => e.ctx.events.commandbar.blur());
+    e.hr(1, 0.1);
+    e.button('⚡️ Select (All)', (e) => e.ctx.events.commandbar.select());
+    e.button('⚡️ Cursor: Start', (e) => e.ctx.events.commandbar.cursor.start());
+    e.button('⚡️ Cursor: End', (e) => e.ctx.events.commandbar.cursor.end());
+
+    e.hr();
+  })
+
+  .items((e) => {
     e.title('Debug');
 
     e.button('change instance: { bus, id }', (e) => {

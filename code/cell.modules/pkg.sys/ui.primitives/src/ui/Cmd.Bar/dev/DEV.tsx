@@ -72,11 +72,11 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const id = `foo.${slug()}`;
-    const bus = rx.bus();
     const netbus = NetworkBusMock({ local: 'local-id', remotes: ['peer-1', 'peer-2'] });
+    const bus = rx.bus();
     const instance = { bus, id };
 
-    const events = CmdBar.Events({ instance });
+    const events = CmdBar.Controller({ instance });
 
     const ctx: Ctx = {
       bus,
@@ -156,8 +156,12 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Events');
 
-    e.button('⚡️ Focus', (e) => e.ctx.events.focus.fire());
-    e.button('⚡️ Blur', (e) => e.ctx.events.focus.fire(false));
+    e.button('⚡️ Focus', (e) => e.ctx.events.text.focus());
+    e.button('⚡️ Blur', (e) => e.ctx.events.text.blur());
+    e.hr(1, 0.1);
+    e.button('⚡️ Select (All)', (e) => e.ctx.events.text.select());
+    e.button('⚡️ Cursor: Start', (e) => e.ctx.events.text.cursor.start());
+    e.button('⚡️ Cursor: End', (e) => e.ctx.events.text.cursor.end());
 
     e.hr();
   })

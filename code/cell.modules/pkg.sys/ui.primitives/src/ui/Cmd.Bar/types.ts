@@ -24,17 +24,17 @@ export type CmdBarEvents = {
   text: {
     changed$: t.Observable<CmdBarTextChange>;
     change(args: { from: string; to: string }): void;
-  };
-  focus: {
-    $: t.Observable<CmdBarFocus>;
-    fire(isFocused?: boolean): void;
+    focus(): void;
+    blur(): void;
+    select(): void;
+    cursor: { start(): void; end(): void };
   };
 };
 
 /**
  * [EVENT] Definitions
  */
-export type CmdBarEvent = CmdBarActionEvent | CmdBarTextChangeEvent | CmdBarFocusEvent;
+export type CmdBarEvent = CmdBarActionEvent | CmdBarTextChangeEvent;
 
 /**
  * Fires when the command is invoked.
@@ -57,12 +57,3 @@ export type CmdBarTextChangeEvent = {
   payload: CmdBarTextChange;
 };
 export type CmdBarTextChange = { instance: Id; from: string; to: string };
-
-/**
- * Fires when the textbox changes.
- */
-export type CmdBarFocusEvent = {
-  type: 'sys.ui.CmdBar/Focus';
-  payload: CmdBarFocus;
-};
-export type CmdBarFocus = { instance: Id; focus: boolean };
