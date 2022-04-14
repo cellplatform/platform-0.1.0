@@ -1,8 +1,8 @@
 import React from 'react';
-import { distinctUntilChanged, filter, map } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 
 import { CmdCard, CmdCardProps } from '..';
-import { CmdBar, t } from '../common';
+import { t } from '../common';
 import { Util } from '../Util';
 import { SampleRenderer } from './DEV.Renderers';
 
@@ -13,7 +13,7 @@ export type DevSampleProps = {
 };
 
 /**
- * UI (Component)
+ * VIEW/UI (Component)
  */
 export const DevSample: React.FC<DevSampleProps> = (args) => {
   const controller = CmdCard.useController({
@@ -30,8 +30,6 @@ export const DevSample: React.FC<DevSampleProps> = (args) => {
  * CONTROLLER (logic "wrapper")
  */
 export function DevSampleController(args: t.CmdCardControllerArgs) {
-  const { instance } = args;
-
   const initial = Util.state.default({
     body: { render: SampleRenderer.body },
     backdrop: { render: SampleRenderer.backdrop },
@@ -41,7 +39,6 @@ export function DevSampleController(args: t.CmdCardControllerArgs) {
   const { dispose$ } = card;
   const patch = card.state.patch;
 
-  const commandbar = CmdBar.Events({ instance, dispose$ });
   const text$ = card.state.$.pipe(
     map((e) => e.value.commandbar.text ?? ''),
     distinctUntilChanged((prev, next) => prev === next),
@@ -59,18 +56,12 @@ export function DevSampleController(args: t.CmdCardControllerArgs) {
     });
   });
 
-  commandbar.action.$.pipe(
-    filter((e) => e.kind === 'Key:Enter'),
-    filter((e) => Boolean(e.text)),
-  ).subscribe(async (e) => {
-    // console.log('e', e);
-
+  // commandbar.
+  card.commandbar.onExecuteCommand(async (e) => {
+    //
+    // console.log('DEV onExecuteCommand', e);
     await patch((state) => (state.commandbar.textbox.spinning = true));
   });
-
-  // card.state$.subscribe((e) => {
-  //   console.log('ff', e);
-  // });
 
   return card;
 }

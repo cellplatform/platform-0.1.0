@@ -201,8 +201,14 @@ export const actions = DevActions<Ctx>()
       const { body, backdrop } = SampleRenderer;
       await e.ctx.events.state.patch((state) => {
         const exists = Boolean(state.body.render);
-        state.body.render = exists ? Util.renderNull : body;
-        state.backdrop.render = exists ? Util.renderNull : backdrop;
+
+        /**
+         * TODO 🐷
+         * - make ".render" method optional (undefined ===> [.renderNull])
+         */
+
+        state.body.render = exists ? (Util.renderNull as any) : body;
+        state.backdrop.render = exists ? (Util.renderNull as any) : backdrop;
       });
     });
 

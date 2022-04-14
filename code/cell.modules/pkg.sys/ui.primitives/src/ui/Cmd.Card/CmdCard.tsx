@@ -65,6 +65,7 @@ type Fields = {
   Events: typeof CmdCardEvents;
   Controller: typeof CmdCardController;
   useController: typeof useCmdCardController;
+  defaultState: typeof Util.state.default;
 };
 export const CmdCard = FC.decorate<CmdCardProps, Fields>(
   View,
@@ -75,6 +76,7 @@ export const CmdCard = FC.decorate<CmdCardProps, Fields>(
     Events: CmdCardEvents,
     Controller: CmdCardController,
     useController: useCmdCardController,
+    defaultState: Util.state.default,
   },
   { displayName: 'CmdCard' },
 );

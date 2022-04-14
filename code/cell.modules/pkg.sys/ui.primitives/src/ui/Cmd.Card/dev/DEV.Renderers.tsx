@@ -21,7 +21,7 @@ const renderSampleBody: t.CmdCardRender<A> = (e) => {
 
   const styles = {
     base: css({
-      Absolute: 10,
+      Absolute: 40,
       Flex: 'center-center',
       border: `dashed 1px ${color.format(-0.2)}`,
       backgroundColor: color.alpha(COLORS.DARK, 0.04),
