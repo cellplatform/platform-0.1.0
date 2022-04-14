@@ -12,7 +12,6 @@ export { TextSyntaxProps };
  */
 const View: React.FC<TextSyntaxProps> = (props) => {
   const {
-    children,
     inlineBlock = true,
     ellipsis = true,
     tokenizer = DefaultTokenizer,
@@ -28,9 +27,9 @@ const View: React.FC<TextSyntaxProps> = (props) => {
   };
 
   let text = props.text ?? '';
-  if (typeof children === 'string') {
+  if (typeof props.children === 'string') {
     if (text) text += ' ';
-    text += children;
+    text += props.children;
   }
 
   const tokens = useMemo(() => tokenizer(text).parts, [tokenizer, text]);
