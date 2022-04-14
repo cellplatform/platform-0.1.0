@@ -8,9 +8,9 @@ type Ctx = {
   props: TextSyntaxProps;
   debug: {
     repeat: number;
-    monospace: boolean;
     customColors: boolean;
     fixedWidth: boolean;
+    textAsChildren: boolean;
   };
 };
 
@@ -27,12 +27,15 @@ export const actions = DevActions<Ctx>()
         inlineBlock: true,
         ellipsis: true,
         theme: 'Light',
+        fontSize: 16,
+        fontWeight: 'bold',
+        monospace: true,
       },
       debug: {
         repeat: 1,
-        monospace: true,
         customColors: false,
         fixedWidth: false,
+        textAsChildren: false,
       },
     };
     return ctx;
@@ -66,6 +69,29 @@ export const actions = DevActions<Ctx>()
         });
     });
 
+    e.hr(1, 0.1);
+
+    e.boolean('monospace', (e) => {
+      if (e.changing) e.ctx.props.monospace = e.changing.next;
+      e.boolean.current = e.ctx.props.monospace;
+    });
+
+    e.boolean('bold', (e) => {
+      if (e.changing) e.ctx.props.fontWeight = e.changing.next ? 'bold' : 'normal';
+      e.boolean.current = e.ctx.props.fontWeight === 'bold';
+    });
+
+    e.select((config) => {
+      config
+        .title('fontSize')
+        .items([12, 14, 16, 24, 36])
+        .initial(config.ctx.props.fontSize)
+        .view('buttons')
+        .pipe((e) => {
+          if (e.changing) e.ctx.props.fontSize = e.changing?.next[0].value;
+        });
+    });
+
     e.hr();
   })
 
@@ -75,6 +101,32 @@ export const actions = DevActions<Ctx>()
     const add = (text: string, value = text) => {
       e.button(text, (e) => (e.ctx.props.text = value));
     };
+
+    e.boolean('fixed width', (e) => {
+      if (e.changing) e.ctx.debug.fixedWidth = e.changing.next;
+      e.boolean.current = e.ctx.debug.fixedWidth;
+    });
+
+    e.select((config) => {
+      config
+        .title('text as')
+        .items(['children', { label: 'text={"property"}', value: 'text' }])
+        .initial('text')
+        .view('buttons')
+        .pipe((e) => {
+          if (e.changing) {
+            const value = e.changing?.next[0].value;
+            e.ctx.debug.textAsChildren = value === 'children';
+          }
+        });
+    });
+
+    // e.boolean('as child', (e) => {
+    //   if (e.changing) e.ctx.debug.fixedWidth = e.changing.next;
+    //   e.boolean.current = e.ctx.debug.fixedWidth;
+    // });
+
+    e.hr(1, 0.1);
 
     add('"" (empty)', '');
     add('hello, <Component>.');
@@ -91,12 +143,6 @@ export const actions = DevActions<Ctx>()
       'long: "Lorem ipsum..."',
       '<Lorem> {ipsum} dolor:sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque.',
     );
-
-    e.hr(1, 0.1);
-    e.boolean('fixed width', (e) => {
-      if (e.changing) e.ctx.debug.fixedWidth = e.changing.next;
-      e.boolean.current = e.ctx.debug.fixedWidth;
-    });
 
     e.hr();
   })
@@ -115,11 +161,6 @@ export const actions = DevActions<Ctx>()
         });
     });
 
-    e.boolean('monospace', (e) => {
-      if (e.changing) e.ctx.debug.monospace = e.changing.next;
-      e.boolean.current = e.ctx.debug.monospace;
-    });
-
     e.boolean('customColors', (e) => {
       if (e.changing) e.ctx.debug.customColors = e.changing.next;
       e.boolean.current = e.ctx.debug.customColors;
@@ -131,7 +172,6 @@ export const actions = DevActions<Ctx>()
   .subject((e) => {
     const { props, debug } = e.ctx;
     const { inlineBlock } = props;
-    const { repeat, monospace, customColors } = debug;
 
     const theme = props.theme ?? TextSyntax.constants.DEFAULT.THEME;
     const isLight = theme === 'Light';
@@ -145,23 +185,28 @@ export const actions = DevActions<Ctx>()
     });
 
     const styles = {
-      base: css({
-        fontFamily: monospace ? 'monospace' : 'sans-serif',
-        fontWeight: monospace ? 'bold' : 'normal',
-        fontSize: 16,
-        width: debug.fixedWidth ? 300 : undefined,
-      }),
+      base: css({ width: debug.fixedWidth ? 300 : undefined }),
       multi: css({
         marginRight: inlineBlock ? 8 : 0,
         ':last-child': { marginRight: 0 },
       }),
     };
 
-    const elements = Array.from({ length: repeat }).map((v, i) => {
-      const style = css(styles.base, repeat > 1 ? styles.multi : undefined);
-      const colors = customColors ? { Brace: 'orange' } : undefined;
+    const elements = Array.from({ length: debug.repeat }).map((v, i) => {
+      const style = css(styles.base, debug.repeat > 1 ? styles.multi : undefined);
+      const colors = debug.customColors ? { Brace: 'orange' } : undefined;
 
-      return <TextSyntax key={i} {...props} colors={colors} style={style} />;
+      return (
+        <TextSyntax
+          {...props}
+          key={i}
+          style={style}
+          colors={colors}
+          text={debug.textAsChildren ? undefined : props.text}
+        >
+          {debug.textAsChildren ? props.text : undefined}
+        </TextSyntax>
+      );
     });
 
     e.render(<div>{elements}</div>);

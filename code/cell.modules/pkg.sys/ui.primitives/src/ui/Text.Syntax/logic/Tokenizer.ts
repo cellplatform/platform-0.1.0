@@ -1,7 +1,7 @@
-import * as k from './types';
+import { t } from '../common';
 
-type K = k.TextSyntaxTokenKind;
-type B = k.TextSyntaxBraceKind;
+type K = t.TextSyntaxTokenKind;
+type B = t.TextSyntaxBraceKind;
 
 /**
  * Simple tokenizer that matches <Value> and {Object} braces.
@@ -9,9 +9,9 @@ type B = k.TextSyntaxBraceKind;
  * Ref:
  *    https://github.com/microsoft/ts-parsec
  */
-export const DefaultTokenizer: k.TextSyntaxTokenizer = (text) => {
+export const DefaultTokenizer: t.TextSyntaxTokenizer = (text) => {
   text = text ?? '';
-  const parts: k.TextSyntaxToken[] = [];
+  const parts: t.TextSyntaxToken[] = [];
   let buffer = '';
 
   const push = (kind: K, text: string, within?: B) => {

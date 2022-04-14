@@ -1,3 +1,4 @@
+import { CSSProperties } from 'react';
 import * as t from '../../common/types';
 
 type Color = string | number;
@@ -14,6 +15,9 @@ export type TextSyntaxProps = {
   tokenizer?: TextSyntaxTokenizer;
   colors?: Partial<TextSyntaxColors>;
   theme?: TextSyntaxTheme;
+  fontSize?: CSSProperties['fontSize'];
+  fontWeight?: CSSProperties['fontWeight'];
+  monospace?: boolean;
   ellipsis?: boolean;
   style?: t.CssValue;
 };

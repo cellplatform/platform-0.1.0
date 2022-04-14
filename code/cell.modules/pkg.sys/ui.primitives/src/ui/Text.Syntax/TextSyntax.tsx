@@ -1,8 +1,7 @@
 import React, { useMemo } from 'react';
 
-import { FC, css, Style, t, constants, color, DEFAULT } from './common';
-import { DefaultTokenizer } from './Tokenizer';
-
+import { color, constants, css, DEFAULT, FC, Style } from './common';
+import { DefaultTokenizer } from './logic/Tokenizer';
 import { TextSyntaxProps } from './types';
 import { Util } from './Util';
 
@@ -13,17 +12,26 @@ export { TextSyntaxProps };
  */
 const View: React.FC<TextSyntaxProps> = (props) => {
   const {
-    text = '',
+    children,
     inlineBlock = true,
     ellipsis = true,
     tokenizer = DefaultTokenizer,
     theme = DEFAULT.THEME,
+    fontSize,
+    fontWeight,
+    monospace = false,
   } = props;
 
   const colors = {
     ...(theme === 'Light' ? constants.COLORS.LIGHT : constants.COLORS.DARK),
     ...props.colors,
   };
+
+  let text = props.text ?? '';
+  if (typeof children === 'string') {
+    if (text) text += ' ';
+    text += children;
+  }
 
   const tokens = useMemo(() => tokenizer(text).parts, [tokenizer, text]);
 
@@ -33,6 +41,9 @@ const View: React.FC<TextSyntaxProps> = (props) => {
   const styles = {
     base: css({
       display: inlineBlock && 'inline-block',
+      fontSize,
+      fontWeight,
+      fontFamily: monospace ? 'monospace' : undefined,
       ...Style.toPadding(props.padding),
       ...Style.toMargins(props.margin),
     }),
