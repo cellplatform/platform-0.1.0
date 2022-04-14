@@ -4,16 +4,18 @@ import React from 'react';
 import { COLORS, color, css, CssValue, t, Spinner } from '../../common';
 import { useModule } from '..';
 
+type Id = string;
+
 export type DevSampleProps = {
-  bus: t.EventBus;
+  instance: { bus: t.EventBus<any>; id?: Id };
   url?: t.ManifestUrl;
   style?: CssValue;
 };
 
 export const DevSample: React.FC<DevSampleProps> = (props) => {
-  const { bus, url } = props;
+  const { instance, url } = props;
 
-  const remote = useModule({ bus, url });
+  const remote = useModule({ instance, url });
   const Component = remote.module?.default;
   const isLoading = remote.loading;
 
@@ -49,7 +51,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
     </div>
   );
   const elEmpty = !Component && !elSpinner && <div {...styles.empty}>Module not loaded.</div>;
-  const elModule = Component && <Component bus={bus} />;
+  const elModule = Component && <Component bus={instance.bus} />;
 
   return (
     <div {...css(styles.base, props.style)}>

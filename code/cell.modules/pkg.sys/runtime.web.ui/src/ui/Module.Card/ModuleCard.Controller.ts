@@ -5,18 +5,24 @@ import { Util } from './Util';
 /**
  * State controller for the <ModuleCard>.
  */
-export function ModuleCardController(args: t.CmdCardStateControllerArgs) {
+export function ModuleCardController(args: t.CmdCardControllerArgs) {
   const initial = args.initial ?? Util.defaultState();
 
-  const card = CmdCard.State.Controller({ ...args, initial });
+  const card = CmdCard.Controller({ ...args, initial });
+
+  // card.commandbar.
+
+  card.commandbar.onExecuteCommand(async (e) => {
+    console.log('onExecuteCommand (load module)', e);
+    card.state.patch((state) => {
+      // state
+      state.commandbar.textbox.spinning = true;
+    });
+  });
 
   /**
    * TODO 🐷
    */
-
-  card.state$.subscribe((e) => {
-    console.log('Module Card Controller $:', e);
-  });
 
   return card;
 }

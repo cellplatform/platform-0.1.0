@@ -6,24 +6,25 @@ import { Button, color, COLORS, css, CssValue, ManifestUrl, t, WebRuntimeBus } f
 import { ModuleInfo } from '../../Module.Info';
 import { useManifest } from '../../useManifest';
 
+type Id = string;
 type Path = string;
 
 export type DevSampleProps = {
-  bus: t.EventBus;
+  instance: { bus: t.EventBus<any>; id?: Id };
   target: string;
   url?: string;
   style?: CssValue;
 };
 
 export const DevSample: React.FC<DevSampleProps> = (props) => {
-  const { bus, url, target } = props;
+  const { instance, url, target } = props;
 
   const manifest = useManifest({ url });
-  const remote = useModuleTarget({ bus, target });
+  const remote = useModuleTarget({ instance, target });
 
   const fireLoad = (manifest: t.ModuleManifest, entry: Path) => {
     if (url) {
-      const events = WebRuntimeBus.Events({ bus });
+      const events = WebRuntimeBus.Events({ instance });
       const module = ManifestUrl.toRemoteImport(url, manifest, entry);
       events.useModule.fire({ target, module });
       events.dispose();
@@ -31,7 +32,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
   };
 
   const fireUnload = () => {
-    const events = WebRuntimeBus.Events({ bus });
+    const events = WebRuntimeBus.Events({ instance });
     events.useModule.fire({ target, module: null });
     events.dispose();
   };

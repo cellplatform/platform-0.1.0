@@ -1,22 +1,22 @@
 import { t, CmdCard } from './common';
 import { Body } from './ui/Body';
+import { Backdrop } from './ui/Backdrop';
 
 export const Util = {
   /**
    * Generate a new "default state" object.
    */
   defaultState() {
-    // const body: t.ModuleCardStateBody = { tmp: 0 };
-    // const backdrop: t.ModuleCardStateBackdrop = { tmp: 0 };
+    const body: t.ModuleCardBodyState = {};
+    const backdrop: t.ModuleCardBackdropState = {};
 
-    return CmdCard.State.default<t.ModuleCardStateBody, t.ModuleCardStateBackdrop>({
-      body: {
-        render: Body.render,
-        state: { tmp: 0 },
-      },
-      backdrop: {
-        state: { tmp: 0 },
-      },
-    });
+    const state = CmdCard.defaultState();
+    state.body.render = Body.render;
+    state.body.state = body;
+
+    state.backdrop.render = Backdrop.render;
+    state.backdrop.state = backdrop;
+
+    return state;
   },
 };

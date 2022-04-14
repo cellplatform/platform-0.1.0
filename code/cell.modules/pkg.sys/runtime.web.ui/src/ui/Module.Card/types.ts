@@ -7,14 +7,12 @@ export type ModuleCardInstance = t.CmdCardInstance;
 /**
  * State
  */
-export type ModuleCardState = t.CmdCardState<ModuleCardStateBody, ModuleCardStateBackdrop>;
-
-export type ModuleCardStateBody = {
-  tmp: number;
+export type ModuleCardBodyState = {
+  url?: t.ManifestUrl;
 };
 
-export type ModuleCardStateBackdrop = {
-  tmp: number;
+export type ModuleCardBackdropState = {
+  url?: t.ManifestUrl;
 };
 
 /**

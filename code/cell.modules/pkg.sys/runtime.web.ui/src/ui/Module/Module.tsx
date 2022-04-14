@@ -3,19 +3,18 @@ import React from 'react';
 import { css, CssValue, t } from '../../common';
 import { useModule } from '../useModule';
 
-type InstanceId = string;
+type Id = string;
 
 export type ModuleProps = {
-  bus: t.EventBus;
+  instance: { bus: t.EventBus<any>; id?: Id };
   url?: t.ManifestUrl;
-  id?: InstanceId;
   style?: CssValue;
 };
 
 export const Module: React.FC<ModuleProps> = (props) => {
-  const { bus, url, id } = props;
+  const { instance, url } = props;
 
-  const remote = useModule({ bus, id, url });
+  const remote = useModule({ instance, url });
   const Component = remote.module?.default;
   // const isLoading = remote.loading;
 
@@ -34,7 +33,7 @@ export const Module: React.FC<ModuleProps> = (props) => {
     body: css({ flex: 1 }),
   };
 
-  const elBody = Component && <Component bus={bus} />;
+  const elBody = Component && <Component bus={instance.bus} />;
 
   return <div {...css(styles.base, props.style)}>{elBody}</div>;
 };

@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { FC, color, COLORS, css, CssValue, t, CmdCard, constants } from './common';
+import React from 'react';
+
+import { CmdCard, constants, CssValue, FC, t } from './common';
 import { ModuleCardController as Controller } from './ModuleCard.Controller';
 
 /**
@@ -7,9 +8,9 @@ import { ModuleCardController as Controller } from './ModuleCard.Controller';
  */
 export type ModuleCardProps = {
   instance: t.ModuleCardInstance;
-  state?: t.ModuleCardState;
+  state?: t.CmdCardState;
   style?: CssValue;
-  onChange?: (e: t.ModuleCardState) => void;
+  onChange?: (e: t.CmdCardState) => void;
 };
 
 /**
@@ -18,7 +19,7 @@ export type ModuleCardProps = {
 export const View: React.FC<ModuleCardProps> = (props) => {
   const { instance } = props;
 
-  const controller = CmdCard.State.useController({
+  const controller = CmdCard.useController({
     instance,
     initial: props.state,
     enabled: props.state === undefined,

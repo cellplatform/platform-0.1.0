@@ -7,8 +7,9 @@ import { t, rx, WebRuntimeBus, Filesystem } from '../../common';
 const TARGET = 'foo';
 const { DEFAULT } = ManifestSelectorStateful.constants;
 
+type Id = string;
 type Ctx = {
-  bus: t.EventBus;
+  instance: { bus: t.EventBus<any>; id?: Id };
   events: t.WebRuntimeEvents;
   props: DevSampleProps;
 };
@@ -22,16 +23,17 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const bus = rx.bus();
-    const events = WebRuntimeBus.Events({ bus });
+    const instance = { bus };
+    const events = WebRuntimeBus.Events({ instance });
     Filesystem.IndexedDb.create({
       bus,
       id: DEFAULT.HISTORY.FS,
     });
 
     const ctx: Ctx = {
-      bus,
+      instance,
       events,
-      props: { bus, target: TARGET },
+      props: { instance, target: TARGET },
     };
     return ctx;
   })
@@ -40,10 +42,9 @@ export const actions = DevActions<Ctx>()
     e.title('Dev');
 
     e.component((e) => {
-      const bus = e.ctx.bus;
       return (
         <ManifestSelectorStateful
-          bus={bus}
+          instance={e.ctx.instance}
           showExports={false}
           focusOnLoad={true}
           style={{ MarginX: 15, marginTop: 10, marginBottom: 20 }}

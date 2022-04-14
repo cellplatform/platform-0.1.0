@@ -35,7 +35,8 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const bus = rx.bus();
-    const { events } = WebRuntimeBus.Controller({ bus });
+    const instance = { bus };
+    const { events } = WebRuntimeBus.Controller({ instance });
 
     Filesystem.IndexedDb.create({ bus, id: DEFAULT.HISTORY.FS });
 
@@ -43,7 +44,7 @@ export const actions = DevActions<Ctx>()
       bus,
       events,
       props: {
-        bus,
+        instance,
         canDrop: true,
         showExports: true,
         history: true,
@@ -165,7 +166,6 @@ export const actions = DevActions<Ctx>()
     const elSelector = (
       <ManifestSelectorStateful
         {...ctx.props}
-        bus={ctx.bus}
         onExportClick={(e) => ctx.events.useModule.fire({ target: TARGET, module: e.module })}
         onChanged={(e) => ctx.url.change(e.url)}
       />
@@ -185,7 +185,7 @@ export const actions = DevActions<Ctx>()
       label: `<ManifestSelectorStateful>`,
     });
 
-    e.render(<DevSampleTarget bus={ctx.bus} target={TARGET} />, {
+    e.render(<DevSampleTarget instance={ctx.props.instance} target={TARGET} />, {
       position: [edge - 1, edge, bottom, width + edge + 50],
       cropmarks: false,
       background: 1,

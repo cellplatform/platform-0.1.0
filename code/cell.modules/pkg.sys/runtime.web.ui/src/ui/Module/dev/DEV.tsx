@@ -6,8 +6,9 @@ import { t, rx, Filesystem } from '../../common';
 
 const { DEFAULT } = ManifestSelectorStateful.constants;
 
+type Id = string;
 type Ctx = {
-  bus: t.EventBus;
+  instance: { bus: t.EventBus; id?: Id };
   props: ModuleProps;
   setUrl(url: t.ManifestUrl): void;
 };
@@ -21,11 +22,13 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const bus = rx.bus();
+    const instance = { bus };
+
     Filesystem.IndexedDb.create({ bus, id: DEFAULT.HISTORY.FS });
 
     const ctx: Ctx = {
-      bus,
-      props: { bus },
+      instance,
+      props: { instance },
       setUrl: (url) => e.change.ctx((ctx) => (ctx.props.url = url)),
     };
     return ctx;
@@ -35,10 +38,9 @@ export const actions = DevActions<Ctx>()
     e.title('Dev');
 
     e.component((e) => {
-      const bus = e.ctx.bus;
       return (
         <ManifestSelectorStateful
-          bus={bus}
+          instance={e.ctx.instance}
           style={{ MarginX: 15, marginTop: 10, marginBottom: 30 }}
           focusOnLoad={true}
           onExportClick={({ url }) => e.ctx.setUrl(url)}

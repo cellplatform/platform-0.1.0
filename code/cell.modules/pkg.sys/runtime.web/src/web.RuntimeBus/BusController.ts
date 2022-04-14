@@ -1,25 +1,24 @@
-import { delay, filter } from 'rxjs/operators';
+import { delay } from 'rxjs/operators';
 
 import { GroupController } from './BusController.Group';
 import { BusEvents } from './BusEvents';
 import { DEFAULT, rx, t, WebRuntime } from './common';
 
-type InstanceId = string;
+type Id = string;
 
 /**
  * Event controller.
  */
 export function BusController(args: {
-  id?: InstanceId;
-  bus: t.EventBus<any>;
+  instance: { bus: t.EventBus<any>; id?: Id };
   netbus?: t.NetworkBus<any>;
   filter?: (e: t.WebRuntimeEvent) => boolean;
 }) {
-  const { netbus } = args;
-  const id = args.id ?? DEFAULT.id;
+  const { netbus, instance } = args;
+  const id = args.instance.id ?? DEFAULT.id;
 
-  const bus = rx.busAsType<t.WebRuntimeEvent>(args.bus);
-  const events = BusEvents({ id, bus });
+  const bus = rx.busAsType<t.WebRuntimeEvent>(args.instance.bus);
+  const events = BusEvents({ instance });
   const { dispose, dispose$ } = events;
 
   /**

@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react';
 import { filter } from 'rxjs/operators';
 
-import { t, WebRuntime, WebRuntimeBus } from '../common';
+import { t, WebRuntime, WebRuntimeBus, rx } from '../common';
 
+type Id = string;
 type TargetName = string;
-type InstanceId = string;
 type Address = t.ModuleManifestRemoteImport;
 
 /**
  * Hook that handles loading remote modules via the [EventBus] for a specific "target".
  */
 export function useModuleTarget<M = any>(args: {
-  bus: t.EventBus<any>;
+  instance: { bus: t.EventBus<any>; id?: Id };
   target: TargetName;
-  id?: InstanceId;
 }) {
-  const { id, bus, target } = args;
+  const { instance, target } = args;
+  const busid = rx.bus.instance(instance.bus);
 
   const [address, setAddress] = useState<Address | undefined>();
   const [failed, setFailed] = useState(false);
@@ -24,7 +24,7 @@ export function useModuleTarget<M = any>(args: {
 
   useEffect(() => {
     const isTarget = Boolean(target);
-    const events = WebRuntimeBus.Events({ bus, id });
+    const events = WebRuntimeBus.Events({ instance });
     const use$ = events.useModule.$.pipe(
       filter((e) => isTarget),
       filter((e) => e.target === target),
@@ -59,7 +59,7 @@ export function useModuleTarget<M = any>(args: {
     });
 
     return () => events.dispose();
-  }, [target, id]); // eslint-disable-line
+  }, [target, instance.id, busid]); // eslint-disable-line
 
   return {
     ok: !failed,

@@ -26,26 +26,26 @@ export type CmdCardRenderState<S extends O> = {
 /**
  * STATE
  */
-export type CmdCardState<A = any, B = any> = {
+export type CmdCardState = {
   ready: boolean;
   commandbar: {
     text?: string;
     textbox: { pending: boolean; spinning: boolean; placeholder: string };
   };
-  body: CmdCardStateBody<A>;
-  backdrop: CmdCardStateBackdrop<B>;
+  body: CmdCardStateBody;
+  backdrop: CmdCardStateBackdrop;
 };
 
-export type CmdCardStateBackdrop<S = any> = {
-  render: CmdCardRender;
-  state: S; // NB: Owned by renderer.
-};
-
-export type CmdCardStateBody<S = any> = {
+export type CmdCardStateBody = {
   isOpen?: boolean; // TEMP 🐷
   show?: 'FullScreen' | 'CommandBar' | 'Hidden';
-  render: CmdCardRender;
-  state: any; // NB: Owned by renderer.
+  render: CmdCardRender<AnyOwnedByRenderer>;
+  state: AnyOwnedByRenderer; // NB: Owned by renderer.
+};
+
+export type CmdCardStateBackdrop = {
+  render: CmdCardRender<AnyOwnedByRenderer>;
+  state: AnyOwnedByRenderer; // NB: Owned by renderer.
 };
 
 /**

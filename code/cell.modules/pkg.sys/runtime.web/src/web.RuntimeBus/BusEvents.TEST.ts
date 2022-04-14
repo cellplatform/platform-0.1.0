@@ -1,14 +1,13 @@
 import { expect, rx, Test } from '../web.test';
 import { WebRuntimeBus } from '.';
 
-const bus = rx.bus();
-
 export default Test.describe('WebRuntimeBus (Events)', (e) => {
   e.describe('is', (e) => {
     const is = WebRuntimeBus.Events.is;
 
     e.it('is (static/instance)', () => {
-      const events = WebRuntimeBus.Events({ bus });
+      const instance = { bus: rx.bus() };
+      const events = WebRuntimeBus.Events({ instance });
       expect(events.is).to.equal(is);
     });
 

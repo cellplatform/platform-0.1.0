@@ -1,16 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FC, color, COLORS, css, CssValue, t, Text } from '../../common';
 
-export type BodyProps = {
+export type BackdropProps = {
   bus: t.EventBus<any>;
-  state: t.ModuleCardBodyState;
+  state: t.ModuleCardBackdropState;
   style?: CssValue;
 };
 
 /**
- * <Body>
+ * <Backdrop>
  */
-export const View: React.FC<BodyProps> = (props) => {
+export const View: React.FC<BackdropProps> = (props) => {
   /**
    * [Render]
    */
@@ -28,14 +28,14 @@ export const View: React.FC<BodyProps> = (props) => {
         fontSize={24}
         fontWeight={'bold'}
         monospace={true}
-      >{`{ Module Loader }`}</Text.Syntax>
+      >{`{ Module Backdrop }`}</Text.Syntax>
     </div>
   );
 };
 
-type R = t.CmdCardRender<t.ModuleCardBodyState>;
+type R = t.CmdCardRender<t.ModuleCardBackdropState>;
 const render: R = (e) => {
-  console.log('render ModuleCard (Body):', e); // TEMP 🐷
+  console.log('render ModuleCard (Backdrop):', e); // TEMP 🐷
   return <View bus={e.bus} state={e.state.current} />;
 };
 
@@ -43,8 +43,8 @@ const render: R = (e) => {
  * Export
  */
 type Fields = { render: R };
-export const Body = FC.decorate<BodyProps, Fields>(
+export const Backdrop = FC.decorate<BackdropProps, Fields>(
   View,
   { render },
-  { displayName: 'ModuleCardBody' },
+  { displayName: 'ModuleCardBackdrop' },
 );
