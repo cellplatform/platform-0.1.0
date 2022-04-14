@@ -5,6 +5,38 @@ type Id = string;
 export type CmdBarInstance = { bus: t.EventBus<any>; id: Id };
 
 /**
+ * Parts
+ */
+export type CmdBarPart = 'Input' | 'Tray';
+export type CmdBarRenderPart = (e: CmdBarRenderPartArgs) => JSX.Element | null;
+export type CmdBarRenderPartArgs = { instance: CmdBarInstance; is: CmdBarRenderPartFlags };
+export type CmdBarRenderPartFlags = { first: boolean; last: boolean; only: boolean };
+
+/**
+ * <Component>
+ */
+export type CmdBarProps = {
+  instance: t.CmdBarInstance;
+  show?: t.CmdBarPart[];
+  cornerRadius?: [number, number, number, number];
+  backgroundColor?: string | number;
+  text?: string;
+  textbox?: {
+    placeholder?: string;
+    spinning?: boolean;
+    pending?: boolean;
+    flex?: number;
+  };
+  tray?: {
+    render?: t.CmdBarRenderPart;
+    flex?: number;
+  };
+  style?: t.CssValue;
+  onChange?: t.CmdTextboxChangeEventHandler;
+  onAction?: t.CmdTextboxActionEventHandler;
+};
+
+/**
  * [Event] API.
  */
 export type CmdBarEventsFactory = (args: {

@@ -5,24 +5,26 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 import { EventPipe, EventPipeItemClickEventHandler } from '../../Event.Pipe';
 import { css, CssValue, Icons, rx, t } from '../common';
 
-export type CmdBarEventPipeProps = {
-  history?: t.EventHistory;
+import { Event } from '../../Event';
+
+export type DevEventPipeProps = {
+  bus: t.EventBus<any>;
   iconEdge?: 'Left' | 'Right';
   style?: CssValue;
   onEventClick?: EventPipeItemClickEventHandler;
 };
 
-export const CmdBarEventPipe: React.FC<CmdBarEventPipeProps> = (props) => {
-  const { iconEdge = 'Right', history = [] } = props;
-  const total = history.length;
+export const DevEventPipe: React.FC<DevEventPipeProps> = (props) => {
+  const { iconEdge = 'Right' } = props;
 
+  const history = Event.useEventHistory(props.bus);
   const [recentlyFired, setRecentlyFired] = useState(false);
   const changedRef$ = useRef(new Subject<t.EventHistory>());
 
   /**
    * Lifecycle
    */
-  useEffect(() => changedRef$.current.next(history), [total]); // eslint-disable-line
+  useEffect(() => changedRef$.current.next(history.events), [history.total]); // eslint-disable-line
   useEffect(() => {
     const dispose$ = new Subject<void>();
     const $ = changedRef$.current.pipe(takeUntil(dispose$));
@@ -52,7 +54,7 @@ export const CmdBarEventPipe: React.FC<CmdBarEventPipeProps> = (props) => {
 
   const elPipe = (
     <EventPipe
-      events={history}
+      events={history.events}
       style={styles.pipe}
       theme={'Dark'}
       onEventClick={props.onEventClick}

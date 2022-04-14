@@ -2,11 +2,11 @@ import React from 'react';
 import { NetworkBusMock } from 'sys.runtime.web';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
-import { CmdBar, CmdBarPart, CmdBarProps } from '..';
+import { CmdBar, CmdBarProps } from '..';
 import { COLORS, rx, slug, t } from '../common';
+import { DevEventPipe } from './DEV.EventPipe';
 
 type Ctx = {
-  bus: t.EventBus<any>;
   netbus: t.NetworkBus<any>;
   props: CmdBarProps;
   debug: Debug;
@@ -15,7 +15,7 @@ type Ctx = {
 
 type Debug = {
   fireCount: number; // Total number of fires.
-  busKind: 'bus' | 'netbus';
+  renderEventPipe: t.CmdBarRenderPart;
 };
 
 /**
@@ -25,37 +25,15 @@ const Util = {
   /**
    * Fire an event.
    */
-  async fire(ctx: Ctx, total: number) {
+  async fireSample(ctx: Ctx, total: number) {
     const fire = (ctx: Ctx) => {
       ctx.debug.fireCount++;
       const count = ctx.debug.fireCount;
       const event: t.Event = { type: `FOO/sample/event-${count}`, payload: { count } };
-      const { busKind } = ctx.debug;
-      if (busKind === 'netbus') ctx.netbus.fire(event);
-      if (busKind === 'bus') ctx.bus.fire(event);
+      ctx.netbus.fire(event);
     };
 
     new Array(total).fill(ctx).forEach(fire);
-  },
-
-  /**
-   * Retrieve currently selected bus ("local" or "network").
-   */
-  toBus(ctx: Ctx) {
-    const { busKind } = ctx.debug;
-    let bus: t.EventBus<any> | undefined;
-    if (busKind === 'bus') bus = ctx.bus;
-    if (busKind === 'netbus') bus = ctx.netbus;
-    if (!bus) throw new Error(`Bus kind '${busKind}' not supported.`);
-
-    const instance = rx.bus.instance(bus);
-    return { bus, instance, busKind };
-  },
-
-  toProps(ctx: Ctx) {
-    const { bus } = Util.toBus(ctx);
-    const props = { ...ctx.props, bus };
-    return props;
   },
 
   toTextbox(ctx: Ctx) {
@@ -71,16 +49,13 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const id = `foo.${slug()}`;
-    const netbus = NetworkBusMock({ local: 'local-id', remotes: ['peer-1', 'peer-2'] });
-    const bus = rx.bus();
-    const instance = { bus, id };
-
+    const instance = { bus: rx.bus(), id: `foo.${slug()}` };
     const events = CmdBar.Controller({ instance });
+    const netbus = NetworkBusMock({ local: 'local-id', remotes: ['peer-1', 'peer-2'] });
 
     const ctx: Ctx = {
-      bus,
       netbus,
+      events,
       props: {
         instance,
         textbox: { placeholder: 'my command', pending: false, spinning: false },
@@ -91,8 +66,12 @@ export const actions = DevActions<Ctx>()
           console.log('!onAction', e);
         },
       },
-      debug: { fireCount: 0, busKind: 'netbus' },
-      events,
+      debug: {
+        fireCount: 0,
+        renderEventPipe(args) {
+          return <DevEventPipe bus={netbus} style={{ MarginX: 8 }} />;
+        },
+      },
     };
 
     return ctx;
@@ -107,7 +86,7 @@ export const actions = DevActions<Ctx>()
 
     e.select((config) =>
       config
-        .title('parts:')
+        .title('show (parts):')
         .items(CmdBar.constants.PARTS)
         .initial(undefined)
         .clearable(true)
@@ -115,8 +94,8 @@ export const actions = DevActions<Ctx>()
         .multi(true)
         .pipe((e) => {
           if (e.changing) {
-            const next = e.changing.next.map(({ value }) => value) as CmdBarPart[];
-            e.ctx.props.parts = next.length === 0 ? undefined : next;
+            const next = e.changing.next.map(({ value }) => value) as t.CmdBarPart[];
+            e.ctx.props.show = next.length === 0 ? undefined : next;
           }
         }),
     );
@@ -167,41 +146,46 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('EventBus');
+    e.title('EventBus (Tray Sample)');
 
-    e.select((config) => {
+    e.select((config) =>
       config
-        .title('Kind of <EventBus>')
-        .items([
-          { value: 'bus', label: 'bus (local)' },
-          { value: 'netbus', label: 'netbus (network)' },
-        ])
-        .initial(config.ctx.debug.busKind)
+        .title('tray (render):')
+        .items([{ label: '<undefined> - default', value: undefined }, 'EventPipe'])
+        .initial(undefined)
         .view('buttons')
         .pipe((e) => {
-          if (e.changing) e.ctx.debug.busKind = e.changing?.next[0].value;
-        });
-    });
+          if (e.changing) {
+            const next = e.changing.next[0].value;
+            e.ctx.props.tray = undefined;
+
+            if (next === 'EventPipe') {
+              e.ctx.props.tray = { render: e.ctx.debug.renderEventPipe };
+            }
+          }
+        }),
+    );
 
     e.hr(1, 0.1);
-    e.button('fire (1)', (e) => Util.fire(e.ctx, 1));
-    e.button('fire (100)', (e) => Util.fire(e.ctx, 100));
-    e.button('fire (1,000)', (e) => Util.fire(e.ctx, 1000));
+
+    e.button('fire (1)', (e) => Util.fireSample(e.ctx, 1));
+    e.button('fire (100)', (e) => Util.fireSample(e.ctx, 100));
+    e.button('fire (1,000)', (e) => Util.fireSample(e.ctx, 1000));
     e.hr();
   })
 
   .items((e) => {
     e.title('Debug');
 
-    e.button('arrangement (1)', (e) => (e.ctx.props.parts = ['Input', 'Events']));
-    e.button('arrangement (2)', (e) => (e.ctx.props.parts = ['Events', 'Input']));
+    e.button('arrangement (1)', (e) => (e.ctx.props.show = ['Input', 'Tray']));
+    e.button('arrangement (2)', (e) => (e.ctx.props.show = ['Tray', 'Input']));
 
     e.hr();
     e.component((e) => {
       return (
         <ObjectView
           name={'props'}
-          data={Util.toProps(e.ctx)}
+          data={e.ctx.props}
           style={{ MarginX: 15 }}
           fontSize={10}
           expandPaths={['$']}
@@ -211,16 +195,10 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const { bus, instance, busKind } = Util.toBus(e.ctx);
-    const props = Util.toProps(e.ctx);
-
     e.settings({
       host: { background: COLORS.DARK },
       layout: {
-        label: {
-          topLeft: '<CmdBar>',
-          bottomRight: busKind === 'netbus' ? `${instance} (network)` : `${instance} (local)`,
-        },
+        label: { topLeft: '<CmdBar>' },
         width: 600,
         height: 38,
         cropmarks: 0.2,
@@ -228,7 +206,7 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    e.render(<CmdBar {...props} style={{ flex: 1 }} />);
+    e.render(<CmdBar {...e.ctx.props} style={{ flex: 1 }} />);
   });
 
 export default actions;
