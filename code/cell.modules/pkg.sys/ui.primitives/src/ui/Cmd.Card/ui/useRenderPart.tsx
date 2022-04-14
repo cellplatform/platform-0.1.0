@@ -75,7 +75,14 @@ export function useRenderPart<S extends O = O>(
  */
 
 function toPart<S extends O>(state: t.CmdCardState, part: t.CmdCardPart): S {
-  if (part === 'Body') return state.body.state as S;
-  if (part === 'Backdrop') return state.backdrop.state as S;
-  throw new Error(`Card part '${part}' not supported`);
+  const done = (state: any): S => {
+    if (state === null || typeof state !== 'object') {
+      throw new Error(`CmdCard '${part}' state must be an {object}.`);
+    }
+    return state as S;
+  };
+
+  if (part === 'Body') return done(state.body.state);
+  if (part === 'Backdrop') return done(state.backdrop.state);
+  throw new Error(`CmdCard part '${part}' not supported`);
 }

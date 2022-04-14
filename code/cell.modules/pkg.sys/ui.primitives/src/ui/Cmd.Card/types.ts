@@ -1,7 +1,6 @@
 import * as t from '../../common/types';
 
 type O = Record<string, unknown>;
-type Obj = Record<string, any>;
 type Id = string;
 type AnyOwnedByRenderer = any;
 
@@ -24,35 +23,29 @@ export type CmdCardRenderState<S extends O> = {
   patch(fn: t.JsonMutation<S>): Promise<void>;
 };
 
-export type CmdCardRenderController = (args: CmdCardRenderControllerArgs) => void | (() => any); // NB. Disposer.
-export type CmdCardRenderControllerArgs = {
-  bus: t.EventBus<any>;
-  card: t.CmdCardEvents;
-};
-
 /**
  * STATE
  */
-export type CmdCardState = {
+export type CmdCardState<A = any, B = any> = {
   ready: boolean;
   commandbar: {
     text?: string;
     textbox: { pending: boolean; spinning: boolean; placeholder: string };
   };
-  body: CmdCardStateBody;
-  backdrop: CmdCardStateBackdrop;
+  body: CmdCardStateBody<A>;
+  backdrop: CmdCardStateBackdrop<B>;
 };
 
-export type CmdCardStateBackdrop = {
+export type CmdCardStateBackdrop<S = any> = {
   render: CmdCardRender;
-  state: AnyOwnedByRenderer;
+  state: S; // NB: Owned by renderer.
 };
 
-export type CmdCardStateBody = {
+export type CmdCardStateBody<S = any> = {
   isOpen?: boolean; // TEMP 🐷
   show?: 'FullScreen' | 'CommandBar' | 'Hidden';
   render: CmdCardRender;
-  state: AnyOwnedByRenderer;
+  state: any; // NB: Owned by renderer.
 };
 
 /**
