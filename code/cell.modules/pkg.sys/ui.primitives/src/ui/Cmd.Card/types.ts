@@ -1,7 +1,9 @@
 import * as t from '../../common/types';
 
 type O = Record<string, unknown>;
+type Obj = Record<string, any>;
 type Id = string;
+type AnyOwnedByRenderer = any;
 
 export type CmdCardInstance = { bus: t.EventBus<any>; id: Id };
 export type CmdCardStateInfoFields = 'Title' | 'State.Controller';
@@ -41,16 +43,16 @@ export type CmdCardState = {
   backdrop: CmdCardStateBackdrop;
 };
 
-export type CmdCardStateBackdrop<S extends O = any> = {
-  render: CmdCardRender<S>;
-  state: S;
+export type CmdCardStateBackdrop = {
+  render: CmdCardRender;
+  state: AnyOwnedByRenderer;
 };
 
-export type CmdCardStateBody<S extends O = any> = {
+export type CmdCardStateBody = {
   isOpen?: boolean; // TEMP 🐷
   show?: 'FullScreen' | 'CommandBar' | 'Hidden';
-  render: CmdCardRender<S>;
-  state: S;
+  render: CmdCardRender;
+  state: AnyOwnedByRenderer;
 };
 
 /**
@@ -82,6 +84,7 @@ export type CmdCardEvents = {
     blur(): void;
     select(): void;
     cursor: { start(): void; end(): void };
+    onExecuteCommand(fn: (e: { trigger: 'Key:Enter' }) => any): void;
   };
 };
 

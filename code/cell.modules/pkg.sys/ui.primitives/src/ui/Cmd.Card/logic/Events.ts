@@ -37,6 +37,15 @@ export function CmdCardEvents(args: t.CmdCardEventsArgs) {
       blur: commandbar.text.blur,
       select: commandbar.text.select,
       cursor: commandbar.text.cursor,
+      onExecuteCommand(fn) {
+        commandbar.action.$.pipe(
+          filter((e) => e.kind === 'Key:Enter'),
+          filter((e) => Boolean(e.text)),
+        ).subscribe((e) => {
+          const trigger = e.kind;
+          fn({ trigger });
+        });
+      },
     },
     clone() {
       return { ...api, dispose: undefined };
