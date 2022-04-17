@@ -29,6 +29,8 @@ export * from './ui/PositioningLayout/types';
 
 export * from './ui/Event/types';
 
+export * from './ui/Error.Boundary/types';
+
 export * from './ui/Tree/types';
 export * from './ui/StackPanel/types';
 

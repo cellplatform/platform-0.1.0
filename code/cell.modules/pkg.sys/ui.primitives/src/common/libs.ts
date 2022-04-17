@@ -1,7 +1,8 @@
 /**
  * Ramda
  */
-import { equals, uniq, clamp, mergeDeepRight, clone, merge } from 'ramda';
+import { clamp, clone, equals, merge, mergeDeepRight, uniq } from 'ramda';
+
 export const R = { equals, uniq, clamp, mergeDeepRight, clone, merge };
 
 /**
@@ -9,7 +10,8 @@ export const R = { equals, uniq, clamp, mergeDeepRight, clone, merge };
  */
 export { rx } from '@platform/util.value';
 export { log } from '@platform/log/lib/client';
-export { css, color, CssValue, formatColor, Style } from '@platform/css';
+export { css, color, Color, CssValue, formatColor, Style } from '@platform/css';
+
 export {
   Mouse,
   MeasureSize,

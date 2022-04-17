@@ -11,6 +11,9 @@ export type IErrorBoundaryState = { error?: Error; errorInfo?: React.ErrorInfo }
 /**
  * Error boundary for hosted content
  * https://reactjs.org/docs/error-boundaries.html
+ *
+ * NOTE:
+ *    The [ErrorBoundary] mechanism requires the use of a react class.
  */
 export class ErrorBoundary extends React.PureComponent<IErrorBoundaryProps, IErrorBoundaryState> {
   public state: IErrorBoundaryState = {};

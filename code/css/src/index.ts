@@ -2,6 +2,7 @@ import { ICssStyle, CssValue, CssProps } from './types';
 
 export { CssValue, CssProps };
 export { color } from './color';
+export { color as Color } from './color';
 export { reset } from './reset';
 
 /**

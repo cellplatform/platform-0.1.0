@@ -23,6 +23,8 @@ const imports = {
   CmdBar: import('./ui/Cmd.Bar/dev/DEV'),
   CmdCard: import('./ui/Cmd.Card/dev/DEV'),
 
+  ErrorBoundary: import('./ui/Error.Boundary/dev/DEV'),
+
   MinSize: import('./ui/MinSize/dev/DEV'),
   PositioningLayer: import('./ui/PositioningLayer/dev/DEV'),
   PositioningLayout: import('./ui/PositioningLayout/dev/DEV'),
