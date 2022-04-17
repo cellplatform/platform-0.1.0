@@ -27,4 +27,6 @@ export {
   CmdCardEvent,
   CmdCardRender,
   CmdCardControllerArgs,
+  CmdCardEvents,
+  CmdCardEventsDisposable,
 } from 'sys.ui.primitives/lib/types';

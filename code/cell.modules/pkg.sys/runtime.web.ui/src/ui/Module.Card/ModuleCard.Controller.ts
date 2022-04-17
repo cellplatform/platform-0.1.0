@@ -1,28 +1,31 @@
 import { t, CmdCard } from '../common';
-// import { ModuleCardEvents } from '../Events';
 import { Util } from './Util';
 
 /**
  * State controller for the <ModuleCard>.
  */
-export function ModuleCardController(args: t.CmdCardControllerArgs) {
+export function ModuleCardController(args: t.CmdCardControllerArgs): t.CmdCardEventsDisposable {
   const initial = args.initial ?? Util.defaultState();
-
   const card = CmdCard.Controller({ ...args, initial });
-
-  // card.commandbar.
 
   card.commandbar.onExecuteCommand(async (e) => {
     console.log('onExecuteCommand (load module)', e);
+
+    /**
+     * TODO 🐷
+     * - monitor load state (stop spinner or raise error on timeout)
+     */
+
     card.state.patch((state) => {
-      // state
       state.commandbar.textbox.spinning = true;
+
+      const body = state.body.state as t.ModuleCardBodyState;
+      body.url = state.commandbar.text;
     });
   });
 
   /**
-   * TODO 🐷
+   * API
    */
-
   return card;
 }
