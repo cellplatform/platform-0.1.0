@@ -2,12 +2,14 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { ErrorBoundary, ErrorBoundaryProps } from '..';
 import { DevSample } from './DEV.Sample';
+import { css, t } from '../common';
 
 type Ctx = {
   props: ErrorBoundaryProps;
   debug: {
-    noChildren: boolean;
     throw: boolean;
+    noChildren: boolean;
+    customError: boolean;
   };
 };
 
@@ -21,8 +23,9 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       props: {},
       debug: {
-        noChildren: false,
         throw: false,
+        noChildren: false,
+        customError: false,
       },
     };
     return ctx;
@@ -39,6 +42,13 @@ export const actions = DevActions<Ctx>()
       if (e.changing) e.ctx.debug.throw = e.changing.next;
       e.boolean.current = e.ctx.debug.throw;
     });
+
+    e.boolean('custom error', (e) => {
+      if (e.changing) e.ctx.debug.customError = e.changing.next;
+      e.boolean.current = e.ctx.debug.customError;
+    });
+
+    e.hr(1, 0.1);
 
     e.boolean('no children', (e) => {
       if (e.changing) e.ctx.debug.noChildren = e.changing.next;
@@ -61,7 +71,7 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const { props, debug } = e.ctx;
+    const { debug } = e.ctx;
 
     e.settings({
       host: { background: -0.04 },
@@ -74,6 +84,14 @@ export const actions = DevActions<Ctx>()
       },
     });
 
+    const renderError: t.RenderBoundaryError = (e) => {
+      const styles = {
+        base: css({ padding: 50, fontSize: 50 }),
+      };
+      return <div {...styles.base}>Derp 🐷</div>;
+    };
+
+    const props = { ...e.ctx.props, renderError: debug.customError ? renderError : undefined };
     const elChildren = debug.noChildren ? undefined : <DevSample throw={debug.throw} />;
     const elError = <ErrorBoundary {...props}>{elChildren}</ErrorBoundary>;
 

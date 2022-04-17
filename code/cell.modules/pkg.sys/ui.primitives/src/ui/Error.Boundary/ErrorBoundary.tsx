@@ -6,7 +6,7 @@ import { t, rx } from '../common';
 import { ErrorViewDefault } from './ErrorView.Default';
 
 export type ErrorBoundaryProps = {
-  Error?: React.FC<t.ErrorViewProps>;
+  renderError?: t.RenderBoundaryError;
   style?: t.CssValue;
 };
 export type ErrorBoundaryState = { error?: Error; info?: React.ErrorInfo };
@@ -47,20 +47,21 @@ export class ErrorBoundary extends React.PureComponent<ErrorBoundaryProps, Error
    * [Render]
    */
   public render() {
-    const children = this.props.children;
+    const { children, style } = this.props;
     if (!children) return null;
 
     /**
      * Success.
      */
-    if (!this.state.error) return children;
+    const { error, info } = this.state;
+    if (!error) return children;
 
     /**
      * Error condition.
      */
-    const Error = this.props.Error ?? ErrorViewDefault;
-    const { error, info } = this.state;
-    return <Error onClear={this.clearError} error={error} info={info} style={this.props.style} />;
+    const onClear = this.clearError;
+    const renderError = this.props.renderError ?? ErrorViewDefault.render;
+    return renderError({ error, info, style, onClear });
   }
 
   /**

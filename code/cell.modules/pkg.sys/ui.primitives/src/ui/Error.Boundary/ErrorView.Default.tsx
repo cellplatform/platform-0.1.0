@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { COLORS, css, t } from '../../common';
+import { FC, COLORS, css, t } from '../../common';
 import { Button } from '../../ui.ref/button/Button';
 import { Icons } from '../Icons';
 
 /**
  * Default view of an error rendered by an [ErrorBoundary]
  */
-export const ErrorViewDefault: React.FC<t.ErrorViewProps> = (props) => {
+const View: React.FC<t.ErrorViewProps> = (props) => {
   const { error, info: errorInfo } = props;
 
   /**
@@ -29,9 +29,7 @@ export const ErrorViewDefault: React.FC<t.ErrorViewProps> = (props) => {
       borderRadius: 10,
       overflow: 'hidden',
     }),
-    close: css({
-      Absolute: [5, 8, null, null],
-    }),
+    close: css({ Absolute: [5, 8, null, null] }),
   };
   return (
     <div {...css(styles.base, props.style)}>
@@ -57,16 +55,30 @@ function renderError(props: t.ErrorViewProps) {
     pre: css({ fontSize: 12 }),
   };
 
+  const elStack = componentStack && (
+    <div>
+      componentStack
+      <div>{componentStack}</div>
+    </div>
+  );
+
   return (
     <pre {...styles.pre}>
       <div>{error?.message}</div>
       <div>{error?.stack}</div>
-      {componentStack && (
-        <div>
-          componentStack
-          <div>{componentStack}</div>
-        </div>
-      )}
+      {elStack}
     </pre>
   );
 }
+
+/**
+ * Export
+ */
+type Fields = {
+  render: t.RenderBoundaryError;
+};
+export const ErrorViewDefault = FC.decorate<t.ErrorViewProps, Fields>(
+  View,
+  { render: (props) => <ErrorViewDefault {...props} /> },
+  { displayName: 'ErrorViewDefault' },
+);
