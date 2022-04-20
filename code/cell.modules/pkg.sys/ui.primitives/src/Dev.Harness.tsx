@@ -41,11 +41,14 @@ const imports = {
   EventPipe: import('./ui/Event.Pipe/dev/DEV'),
   EventList: import('./ui/Event.List/dev/DEV'),
 
+  FullScreen: import('./ui/FullScreen/dev/DEV'),
+
   HashChip: import('./ui/HashChip/dev/DEV'),
 
   Button: import('./ui.ref/button/Button.dev/DEV'),
   Switch: import('./ui.ref/button/Switch.dev/DEV'),
   OptionButtons: import('sys.ui.dev/lib/ui/OptionButtons/dev/DEV'),
+  // OptionButtons: import('./ui/OptionButtons/DEV'),
 
   Svg: import('./ui/Image.Svg/dev/DEV'),
 

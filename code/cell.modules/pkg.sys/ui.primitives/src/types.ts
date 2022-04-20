@@ -39,3 +39,8 @@ export * from './ui/Text/types';
 export * from './ui/Text.Copy/types';
 export * from './ui/Text.Syntax/types';
 export * from './ui/Text.Input/types';
+
+/**
+ * @system (ui.dev)
+ */
+export * from 'sys.ui.dev/lib/ui/OptionButtons/types';
