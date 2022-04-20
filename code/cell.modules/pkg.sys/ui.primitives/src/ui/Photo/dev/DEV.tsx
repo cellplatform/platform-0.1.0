@@ -1,23 +1,22 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { Photo, PhotoProps } from '..';
-import { t } from '../common';
+import { css, t } from '../common';
 
 type Ctx = {
   props: PhotoProps;
-  debug: {
-    //
-  };
 };
 
-const PHOTO: t.Photo = {
-  // url: 'https://source.unsplash.com/ntqaFfrDdEA/1920x1280', // Sample
-  url: 'http://localhost:5000/Pre-Memorial%20(via%20Email)/070422%20Paul%20&%20Gay%2008.jpeg',
-};
-
-const DEFAULT = {
-  PHOTO,
-};
+const URLS = [
+  'https://source.unsplash.com/ntqaFfrDdEA/1920x1280',
+  'https://source.unsplash.com/wdIEebx7SSs/1920x1280',
+  'https://source.unsplash.com/03Pv2Ikm5Hk/1920x1280',
+  'https://source.unsplash.com/1OtUkD_8svc/1920x1280',
+  'https://source.unsplash.com/nKNm_75lH4g/1920x1280',
+  'https://source.unsplash.com/MljwsnGwdOY/1920x1280',
+  'https://source.unsplash.com/JZRlnfsdcj0/1920x1280',
+  'https://source.unsplash.com/ycG0A6DlvOk/1920x1280',
+];
 
 const Util = {
   toProps(ctx: Ctx) {
@@ -27,6 +26,15 @@ const Util = {
 
   toDefs(ctx: Ctx) {
     return [...Photo.toDefs(ctx.props.def)];
+  },
+
+  addPhoto(ctx: Ctx) {
+    const defs = Photo.toDefs(ctx.props.def);
+    if (defs.length < URLS.length) {
+      const url = URLS[defs.length];
+      defs.push({ url });
+      ctx.props.def = defs; // NB: As [list].
+    }
   },
 };
 
@@ -39,8 +47,7 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const ctx: Ctx = {
-      props: { def: DEFAULT.PHOTO },
-      debug: {},
+      props: {},
     };
 
     return ctx;
@@ -48,20 +55,14 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx, bus } = e;
+    Util.addPhoto(e.ctx);
   })
 
   .items((e) => {
     e.title('Def (Items)');
 
     e.button('add photo', (e) => {
-      const defs = Photo.toDefs(e.ctx.props.def);
-
-      if (defs.length === 0) {
-        e.ctx.props.def = DEFAULT.PHOTO; // NB: As singular value.
-      } else {
-        defs.push(DEFAULT.PHOTO);
-        e.ctx.props.def = defs; // NB: As [list].
-      }
+      Util.addPhoto(e.ctx);
     });
 
     e.hr(1, 0.1);
@@ -87,6 +88,19 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Debug');
+
+    e.component((e) => {
+      const change = e.change;
+      return (
+        <Photo.Debug.DefsSelector
+          {...e.ctx.props}
+          style={{ MarginX: 20, MarginY: 15 }}
+          onSelectionChange={(e) => {
+            change.ctx((ctx) => (ctx.props.index = e.to));
+          }}
+        />
+      );
+    });
 
     e.hr();
 

@@ -1,16 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Color, COLORS, css, CssValue, t } from './common';
+import React from 'react';
+import { Color, css, CssValue, t } from './common';
 
-export type PhotoImgProps = {
+export type PhotoImageProps = {
   def: t.Photo;
+  opacity?: number;
   style?: CssValue;
 };
 
-export const PhotoImg: React.FC<PhotoImgProps> = (props) => {
-  const { def } = props;
+export const PhotoImage: React.FC<PhotoImageProps> = (props) => {
+  const { def, opacity = 1 } = props;
   const url = def.url;
-
-  console.log('url', url);
 
   /**
    * Handlers
@@ -22,14 +21,11 @@ export const PhotoImg: React.FC<PhotoImgProps> = (props) => {
   const styles = {
     base: css({
       Absolute: 0,
-      // backgroundImage: `url(${url})`,
-      // backgroundSize: 'cover',
-      // backgroundPosition: 'center center',
+      opacity,
+      transition: `opacity 500ms`,
       Flex: 'center-center',
     }),
     url: css({
-      // Absolute: 10,
-      // Flex: 'center-center',
       Absolute: [null, 10, 10, null],
     }),
     a: css({

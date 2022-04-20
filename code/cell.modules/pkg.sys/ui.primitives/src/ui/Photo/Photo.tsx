@@ -1,16 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FC, color, COLORS, css, CssValue, t } from '../../common';
-import { PhotoImg } from './Photo.Img';
-import { DEFAULTS } from './common';
+import { PhotoImage } from './Photo.Image';
+import { DEFAULT } from './common';
+import { PhotoProps } from './types';
+import { Util } from './Util';
+import { DefsSelector } from './ui/Debug.DefsSelector';
 
-export type PhotoProps = {
-  def?: t.Photo | t.Photo[];
-  style?: CssValue;
-};
+export { PhotoProps };
 
 const View: React.FC<PhotoProps> = (props) => {
-  // const inputDef = props.def ?? [];
-  // const defs = Array.isArray(inputDef) ? inputDef : inputDef === undefined ? [] : [inputDef];
+  const { index = DEFAULT.index } = props;
   const defs = Util.toDefs(props.def);
 
   /**
@@ -21,7 +20,8 @@ const View: React.FC<PhotoProps> = (props) => {
    */
 
   const images = defs.map((def, i) => {
-    return <PhotoImg key={i} def={def} />;
+    const isCurrent = i === index;
+    return <PhotoImage key={i} def={def} opacity={isCurrent ? 1 : 0} />;
   });
 
   /**
@@ -37,24 +37,19 @@ const View: React.FC<PhotoProps> = (props) => {
 };
 
 /**
- * Helpers
- */
-const Util = {
-  toDefs(inputDef: PhotoProps['def'] = []) {
-    const defs = Array.isArray(inputDef) ? inputDef : inputDef === undefined ? [] : [inputDef];
-    return defs;
-  },
-};
-
-/**
  * Export
  */
 type Fields = {
-  defaults: typeof DEFAULTS;
+  default: typeof DEFAULT;
   toDefs: typeof Util.toDefs;
+  Debug: { DefsSelector: typeof DefsSelector };
 };
 export const Photo = FC.decorate<PhotoProps, Fields>(
   View,
-  { defaults: DEFAULTS, toDefs: Util.toDefs },
+  {
+    default: DEFAULT,
+    toDefs: Util.toDefs,
+    Debug: { DefsSelector },
+  },
   { displayName: 'Photo' },
 );

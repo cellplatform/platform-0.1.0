@@ -1,6 +1,9 @@
 export * from '../common';
+export { Radios } from '../OptionButtons';
 
 /**
  * Constants
  */
-export const DEFAULTS = {};
+export const DEFAULT = {
+  index: 0,
+};
