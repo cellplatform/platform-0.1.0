@@ -10,7 +10,6 @@ export type OptionClickEvent = {
 
 export type OptionRenderFactory = {
   label?(props: {
-    // item: OptionItem;
     label: string;
     value: any;
     index: number;

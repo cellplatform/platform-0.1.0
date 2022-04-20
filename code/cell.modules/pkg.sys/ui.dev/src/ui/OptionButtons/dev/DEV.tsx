@@ -51,7 +51,8 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Selected');
 
-    e.button('undefined', (e) => (e.ctx.selected = undefined));
+    e.button('<undefined>', (e) => (e.ctx.selected = undefined));
+    e.hr(1, 0.1);
     e.button('first', (e) => (e.ctx.selected = 0));
     e.button('last', (e) => (e.ctx.selected = e.ctx.items.length - 1));
 
