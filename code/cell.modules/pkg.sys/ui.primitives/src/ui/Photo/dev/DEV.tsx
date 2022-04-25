@@ -1,7 +1,6 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { Photo, PhotoProps } from '..';
-import { css, t } from '../common';
 
 type Ctx = {
   props: PhotoProps;
@@ -22,6 +21,10 @@ const Util = {
   toProps(ctx: Ctx) {
     const props = { ...ctx.props };
     return props;
+  },
+
+  toDefaults(ctx: Ctx) {
+    return ctx.props.defaults || (ctx.props.defaults = {});
   },
 
   toDefs(ctx: Ctx) {
@@ -47,7 +50,12 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const ctx: Ctx = {
-      props: {},
+      props: {
+        defaults: { showUrl: true },
+        onLoaded(e) {
+          console.log('⚡️ onLoaded:', e);
+        },
+      },
     };
 
     return ctx;
@@ -55,14 +63,31 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx, bus } = e;
-    Util.addPhoto(e.ctx);
+    ctx.props.def = URLS[0];
+  })
+
+  .items((e) => {
+    e.title('Props');
+
+    // e.button('meta.url', (e) => Util.toMeta(e.ctx).showUrl);
+
+    e.boolean('defaults.meta.showUrl', (e) => {
+      const meta = Util.toDefaults(e.ctx);
+      if (e.changing) meta.showUrl = e.changing.next;
+      e.boolean.current = meta.showUrl;
+    });
+
+    e.hr();
   })
 
   .items((e) => {
     e.title('Def (Items)');
 
-    e.button('add photo', (e) => {
-      Util.addPhoto(e.ctx);
+    e.button('add photo', (e) => Util.addPhoto(e.ctx));
+    e.button('add 404 (fail)', (e) => {
+      const defs = Photo.toDefs(e.ctx.props.def);
+      defs.push({ url: 'https://domain.com/404.png' });
+      e.ctx.props.def = defs; // NB: As [list].
     });
 
     e.hr(1, 0.1);

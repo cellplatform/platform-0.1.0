@@ -8,20 +8,32 @@ import { DefsSelector } from './ui/Debug.DefsSelector';
 
 export { PhotoProps };
 
+/**
+ * Component
+ */
 const View: React.FC<PhotoProps> = (props) => {
-  const { index = DEFAULT.index } = props;
+  const { index = DEFAULT.index, defaults = {} } = props;
   const defs = Util.toDefs(props.def);
 
   /**
    * TODO 🐷
-   * - def as simple "string" (url)
    * - index selection of set (`currentIndex: number`)
    *    - transition controls between images - recursive call to self as "[def]" (single item index)
    */
 
   const images = defs.map((def, i) => {
     const isCurrent = i === index;
-    return <PhotoImage key={i} def={def} opacity={isCurrent ? 1 : 0} />;
+    const opacity = isCurrent ? 1 : 0;
+    return (
+      <PhotoImage
+        key={`${i}.${def.url}`}
+        index={i}
+        def={def}
+        opacity={opacity}
+        defaults={defaults}
+        onLoaded={props.onLoaded}
+      />
+    );
   });
 
   /**
