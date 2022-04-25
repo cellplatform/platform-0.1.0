@@ -2,9 +2,12 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { App, AppProps } from '..';
 
-import { Photo } from '../common';
+import { Photo, rx, slug, t, Vimeo } from '../common';
 
-type Ctx = { props: AppProps };
+type Ctx = {
+  events: t.VimeoEvents;
+  props: AppProps;
+};
 
 /**
  * Actions
@@ -13,8 +16,17 @@ export const actions = DevActions<Ctx>()
   .namespace('ui.App')
   .context((e) => {
     if (e.prev) return e.prev;
+
+    const bus = rx.bus();
+    const id = `foo.${slug()}`;
+    const instance = { bus, id };
+
+    const events = Vimeo.Events({ instance });
+
     const ctx: Ctx = {
+      events,
       props: {
+        instance,
         photos: [
           { url: '/static/images/paul/g-street-bob-kath-gay.png' },
           { url: '/static/images/paul/head-shot.png' },
@@ -32,10 +44,14 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Dev');
 
+    e.button('start', (e) => e.ctx.events.play.fire());
+    e.button('stop', (e) => e.ctx.events.pause.fire());
+
+    e.hr();
+
     e.component((e) => {
       return (
         <Photo.Debug.DefsSelector
-          // {...e.ctx.props}
           def={e.ctx.props.photos}
           index={e.ctx.props.index}
           style={{ MarginX: 20, MarginY: 15 }}
