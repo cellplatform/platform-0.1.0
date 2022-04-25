@@ -8,19 +8,19 @@ import { VimeoEvents } from '../VimeoEvents';
  * Monitors a Videmo player providing icon values to display based on various strategies..
  */
 export const useIconController: t.UseVimeoIconController = (args: {
-  bus: t.EventBus<any>;
-  id: t.VimeoInstance;
+  instance: t.VimeoInstance;
   showPlayPause?: boolean;
   isEnabled?: boolean;
 }) => {
-  const { id, isEnabled = true, showPlayPause = true } = args;
+  const { instance, isEnabled = true, showPlayPause = true } = args;
+  const { id } = instance;
   const [icon, setIcon] = useState<t.VimeoIconFlag | undefined>();
 
   /**
    * Lifecycle
    */
   useEffect(() => {
-    const bus = rx.busAsType<t.VimeoEvent>(args.bus);
+    const bus = rx.busAsType<t.VimeoEvent>(instance.bus);
     const events = VimeoEvents({ id, bus, isEnabled });
     const status$ = events.status.$.pipe();
     const start$ = status$.pipe(filter((e) => e.action === 'start'));
@@ -87,7 +87,7 @@ export const useIconController: t.UseVimeoIconController = (args: {
 
     updatePlayVisibility();
     return () => events.dispose();
-  }, [args.bus, id, isEnabled, showPlayPause]);
+  }, [instance.bus, id, isEnabled, showPlayPause]);
 
   // Finish up.
   return {

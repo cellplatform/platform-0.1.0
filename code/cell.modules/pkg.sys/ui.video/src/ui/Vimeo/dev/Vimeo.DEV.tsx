@@ -51,8 +51,7 @@ export const actions = DevActions<Ctx>()
       events,
       theme: 'light',
       props: {
-        id,
-        bus,
+        instance: { bus, id },
         video: VIDEO['stock/running'],
         muted: true,
         borderRadius: 20,
@@ -169,8 +168,8 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     const fire = (e: A, seconds: number) => {
-      const id = e.ctx.props.id;
-      e.ctx.bus.fire({ type: 'Vimeo/seek:req', payload: { id, seconds } });
+      const id = e.ctx.props.instance.id;
+      e.ctx.bus.fire({ type: 'Vimeo/seek:req', payload: { instance: id, seconds } });
     };
 
     e.title('seek (seconds)');
@@ -217,9 +216,9 @@ export type SampleProps = { ctx: Ctx };
 
 export const Sample: React.FC<SampleProps> = (props) => {
   const { ctx } = props;
-  const { bus, id } = ctx.props;
+  const { instance } = ctx.props;
 
-  const icon = useIconController({ bus, id, isEnabled: ctx.debug.useIconController });
+  const icon = useIconController({ instance, isEnabled: ctx.debug.useIconController });
 
   return <Vimeo {...ctx.props} icon={icon.current ?? props.ctx.props.icon} />;
 };

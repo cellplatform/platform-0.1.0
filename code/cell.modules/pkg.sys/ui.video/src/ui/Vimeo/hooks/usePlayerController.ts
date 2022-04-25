@@ -11,8 +11,7 @@ type Action = t.VimeoStatus['action'];
  * Event-bus controller for a Vimeo player.
  */
 export function usePlayerController(args: {
-  bus: t.EventBus<any>;
-  id: t.VimeoInstance;
+  instance: t.VimeoInstance;
   video: number;
   player?: VimeoPlayer;
 }) {
@@ -21,13 +20,14 @@ export function usePlayerController(args: {
   const loading = useRef<number | undefined>(); // Video-ID.
   const [opacity, setOpacity] = useState<number>(0);
 
-  const { id, player, video } = args;
+  const { instance, player, video } = args;
+  const { id, bus } = instance;
 
   /**
    * Lifecycle
    */
   useEffect(() => {
-    const bus = rx.busAsType<t.VimeoEvent>(args.bus);
+    const bus = rx.busAsType<t.VimeoEvent>(instance.bus);
     const events = VimeoEvents({ id, bus });
 
     const getTimes = async (): Promise<Times> => {
@@ -42,7 +42,7 @@ export function usePlayerController(args: {
 
     const toStatus = async (action: Action, times: Times): Promise<t.VimeoStatus> => {
       return deleteUndefined({
-        id,
+        instance: instance.id,
         action,
         ...times,
         video: (await player?.getVideoId()) ?? video,
@@ -123,7 +123,7 @@ export function usePlayerController(args: {
         const status = await getStatus();
         bus.fire({
           type: 'Vimeo/status:res',
-          payload: { tx, id, status },
+          payload: { tx, instance: id, status },
         });
       });
 
@@ -151,7 +151,7 @@ export function usePlayerController(args: {
           type: 'Vimeo/load:res',
           payload: {
             tx,
-            id,
+            instance: id,
             action: isLoaded ? 'none:already-loaded' : 'loaded',
             status: await getStatus(),
           },
@@ -165,7 +165,7 @@ export function usePlayerController(args: {
         const { tx = slug() } = e;
         await player.play();
         await time.wait(1); // NB: Allow a tick to prevent "pause" (or other actions performed immediately after) from erroring.
-        bus.fire({ type: 'Vimeo/play:res', payload: { tx, id } });
+        bus.fire({ type: 'Vimeo/play:res', payload: { tx, instance: id } });
       });
 
       /**
@@ -174,7 +174,7 @@ export function usePlayerController(args: {
       events.pause.req$.subscribe(async (e) => {
         const { tx = slug() } = e;
         await player.pause();
-        bus.fire({ type: 'Vimeo/pause:res', payload: { tx, id } });
+        bus.fire({ type: 'Vimeo/pause:res', payload: { tx, instance: id } });
       });
 
       /**
@@ -185,7 +185,7 @@ export function usePlayerController(args: {
         const secs = R.clamp(0, await player.getDuration(), e.seconds);
         seekRef.current = secs;
         await player.setCurrentTime(secs);
-        bus.fire({ type: 'Vimeo/seek:res', payload: { tx, id } });
+        bus.fire({ type: 'Vimeo/seek:res', payload: { tx, instance: id } });
       });
     }
 
@@ -202,7 +202,7 @@ export function usePlayerController(args: {
       }
       events.dispose();
     };
-  }, [args.bus, id, player]); // eslint-disable-line
+  }, [instance.bus, instance.id, player]); // eslint-disable-line
 
   // Finish up.
   return { id, opacity };

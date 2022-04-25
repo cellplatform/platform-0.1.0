@@ -34,8 +34,7 @@ export const actions = DevActions<Ctx>()
       bus,
       events,
       props: {
-        id,
-        bus,
+        instance: { id, bus },
         video: VIDEOS[0].value,
         blur: 0,
         opacity: 1,
@@ -100,7 +99,7 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     const fire = (e: A, seconds: number) => {
-      e.ctx.bus.fire({ type: 'Vimeo/seek:req', payload: { id, seconds } });
+      e.ctx.bus.fire({ type: 'Vimeo/seek:req', payload: { instance: id, seconds } });
     };
     e.title('seek');
     e.button('0 (start)', (e) => fire(e, -10));

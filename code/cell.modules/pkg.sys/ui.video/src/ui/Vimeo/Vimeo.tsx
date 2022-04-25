@@ -2,7 +2,7 @@ import VimeoPlayer from '@vimeo/player';
 import React, { useEffect, useRef, useState } from 'react';
 import { distinctUntilChanged } from 'rxjs/operators';
 
-import { css, CssValue, t } from './common';
+import { css, CssValue, t, FC } from './common';
 import { IconOverlay, VimeoIconClickArgs } from './components/IconOverlay';
 import { ThumbnailOverlay } from './components/ThumbnailOverlay';
 import { useIconController, usePlayerController } from './hooks';
@@ -11,8 +11,7 @@ import { VimeoEvents } from './VimeoEvents';
 type Url = string;
 
 export type VimeoProps = {
-  bus: t.EventBus<any>;
-  id: string;
+  instance: t.VimeoInstance;
   video: number;
   muted?: boolean;
   width?: number;
@@ -29,8 +28,9 @@ export type VimeoProps = {
  * Wrapper for the Vimeo player API.
  * https://github.com/vimeo/player.js
  */
-const Component: React.FC<VimeoProps> = (props) => {
-  const { id, video, width, height, bus, borderRadius, muted } = props;
+const View: React.FC<VimeoProps> = (props) => {
+  const { instance, video, width, height, borderRadius, muted } = props;
+  const { bus, id } = instance;
   const divRef = useRef<HTMLDivElement>(null);
 
   const [player, setPlayer] = useState<VimeoPlayer>();
@@ -59,7 +59,7 @@ const Component: React.FC<VimeoProps> = (props) => {
     };
   }, [width, height]); // eslint-disable-line
 
-  const controller = usePlayerController({ id, video, player, bus });
+  const controller = usePlayerController({ instance, video, player });
 
   useEffect(() => {
     const events = VimeoEvents({ id, bus });
@@ -108,13 +108,14 @@ const Component: React.FC<VimeoProps> = (props) => {
 };
 
 /**
- * Export extended function.
+ * Export
  */
-(Component as any).Events = VimeoEvents;
-(Component as any).useIconController = useIconController;
-
-type T = React.FC<VimeoProps> & {
+type Fields = {
   Events: t.VimeoEventsFactory;
   useIconController: t.UseVimeoIconController;
 };
-export const Vimeo = Component as T;
+export const Vimeo = FC.decorate<VimeoProps, Fields>(
+  View,
+  { Events: VimeoEvents, useIconController },
+  { displayName: 'Vimeo' },
+);

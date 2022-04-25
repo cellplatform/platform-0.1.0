@@ -1,12 +1,13 @@
 import { t } from './common';
 
+type Id = string;
 type Seconds = number;
 
 /**
  * Status
  */
 export type VimeoStatus = {
-  id: t.VimeoInstance;
+  instance: Id;
   video: t.VimeoId;
   action: 'info' | 'loaded' | 'start' | 'update' | 'seek' | 'stop' | 'end';
   duration: Seconds;

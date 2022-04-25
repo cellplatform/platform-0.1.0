@@ -16,7 +16,7 @@ function Events(args: { id: string; bus: t.EventBus<any>; isEnabled?: boolean })
     takeUntil(dispose$),
     filter((e) => isEnabled),
     filter((e) => is.base(e)),
-    filter((e) => e.payload.id === id),
+    filter((e) => e.payload.instance === id),
   );
 
   const load: t.VimeoEvents['load'] = {
@@ -32,9 +32,9 @@ function Events(args: { id: string; bus: t.EventBus<any>; isEnabled?: boolean })
           catchError(() => of(`Vimeo load timed out after ${msecs} msecs`)),
         ),
       );
-      bus.fire({ type: 'Vimeo/load:req', payload: { tx, id, video, muted } });
+      bus.fire({ type: 'Vimeo/load:req', payload: { tx, instance: id, video, muted } });
       const res = await first;
-      return typeof res === 'string' ? { tx, id, error: res } : res;
+      return typeof res === 'string' ? { tx, instance: id, error: res } : res;
     },
   };
 
@@ -52,9 +52,9 @@ function Events(args: { id: string; bus: t.EventBus<any>; isEnabled?: boolean })
           catchError(() => of(`Vimeo status timed out after ${msecs} msecs`)),
         ),
       );
-      bus.fire({ type: 'Vimeo/status:req', payload: { tx, id } });
+      bus.fire({ type: 'Vimeo/status:req', payload: { tx, instance: id } });
       const res = await first;
-      return typeof res === 'string' ? { tx, id, error: res } : res;
+      return typeof res === 'string' ? { tx, instance: id, error: res } : res;
     },
   };
 
@@ -71,9 +71,9 @@ function Events(args: { id: string; bus: t.EventBus<any>; isEnabled?: boolean })
           catchError(() => of(`Vimeo play timed out after ${msecs} msecs`)),
         ),
       );
-      bus.fire({ type: 'Vimeo/play:req', payload: { tx, id } });
+      bus.fire({ type: 'Vimeo/play:req', payload: { tx, instance: id } });
       const res = await first;
-      return typeof res === 'string' ? { tx, id, error: res } : res;
+      return typeof res === 'string' ? { tx, instance: id, error: res } : res;
     },
   };
 
@@ -90,9 +90,9 @@ function Events(args: { id: string; bus: t.EventBus<any>; isEnabled?: boolean })
           catchError(() => of(`Vimeo pause timed out after ${msecs} msecs`)),
         ),
       );
-      bus.fire({ type: 'Vimeo/pause:req', payload: { tx, id } });
+      bus.fire({ type: 'Vimeo/pause:req', payload: { tx, instance: id } });
       const res = await first;
-      return typeof res === 'string' ? { tx, id, error: res } : res;
+      return typeof res === 'string' ? { tx, instance: id, error: res } : res;
     },
   };
 
@@ -109,13 +109,24 @@ function Events(args: { id: string; bus: t.EventBus<any>; isEnabled?: boolean })
           catchError(() => of(`Vimeo seek timed out after ${msecs} msecs`)),
         ),
       );
-      bus.fire({ type: 'Vimeo/seek:req', payload: { tx, id, seconds } });
+      bus.fire({ type: 'Vimeo/seek:req', payload: { tx, instance: id, seconds } });
       const res = await first;
-      return typeof res === 'string' ? { tx, id, error: res } : res;
+      return typeof res === 'string' ? { tx, instance: id, error: res } : res;
     },
   };
 
-  return { id, $, is, dispose, dispose$, load, status, play, pause, seek };
+  return {
+    instance: { bus: rx.bus.instance(bus), id },
+    $,
+    is,
+    dispose,
+    dispose$,
+    load,
+    status,
+    play,
+    pause,
+    seek,
+  };
 }
 
 /**
