@@ -31,13 +31,21 @@ const Util = {
     return [...Photo.toDefs(ctx.props.def)];
   },
 
-  addPhoto(ctx: Ctx) {
-    const defs = Photo.toDefs(ctx.props.def);
-    if (defs.length < URLS.length) {
-      const url = URLS[defs.length];
+  add: {
+    fromList(ctx: Ctx) {
+      const defs = Photo.toDefs(ctx.props.def);
+      if (defs.length < URLS.length) {
+        const url = URLS[defs.length];
+        defs.push({ url });
+        ctx.props.def = defs; // NB: As [list].
+      }
+    },
+
+    fromUrl(ctx: Ctx, url: string) {
+      const defs = Photo.toDefs(ctx.props.def);
       defs.push({ url });
       ctx.props.def = defs; // NB: As [list].
-    }
+    },
   },
 };
 
@@ -83,11 +91,14 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Def (Items)');
 
-    e.button('add photo', (e) => Util.addPhoto(e.ctx));
-    e.button('add 404 (fail)', (e) => {
-      const defs = Photo.toDefs(e.ctx.props.def);
-      defs.push({ url: 'https://domain.com/404.png' });
-      e.ctx.props.def = defs; // NB: As [list].
+    e.button('add photo', (e) => {
+      Util.add.fromList(e.ctx);
+    });
+    e.button('add 404 (not found)', (e) => {
+      Util.add.fromUrl(e.ctx, 'https://domain.com/404.png');
+    });
+    e.button('add /static', (e) => {
+      Util.add.fromUrl(e.ctx, '/static/images/sample/kitten.png');
     });
 
     e.hr(1, 0.1);
@@ -115,13 +126,12 @@ export const actions = DevActions<Ctx>()
     e.title('Debug');
 
     e.component((e) => {
-      const change = e.change;
       return (
         <Photo.Debug.DefsSelector
           {...e.ctx.props}
           style={{ MarginX: 20, MarginY: 15 }}
-          onSelectionChange={(e) => {
-            change.ctx((ctx) => (ctx.props.index = e.to));
+          onSelectionChange={({ to }) => {
+            e.change.ctx((ctx) => (ctx.props.index = to));
           }}
         />
       );

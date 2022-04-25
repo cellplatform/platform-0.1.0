@@ -1,3 +1,4 @@
+import { Url } from '@platform/cell.schema';
 import { t, R, DEFAULT } from './common';
 
 export const Util = {
@@ -14,5 +15,17 @@ export const Util = {
       .map((def) => ({ ...def, transition: def.transition ?? meta.transition }));
 
     return defs;
+  },
+
+  /**
+   * Format an input string and return as a parsed URL.
+   */
+  toUrl(input: string) {
+    if (input.startsWith('http')) {
+      return new URL(input);
+    } else {
+      const path = input.replace(/^\/*/, '');
+      return new URL(`${location.origin}/${path}`);
+    }
   },
 };
