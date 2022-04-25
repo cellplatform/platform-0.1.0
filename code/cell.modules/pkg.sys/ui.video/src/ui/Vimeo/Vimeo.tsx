@@ -62,7 +62,7 @@ const View: React.FC<VimeoProps> = (props) => {
   const controller = usePlayerController({ instance, video, player });
 
   useEffect(() => {
-    const events = VimeoEvents({ id, bus });
+    const events = VimeoEvents({ instance });
     const status$ = events.status.$;
 
     if (player && typeof video === 'number') {

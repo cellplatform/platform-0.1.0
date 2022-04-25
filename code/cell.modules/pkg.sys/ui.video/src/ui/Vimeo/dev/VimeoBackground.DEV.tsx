@@ -2,7 +2,7 @@ import React from 'react';
 import { ActionHandlerArgs, DevActions } from 'sys.ui.dev';
 
 import { VimeoBackground, VimeoBackgroundProps } from '..';
-import { COLORS, rx, t } from '../common';
+import { COLORS, rx, t, slug } from '../common';
 import { VIDEOS } from './Vimeo.DEV';
 
 type Ctx = {
@@ -11,8 +11,6 @@ type Ctx = {
   props: VimeoBackgroundProps;
 };
 type A = ActionHandlerArgs<Ctx>;
-
-const id = 'sample';
 
 /**
  * Actions
@@ -23,8 +21,11 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
+    const id = `foo.${slug()}`;
     const bus = rx.bus<t.VimeoEvent>();
-    const events = VimeoBackground.Events({ id, bus });
+    const instance = { bus, id };
+
+    const events = VimeoBackground.Events({ instance });
 
     bus.$.subscribe((e) => {
       console.log(e.type, e.payload);
@@ -34,7 +35,7 @@ export const actions = DevActions<Ctx>()
       bus,
       events,
       props: {
-        instance: { id, bus },
+        instance,
         video: VIDEOS[0].value,
         blur: 0,
         opacity: 1,
@@ -99,7 +100,8 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     const fire = (e: A, seconds: number) => {
-      e.ctx.bus.fire({ type: 'Vimeo/seek:req', payload: { instance: id, seconds } });
+      const instance = e.ctx.props.instance.id;
+      e.ctx.bus.fire({ type: 'Vimeo/seek:req', payload: { instance, seconds } });
     };
     e.title('seek');
     e.button('0 (start)', (e) => fire(e, -10));

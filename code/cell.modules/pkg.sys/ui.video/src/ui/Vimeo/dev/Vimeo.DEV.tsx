@@ -31,7 +31,8 @@ export const actions = DevActions<Ctx>()
 
     const id = 'sample';
     const bus = rx.bus<t.VimeoEvent>();
-    const events = Vimeo.Events({ id, bus });
+    const instance = { bus, id };
+    const events = Vimeo.Events({ instance });
 
     events.$.pipe().subscribe((e) => {
       // console.log('events.$:', e.type, e.payload);
@@ -51,7 +52,7 @@ export const actions = DevActions<Ctx>()
       events,
       theme: 'light',
       props: {
-        instance: { bus, id },
+        instance,
         video: VIDEO['stock/running'],
         muted: true,
         borderRadius: 20,

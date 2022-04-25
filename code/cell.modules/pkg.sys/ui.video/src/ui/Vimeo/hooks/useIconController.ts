@@ -20,8 +20,7 @@ export const useIconController: t.UseVimeoIconController = (args: {
    * Lifecycle
    */
   useEffect(() => {
-    const bus = rx.busAsType<t.VimeoEvent>(instance.bus);
-    const events = VimeoEvents({ id, bus, isEnabled });
+    const events = VimeoEvents({ instance, isEnabled });
     const status$ = events.status.$.pipe();
     const start$ = status$.pipe(filter((e) => e.action === 'start'));
     const loaded$ = status$.pipe(filter((e) => e.action === 'start'));
@@ -87,7 +86,7 @@ export const useIconController: t.UseVimeoIconController = (args: {
 
     updatePlayVisibility();
     return () => events.dispose();
-  }, [instance.bus, id, isEnabled, showPlayPause]);
+  }, [instance.bus, id, isEnabled, showPlayPause]); // eslint-disable-line
 
   // Finish up.
   return {
