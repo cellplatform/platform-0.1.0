@@ -2,11 +2,14 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { App, AppProps } from '..';
 
-import { Photo, rx, slug, t, Vimeo } from '../common';
+import { Photo, rx, slug, t, Vimeo, Fullscreen } from '../common';
 
 type Ctx = {
-  events: t.VimeoEvents;
   props: AppProps;
+  events: {
+    video: t.VimeoEvents;
+    fullscreen: t.FullscreenEvents;
+  };
 };
 
 /**
@@ -21,7 +24,10 @@ export const actions = DevActions<Ctx>()
     const id = `foo.${slug()}`;
     const instance = { bus, id };
 
-    const events = Vimeo.Events({ instance });
+    const events = {
+      video: Vimeo.Events({ instance }),
+      fullscreen: Fullscreen.Events({ instance }),
+    };
 
     const ctx: Ctx = {
       events,
@@ -42,12 +48,20 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('Dev');
+    e.title('Controls');
 
-    e.button('start', (e) => e.ctx.events.play.fire());
-    e.button('stop', (e) => e.ctx.events.pause.fire());
+    e.button('music: start', (e) => e.ctx.events.video.play.fire());
+    e.button('music: stop', (e) => e.ctx.events.video.pause.fire());
+
+    e.hr(1, 0.1);
+    e.button('fullscreen: enter', (e) => e.ctx.events.fullscreen.enter.fire());
+    e.button('fullscreen: exit', (e) => e.ctx.events.fullscreen.exit.fire());
 
     e.hr();
+  })
+
+  .items((e) => {
+    e.title('Images');
 
     e.component((e) => {
       return (
@@ -61,6 +75,12 @@ export const actions = DevActions<Ctx>()
         />
       );
     });
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Dev');
 
     e.hr();
 

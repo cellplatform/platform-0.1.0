@@ -28,10 +28,11 @@ const bus = rx.bus();
 const instance = { bus, id: 'main' };
 
 const isDev = query().has('dev');
-const el = isDev ? <DevHarness /> : <App instance={instance} style={{ Absolute: 0 }} />;
+// const el = isDev ? <DevHarness /> : <App instance={instance} style={{ Absolute: 0 }} />;
+const el = <DevHarness />;
 ReactDOM.render(el, document.getElementById('root'));
 
 /**
  * Page Title
  */
-if (isDev) document.title = `${document.title} (dev)`;
+// if (isDev) document.title = `${document.title} (dev)`;

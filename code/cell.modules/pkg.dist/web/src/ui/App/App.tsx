@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { color, COLORS, css, CssValue, t, Photo, Vimeo } from '../common';
+import { color, COLORS, css, CssValue, t, Photo, Vimeo, Fullscreen } from '../common';
 
 export type AppProps = {
   instance: { bus: t.EventBus; id: string };
@@ -9,11 +9,8 @@ export type AppProps = {
 };
 
 export const App: React.FC<AppProps> = (props) => {
-  // const def: t.Photo[] = [
-  //   { url: '/static/images/paul/g-street-bob-kath-gay.png' },
-  //   { url: '/static/images/paul/head-shot.png' },
-  //   { url: '/static/images/paul/paul-randel.png' },
-  // ];
+  const { instance } = props;
+  const fullscreen = Fullscreen.useFullscreen({ instance });
 
   /**
    * [Render]
@@ -25,7 +22,7 @@ export const App: React.FC<AppProps> = (props) => {
   };
 
   return (
-    <div {...css(styles.base, props.style)}>
+    <div {...css(styles.base, props.style)} ref={fullscreen.ref}>
       <Vimeo instance={props.instance} video={701008221} style={styles.video} />
 
       <Photo
