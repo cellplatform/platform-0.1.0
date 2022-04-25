@@ -1,4 +1,3 @@
-import { t } from '../src/common';
 import { Vercel } from 'vendor.cloud.vercel/lib/node';
 
 const token = process.env.VERCEL_TEST_TOKEN;
@@ -10,8 +9,10 @@ const token = process.env.VERCEL_TEST_TOKEN;
  *    https://www.npmjs.com/package/path-to-regexp
  *
  */
-async function deploy(team: string, project: string, alias: string) {
+export async function deploy(team: string, project: string, alias: string) {
   const deployment = Vercel.Deploy({ token, dir: 'dist/web', team, project });
+  await deployment.ensureProject(project);
+
   const manifest = await deployment.manifest<t.ModuleManifest>();
 
   console.log('\ndeploying:');
@@ -24,7 +25,6 @@ async function deploy(team: string, project: string, alias: string) {
     target: 'production',
     regions: ['sfo1'],
     alias,
-    // routes: [{ src: '/foo', dest: '/' }],
   });
   const res = await wait;
   const status = res.status;
@@ -40,5 +40,3 @@ async function deploy(team: string, project: string, alias: string) {
   return { status, name };
 }
 
-// DEV
-deploy('tdb', 'tdb-private', 'private.db.team');

@@ -1,16 +1,18 @@
 import React from 'react';
 import { Harness } from 'sys.ui.dev';
+import { t } from './common';
 
 const imports = {
-  Root: import('./web.ui/Root/dev/DEV'),
+  App: import('./ui/App/dev/DEV'),
 };
 
 /**
  * UI Harness (Dev)
  */
-const url = new URL(location.href);
-const dev = url.searchParams.get('dev');
-const actions = Object.values(imports);
+type Props = { bus?: t.EventBus };
 
-export const DevHarness: React.FC = () => <Harness actions={actions} initial={dev} />;
+export const DevHarness: React.FC<Props> = (props) => {
+  return <Harness bus={props.bus} actions={Object.values(imports)} showActions={true} />;
+};
+
 export default DevHarness;
