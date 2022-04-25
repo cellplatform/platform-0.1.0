@@ -19,10 +19,14 @@ const query = () => {
   return q;
 };
 
+/**
+ * UI
+ */
 const isDev = query().has('dev');
 const el = isDev ? <DevHarness /> : <App style={{ Absolute: 0 }} />;
 ReactDOM.render(el, document.getElementById('root'));
 
-if (isDev) {
-  document.title = `${document.title} (dev)`;
-}
+/**
+ * Page Title
+ */
+if (isDev) document.title = `${document.title} (dev)`;

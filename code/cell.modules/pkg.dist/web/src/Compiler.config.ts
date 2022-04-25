@@ -7,17 +7,15 @@ export default () =>
 
     .variant('web', (config) =>
       config
+        .title('Paul')
+
         .target('web')
         .port(3000)
-
         .entry('main', './src/entry/main')
-
-        // .declarations('./src/**/*')
 
         .static('static')
         .files((e) => e.redirect(false, '*.worker.js').access('public', '**/*.{png,jpg,svg}'))
         .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
 
-        .expose('./Dev', './src/Dev.Harness')
-        .expose('./Root', './src/web.ui/Root'),
+        .expose('./Dev', './src/Dev.Harness'),
     );
