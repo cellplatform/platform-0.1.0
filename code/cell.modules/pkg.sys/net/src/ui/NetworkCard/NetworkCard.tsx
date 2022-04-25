@@ -18,10 +18,9 @@ export const NetworkCard: React.FC<NetworkCardProps> = (props) => {
   const { bus, netbus } = network;
   const self = netbus.self;
 
-  const { state } = CmdCard.State.useController({
+  const { state } = CmdCard.useController({
     instance: { bus, id: instance },
-    bus: netbus,
-    initial: CmdCard.State.default({ body: { render: () => elBody } }),
+    initial: CmdCard.defaultState({ body: { render: () => elBody } }),
   });
 
   /**

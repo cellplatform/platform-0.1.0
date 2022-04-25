@@ -2,7 +2,7 @@ import React from 'react';
 import { defaultValue, css, CssValue, t, COLORS, ObjectView } from '../../common';
 
 import { Card, CardProps } from '../Card';
-import { PropList, PropListItem } from '../PropList';
+import { PropList } from '../PropList';
 
 export type EventCardProps = {
   count: number;
@@ -38,7 +38,7 @@ export const EventCard: React.FC<EventCardProps> = (props) => {
     color: COLORS.PURPLE,
   };
 
-  const items: PropListItem[] = [
+  const items: t.PropListItem[] = [
     { label: 'count', value: props.count },
     {
       label: 'type',

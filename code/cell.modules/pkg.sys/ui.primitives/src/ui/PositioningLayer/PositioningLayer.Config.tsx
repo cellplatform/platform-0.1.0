@@ -13,16 +13,14 @@ type GridTargetClickArgs = {
   dblClick: boolean;
 };
 
-export type PositioningLayerConfigChangeEvent = { prev?: t.BoxPosition; next: t.BoxPosition };
-export type PositioningLayerConfigChangeEventHandler = (
-  e: PositioningLayerConfigChangeEvent,
-) => void;
+export type PositioningLayerConfigChange = { prev?: t.BoxPosition; next: t.BoxPosition };
+export type PositioningLayerConfigChangeHandler = (e: PositioningLayerConfigChange) => void;
 
 export type PositioningLayerConfigProps = {
   isEnabled?: boolean;
   position?: t.BoxPosition;
   style?: CssValue;
-  onChange?: PositioningLayerConfigChangeEventHandler;
+  onChange?: PositioningLayerConfigChangeHandler;
 };
 
 /**

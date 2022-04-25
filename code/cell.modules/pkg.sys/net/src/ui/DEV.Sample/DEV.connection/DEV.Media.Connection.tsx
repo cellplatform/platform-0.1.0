@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { css, CssValue, Hr, PropList, PropListItem, t, isLocalhost } from '../DEV.common';
+import { css, CssValue, Hr, PropList, t, isLocalhost } from '../DEV.common';
 import { DevVideo } from '../DEV.media';
 import { PropUtil } from './util';
 
@@ -16,7 +16,7 @@ export const DevMediaConnection: React.FC<DevMediaConnectionProps> = (props) => 
   const { kind } = connection;
   const streamId = connection.media?.id;
 
-  const items: PropListItem[] = [...PropUtil.common(connection)];
+  const items: t.PropListItem[] = [...PropUtil.common(connection)];
 
   const styles = {
     base: css({ position: 'relative', padding: 12, paddingRight: 18 }),

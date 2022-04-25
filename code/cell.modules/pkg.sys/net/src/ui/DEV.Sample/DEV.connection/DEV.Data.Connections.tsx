@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Button, css, CssValue, Hr, PropList, PropListItem, t } from '../DEV.common';
+import { Button, css, CssValue, Hr, PropList, t } from '../DEV.common';
 import { DevNetworkConnectionsModal } from '../DEV.network';
 import { openHandler } from './util';
 
@@ -27,7 +27,7 @@ export const DevDataConnections: React.FC<DevDataConnectionsProps> = (props) => 
     },
   };
 
-  const items: PropListItem[] = connections.map((connection, i) => {
+  const items: t.PropListItem[] = connections.map((connection, i) => {
     const open = (kind: t.PeerConnectionKindMedia) => openHandler({ bus, connection, kind });
     const value = (
       <div {...styles.value.base}>

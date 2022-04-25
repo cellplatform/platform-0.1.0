@@ -18,9 +18,9 @@ export default () =>
          * EXPORTS: Development
          */
 
-        .expose('./DEV.sys.crdt', './src/exports/Dev.Crdt')
         .expose('./DEV.sys.fs', './src/exports/Dev.Fs')
-        .expose('./DEV.sys.json', './src/exports/Dev.Json')
+        .expose('./DEV.sys.data.crdt', './src/exports/Dev.Data.Crdt')
+        .expose('./DEV.sys.data.json', './src/exports/Dev.Data.Json')
         .expose('./DEV.sys.ui.dev', './src/exports/Dev')
         .expose('./DEV.sys.ui.video', './src/exports/Dev.Video')
         .expose('./DEV.sys.ui.primitives', './src/exports/Dev.Primitives')

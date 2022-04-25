@@ -1,10 +1,13 @@
-import { map, filter, takeUntil } from 'rxjs/operators';
-import { rx, slug, t, DEFAULT, Patch } from './common';
+import { filter, map, takeUntil } from 'rxjs/operators';
+
+import { DEFAULT, Patch, rx, slug, t } from './common';
 
 type J = Record<string, unknown>;
 type Id = string;
 type Milliseconds = number;
 type KeyPath = string;
+
+const { toObject } = Patch;
 
 /**
  * Event API
@@ -95,7 +98,7 @@ export function JsonBusEvents(args: {
 
       // Value not found, look for an initial value.
       if (!res.value && options.initial !== undefined) {
-        const initial = typeof options.initial === 'function' ? options.initial() : options.initial;
+        const initial = Util.toInitial(options.initial);
         if (initial) {
           const write = await put.fire(initial, { tx, key, timeout });
           if (write.error) return response(undefined, write.error);
@@ -143,7 +146,7 @@ export function JsonBusEvents(args: {
     req$: rx.payload<t.JsonStatePatchReqEvent>($, 'sys.json/state.patch:req'),
     res$: rx.payload<t.JsonStatePatchResEvent>($, 'sys.json/state.patch:res'),
     async fire<T extends J = J>(
-      fn: t.JsonStateMutator<T>,
+      fn: t.JsonMutation<T>,
       options: { tx?: Id; timeout?: Milliseconds; key?: KeyPath; initial?: T | (() => T) } = {},
     ): Promise<t.JsonStatePatchRes> {
       const { timeout = DEFAULT.TIMEOUT, key = DEFAULT.KEY, tx = slug(), initial } = options;
@@ -185,18 +188,68 @@ export function JsonBusEvents(args: {
   const state: t.JsonEventsState = { get, put, patch };
 
   /**
-   * JSON (key-pathed convenience method).
+   * A lens into a sub-set of the object.
    */
-  const json = <T extends J = J>(args: t.JsonStateOptions<T> = {}): t.JsonState<T> => {
+  function toLens<R extends J, L extends J>(args: {
+    root: t.JsonState<R>;
+    target: (root: R) => L;
+    timeout?: Milliseconds;
+  }): t.JsonLens<L> {
     type O = { timeout?: Milliseconds };
     const asTimeout = (options: O) => options.timeout ?? args.timeout ?? DEFAULT.TIMEOUT;
-    const { key = DEFAULT.KEY, initial } = args;
+    const nil = (value: any) => typeof value !== 'object' || value === null;
+
+    const lens: t.JsonLens<L> = {
+      $: args.root.$.pipe(map((e) => args.target(e.value))),
+
+      get current() {
+        return args.target(args.root.current);
+      },
+
+      async patch(fn, options = {}) {
+        const timeout = asTimeout(options);
+
+        const handler: t.JsonMutation<R> = (root) => {
+          const target = args.target(root);
+          if (nil(target)) throw new Error(`Lens target child could not be derived from the root`);
+
+          const ctx: t.JsonMutationCtx = { toObject };
+          fn(target, ctx);
+        };
+
+        const { error } = await args.root.patch(handler, { ...options, timeout });
+        if (error) throw new Error(error);
+      },
+    };
+
+    return lens;
+  }
+
+  /**
+   * JSON (key-pathed convenience method).
+   */
+  const json = <T extends J = J>(
+    initial: T | (() => T),
+    args: t.JsonStateOptions = {},
+  ): t.JsonState<T> => {
+    type O = { timeout?: Milliseconds };
+    const asTimeout = (options: O) => options.timeout ?? args.timeout ?? DEFAULT.TIMEOUT;
+    const { key = DEFAULT.KEY } = args;
+
     const $ = changed$.pipe(
       filter((e) => e.key === key),
       map((e) => e as t.JsonStateChange<T>),
     );
-    return {
+
+    let _current: T | undefined;
+    $.subscribe((e) => (_current = e.value));
+
+    const root: t.JsonState<T> = {
       $,
+      get current() {
+        if (_current === undefined) _current = Util.toInitial(initial);
+        return _current as T;
+      },
       get(options = {}) {
         const timeout = asTimeout(options);
         return get.fire<T>({ key, timeout, initial });
@@ -209,7 +262,13 @@ export function JsonBusEvents(args: {
         const timeout = asTimeout(options);
         return patch.fire<T>(fn, { key, timeout, initial });
       },
+      lens<L extends J = J>(target: (root: T) => L) {
+        const timeout = asTimeout({});
+        return toLens<T, L>({ root, target, timeout });
+      },
     };
+
+    return root;
   };
 
   /**
@@ -241,3 +300,12 @@ const is = {
  * Decorate
  */
 JsonBusEvents.is = is;
+
+/**
+ * Helpers
+ */
+const Util = {
+  toInitial<T extends J = J>(initial?: T | (() => T)) {
+    return typeof initial === 'function' ? initial() : initial;
+  },
+};

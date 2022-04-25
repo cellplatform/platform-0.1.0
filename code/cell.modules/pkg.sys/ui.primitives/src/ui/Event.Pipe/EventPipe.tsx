@@ -3,12 +3,13 @@ import React from 'react';
 
 import {
   color,
+  COLORS,
   css,
   CssValue,
   defaultValue,
   deleteUndefined,
+  FC,
   useResizeObserver,
-  COLORS,
 } from '../../common';
 import { EventHistoryItem } from '../Event/types';
 import {
@@ -42,15 +43,12 @@ export type EventPipeProps = {
 const THEMES: EventPipeTheme[] = ['Light', 'Dark'];
 const DEFAULT_THEME: EventPipeTheme = 'Light';
 const DEFAULT = { THEME: DEFAULT_THEME };
-export const EventPipeConstants = {
-  DEFAULT,
-  THEMES,
-};
+const constants = { DEFAULT, THEMES };
 
 /**
  * Component
  */
-export const EventPipe: React.FC<EventPipeProps> = (props) => {
+const View: React.FC<EventPipeProps> = (props) => {
   const { orientation = 'x', thickness = 8, theme = 'Light' } = props;
   const slideDuration = defaultValue(props.duration?.slide, 300) / 1000;
   const max = defaultValue(props.event?.max, 10);
@@ -130,3 +128,15 @@ export const EventPipe: React.FC<EventPipeProps> = (props) => {
     </div>
   );
 };
+
+/**
+ * Export
+ */
+type Fields = {
+  constants: typeof constants;
+};
+export const EventPipe = FC.decorate<EventPipeProps, Fields>(
+  View,
+  { constants },
+  { displayName: 'EventPipe' },
+);

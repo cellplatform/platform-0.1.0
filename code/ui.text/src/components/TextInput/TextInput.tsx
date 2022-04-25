@@ -33,8 +33,8 @@ export type TextInputProps = t.TextInputFocusAction &
     maxWidth?: number;
     autoSize?: boolean;
     placeholder?: string | React.ReactElement;
-    valueStyle?: t.ITextInputStyle;
-    placeholderStyle?: t.ITextInputStyle;
+    valueStyle?: t.TextInputStyle;
+    placeholderStyle?: t.TextInputStyle;
     spellCheck?: boolean;
     autoCapitalize?: boolean;
     autoCorrect?: boolean;

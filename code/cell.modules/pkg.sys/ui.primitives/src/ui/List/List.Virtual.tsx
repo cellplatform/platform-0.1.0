@@ -26,7 +26,7 @@ export type ListVirtualProps = t.ListProps & {
  *    - https://react-window.vercel.app/#/examples/list/fixed-size
  *
  */
-export const View: React.FC<ListVirtualProps> = (props) => {
+const View: React.FC<ListVirtualProps> = (props) => {
   const { items, paddingNear = 0, paddingFar = 0, tabIndex } = props;
   const total = items.total;
 

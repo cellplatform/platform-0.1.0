@@ -4,8 +4,8 @@ import { expect, rx, Test } from '../web.test';
 export default Test.describe('WebRuntimeBus (Controller)', (e) => {
   e.describe('events', (e) => {
     e.it('info', async () => {
-      const bus = rx.bus();
-      const runtime = WebRuntimeBus.Controller({ bus });
+      const instance = { bus: rx.bus() };
+      const runtime = WebRuntimeBus.Controller({ instance });
 
       const res = await runtime.events.info.get();
       runtime.dispose();
@@ -15,8 +15,8 @@ export default Test.describe('WebRuntimeBus (Controller)', (e) => {
     });
 
     e.it('netbus (exists: false)', async () => {
-      const bus = rx.bus();
-      const runtime = WebRuntimeBus.Controller({ bus });
+      const instance = { bus: rx.bus() };
+      const runtime = WebRuntimeBus.Controller({ instance });
 
       const res = await runtime.events.netbus.get({ timeout: 10 });
       runtime.dispose();

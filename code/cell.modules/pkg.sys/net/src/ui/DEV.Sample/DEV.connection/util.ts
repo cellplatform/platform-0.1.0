@@ -1,4 +1,4 @@
-import { t, PropListItem, PeerNetwork } from '../DEV.common';
+import { t, PeerNetwork } from '../DEV.common';
 
 export function openHandler(args: {
   bus: t.EventBus<any>;
@@ -20,7 +20,7 @@ export const PropUtil = {
     const { id, peer, kind, parent } = connection;
     const module = peer.remote.module;
 
-    const items: PropListItem[] = [
+    const items: t.PropListItem[] = [
       { label: 'id', value: { data: id, clipboard: true } },
       { label: 'remote peer', value: { data: peer.remote.id, clipboard: true } },
       { label: 'kind', value: `${kind} (${module.name}@${module.version})` },

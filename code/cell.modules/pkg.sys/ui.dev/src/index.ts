@@ -1,4 +1,4 @@
-export { expect } from 'chai';
+export { expect, expectError } from './api/TestSuite/expect';
 
 export { ActionsFactory } from './api/Actions';
 export { DevActions } from './factory';

@@ -1,7 +1,6 @@
 /**
  * @platform
  */
-export * from '@platform/ui.text/lib/types';
 export * from '@platform/ui.button/lib/types';
 export * from '@platform/ui.image/lib/types';
 
@@ -28,10 +27,20 @@ export * from './ui/Cmd.Textbox/types';
 export * from './ui/PositioningLayer/types';
 export * from './ui/PositioningLayout/types';
 
+export * from './ui/Photo/types';
+
 export * from './ui/Event/types';
+export * from './ui/Error.Boundary/types';
 
 export * from './ui/Tree/types';
 export * from './ui/StackPanel/types';
 
+export * from './ui/Text/types';
 export * from './ui/Text.Copy/types';
 export * from './ui/Text.Syntax/types';
+export * from './ui/Text.Input/types';
+
+/**
+ * @system (ui.dev)
+ */
+export * from 'sys.ui.dev/lib/ui/OptionButtons/types';

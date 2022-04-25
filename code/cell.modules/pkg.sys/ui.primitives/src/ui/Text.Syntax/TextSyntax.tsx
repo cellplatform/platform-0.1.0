@@ -1,39 +1,38 @@
 import React, { useMemo } from 'react';
 
-import { css, CssValue, Style, t, COLORS, color } from '../../common';
-import { DefaultTokenizer } from './Tokenizer';
-import * as k from './types';
+import { color, constants, css, DEFAULT, FC, Style } from './common';
+import { DefaultTokenizer } from './logic/Tokenizer';
+import { TextSyntaxProps } from './types';
+import { Util } from './Util';
 
-/**
- * Types
- */
-export type TextSyntaxProps = {
-  text?: string;
-  inlineBlock?: boolean;
-  margin?: t.CssEdgesInput;
-  padding?: t.CssEdgesInput;
-  tokenizer?: k.TextSyntaxTokenizer;
-  colors?: Partial<k.TextSyntaxColors>;
-  style?: CssValue;
-};
-
-/**
- * Constants
- */
-const BASE: k.TextSyntaxColors = {
-  Brace: COLORS.MAGENTA,
-  Predicate: COLORS.MAGENTA,
-  Colon: color.alpha(COLORS.DARK, 0.6),
-  Word: { Base: COLORS.DARK, Element: COLORS.CYAN },
-};
+export { TextSyntaxProps };
 
 /**
  * Label that provides common syntax highlighting.
  */
-export const TextSyntax: React.FC<TextSyntaxProps> = (props) => {
-  const { text = '', inlineBlock = true, tokenizer = DefaultTokenizer } = props;
+const View: React.FC<TextSyntaxProps> = (props) => {
+  const {
+    inlineBlock = true,
+    ellipsis = true,
+    tokenizer = DefaultTokenizer,
+    theme = DEFAULT.THEME,
+    fontSize,
+    fontWeight,
+    monospace = false,
+  } = props;
+
+  const colors = {
+    ...(theme === 'Light' ? constants.COLORS.LIGHT : constants.COLORS.DARK),
+    ...props.colors,
+  };
+
+  let text = props.text ?? '';
+  if (typeof props.children === 'string') {
+    if (text) text += ' ';
+    text += props.children;
+  }
+
   const tokens = useMemo(() => tokenizer(text).parts, [tokenizer, text]);
-  const colors = { ...BASE, ...props.colors };
 
   /**
    * [Render]
@@ -41,13 +40,23 @@ export const TextSyntax: React.FC<TextSyntaxProps> = (props) => {
   const styles = {
     base: css({
       display: inlineBlock && 'inline-block',
+      fontSize,
+      fontWeight,
+      fontFamily: monospace ? 'monospace' : undefined,
       ...Style.toPadding(props.padding),
       ...Style.toMargins(props.margin),
     }),
+    ellipsis:
+      ellipsis &&
+      css({
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+      }),
   };
 
   const elements = tokens.map((token, i) => {
-    const style = { color: color.format(toColor(colors, token)) };
+    const style = { color: color.format(Util.toColor(colors, tokens, i)) };
     return (
       <span key={i} style={style}>
         {token.text}
@@ -55,14 +64,17 @@ export const TextSyntax: React.FC<TextSyntaxProps> = (props) => {
     );
   });
 
-  return <div {...css(styles.base, props.style)}>{elements}</div>;
+  return <div {...css(styles.base, styles.ellipsis, props.style)}>{elements}</div>;
 };
 
 /**
- * [Helpers]
+ * Export
  */
-
-function toColor(colors: k.TextSyntaxColors, token: k.TextSyntaxToken) {
-  if (token.kind === 'Word') return token.within ? colors.Word.Element : colors.Word.Base;
-  return colors[token.kind];
-}
+type Fields = {
+  constants: typeof constants;
+};
+export const TextSyntax = FC.decorate<TextSyntaxProps, Fields>(
+  View,
+  { constants },
+  { displayName: 'TextSyntax' },
+);

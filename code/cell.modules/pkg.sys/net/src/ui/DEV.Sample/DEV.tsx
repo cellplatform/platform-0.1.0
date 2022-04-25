@@ -81,13 +81,14 @@ export const actions = DevActions<Ctx>()
     const { signal } = DEFAULT;
     const self = cuid();
     const bus = rx.bus<t.PeerEvent | t.DevEvent>();
+    const instance = { bus };
 
     PeerNetwork.Controller({ bus });
     MediaStream.Controller({ bus });
     EventBridge.startEventBridge({ bus, self });
 
     const netbus = PeerNetbus({ bus, self });
-    const runtime = WebRuntime.Bus.Controller({ bus, netbus });
+    const runtime = WebRuntime.Bus.Controller({ instance, netbus });
 
     const events = {
       media: MediaStream.Events(bus),
@@ -178,9 +179,12 @@ export const actions = DevActions<Ctx>()
 
     e.component((e) => {
       const { ctx } = e;
+      const bus = ctx.bus;
+      const instance = { bus };
+
       return (
         <WebRuntime.ui.ManifestSelectorStateful
-          bus={ctx.bus}
+          instance={instance}
           style={{ MarginX: 30, MarginY: 20 }}
           history={{ fs: DEFAULT.fs }}
           onExportClick={(e) => {

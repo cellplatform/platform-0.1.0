@@ -2,11 +2,9 @@ import React from 'react';
 import { Observable, Subject } from 'rxjs';
 
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { EventPipe, EventPipeProps, EventPipeConstants, EventPipeTheme } from '..';
+import { EventPipe, EventPipeProps, EventPipeTheme } from '..';
 import { useEventHistory } from '../../Event';
 import { t, rx, time, COLORS } from '../../common';
-
-const CONST = EventPipeConstants;
 
 type Ctx = {
   bus: t.EventBus<any>;
@@ -82,7 +80,7 @@ export const actions = DevActions<Ctx>()
       config
         .view('buttons')
         .title('theme')
-        .items(CONST.THEMES)
+        .items(EventPipe.constants.THEMES)
         .initial(config.ctx.props.theme)
         .pipe((e) => {
           if (e.changing) e.ctx.props.theme = e.changing?.next[0].value;
@@ -100,14 +98,12 @@ export const actions = DevActions<Ctx>()
     const { props, bus, debug } = e.ctx;
 
     const size = 300;
-    const theme = props.theme as EventPipeTheme;
+    const theme = props.theme ?? EventPipe.constants.DEFAULT.THEME;
     const isLight = theme === 'Light';
     const { orientation } = props;
 
     e.settings({
-      host: {
-        background: isLight ? -0.04 : COLORS.DARK,
-      },
+      host: { background: isLight ? -0.04 : COLORS.DARK },
       layout: {
         cropmarks: isLight ? -0.2 : 0.6,
         labelColor: isLight ? -0.5 : 0.8,

@@ -2,8 +2,8 @@ import React from 'react';
 
 import { color, css, CssValue, t, useDragTarget, COLORS, ManifestUrl, FC } from './common';
 import { UrlTextbox } from './components/UrlTextbox';
-import { ModuleInfo } from '../ModuleInfo';
-import { ModuleInfoFields } from '../ModuleInfo/types';
+import { ModuleInfo } from '../Module.Info';
+import { ModuleInfoFields } from '../Module.Info/types';
 import { ManifestSelectorConstants as constants } from './constants';
 
 /**

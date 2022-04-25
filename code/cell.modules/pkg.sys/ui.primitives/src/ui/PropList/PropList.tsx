@@ -1,31 +1,25 @@
 import React from 'react';
 
-import { COLORS, css, CssValue, defaultValue, t, Style, FC } from '../../common';
+import { COLORS, css, FC, Style, t, constants } from './common';
+import { FieldBuilder } from './Fields';
 import { PropListItem } from './PropList.Item';
 import { PropListTitle } from './PropList.Title';
-import { FieldBuilder } from './Fields';
+import { PropListProps } from './types';
+import { Util } from './Util';
+
+export { PropListProps };
 
 /**
- * Types
+ * Constants
  */
-export type PropListProps = {
-  title?: string | React.ReactNode | null;
-  titleEllipsis?: boolean;
-  items?: (t.PropListItem | undefined)[] | Record<string, unknown>;
-  defaults?: t.PropListDefaults;
-  padding?: t.CssEdgesInput;
-  margin?: t.CssEdgesInput;
-  width?: number | { fixed?: number; min?: number; max?: number };
-  height?: number | { fixed?: number; min?: number; max?: number };
-  style?: CssValue;
-};
+const { DEFAULT } = constants;
 
 /**
  * Component
  */
 const View: React.FC<PropListProps> = (props) => {
-  const { title } = props;
-  const items = asItems(props.items);
+  const { title, theme = DEFAULT.THEME } = props;
+  const items = Util.asItems(props.items);
   const width = typeof props.width === 'number' ? { fixed: props.width } : props.width;
   const height = typeof props.height === 'number' ? { fixed: props.height } : props.height;
 
@@ -41,8 +35,8 @@ const View: React.FC<PropListProps> = (props) => {
 
       width: width?.fixed === undefined ? '100%' : width?.fixed,
       height: height?.fixed,
-      minWidth: defaultValue(width?.min, 10),
-      minHeight: defaultValue(height?.min, 10),
+      minWidth: width?.min ?? 10,
+      minHeight: height?.min ?? 10,
       maxWidth: width?.max,
       maxHeight: height?.max,
 
@@ -54,7 +48,7 @@ const View: React.FC<PropListProps> = (props) => {
 
   const elItems = items
     .filter((item) => Boolean(item))
-    .filter((item) => defaultValue(item?.visible, true))
+    .filter((item) => item?.visible ?? true)
     .map((item, i) => {
       return (
         <PropListItem
@@ -63,12 +57,18 @@ const View: React.FC<PropListProps> = (props) => {
           isFirst={i == 0}
           isLast={i === items.length - 1}
           defaults={defaults}
+          theme={theme}
         />
       );
     });
 
   const elTitle = title && (
-    <PropListTitle style={styles.title} ellipsis={props.titleEllipsis} defaults={defaults}>
+    <PropListTitle
+      style={styles.title}
+      theme={theme}
+      ellipsis={props.titleEllipsis}
+      defaults={defaults}
+    >
       {title}
     </PropListTitle>
   );
@@ -82,61 +82,16 @@ const View: React.FC<PropListProps> = (props) => {
 };
 
 /**
- * [Helpers]
- */
-
-function asItems(input: PropListProps['items']) {
-  if (Array.isArray(input)) {
-    return input;
-  }
-
-  if (typeof input === 'object') {
-    return Object.keys(input).map((key) => {
-      const item: t.PropListItem = { label: key, value: toRenderValue(input[key]) };
-      return item;
-    });
-  }
-
-  return [];
-}
-
-function toRenderValue(input: any) {
-  if (input === null) {
-    return null;
-  }
-  if (input === undefined) {
-    return undefined;
-  }
-
-  /**
-   * TODO 🐷
-   * Expand this out to be more nuanced in display value types
-   * eg, color-coding, spans etc:
-   *  - {object}
-   *  - [Array]
-   */
-
-  if (Array.isArray(input)) {
-    return `[Array](${input.length})`;
-  }
-
-  if (typeof input === 'object') {
-    return `{object}`;
-  }
-
-  return input.toString();
-}
-
-/**
  * Export (API)
  */
-
 type Fields = {
+  constants: typeof constants;
   builder<F extends string>(): t.PropListFieldBuilder<F>;
 };
 export const PropList = FC.decorate<PropListProps, Fields>(
   View,
   {
+    constants,
     builder<F extends string>() {
       return FieldBuilder<F>();
     },

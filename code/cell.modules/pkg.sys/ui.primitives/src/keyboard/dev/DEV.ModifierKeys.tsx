@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 
 import { css, CssValue, t } from './DEV.common';
 import { DevKey, DevKeyDefaults } from './DEV.Key';
@@ -14,19 +14,18 @@ export const DevModifierKeys: React.FC<DevModifierKeysProps> = (props) => {
   const { edge, state, spacing = DevKeyDefaults.SPACING } = props;
 
   type P = { isPressed: boolean; isEdge: boolean };
-  const toPressed = (state: t.KeyboardModifierKeyState): P => {
-    if (state === false) return { isPressed: false, isEdge: false };
+  const toPressed = (state: t.KeyboardModifierEdges): P => {
     return {
-      isPressed: Array.isArray(state),
+      isPressed: state.length > 0,
       isEdge: (state as string[]).includes(edge),
     };
   };
 
-  const { modifiers } = state.current;
-  const shift = toPressed(modifiers.shift);
-  const ctrl = toPressed(modifiers.ctrl);
-  const alt = toPressed(modifiers.alt);
-  const meta = toPressed(modifiers.meta);
+  const { modifierKeys } = state.current;
+  const shift = toPressed(modifierKeys.shift);
+  const ctrl = toPressed(modifierKeys.ctrl);
+  const alt = toPressed(modifierKeys.alt);
+  const meta = toPressed(modifierKeys.meta);
 
   /**
    * [Render]

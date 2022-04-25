@@ -1,54 +1,35 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
-import { CmdTextbox } from '../Cmd.Textbox';
-import { CmdBarEventPipe, CmdBarEventPipeProps } from './CmdBar.EventPipe';
-import { color, css, CssValue, FC, t } from './common';
-import { CmdBarEvents } from './Events';
-import { CmdBarState } from './State';
+import { color, css, FC, t, PARTS } from './common';
+import { CmdBarEvents, CmdBarController } from './logic';
+import { TrayPlaceholder } from './ui/Tray.Placeholder';
+import { Event } from '../Event';
+import { CmdBarProps } from './types';
+import { Textbox } from './ui/Textbox';
+
+export { CmdBarProps };
 
 /**
  * Types
  */
-export type CmdBarPart = 'Input' | 'Events';
-
-export type CmdBarProps = {
-  instance: t.CmdBarInstance;
-  state?: t.CmdBarState;
-  parts?: CmdBarPart[];
-  cornerRadius?: [number, number, number, number];
-  backgroundColor?: string | number;
-  textbox?: { placeholder?: string; spinner?: boolean };
-  style?: CssValue;
-  onChange?: t.CmdTextboxChangeEventHandler;
-  onAction?: t.CmdTextboxActionEventHandler;
-};
 
 /**
  * Constants
  */
-const PARTS: CmdBarPart[] = ['Input', 'Events'];
-export const CmdBarConstants = { PARTS };
+const constants = { PARTS };
 
 /**
  * Component
  */
-export const View: React.FC<CmdBarProps> = (props) => {
-  const { instance, state } = props;
-  const { parts = ['Input', 'Events'] } = props;
+const View: React.FC<CmdBarProps> = (props) => {
+  const { instance } = props;
+  const { show = PARTS } = props;
 
   const borderRadius = props.cornerRadius
     ?.map((value) => (value === 0 ? '0' : `${value}px`))
     .join(' ');
 
-  const [events, setEvents] = React.useState<t.CmdBarEvents | undefined>();
-
-  /**
-   * Lifecycle
-   */
-  useEffect(() => {
-    if (instance) setEvents(CmdBarEvents({ instance }));
-    return () => events?.dispose();
-  }, [instance]); // eslint-disable-line
+  const events = Event.useEventsRef(() => CmdBarEvents({ instance }));
 
   /**
    * [Render]
@@ -63,16 +44,17 @@ export const View: React.FC<CmdBarProps> = (props) => {
     }),
     inset: css({ Absolute: 0 }),
     body: css({ flex: 1, Flex: 'x-stretch-stretch' }),
-    input: css({ flex: 2, paddingTop: 10, paddingBottom: 4 }),
-    events: css({
-      flex: 1,
+    input: css({
+      flex: props.textbox?.flex ?? 2,
+      paddingTop: 10,
+      paddingBottom: 4,
+    }),
+    tray: css({
+      flex: props.tray?.flex ?? 1,
       display: 'flex',
-      overflow: 'hidden',
       position: 'relative',
-      paddingRight: 10,
     }),
     divider: {
-      spacer: css({ width: 10 }),
       border: css({
         borderLeft: `solid 1px ${color.format(-0.2)}`,
         borderRight: `solid 1px ${color.format(0.1)}`,
@@ -81,55 +63,41 @@ export const View: React.FC<CmdBarProps> = (props) => {
   };
 
   const elements: JSX.Element[] = [];
+  const append = (fn: (e: { key: string }) => JSX.Element) => {
+    const key = `item-${elements.length}`;
+    elements.push(fn({ key }));
+  };
 
   const appendDivider = () => {
     if (elements.length > 0) {
-      elements.push(<div {...styles.divider.spacer} key={elements.length} />);
-      elements.push(<div {...styles.divider.border} key={elements.length} />);
-      elements.push(<div {...styles.divider.spacer} key={elements.length} />);
+      append((e) => <div {...styles.divider.border} key={e.key} />);
     }
   };
 
-  parts.forEach((part, i) => {
-    const isFirst = i === 0;
+  show.forEach((part, i) => {
+    const is: t.CmdBarRenderPartFlags = {
+      first: i === 0,
+      last: i === show.length - 1,
+      only: show.length === 1,
+    };
 
     if (part === 'Input') {
       appendDivider();
-      elements.push(
-        <div {...styles.input} key={elements.length}>
-          <CmdTextbox
-            text={state?.text ?? ''}
-            theme={'Dark'}
-            placeholder={props.textbox?.placeholder}
-            spinner={props.textbox?.spinner ?? state?.spinning}
-            onChange={(e) => {
-              const { from, to } = e;
-              events?.text.changed({ from, to });
-              props.onChange?.(e);
-            }}
-            onAction={(e) => {
-              const { text } = e;
-              events?.action.fire({ text });
-              props.onAction?.(e);
-            }}
-            style={{ paddingLeft: 8 }}
-          />
-        </div>,
-      );
+      append((e) => (
+        <div {...styles.input} key={e.key}>
+          <Textbox {...props} events={events} is={is} />
+        </div>
+      ));
     }
 
-    if (part === 'Events') {
+    if (part === 'Tray') {
+      const render = props.tray?.render ?? TrayPlaceholder.render;
       appendDivider();
-      elements.push(
-        <div {...styles.events} key={elements.length}>
-          {
-            <CmdBarEventPipe
-              history={state?.history?.events}
-              iconEdge={isFirst ? 'Left' : 'Right'}
-            />
-          }
-        </div>,
-      );
+      append((e) => (
+        <div {...styles.tray} key={e.key}>
+          {render({ instance, is })}
+        </div>
+      ));
     }
   });
 
@@ -144,16 +112,16 @@ export const View: React.FC<CmdBarProps> = (props) => {
  * Export
  */
 type Fields = {
-  EventPipe: React.FC<CmdBarEventPipeProps>;
-  Events: t.CmdBarEventsFactory;
-  State: typeof CmdBarState;
+  constants: typeof constants;
+  Events: typeof CmdBarEvents;
+  Controller: typeof CmdBarController;
 };
 export const CmdBar = FC.decorate<CmdBarProps, Fields>(
   View,
   {
-    EventPipe: CmdBarEventPipe,
+    constants,
     Events: CmdBarEvents,
-    State: CmdBarState,
+    Controller: CmdBarController,
   },
   { displayName: 'CmdBar' },
 );

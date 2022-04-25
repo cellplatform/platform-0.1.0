@@ -7,8 +7,10 @@ import { DevSample, DevSampleProps } from './DEV.Sample';
 
 const { DEFAULT } = ManifestSelectorStateful.constants;
 
+type Id = string;
+
 type Ctx = {
-  bus: t.EventBus;
+  instance: { bus: t.EventBus; id?: Id };
   props: DevSampleProps;
   debug: { useUrl: boolean };
 };
@@ -22,10 +24,11 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const bus = rx.bus();
+    const instance = { bus };
     Filesystem.IndexedDb.create({ bus, id: DEFAULT.HISTORY.FS });
 
     const ctx: Ctx = {
-      bus,
+      instance,
       props: {},
       debug: { useUrl: true },
     };
@@ -36,10 +39,9 @@ export const actions = DevActions<Ctx>()
     e.title('Dev');
 
     e.component((e) => {
-      const bus = e.ctx.bus;
       return (
         <ManifestSelectorStateful
-          bus={bus}
+          instance={e.ctx.instance}
           showExports={false}
           focusOnLoad={true}
           style={{ MarginX: 15, marginTop: 10, marginBottom: 20 }}

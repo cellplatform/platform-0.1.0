@@ -13,13 +13,10 @@ export type TextInputFocusAction = {
   focusAction?: 'SELECT' | 'END';
 };
 
-export type ITextInputMask = {
-  text: string;
-  char: string;
-};
-export type TextInputMaskHandler = (e: ITextInputMask) => boolean; // True - OK, False - disallow.
+export type TextInputMask = { text: string; char: string };
+export type TextInputMaskHandler = (e: TextInputMask) => boolean; // True - OK, False - disallow.
 
-export type ITextInputStyle = t.TextStyle & { disabledColor?: number | string };
+export type TextInputStyle = t.TextStyle & { disabledColor?: number | string };
 
 /**
  * [Events]

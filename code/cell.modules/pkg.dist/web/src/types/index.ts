@@ -1,1 +1,1 @@
-export * from '../web.MyBus/types';
+export * from '../ui/App/types';

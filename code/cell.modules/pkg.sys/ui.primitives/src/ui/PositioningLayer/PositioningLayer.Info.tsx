@@ -1,5 +1,5 @@
 import React from 'react';
-import { PropList, PropListItem } from '../PropList';
+import { PropList } from '../PropList';
 
 import { css, CssValue, t } from '../../common';
 import { PositioningLayerProps, PositioningSize } from './PositioningLayer';
@@ -19,7 +19,7 @@ export const PositioningLayerInfo: React.FC<PositioningLayerInfoProps> = (props)
   const toSize = (size?: D) => (!size ? '-' : `${size.width} x ${size.height} px`);
   const toPosition = (size?: D) => (!size ? '-' : `x:${size.x}, y:${size.y}`);
 
-  const items: (PropListItem | undefined)[] = [
+  const items: (t.PropListItem | undefined)[] = [
     { label: 'position.x', value: position?.x ?? '-' },
     { label: 'position.y', value: position?.y ?? '-' },
     size && { label: 'parent.size', value: toSize(size.parent) },

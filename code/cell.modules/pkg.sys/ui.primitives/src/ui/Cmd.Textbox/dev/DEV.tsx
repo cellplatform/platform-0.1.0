@@ -23,9 +23,8 @@ export const actions = DevActions<Ctx>()
       props: {
         placeholder: 'command',
         spinner: false,
+        pending: false,
         theme: 'Dark',
-        // theme: 'Light',
-        // theme: CONST.DEFAULT.THEME,
         onChange(event) {
           e.change.ctx((ctx) => {
             const isControlled = e.current?.debug.isControlled ?? true;
@@ -64,6 +63,11 @@ export const actions = DevActions<Ctx>()
     e.boolean('spinner', (e) => {
       if (e.changing) e.ctx.props.spinner = e.changing.next;
       e.boolean.current = e.ctx.props.spinner;
+    });
+
+    e.boolean('pending', (e) => {
+      if (e.changing) e.ctx.props.pending = e.changing.next;
+      e.boolean.current = e.ctx.props.pending;
     });
 
     e.textbox((config) =>

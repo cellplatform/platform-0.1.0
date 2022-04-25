@@ -8,7 +8,7 @@ export type EventPropsProps = {
   style?: CssValue;
 };
 
-export const View: React.FC<EventPropsProps> = (props) => {
+const View: React.FC<EventPropsProps> = (props) => {
   const { event } = props;
   const { keypress, is } = event;
 

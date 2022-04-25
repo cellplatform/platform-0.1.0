@@ -1,5 +1,8 @@
 export * from '../../common';
 
-export const CONST = {
+export { Util } from './Util';
+export { CmdBar } from '../Cmd.Bar';
+
+export const constants = {
   FOOTER: { HEIGHT: 38 },
 };

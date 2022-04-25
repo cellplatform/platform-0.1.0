@@ -9,6 +9,8 @@ const Imports = {
   UIEvent: import('./hooks/UIEvent/TEST'),
 
   TextSyntaxTokenizer: import('./ui/Text.Syntax/TEST'),
+  TextInput: import('./ui/Text.Input/TEST'),
+
   PropList: import('./ui/PropList/TEST'),
   ListState: import('./ui/List.State/TEST'),
   Semver: import('./ui/Semver/TEST'),
@@ -27,8 +29,8 @@ export const actions = DevActions<Ctx>()
   .context((e) => e.prev ?? {})
 
   .init(async (e) => {
-    e.ctx.results = await Test.run(Object.values(Imports));
-    // e.ctx.results = await Test.run([Imports.CmdCard]);
+    // e.ctx.results = await Test.run(Object.values(Imports));
+    e.ctx.results = await Test.run([Imports.CmdBar, Imports.CmdCard, Imports.TextInput]);
   })
 
   .items((e) => {

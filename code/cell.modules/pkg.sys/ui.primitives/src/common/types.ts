@@ -4,7 +4,15 @@ export * from '../types';
 /**
  * @platform
  */
-export { EventBus, Event, DomRect, PartialDeep, Disposable, LazyBool } from '@platform/types';
+export {
+  EventBus,
+  Event,
+  DomRect,
+  PartialDeep,
+  Disposable,
+  LazyBool,
+  JsonMap,
+} from '@platform/types';
 export {
   IHttpClientCellFileUpload,
   ManifestUrl,
@@ -20,5 +28,4 @@ export { IIcon } from '@platform/ui.icon/lib/types';
  * @system
  */
 export { WebRuntimeEvents } from 'sys.runtime.web/lib/types';
-export { UseManifestHook } from 'sys.runtime.web.ui/lib/types';
-export { JsonState } from 'sys.data.json/lib/types';
+export { JsonState, JsonLens, JsonMutation } from 'sys.data.json/lib/types';

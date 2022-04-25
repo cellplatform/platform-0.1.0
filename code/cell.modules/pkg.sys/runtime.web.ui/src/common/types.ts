@@ -18,8 +18,15 @@ export {
 /**
  * @system
  */
-export { PropListItem, PropListValue } from 'sys.ui.primitives/lib/types';
-
-// export * from 'sys.runtime.web/lib/types';
-
 export { WebRuntimeEvents } from 'sys.runtime.web/lib/types';
+export {
+  PropListItem,
+  PropListValue,
+  CmdCardInstance,
+  CmdCardState,
+  CmdCardEvent,
+  CmdCardRender,
+  CmdCardControllerArgs,
+  CmdCardEvents,
+  CmdCardEventsDisposable,
+} from 'sys.ui.primitives/lib/types';

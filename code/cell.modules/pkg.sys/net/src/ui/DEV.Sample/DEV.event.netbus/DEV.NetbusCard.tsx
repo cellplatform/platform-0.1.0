@@ -6,7 +6,6 @@ import {
   CssValue,
   Hr,
   PropList,
-  PropListItem,
   Style,
   UriUtil,
   t,
@@ -25,7 +24,7 @@ export type DevNetbusCardProps = {
 export const DevNetbusCard: React.FC<DevNetbusCardProps> = (props) => {
   const { showAsCard = true, netbus } = props;
   const history = useEventHistory(netbus);
-  const items: PropListItem[] = [{ label: 'total events', value: history.total }];
+  const items: t.PropListItem[] = [{ label: 'total events', value: history.total }];
 
   /**
    * Event Handlers

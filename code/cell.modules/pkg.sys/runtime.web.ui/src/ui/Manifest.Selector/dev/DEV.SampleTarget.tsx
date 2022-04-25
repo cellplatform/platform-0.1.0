@@ -3,15 +3,19 @@ import React from 'react';
 import { useModuleTarget } from '../../useModuleTarget';
 import { css, t } from '../common';
 
-export type DevSampleTargetProps = { bus: t.EventBus; target: string };
+type Id = string;
+export type DevSampleTargetProps = {
+  instance: { bus: t.EventBus; id?: Id };
+  target: string;
+};
 
 /**
  * Sample UI for the [useModule] hook.
  */
 export const DevSampleTarget: React.FC<DevSampleTargetProps> = (props) => {
-  const { bus, target } = props;
+  const { instance, target } = props;
 
-  const remote = useModuleTarget({ bus, target });
+  const remote = useModuleTarget({ instance, target });
   const Component = remote.module?.default;
 
   /**
@@ -25,6 +29,6 @@ export const DevSampleTarget: React.FC<DevSampleTargetProps> = (props) => {
     }),
   };
 
-  const el = Component && <Component bus={props.bus} />;
+  const el = Component && <Component bus={instance.bus} />;
   return <div {...styles.base}>{el}</div>;
 };

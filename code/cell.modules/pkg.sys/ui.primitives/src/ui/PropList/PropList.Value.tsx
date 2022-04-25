@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 
-import { css, CssValue, defaultValue, t, time, copyToClipboard } from '../../common';
-import { SwitchValue } from './PropList.Value.Switch';
+import { copyToClipboard, css, CssValue, t, time } from './common';
+
 import { SimpleValue } from './PropList.Value.Simple';
-import { FormatItem } from './FormatItem';
+import { SwitchValue } from './PropList.Value.Switch';
+import { Util } from './Util';
 
 export type PropListValueProps = {
   item: t.PropListItem;
   isFirst?: boolean;
   isLast?: boolean;
   defaults: t.PropListDefaults;
+  theme?: t.PropListTheme;
   style?: CssValue;
 };
 
 export const PropListValue: React.FC<PropListValueProps> = (props) => {
-  const item = FormatItem(props.item);
+  const item = Util.format(props.item);
   const value = item.value;
   const isCopyable = item.isCopyable(props.defaults);
 
@@ -23,6 +25,41 @@ export const PropListValue: React.FC<PropListValueProps> = (props) => {
 
   const cursor = item.value.onClick ? 'pointer' : undefined;
 
+  const showMessage = (message: React.ReactNode, delay?: number) => {
+    setMessage(message);
+    time.delay(delay ?? 1500, () => setMessage(undefined));
+  };
+
+  const handleClick = () => {
+    const { clipboard, value } = item;
+    let message: React.ReactNode;
+    let delay: number | undefined;
+
+    value.onClick?.({
+      item,
+      value,
+      message(text, msecs) {
+        message = text;
+        delay = msecs;
+      },
+    });
+
+    if (clipboard && isCopyable) {
+      const value = typeof clipboard === 'function' ? clipboard() : clipboard;
+      copyToClipboard(value);
+      if (!message) {
+        const text = (value || '').toString().trim();
+        const isHttp = text.startsWith('http://') || text.startsWith('https://');
+        message = isHttp ? 'copied url' : 'copied';
+      }
+    }
+
+    if (message) showMessage(message, delay);
+  };
+
+  /**
+   * [Render]
+   */
   const styles = {
     base: css({
       flex: 1,
@@ -31,42 +68,10 @@ export const PropListValue: React.FC<PropListValueProps> = (props) => {
       userSelect: 'none',
       fontWeight: item.value.bold ? 'bold' : undefined,
     }),
-  };
-
-  const showMessage = (message: React.ReactNode, delay?: number) => {
-    setMessage(message);
-    time.delay(defaultValue(delay, 1500), () => setMessage(undefined));
-  };
-
-  const handleClick = () => {
-    let message: React.ReactNode;
-    let delay: number | undefined;
-
-    const { clipboard, value } = item;
-    const { onClick } = value;
-
-    if (onClick) {
-      onClick({
-        item,
-        value,
-        message: (text, msecs) => {
-          message = text;
-          delay = msecs;
-        },
-      });
-    }
-
-    if (clipboard && isCopyable) {
-      const value = typeof clipboard === 'function' ? clipboard() : clipboard;
-      copyToClipboard(value);
-      if (!message) {
-        const text = (value || '').trim();
-        const isHttp = text.startsWith('http://') || text.startsWith('https://');
-        message = isHttp ? 'copied url' : 'copied';
-      }
-    }
-
-    if (message) showMessage(message, delay);
+    component: css({
+      flex: 1,
+      display: 'flex',
+    }),
   };
 
   const renderValue = () => {
@@ -85,12 +90,19 @@ export const PropListValue: React.FC<PropListValueProps> = (props) => {
           isCopyable={isCopyable}
           cursor={cursor}
           defaults={props.defaults}
+          theme={props.theme}
           onClick={handleClick}
         />
       );
     }
 
-    if (item.isComponent) return item.value.data;
+    if (item.isComponent) {
+      return (
+        <div {...styles.component} onClick={handleClick}>
+          {item.value.data}
+        </div>
+      );
+    }
     return null;
   };
 

@@ -11,8 +11,6 @@ export default () =>
         .port(3000)
 
         .entry('main', './src/entry/main')
-        .entry('service.worker', './src/workers/service.worker')
-        .entry('web.worker', './src/workers/web.worker')
 
         // .declarations('./src/**/*')
 

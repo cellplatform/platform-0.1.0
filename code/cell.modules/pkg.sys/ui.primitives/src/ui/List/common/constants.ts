@@ -10,6 +10,4 @@ export const ALL = { AlignTypes };
  * Defaults
  */
 const DefaultOrientation: k.ListOrientation = 'y';
-
 export const DEFAULTS = { Orientation: DefaultOrientation };
-export const ListConstants = { DEFAULTS, ALL };

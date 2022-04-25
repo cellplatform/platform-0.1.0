@@ -1,10 +1,10 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { Bullet, BulletProps, BulletConstants } from '..';
+import { Bullet, BulletProps } from '..';
 import { Icons } from '../../Icons';
 import { COLORS, color } from '../../common';
 
-const { DEFAULTS } = BulletConstants;
+const { DEFAULTS } = Bullet.constants;
 
 type Ctx = {
   props: BulletProps;
@@ -52,7 +52,7 @@ export const actions = DevActions<Ctx>()
     e.title('Props');
 
     e.select((config) => {
-      const defaultLabel = `<undefined> (default: ${BulletConstants.DEFAULTS.size})`;
+      const defaultLabel = `<undefined> (default: ${DEFAULTS.size})`;
       config
         .title('size')
         .items([{ label: defaultLabel, value: undefined }, 5, 8, 12, 22, 60])

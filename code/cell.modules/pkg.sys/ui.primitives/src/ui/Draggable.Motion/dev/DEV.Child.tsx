@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { MotionDraggableItem, MotionDraggableContainer } from '..';
-import { PropList, PropListItem } from '../../PropList';
+import { PropList } from '../../PropList';
 import { Hr } from '../../Hr';
 import { css, CssValue } from '../common';
 

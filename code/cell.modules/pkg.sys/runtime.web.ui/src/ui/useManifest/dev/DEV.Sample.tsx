@@ -3,7 +3,7 @@ import { ObjectView } from 'sys.ui.dev';
 
 import { useManifest } from '..';
 import { color, COLORS, css, CssValue } from '../../common';
-import { ModuleInfo } from '../../ModuleInfo';
+import { ModuleInfo } from '../../Module.Info';
 
 export type DevSampleProps = {
   url?: string;

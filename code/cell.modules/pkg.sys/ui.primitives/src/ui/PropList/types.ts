@@ -1,3 +1,22 @@
+import * as t from '../../common/types';
+
+/**
+ * Component
+ */
+export type PropListTheme = 'Dark' | 'Light';
+export type PropListProps = {
+  title?: string | React.ReactNode | null;
+  titleEllipsis?: boolean;
+  items?: (PropListItem | undefined)[] | Record<string, unknown>;
+  defaults?: t.PropListDefaults;
+  padding?: t.CssEdgesInput;
+  margin?: t.CssEdgesInput;
+  width?: number | { fixed?: number; min?: number; max?: number };
+  height?: number | { fixed?: number; min?: number; max?: number };
+  theme?: t.PropListTheme;
+  style?: t.CssValue;
+};
+
 /**
  * Factory
  */

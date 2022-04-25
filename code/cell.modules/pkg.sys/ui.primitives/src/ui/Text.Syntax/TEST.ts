@@ -1,5 +1,5 @@
 import { Test, expect } from 'sys.ui.dev';
-import { DefaultTokenizer } from './Tokenizer';
+import { DefaultTokenizer } from './logic/Tokenizer';
 import * as k from './types';
 
 export default Test.describe('Text.Syntax', (e) => {

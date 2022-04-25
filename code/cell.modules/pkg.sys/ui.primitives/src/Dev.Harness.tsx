@@ -16,7 +16,6 @@ const imports = {
   DotTabstrip: import('./ui/DotTabstrip/dev/DEV'),
   Zoom: import('./ui/Zoom/DEV'),
   PropList: import('./ui/PropList/dev/DEV'),
-  TextEditor: import('./ui/TextEditor/DEV'),
   QRCode: import('./ui/QRCode/dev/DEV'),
   Semver: import('./ui/Semver/dev/DEV'),
 
@@ -24,9 +23,12 @@ const imports = {
   CmdBar: import('./ui/Cmd.Bar/dev/DEV'),
   CmdCard: import('./ui/Cmd.Card/dev/DEV'),
 
+  ErrorBoundary: import('./ui/Error.Boundary/dev/DEV'),
+
   MinSize: import('./ui/MinSize/dev/DEV'),
   PositioningLayer: import('./ui/PositioningLayer/dev/DEV'),
   PositioningLayout: import('./ui/PositioningLayout/dev/DEV'),
+  Photo: import('./ui/Photo/dev/DEV'),
 
   DraggableSort: import('./ui/Draggable.Sort/dev/DEV'),
   DraggableMotion: import('./ui/Draggable.Motion/dev/DEV'),
@@ -39,11 +41,14 @@ const imports = {
   EventPipe: import('./ui/Event.Pipe/dev/DEV'),
   EventList: import('./ui/Event.List/dev/DEV'),
 
+  FullScreen: import('./ui/FullScreen/dev/DEV'),
+
   HashChip: import('./ui/HashChip/dev/DEV'),
 
   Button: import('./ui.ref/button/Button.dev/DEV'),
   Switch: import('./ui.ref/button/Switch.dev/DEV'),
   OptionButtons: import('sys.ui.dev/lib/ui/OptionButtons/dev/DEV'),
+  // OptionButtons: import('./ui/OptionButtons/DEV'),
 
   Svg: import('./ui/Image.Svg/dev/DEV'),
 
@@ -52,6 +57,7 @@ const imports = {
 
   TextCopy: import('./ui/Text.Copy/dev/DEV'),
   TextSyntax: import('./ui/Text.Syntax/dev/DEV'),
+  TextInput: import('./ui/Text.Input/dev/DEV'),
 
   UnitTests: import('./Dev.UnitTests'),
 };

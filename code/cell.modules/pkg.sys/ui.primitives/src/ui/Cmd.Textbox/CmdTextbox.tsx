@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
-import { color, COLORS, css, CssValue, t } from '../common';
-import { TextInput } from '../../ui.ref/text/TextInput';
-import { Icons } from '../Icons';
+
 import { Button } from '../../ui.ref/button/Button';
 import { Spinner } from '../../ui.ref/spinner/Spinner';
+import { color, COLORS, css, CssValue, t } from '../common';
+import { Icons } from '../Icons';
+import { TextInput } from '../Text.Input';
 
 /**
  * Types
  */
 export type CmdTextboxProps = {
+  instance?: { bus: t.EventBus<any>; id: string };
   text?: string; // NB: undefined === handle state internally ("uncontrolled").
   placeholder?: string;
   spinner?: boolean;
+  pending?: boolean;
   theme?: t.CmdTextboxTheme;
   style?: CssValue;
   onChange?: t.CmdTextboxChangeEventHandler;
@@ -33,10 +36,9 @@ export const CmdTextboxContants = { DEFAULT, THEMES };
  * Component
  */
 export const CmdTextbox: React.FC<CmdTextboxProps> = (props) => {
-  const { theme = 'Light', spinner } = props;
+  const { theme = 'Light', spinner, pending = false } = props;
   const isControlled = typeof props.text === 'string';
 
-  const [pending, setPending] = useState(false);
   const [textState, setTextState] = useState('');
   const text = isControlled ? props.text : textState;
   const textTrimmed = (text || '').trim();
@@ -60,17 +62,13 @@ export const CmdTextbox: React.FC<CmdTextboxProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({
-      Flex: 'x-stretch-stretch',
-      minWidth: 240,
-      color: COL_BASE,
-    }),
+    base: css({ minWidth: 240, color: COL_BASE, Flex: 'x-stretch-stretch' }),
     textbox: {
       base: css({ flex: 1, Flex: 'x-center-center' }),
       input: css({
-        top: -5,
-        flex: 1,
         position: 'relative',
+        flex: 1,
+        top: -5,
         borderBottom: `dashed 1px ${color.format(isDark ? 0.2 : -0.1)}`,
       }),
     },
@@ -100,16 +98,17 @@ export const CmdTextbox: React.FC<CmdTextboxProps> = (props) => {
     <Spinner size={18} color={isDark ? COLORS.WHITE : COLORS.DARK} style={styles.spinner} />
   );
 
-  const elIcon = textTrimmed && pending && !elSpinner && (
+  const elActionIcon = pending && !elSpinner && (
     <Button isEnabled={isInvokable}>
       <Icons.Arrow.Forward size={20} color={COL_ICON.PENDING} />
     </Button>
   );
-  const elRight = <div {...styles.right.base}>{elSpinner || elIcon}</div>;
+  const elRight = <div {...styles.right.base}>{elSpinner || elActionIcon}</div>;
 
   const elTextbox = (
     <div {...styles.textbox.base}>
       <TextInput
+        instance={props.instance}
         style={styles.textbox.input}
         value={text}
         placeholder={props.placeholder ?? DEFAULT.PLACEHOLDER}
@@ -127,12 +126,10 @@ export const CmdTextbox: React.FC<CmdTextboxProps> = (props) => {
           const { from, to } = e;
           if (!isControlled) setTextState(to);
           props.onChange?.({ from, to });
-          setPending(true);
         }}
         onEnter={() => {
           const text = textTrimmed;
-          if (text) props.onAction?.({ text });
-          setPending(false);
+          if (text) props.onAction?.({ text, kind: 'Key:Enter' });
         }}
       />
     </div>

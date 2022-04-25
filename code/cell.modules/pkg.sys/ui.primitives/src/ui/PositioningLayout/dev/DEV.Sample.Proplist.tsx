@@ -1,6 +1,6 @@
 import React from 'react';
 import { CssValue, t } from '../../common';
-import { PropList, PropListItem } from '../../PropList';
+import { PropList } from '../../PropList';
 
 export type DevSampleProplistProps = {
   id: string;
@@ -26,7 +26,7 @@ function toList(args: {
 }) {
   const { id, info, overlaps } = args;
   const index = info ? `${info.index}` : '?';
-  const list: PropListItem[] = [{ label: `layer-${index}`, value: `id:"${id}"` }];
+  const list: t.PropListItem[] = [{ label: `layer-${index}`, value: `id:"${id}"` }];
 
   if (info) {
     const { position, size } = info;

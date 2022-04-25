@@ -3,21 +3,21 @@ import React, { useRef } from 'react';
 import { CssValue, t, rx, slug, DEFAULT, FC } from './common';
 import { ManifestSelector } from './ManifestSelector';
 import { useStateController, useHistoryController } from './hooks';
-import { ModuleInfoFields } from '../ModuleInfo/types';
 import { ManifestSelectorConstants as constants } from './constants';
 
 /**
  * Types
  */
+type Id = string;
 type FilesystemId = string;
 type FilePath = string;
 type History = { fs: FilesystemId; path: FilePath };
 
 export type ManifestSelectorStatefulProps = {
-  bus: t.EventBus<any>;
+  instance: { bus: t.EventBus<any>; id?: Id };
   canDrop?: boolean;
   showExports?: boolean;
-  fields?: ModuleInfoFields[];
+  fields?: t.ModuleInfoFields[];
   history?: boolean | Partial<History>;
   focusOnLoad?: boolean;
   style?: CssValue;
@@ -29,9 +29,9 @@ export type ManifestSelectorStatefulProps = {
  * Component
  */
 const View: React.FC<ManifestSelectorStatefulProps> = (props) => {
-  const { onChanged } = props;
-  const id = useRef(slug());
-  const bus = rx.busAsType<t.ManifestSelectorEvent>(props.bus);
+  const { onChanged, instance } = props;
+  const id = useRef(instance.id || slug());
+  const bus = rx.busAsType<t.ManifestSelectorEvent>(instance.bus);
   const component = id.current;
 
   const state = useStateController({ bus, component, onChanged });

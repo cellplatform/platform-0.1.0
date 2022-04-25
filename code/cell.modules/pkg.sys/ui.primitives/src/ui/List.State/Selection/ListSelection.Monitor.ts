@@ -68,7 +68,7 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
   type ShiftOperation = { anchor: Index; prev: Index[] };
   const ShiftKey = {
     current: undefined as ShiftOperation | undefined,
-    isPressed: (state: t.KeyboardState) => Boolean(state.current.modifiers.shift),
+    isPressed: (state: t.KeyboardState) => state.current.modifiers.shift,
     init: (anchor: Index) => (ShiftKey.current = { anchor, prev: [] }),
   };
 

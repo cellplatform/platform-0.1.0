@@ -24,11 +24,13 @@ type StartRes = {
 export async function start(args: StartArgs): Promise<StartRes> {
   const { bus, signal, timeout } = args;
   const self = args.self ?? cuid();
+
   const id = self;
+  const instance = { bus, id };
 
   const peer = Controller({ bus });
   const netbus = PeerNetbus({ bus, self });
-  const runtime = WebRuntime.Bus.Controller({ id, bus, netbus });
+  const runtime = WebRuntime.Bus.Controller({ instance, netbus });
 
   const events = {
     peer: PeerEvents(bus),
