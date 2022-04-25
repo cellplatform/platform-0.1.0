@@ -1,22 +1,34 @@
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { rx, slug, t } from './common';
+import { rx, slug, t } from '../common';
 
-export type FullscreenEventsArgs = {
-  instance: t.FullscreenInstance;
+type E = t.FullscreenEvent;
+
+/**
+ * EventBus interface for the Fullscreen API.
+ *
+ * See:
+ *    WebStandard: Fullscreen API
+ *    https://developer.mozilla.org/en-US/docs/Web/API/Fullscreen_API
+ *
+ *    Spec:
+ *    https://fullscreen.spec.whatwg.org
+ */
+export function FullscreenEvents(args: {
+  instance?: t.FullscreenInstance;
   dispose$?: t.Observable<void>;
-};
-
-export function FullscreenEvents(args: FullscreenEventsArgs): t.FullscreenEvents {
+}): t.FullscreenEvents {
   const { dispose, dispose$ } = rx.disposable(args.dispose$);
-  const bus = rx.busAsType<t.FullscreenEvent>(args.instance.bus);
-  const instance = args.instance.id;
+  const bus = args.instance ? rx.busAsType<E>(args.instance.bus) : rx.bus<E>(); // NB dummy.
+  const instance = args.instance?.id ?? '';
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
     filter((e) => e.type.startsWith('sys.ui.Fullscreen/')),
     filter((e) => e.payload.instance === instance),
   );
+
+  const fire = (e: t.FullscreenEvent) => bus.fire(e);
 
   const enter: t.FullscreenEvents['enter'] = {
     req$: rx.payload<t.FullscreenEnterReqEvent>($, 'sys.ui.Fullscreen/enter:req'),
@@ -29,7 +41,7 @@ export function FullscreenEvents(args: FullscreenEventsArgs): t.FullscreenEvents
       const res$ = enter.res$.pipe(filter((e) => e.tx === tx));
       const first = rx.asPromise.first<t.FullscreenEnterResEvent>(res$, { op, timeout });
 
-      bus.fire({
+      fire({
         type: 'sys.ui.Fullscreen/enter:req',
         payload: { tx, instance },
       });
@@ -53,7 +65,7 @@ export function FullscreenEvents(args: FullscreenEventsArgs): t.FullscreenEvents
       const res$ = enter.res$.pipe(filter((e) => e.tx === tx));
       const first = rx.asPromise.first<t.FullscreenExitResEvent>(res$, { op, timeout });
 
-      bus.fire({
+      fire({
         type: 'sys.ui.Fullscreen/exit:req',
         payload: { tx, instance },
       });
@@ -71,6 +83,7 @@ export function FullscreenEvents(args: FullscreenEventsArgs): t.FullscreenEvents
     $,
     dispose,
     dispose$,
+    fire,
     enter,
     exit,
   };

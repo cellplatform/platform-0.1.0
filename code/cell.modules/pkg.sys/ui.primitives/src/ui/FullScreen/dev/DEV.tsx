@@ -8,6 +8,7 @@ type Ctx = {
   instance: t.FullscreenInstance;
   events: t.FullscreenEvents;
   props: DevSampleProps;
+  debug: { render: boolean; withoutInstance: boolean };
 };
 
 /**
@@ -24,8 +25,9 @@ export const actions = DevActions<Ctx>()
 
     const ctx: Ctx = {
       instance,
-      props: { instance },
       events,
+      props: { instance },
+      debug: { render: true, withoutInstance: false },
     };
 
     return ctx;
@@ -37,6 +39,18 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Dev');
+
+    e.boolean('render', (e) => {
+      if (e.changing) e.ctx.debug.render = e.changing.next;
+      e.boolean.current = e.ctx.debug.render;
+    });
+
+    e.boolean('without instance (bus)', (e) => {
+      if (e.changing) e.ctx.debug.withoutInstance = e.changing.next;
+      e.boolean.current = e.ctx.debug.withoutInstance;
+    });
+
+    e.hr();
 
     e.button('⚡️ fullscreen.enter', async (e) => {
       const res = await e.ctx.events.enter.fire();
@@ -64,6 +78,8 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    const { debug } = e.ctx;
+
     e.settings({
       host: { background: -0.04 },
       layout: {
@@ -74,7 +90,12 @@ export const actions = DevActions<Ctx>()
         background: 1,
       },
     });
-    e.render(<DevSample {...e.ctx.props} style={{ flex: 1 }} />);
+
+    const props = { ...e.ctx.props };
+    if (debug.withoutInstance) delete props.instance;
+
+    const el = <DevSample {...props} style={{ flex: 1 }} />;
+    e.render(debug.render && el);
   });
 
 export default actions;

@@ -1,8 +1,5 @@
 import { RefObject } from 'react';
-import { Subject } from 'rxjs';
-
-import { t, rx } from './common';
-import { FullscreenEvents } from './Fullscreen.Events';
+import { t } from '../common';
 
 /**
  * See:
@@ -12,9 +9,11 @@ import { FullscreenEvents } from './Fullscreen.Events';
  *    Spec:
  *    https://fullscreen.spec.whatwg.org
  */
-export function FullscreenAPI<H extends HTMLElement = HTMLDivElement>(args: { ref: RefObject<H> }) {
+export function FullscreenAPI<H extends HTMLElement = HTMLDivElement>(args: {
+  ref: RefObject<H>;
+}): t.Fullscreen<H> {
   const { ref } = args;
-  const isFullscreen = () => document.fullscreenElement === ref.current;
+  const isFullscreen = () => Boolean(ref.current && document.fullscreenElement === ref.current);
 
   /**
    * API
@@ -31,13 +30,16 @@ export function FullscreenAPI<H extends HTMLElement = HTMLDivElement>(args: { re
     },
 
     /**
-     *
+     * Request that the element enter fullscreen mode.
      */
     async enter() {
       await ref.current?.requestFullscreen({ navigationUI: 'hide' });
     },
 
-    exit() {
+    /**
+     * Request to exit full screen mode.
+     */
+    async exit() {
       if (isFullscreen()) document.exitFullscreen();
     },
   };

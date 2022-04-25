@@ -1,5 +1,7 @@
 import { useFullscreen } from './useFullscreen';
-import { FullscreenEvents as Events } from './Fullscreen.Events';
+import { FullscreenEvents as Events } from './logic/Events';
+import { FullscreenAPI as API } from './logic/API';
+import { FullscreenController as Controller } from './logic/Controller';
 
 /**
  * Helpers for moving the UI into "fullscreen" mode.
@@ -13,6 +15,8 @@ import { FullscreenEvents as Events } from './Fullscreen.Events';
  *
  */
 export const Fullscreen = {
+  API,
   Events,
+  Controller,
   useFullscreen,
 };

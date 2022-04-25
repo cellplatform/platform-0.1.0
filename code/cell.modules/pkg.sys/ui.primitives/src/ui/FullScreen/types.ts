@@ -1,3 +1,4 @@
+import { RefObject } from 'react';
 import * as t from '../../common/types';
 
 type Id = string;
@@ -6,11 +7,22 @@ type Milliseconds = number;
 export type FullscreenInstance = { bus: t.EventBus<any>; id: string };
 
 /**
+ * API
+ */
+export type Fullscreen<H extends HTMLElement = HTMLDivElement> = {
+  ref: RefObject<H>;
+  isFullscreen: boolean;
+  enter(): Promise<void>;
+  exit(): Promise<void>;
+};
+
+/**
  * EVENTS (API)
  */
 export type FullscreenEvents = t.Disposable & {
   instance: { bus: Id; id: Id };
   $: t.Observable<FullscreenEvent>;
+  fire(e: t.FullscreenEvent): void;
   enter: {
     req$: t.Observable<FullscreenEnterReq>;
     res$: t.Observable<FullscreenEnterReq>;
