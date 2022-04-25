@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { FC, color, COLORS, css, CssValue, t } from '../../common';
-import { PhotoImage } from './Photo.Image';
+import React from 'react';
+
+import { css, FC } from '../../common';
 import { DEFAULT } from './common';
 import { PhotoProps } from './types';
-import { Util } from './Util';
 import { DefsSelector } from './ui/Debug.DefsSelector';
+import { Image } from './ui/Image';
+import { Util } from './Util';
 
 export { PhotoProps };
 
@@ -15,17 +16,11 @@ const View: React.FC<PhotoProps> = (props) => {
   const { index = DEFAULT.index, defaults = {} } = props;
   const defs = Util.toDefs(props.def);
 
-  /**
-   * TODO 🐷
-   * - index selection of set (`currentIndex: number`)
-   *    - transition controls between images - recursive call to self as "[def]" (single item index)
-   */
-
   const images = defs.map((def, i) => {
     const isCurrent = i === index;
     const opacity = isCurrent ? 1 : 0;
     return (
-      <PhotoImage
+      <Image
         key={`${i}.${def.url}`}
         index={i}
         def={def}

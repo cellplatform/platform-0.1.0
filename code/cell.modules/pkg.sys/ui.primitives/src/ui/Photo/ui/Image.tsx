@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Color, css, CssValue, t, DEFAULT, R } from './common';
+import { Color, css, CssValue, t, DEFAULT, R } from '../common';
 
-export type PhotoImageProps = {
+export type ImageProps = {
   index: number;
   def: t.Photo;
   opacity?: number;
@@ -10,7 +10,7 @@ export type PhotoImageProps = {
   onLoaded?: t.PhotoLoadedEventHandler;
 };
 
-export const PhotoImage: React.FC<PhotoImageProps> = (props) => {
+export const Image: React.FC<ImageProps> = (props) => {
   const { index, def } = props;
   const url = def.url;
   const defaults = R.mergeDeepRight(DEFAULT.meta, props.defaults ?? {}) as t.PhotoDefaults;
