@@ -1,16 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { color, COLORS, css, CssValue, t } from '../../common';
+import { color, COLORS, css, CssValue, t, Photo } from '../common';
 
-import { Photo } from 'sys.ui.primitives/lib/ui/Photo';
-
-export type AppProps = { style?: CssValue };
+export type AppProps = {
+  index?: number;
+  photos?: t.Photo[];
+  style?: CssValue;
+};
 
 export const App: React.FC<AppProps> = (props) => {
-  const def: t.Photo[] = [
-    { url: '/static/images/paul/g-street-bob-kath-gay.png' },
-    { url: '/static/images/paul/head-shot.png' },
-    { url: '/static/images/paul/paul-randel.png' },
-  ];
+  // const def: t.Photo[] = [
+  //   { url: '/static/images/paul/g-street-bob-kath-gay.png' },
+  //   { url: '/static/images/paul/head-shot.png' },
+  //   { url: '/static/images/paul/paul-randel.png' },
+  // ];
 
   /**
    * [Render]
@@ -21,7 +23,7 @@ export const App: React.FC<AppProps> = (props) => {
   };
   return (
     <div {...css(styles.base, props.style)}>
-      <Photo style={styles.photo} def={def} />
+      <Photo style={styles.photo} def={props.photos} index={props.index} />
     </div>
   );
 };

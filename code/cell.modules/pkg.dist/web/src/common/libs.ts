@@ -10,3 +10,4 @@ export { rx, slug } from '@platform/util.value';
  * @system
  */
 export { WebRuntime } from 'sys.runtime.web';
+export { Photo } from 'sys.ui.primitives/lib/ui/Photo';

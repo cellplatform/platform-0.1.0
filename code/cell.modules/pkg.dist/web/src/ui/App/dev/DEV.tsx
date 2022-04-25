@@ -2,6 +2,8 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { App, AppProps } from '..';
 
+import { Photo } from '../common';
+
 type Ctx = { props: AppProps };
 
 /**
@@ -11,7 +13,15 @@ export const actions = DevActions<Ctx>()
   .namespace('ui.App')
   .context((e) => {
     if (e.prev) return e.prev;
-    const ctx: Ctx = { props: {} };
+    const ctx: Ctx = {
+      props: {
+        photos: [
+          { url: '/static/images/paul/g-street-bob-kath-gay.png' },
+          { url: '/static/images/paul/head-shot.png' },
+          { url: '/static/images/paul/paul-randel.png' },
+        ],
+      },
+    };
     return ctx;
   })
 
@@ -21,6 +31,20 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Dev');
+
+    e.component((e) => {
+      return (
+        <Photo.Debug.DefsSelector
+          // {...e.ctx.props}
+          def={e.ctx.props.photos}
+          index={e.ctx.props.index}
+          style={{ MarginX: 20, MarginY: 15 }}
+          onSelectionChange={({ to }) => {
+            e.change.ctx((ctx) => (ctx.props.index = to));
+          }}
+        />
+      );
+    });
 
     e.hr();
 
