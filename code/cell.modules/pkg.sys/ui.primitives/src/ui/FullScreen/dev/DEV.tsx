@@ -2,7 +2,7 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { DevSample, DevSampleProps } from './DEV.Sample';
 import { rx, t, slug, time } from '../common';
-import { FullScreen } from '..';
+import { Fullscreen } from '..';
 
 type Ctx = {
   instance: t.FullscreenInstance;
@@ -20,7 +20,7 @@ export const actions = DevActions<Ctx>()
 
     const bus = rx.bus();
     const instance = { bus, id: `foo.${slug()}` };
-    const events = FullScreen.Events({ instance });
+    const events = Fullscreen.Events({ instance });
 
     const ctx: Ctx = {
       instance,

@@ -12,7 +12,7 @@ import { FullscreenEvents as Events } from './Fullscreen.Events';
  *    https://fullscreen.spec.whatwg.org
  *
  */
-export const FullScreen = {
+export const Fullscreen = {
   Events,
   useFullscreen,
 };

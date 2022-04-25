@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 
 import { t, Color, css, CssValue, Button } from '../common';
-import { FullScreen } from '..';
+import { Fullscreen } from '..';
 
 export type DevSampleProps = {
   instance?: t.FullscreenInstance;
@@ -10,14 +10,14 @@ export type DevSampleProps = {
 
 export const DevSample: React.FC<DevSampleProps> = (props) => {
   const { instance } = props;
-  const fullscreen = FullScreen.useFullscreen({ instance });
+  const fullscreen = Fullscreen.useFullscreen({ instance });
 
   /**
    * Handlers
    */
   const handleExitViaBus = async () => {
     if (instance) {
-      const events = FullScreen.Events({ instance });
+      const events = Fullscreen.Events({ instance });
       await events.exit.fire();
       events.dispose();
     }
