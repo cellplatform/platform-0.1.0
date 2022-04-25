@@ -10,4 +10,4 @@ export { ModuleManifest } from '@platform/cell.types';
 /**
  * @system
  */
-export { PositioningLayer } from 'sys.ui.primitives/lib/types';
+export { PositioningLayer, Photo } from 'sys.ui.primitives/lib/types';
