@@ -7,7 +7,7 @@ export { Radios } from '../OptionButtons';
  * Constants
  */
 
-const meta: t.PhotoDefaults = {
+const config: t.PhotoDefaults = {
   showUrl: false,
   transition: 500,
   duration: 3000,
@@ -15,5 +15,5 @@ const meta: t.PhotoDefaults = {
 
 export const DEFAULT = {
   index: 0,
-  meta,
+  config,
 };

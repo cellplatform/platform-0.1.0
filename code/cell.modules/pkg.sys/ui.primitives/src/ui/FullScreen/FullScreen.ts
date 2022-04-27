@@ -1,7 +1,7 @@
-import { useFullscreen } from './useFullscreen';
-import { FullscreenEvents as Events } from './logic/Events';
 import { FullscreenAPI as API } from './logic/API';
 import { FullscreenController as Controller } from './logic/Controller';
+import { FullscreenEvents as Events } from './logic/Events';
+import { useFullscreen } from './logic/useFullscreen';
 
 /**
  * Helpers for moving the UI into "fullscreen" mode.

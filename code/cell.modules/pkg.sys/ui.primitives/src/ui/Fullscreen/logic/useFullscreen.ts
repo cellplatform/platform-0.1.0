@@ -1,9 +1,9 @@
 import { RefObject, useEffect, useRef } from 'react';
 import { Subject } from 'rxjs';
 
-import { rx, t } from './common';
-import { FullscreenAPI } from './logic/API';
-import { FullscreenController } from './logic/Controller';
+import { rx, t } from '../common';
+import { FullscreenAPI } from './API';
+import { FullscreenController } from './Controller';
 
 /**
  * Hook for binding a UI element [ref] to the Browser Fullscreen API.

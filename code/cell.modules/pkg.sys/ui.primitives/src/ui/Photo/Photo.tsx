@@ -6,6 +6,7 @@ import { PhotoProps } from './types';
 import { DefsSelector } from './ui/Debug.DefsSelector';
 import { Image } from './ui/Image';
 import { Util } from './Util';
+import { useIndexSequence } from './useIndexSequence';
 
 export { PhotoProps };
 
@@ -50,6 +51,7 @@ type Fields = {
   default: typeof DEFAULT;
   toDefs: typeof Util.toDefs;
   Debug: { DefsSelector: typeof DefsSelector };
+  useIndexSequence: typeof useIndexSequence;
 };
 export const Photo = FC.decorate<PhotoProps, Fields>(
   View,
@@ -57,6 +59,7 @@ export const Photo = FC.decorate<PhotoProps, Fields>(
     default: DEFAULT,
     toDefs: Util.toDefs,
     Debug: { DefsSelector },
+    useIndexSequence,
   },
   { displayName: 'Photo' },
 );

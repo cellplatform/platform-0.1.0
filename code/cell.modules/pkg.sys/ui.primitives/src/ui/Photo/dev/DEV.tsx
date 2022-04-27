@@ -1,9 +1,17 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { Photo, PhotoProps } from '..';
+import { DevSample } from './DEV.Sample';
+import { deleteUndefined } from '../common';
+
+type Milliseconds = number;
 
 type Ctx = {
   props: PhotoProps;
+  debug: {
+    indexTimer: { enabled: boolean; loop: boolean };
+    durationOnItem: boolean;
+  };
 };
 
 const URLS = [
@@ -31,20 +39,27 @@ const Util = {
     return [...Photo.toDefs(ctx.props.def)];
   },
 
+  push(ctx: Ctx, args: { url: string; duration?: Milliseconds }) {
+    const { url } = args;
+    const defs = Photo.toDefs(ctx.props.def);
+
+    let duration = args.duration;
+    if (typeof duration !== 'number' && ctx.debug.durationOnItem) duration = 1000;
+
+    defs.push(deleteUndefined({ url, duration }));
+    ctx.props.def = defs; // NB: As [list].
+  },
+
   add: {
     fromList(ctx: Ctx) {
       const defs = Photo.toDefs(ctx.props.def);
       if (defs.length < URLS.length) {
-        const url = URLS[defs.length];
-        defs.push({ url });
-        ctx.props.def = defs; // NB: As [list].
+        Util.push(ctx, { url: URLS[defs.length] });
       }
     },
 
     fromUrl(ctx: Ctx, url: string) {
-      const defs = Photo.toDefs(ctx.props.def);
-      defs.push({ url });
-      ctx.props.def = defs; // NB: As [list].
+      Util.push(ctx, { url });
     },
   },
 };
@@ -60,9 +75,11 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       props: {
         defaults: { showUrl: true },
-        onLoaded(e) {
-          console.log('⚡️ onLoaded:', e);
-        },
+        onLoaded: (e) => console.log('⚡️ onLoaded:', e),
+      },
+      debug: {
+        indexTimer: { enabled: true, loop: true },
+        durationOnItem: false,
       },
     };
 
@@ -71,13 +88,14 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx, bus } = e;
-    ctx.props.def = URLS[0];
+
+    // ctx.props.def = URLS[0];
+    Util.add.fromList(ctx);
+    Util.add.fromList(ctx);
   })
 
   .items((e) => {
     e.title('Props');
-
-    // e.button('meta.url', (e) => Util.toMeta(e.ctx).showUrl);
 
     e.boolean('defaults.meta.showUrl', (e) => {
       const meta = Util.toDefaults(e.ctx);
@@ -89,7 +107,7 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('Def (Items)');
+    e.title('Items (defs)');
 
     e.button('add photo', (e) => {
       Util.add.fromList(e.ctx);
@@ -130,21 +148,37 @@ export const actions = DevActions<Ctx>()
         <Photo.Debug.DefsSelector
           {...e.ctx.props}
           style={{ MarginX: 20, MarginY: 15 }}
-          onSelectionChange={({ to }) => {
-            e.change.ctx((ctx) => (ctx.props.index = to));
-          }}
+          onSelectionChange={({ to }) => e.change.ctx((ctx) => (ctx.props.index = to))}
         />
       );
+    });
+
+    e.hr(1, 0.1);
+
+    e.boolean('duration on item (def)', (e) => {
+      if (e.changing) e.ctx.debug.durationOnItem = e.changing.next;
+      e.boolean.current = e.ctx.debug.durationOnItem;
+    });
+
+    e.hr();
+
+    e.boolean('useIndexTimer: enabled', (e) => {
+      if (e.changing) e.ctx.debug.indexTimer.enabled = e.changing.next;
+      e.boolean.current = e.ctx.debug.indexTimer.enabled;
+    });
+
+    e.boolean('useIndexTimer: loop', (e) => {
+      if (e.changing) e.ctx.debug.indexTimer.loop = e.changing.next;
+      e.boolean.current = e.ctx.debug.indexTimer.loop;
     });
 
     e.hr();
 
     e.component((e) => {
-      const props = Util.toProps(e.ctx);
       return (
         <ObjectView
           name={'props'}
-          data={props}
+          data={Util.toProps(e.ctx)}
           style={{ MarginX: 15 }}
           fontSize={10}
           expandPaths={['$']}
@@ -155,6 +189,7 @@ export const actions = DevActions<Ctx>()
 
   .subject((e) => {
     const props = Util.toProps(e.ctx);
+    const debug = e.ctx.debug;
 
     e.settings({
       host: { background: -0.04 },
@@ -166,7 +201,7 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    e.render(<Photo {...props} style={{ flex: 1 }} />);
+    e.render(<DevSample props={props} indexTimer={debug.indexTimer} />);
   });
 
 export default actions;

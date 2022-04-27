@@ -13,7 +13,7 @@ export type ImageProps = {
 export const Image: React.FC<ImageProps> = (props) => {
   const { index, def } = props;
   const url = def.url;
-  const defaults = R.mergeDeepRight(DEFAULT.meta, props.defaults ?? {}) as t.PhotoDefaults;
+  const defaults = R.mergeDeepRight(DEFAULT.config, props.defaults ?? {}) as t.PhotoDefaults;
   const transition = def.transition ?? defaults.transition;
 
   const [error, setError] = useState<string | undefined>();
