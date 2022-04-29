@@ -30,7 +30,6 @@ export type VimeoProps = {
  */
 const View: React.FC<VimeoProps> = (props) => {
   const { instance, video, width, height, borderRadius, muted } = props;
-  const { bus, id } = instance;
   const divRef = useRef<HTMLDivElement>(null);
 
   const [player, setPlayer] = useState<VimeoPlayer>();
@@ -72,7 +71,6 @@ const View: React.FC<VimeoProps> = (props) => {
     status$
       .pipe(distinctUntilChanged((prev, next) => prev.playing === next.playing))
       .subscribe((e) => {
-        console.log('e', e);
         setIsPlaying(e.playing);
       });
 

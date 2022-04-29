@@ -8,7 +8,11 @@ type Milliseconds = number;
  * Event API.
  */
 export type VimeoEventsFactory = {
-  (args: { instance: t.VimeoInstance; isEnabled?: boolean }): VimeoEvents;
+  (args: {
+    instance: t.VimeoInstance;
+    isEnabled?: boolean;
+    dispose$?: Observable<any>;
+  }): VimeoEvents;
   is: VimeoEvents['is'];
 };
 

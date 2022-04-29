@@ -1,14 +1,21 @@
 import { firstValueFrom, of, timeout } from 'rxjs';
-import { catchError, filter, takeUntil } from 'rxjs/operators';
+import { catchError, filter, takeUntil, take } from 'rxjs/operators';
 
 import { rx, slug, t } from './common';
 
 /**
  * Event API.
  */
-function Events(args: { instance: t.VimeoInstance; isEnabled?: boolean }): t.VimeoEvents {
+function Events(args: {
+  instance: t.VimeoInstance;
+  isEnabled?: boolean;
+  dispose$?: t.Observable<any>;
+}): t.VimeoEvents {
   const { isEnabled = true } = args;
+
   const { dispose, dispose$ } = rx.disposable();
+  dispose$?.pipe(take(1)).subscribe(() => dispose());
+
   const bus = rx.busAsType<t.VimeoEvent>(args.instance.bus);
   const is = Events.is;
   const instance = args.instance.id;
