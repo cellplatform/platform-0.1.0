@@ -1,3 +1,4 @@
+import { Observable, timeout } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { rx, slug, t } from '../common';
@@ -30,9 +31,33 @@ export function FullscreenEvents(args: {
 
   const fire = (e: t.FullscreenEvent) => bus.fire(e);
 
+  const status: t.FullscreenEvents['status'] = {
+    req$: rx.payload<t.FullscreenStatusReqEvent>($, 'sys.ui.Fullscreen/Status:req'),
+    res$: rx.payload<t.FullscreenStatusResEvent>($, 'sys.ui.Fullscreen/Status:res'),
+    async get(options = {}) {
+      const { timeout = 1000 } = options;
+      const tx = slug();
+
+      const op = 'status';
+      const res$ = status.res$.pipe(filter((e) => e.tx === tx));
+      const first = rx.asPromise.first<t.FullscreenEnterResEvent>(res$, { op, timeout });
+
+      fire({
+        type: 'sys.ui.Fullscreen/Status:req',
+        payload: { tx, instance },
+      });
+
+      const res = await first;
+      if (res.payload) return res.payload;
+
+      const error = res.error?.message ?? 'Failed';
+      return { tx, instance: instance, error };
+    },
+  };
+
   const enter: t.FullscreenEvents['enter'] = {
-    req$: rx.payload<t.FullscreenEnterReqEvent>($, 'sys.ui.Fullscreen/enter:req'),
-    res$: rx.payload<t.FullscreenEnterResEvent>($, 'sys.ui.Fullscreen/enter:res'),
+    req$: rx.payload<t.FullscreenEnterReqEvent>($, 'sys.ui.Fullscreen/Enter:req'),
+    res$: rx.payload<t.FullscreenEnterResEvent>($, 'sys.ui.Fullscreen/Enter:res'),
     async fire(options = {}) {
       const { timeout = 1000 } = options;
       const tx = slug();
@@ -42,7 +67,7 @@ export function FullscreenEvents(args: {
       const first = rx.asPromise.first<t.FullscreenEnterResEvent>(res$, { op, timeout });
 
       fire({
-        type: 'sys.ui.Fullscreen/enter:req',
+        type: 'sys.ui.Fullscreen/Enter:req',
         payload: { tx, instance },
       });
 
@@ -55,8 +80,8 @@ export function FullscreenEvents(args: {
   };
 
   const exit: t.FullscreenEvents['exit'] = {
-    req$: rx.payload<t.FullscreenExitReqEvent>($, 'sys.ui.Fullscreen/exit:req'),
-    res$: rx.payload<t.FullscreenExitResEvent>($, 'sys.ui.Fullscreen/exit:res'),
+    req$: rx.payload<t.FullscreenExitReqEvent>($, 'sys.ui.Fullscreen/Exit:req'),
+    res$: rx.payload<t.FullscreenExitResEvent>($, 'sys.ui.Fullscreen/Exit:res'),
     async fire(options = {}) {
       const { timeout = 1000 } = options;
       const tx = slug();
@@ -66,7 +91,7 @@ export function FullscreenEvents(args: {
       const first = rx.asPromise.first<t.FullscreenExitResEvent>(res$, { op, timeout });
 
       fire({
-        type: 'sys.ui.Fullscreen/exit:req',
+        type: 'sys.ui.Fullscreen/Exit:req',
         payload: { tx, instance },
       });
 
@@ -78,9 +103,21 @@ export function FullscreenEvents(args: {
     },
   };
 
+  const changed: t.FullscreenEvents['changed'] = {
+    $: rx.payload<t.FullscreenChangedEvent>($, 'sys.ui.Fullscreen/Changed'),
+    fire(isFullscreen) {
+      fire({
+        type: 'sys.ui.Fullscreen/Changed',
+        payload: { instance, isFullscreen },
+      });
+    },
+  };
+
   return {
     instance: { bus: rx.bus.instance(bus), id: instance },
     $,
+    status,
+    changed,
     dispose,
     dispose$,
     fire,

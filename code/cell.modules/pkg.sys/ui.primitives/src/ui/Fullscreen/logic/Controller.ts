@@ -16,6 +16,37 @@ export function FullscreenController<H extends HTMLElement = HTMLDivElement>(arg
   const instance = args.instance?.id ?? '';
   const api = FullscreenAPI({ ref });
 
+  const toStatus = (): t.FullscreenStatus => {
+    const isFullscreen = api.isFullscreen;
+    const element = ref.current as HTMLElement;
+    return { element, isFullscreen };
+  };
+
+  /**
+   * Document Handler
+   */
+  const onFullscreenChange = (e: Event) => {
+    if (e.target === ref.current) {
+      events.changed.fire(api.isFullscreen);
+    }
+  };
+  document.addEventListener('fullscreenchange', onFullscreenChange);
+  events.dispose$.subscribe(() =>
+    document.removeEventListener('fullscreenchange', onFullscreenChange),
+  );
+
+  /**
+   * STATUS
+   */
+  events.status.req$.subscribe((e) => {
+    const { tx } = e;
+    const status = toStatus();
+    events.fire({
+      type: 'sys.ui.Fullscreen/Status:res',
+      payload: { instance, tx, status },
+    });
+  });
+
   /**
    * ENTER fullscreen.
    */
@@ -24,7 +55,7 @@ export function FullscreenController<H extends HTMLElement = HTMLDivElement>(arg
 
     const fire = (error?: string) => {
       events.fire({
-        type: 'sys.ui.Fullscreen/enter:res',
+        type: 'sys.ui.Fullscreen/Enter:res',
         payload: { tx, instance, error },
       });
     };
@@ -45,7 +76,7 @@ export function FullscreenController<H extends HTMLElement = HTMLDivElement>(arg
 
     const fire = (error?: string) => {
       events.fire({
-        type: 'sys.ui.Fullscreen/exit:res',
+        type: 'sys.ui.Fullscreen/Exit:res',
         payload: { tx, instance, error },
       });
     };

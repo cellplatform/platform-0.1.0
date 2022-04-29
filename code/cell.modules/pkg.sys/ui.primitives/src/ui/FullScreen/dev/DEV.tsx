@@ -52,6 +52,11 @@ export const actions = DevActions<Ctx>()
 
     e.hr();
 
+    e.button('⚡️ fullscreen.status', async (e) => {
+      const res = await e.ctx.events.status.get();
+      console.log('res', res);
+    });
+
     e.button('⚡️ fullscreen.enter', async (e) => {
       const res = await e.ctx.events.enter.fire();
       console.log('res', res);

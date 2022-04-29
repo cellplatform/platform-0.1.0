@@ -2,16 +2,17 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { App, AppProps } from '..';
 
-import { Photo, rx, slug, t, Vimeo, Fullscreen } from '../common';
-import { PHOTOS } from './DEV.data';
+import { Photo, rx, slug, t, Vimeo, Fullscreen, DEFAULT } from '../common';
 
 type Ctx = {
+  events: t.AppEvents;
+  video: t.VimeoEvents;
+  // events: {
+  //   video: t.VimeoEvents;
+  //   fullscreen: t.FullscreenEvents;
+  // };
   props: AppProps;
-  events: {
-    video: t.VimeoEvents;
-    fullscreen: t.FullscreenEvents;
-  };
-  debug: { run: boolean };
+  debug: { json: boolean };
 };
 
 /**
@@ -26,60 +27,55 @@ export const actions = DevActions<Ctx>()
     const id = `foo.${slug()}`;
     const instance = { bus, id };
 
-    const events = {
-      video: Vimeo.Events({ instance }),
-      fullscreen: Fullscreen.Events({ instance }),
-    };
+    const video = Vimeo.Events({ instance });
 
     const ctx: Ctx = {
-      events,
-      props: {
-        instance,
-        photos: PHOTOS,
-      },
-      debug: { run: true },
+      events: App.Events({ instance }),
+      video,
+      props: { instance, state: DEFAULT.STATE },
+      debug: { json: false },
     };
     return ctx;
   })
 
   .init(async (e) => {
-    const { ctx, bus } = e;
+    const { ctx, redraw } = e;
+    const { instance } = ctx.props;
+
+    const controller = App.Controller({ instance });
+
+    controller.state.$.subscribe((e) => {
+      ctx.props.state = e.value;
+      redraw();
+    });
   })
 
   .items((e) => {
     e.title('Controls');
 
-    e.boolean('sequence (run)', (e) => {
-      if (e.changing) e.ctx.debug.run = e.changing.next;
-      e.boolean.current = e.ctx.debug.run;
+    e.button('fullscreen: enter', (e) => e.ctx.events.fullscreen(true));
+
+    // e.button('video: start', (e) => e.ctx.video.play.fire());
+    e.button('video: start', (e) => e.ctx.events.video.player.play.fire());
+    e.button('video: stop', (e) => e.ctx.events.video.player.pause.fire());
+    e.button('video: hide', (e) => e.ctx.events.video.hide());
+
+    e.button('video: jump to end', async (e) => {
+      const player = e.ctx.events.video.player;
+      const status = (await player.status.get()).status;
+
+      if (status) {
+        const total = status.duration;
+        player.seek.fire(total - 2);
+      }
+
+      console.log('status', status);
     });
 
     e.hr(1, 0.1);
 
-    e.button('music: start', (e) => e.ctx.events.video.play.fire());
-    e.button('music: stop', (e) => e.ctx.events.video.pause.fire());
-
-    e.hr(1, 0.1);
-    e.button('fullscreen: enter', (e) => e.ctx.events.fullscreen.enter.fire());
-    e.button('fullscreen: exit', (e) => e.ctx.events.fullscreen.exit.fire());
-
-    e.hr();
-  })
-
-  .items((e) => {
-    e.title('Images');
-
-    e.component((e) => {
-      return (
-        <Photo.Debug.DefsSelector
-          def={e.ctx.props.photos?.slice(0, 10)}
-          index={e.ctx.props.index}
-          style={{ MarginX: 20, MarginY: 15 }}
-          onSelectionChange={({ to }) => {
-            e.change.ctx((ctx) => (ctx.props.index = to));
-          }}
-        />
-      );
+    e.button('open antechamber (toggle)', (e) => {
+      e.ctx.events.state.patch((state) => (state.auth.isOpen = !state.auth.isOpen));
     });
 
     e.hr();
@@ -101,6 +97,20 @@ export const actions = DevActions<Ctx>()
         />
       );
     });
+
+    e.hr(1, 0.1);
+
+    e.component((e) => {
+      return (
+        <ObjectView
+          name={'state'}
+          data={e.ctx.props.state}
+          style={{ MarginX: 15 }}
+          fontSize={10}
+          expandPaths={['$']}
+        />
+      );
+    });
   })
 
   .subject((e) => {
@@ -114,7 +124,7 @@ export const actions = DevActions<Ctx>()
         background: 1,
       },
     });
-    e.render(<App {...e.ctx.props} style={{ flex: 1 }} run={e.ctx.debug.run} />);
+    e.render(<App {...e.ctx.props} style={{ flex: 1 }} />);
   });
 
 export default actions;

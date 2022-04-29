@@ -1,47 +1,74 @@
 import React from 'react';
-import { css, CssValue, Fullscreen, Photo, t, Vimeo } from '../common';
+
+import { css, CssValue, FC, Fullscreen, t, Button, Icons, VIDEOS } from './common';
+import { State } from './logic';
+import { Auth } from './ui/Auth';
+import { PlayerIndex } from './ui/Player.Index';
+import { Player } from './ui/Player';
+
+import { FullscreenButton } from './ui/FullscreenButton';
+const { Events, Controller } = State;
 
 export type AppProps = {
-  instance: { bus: t.EventBus; id: string };
-  index?: number;
-  photos?: t.Photo[];
-  run?: boolean;
+  instance: t.AppInstance;
+  state: t.AppState;
   style?: CssValue;
 };
 
-export const App: React.FC<AppProps> = (props) => {
-  const { instance } = props;
+/**
+ * Component
+ */
+const View: React.FC<AppProps> = (props) => {
+  const { instance, state } = props;
   const fullscreen = Fullscreen.useFullscreen({ instance });
-
-  const timer = Photo.useIndexSequence({
-    def: props.photos,
-    index: props.index,
-    enabled: props.run,
-    defaultDuration: 5000,
-  });
+  const events = State.useEvents(props.instance);
 
   /**
    * [Render]
    */
   const styles = {
-    base: css({ position: 'relative' }),
-    photo: css({ Absolute: 0 }),
-    video: css({ opacity: 0 }),
+    base: css({
+      position: 'relative',
+      backgroundImage: `url(/static/images/App/paul.jpg)`,
+      backgroundPosition: 'center center',
+      backgroundSize: 'cover',
+    }),
+    index: css({ Absolute: [null, null, 10, 10] }),
+    video: css({ Absolute: 0 }),
+    fullscreen: css({ Absolute: [5, 5, null, null] }),
   };
+
+  const elPlayerIndex = state.auth.isOpen && (
+    <PlayerIndex instance={instance} state={state} videos={VIDEOS} style={styles.index} />
+  );
+
+  const elVideo = state.video && <Player instance={instance} state={state} style={styles.video} />;
+
+  const elAuth = <Auth instance={instance} state={state} />;
+
+  const elFullscreen = !fullscreen.isFullscreen && (
+    <FullscreenButton instance={instance} state={state} style={styles.fullscreen} />
+  );
 
   return (
     <div {...css(styles.base, props.style)} ref={fullscreen.ref}>
-      <Vimeo instance={props.instance} video={701008221} style={styles.video} />
-
-      <Photo
-        style={styles.photo}
-        def={props.photos}
-        index={timer.index}
-        defaults={{
-          transition: 2500,
-          // duration: 8000,
-        }}
-      />
+      {elPlayerIndex}
+      {elFullscreen}
+      {elVideo}
+      {elAuth}
     </div>
   );
 };
+
+/**
+ * Export
+ */
+type Fields = {
+  Events: typeof State.Events;
+  Controller: typeof State.Controller;
+};
+export const App = FC.decorate<AppProps, Fields>(
+  View,
+  { Events, Controller },
+  { displayName: 'App' },
+);

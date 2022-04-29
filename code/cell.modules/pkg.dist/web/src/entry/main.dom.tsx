@@ -3,7 +3,7 @@ import '@platform/css/reset.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { DevHarness } from '../Dev.Harness';
-import { App } from '../ui/App';
+import { AppContainer } from '../ui/App';
 import { rx } from '../common';
 
 const query = () => {
@@ -23,16 +23,14 @@ const query = () => {
 /**
  * UI
  */
-
 const bus = rx.bus();
 const instance = { bus, id: 'main' };
 
 const isDev = query().has('dev');
-// const el = isDev ? <DevHarness /> : <App instance={instance} style={{ Absolute: 0 }} />;
-const el = <DevHarness />;
+const el = isDev ? <DevHarness /> : <AppContainer instance={instance} style={{ Absolute: 0 }} />;
 ReactDOM.render(el, document.getElementById('root'));
 
 /**
  * Page Title
  */
-// if (isDev) document.title = `${document.title} (dev)`;
+if (isDev) document.title = `${document.title} (dev)`;
