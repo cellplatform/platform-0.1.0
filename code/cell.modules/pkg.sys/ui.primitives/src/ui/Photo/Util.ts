@@ -1,4 +1,3 @@
-import { Url } from '@platform/cell.schema';
 import { t, R, DEFAULT } from './common';
 
 export const Util = {
@@ -6,8 +5,8 @@ export const Util = {
    * Convert "loose" photo definition imports into a
    * precise data-type used by the <Photo> component.
    */
-  toDefs(inputDef: t.PhotoDefInput = [], inputMeta?: t.PhotoDefaults): t.Photo[] {
-    const meta = R.mergeDeepRight(DEFAULT.config, inputMeta ?? {}) as t.PhotoDefaults;
+  toDefs(inputDef: t.PhotoDefInput = [], inputDefaults?: Partial<t.PhotoDefaults>): t.Photo[] {
+    const meta = R.mergeDeepRight(DEFAULT.config, inputDefaults ?? {}) as t.PhotoDefaults;
     const list = Array.isArray(inputDef) ? inputDef : [inputDef];
 
     const defs = list

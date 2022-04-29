@@ -15,7 +15,7 @@ export { PhotoProps };
  */
 const View: React.FC<PhotoProps> = (props) => {
   const { index = DEFAULT.index, defaults = {} } = props;
-  const defs = Util.toDefs(props.def);
+  const defs = Util.toDefs(props.def, props.defaults);
 
   const images = defs.map((def, i) => {
     const isCurrent = i === index;
@@ -36,10 +36,7 @@ const View: React.FC<PhotoProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({
-      position: 'relative',
-      overflow: 'hidden',
-    }),
+    base: css({ position: 'relative', overflow: 'hidden' }),
   };
   return <div {...css(styles.base, props.style)}>{images}</div>;
 };
