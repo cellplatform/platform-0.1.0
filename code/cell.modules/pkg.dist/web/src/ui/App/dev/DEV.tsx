@@ -3,6 +3,7 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { App, AppProps } from '..';
 
 import { Photo, rx, slug, t, Vimeo, Fullscreen } from '../common';
+import { PHOTOS } from './DEV.data';
 
 type Ctx = {
   props: AppProps;
@@ -10,6 +11,7 @@ type Ctx = {
     video: t.VimeoEvents;
     fullscreen: t.FullscreenEvents;
   };
+  debug: { run: boolean };
 };
 
 /**
@@ -33,12 +35,9 @@ export const actions = DevActions<Ctx>()
       events,
       props: {
         instance,
-        photos: [
-          { url: '/static/images/paul/g-street-bob-kath-gay.png' },
-          { url: '/static/images/paul/head-shot.png' },
-          { url: '/static/images/paul/paul-randel.png' },
-        ],
+        photos: PHOTOS,
       },
+      debug: { run: true },
     };
     return ctx;
   })
@@ -49,6 +48,13 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Controls');
+
+    e.boolean('sequence (run)', (e) => {
+      if (e.changing) e.ctx.debug.run = e.changing.next;
+      e.boolean.current = e.ctx.debug.run;
+    });
+
+    e.hr(1, 0.1);
 
     e.button('music: start', (e) => e.ctx.events.video.play.fire());
     e.button('music: stop', (e) => e.ctx.events.video.pause.fire());
@@ -66,7 +72,7 @@ export const actions = DevActions<Ctx>()
     e.component((e) => {
       return (
         <Photo.Debug.DefsSelector
-          def={e.ctx.props.photos}
+          def={e.ctx.props.photos?.slice(0, 10)}
           index={e.ctx.props.index}
           style={{ MarginX: 20, MarginY: 15 }}
           onSelectionChange={({ to }) => {
@@ -108,7 +114,7 @@ export const actions = DevActions<Ctx>()
         background: 1,
       },
     });
-    e.render(<App {...e.ctx.props} style={{ flex: 1 }} />);
+    e.render(<App {...e.ctx.props} style={{ flex: 1 }} run={e.ctx.debug.run} />);
   });
 
 export default actions;

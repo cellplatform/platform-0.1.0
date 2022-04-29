@@ -1,16 +1,24 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { color, COLORS, css, CssValue, t, Photo, Vimeo, Fullscreen } from '../common';
+import React from 'react';
+import { css, CssValue, Fullscreen, Photo, t, Vimeo } from '../common';
 
 export type AppProps = {
   instance: { bus: t.EventBus; id: string };
   index?: number;
   photos?: t.Photo[];
+  run?: boolean;
   style?: CssValue;
 };
 
 export const App: React.FC<AppProps> = (props) => {
   const { instance } = props;
   const fullscreen = Fullscreen.useFullscreen({ instance });
+
+  const timer = Photo.useIndexSequence({
+    def: props.photos,
+    index: props.index,
+    enabled: props.run,
+    defaultDuration: 5000,
+  });
 
   /**
    * [Render]
@@ -28,8 +36,11 @@ export const App: React.FC<AppProps> = (props) => {
       <Photo
         style={styles.photo}
         def={props.photos}
-        index={props.index}
-        defaults={{ transition: 1000 }}
+        index={timer.index}
+        defaults={{
+          transition: 2500,
+          // duration: 8000,
+        }}
       />
     </div>
   );

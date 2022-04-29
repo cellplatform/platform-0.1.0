@@ -1,7 +1,7 @@
 {
   "name": "dns.web",
   "description": "User interface runtime (web)",
-  "version": "0.0.9",
+  "version": "0.0.13",
   "main": "lib/index",
   "sideEffects": false,
   "scripts": {
@@ -15,7 +15,8 @@
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
-    "deploy": "ts-node -T script.ts/vercel.run"
+    "deploy": "ts-node -T script.ts/vercel.run",
+    "index": "ts-node -T script.ts/fs.index"
   },
   "dependencies": {},
   "devDependencies": {
