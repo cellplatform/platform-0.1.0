@@ -1,7 +1,7 @@
 {
   "name": "dns.web",
   "description": "User interface runtime (web)",
-  "version": "0.0.17",
+  "version": "0.0.21",
   "main": "lib/index",
   "sideEffects": false,
   "scripts": {

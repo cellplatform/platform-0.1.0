@@ -1,12 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import { css, CssValue, FC, Fullscreen, t, Button, Icons, VIDEOS } from './common';
+import {
+  Color,
+  COLORS,
+  css,
+  CssValue,
+  FC,
+  Fullscreen,
+  t,
+  useResizeObserver,
+  VIDEOS,
+} from './common';
 import { State } from './logic';
 import { Auth } from './ui/Auth';
-import { PlayerIndex } from './ui/Player.Index';
-import { Player } from './ui/Player';
-
 import { FullscreenButton } from './ui/FullscreenButton';
+import { Player } from './ui/Player';
+import { PlayerIndex } from './ui/Player.Index';
+
 const { Events, Controller } = State;
 
 export type AppProps = {
@@ -20,8 +30,21 @@ export type AppProps = {
  */
 const View: React.FC<AppProps> = (props) => {
   const { instance, state } = props;
-  const fullscreen = Fullscreen.useFullscreen({ instance });
   const events = State.useEvents(props.instance);
+
+  const [tooSmall, setTooSmall] = useState(false);
+
+  const checkTooSmall = (size: t.DomRect) => {
+    if (size.width < 500) return true;
+    if (size.height < 500) return true;
+    return false;
+  };
+
+  const fullscreen = Fullscreen.useFullscreen({ instance });
+  useResizeObserver({
+    ref: fullscreen.ref,
+    onSize: (e) => setTooSmall(checkTooSmall(e)),
+  });
 
   /**
    * [Render]
@@ -33,6 +56,18 @@ const View: React.FC<AppProps> = (props) => {
       backgroundPosition: 'center center',
       backgroundSize: 'cover',
     }),
+    body: css({ Absolute: 0 }),
+    tooSmall: css({
+      Absolute: 0,
+      backgroundColor: Color.format(0.6),
+      backdropFilter: `blur(8px)`,
+      flex: 1,
+      Flex: 'center-center',
+      color: Color.alpha(COLORS.DARK, 0.6),
+      fontSize: 14,
+      fontStyle: 'italic',
+    }),
+
     index: css({ Absolute: [null, null, 10, 10] }),
     video: css({ Absolute: 0 }),
     fullscreen: css({ Absolute: [5, 5, null, null] }),
@@ -50,12 +85,20 @@ const View: React.FC<AppProps> = (props) => {
     <FullscreenButton instance={instance} state={state} style={styles.fullscreen} />
   );
 
-  return (
-    <div {...css(styles.base, props.style)} ref={fullscreen.ref}>
+  const elTooSmall = <div {...css(styles.tooSmall)}>{`Screen is too small.`}</div>;
+
+  const elBody = (
+    <div {...styles.body}>
       {elPlayerIndex}
       {elFullscreen}
       {elVideo}
       {elAuth}
+    </div>
+  );
+
+  return (
+    <div {...css(styles.base, props.style)} ref={fullscreen.ref}>
+      {tooSmall ? elTooSmall : elBody}
     </div>
   );
 };

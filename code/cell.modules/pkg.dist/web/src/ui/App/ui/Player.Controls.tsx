@@ -20,6 +20,8 @@ export const PlayerControls: React.FC<PlayerControlsProps> = (props) => {
   const [isPlaying, setPlaying] = useState<boolean | null>(null);
   const [percent, setPercent] = useState(0);
 
+  const [isOver, setOver] = useState(false);
+
   /**
    * [Handlers]
    */
@@ -48,8 +50,9 @@ export const PlayerControls: React.FC<PlayerControlsProps> = (props) => {
       const percent = R.clamp(0, 1, e.percent);
       setPercent(percent);
       if (percent === 1) {
-        vimeo.seek.fire(0);
-        if (video?.loop !== true) vimeo.pause.fire();
+        const loop = Boolean(video?.loop);
+        if (loop) vimeo.seek.fire(0);
+        if (!loop) events.video.hide();
       }
     });
 
@@ -72,26 +75,39 @@ export const PlayerControls: React.FC<PlayerControlsProps> = (props) => {
     }),
     button: css({ Size: 24 }),
     spinner: css({ Size: 24, Flex: 'center-center' }),
+    progressBar: css({ MarginX: 6 }),
+    loop: css({
+      marginLeft: 6,
+      opacity: 0.2,
+    }),
   };
 
   const elSpinner = isPlaying === null && (
     <div {...styles.spinner}>
-      <Spinner color={COLORS.WHITE} size={18} />
+      <Spinner color={1} size={18} />
     </div>
   );
 
   const elPlay = isPlaying !== null && (
     <Button style={styles.button} onClick={handlePlayClick}>
-      {isPlaying && <Icons.Pause size={24} color={COLORS.WHITE} />}
-      {!isPlaying && <Icons.Play size={24} color={COLORS.WHITE} />}
+      {isPlaying && <Icons.Pause size={24} color={1} />}
+      {!isPlaying && <Icons.Play size={24} color={1} />}
     </Button>
   );
 
+  const elProgressBar = <PlayerProgress percent={percent} style={styles.progressBar} />;
+  const elLoop = video.loop && <Icons.Loop size={20} color={1} style={styles.loop} />;
+
   return (
-    <div {...css(styles.base, props.style)}>
+    <div
+      {...css(styles.base, props.style)}
+      onMouseEnter={() => setOver(true)}
+      onMouseLeave={() => setOver(false)}
+    >
       {elSpinner}
       {elPlay}
-      <PlayerProgress percent={percent} />
+      {elProgressBar}
+      {elLoop}
     </div>
   );
 };

@@ -4,6 +4,8 @@ import { App, AppProps } from '..';
 
 import { Photo, rx, slug, t, Vimeo, Fullscreen, DEFAULT } from '../common';
 
+type Seconds = number;
+
 type Ctx = {
   events: t.AppEvents;
   video: t.VimeoEvents;
@@ -60,17 +62,41 @@ export const actions = DevActions<Ctx>()
     e.button('video: stop', (e) => e.ctx.events.video.player.pause.fire());
     e.button('video: hide', (e) => e.ctx.events.video.hide());
 
-    e.button('video: jump to end', async (e) => {
-      const player = e.ctx.events.video.player;
+    e.hr(1, 0.1);
+
+    const jumpToEnd = async (ctx: Ctx, beforeEnd: Seconds) => {
+      const player = ctx.events.video.player;
       const status = (await player.status.get()).status;
 
       if (status) {
         const total = status.duration;
-        player.seek.fire(total - 2);
+        player.seek.fire(total - beforeEnd);
       }
+    };
 
-      console.log('status', status);
-    });
+    const jumpToEndButton = (beforeEnd: Seconds) => {
+      e.button(`video: jump ${beforeEnd}s before end`, async (e) => {
+        // jumpToEnd(e.ctx, beforeEnd);
+
+        const player = e.ctx.events.video.player;
+        const status = (await player.status.get()).status;
+
+        console.log('status', status);
+
+        if (status) {
+          const total = status.duration;
+          player.seek.fire(total - beforeEnd);
+        }
+      });
+    };
+
+    jumpToEndButton(2);
+    jumpToEndButton(5);
+    jumpToEndButton(30);
+
+    // e.button('video: jump to end', async (e) => {
+    //   jumpToEnd(2);
+    // });
 
     e.hr(1, 0.1);
 

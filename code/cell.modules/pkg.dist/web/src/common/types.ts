@@ -4,7 +4,7 @@ export * from '../types';
 /**
  * @platform
  */
-export { Event, EventBus, Disposable } from '@platform/types';
+export { Event, EventBus, Disposable, DomRect } from '@platform/types';
 export { ModuleManifest } from '@platform/cell.types';
 
 /**

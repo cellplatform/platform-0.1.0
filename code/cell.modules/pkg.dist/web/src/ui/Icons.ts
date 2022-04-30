@@ -6,6 +6,7 @@ import {
   MdClose,
   MdPlayArrow,
   MdPause,
+  MdAllInclusive,
 } from 'react-icons/md';
 
 const icon = Icon.renderer;
@@ -16,4 +17,5 @@ export const Icons = {
   Fullscreen: { Enter: icon(MdFullscreen), Exit: icon(MdFullscreenExit) },
   Play: icon(MdPlayArrow),
   Pause: icon(MdPause),
+  Loop: icon(MdAllInclusive),
 };

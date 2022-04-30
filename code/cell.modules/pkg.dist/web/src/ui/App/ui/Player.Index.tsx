@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { Button, Color, COLORS, css, CssValue, Icons, t } from '../common';
+import { Button, Color, COLORS, css, CssValue, t } from '../common';
 import { State } from '../logic';
 
 export type PlayerIndexProps = {
@@ -14,26 +14,28 @@ export const PlayerIndex: React.FC<PlayerIndexProps> = (props) => {
   const { videos = [], state } = props;
   const events = State.useEvents(props.instance);
 
+  const [isOver, setOver] = useState(false);
+
   /**
    * [Render]
    */
   const styles = {
     base: css({
-      lineHeight: '1.6em',
+      lineHeight: '1.8em',
       boxSizing: 'border-box',
-      minWidth: 200,
+      minWidth: 150,
       borderRadius: 8,
       PaddingX: 20,
       PaddingY: 10,
       backgroundColor: Color.format(0.3),
+      border: `solid 1px ${Color.format(0.2)}`,
       backdropFilter: `blur(5px)`,
-      border: `solid 1px ${Color.format(0.4)}`,
+      fontSize: 14,
     }),
     fullscreen: css({ Size: 24, Absolute: [5, 5, null, null] }),
     item: {
       base: css({ Flex: 'x-center-center' }),
-      icon: css({ marginRight: 6 }),
-      title: css({ color: COLORS.DARK }),
+      title: css({ color: COLORS.DARK, opacity: 0.7 }),
     },
   };
 
@@ -42,7 +44,6 @@ export const PlayerIndex: React.FC<PlayerIndexProps> = (props) => {
       <div key={i}>
         <Button onClick={() => events.video.show(video)}>
           <div {...styles.item.base}>
-            {/* <Icons.Face color={COLORS.DARK} style={styles.item.icon} /> */}
             <div {...styles.item.title}>{video.title}</div>
           </div>
         </Button>
@@ -51,9 +52,12 @@ export const PlayerIndex: React.FC<PlayerIndexProps> = (props) => {
   });
 
   return (
-    <div {...css(styles.base, props.style)}>
+    <div
+      {...css(styles.base, props.style)}
+      onMouseEnter={() => setOver(true)}
+      onMouseLeave={() => setOver(false)}
+    >
       <div>{elButtons}</div>
-      {/* {elFullscreenButton} */}
     </div>
   );
 };

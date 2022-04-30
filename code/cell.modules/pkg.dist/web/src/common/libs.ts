@@ -21,5 +21,7 @@ export { Fullscreen } from 'sys.ui.primitives/lib/ui/Fullscreen';
 export { Antechamber } from 'sys.ui.primitives/lib/ui/Antechamber';
 export { Text } from 'sys.ui.primitives/lib/ui/Text';
 export { Event } from 'sys.ui.primitives/lib/ui/Event';
+export { MinSize } from 'sys.ui.primitives/lib/ui/MinSize';
+
 export { Button } from 'sys.ui.primitives/lib/ui.ref/button/Button';
 export { Spinner } from 'sys.ui.primitives/lib/ui.ref/spinner/Spinner';

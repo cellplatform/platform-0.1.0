@@ -37,7 +37,7 @@ export const Login: React.FC<LoginProps> = (props) => {
       <Text.Input
         value={state.auth.token}
         style={styles.textbox.input}
-        placeholder={'access token'}
+        placeholder={'access code'}
         placeholderStyle={{ italic: true, opacity: 0.3 }}
         spellCheck={false}
         autoCapitalize={false}
@@ -45,8 +45,10 @@ export const Login: React.FC<LoginProps> = (props) => {
         autoCorrect={false}
         maxLength={64}
         focusOnLoad={true}
-        onChange={(e) => events.state.patch((state) => (state.auth.token = e.to))}
-        onEnter={() => events.login()}
+        onChange={async (e) => {
+          await events.state.patch((state) => (state.auth.token = e.to));
+          events.login();
+        }}
       />
     </div>
   );

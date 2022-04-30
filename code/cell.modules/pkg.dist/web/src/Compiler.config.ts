@@ -7,7 +7,7 @@ export default () =>
 
     .variant('web', (config) =>
       config
-        .title('Paul')
+        .title('Goodbye Paul')
 
         .target('web')
         .port(3000)

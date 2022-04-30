@@ -13,7 +13,12 @@ export const PlayerProgress: React.FC<PlayerProgressProps> = (props) => {
    * Handlers
    */
   const handleDoubleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    // console.log('e', e);
+    /**
+     * TODO 🐷
+     * - seek to clicked location
+     */
+    console.log('mouse event:', e);
+    console.log('el (target):', e.target);
   };
 
   /**
@@ -23,8 +28,7 @@ export const PlayerProgress: React.FC<PlayerProgressProps> = (props) => {
     base: css({
       backgroundColor: Color.format(0.1),
       border: `solid 1px ${Color.format(0.1)}`,
-      width: 120,
-      MarginX: 6,
+      width: 40,
       height: 4,
       borderRadius: 4,
     }),
@@ -36,7 +40,7 @@ export const PlayerProgress: React.FC<PlayerProgressProps> = (props) => {
     }),
   };
   return (
-    <div {...css(styles.base, props.style)} onDoubleClick={handleDoubleClick}>
+    <div {...css(styles.base, props.style)} onClick={handleDoubleClick}>
       <div {...styles.thumb} />
     </div>
   );
