@@ -1,7 +1,7 @@
 import { loader } from '@monaco-editor/react';
 
 import { configure } from './config';
-import { t } from '../common';
+import { t, LANGUAGES } from '../common';
 import { CodeEditorSingleton } from './singleton';
 import { Events } from './event';
 
@@ -11,6 +11,8 @@ let singleton: Promise<t.ICodeEditorSingleton>;
  * Static entry points.
  */
 export const CodeEditor = {
+  languages: LANGUAGES,
+
   /**
    * The singleton instance of monaco-editor logical controller (API).
    */

@@ -4,7 +4,7 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { CodeEditor as CodeEditorView, CodeEditorProps } from '..';
 import { CodeEditor } from '../../../api';
-import { constants, Filesystem, rx, t, deleteUndefined } from '../../../common';
+import { Filesystem, rx, t, deleteUndefined, constants } from '../common';
 
 type Ctx = {
   bus: t.EventBus;
@@ -37,7 +37,7 @@ const total = a.reduce((acc, next) =>acc + next, 0)
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('sys.ui.code.CodeEditor')
+  .namespace('ui.CodeEditor')
   .context((e) => {
     if (e.prev) return e.prev;
 
@@ -53,7 +53,7 @@ export const actions = DevActions<Ctx>()
 
     const ctx: Ctx = {
       bus,
-      props: {},
+      props: { language: 'typescript' },
       global,
       filestore,
       debug: {},
@@ -63,9 +63,22 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Language');
-    e.button('typescript', (e) => e.ctx.instance?.model.set.language('typescript'));
-    e.button('javascript', (e) => e.ctx.instance?.model.set.language('javascript'));
-    e.button('json', (e) => e.ctx.instance?.model.set.language('json'));
+
+    e.select((config) =>
+      config
+        .title('language:')
+        .items(CodeEditor.languages)
+        .initial(config.ctx.props.language)
+        .view('buttons')
+        .pipe((e) => {
+          if (e.changing) {
+            const value = e.changing.next[0].value;
+            // e.ctx.instance?.model.set.language(value);
+            e.ctx.props.language = value;
+          }
+        }),
+    );
+
     e.hr();
   })
 
@@ -111,7 +124,6 @@ export const actions = DevActions<Ctx>()
       }
     });
 
-    // e.button('json', (e) => e.ctx.instance?.model.set.language('json'));
     e.hr();
   })
 
@@ -276,7 +288,7 @@ export const actions = DevActions<Ctx>()
       });
     };
 
-    const onReady = (filename: string, e: t.CodeEditorReadyEvent) => {
+    const handleReady = (filename: string, e: t.CodeEditorReadyEvent) => {
       console.log('onReady', e);
 
       saveOnChange(e.editor, filename);
@@ -295,7 +307,7 @@ export const actions = DevActions<Ctx>()
           id={id}
           filename={filename}
           bus={ctx.bus}
-          onReady={(e) => onReady(filename, e)}
+          onReady={(e) => handleReady(filename, e)}
         />
       );
     };

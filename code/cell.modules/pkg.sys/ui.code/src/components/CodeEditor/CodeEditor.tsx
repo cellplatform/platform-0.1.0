@@ -1,66 +1,79 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { CssValue, t, rx, DEFAULT, css } from '../../common';
+import { CodeEditorInstance } from '../../api';
 import { Loading } from '../Loading';
 import { MonacoEditor, MonacoEditorReadyEvent } from '../Monaco';
-import { CodeEditorInstance } from '../../api';
+import { css, CssValue, DEFAULT, FC, LANGUAGES, rx, t } from './common';
 
-type InstanceId = string;
+/**
+ * Types
+ */
+type Instance = string;
 
 export type CodeEditorProps = {
-  id?: InstanceId;
+  id?: Instance;
+  bus?: t.EventBus<any>;
   theme?: t.CodeEditorTheme;
   language?: t.CodeEditorLanguage;
   focusOnLoad?: boolean;
   filename?: string;
   style?: CssValue;
-  bus?: t.EventBus<any>;
   onReady?: t.CodeEditorReadyEventHandler;
 };
 
-export const CodeEditor: React.FC<CodeEditorProps> = (props) => {
-  const editorRef = useRef<t.CodeEditorInstance>();
+/**
+ * Component
+ */
+const View: React.FC<CodeEditorProps> = (props) => {
   const bus = rx.bus<t.CodeEditorEvent>(props.bus);
 
-  const [isReady, setIsReady] = useState<boolean>(false);
+  const editorRef = useRef<t.CodeEditorInstance>();
+
+  const [isReady, setReady] = useState<boolean>(false);
   const [theme, setTheme] = useState<t.CodeEditorTheme>();
 
+  /**
+   * Handlers
+   */
   const onReady = (e: MonacoEditorReadyEvent) => {
-    const editor = CodeEditorInstance.create({
-      singleton: e.singleton,
-      instance: e.instance,
-      id: props.id,
-      filename: props.filename,
-      bus,
-    });
+    const { id, filename } = props;
+    const { singleton, instance } = e;
 
+    const editor = CodeEditorInstance.create({ singleton, instance, id, filename, bus });
     editorRef.current = editor;
 
-    if (props.onReady) props.onReady({ id: editor.id, editor });
+    props.onReady?.({ id: editor.id, editor });
     if (props.focusOnLoad) editor.focus();
 
-    // HACK: Theme not being applied until load finished.
+    // HACK: Theme not being applied until load has completed.
     setTheme(DEFAULT.THEME);
-    setIsReady(true);
+    setReady(true);
   };
 
+  /**
+   * Lifecycle
+   */
   useEffect(() => {
-    // Clean up.
-    () => editorRef.current?.dispose();
-  });
+    () => editorRef.current?.dispose(); // Clean up.
+  }, []);
+
+  useEffect(() => setTheme(props.theme), [props.theme]);
 
   useEffect(() => {
-    setTheme(props.theme);
-  }, [props.theme]);
+    const language = props.language ?? DEFAULT.LANGUAGE.TS;
+    editorRef.current?.events.model.set.language(language);
+  }, [props.language]);
 
-  const elLoading = !isReady && <Loading theme={props.theme || DEFAULT.THEME} />;
+  /**
+   * Render
+   */
 
   const styles = {
     base: css({ Absolute: 0 }),
-    editor: css({
-      display: isReady ? 'block' : 'none',
-    }),
+    editor: css({ display: isReady ? 'block' : 'none' }),
   };
+
+  const elLoading = !isReady && <Loading theme={props.theme || DEFAULT.THEME} />;
 
   return (
     <div {...css(styles.base, props.style)}>
@@ -69,3 +82,16 @@ export const CodeEditor: React.FC<CodeEditorProps> = (props) => {
     </div>
   );
 };
+
+/**
+ * Export
+ */
+
+type Fields = {
+  languages: t.CodeEditorLanguage[];
+};
+export const CodeEditor = FC.decorate<CodeEditorProps, Fields>(
+  View,
+  { languages: LANGUAGES },
+  { displayName: 'CodeEditor' },
+);

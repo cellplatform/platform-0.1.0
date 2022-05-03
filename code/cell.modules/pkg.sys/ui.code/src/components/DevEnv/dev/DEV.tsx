@@ -3,6 +3,7 @@ import { debounceTime } from 'rxjs/operators';
 import { DevActions, TestSuiteRunResponse } from 'sys.ui.dev';
 
 import { DevEnv, DevEnvProps } from '..';
+import { CodeEditor } from '../../../api';
 import { k, rx, t, Filesystem } from '../common';
 import { evalCode } from './DEV.eval';
 
@@ -13,8 +14,6 @@ type Ctx = {
   onReady: k.DevEnvReadyHandler;
   runTests(code?: string): Promise<TestSuiteRunResponse | undefined>;
 };
-
-const LANGUAGES: t.CodeEditorLanguage[] = ['typescript', 'javascript'];
 
 const SAMPLE = `
 describe('hello', (e) => {
@@ -28,7 +27,7 @@ describe('hello', (e) => {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('sys.ui.code.DevEnv')
+  .namespace('ui.DevEnv')
   .context((e) => {
     if (e.prev) return e.prev;
 
@@ -92,7 +91,7 @@ export const actions = DevActions<Ctx>()
     e.select((config) =>
       config
         .title('language:')
-        .items(LANGUAGES)
+        .items(CodeEditor.languages)
         .initial(config.ctx.props.language)
         .view('buttons')
         .pipe((e) => {

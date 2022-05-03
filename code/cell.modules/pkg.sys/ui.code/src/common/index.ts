@@ -7,5 +7,4 @@ export * from './Translate';
 export * from './Is';
 export * from './rx';
 
-export const DEFAULT = constants.DEFAULT;
-export const COLORS = constants.COLORS;
+export { LANGUAGES, DEFAULT, COLORS } from './constants';
