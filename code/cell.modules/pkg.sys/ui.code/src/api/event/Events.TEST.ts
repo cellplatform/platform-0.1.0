@@ -1,11 +1,11 @@
-import { expect, is, rx, t } from '../../test';
+import { expect, is, rx, t, Test } from '../../test';
 import { Events } from './Events';
 
 type E = t.CodeEditorEvent;
 const bus = rx.bus<E>();
 
-describe('Events', () => {
-  it('create', () => {
+export default Test.describe('Events', (e) => {
+  e.it('create', () => {
     const events = Events.create(bus);
     expect(is.observable(events.$)).to.eql(true);
 
@@ -19,7 +19,7 @@ describe('Events', () => {
     expect(count).to.eql(1);
   });
 
-  it('only "CodeEditor/" events (filter generic bus)', () => {
+  e.it('only "CodeEditor/" events (filter generic bus)', () => {
     const bus = rx.bus();
     const events = Events.create(bus);
 
@@ -40,7 +40,7 @@ describe('Events', () => {
     expect(count).to.eql(1);
   });
 
-  it('singleton$', () => {
+  e.it('singleton$', () => {
     const bus = rx.bus();
     const events = Events.create(bus);
 
@@ -53,7 +53,7 @@ describe('Events', () => {
     expect(count).to.eql(1);
   });
 
-  it('instance$', () => {
+  e.it('instance$', () => {
     const bus = rx.bus();
     const events = Events.create(bus);
 

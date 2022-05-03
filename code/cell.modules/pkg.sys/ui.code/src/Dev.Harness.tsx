@@ -6,6 +6,7 @@ const imports = {
   Monaco: import('./ui/Monaco/dev/DEV'),
   CodeEditor: import('./ui/CodeEditor/dev/DEV'),
   DevEnv: import('./ui/DevEnv/dev/DEV'),
+  UnitTests: import('./Dev.UnitTests'),
 };
 
 /**
