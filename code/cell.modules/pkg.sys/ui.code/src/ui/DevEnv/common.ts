@@ -1,4 +1,11 @@
-export * from '../../common';
+/**
+ * @system
+ */
+export { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
+export { Test } from 'sys.ui.dev/lib/ui/TestSuite';
 
-import * as k from './types';
-export { k };
+/**
+ * @local
+ */
+export * from '../../common';
+export { Icons } from '../Icons';

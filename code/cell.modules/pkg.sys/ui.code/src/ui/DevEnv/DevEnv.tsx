@@ -1,54 +1,45 @@
 import React, { useState } from 'react';
-import { css, CssValue, t, k, COLORS } from './common';
-import { Icons } from '../Icons';
-import {} from 'sys.ui.dev';
-
-import { Test } from 'sys.ui.dev/lib/ui/TestSuite';
 import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
 import { CodeEditor } from '../CodeEditor';
+import { COLORS, css, CssValue, t } from './common';
+import { FooterWarning } from './ui/Footer.Warning';
+import { TestResultsView } from './ui/View.TestResults';
+import { JsonView } from './ui/View.Json';
 
 export type DevEnvProps = {
   bus: t.EventBus;
   theme?: t.CodeEditorTheme;
   language?: t.CodeEditorLanguage;
+  text?: string;
   results?: TestSuiteRunResponse;
   focusOnLoad?: boolean;
   filename?: string;
   style?: CssValue;
-  onReady?: k.DevEnvReadyHandler;
+  onReady?: t.DevEnvReadyHandler;
 };
 
 export const DevEnv: React.FC<DevEnvProps> = (props) => {
-  const { bus, results } = props;
+  const { bus, results, language } = props;
   const [editor, setEditor] = useState<t.CodeEditorInstance>();
+
+  const isCode = language === 'javascript' || language === 'typescript';
+  const isJson = language === 'json';
 
   /**
    * Render
    */
   const styles = {
     base: css({
-      boxSizing: 'border-box',
       position: 'relative',
+      boxSizing: 'border-box',
       Flex: 'vertical-stretch-stretch',
       color: COLORS.DARK,
     }),
     body: {
       base: css({ Flex: 'horizontal-stretch-stretch', flex: 1 }),
       left: css({ flex: 1, position: 'relative' }),
-      right: css({ flex: 1, position: 'relative' }),
-    },
-    footer: {
-      base: css({
-        padding: 6,
-        backgroundColor: COLORS.CLI.YELLOW,
-        Flex: 'horizontal-spaceBetween-center',
-      }),
-    },
-    warning: {
-      base: css({ Flex: 'horizontal-center-center', fontSize: 11 }),
-      icon: css({ marginRight: 6, opacity: 0.6 }),
-      label: css({ opacity: 0.7 }),
+      right: css({ flex: 1, position: 'relative', display: 'flex' }),
     },
   };
 
@@ -68,27 +59,16 @@ export const DevEnv: React.FC<DevEnvProps> = (props) => {
         />
       </div>
       <div {...styles.body.right}>
-        <Test.View.Results padding={20} scroll={true} data={results} />
+        {isCode && <TestResultsView results={results} style={{ flex: 1 }} />}
+        {isJson && <JsonView text={props.text} style={{ flex: 1 }} />}
       </div>
-    </div>
-  );
-
-  const elFooter = (
-    <div {...styles.footer.base}>
-      <div {...styles.warning.base}>
-        <Icons.Warning style={styles.warning.icon} size={18} color={COLORS.DARK} />
-        <div {...styles.warning.label}>
-          Warning: Unsafe {'"eval"'} language structure in use. Do not use in production.
-        </div>
-      </div>
-      <div></div>
     </div>
   );
 
   return (
     <div {...css(styles.base, props.style)}>
       {elBody}
-      {elFooter}
+      {isCode && <FooterWarning />}
     </div>
   );
 };

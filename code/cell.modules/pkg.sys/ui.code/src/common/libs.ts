@@ -4,7 +4,7 @@ export const R = { equals };
 /**
  * @platform
  */
-export { css, CssValue, CssProps, color } from '@platform/css';
+export { css, CssValue, CssProps, color, Color } from '@platform/css';
 export { WebRuntime } from '@platform/cell.runtime.web/lib/WebRuntime';
 export { http } from '@platform/http';
 export { log } from '@platform/log/lib/client';
@@ -19,3 +19,4 @@ export { FC } from '@platform/react';
  */
 export { IpcBus } from 'sys.runtime.electron';
 export { Filesystem } from 'sys.fs';
+export { ObjectView } from 'sys.ui.primitives/lib/ui/ObjectView';

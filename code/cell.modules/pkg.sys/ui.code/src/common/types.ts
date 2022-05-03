@@ -13,7 +13,7 @@ export {
 } from '@platform/cell.types/lib/types.Manifest';
 export { NetworkBus } from '@platform/cell.types';
 export { IStateObject, IStateObjectWritable } from '@platform/state.types';
-export { EventBus, Event, Disposable } from '@platform/types';
+export { EventBus, Event, Disposable, Json } from '@platform/types';
 
 /**
  * @system

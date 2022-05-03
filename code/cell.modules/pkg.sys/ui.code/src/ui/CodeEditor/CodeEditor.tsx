@@ -26,7 +26,6 @@ export type CodeEditorProps = {
  */
 const View: React.FC<CodeEditorProps> = (props) => {
   const bus = rx.bus<t.CodeEditorEvent>(props.bus);
-
   const editorRef = useRef<t.CodeEditorInstance>();
 
   const [isReady, setReady] = useState<boolean>(false);
@@ -35,6 +34,12 @@ const View: React.FC<CodeEditorProps> = (props) => {
   /**
    * Handlers
    */
+
+  const updateLanguage = () => {
+    const language = props.language ?? DEFAULT.LANGUAGE.TS;
+    editorRef.current?.events.model.set.language(language);
+  };
+
   const onReady = (e: MonacoEditorReadyEvent) => {
     const { id, filename } = props;
     const { singleton, instance } = e;
@@ -48,6 +53,7 @@ const View: React.FC<CodeEditorProps> = (props) => {
     // HACK: Theme not being applied until load has completed.
     setTheme(DEFAULT.THEME);
     setReady(true);
+    updateLanguage();
   };
 
   /**
@@ -58,11 +64,7 @@ const View: React.FC<CodeEditorProps> = (props) => {
   }, []);
 
   useEffect(() => setTheme(props.theme), [props.theme]);
-
-  useEffect(() => {
-    const language = props.language ?? DEFAULT.LANGUAGE.TS;
-    editorRef.current?.events.model.set.language(language);
-  }, [props.language]);
+  useEffect(() => updateLanguage(), [props.language]); // eslint-disable-line
 
   /**
    * Render

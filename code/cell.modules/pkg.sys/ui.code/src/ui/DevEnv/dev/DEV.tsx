@@ -4,14 +4,14 @@ import { DevActions, TestSuiteRunResponse } from 'sys.ui.dev';
 
 import { DevEnv, DevEnvProps } from '..';
 import { CodeEditor } from '../../../api';
-import { k, rx, t, Filesystem } from '../common';
+import { rx, t, Filesystem } from '../common';
 import { evalCode } from './DEV.eval';
 
 type Ctx = {
   bus: t.EventBus;
   props: DevEnvProps;
   editor?: t.CodeEditorInstanceEvents;
-  onReady: k.DevEnvReadyHandler;
+  onReady: t.DevEnvReadyHandler;
   runTests(code?: string): Promise<TestSuiteRunResponse | undefined>;
 };
 
@@ -43,25 +43,32 @@ export const actions = DevActions<Ctx>()
 
     const onChanged = async () => {
       const fs = await getFs();
-      const code = await getEditorCode();
-      await fs.write(path, code);
-      ctx.runTests(code);
+      const text = await getEditorCode();
+      ctx.runTests(text);
+      await fs.write(path, text);
+      e.change.ctx((ctx) => (ctx.props.text = text));
     };
 
     const ctx: Ctx = {
       bus,
-      props: { bus, language: 'javascript', focusOnLoad: true },
+      props: {
+        bus,
+        // language: 'javascript',
+        language: 'json',
+        focusOnLoad: true,
+      },
 
       get editor() {
         return editor;
       },
 
       async onReady(args) {
-        const code = (await getSavedCode()) || SAMPLE;
+        const text = (await getSavedCode()) || SAMPLE;
         editor = args.editor;
-        editor.text.set(code);
+        editor.text.set(text);
         editor.text.changed$.pipe(debounceTime(500)).subscribe(onChanged);
         ctx.runTests();
+        e.change.ctx((ctx) => (ctx.props.text = text));
       },
 
       async runTests(code?: string) {
@@ -118,8 +125,11 @@ export const actions = DevActions<Ctx>()
     e.settings({
       host: { background: -0.04 },
       layout: {
-        label: { topLeft: '<DevEnv>', topRight: `language: ${e.ctx.props.language}` },
-        position: [150, 80],
+        label: {
+          topLeft: '<DevEnv>',
+          topRight: `language: ${e.ctx.props.language}`,
+        },
+        position: [100, 80],
         border: -0.1,
         cropmarks: -0.2,
         background: 1,
