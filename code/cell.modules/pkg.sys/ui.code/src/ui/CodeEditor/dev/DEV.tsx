@@ -71,11 +71,7 @@ export const actions = DevActions<Ctx>()
         .initial(config.ctx.props.language)
         .view('buttons')
         .pipe((e) => {
-          if (e.changing) {
-            const value = e.changing.next[0].value;
-            // e.ctx.instance?.model.set.language(value);
-            e.ctx.props.language = value;
-          }
+          if (e.changing) e.ctx.props.language = e.changing.next[0].value;
         }),
     );
 
