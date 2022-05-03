@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { color, css, CssValue, t } from '../../common';
-import { TextInput } from '../../../ui.ref/text/TextInput';
+// import { TextInput } from '../../../ui.ref/text/TextInput';
+import { TextInput } from '../../Text.Input';
 
 import { Antechamber, AntechamberProps } from '..';
 import { PropList } from '../../PropList';
@@ -20,14 +21,9 @@ export const Sample: React.FC<SampleProps> = (props) => {
     }),
     subject: css({ flex: 1 }),
 
-    login: css({
-      marginTop: 40,
-    }),
+    login: css({ marginTop: 40 }),
 
-    props: css({
-      width: 300,
-      marginBottom: 40,
-    }),
+    props: css({ width: 300, marginBottom: 40 }),
   };
 
   const items: t.PropListItem[] = [

@@ -1,22 +1,30 @@
 import { firstValueFrom, of, timeout } from 'rxjs';
-import { catchError, filter, takeUntil } from 'rxjs/operators';
+import { catchError, filter, takeUntil, take } from 'rxjs/operators';
 
 import { rx, slug, t } from './common';
 
 /**
  * Event API.
  */
-function Events(args: { id: string; bus: t.EventBus<any>; isEnabled?: boolean }): t.VimeoEvents {
-  const { id, isEnabled = true } = args;
+function Events(args: {
+  instance: t.VimeoInstance;
+  isEnabled?: boolean;
+  dispose$?: t.Observable<any>;
+}): t.VimeoEvents {
+  const { isEnabled = true } = args;
+
   const { dispose, dispose$ } = rx.disposable();
-  const bus = rx.busAsType<t.VimeoEvent>(args.bus);
+  dispose$?.pipe(take(1)).subscribe(() => dispose());
+
+  const bus = rx.busAsType<t.VimeoEvent>(args.instance.bus);
   const is = Events.is;
+  const instance = args.instance.id;
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
     filter((e) => isEnabled),
     filter((e) => is.base(e)),
-    filter((e) => e.payload.id === id),
+    filter((e) => e.payload.instance === instance),
   );
 
   const load: t.VimeoEvents['load'] = {
@@ -32,9 +40,9 @@ function Events(args: { id: string; bus: t.EventBus<any>; isEnabled?: boolean })
           catchError(() => of(`Vimeo load timed out after ${msecs} msecs`)),
         ),
       );
-      bus.fire({ type: 'Vimeo/load:req', payload: { tx, id, video, muted } });
+      bus.fire({ type: 'Vimeo/load:req', payload: { tx, instance, video, muted } });
       const res = await first;
-      return typeof res === 'string' ? { tx, id, error: res } : res;
+      return typeof res === 'string' ? { tx, instance, error: res } : res;
     },
   };
 
@@ -52,9 +60,9 @@ function Events(args: { id: string; bus: t.EventBus<any>; isEnabled?: boolean })
           catchError(() => of(`Vimeo status timed out after ${msecs} msecs`)),
         ),
       );
-      bus.fire({ type: 'Vimeo/status:req', payload: { tx, id } });
+      bus.fire({ type: 'Vimeo/status:req', payload: { tx, instance } });
       const res = await first;
-      return typeof res === 'string' ? { tx, id, error: res } : res;
+      return typeof res === 'string' ? { tx, instance, error: res } : res;
     },
   };
 
@@ -71,9 +79,9 @@ function Events(args: { id: string; bus: t.EventBus<any>; isEnabled?: boolean })
           catchError(() => of(`Vimeo play timed out after ${msecs} msecs`)),
         ),
       );
-      bus.fire({ type: 'Vimeo/play:req', payload: { tx, id } });
+      bus.fire({ type: 'Vimeo/play:req', payload: { tx, instance } });
       const res = await first;
-      return typeof res === 'string' ? { tx, id, error: res } : res;
+      return typeof res === 'string' ? { tx, instance, error: res } : res;
     },
   };
 
@@ -90,9 +98,9 @@ function Events(args: { id: string; bus: t.EventBus<any>; isEnabled?: boolean })
           catchError(() => of(`Vimeo pause timed out after ${msecs} msecs`)),
         ),
       );
-      bus.fire({ type: 'Vimeo/pause:req', payload: { tx, id } });
+      bus.fire({ type: 'Vimeo/pause:req', payload: { tx, instance } });
       const res = await first;
-      return typeof res === 'string' ? { tx, id, error: res } : res;
+      return typeof res === 'string' ? { tx, instance, error: res } : res;
     },
   };
 
@@ -109,13 +117,24 @@ function Events(args: { id: string; bus: t.EventBus<any>; isEnabled?: boolean })
           catchError(() => of(`Vimeo seek timed out after ${msecs} msecs`)),
         ),
       );
-      bus.fire({ type: 'Vimeo/seek:req', payload: { tx, id, seconds } });
+      bus.fire({ type: 'Vimeo/seek:req', payload: { tx, instance, seconds } });
       const res = await first;
-      return typeof res === 'string' ? { tx, id, error: res } : res;
+      return typeof res === 'string' ? { tx, instance, error: res } : res;
     },
   };
 
-  return { id, $, is, dispose, dispose$, load, status, play, pause, seek };
+  return {
+    instance: { bus: rx.bus.instance(bus), id: instance },
+    $,
+    is,
+    dispose,
+    dispose$,
+    load,
+    status,
+    play,
+    pause,
+    seek,
+  };
 }
 
 /**

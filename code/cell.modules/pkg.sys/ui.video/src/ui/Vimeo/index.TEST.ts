@@ -9,12 +9,13 @@ describe('Vimeo', () => {
 
     it('is (static/instance)', () => {
       const id = 'foo';
+      const instance = { bus, id };
 
       expect(Vimeo.Events.is).to.equal(is);
       expect(VimeoBackground.Events.is).to.equal(is);
 
-      expect(Vimeo.Events({ id, bus }).is).to.equal(is);
-      expect(VimeoBackground.Events({ id, bus }).is).to.equal(is);
+      expect(Vimeo.Events({ instance }).is).to.equal(is);
+      expect(VimeoBackground.Events({ instance }).is).to.equal(is);
     });
 
     it('is.base', () => {

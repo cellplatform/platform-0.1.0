@@ -21,7 +21,7 @@ export const DefsSelector: React.FC<DefsSelectorProps> = (props) => {
   };
 
   const items: t.OptionItem[] = defs.map((e, i) => {
-    const url = new URL(e.url);
+    const url = Util.toUrl(e.url);
     const label = `${url.pathname.replace(/^\//, '')}`;
     return { label, value: url.href };
   });

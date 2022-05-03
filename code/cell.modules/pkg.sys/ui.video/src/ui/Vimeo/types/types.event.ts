@@ -1,5 +1,6 @@
-import { t, IDisposable, EventBus, Observable } from './common';
+import { t, Disposable, EventBus, Observable } from './common';
 
+type Id = string;
 type Seconds = number;
 type Milliseconds = number;
 
@@ -7,14 +8,19 @@ type Milliseconds = number;
  * Event API.
  */
 export type VimeoEventsFactory = {
-  (args: { id: string; bus: EventBus<any>; isEnabled?: boolean }): VimeoEvents;
+  (args: {
+    instance: t.VimeoInstance;
+    isEnabled?: boolean;
+    dispose$?: Observable<any>;
+  }): VimeoEvents;
   is: VimeoEvents['is'];
 };
 
-export type VimeoEvents = IDisposable & {
+export type VimeoEvents = Disposable & {
   $: Observable<VimeoEvent>;
+
+  instance: { bus: Id; id: Id };
   is: { base(input: any): boolean };
-  id: string; // Player instance.
 
   load: {
     req$: Observable<VimeoLoadReq>;
@@ -74,15 +80,15 @@ export type VimeoLoadReqEvent = {
   type: 'Vimeo/load:req';
   payload: VimeoLoadReq;
 };
-export type VimeoLoadReq = { id: string; tx?: string; video: t.VimeoId; muted?: boolean };
+export type VimeoLoadReq = { instance: Id; tx?: Id; video: t.VimeoId; muted?: boolean };
 
 export type VimeoLoadResEvent = {
   type: 'Vimeo/load:res';
   payload: VimeoLoadRes;
 };
 export type VimeoLoadRes = {
-  id: string;
-  tx: string;
+  instance: Id;
+  tx: Id;
   action: 'loaded' | 'none:already-loaded';
   status?: t.VimeoStatus;
   error?: string;
@@ -97,12 +103,12 @@ export type VimeoStatusEvent = {
 };
 
 export type VimeoStatusReqEvent = { type: 'Vimeo/status:req'; payload: VimeoStatusReq };
-export type VimeoStatusReq = { id: t.VimeoInstance; tx?: string };
+export type VimeoStatusReq = { instance: Id; tx?: Id };
 
 export type VimeoStatusResEvent = { type: 'Vimeo/status:res'; payload: VimeoStatusRes };
 export type VimeoStatusRes = {
-  id: t.VimeoInstance;
-  tx: string;
+  instance: Id;
+  tx: Id;
   status?: t.VimeoStatus;
   error?: string;
 };
@@ -114,13 +120,13 @@ export type VimeoSeekReqEvent = {
   type: 'Vimeo/seek:req';
   payload: VimeoSeekReq;
 };
-export type VimeoSeekReq = { id: t.VimeoInstance; tx?: string; seconds: Seconds };
+export type VimeoSeekReq = { instance: Id; tx?: Id; seconds: Seconds };
 
 export type VimeoSeekResEvent = {
   type: 'Vimeo/seek:res';
   payload: VimeoSeekRes;
 };
-export type VimeoSeekRes = { id: t.VimeoInstance; tx: string; error?: string };
+export type VimeoSeekRes = { instance: Id; tx: Id; error?: string };
 
 /**
  * Requests that the video starts playing
@@ -129,13 +135,13 @@ export type VimeoPlayReqEvent = {
   type: 'Vimeo/play:req';
   payload: VimeoPlayReq;
 };
-export type VimeoPlayReq = { id: t.VimeoInstance; tx?: string };
+export type VimeoPlayReq = { instance: Id; tx?: Id };
 
 export type VimeoPlayResEvent = {
   type: 'Vimeo/play:res';
   payload: VimeoPlayRes;
 };
-export type VimeoPlayRes = { id: t.VimeoInstance; tx: string; error?: string };
+export type VimeoPlayRes = { instance: Id; tx: Id; error?: string };
 
 /**
  * Requests that the video pauses.
@@ -144,10 +150,10 @@ export type VimeoPauseReqEvent = {
   type: 'Vimeo/pause:req';
   payload: VimeoPauseReq;
 };
-export type VimeoPauseReq = { id: t.VimeoInstance; tx?: string };
+export type VimeoPauseReq = { instance: Id; tx?: Id };
 
 export type VimeoPauseResEvent = {
   type: 'Vimeo/pause:res';
   payload: VimeoPauseRes;
 };
-export type VimeoPauseRes = { id: t.VimeoInstance; tx: string; error?: string };
+export type VimeoPauseRes = { instance: Id; tx: Id; error?: string };

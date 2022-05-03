@@ -45,7 +45,6 @@ export function useResizeObserver<H extends HTMLElement = HTMLDivElement>(
   const _ref = useRef<H>(null);
   const targetRef = options.ref ?? _ref;
 
-  const readyRef = useRef(false);
   const rootRef = useRef<t.ResizeObserver>(wrangleObserver(options.root) ?? ResizeObserver());
   const change$ = useRef(new Subject<t.DomRect>());
   const refresh$ = useRef(new Subject<void>());
@@ -69,17 +68,22 @@ export function useResizeObserver<H extends HTMLElement = HTMLDivElement>(
     refresh$.current.pipe(takeUntil(element.dispose$)).subscribe(() => element.refresh());
 
     // Finish up.
-    readyRef.current = true;
     return () => element?.dispose();
   }, [targetRef]); // eslint-disable-line
 
   return {
     ref: targetRef,
-    ready: readyRef.current,
     $: change$.current.asObservable(),
-    root: rootRef.current,
     rect,
-    refresh: () => refresh$.current.next(),
+    get root() {
+      return rootRef.current;
+    },
+    get ready() {
+      return rect.width > -1 && rect.height > -1;
+    },
+    refresh() {
+      refresh$.current.next();
+    },
   };
 }
 

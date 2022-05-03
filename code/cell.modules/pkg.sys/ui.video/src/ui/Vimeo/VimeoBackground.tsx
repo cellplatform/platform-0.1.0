@@ -1,21 +1,24 @@
 import VimeoPlayer from '@vimeo/player';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { css, cuid, defaultValue, t } from './common';
+import { css, FC, defaultValue, t } from './common';
 import { usePlayerController } from './hooks/usePlayerController';
 import { VimeoEvents } from './VimeoEvents';
 
 export type VimeoBackgroundProps = {
-  bus: t.EventBus<any>;
-  id: string;
+  instance: t.VimeoInstance;
   video: number;
   opacity?: number;
   blur?: number;
   opacityTransition?: number; // msecs
 };
 
-const Component: React.FC<VimeoBackgroundProps> = (props) => {
-  const { id, video, bus } = props;
+/**
+ * Component
+ */
+const View: React.FC<VimeoBackgroundProps> = (props) => {
+  const { instance, video } = props;
+  const { bus, id } = instance;
   const blur = defaultValue(props.blur, 0);
   const opacityTransition = defaultValue(props.opacityTransition, 300);
 
@@ -30,7 +33,7 @@ const Component: React.FC<VimeoBackgroundProps> = (props) => {
     };
   }, []); // eslint-disable-line
 
-  usePlayerController({ id, video, player, bus });
+  usePlayerController({ instance: { id, bus }, video, player });
 
   const styles = {
     base: css({
@@ -79,8 +82,13 @@ const Component: React.FC<VimeoBackgroundProps> = (props) => {
 };
 
 /**
- * Export extended function.
+ * Export
  */
-(Component as any).Events = VimeoEvents;
-type T = React.FC<VimeoBackgroundProps> & { Events: t.VimeoEventsFactory };
-export const VimeoBackground = Component as T;
+type Fields = {
+  Events: t.VimeoEventsFactory;
+};
+export const VimeoBackground = FC.decorate<VimeoBackgroundProps, Fields>(
+  View,
+  { Events: VimeoEvents },
+  { displayName: 'VimeoBackground' },
+);

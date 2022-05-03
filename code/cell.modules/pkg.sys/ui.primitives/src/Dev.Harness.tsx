@@ -41,7 +41,7 @@ const imports = {
   EventPipe: import('./ui/Event.Pipe/dev/DEV'),
   EventList: import('./ui/Event.List/dev/DEV'),
 
-  FullScreen: import('./ui/FullScreen/dev/DEV'),
+  FullScreen: import('./ui/Fullscreen/dev/DEV'),
 
   HashChip: import('./ui/HashChip/dev/DEV'),
 
