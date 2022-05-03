@@ -3,9 +3,9 @@ import { Harness } from 'sys.ui.dev';
 import { t } from './common';
 
 const imports = {
-  Monaco: import('./components/Monaco/dev/DEV'),
-  CodeEditor: import('./components/CodeEditor/dev/DEV'),
-  DevEnv: import('./components/DevEnv/dev/DEV'),
+  Monaco: import('./ui/Monaco/dev/DEV'),
+  CodeEditor: import('./ui/CodeEditor/dev/DEV'),
+  DevEnv: import('./ui/DevEnv/dev/DEV'),
 };
 
 /**
