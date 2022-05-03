@@ -7,7 +7,11 @@ export * from '../Icons';
  * Constants
  */
 const STATE: t.AppState = {
-  auth: { isOpen: false, token: '' },
+  auth: {
+    // isOpen: false,
+    isOpen: true,
+    token: '',
+  },
   isFullscreen: false,
 };
 

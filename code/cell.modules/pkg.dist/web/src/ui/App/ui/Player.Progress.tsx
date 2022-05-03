@@ -26,8 +26,8 @@ export const PlayerProgress: React.FC<PlayerProgressProps> = (props) => {
    */
   const styles = {
     base: css({
-      backgroundColor: Color.format(0.1),
-      border: `solid 1px ${Color.format(0.1)}`,
+      backgroundColor: Color.format(0.2),
+      border: `solid 1px ${Color.format(0.35)}`,
       width: 40,
       height: 4,
       borderRadius: 4,
