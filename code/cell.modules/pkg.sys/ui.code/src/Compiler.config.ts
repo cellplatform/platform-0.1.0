@@ -13,7 +13,7 @@ export default () =>
           .target('web')
           .port(3034)
 
-          .entry('main', './src/entry/dom')
+          .entry('main', './src/entry/main')
           // .entry('service.worker', './src/workers/service.worker')
           .declarations('./src/types/env.ts', 'inner/env')
           // .declarations('./src/**/*')

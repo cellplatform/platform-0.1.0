@@ -1,4 +1,4 @@
-const init = import('./dom.init');
+const init = import('./main.dom');
 
 init.catch((err) => {
   console.log('INIT 🐷', err);
