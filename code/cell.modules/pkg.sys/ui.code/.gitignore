@@ -1,3 +1,5 @@
 /static/vs/
 /static/types.d/
 /lib*.d.ts
+
+script.ts/vercel.run.ts

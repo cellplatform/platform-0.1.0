@@ -9,10 +9,11 @@ export {
   ManifestFile,
   TypelibManifest,
   TypelibManifestFile,
+  ModuleManifest,
 } from '@platform/cell.types/lib/types.Manifest';
 export { NetworkBus } from '@platform/cell.types';
 export { IStateObject, IStateObjectWritable } from '@platform/state.types';
-export { EventBus, Event } from '@platform/types';
+export { EventBus, Event, Disposable } from '@platform/types';
 
 /**
  * @system

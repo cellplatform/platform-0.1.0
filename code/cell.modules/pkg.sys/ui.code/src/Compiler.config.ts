@@ -6,27 +6,29 @@ export default () =>
     .namespace('sys.ui.code')
     .version(Package.version)
 
-    .variant('web', (config) =>
-      config
-        .target('web')
-        .port(3034)
+    .variant(
+      'web',
+      (config) =>
+        config
+          .target('web')
+          .port(3034)
 
-        .entry('main', './src/entry/dom')
-        // .entry('service.worker', './src/workers/service.worker')
-        .declarations('./src/types/env.ts', 'inner/env')
-        // .declarations('./src/**/*')
+          .entry('main', './src/entry/dom')
+          // .entry('service.worker', './src/workers/service.worker')
+          .declarations('./src/types/env.ts', 'inner/env')
+          // .declarations('./src/**/*')
 
-        .static('./static')
-        .files((e) =>
-          e
-            .redirect(false, 'static/**')
-            .redirect(false, '*.worker.js')
-            .access('public', '**/*.{png,jpg,svg}'),
-        )
+          .static('./static')
+          .files((e) =>
+            e
+              .redirect(false, 'static/**')
+              .redirect(false, '*.worker.js')
+              .access('public', '**/*.{png,jpg,svg}'),
+          )
 
-        .shared((config) => config.add(config.dependencies).singleton(['react', 'react-dom']))
-        .expose('./Dev', './src/Dev.Harness')
-        .expose('./CodeEditor', './src/components/CodeEditor'),
+          .shared((config) => config.add(config.dependencies).singleton(['react', 'react-dom']))
+          .expose('./Dev', './src/Dev.Harness'),
+      // .expose('./CodeEditor', './src/ui/CodeEditor'),
     )
 
     .beforeCompile(async (e) => {

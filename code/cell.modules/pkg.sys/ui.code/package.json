@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.code",
-  "version": "0.0.112",
+  "version": "0.0.115",
   "scripts": {
     "test": "echo no-op",
     "build": "ts build --no-esm $@",
@@ -14,8 +14,7 @@
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
     "copy": "ts-node -T src/node/fs.copy/run",
-    "tmp": "ts-node -T src/node/tmp",
-    "deploy": "ts-node -T script.ts/deploy.vercel"
+    "deploy": "ts-node -T script.ts/vercel.run"
   },
   "dependencies": {
     "@monaco-editor/react": "4.2.2",
