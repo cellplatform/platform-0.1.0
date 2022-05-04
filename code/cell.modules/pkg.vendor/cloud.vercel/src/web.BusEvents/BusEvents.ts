@@ -4,20 +4,19 @@ import { catchError, filter, takeUntil } from 'rxjs/operators';
 
 import { rx, slug, t, DEFAULT } from './common';
 
-type InstanceId = string;
+type Id = string;
 
 /**
  * Event API.
  */
 export function BusEvents(args: {
-  bus: EventBus<any>;
-  id?: InstanceId;
+  instance: { bus: t.EventBus<any>; id?: Id };
   filter?: (e: t.VercelEvent) => boolean;
 }): t.VercelEvents {
-  const id = args.id ?? DEFAULT.id;
+  const id = args.instance.id ?? DEFAULT.id;
 
   const { dispose, dispose$ } = rx.disposable();
-  const bus = rx.busAsType<t.VercelEvent>(args.bus);
+  const bus = rx.busAsType<t.VercelEvent>(args.instance.bus);
   const is = BusEvents.is;
 
   const $ = bus.$.pipe(
@@ -95,5 +94,5 @@ export function BusEvents(args: {
 const matcher = (startsWith: string) => (input: any) => rx.isEvent(input, { startsWith });
 BusEvents.is = {
   base: matcher('vendor.vercel/'),
-  instance: (e: t.Event, id: InstanceId) => BusEvents.is.base(e) && e.payload?.id === id,
+  instance: (e: t.Event, id: Id) => BusEvents.is.base(e) && e.payload?.id === id,
 };

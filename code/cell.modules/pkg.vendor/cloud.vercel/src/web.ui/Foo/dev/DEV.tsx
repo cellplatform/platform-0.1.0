@@ -19,7 +19,7 @@ export const actions = DevActions<Ctx>()
 
     const id = 'my-instance';
     const bus = rx.bus<t.VercelEvent>();
-    const events = VercelBus.Events({ id, bus });
+    const events = VercelBus.Events({ instance: { id, bus } });
 
     const ctx: Ctx = {
       bus,
