@@ -36,8 +36,7 @@ export const JsonView: React.FC<JsonViewProps> = (props) => {
     base: css({
       Absolute: 0,
       boxSizing: 'border-box',
-      PaddingX: 30,
-      PaddingY: 20,
+      Padding: [20, 30],
       Scroll: true,
     }),
   };

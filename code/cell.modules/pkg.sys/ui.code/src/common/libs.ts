@@ -13,6 +13,7 @@ export { StateObject } from '@platform/state';
 export { HttpClient } from '@platform/cell.client';
 export { time, rx, slug, deleteUndefined } from '@platform/util.value';
 export { FC } from '@platform/react';
+export { Markdown } from '@platform/util.markdown';
 
 /**
  * @system

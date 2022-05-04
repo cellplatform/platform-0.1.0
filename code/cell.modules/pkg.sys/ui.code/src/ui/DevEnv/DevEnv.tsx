@@ -6,6 +6,7 @@ import { COLORS, css, CssValue, t } from './common';
 import { FooterWarning } from './ui/Footer.Warning';
 import { TestResultsView } from './ui/View.TestResults';
 import { JsonView } from './ui/View.Json';
+import { MarkdownView } from './ui/View.Markdown';
 
 export type DevEnvProps = {
   bus: t.EventBus;
@@ -23,8 +24,11 @@ export const DevEnv: React.FC<DevEnvProps> = (props) => {
   const { bus, results, language } = props;
   const [editor, setEditor] = useState<t.CodeEditorInstance>();
 
-  const isCode = language === 'javascript' || language === 'typescript';
-  const isJson = language === 'json';
+  const is = {
+    code: language === 'javascript' || language === 'typescript',
+    json: language === 'json',
+    markdown: language === 'markdown',
+  };
 
   /**
    * Render
@@ -41,6 +45,7 @@ export const DevEnv: React.FC<DevEnvProps> = (props) => {
       left: css({ flex: 1, position: 'relative' }),
       right: css({ flex: 1, position: 'relative', display: 'flex' }),
     },
+    fill: css({ flex: 1 }),
   };
 
   const elBody = (
@@ -59,8 +64,9 @@ export const DevEnv: React.FC<DevEnvProps> = (props) => {
         />
       </div>
       <div {...styles.body.right}>
-        {isCode && <TestResultsView results={results} style={{ flex: 1 }} />}
-        {isJson && <JsonView text={props.text} style={{ flex: 1 }} />}
+        {is.code && <TestResultsView results={results} style={styles.fill} />}
+        {is.json && <JsonView text={props.text} style={styles.fill} />}
+        {is.markdown && <MarkdownView text={props.text} style={styles.fill} />}
       </div>
     </div>
   );
@@ -68,7 +74,7 @@ export const DevEnv: React.FC<DevEnvProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       {elBody}
-      {isCode && <FooterWarning />}
+      {is.code && <FooterWarning />}
     </div>
   );
 };

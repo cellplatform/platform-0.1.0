@@ -54,7 +54,8 @@ export const actions = DevActions<Ctx>()
       props: {
         bus,
         // language: 'javascript',
-        language: 'json',
+        // language: 'json',
+        language: 'markdown',
         focusOnLoad: true,
       },
 
@@ -74,17 +75,23 @@ export const actions = DevActions<Ctx>()
       async runTests(code?: string) {
         const update = (results?: TestSuiteRunResponse) => {
           e.change.ctx((ctx) => (ctx.props.results = results));
+          return results;
         };
+
+        const language = e.current?.props.language;
+        const isCode = language === 'javascript' || language === 'typescript';
+
+        if (!isCode) {
+          return update(undefined);
+        }
 
         try {
           code = code ?? (await getEditorCode());
           const results = code ? await evalCode(code) : undefined;
-          update(results);
-          return results;
+          return update(results);
         } catch (error) {
           console.error('error', error);
-          update(undefined);
-          return undefined;
+          return update(undefined);
         }
       },
     };
