@@ -1,7 +1,7 @@
 import { expect } from '../test';
 import { BusEvents } from '.';
 
-describe.only('BusEvents', () => {
+describe('BusEvents', () => {
   const is = BusEvents.is;
 
   it('✨✨ See [BusController] tests', () => {

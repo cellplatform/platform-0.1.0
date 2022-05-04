@@ -2,7 +2,7 @@ import { nodefs, t, expect, rx } from '../test';
 import { BusController, BusEvents } from '.';
 import { DEFAULT, Filesystem } from './common';
 
-describe.only('BusController', function () {
+describe('BusController', function () {
   this.timeout(5000);
 
   const token = process.env.VERCEL_TEST_TOKEN ?? '';
