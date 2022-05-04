@@ -7,6 +7,7 @@ describe.only('BusController', function () {
 
   const token = process.env.VERCEL_TEST_TOKEN ?? '';
   const bus = rx.bus<t.VercelEvent>();
+  const busid = rx.bus.instance(bus);
   const instance = { bus };
   const store = Filesystem.Controller({ bus, driver: nodefs.resolve('static.test') });
   const fs = store.fs();
@@ -20,9 +21,10 @@ describe.only('BusController', function () {
       controller.dispose();
 
       expect(controller.instance.id).to.eql(DEFAULT.id);
-      expect(controller.instance.bus).to.eql(rx.bus.instance(bus));
-      expect(controller.events.id).to.eql(DEFAULT.id);
-      expect(events.id).to.eql(DEFAULT.id);
+      expect(controller.instance.bus).to.eql(busid);
+      expect(controller.events.instance.id).to.eql(DEFAULT.id);
+      expect(events.instance.id).to.eql(DEFAULT.id);
+      expect(events.instance.bus).to.eql(busid);
       expect(res.info?.endpoint).to.eql(undefined); // NB: The 'endpoint:true' option was not specified.
     });
 
@@ -31,8 +33,9 @@ describe.only('BusController', function () {
       const controller = BusController({ instance: { bus, id }, token, fs });
 
       expect(controller.instance.id).to.eql(id);
-      expect(controller.instance.bus).to.eql(rx.bus.instance(bus));
-      expect(controller.events.id).to.eql(id);
+      expect(controller.instance.bus).to.eql(busid);
+      expect(controller.events.instance.id).to.eql(id);
+      expect(controller.events.instance.bus).to.eql(busid);
     });
 
     it('filter', async () => {

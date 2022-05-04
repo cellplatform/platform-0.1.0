@@ -30,8 +30,8 @@ export type VercelEvent =
  * Event API
  */
 export type VercelEvents = t.Disposable & {
+  instance: { bus: Id; id: Id };
   $: t.Observable<t.VercelEvent>;
-  id: Id;
   is: { base(input: any): boolean };
 
   info: {

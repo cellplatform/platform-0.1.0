@@ -1,4 +1,3 @@
-import { EventBus } from '@platform/types';
 import { firstValueFrom, of, timeout } from 'rxjs';
 import { catchError, filter, takeUntil } from 'rxjs/operators';
 
@@ -85,7 +84,18 @@ export function BusEvents(args: {
     },
   };
 
-  return { $, id, is, dispose, dispose$, info, deploy };
+  /**
+   * API
+   */
+  return {
+    instance: { id, bus: rx.bus.instance(bus) },
+    $,
+    is,
+    dispose,
+    dispose$,
+    info,
+    deploy,
+  };
 }
 
 /**
