@@ -19,11 +19,13 @@ export async function registerPrettier(api: t.ICodeEditorSingleton) {
       try {
         const prettier = await import('prettier/standalone');
         const typescript = await import('prettier/parser-typescript');
+
         const text = prettier.format(model.getValue(), {
           parser: 'typescript',
           plugins: [typescript],
           singleQuote: true,
         });
+
         return [
           {
             range: model.getFullModelRange(),

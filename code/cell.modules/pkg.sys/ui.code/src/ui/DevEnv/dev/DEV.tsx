@@ -4,7 +4,7 @@ import { DevActions, TestSuiteRunResponse } from 'sys.ui.dev';
 
 import { DevEnv, DevEnvProps } from '..';
 import { CodeEditor } from '../../../api';
-import { rx, t, Filesystem, time } from '../common';
+import { Filesystem, rx, t } from '../common';
 import { evalCode } from './DEV.eval';
 
 type Ctx = {
@@ -41,7 +41,7 @@ export const actions = DevActions<Ctx>()
     const getEditorCode = () => ctx.editor?.text.get.fire();
     const getSavedCode = async () => new TextDecoder().decode(await (await getFs()).read(path));
 
-    const onChanged = async () => {
+    const handleChanged = async () => {
       const fs = await getFs();
       const text = await getEditorCode();
       ctx.runTests(text);
@@ -71,7 +71,7 @@ export const actions = DevActions<Ctx>()
         const text = (await getSavedCode()) || SAMPLE;
         editor = args.editor;
         editor.text.set(text);
-        editor.text.changed$.pipe(debounceTime(500)).subscribe(onChanged);
+        editor.text.changed$.pipe(debounceTime(500)).subscribe(handleChanged);
         ctx.runTests();
       },
 

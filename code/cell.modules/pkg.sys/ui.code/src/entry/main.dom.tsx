@@ -20,7 +20,7 @@ const query = () => {
 };
 
 const isDev = query().has('dev');
-const el = isDev ? <DevHarness /> : <App />;
+const el = isDev ? <DevHarness /> : <App fs={{ id: 'fs.sample', path: 'sample/markdown.md' }} />;
 ReactDOM.render(el, document.getElementById('root'));
 
 if (isDev) {
