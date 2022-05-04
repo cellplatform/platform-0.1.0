@@ -23,6 +23,7 @@ export const CodeEditorInstance = {
     instance: t.IMonacoStandaloneCodeEditor;
     id?: string;
     filename?: string;
+    language?: t.CodeEditorLanguage;
   }): t.CodeEditorInstance {
     const { instance, singleton, bus } = args;
     const id = args.id || `editor-${slug()}`;
@@ -33,7 +34,6 @@ export const CodeEditorInstance = {
 
     const filename = args.filename ? args.filename?.replace(/^\/*/, '') : 'default.ts';
     const uri = singleton.monaco.Uri.parse(`file:///${args.filename?.replace(/^\/*/, '')}`);
-    // console.log('uri.toString()', uri.toString());
 
     // TEMP 🐷
     if (filename === 'one.ts') {
@@ -45,7 +45,7 @@ export const CodeEditorInstance = {
       // console.groupEnd();
     }
 
-    let language: t.CodeEditorLanguage = DEFAULT.MODEL.language;
+    let language: t.CodeEditorLanguage = args.language ?? DEFAULT.MODEL.language;
     const model = singleton.monaco.editor.createModel(DEFAULT.MODEL.text, language, uri);
     instance.setModel(model);
 

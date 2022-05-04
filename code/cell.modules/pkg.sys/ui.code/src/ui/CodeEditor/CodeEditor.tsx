@@ -25,26 +25,22 @@ export type CodeEditorProps = {
  * Component
  */
 const View: React.FC<CodeEditorProps> = (props) => {
+  const language = props.language ?? DEFAULT.LANGUAGE.TS;
   const bus = rx.bus<t.CodeEditorEvent>(props.bus);
   const editorRef = useRef<t.CodeEditorInstance>();
 
-  const [isReady, setReady] = useState<boolean>(false);
+  const [ready, setReady] = useState<boolean>(false);
   const [theme, setTheme] = useState<t.CodeEditorTheme>();
 
   /**
    * Handlers
    */
 
-  const updateLanguage = () => {
-    const language = props.language ?? DEFAULT.LANGUAGE.TS;
-    editorRef.current?.events.model.set.language(language);
-  };
-
-  const onReady = (e: MonacoEditorReadyEvent) => {
+  const handleReady = async (e: MonacoEditorReadyEvent) => {
     const { id, filename } = props;
     const { singleton, instance } = e;
 
-    const editor = CodeEditorInstance.create({ singleton, instance, id, filename, bus });
+    const editor = CodeEditorInstance.create({ bus, id, singleton, instance, filename, language });
     editorRef.current = editor;
 
     props.onReady?.({ id: editor.id, editor });
@@ -53,7 +49,6 @@ const View: React.FC<CodeEditorProps> = (props) => {
     // HACK: Theme not being applied until load has completed.
     setTheme(DEFAULT.THEME);
     setReady(true);
-    updateLanguage();
   };
 
   /**
@@ -63,8 +58,13 @@ const View: React.FC<CodeEditorProps> = (props) => {
     () => editorRef.current?.dispose(); // Clean up.
   }, []);
 
-  useEffect(() => setTheme(props.theme), [props.theme]);
-  useEffect(() => updateLanguage(), [props.language]); // eslint-disable-line
+  useEffect(() => {
+    setTheme(props.theme);
+  }, [props.theme]);
+
+  useEffect(() => {
+    editorRef.current?.events.model.set.language(language);
+  }, [language]); // eslint-disable-line
 
   /**
    * Render
@@ -72,15 +72,15 @@ const View: React.FC<CodeEditorProps> = (props) => {
 
   const styles = {
     base: css({ Absolute: 0 }),
-    editor: css({ display: isReady ? 'block' : 'none' }),
+    editor: css({ display: ready ? 'block' : 'none' }),
   };
 
-  const elLoading = !isReady && <Loading theme={props.theme || DEFAULT.THEME} />;
+  const elLoading = !ready && <Loading theme={props.theme || DEFAULT.THEME} />;
 
   return (
     <div {...css(styles.base, props.style)}>
       {elLoading}
-      <MonacoEditor theme={theme} onReady={onReady} bus={bus} style={styles.editor} />
+      <MonacoEditor bus={bus} theme={theme} style={styles.editor} onReady={handleReady} />
     </div>
   );
 };

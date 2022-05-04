@@ -4,7 +4,7 @@ import { DevActions, TestSuiteRunResponse } from 'sys.ui.dev';
 
 import { DevEnv, DevEnvProps } from '..';
 import { CodeEditor } from '../../../api';
-import { rx, t, Filesystem } from '../common';
+import { rx, t, Filesystem, time } from '../common';
 import { evalCode } from './DEV.eval';
 
 type Ctx = {
@@ -54,9 +54,13 @@ export const actions = DevActions<Ctx>()
       props: {
         bus,
         // language: 'javascript',
-        // language: 'json',
-        language: 'markdown',
         focusOnLoad: true,
+
+        // language: 'markdown',
+        // text: '# title',
+
+        language: 'json',
+        text: '{ "count": 123 }\n',
       },
 
       get editor() {
@@ -69,7 +73,6 @@ export const actions = DevActions<Ctx>()
         editor.text.set(text);
         editor.text.changed$.pipe(debounceTime(500)).subscribe(onChanged);
         ctx.runTests();
-        e.change.ctx((ctx) => (ctx.props.text = text));
       },
 
       async runTests(code?: string) {
