@@ -1,5 +1,6 @@
 import * as constants from './constants';
 import * as t from './types';
+
 const pkg = require('../../package.json') as t.NpmPackageJson; // eslint-disable-line
 
 export { t, constants, pkg };
