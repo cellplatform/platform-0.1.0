@@ -13,7 +13,7 @@ export {
 } from '@platform/cell.types/lib/types.Manifest';
 export { NetworkBus } from '@platform/cell.types';
 export { IStateObject, IStateObjectWritable } from '@platform/state.types';
-export { EventBus, Event, Disposable, Json } from '@platform/types';
+export { EventBus, Event, Disposable, Json, NpmPackageJson } from '@platform/types';
 
 /**
  * @system
@@ -21,6 +21,6 @@ export { EventBus, Event, Disposable, Json } from '@platform/types';
 export { Fs, SysFsEvents } from 'sys.fs/lib/types';
 
 /**
- * Local
+ * @local
  */
 export * from '../types';

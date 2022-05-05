@@ -5,6 +5,7 @@ import { t } from './common';
 const imports = {
   DevEnv: import('./ui/DevEnv/dev/DEV'),
   CodeEditor: import('./ui/CodeEditor/dev/DEV'),
+  ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
   InternalMonaco: import('./ui/Monaco/dev/DEV'),
   UnitTests: import('./Dev.UnitTests'),
 };
