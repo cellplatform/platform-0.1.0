@@ -32,17 +32,13 @@ export const App: React.FC<AppProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({
-      Absolute: 0,
-      display: 'flex',
-      overflow: 'hidden',
-    }),
+    base: css({ Absolute: 0, display: 'flex', overflow: 'hidden' }),
   };
   return (
     <div {...css(styles.base, props.style)}>
       <DevEnv
         style={{ flex: 1 }}
-        bus={bus}
+        instance={{ bus }}
         text={state.text}
         language={language}
         onReady={state.onReady}

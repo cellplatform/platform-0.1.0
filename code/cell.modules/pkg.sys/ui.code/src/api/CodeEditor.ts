@@ -24,8 +24,9 @@ export const CodeEditor = {
     return (singleton = new Promise<t.ICodeEditorSingleton>(async (resolve, reject) => {
       try {
         // Initialize.
-        const monaco = await loader.init();
-        const api = CodeEditorSingleton.create(bus, monaco as unknown as t.IMonaco);
+        const editor = await loader.init();
+        const monaco = editor as unknown as t.IMonaco;
+        const api = CodeEditorSingleton({ bus, monaco });
 
         // Run configuration routines.
         await Promise.all([

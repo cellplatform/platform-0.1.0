@@ -9,7 +9,7 @@ import { JsonView } from './ui/View.Json';
 import { MarkdownView } from './ui/View.Markdown';
 
 export type DevEnvProps = {
-  bus: t.EventBus;
+  instance: { bus: t.EventBus<any>; id?: string };
   theme?: t.CodeEditorTheme;
   language?: t.CodeEditorLanguage;
   text?: string;
@@ -21,7 +21,7 @@ export type DevEnvProps = {
 };
 
 export const DevEnv: React.FC<DevEnvProps> = (props) => {
-  const { bus, results, language } = props;
+  const { results, language } = props;
   const [editor, setEditor] = useState<t.CodeEditorInstance>();
 
   const is = {
@@ -52,7 +52,7 @@ export const DevEnv: React.FC<DevEnvProps> = (props) => {
     <div {...styles.body.base}>
       <div {...styles.body.left}>
         <CodeEditor
-          bus={bus}
+          instance={props.instance}
           theme={props.theme}
           language={props.language}
           focusOnLoad={props.focusOnLoad}

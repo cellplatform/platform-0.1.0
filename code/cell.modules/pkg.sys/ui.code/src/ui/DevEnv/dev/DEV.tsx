@@ -4,7 +4,7 @@ import { DevActions, TestSuiteRunResponse } from 'sys.ui.dev';
 
 import { DevEnv, DevEnvProps } from '..';
 import { CodeEditor } from '../../../api';
-import { Filesystem, rx, t } from '../common';
+import { Filesystem, rx, t, slug } from '../common';
 import { evalCode } from './DEV.eval';
 
 type Ctx = {
@@ -52,7 +52,8 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       bus,
       props: {
-        bus,
+        instance: { bus, id: `foo.${slug()}` },
+
         // language: 'javascript',
         focusOnLoad: true,
 

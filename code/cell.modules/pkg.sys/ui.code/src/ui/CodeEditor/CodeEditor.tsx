@@ -8,8 +8,6 @@ import { css, CssValue, DEFAULT, FC, LANGUAGES, rx, t } from './common';
 /**
  * Types
  */
-type Id = string;
-
 export type CodeEditorProps = {
   instance?: { bus: t.EventBus<any>; id?: string };
   theme?: t.CodeEditorTheme;
@@ -34,13 +32,17 @@ const View: React.FC<CodeEditorProps> = (props) => {
   /**
    * Handlers
    */
-
   const handleReady = async (e: MonacoEditorReady) => {
     const { filename } = props;
     const { singleton, instance } = e;
     const id = props.instance?.id;
 
-    const editor = CodeEditorInstance.create({ bus, id, singleton, instance, filename, language });
+    const editor = CodeEditorInstance({
+      instance: { bus, id },
+      monaco: { singleton, instance },
+      filename,
+      language,
+    });
     editorRef.current = editor;
 
     props.onReady?.({ id: editor.id, editor });

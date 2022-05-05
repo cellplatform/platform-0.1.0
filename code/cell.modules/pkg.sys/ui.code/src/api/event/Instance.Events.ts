@@ -1,4 +1,4 @@
-import { firstValueFrom, of, Subject, timeout } from 'rxjs';
+import { firstValueFrom, of, timeout } from 'rxjs';
 import { catchError, filter, share, takeUntil } from 'rxjs/operators';
 
 import { Is, rx, slug, t, WaitForResponse } from '../../common';
@@ -7,20 +7,14 @@ import { Is, rx, slug, t, WaitForResponse } from '../../common';
  * Editor API
  */
 export const InstanceEvents: t.CodeEditorInstanceEventsFactory = (args) => {
-  const id = args.id;
-  const instance = id;
+  const instance = args.id;
   const bus = rx.bus<t.CodeEditorInstanceEvent>(args.bus);
-
-  const dispose$ = new Subject<void>();
-  const dispose = () => {
-    dispose$.next();
-    dispose$.complete();
-  };
+  const { dispose, dispose$ } = rx.disposable(args.dispose$);
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
     filter((e) => Is.instanceEvent(e)),
-    filter((e) => (id ? e.payload.instance === id : true)),
+    filter((e) => (instance ? e.payload.instance === instance : true)),
     share(),
   );
 
@@ -123,15 +117,12 @@ export const InstanceEvents: t.CodeEditorInstanceEventsFactory = (args) => {
     set: {
       language: (language, options) => model.set.fire({ language }, options),
       async fire(change, options = {}) {
+        const { timeout = 1000 } = options;
         const tx = slug();
-        const msecs = options.timeout ?? 1000;
-        const first = firstValueFrom(
-          model.res$.pipe(
-            filter((e) => e.tx === tx),
-            timeout(msecs),
-            catchError(() => of(`[Model] request timed out after ${msecs} msecs`)),
-          ),
-        );
+
+        const op = 'set';
+        const res$ = model.res$.pipe(filter((e) => e.tx === tx));
+        const first = rx.asPromise.first<t.CodeEditorModelResEvent>(res$, { op, timeout });
 
         bus.fire({
           type: 'CodeEditor/model:req',
@@ -139,16 +130,18 @@ export const InstanceEvents: t.CodeEditorInstanceEventsFactory = (args) => {
         });
 
         const res = await first;
-        if (typeof res === 'string') throw new Error(res);
-        return res.model;
+        if (res.payload) return res.payload.model;
+
+        const error = res.error?.message ?? 'Failed';
+        throw new Error(error);
       },
     },
   };
 
   const api: t.CodeEditorInstanceEvents = {
-    id,
+    instance: { bus: rx.bus.instance(bus), id: args.id },
     $,
-    dispose$: dispose$.asObservable(),
+    dispose$,
     dispose,
 
     focus,
