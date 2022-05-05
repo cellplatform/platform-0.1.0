@@ -1,7 +1,7 @@
 /**
  * @types
  */
-export { ModuleManifest } from '@platform/cell.types';
+export { ModuleManifest, DirManifest } from '@platform/cell.types';
 
 /**
  * @modules

@@ -1,5 +1,4 @@
 import { Vercel, t } from 'vendor.cloud.vercel/lib/node';
-import { fs } from '@platform/fs';
 
 const token = process.env.VERCEL_TEST_TOKEN;
 
@@ -17,23 +16,26 @@ async function deploy(team: string, project: string, dir: string, alias?: string
     }
   };
 
-  const size = await fs.size.dir(fs.resolve(dir));
   const deployment = Vercel.Deploy({ token, dir, team, project, beforeUpload });
-  const manifest = await deployment.manifest<t.ModuleManifest>();
+  const info = await deployment.info();
 
-  console.log('\ndeploying:');
-  console.log(' • manifest:', manifest?.hash?.module);
-  console.log(' • size:    ', `${size.files.length} files, ${size.toString()}`);
+  console.log();
+  console.log('deploying:');
+  console.log(' • hash:  ', info.files.hash);
+  console.log(' • size:  ', info.files.toString());
+  console.log(' • alias: ', alias);
   console.log();
 
-  const wait = deployment.commit({
-    target: alias ? 'production' : 'staging',
-    regions: ['sfo1'],
-    alias,
-    // routes: [{ src: '/foo', dest: '/' }],
-  });
+  const res = await deployment.commit(
+    {
+      target: alias ? 'production' : 'staging',
+      regions: ['sfo1'],
+      alias,
+      // routes: [{ src: '/foo', dest: '/' }],
+    },
+    { ensureProject: true },
+  );
 
-  const res = await wait;
   const status = res.status;
   const name = res.deployment.name;
 
