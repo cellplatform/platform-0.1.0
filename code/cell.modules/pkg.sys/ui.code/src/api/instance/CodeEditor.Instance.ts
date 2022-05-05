@@ -1,5 +1,5 @@
 import { Monaco } from '../../api';
-import { slug, t, DEFAULT } from '../../common';
+import { slug, t, DEFAULT, rx } from '../../common';
 import { CodeEditorAction } from './CodeEditor.Action';
 import { InstanceEvents } from '../event';
 import { InstanceController } from './CodeEditor.Instance.Controller';
@@ -18,14 +18,16 @@ export const CodeEditorInstance = {
    * Create a new editor instance API.
    */
   create(args: {
-    bus: t.CodeEditorEventBus;
+    bus?: t.EventBus<any>;
     singleton: t.ICodeEditorSingleton;
     instance: t.IMonacoStandaloneCodeEditor;
     id?: string;
     filename?: string;
     language?: t.CodeEditorLanguage;
   }): t.CodeEditorInstance {
-    const { instance, singleton, bus } = args;
+    const { instance, singleton } = args;
+    const bus = rx.bus<t.CodeEditorEvent>(args.bus);
+
     const id = args.id || `editor-${slug()}`;
     const listeners = MonacoListeners({ bus, instance, id });
     const events = InstanceEvents({ bus, id });

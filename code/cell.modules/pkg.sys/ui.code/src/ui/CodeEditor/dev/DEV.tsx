@@ -138,8 +138,9 @@ export const actions = DevActions<Ctx>()
    */
   .items((e) => {
     e.title('Focus');
-    e.button('instance: "one"', (e) => e.ctx.global.editor('one').focus.fire());
-    e.button('instance: "two"', (e) => e.ctx.global.editor('two').focus.fire());
+    const focus = (ctx: Ctx, id: string) => ctx.global.editor(id).focus.fire();
+    e.button('⚡️ instance: "one"', (e) => focus(e.ctx, 'one'));
+    e.button('⚡️ instance: "two"', (e) => focus(e.ctx, 'two'));
     e.hr();
   })
 
@@ -180,22 +181,22 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Text');
 
-    e.button('get', async (e) => {
+    e.button('⚡️ get', async (e) => {
       const res = await e.ctx.instance?.text.get.fire();
       console.log('text', res);
     });
 
     e.hr(1, 0.1);
 
-    e.button('set: short', (e) => {
+    e.button('⚡️ set: short', (e) => {
       e.ctx.instance?.text.set('// hello');
     });
 
-    e.button('set: sample', (e) => {
+    e.button('⚡️ set: sample', (e) => {
       e.ctx.instance?.text.set(SAMPLE);
     });
 
-    e.button('set: null (clear)', (e) => {
+    e.button('⚡️ set: null (clear)', (e) => {
       e.ctx.instance?.text.set(null);
     });
 
@@ -207,11 +208,11 @@ export const actions = DevActions<Ctx>()
    */
   .items((e) => {
     e.title('Command Actions');
-    e.button('format document (prettier)', async (e) => {
+    e.button('⚡️ format document (prettier)', async (e) => {
       const res = await e.ctx.instance?.action.fire('editor.action.formatDocument');
       console.log('res', res);
     });
-    e.button('format selection', async (e) => {
+    e.button('⚡️ format selection', async (e) => {
       const res = await e.ctx.instance?.action.fire('editor.action.formatSelection');
       console.log('res', res);
     });
@@ -262,6 +263,7 @@ export const actions = DevActions<Ctx>()
    */
   .subject((e) => {
     const { ctx } = e;
+    const bus = ctx.bus;
 
     e.settings({
       layout: {
@@ -269,7 +271,7 @@ export const actions = DevActions<Ctx>()
         cropmarks: -0.2,
         background: 1,
         width: 800,
-        height: 400,
+        height: 300,
       },
       host: { background: -0.04 },
     });
@@ -285,7 +287,7 @@ export const actions = DevActions<Ctx>()
     };
 
     const handleReady = (filename: string, e: t.CodeEditorReadyEvent) => {
-      console.log('onReady', e);
+      console.log('⚡️ onReady', e);
 
       saveOnChange(e.editor, filename);
 
@@ -297,12 +299,12 @@ export const actions = DevActions<Ctx>()
 
     const renderEditor = (id: string, filename: string, props: CodeEditorProps = {}) => {
       props = { ...e.ctx.props, ...props };
+
       return (
         <CodeEditorView
           {...props}
-          id={id}
+          instance={{ bus, id }}
           filename={filename}
-          bus={ctx.bus}
           onReady={(e) => handleReady(filename, e)}
         />
       );

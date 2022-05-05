@@ -1,6 +1,6 @@
 import { t } from './common';
 
-type InstanceId = string;
+type Id = string;
 export type CodeEditorEventBus = t.EventBus<t.CodeEditorEvent>;
 export type CodeEditorEvent = CodeEditorInstanceEvent | CodeEditorSingletonEvent;
 
@@ -38,7 +38,7 @@ export type CodeEditorChangeFocusEvent = {
   type: 'CodeEditor/change:focus';
   payload: CodeEditorChangeFocus;
 };
-export type CodeEditorChangeFocus = { instance: InstanceId };
+export type CodeEditorChangeFocus = { instance: Id };
 
 /**
  * Fired when editor recieves or loses focus.
@@ -48,7 +48,7 @@ export type CodeEditorFocusChangedEvent = {
   payload: CodeEditorFocusChanged;
 };
 export type CodeEditorFocusChanged = {
-  instance: InstanceId;
+  instance: Id;
   isFocused: boolean;
 };
 
@@ -60,7 +60,7 @@ export type CodeEditorChangeSelectionEvent = {
   payload: CodeEditorChangeSelection;
 };
 export type CodeEditorChangeSelection = {
-  instance: InstanceId;
+  instance: Id;
   selection: t.CodeEditorPosition | t.CodeEditorRange | t.CodeEditorRange[] | null;
   focus?: boolean;
 };
@@ -73,7 +73,7 @@ export type CodeEditorSelectionChangedEvent = {
   payload: CodeEditorSelectionChanged;
 };
 export type CodeEditorSelectionChanged = {
-  instance: InstanceId;
+  instance: Id;
   selection: t.CodeEditorSelection;
   via: 'keyboard' | 'mouse';
 };
@@ -86,7 +86,7 @@ export type CodeEditorChangeTextEvent = {
   payload: CodeEditorChangeText;
 };
 export type CodeEditorChangeText = {
-  instance: InstanceId;
+  instance: Id;
   text: string | null;
 };
 
@@ -97,13 +97,13 @@ export type CodeEditorTextReqEvent = {
   type: 'CodeEditor/text:req';
   payload: CodeEditorTextReq;
 };
-export type CodeEditorTextReq = { tx: string; instance: InstanceId };
+export type CodeEditorTextReq = { tx: string; instance: Id };
 
 export type CodeEditorTextResEvent = {
   type: 'CodeEditor/text:res';
   payload: CodeEditorTextRes;
 };
-export type CodeEditorTextRes = { tx: string; instance: InstanceId; text: string };
+export type CodeEditorTextRes = { tx: string; instance: Id; text: string };
 
 /**
  * Fires when the editor text changes.
@@ -113,7 +113,7 @@ export type CodeEditorTextChangedEvent = {
   payload: CodeEditorTextChanged;
 };
 export type CodeEditorTextChanged = {
-  instance: InstanceId;
+  instance: Id;
   changes: CodeEditorTextChange[];
   isFlush: boolean;
   isRedoing: boolean;
@@ -132,7 +132,7 @@ export type CodeEditorRunActionEvent = {
   payload: CodeEditorRunAction;
 };
 export type CodeEditorRunAction = {
-  instance: InstanceId;
+  instance: Id;
   action: t.MonacoAction;
   tx?: string;
 };
@@ -143,7 +143,7 @@ export type CodeEditorActionCompleteEvent = {
 };
 export type CodeEditorActionComplete = {
   tx: string;
-  instance: InstanceId;
+  instance: Id;
   action: t.MonacoAction;
   error?: string;
 };
@@ -180,7 +180,7 @@ export type CodeEditorModelReqEvent = {
 };
 export type CodeEditorModelReq = {
   tx: string;
-  instance: InstanceId;
+  instance: Id;
   change?: Partial<t.CodeEditorModel>;
 };
 
@@ -190,7 +190,7 @@ export type CodeEditorModelResEvent = {
 };
 export type CodeEditorModelRes = {
   tx: string;
-  instance: InstanceId;
+  instance: Id;
   action: 'read' | 'update';
   model: t.CodeEditorModel;
 };

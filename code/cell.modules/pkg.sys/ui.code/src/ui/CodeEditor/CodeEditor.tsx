@@ -2,17 +2,16 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { CodeEditorInstance } from '../../api';
 import { Loading } from '../Loading';
-import { MonacoEditor, MonacoEditorReadyEvent } from '../Monaco';
+import { MonacoEditor, MonacoEditorReady } from '../Monaco';
 import { css, CssValue, DEFAULT, FC, LANGUAGES, rx, t } from './common';
 
 /**
  * Types
  */
-type Instance = string;
+type Id = string;
 
 export type CodeEditorProps = {
-  id?: Instance;
-  bus?: t.EventBus<any>;
+  instance?: { bus: t.EventBus<any>; id?: string };
   theme?: t.CodeEditorTheme;
   language?: t.CodeEditorLanguage;
   focusOnLoad?: boolean;
@@ -26,7 +25,7 @@ export type CodeEditorProps = {
  */
 const View: React.FC<CodeEditorProps> = (props) => {
   const language = props.language ?? DEFAULT.LANGUAGE.TS;
-  const bus = rx.bus<t.CodeEditorEvent>(props.bus);
+  const bus = rx.bus<t.CodeEditorEvent>(props.instance?.bus);
   const editorRef = useRef<t.CodeEditorInstance>();
 
   const [ready, setReady] = useState<boolean>(false);
@@ -36,9 +35,10 @@ const View: React.FC<CodeEditorProps> = (props) => {
    * Handlers
    */
 
-  const handleReady = async (e: MonacoEditorReadyEvent) => {
-    const { id, filename } = props;
+  const handleReady = async (e: MonacoEditorReady) => {
+    const { filename } = props;
     const { singleton, instance } = e;
+    const id = props.instance?.id;
 
     const editor = CodeEditorInstance.create({ bus, id, singleton, instance, filename, language });
     editorRef.current = editor;
