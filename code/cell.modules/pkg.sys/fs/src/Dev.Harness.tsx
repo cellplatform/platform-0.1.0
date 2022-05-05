@@ -6,8 +6,7 @@ const imports = {
   ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
   PathList: import('./ui/PathList/dev/DEV'),
   FileDropTarget: import('./ui/FileDropTarget/dev/DEV'),
-  FsDriverIndexedDb: import('./ui/FsDriver.IndexedDb/dev/DEV'),
-  FsIndexedDb: import('./ui/FsBus.IndexedDb/dev/DEV'),
+  UnitTests: import('./Dev.UnitTests'),
 };
 
 /**

@@ -3,7 +3,7 @@ import { Test, expect } from '../../web.test';
 import { FsDriverLocal } from '..';
 import { Hash, t, ManifestHash, time, Path } from '../common';
 
-export default Test.describe('FsIndexer', (e) => {
+export default Test.describe('FsIndexer (IndexedDB)', (e) => {
   const EMPTY_HASH = Hash.sha256([]);
 
   const testCreate = async () => {

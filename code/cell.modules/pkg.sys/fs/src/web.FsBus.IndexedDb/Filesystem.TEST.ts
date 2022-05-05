@@ -2,7 +2,7 @@ import { Test, expect } from '../web.test';
 import { Filesystem } from '.';
 import { rx, DEFAULT, Hash, t } from './common';
 
-export default Test.describe('FsBus', (e) => {
+export default Test.describe('FsBus (IndexedDB)', (e) => {
   const testPrep = async (options: { id?: string; clear?: boolean } = {}) => {
     const { id = 'dev.test.FsBus' } = options;
     const bus = rx.bus();

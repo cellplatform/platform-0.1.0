@@ -1,9 +1,8 @@
-import { Test, expect, TestIndexedDb } from '../../web.test';
-
 import { FsDriverLocal } from '..';
-import { Hash, Path, slug, t, Stream, IndexedDb } from '../common';
+import { expect, Test, TestIndexedDb } from '../../web.test';
+import { Hash, Path, slug, Stream, t } from '../common';
 
-export default Test.describe('FsDriver', (e) => {
+export default Test.describe('FsDriver (IndexedDB)', (e) => {
   const FS_ID = 'dev.test.FsDriver';
 
   const testCreate = async () => {
