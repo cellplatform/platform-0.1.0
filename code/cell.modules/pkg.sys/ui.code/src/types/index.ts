@@ -1,6 +1,13 @@
+/**
+ * API
+ */
 export * from './types.editor';
 export * from './types.monaco';
-export * from './ui/DevEnv/types';
+
+/**
+ * User Interface
+ */
+export * from '../ui/DevEnv/types';
 
 /**
  * Environment
