@@ -1,14 +1,14 @@
-import { expect } from '../test';
+import { Test, expect } from 'sys.ui.dev';
 import { BusEvents } from '.';
 
-describe('BusEvents', () => {
+export default Test.describe('BusEvents', (e) => {
   const is = BusEvents.is;
 
-  it('✨✨ See [BusController] tests', () => {
+  e.it('✨✨ See [BusController] tests', () => {
     //
   });
 
-  it('is.base', () => {
+  e.it('is.base', () => {
     const test = (type: string, expected: boolean) => {
       expect(is.base({ type, payload: {} })).to.eql(expected);
     };
@@ -16,7 +16,7 @@ describe('BusEvents', () => {
     test('vendor.vercel/', true);
   });
 
-  it('is.instance', () => {
+  e.it('is.instance', () => {
     expect(is.instance({ type: 'vendor.vercel/', payload: { id: 'abc' } }, 'abc')).to.eql(true);
     expect(is.instance({ type: 'vendor.vercel/', payload: { id: 'abc' } }, '123')).to.eql(false);
     expect(is.instance({ type: 'foo', payload: { id: 'abc' } }, 'abc')).to.eql(false);
