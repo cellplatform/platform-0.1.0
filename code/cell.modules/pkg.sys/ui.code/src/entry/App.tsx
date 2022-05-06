@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 import { css, CssValue, rx, t } from '../common';
 import { DevEnv } from '../ui/DevEnv';
-import { useAppState } from './App.useState';
+import { CodeEditor } from '../ui/CodeEditor';
 
 type Id = string;
 
@@ -18,7 +18,7 @@ export const App: React.FC<AppProps> = (props) => {
   const { fs } = props;
 
   const language: t.CodeEditorLanguage = 'markdown';
-  const state = useAppState({ bus, fs });
+  const state = CodeEditor.useState({ bus, fs });
 
   /**
    * Lifecycle

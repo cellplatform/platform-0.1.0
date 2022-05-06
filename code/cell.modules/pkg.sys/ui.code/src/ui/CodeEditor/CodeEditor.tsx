@@ -4,6 +4,10 @@ import { CodeEditorInstance } from '../../api';
 import { Loading } from '../Loading';
 import { MonacoEditor, MonacoEditorReady } from '../Monaco';
 import { css, CssValue, DEFAULT, FC, LANGUAGES, rx, t } from './common';
+import {
+  CodeEditorStateController as StateController,
+  useCodeEditorStateController,
+} from './logic';
 
 /**
  * Types
@@ -93,9 +97,11 @@ const View: React.FC<CodeEditorProps> = (props) => {
 
 type Fields = {
   languages: t.CodeEditorLanguage[];
+  StateController: typeof StateController;
+  useState: typeof useCodeEditorStateController;
 };
 export const CodeEditor = FC.decorate<CodeEditorProps, Fields>(
   View,
-  { languages: LANGUAGES },
+  { languages: LANGUAGES, StateController, useState: useCodeEditorStateController },
   { displayName: 'CodeEditor' },
 );
