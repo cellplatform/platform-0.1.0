@@ -64,6 +64,19 @@ describe('Vercel', () => {
 
         dispose();
       });
+
+      it('files.toString()', async () => {
+        const { fs, dispose } = Vercel.Node({ token, dir: 'static.test' });
+        const source = 'node';
+        const info = await Vercel.Fs.info({ fs, source });
+
+        const res = info.files.toString();
+        dispose();
+
+        expect(res).to.include('kB');
+        expect(res).to.include(' files)');
+        expect(res).to.include('SHA256:');
+      });
     });
   });
 

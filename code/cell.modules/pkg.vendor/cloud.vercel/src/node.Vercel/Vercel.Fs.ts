@@ -92,7 +92,12 @@ export const VercelFs = {
       hash: meta.fileshash,
       toString() {
         const total = files.total;
-        return `${size.toString()} (${total} ${total === 1 ? 'file' : 'files'})`;
+        const fileSummary = `${total} ${total === 1 ? 'file' : 'files'}`;
+
+        const h = meta.fileshash.substring('sha256-'.length);
+        const hash = `SHA256( ${h.substring(0, 5)}..${h.substring(h.length - 5)} )`;
+
+        return `${size.toString()} (${fileSummary}) | ${hash}`;
       },
     };
 

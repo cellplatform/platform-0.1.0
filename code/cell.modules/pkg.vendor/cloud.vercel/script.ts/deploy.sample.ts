@@ -21,7 +21,6 @@ async function deploy(team: string, project: string, dir: string, alias?: string
 
   console.log();
   console.log('deploying:');
-  console.log(' • hash:  ', info.files.hash);
   console.log(' • size:  ', info.files.toString());
   console.log(' • alias: ', alias);
   console.log();

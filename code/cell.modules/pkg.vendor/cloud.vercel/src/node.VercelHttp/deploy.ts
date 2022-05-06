@@ -1,4 +1,4 @@
-import { asArray, t, util, deleteUndefined } from './common';
+import { asArray, t, util, deleteUndefined, log } from './common';
 import { VercelUploadFiles } from './VercelHttp.Files.Upload';
 import { VercelFs } from '../node.Vercel/Vercel.Fs';
 
@@ -18,9 +18,10 @@ export async function Deploy(
     ctx: t.Ctx;
     team: { id: string; name: string };
     project: { id: string; name: string };
+    silent?: boolean;
   },
 ): Promise<t.VercelHttpDeployResponse> {
-  const { ctx, source, team, project, beforeUpload } = args;
+  const { ctx, source, team, project, beforeUpload, silent = false } = args;
   const { http, fs, headers } = ctx;
   const teamId = team.id;
 
@@ -36,9 +37,13 @@ export async function Deploy(
     const res = await client.upload(source, { beforeUpload });
     const { ok, error, total } = res;
     const files = res.files.map((item) => item.file);
+
     const errors = res.files
       .filter((item) => Boolean(item.error))
-      .map(({ file, error }) => `${file.file}: [${error?.code}] ${error?.message}`);
+      .map(({ file, error }) => {
+        const code = error?.code ? `[${error?.code}] ` : '';
+        return `${file.file}: ${code}${error?.message}`;
+      });
 
     return deleteUndefined({
       ok,
@@ -51,6 +56,13 @@ export async function Deploy(
 
   if (!uploaded.ok) {
     const { total } = uploaded;
+
+    if (!silent) {
+      const total = uploaded.errors.length;
+      console.log('Failed Uploading:');
+      uploaded.errors.forEach((item, i) => log.info(`${i + 1} of ${total}`, item));
+    }
+
     throw new Error(`Failed uploading ${total.failed} of ${total.files} files.`);
   }
 
