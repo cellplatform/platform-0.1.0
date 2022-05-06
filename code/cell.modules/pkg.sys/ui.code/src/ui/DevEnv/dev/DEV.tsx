@@ -35,7 +35,6 @@ export const actions = DevActions<Ctx>()
     let editor: t.CodeEditorInstanceEvents | undefined;
 
     const storage = Filesystem.IndexedDb.create({ bus, id: 'fs.dev.code' });
-
     const path = 'dev/DevEnv/code.js';
     const getFs = async () => (await storage).fs;
     const getEditorCode = () => ctx.editor?.text.get.fire();
