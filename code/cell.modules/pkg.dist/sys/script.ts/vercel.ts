@@ -1,4 +1,5 @@
 import { Vercel } from 'vendor.cloud.vercel/lib/node';
+import { t } from '../src/common';
 
 const token = process.env.VERCEL_TEST_TOKEN;
 
@@ -39,4 +40,3 @@ export async function deploy(team: string, project: string, alias: string) {
 
   return { status, name };
 }
-

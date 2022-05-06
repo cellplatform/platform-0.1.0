@@ -1,4 +1,4 @@
-import { nodefs, t } from './common';
+import { nodefs, t, Manifest } from './common';
 import { VercelFs } from './Vercel.Fs';
 import { VercelNode } from './Vercel.Node';
 
@@ -58,6 +58,14 @@ export const VercelDeploy = (args: Args) => {
     client,
     team: args.team,
     project: args.project,
+
+    /**
+     * Derive info about the deployment.
+     */
+    async info() {
+      const source = await VercelFs.readdir(fs);
+      return VercelFs.info({ fs, source });
+    },
 
     /**
      * Read in the bundle manifest.

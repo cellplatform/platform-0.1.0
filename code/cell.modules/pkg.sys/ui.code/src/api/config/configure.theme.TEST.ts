@@ -1,10 +1,10 @@
-import { t, expect } from '../../test';
+import { t, expect, Test } from '../../test';
 
 import { Themes, Theme } from '.';
 
-describe('Theme', () => {
-  describe('shade', () => {
-    it('isDark', () => {
+export default Test.describe('Theme', (e) => {
+  e.describe('shade', (e) => {
+    e.it('isDark', () => {
       const test = (theme: t.CodeEditorTheme, expected: boolean) => {
         expect(Theme.isDark(theme)).to.eql(expected);
       };
@@ -12,7 +12,7 @@ describe('Theme', () => {
       test('light', false);
     });
 
-    it('isLight', () => {
+    e.it('isLight', () => {
       const test = (theme: t.CodeEditorTheme, expected: boolean) => {
         expect(Theme.isLight(theme)).to.eql(expected);
       };
@@ -21,26 +21,26 @@ describe('Theme', () => {
     });
   });
 
-  describe('byName', () => {
-    it('get by name', () => {
+  e.describe('byName', (e) => {
+    e.it('get by name', () => {
       expect(Theme.byName('dark')).to.eql(Themes.dark());
     });
 
-    it('throw: theme not supported', () => {
+    e.it('throw: theme not supported', () => {
       const fn = () => Theme.byName('foobar' as any);
       expect(fn).to.throw(/Theme 'foobar' not supported/);
     });
   });
 
-  describe('Themes', () => {
-    it('light', () => {
+  e.describe('Themes', (e) => {
+    e.it('light', () => {
       const theme = Themes.light();
       expect(theme.name).to.eql('light');
       expect(theme.data.base).to.eql('vs');
       expect(Theme.byName('light')).to.eql(theme);
     });
 
-    it('dark', () => {
+    e.it('dark', () => {
       const theme = Themes.dark();
       expect(theme.name).to.eql('dark');
       expect(theme.data.base).to.eql('vs-dark');

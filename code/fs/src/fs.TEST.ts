@@ -52,10 +52,10 @@ describe('fs', () => {
   describe('size.toString( bytes )', () => {
     it('converts to human readable size', () => {
       expect(fs.size.toString(123)).to.eql('123 B');
-      expect(fs.size.toString(9999)).to.eql('9.76 KB');
-      expect(fs.size.toString(9999, { spacer: '' })).to.eql('9.76KB');
-      expect(fs.size.toString(9999, { round: 1 })).to.eql('9.8 KB');
-      expect(fs.size.toString(9999, { round: 0 })).to.eql('10 KB');
+      expect(fs.size.toString(9999)).to.eql('10 kB');
+      expect(fs.size.toString(9999, { spacer: '' })).to.eql('10kB');
+      expect(fs.size.toString(123456, { round: 1 })).to.eql('123.5 kB');
+      expect(fs.size.toString(123456, { round: 0 })).to.eql('123 kB');
     });
   });
 

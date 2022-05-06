@@ -1,9 +1,8 @@
 import * as t from './types';
 
-export const LANGUAGES: t.CodeEditorLanguage[] = ['typescript', 'json'];
+export const LANGUAGES: t.CodeEditorLanguage[] = ['typescript', 'javascript', 'json', 'markdown'];
 
 const MODEL: t.CodeEditorModel = {
-  // filename: '',
   text: '',
   language: 'typescript',
   selection: {
@@ -15,7 +14,7 @@ const MODEL: t.CodeEditorModel = {
 
 export const DEFAULT = {
   THEME: 'dark' as t.CodeEditorTheme,
-  LANGUAGE: { TS: 'typescript' },
+  LANGUAGE: { TS: 'typescript' as t.CodeEditorLanguage },
   MODEL,
 };
 

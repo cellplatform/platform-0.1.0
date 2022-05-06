@@ -9,6 +9,7 @@ describe.skip('BusController', function () {
   this.timeout(timeout);
 
   const bus = rx.bus<t.VercelEvent>();
+  const instance = { bus };
   const store = Filesystem.Controller({ bus, driver: nodefs.resolve('static.test') });
   const fs = store.fs();
 
@@ -28,8 +29,8 @@ describe.skip('BusController', function () {
     it('bundle (Uint8Array)', async () => {
       const dir = fs.dir('web');
 
-      const controller = BusController({ token, fs, bus });
-      const events = BusEvents({ bus });
+      const controller = BusController({ instance, token, fs });
+      const events = BusEvents({ instance });
 
       // const paths = manifest.files.map((file) => file.path);
 

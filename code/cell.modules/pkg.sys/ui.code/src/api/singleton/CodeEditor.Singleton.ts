@@ -10,11 +10,11 @@ import { CodeEditorLibsEventHandlers } from './CodeEditor.Libs.rx.handlers';
  *    - https://microsoft.github.io/monaco-editor/api/index.html
  *
  */
-export const CodeEditorSingleton = {
-  create(bus: t.EventBus<any>, monaco: t.IMonaco): t.ICodeEditorSingleton {
-    const libs = CodeEditorLibs(monaco);
-    const singleton = { monaco, libs };
-    CodeEditorLibsEventHandlers(bus, singleton);
-    return singleton;
-  },
-};
+
+export function CodeEditorSingleton(args: { bus: t.EventBus<any>; monaco: t.IMonaco }) {
+  const { bus, monaco } = args;
+  const libs = CodeEditorLibs(monaco);
+  const singleton = { monaco, libs };
+  CodeEditorLibsEventHandlers(bus, singleton);
+  return singleton;
+}

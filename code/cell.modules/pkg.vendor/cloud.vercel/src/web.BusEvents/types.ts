@@ -1,6 +1,6 @@
 import * as t from '../web/common/types';
 
-type InstanceId = string;
+type Id = string;
 type Milliseconds = number;
 type IdOrName = string;
 type Name = string;
@@ -30,8 +30,8 @@ export type VercelEvent =
  * Event API
  */
 export type VercelEvents = t.Disposable & {
+  instance: { bus: Id; id: Id };
   $: t.Observable<t.VercelEvent>;
-  id: InstanceId;
   is: { base(input: any): boolean };
 
   info: {
@@ -73,13 +73,13 @@ export type VercelInfoReqEvent = {
   type: 'vendor.vercel/info:req';
   payload: VercelInfoReq;
 };
-export type VercelInfoReq = { tx: string; id: InstanceId; endpoint: boolean };
+export type VercelInfoReq = { tx: string; id: Id; endpoint: boolean };
 
 export type VercelInfoResEvent = {
   type: 'vendor.vercel/info:res';
   payload: VercelInfoRes;
 };
-export type VercelInfoRes = { tx: string; id: InstanceId; info?: VercelInfo; error?: string };
+export type VercelInfoRes = { tx: string; id: Id; info?: VercelInfo; error?: string };
 
 /**
  * Deploy
@@ -90,7 +90,7 @@ export type VercelDeployReqEvent = {
 };
 export type VercelDeployReq = {
   tx: string;
-  id: InstanceId;
+  id: Id;
   team: IdOrName;
   project: Name;
   source: t.VercelSourceBundle;
@@ -103,7 +103,7 @@ export type VercelDeployResEvent = {
 };
 export type VercelDeployRes = {
   tx: string;
-  id: InstanceId;
+  id: Id;
   paths: string[];
   deployment?: t.VercelHttpDeployResponse['deployment'];
   error?: string;

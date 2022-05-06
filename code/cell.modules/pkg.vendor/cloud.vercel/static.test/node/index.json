@@ -1,0 +1,23 @@
+{
+  "kind": "module",
+  "hash": {
+    "files": "sha256-16d1e97959af8d66b6cbb944ad923871c12c6598ad2b72dc842ccc51f94cf3c8",
+    "module": "sha256-18d6ceade80c0caab3ea053546924c22f4e396cad40907bb2d2e65a8ae5fbd50"
+  },
+  "module": {
+    "namespace": "vercel.sample.node",
+    "version": "0.0.22",
+    "compiler": "@platform/cell.compiler@0.4.1",
+    "compiledAt": 1651708954617,
+    "mode": "production",
+    "target": "node",
+    "entry": "main.js"
+  },
+  "files": [
+    {
+      "path": "main.js",
+      "filehash": "sha256-6cca7b4df69728e4e060d912e676f50fd20a0213d3addd3b1e2e00f904057341",
+      "bytes": 27387
+    }
+  ]
+}

@@ -84,7 +84,7 @@ describe('VercelHttp', function () {
 
     http.res$.subscribe((e) => {
       console.log('-------------------------------------------');
-      console.log('🌳', e.method, e.status, e.url);
+      console.log('🌳 (intercept)', e.method, e.status, e.url);
 
       // console.log(e.response.json);
       // const { status, method } = e;

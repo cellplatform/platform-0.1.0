@@ -4,12 +4,16 @@ import { distinctUntilChanged } from 'rxjs/operators';
 import { Monaco } from '../../api';
 import { R, t, Translate } from '../../common';
 
+/**
+ * Event handlers for the Monaco code-editor instance.
+ */
 export function MonacoListeners(args: {
-  id: string; // editor instance ID.
-  bus: t.CodeEditorEventBus;
-  instance: t.IMonacoStandaloneCodeEditor;
+  instance: { bus: t.EventBus<any>; id: string };
+  editor: t.IMonacoStandaloneCodeEditor;
 }) {
-  const { instance, id, bus } = args;
+  const { editor } = args;
+  const { bus, id } = args.instance;
+  const instance = id;
 
   const selection$ = new Subject<t.CodeEditorSelectionChangedEvent>();
   selection$
@@ -18,7 +22,7 @@ export function MonacoListeners(args: {
 
   const fireFocus = (isFocused: boolean, source: 'text' | 'widget') => {
     if (source === 'text') {
-      bus.fire({ type: 'CodeEditor/changed:focus', payload: { instance: id, isFocused } });
+      bus.fire({ type: 'CodeEditor/changed:focus', payload: { instance, isFocused } });
     }
   };
 
@@ -26,15 +30,15 @@ export function MonacoListeners(args: {
     selection$.next({
       type: 'CodeEditor/changed:selection',
       payload: {
-        instance: id,
+        instance,
         via: source as t.CodeEditorSelectionChanged['via'],
-        selection: Monaco.getSelection(instance),
+        selection: Monaco.getSelection(editor),
       },
     });
   };
 
   const listeners = {
-    contentChanged: instance.onDidChangeModelContent((e) => {
+    contentChanged: editor.onDidChangeModelContent((e) => {
       const { isFlush, isRedoing, isUndoing } = e;
       const changes: t.CodeEditorTextChange[] = e.changes.map((item) => {
         return {
@@ -44,19 +48,21 @@ export function MonacoListeners(args: {
       });
       bus.fire({
         type: 'CodeEditor/changed:text',
-        payload: { instance: id, changes, isFlush, isRedoing, isUndoing },
+        payload: { instance, changes, isFlush, isRedoing, isUndoing },
       });
     }),
 
-    cursorChanged: instance.onDidChangeCursorPosition((e) => fireSelection(e.source)),
-    selectionChanged: instance.onDidChangeCursorSelection((e) => fireSelection(e.source)),
-    focusEditorText: instance.onDidFocusEditorText(() => fireFocus(true, 'text')),
-    focusEditorWidget: instance.onDidFocusEditorWidget(() => fireFocus(true, 'widget')),
-    blurEditorText: instance.onDidBlurEditorText(() => fireFocus(false, 'text')),
-    blurEditorWidget: instance.onDidBlurEditorWidget(() => fireFocus(false, 'widget')),
+    cursorChanged: editor.onDidChangeCursorPosition((e) => fireSelection(e.source)),
+    selectionChanged: editor.onDidChangeCursorSelection((e) => fireSelection(e.source)),
+    focusEditorText: editor.onDidFocusEditorText(() => fireFocus(true, 'text')),
+    focusEditorWidget: editor.onDidFocusEditorWidget(() => fireFocus(true, 'widget')),
+    blurEditorText: editor.onDidBlurEditorText(() => fireFocus(false, 'text')),
+    blurEditorWidget: editor.onDidBlurEditorWidget(() => fireFocus(false, 'widget')),
   };
 
   return {
-    dispose: () => Object.keys(listeners).forEach((key) => listeners[key].dispose()),
+    dispose() {
+      Object.keys(listeners).forEach((key) => listeners[key].dispose());
+    },
   };
 }

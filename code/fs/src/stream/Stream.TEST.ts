@@ -3,7 +3,7 @@ import { fs } from '..';
 
 import { Stream } from '.';
 
-describe.only('Stream', function () {
+describe('Stream', function () {
   this.afterEach(() => fs.remove(PATH.TMP));
 
   const PATH = {

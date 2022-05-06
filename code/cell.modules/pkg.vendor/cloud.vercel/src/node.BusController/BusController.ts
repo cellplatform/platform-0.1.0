@@ -1,22 +1,22 @@
 import { VercelHttp } from '../node.VercelHttp';
 import { BusEvents, DEFAULT, rx, slug, t } from './common';
 
-type InstanceId = string;
+type Id = string;
 
 /**
  * Event controller.
  */
 export function BusController(args: {
+  instance: { bus: t.EventBus<any>; id?: Id };
   token: string;
-  id?: InstanceId;
   fs: t.Fs;
-  bus: t.EventBus<any>;
   filter?: (e: t.VercelEvent) => boolean;
 }) {
   const { token, fs } = args;
-  const id = args.id ?? DEFAULT.id;
-  const bus = rx.busAsType<t.VercelEvent>(args.bus);
-  const events = BusEvents({ id, bus, filter: args.filter });
+  const id = args.instance.id ?? DEFAULT.id;
+  const bus = rx.busAsType<t.VercelEvent>(args.instance.bus);
+  const instance = { id, bus };
+  const events = BusEvents({ instance, filter: args.filter });
   const client = VercelHttp({ fs, token });
   const { dispose, dispose$ } = events;
 
@@ -87,5 +87,10 @@ export function BusController(args: {
   /**
    * API
    */
-  return { dispose, dispose$, id, events };
+  return {
+    instance: { id, bus: rx.bus.instance(bus) },
+    dispose,
+    dispose$,
+    events,
+  };
 }

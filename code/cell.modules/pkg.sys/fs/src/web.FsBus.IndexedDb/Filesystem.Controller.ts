@@ -14,6 +14,7 @@ export async function BusController(args: {
   filter?: (e: t.SysFsEvent) => boolean;
   httpFactory?: (host: string | number) => t.IHttpClient;
   timeout?: Milliseconds;
+  dispose$?: t.Observable<any>;
 }) {
   const { bus, filter, httpFactory, timeout } = args;
   const id = (args.id ?? '').trim() || DEFAULT.FILESYSTEM_ID;
@@ -22,8 +23,8 @@ export async function BusController(args: {
   const local = await FsDriverLocal({ id });
   const { driver, index } = local;
 
-  // Finish up.
-  return FilesystemWeb.Controller({
+  // Start the EventBus controller.
+  const store = FilesystemWeb.Controller({
     bus,
     id,
     driver,
@@ -32,4 +33,8 @@ export async function BusController(args: {
     httpFactory,
     timeout,
   });
+
+  // Finish up.
+  args.dispose$?.subscribe(() => store.dispose());
+  return store;
 }

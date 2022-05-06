@@ -13,7 +13,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.PathList (Stateful)')
+  .namespace('ui.PathList.Stateful')
   .context((e) => {
     if (e.prev) return e.prev;
 
@@ -26,7 +26,7 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       bus,
       fs,
-      props: { id, bus, scroll: true },
+      props: { instance: { id, bus }, scroll: true },
     };
 
     return ctx;

@@ -1,12 +1,12 @@
-import { expect, is, rx, t } from '../../test';
+import { expect, is, rx, t, Test } from '../../test';
 import { InstanceEvents } from './Instance.Events';
 
 type E = t.CodeEditorEvent;
 const bus = rx.bus<E>();
 const id = 'foo';
 
-describe('Events: Instance', () => {
-  it('create', () => {
+export default Test.describe('Events: Instance', (e) => {
+  e.it('create', () => {
     const events = InstanceEvents({ bus, id });
     expect(is.observable(events.$)).to.eql(true);
 
@@ -20,7 +20,7 @@ describe('Events: Instance', () => {
     expect(count).to.eql(1);
   });
 
-  it('only "CodeEditor/" instance events (filter generic bus)', () => {
+  e.it('only "CodeEditor/" instance events (filter generic bus)', () => {
     const bus = rx.bus();
     const events = InstanceEvents({ bus, id });
 

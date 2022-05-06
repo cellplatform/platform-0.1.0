@@ -3,9 +3,11 @@ import { Harness } from 'sys.ui.dev';
 import { t } from './common';
 
 const imports = {
-  Monaco: import('./components/Monaco/dev/DEV'),
-  CodeEditor: import('./components/CodeEditor/dev/DEV'),
-  DevEnv: import('./components/DevEnv/dev/DEV'),
+  DevEnv: import('./ui/DevEnv/dev/DEV'),
+  CodeEditor: import('./ui/CodeEditor/dev/DEV'),
+  ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
+  InternalMonaco: import('./ui/Monaco/dev/DEV'),
+  UnitTests: import('./Dev.UnitTests'),
 };
 
 /**

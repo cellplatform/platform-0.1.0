@@ -1,5 +1,6 @@
-import { asArray, t, util, deleteUndefined } from './common';
+import { asArray, t, util, deleteUndefined, log } from './common';
 import { VercelUploadFiles } from './VercelHttp.Files.Upload';
+import { VercelFs } from '../node.Vercel/Vercel.Fs';
 
 /**
  * Create a new deployment.
@@ -12,14 +13,15 @@ import { VercelUploadFiles } from './VercelHttp.Files.Upload';
  *    https://vercel.com/docs/cli#project/redirects
  *
  */
-export async function deploy(
+export async function Deploy(
   args: t.VercelHttpDeployArgs & {
     ctx: t.Ctx;
     team: { id: string; name: string };
     project: { id: string; name: string };
+    silent?: boolean;
   },
 ): Promise<t.VercelHttpDeployResponse> {
-  const { ctx, source, team, project, beforeUpload } = args;
+  const { ctx, source, team, project, beforeUpload, silent = false } = args;
   const { http, fs, headers } = ctx;
   const teamId = team.id;
 
@@ -35,9 +37,13 @@ export async function deploy(
     const res = await client.upload(source, { beforeUpload });
     const { ok, error, total } = res;
     const files = res.files.map((item) => item.file);
+
     const errors = res.files
       .filter((item) => Boolean(item.error))
-      .map(({ file, error }) => `${file.file}: [${error?.code}] ${error?.message}`);
+      .map(({ file, error }) => {
+        const code = error?.code ? `[${error?.code}] ` : '';
+        return `${file.file}: ${code}${error?.message}`;
+      });
 
     return deleteUndefined({
       ok,
@@ -50,6 +56,13 @@ export async function deploy(
 
   if (!uploaded.ok) {
     const { total } = uploaded;
+
+    if (!silent) {
+      const total = uploaded.errors.length;
+      console.log('Failed Uploading:');
+      uploaded.errors.forEach((item, i) => log.info(`${i + 1} of ${total}`, item));
+    }
+
     throw new Error(`Failed uploading ${total.failed} of ${total.files} files.`);
   }
 
@@ -60,39 +73,14 @@ export async function deploy(
    * Append the deployment's {meta} data object with
    * the manifest {module} details.
    */
-  const manifest = await wrangleManifest({ source, fs });
-  let name = args.name;
-
-  let meta: t.VercelHttpDeployMeta = { kind: 'bundle:plain/files' };
-  if (manifest) {
-    const kind = (manifest as any)?.kind;
-    if (kind === 'module') {
-      const m = manifest as t.ModuleManifest;
-      const module = { ...m.module };
-
-      Object.keys(module)
-        .filter((key) => typeof module[key] === 'object')
-        .forEach((key) => delete module[key]); // NB: Meta-data cannot be an {object}.
-
-      name = name ?? `${module.namespace}-v${module.version}`;
-      const bytes = m.files.reduce((acc, next) => acc + next.bytes, 0).toString();
-      meta = {
-        ...module,
-        kind: 'bundle:code/module',
-        modulehash: m.hash.module,
-        fileshash: m.hash.files,
-        bytes,
-      };
-      Object.keys(meta).map((key) => (meta[key] = meta[key].toString())); // NB: Ensure all values are strings.
-    }
-  }
+  const info = await VercelFs.info({ fs, source, name: args.name });
+  const { name, meta } = info;
 
   /**
    * HTTP BODY
    * Request Parameters:
    *    https://vercel.com/docs/api#endpoints/deployments/create-a-new-deployment/request-parameters
    */
-  name = name ?? 'unnamed-v0.0.0';
   const alias = asArray(args.alias).filter(Boolean) as string[];
   const target = args.target;
   const body = {
@@ -137,24 +125,4 @@ export async function deploy(
   };
 
   return deleteUndefined({ ok, status, deployment, paths, error });
-}
-
-/**
- * [Helpers]
- */
-
-async function wrangleManifest(args: { fs: t.Fs; source: string | t.VercelSourceBundle }) {
-  const { fs, source } = args;
-
-  if (typeof source === 'string') {
-    return fs.json.read<t.Manifest>(fs.join(source, 'index.json'));
-  }
-
-  const file = source.files.find((file) => file.path === 'index.json');
-  if (file?.data) {
-    const text = new TextDecoder().decode(file.data);
-    return JSON.parse(text) as t.Manifest;
-  }
-
-  return undefined;
 }

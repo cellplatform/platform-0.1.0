@@ -1,8 +1,8 @@
-import { expect, t } from '../test';
+import { expect, t, Test } from '../test';
 import { Is } from './Is';
 
-describe('Is', () => {
-  it('Is.position', () => {
+export default Test.describe('Common: Is (flags)', (e) => {
+  e.it('Is.position', () => {
     const test = (input: any, expected: boolean) => {
       expect(Is.position(input)).to.eql(expected);
     };
@@ -16,7 +16,7 @@ describe('Is', () => {
     test({ column: 1, line: 1 }, true);
   });
 
-  it('Is.range', () => {
+  e.it('Is.range', () => {
     const test = (input: any, expected: boolean) => {
       expect(Is.range(input)).to.eql(expected);
     };
@@ -37,7 +37,7 @@ describe('Is', () => {
     test({ start: {}, end: pos }, false);
   });
 
-  it('Is.selection', () => {
+  e.it('Is.selection', () => {
     const test = (input: any, expected: boolean) => {
       expect(Is.selection(input)).to.eql(expected);
     };
@@ -59,7 +59,7 @@ describe('Is', () => {
     test({ cursor: pos, primary: range, secondary: [123] }, false);
   });
 
-  it('Is.http', () => {
+  e.it('Is.http', () => {
     const test = (input: string, expected: boolean) => {
       expect(Is.http(input)).to.eql(expected);
     };
@@ -72,7 +72,7 @@ describe('Is', () => {
     test('  https://domain.com  ', true);
   });
 
-  it('Is.editorEvent', () => {
+  e.it('Is.editorEvent', () => {
     const test = (input: t.Event<any>, expected: boolean) => {
       expect(Is.editorEvent(input)).to.eql(expected);
     };
@@ -80,7 +80,7 @@ describe('Is', () => {
     test({ type: 'foo', payload: { instance: 'foo' } }, false);
   });
 
-  it('Is.editorEvent', () => {
+  e.it('Is.editorEvent', () => {
     const test = (input: t.Event<any>, expected: boolean) => {
       expect(Is.editorEvent(input)).to.eql(expected);
     };
@@ -88,7 +88,7 @@ describe('Is', () => {
     test({ type: 'foo', payload: { instance: 'foo' } }, false);
   });
 
-  it('Is.instanceEvent', () => {
+  e.it('Is.instanceEvent', () => {
     const test = (input: t.Event<any>, expected: boolean) => {
       expect(Is.instanceEvent(input)).to.eql(expected);
     };
@@ -97,7 +97,7 @@ describe('Is', () => {
     test({ type: 'foo', payload: { instance: 'foo' } }, false);
   });
 
-  it('Is.singletonEvent', () => {
+  e.it('Is.singletonEvent', () => {
     const test = (input: t.Event<any>, expected: boolean) => {
       expect(Is.singletonEvent(input)).to.eql(expected);
     };
@@ -106,7 +106,7 @@ describe('Is', () => {
     test({ type: 'CodeEditor/foo', payload: {} }, true);
   });
 
-  it('Is.declarationFileUrl', () => {
+  e.it('Is.declarationFileUrl', () => {
     const test = (input: string, expected: boolean) => {
       expect(Is.declarationFileUrl(input)).to.eql(expected);
     };
