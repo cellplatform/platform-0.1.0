@@ -1,5 +1,6 @@
 import { Icon } from '@platform/ui.icon';
 import { MdWarning } from 'react-icons/md';
+import { FiHardDrive } from 'react-icons/fi';
 
 const icon = Icon.renderer;
 
@@ -8,4 +9,5 @@ const icon = Icon.renderer;
  */
 export const Icons = {
   Warning: icon(MdWarning),
+  HardDrive: icon(FiHardDrive),
 };

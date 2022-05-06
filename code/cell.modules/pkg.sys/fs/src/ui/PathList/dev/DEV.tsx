@@ -13,7 +13,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.PathList (Stateful)')
+  .namespace('ui.PathList.Stateful')
   .context((e) => {
     if (e.prev) return e.prev;
 
