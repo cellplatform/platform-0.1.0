@@ -1,15 +1,13 @@
 import React from 'react';
 
 import { CssValue, t } from './common';
-import { usePathListState } from './hooks/usePathListState';
 import { PathList } from './PathList';
 
 type FilesystemName = string;
 type DirPath = string;
 
 export type PathListStatefulProps = {
-  bus: t.EventBus<any>;
-  id: FilesystemName;
+  instance: { bus: t.EventBus<any>; id: FilesystemName };
   dir?: DirPath;
   scroll?: boolean;
   padding?: t.CssEdgesInput;
@@ -17,8 +15,8 @@ export type PathListStatefulProps = {
 };
 
 export const PathListStateful: React.FC<PathListStatefulProps> = (props) => {
-  const { bus, id } = props;
-  const state = usePathListState({ bus, id });
+  const { instance, dir } = props;
+  const state = PathList.useState({ instance, dir });
 
   /**
    * [Render]

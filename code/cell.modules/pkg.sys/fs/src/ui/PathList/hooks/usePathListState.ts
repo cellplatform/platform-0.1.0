@@ -3,14 +3,18 @@ import { debounceTime } from 'rxjs/operators';
 
 import { Filesystem, t } from '../common';
 
-type FilesystemName = string;
+type FilesystemId = string;
 type DirPath = string;
 
 /**
  * Manages keeping a list of paths in sync with the underlying filesystem.
  */
-export function usePathListState(args: { bus: t.EventBus; id: FilesystemName; dir?: DirPath }) {
-  const { bus, id, dir } = args;
+export function usePathListState(args: {
+  instance: { bus: t.EventBus; id: FilesystemId };
+  dir?: DirPath;
+}) {
+  const { dir } = args;
+  const { bus, id } = args.instance;
 
   const [ready, setReady] = useState(false);
   const [files, setFiles] = useState<t.ManifestFile[]>([]);

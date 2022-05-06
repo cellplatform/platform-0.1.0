@@ -24,7 +24,9 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
   /**
    * [Render]
    */
-  const styles = { base: css({ position: 'relative', width, minWidth, maxWidth }) };
+  const styles = {
+    base: css({ position: 'relative', width, minWidth, maxWidth }),
+  };
 
   return (
     <div {...css(styles.base, props.style)}>

@@ -1,20 +1,20 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t, Filesystem } from './common';
+import React from 'react';
+
+import { CssValue, Filesystem, t } from './common';
 import { FileDropTarget, FileDropTargetProps } from './FileDropTarget';
 
 type FilesystemId = string;
 
 export type FileDropTargetStatefulProps = {
-  bus: t.EventBus;
-  fs: FilesystemId;
+  instance: { bus: t.EventBus; id: FilesystemId };
   dir?: string;
   fileFilter?: (file: t.DroppedFile) => boolean;
   style?: CssValue;
 };
 
 export const FileDropTargetStateful: React.FC<FileDropTargetStatefulProps> = (props) => {
-  const { bus } = props;
-  const id = props.fs;
+  const { instance } = props;
+  const { bus, id } = instance;
   const rootDir = props.dir || '';
 
   const fileFilter = (file: t.DroppedFile) => {
@@ -56,36 +56,3 @@ export const FileDropTargetStateful: React.FC<FileDropTargetStatefulProps> = (pr
 
   return <FileDropTarget style={props.style} onDrop={onDrop} />;
 };
-
-/**
- * [Hooks]
- */
-
-/**
- * TODO 🐷
- * - put somewhere PUBLIC and OBVIOUS
- */
-
-// export function withFilesystem(bus: t.EventBus, id: FilesystemId, dir?: string) {}
-
-// export function useFilesystem(args: { bus: t.EventBus; id: FilesystemId; dir?: string }) {
-//   const { bus, id } = args;
-
-//   const [store, setStore] = useState<t.SysFsEvents>();
-//   const [fs, setFs] = useState<t.Fs>();
-
-//   useEffect(() => {
-//     const dir = args.dir;
-//     const store = Filesystem.Events({ bus, id });
-//     const fs = store.fs({ dir });
-
-//     console.log('fs', fs);
-
-//     setStore(store);
-//     setFs(fs);
-
-//     return () => store.dispose();
-//   }, [id]); // eslint-disable-line
-
-//   return { fs, store };
-// }

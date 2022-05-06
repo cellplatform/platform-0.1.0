@@ -26,7 +26,7 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       bus,
       fs,
-      props: { id, bus, scroll: true },
+      props: { instance: { id, bus }, scroll: true },
     };
 
     return ctx;

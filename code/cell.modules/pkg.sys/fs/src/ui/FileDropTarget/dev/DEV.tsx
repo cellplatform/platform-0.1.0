@@ -11,9 +11,7 @@ import { DevOuter } from './DEV.Outer';
 type FilesystemId = string;
 
 type Ctx = {
-  bus: t.EventBus;
   fs: t.Fs;
-  fsid: FilesystemId;
   props: FileDropTargetStatefulProps;
 };
 
@@ -27,17 +25,16 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const bus = rx.bus();
-
     const id = 'dev.fs';
-    Filesystem.create({ bus, id: id });
-    const fs = Filesystem.Events({ bus, id: id }).fs();
+    const bus = rx.bus();
+    const instance = { bus, id };
+
+    Filesystem.create({ bus, id });
+    const fs = Filesystem.Events({ bus, id }).fs();
 
     const ctx: Ctx = {
-      bus,
       fs,
-      fsid: id,
-      props: { bus, fs: id, dir: 'my-root' },
+      props: { instance, dir: 'my-root' },
     };
     return ctx;
   })
@@ -66,8 +63,6 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const bus = e.ctx.bus;
-
     const styles = {
       topLeft: {
         base: css({ Flex: 'horizontal-center-center' }),
@@ -78,7 +73,7 @@ export const actions = DevActions<Ctx>()
     const topLeft = (
       <div {...styles.topLeft.base}>
         <Icons.LegoBlock style={styles.topLeft.icon} size={14} />
-        {'Composition: <PathList>  ➡︎  <FileDropTarget>'}
+        {'Composition: <PathList> | <FileDropTarget>'}
       </div>
     );
 
@@ -87,7 +82,7 @@ export const actions = DevActions<Ctx>()
       layout: {
         label: {
           topLeft,
-          topRight: `Filesystem: "${e.ctx.fsid}"`,
+          topRight: `Filesystem: "${e.ctx.props.instance.id}"`,
         },
         position: [150, 80, 150, 80],
         cropmarks: -0.2,
@@ -103,8 +98,7 @@ export const actions = DevActions<Ctx>()
         return (
           <DevOuter>
             <PathListStateful
-              bus={e.ctx.bus}
-              id={e.ctx.fsid}
+              {...e.ctx.props}
               style={{ flex: 1, width: LEFT_WIDTH }}
               scroll={true}
               padding={[10, 15]}

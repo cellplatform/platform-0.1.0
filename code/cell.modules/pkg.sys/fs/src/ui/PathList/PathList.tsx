@@ -1,7 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t, Style, Spinner } from './common';
-import { PathListItem } from './components/PathItem';
+import React from 'react';
 
+import { css, CssValue, Spinner, Style, t, FC } from './common';
+import { PathListItem } from './ui/PathItem';
+import { usePathListState } from './hooks/usePathListState';
+
+/**
+ * Types
+ */
 export type PathListProps = {
   files?: t.ManifestFile[];
   scroll?: boolean;
@@ -10,7 +15,10 @@ export type PathListProps = {
   style?: CssValue;
 };
 
-export const PathList: React.FC<PathListProps> = (props) => {
+/**
+ * Component
+ */
+const View: React.FC<PathListProps> = (props) => {
   const { scroll = true, files = [], spinning } = props;
   const isEmpty = files.length === 0;
 
@@ -71,3 +79,15 @@ export const PathList: React.FC<PathListProps> = (props) => {
     </div>
   );
 };
+
+/**
+ * Export
+ */
+type Fields = {
+  useState: typeof usePathListState;
+};
+export const PathList = FC.decorate<PathListProps, Fields>(
+  View,
+  { useState: usePathListState },
+  { displayName: 'PathList' },
+);
