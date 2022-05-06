@@ -16,10 +16,13 @@ async function deploy(team: string, project: string, dir: string, alias?: string
   // const res = await team.project(projectName).create();
 
   const deployment = Vercel.Deploy({ token, dir, team, project });
-  const manifest = await deployment.manifest<t.ModuleManifest>();
 
+  const info = await deployment.info();
+  console.log();
   console.log('deploying:');
-  console.log(' • manifest', manifest?.hash.files);
+  console.log(' • size:  ', info.files.toString());
+  console.log(' • alias: ', alias);
+  console.log();
 
   const wait = deployment.commit({
     target: 'production',
