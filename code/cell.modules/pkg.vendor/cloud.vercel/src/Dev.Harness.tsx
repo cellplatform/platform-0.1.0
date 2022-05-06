@@ -4,6 +4,7 @@ import { t } from './web/common';
 
 const imports = {
   ModuleInfo: import('./web.ui/ModuleInfo/dev/DEV'),
+  VercelHttp: import('./web.ui/VercelHttp/dev/DEV'),
   UnitTests: import('./Dev.UnitTests'),
 };
 
