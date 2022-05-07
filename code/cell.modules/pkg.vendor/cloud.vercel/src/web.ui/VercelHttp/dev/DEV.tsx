@@ -2,7 +2,7 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { VercelHttp, VercelHttpProps } from '..';
 import { Http, t } from '../../common';
-import { VERCEL_TEST_TOKEN } from '../../../__UNSAFE__';
+import { VERCEL_TEST_TOKEN } from '../../../__SECRET__';
 
 type Ctx = {
   props: VercelHttpProps;
