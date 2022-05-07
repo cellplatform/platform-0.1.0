@@ -7,6 +7,11 @@ export { Observable } from 'rxjs';
 export { Http, HttpMethod } from '@platform/http.types';
 
 /**
+ * @system
+ */
+export { Fs } from 'sys.fs/lib/types';
+
+/**
  * @local
  */
 export * from '../../types';
