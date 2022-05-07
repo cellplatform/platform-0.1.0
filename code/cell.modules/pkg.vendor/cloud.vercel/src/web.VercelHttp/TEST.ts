@@ -5,7 +5,7 @@ export default Test.describe('VercelHttp', async (e) => {
   const fs = await TestUtil.fs.init();
   const { http } = TestUtil;
 
-  e.describe('util', (e) => {
+  e.describe('Util', (e) => {
     e.describe('shasum (SHA1 digest)', (e) => {
       e.it('hash: <empty> (undefined input)', () => {
         expect(Util.shasum()).to.eql('');
@@ -77,6 +77,9 @@ export default Test.describe('VercelHttp', async (e) => {
 
     e.describe('auth', (e) => {
       e.it.skip('not authorized', async () => {
+        /**
+         * TODO 🐷
+         */
         // const token = 'abc123';
         // const client = VercelHttp({ fs, token });
         // const res = await client.teams.list();

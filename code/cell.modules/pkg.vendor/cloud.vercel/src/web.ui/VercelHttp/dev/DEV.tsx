@@ -7,6 +7,8 @@ import { css, cuid, t, value } from '../../common';
 import { DevFilesystem } from '../../dev';
 import { ModuleInfo } from '../../ModuleInfo';
 
+import { VercelHttp as Api } from '../../../web.VercelHttp';
+
 type Ctx = {
   bus: t.EventBus;
   props: VercelHttpProps;
@@ -45,7 +47,8 @@ export const actions = DevActions<Ctx>()
     e.title('Debug');
 
     e.button('tmp', (e) => {
-      console.log('Crypto', Crypto);
+      // console.log('Crypto', Crypto);
+      console.log('Api', Api);
     });
 
     e.hr();

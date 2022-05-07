@@ -4,5 +4,3 @@ import * as Util from './Util';
 export { Util, t };
 export * from './Util';
 export * from './libs';
-
-export const FOO = { m: 1 };
