@@ -1,6 +1,9 @@
 import { clone, uniq, flatten } from 'ramda';
 export const R = { clone, uniq, flatten };
 
+import Filesize from 'filesize';
+export { Filesize };
+
 /**
  * @platform
  */

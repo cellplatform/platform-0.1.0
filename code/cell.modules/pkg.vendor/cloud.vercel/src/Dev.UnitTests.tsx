@@ -4,7 +4,7 @@ import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
 const Imports = {
   Bus: import('./web.Bus/TEST'),
-  VercelHttp: import('./web.Vercel/VercelHttp/TEST'),
+  VercelHttp: import('./web.Vercel/Vercel.Http/TEST'),
 };
 
 type Ctx = { results?: TestSuiteRunResponse };

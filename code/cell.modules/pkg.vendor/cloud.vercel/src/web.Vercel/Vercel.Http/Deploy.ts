@@ -1,6 +1,6 @@
 import { asArray, t, Util, deleteUndefined, log } from './common';
 import { VercelUploadFiles } from './VercelHttp.Files.Upload';
-import { VercelFs } from '../node.Vercel/Vercel.Fs';
+import { VercelFs } from '../Vercel.Fs';
 
 /**
  * Create a new deployment.

@@ -1,2 +1,2 @@
 export { Filesystem } from './web';
-export { Path } from './web/common';
+export { Path, Filesize } from './web/common';

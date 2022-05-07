@@ -1,5 +1,5 @@
 import { t, deleteUndefined } from './common';
-// import { Deploy } from './Deploy';
+import { Deploy } from './Deploy';
 
 export function VercelTeamProject(args: {
   ctx: t.Ctx;
@@ -81,18 +81,12 @@ export function VercelTeamProject(args: {
         throw new Error(`Failed to deploy while retrieving team details. [${code}] ${message}`);
       }
 
-      /**
-       * TODO 🐷
-       */
-
-      return null as any;
-
-      // return Deploy({
-      //   ...args,
-      //   ctx,
-      //   team: { id: teamId, name: teamInfo.team?.name ?? '' },
-      //   project: { id: projectInfo.project.id, name },
-      // });
+      return Deploy({
+        ...args,
+        ctx,
+        team: { id: teamId, name: teamInfo.team?.name ?? '' },
+        project: { id: projectInfo.project.id, name },
+      });
     },
   };
 

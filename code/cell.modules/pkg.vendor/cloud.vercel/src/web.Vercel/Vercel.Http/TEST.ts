@@ -1,5 +1,6 @@
 import { expect, Test, TestUtil } from '../../web.test';
 import { Util } from './common';
+import { VercelHttp } from '.';
 
 export default Test.describe('VercelHttp', async (e) => {
   const fs = await TestUtil.fs.init();
@@ -76,17 +77,14 @@ export default Test.describe('VercelHttp', async (e) => {
     });
 
     e.describe('auth', (e) => {
-      e.it.skip('not authorized', async () => {
-        /**
-         * TODO 🐷
-         */
-        // const token = 'abc123';
-        // const client = VercelHttp({ fs, token });
-        // const res = await client.teams.list();
-        // expect(res.ok).to.eql(false);
-        // expect(res.status).to.eql(403);
-        // expect(res.error?.code).to.eql('forbidden');
-        // expect(res.error?.message).to.include('Not authorized');
+      e.it('not authorized', async () => {
+        const token = 'abc123';
+        const client = VercelHttp({ fs, token });
+        const res = await client.teams.list();
+        expect(res.ok).to.eql(false);
+        expect(res.status).to.eql(403);
+        expect(res.error?.code).to.eql('forbidden');
+        expect(res.error?.message).to.include('Not authorized');
       });
     });
   });

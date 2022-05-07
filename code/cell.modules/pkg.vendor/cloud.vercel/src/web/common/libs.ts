@@ -16,4 +16,4 @@ export { Mime } from '@platform/util.mimetype';
 export { WebRuntime } from 'sys.runtime.web.ui';
 export { PropList } from 'sys.ui.primitives/lib/ui/PropList';
 export { Filesystem } from 'sys.fs/lib/web.FsBus.IndexedDb';
-export { Path } from 'sys.fs/lib';
+export { Path, Filesize } from 'sys.fs/lib';

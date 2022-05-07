@@ -7,9 +7,10 @@ import { css, cuid, t, value } from '../../common';
 import { DevFilesystem } from '../../dev';
 import { ModuleInfo } from '../../ModuleInfo';
 
-import { VercelHttp as Api } from '../../../web.Vercel';
+import { Vercel } from '../../../web.Vercel';
 
 type Ctx = {
+  token: string;
   bus: t.EventBus;
   props: VercelHttpProps;
   http: t.Http;
@@ -25,11 +26,12 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const { bus, http } = TestUtil;
+    const { bus, http, token } = TestUtil;
     const fs = TestUtil.fs.events;
     TestUtil.fs.init();
 
     const ctx: Ctx = {
+      token,
       bus,
       http,
       fs,
@@ -47,8 +49,19 @@ export const actions = DevActions<Ctx>()
     e.title('Debug');
 
     e.button('tmp', (e) => {
-      // console.log('Crypto', Crypto);
-      console.log('Api', Api);
+      const { http, fs, token } = e.ctx;
+
+      /**
+       * TODO 🐷
+       */
+      // const api = VercelHttpApi({ fs, http, token });
+      // console.log('api', api);
+      console.log('TODO', e.ctx);
+      console.log('Vercel', Vercel);
+
+      const vercel = Vercel.Http({ fs, http, token });
+
+      console.log('vercel', vercel);
     });
 
     e.hr();
@@ -123,18 +136,6 @@ export const actions = DevActions<Ctx>()
       console.log('res.json', res.json);
 
       e.ctx.output = res.json;
-    });
-
-    e.button('VercelHttp (wrapper)', (e) => {
-      //
-      const { http, fs } = e.ctx;
-
-      /**
-       * TODO 🐷
-       */
-      // const api = VercelHttpApi({ fs, http, token });
-      // console.log('api', api);
-      console.log('TODO', e.ctx);
     });
 
     e.hr();

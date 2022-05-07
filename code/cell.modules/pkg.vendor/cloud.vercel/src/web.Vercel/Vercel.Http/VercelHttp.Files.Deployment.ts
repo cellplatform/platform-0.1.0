@@ -85,14 +85,6 @@ export function VercelDeploymentFiles(args: {
       const errors = results.map((item) => item.error as Error).filter(Boolean);
       const ok = results.every((item) => item.ok);
 
-      // console.log(
-      //   'ok',
-      //   results.map((e) => e.ok),
-      // );
-
-      console.log('-------------------------------------------');
-      console.log('baseUrl', baseUrl);
-
       // Finish up.
       return deleteUndefined({ ok, errors });
     },
