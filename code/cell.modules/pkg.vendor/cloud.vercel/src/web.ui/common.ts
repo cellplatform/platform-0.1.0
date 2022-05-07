@@ -1,2 +1,2 @@
 export * from '../web/common';
-export { VercelBus } from '../web.BusEvents';
+export { VercelBus } from '../web.Bus';

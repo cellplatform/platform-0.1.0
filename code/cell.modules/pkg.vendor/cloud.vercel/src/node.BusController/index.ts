@@ -1,2 +1,2 @@
 export { BusController } from './BusController';
-export { BusEvents } from '../web.BusEvents';
+export { BusEvents } from '../web.Bus';
