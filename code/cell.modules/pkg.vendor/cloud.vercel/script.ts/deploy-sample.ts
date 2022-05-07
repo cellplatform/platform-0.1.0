@@ -42,6 +42,7 @@ async function deploy(team: string, project: string, dir: string, alias?: string
   console.log('-------------------------------------------');
   console.log(status);
   console.log(name);
+  if (res.error) console.log('error', res.error);
   console.log();
 
   return { status, name };
