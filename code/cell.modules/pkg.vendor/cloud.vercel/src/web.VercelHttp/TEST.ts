@@ -1,5 +1,5 @@
 import { expect, Test, TestUtil } from '../web.test';
-import { util } from './common';
+import { Util } from './common';
 
 export default Test.describe('VercelHttp', async (e) => {
   const fs = await TestUtil.fs.init();
@@ -7,11 +7,11 @@ export default Test.describe('VercelHttp', async (e) => {
   e.describe('util', (e) => {
     e.describe('shasum (SHA1 digest)', (e) => {
       e.it('hash: <empty> (undefined input)', () => {
-        expect(util.shasum()).to.eql('');
+        expect(Util.shasum()).to.eql('');
       });
 
       e.it('hash: string', () => {
-        const res = util.shasum('hello');
+        const res = Util.shasum('hello');
         expect(res).to.eql('aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d');
       });
 
@@ -22,7 +22,7 @@ export default Test.describe('VercelHttp', async (e) => {
         await fs.write(path, data);
         const file = await fs.read(path);
 
-        const res = util.shasum(file);
+        const res = Util.shasum(file);
         expect(res).to.eql('be56893d6faa9d742f1595f8d077af6083ba8dd6');
       });
     });

@@ -1,8 +1,8 @@
 import * as t from './types';
-import * as util from './util';
+import * as Util from './Util';
 
-export { util, t };
-export * from './util';
+export { Util, t };
+export * from './Util';
 export * from './libs';
 
 export const FOO = { m: 1 };
