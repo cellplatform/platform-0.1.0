@@ -1,3 +1,5 @@
+export * as Sha1 from 'js-sha1';
+
 /**
  * @platform
  */

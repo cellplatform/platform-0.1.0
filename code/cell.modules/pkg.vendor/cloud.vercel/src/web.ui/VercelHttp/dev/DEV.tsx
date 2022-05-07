@@ -1,14 +1,24 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { VercelHttp, VercelHttpProps } from '..';
-import { Http, t } from '../../common';
+import { Http, t, Filesystem, rx, cuid, value, css } from '../../common';
 import { VERCEL_TEST_TOKEN } from '../../../__SECRET__';
 
+import { DevFilesystem } from '../../dev';
+import { ModuleInfo } from '../../ModuleInfo';
+import { TestUtil } from '../../../web.test';
+
+import { FOO } from '../../../web.VercelHttp/common';
+
 type Ctx = {
+  bus: t.EventBus;
   props: VercelHttpProps;
   http: t.Http;
+  fs: t.Fs;
   output?: any;
 };
+
+const token = VERCEL_TEST_TOKEN; // 💥 SECRET 💥
 
 /**
  * Actions
@@ -22,8 +32,14 @@ export const actions = DevActions<Ctx>()
     const headers = { Authorization };
     const http = Http.create({ headers });
 
+    const bus = TestUtil.bus;
+    const fs = TestUtil.fs.events;
+    TestUtil.fs.init();
+
     const ctx: Ctx = {
+      bus,
       http,
+      fs,
       props: {},
     };
 
@@ -35,7 +51,72 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('Vercel HTTP/API');
+    e.title('Debug');
+
+    e.button('tmp', (e) => {
+      console.log('Crypto', Crypto);
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Filesystem');
+
+    const toPath = (count: number) => `foo/my-file-${count + 1}.json`;
+
+    e.button('add', async (e) => {
+      const msg = cuid().repeat(value.random(1, 50));
+      const fs = e.ctx.fs;
+      const total = (await fs.manifest()).files.length;
+      const path = toPath(total);
+      const data = { msg, total };
+      fs.json.write(path, data);
+    });
+
+    e.hr(1, 0.1);
+
+    e.button('delete: first', async (e) => {
+      const fs = e.ctx.fs;
+      const first = (await fs.manifest()).files[0];
+      if (first) await fs.delete(first.path);
+    });
+
+    e.button('delete: last', async (e) => {
+      const fs = e.ctx.fs;
+      const files = (await fs.manifest()).files;
+      const last = files[files.length - 1];
+      if (last) await fs.delete(last.path);
+    });
+
+    e.button('delete: all (reset)', async (e) => {
+      const fs = e.ctx.fs;
+      const files = (await fs.manifest()).files;
+      await Promise.all(files.map((file) => fs.delete(file.path)));
+    });
+
+    e.hr();
+
+    e.component((e) => {
+      const styles = {
+        base: css({
+          Flex: 'y-stretch-stretch',
+          Margin: [20, 45, 30, 45],
+        }),
+      };
+      return (
+        <div {...styles.base}>
+          <ModuleInfo style={{ marginBottom: 15 }} fields={['Module', 'Token.API']} />
+          <DevFilesystem fs={TestUtil.fs.instance} />
+        </div>
+      );
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Vercel API');
 
     e.button('GET: /www/user', async (e) => {
       const http = e.ctx.http;
@@ -48,6 +129,18 @@ export const actions = DevActions<Ctx>()
       console.log('res.json', res.json);
 
       e.ctx.output = res.json;
+    });
+
+    e.button('VercelHttp (wrapper)', (e) => {
+      //
+      const { http, fs } = e.ctx;
+
+      /**
+       * TODO 🐷
+       */
+      // const api = VercelHttpApi({ fs, http, token });
+      // console.log('api', api);
+      console.log('TODO', e.ctx);
     });
 
     e.hr();
