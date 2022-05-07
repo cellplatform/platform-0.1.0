@@ -1,7 +1,7 @@
 import { INodeFs, Http, HttpMethod, Fs } from '../../node/common/types';
 
 export * from '../../web/common/types';
-export * from '../types';
+export * from '../../types';
 export { INodeFs, Http, HttpMethod, Fs };
 
 /**
