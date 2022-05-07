@@ -1,4 +1,4 @@
-import { expect, Test, TestUtil } from '../web.test';
+import { expect, Test, TestUtil } from '../../web.test';
 import { Util } from './common';
 
 export default Test.describe('VercelHttp', async (e) => {

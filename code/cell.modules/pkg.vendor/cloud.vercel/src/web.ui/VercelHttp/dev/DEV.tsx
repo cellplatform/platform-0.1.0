@@ -7,7 +7,7 @@ import { css, cuid, t, value } from '../../common';
 import { DevFilesystem } from '../../dev';
 import { ModuleInfo } from '../../ModuleInfo';
 
-import { VercelHttp as Api } from '../../../web.VercelHttp';
+import { VercelHttp as Api } from '../../../web.Vercel';
 
 type Ctx = {
   bus: t.EventBus;

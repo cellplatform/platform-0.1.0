@@ -1,6 +1,6 @@
-import * as t from '../../web/common/types';
+import * as t from '../../../web/common/types';
 
-export * from '../../web/common/types';
+export * from '../../../web/common/types';
 export * from '../types';
 
 /**
