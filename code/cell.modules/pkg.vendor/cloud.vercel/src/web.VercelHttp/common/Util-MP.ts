@@ -1,4 +1,4 @@
-import * as t from './types';
+import * as Util from './types';
 import { Sha1 } from './libs';
 
 type Q = Record<string, string | number | undefined>;
@@ -36,14 +36,14 @@ export function ensureHttps(url: string) {
 /**
  * Creates a common context object.
  */
-export function toCtx(fs: t.Fs, http: t.Http, token: string, version?: number) {
+export function toCtx(fs: Util.Fs, http: Util.Http, token: string, version?: number) {
   token = (token ?? '').trim();
   if (!token) throw new Error(`A Vercel authorization token not provided.`);
 
   const Authorization = `Bearer ${token}`;
   const headers = { Authorization };
 
-  const ctx: t.Ctx = {
+  const ctx: Util.Ctx = {
     token,
     headers,
     Authorization,
