@@ -15,19 +15,6 @@ describe('VercelHttp', function () {
   const fs = store.fs();
 
   describe('util', () => {
-    it.only('shasum', async () => {
-      const file = await fs.read('node/main.js');
-
-      if (file) {
-        const r = util.shasum('hello');
-        console.log('r', r);
-      }
-
-      /**
-       * TODO 🐷
-       */
-    });
-
     it('toUrl', () => {
       expect(util.toUrl(12, '  teams  ')).to.eql('https://api.vercel.com/v12/teams');
       expect(util.toUrl(12, 'teams?123')).to.eql('https://api.vercel.com/v12/teams'); // NB: Strips query-string.

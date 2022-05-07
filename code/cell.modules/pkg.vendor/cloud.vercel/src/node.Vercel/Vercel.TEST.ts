@@ -75,7 +75,7 @@ describe('Vercel', () => {
 
         expect(res).to.include('kB');
         expect(res).to.include(' files)');
-        expect(res).to.include('SHA256:');
+        expect(res).to.include('SHA256(');
       });
     });
   });
