@@ -10,15 +10,11 @@ export type DevFilesystemProps = {
 };
 
 export const DevFilesystem: React.FC<DevFilesystemProps> = (props) => {
-  const state = PathListStateful.useState({ instance: props.fs });
-
   /**
    * [Render]
    */
   const styles = {
-    base: css({
-      color: COLORS.DARK,
-    }),
+    base: css({ color: COLORS.DARK }),
     title: css({
       fontFamily: 'monospace',
       fontSize: 12,

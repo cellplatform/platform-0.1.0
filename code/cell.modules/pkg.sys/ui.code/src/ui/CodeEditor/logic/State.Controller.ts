@@ -3,6 +3,8 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 
 import { Filesystem, rx, t } from '../common';
 
+type DirPath = string;
+type FilesystemId = string;
 type Milliseconds = number;
 
 /**
@@ -11,7 +13,7 @@ type Milliseconds = number;
 export function CodeEditorStateController(args: {
   bus: t.EventBus<any>;
   editor: t.CodeEditorInstanceEvents;
-  fs?: { id: string; path: string };
+  fs?: { id: FilesystemId; path: DirPath };
   debounce?: Milliseconds;
   dispose$?: t.Observable<any>;
 }) {
