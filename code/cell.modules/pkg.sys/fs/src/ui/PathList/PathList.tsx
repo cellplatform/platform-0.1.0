@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { css, CssValue, Spinner, Style, t, FC } from './common';
-import { PathListItem } from './ui/PathItem';
+import { COLORS, css, CssValue, FC, Spinner, Style, t } from './common';
 import { usePathListState } from './hooks/usePathListState';
+import { PathListItem } from './ui/PathItem';
 
 /**
  * Types
@@ -55,7 +55,7 @@ const View: React.FC<PathListProps> = (props) => {
 
   const elSpinner = spinning && (
     <div {...styles.spinner.base}>
-      <Spinner />
+      <Spinner color={COLORS.DARK} size={18} />
     </div>
   );
 

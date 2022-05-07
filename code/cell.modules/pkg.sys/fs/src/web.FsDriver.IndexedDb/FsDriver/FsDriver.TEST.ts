@@ -1,12 +1,10 @@
 import { FsDriverLocal } from '..';
-import { expect, Test, TestIndexedDb } from '../../web.test';
+import { expect, Test, TestIndexedDb, TEST } from '../../web.test';
 import { Hash, Path, slug, Stream, t } from '../common';
 
 export default Test.describe('FsDriver (IndexedDB)', (e) => {
-  const FS_ID = 'dev.test.FsDriver';
-
   const testCreate = async () => {
-    const id = FS_ID;
+    const id = TEST.FS_DEV;
     const fs = await FsDriverLocal({ id });
 
     const data = new Uint8Array([1, 2, 3]);
@@ -287,7 +285,7 @@ export default Test.describe('FsDriver (IndexedDB)', (e) => {
     });
 
     e.it('write (replace)', async () => {
-      const test = await TestIndexedDb.create(FS_ID);
+      const test = await TestIndexedDb.create(TEST.FS_DEV);
       await test.deleteAll();
       const { fs } = await testCreate();
 

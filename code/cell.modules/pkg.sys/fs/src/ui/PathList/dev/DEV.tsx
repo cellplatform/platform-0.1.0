@@ -1,5 +1,5 @@
 import React from 'react';
-import { DevActions } from 'sys.ui.dev';
+import { TEST, DevActions } from '../../../web.test';
 import { PathListStateful, PathListStatefulProps } from '..';
 import { t, rx, cuid, value, Filesystem } from '../common';
 
@@ -18,15 +18,15 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const bus = rx.bus();
+    const instance = { bus, id: TEST.FS_DEV };
 
-    const id = 'dev.fs';
-    Filesystem.create({ bus, id });
-    const fs = Filesystem.Events({ bus, id }).fs();
+    Filesystem.create(instance);
+    const fs = Filesystem.Events(instance).fs();
 
     const ctx: Ctx = {
       bus,
       fs,
-      props: { instance: { id, bus }, scroll: true },
+      props: { instance, scroll: true },
     };
 
     return ctx;
@@ -85,7 +85,10 @@ export const actions = DevActions<Ctx>()
     e.settings({
       host: { background: -0.04 },
       layout: {
-        label: '<PathListStateful>',
+        label: {
+          topLeft: '<PathListStateful>',
+          topRight: `Filesystem: "${e.ctx.props.instance.id}"`,
+        },
         position: [150, null],
         width: 450,
         border: -0.1,

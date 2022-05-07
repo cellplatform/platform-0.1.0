@@ -1,5 +1,5 @@
 import React from 'react';
-import { DevActions } from 'sys.ui.dev';
+import { TEST, DevActions } from '../../../web.test';
 import { FileDropTargetStateful, FileDropTargetStatefulProps } from '..';
 import { PathListStateful } from '../../PathList';
 import { t, rx, Filesystem, Icons, css } from '../common';
@@ -7,8 +7,6 @@ import { t, rx, Filesystem, Icons, css } from '../common';
 import { PositioningLayout } from 'sys.ui.primitives/lib/ui/PositioningLayout';
 import { PositioningLayer } from 'sys.ui.primitives/lib/types';
 import { DevOuter } from './DEV.Outer';
-
-type FilesystemId = string;
 
 type Ctx = {
   fs: t.Fs;
@@ -25,7 +23,7 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const id = 'dev.fs';
+    const id = TEST.FS_DEV;
     const bus = rx.bus();
     const instance = { bus, id };
 
