@@ -1,14 +1,11 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { VercelHttp, VercelHttpProps } from '..';
-import { Http, t, Filesystem, rx, cuid, value, css } from '../../common';
-import { VERCEL_TEST_TOKEN } from '../../../__SECRET__';
 
+import { VercelHttp, VercelHttpProps } from '..';
+import { TestUtil } from '../../../web.test';
+import { css, cuid, t, value } from '../../common';
 import { DevFilesystem } from '../../dev';
 import { ModuleInfo } from '../../ModuleInfo';
-import { TestUtil } from '../../../web.test';
-
-import { FOO } from '../../../web.VercelHttp/common';
 
 type Ctx = {
   bus: t.EventBus;
@@ -18,8 +15,6 @@ type Ctx = {
   output?: any;
 };
 
-const token = VERCEL_TEST_TOKEN; // 💥 SECRET 💥
-
 /**
  * Actions
  */
@@ -28,11 +23,7 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const Authorization = `Bearer ${VERCEL_TEST_TOKEN}`;
-    const headers = { Authorization };
-    const http = Http.create({ headers });
-
-    const bus = TestUtil.bus;
+    const { bus, http } = TestUtil;
     const fs = TestUtil.fs.events;
     TestUtil.fs.init();
 
