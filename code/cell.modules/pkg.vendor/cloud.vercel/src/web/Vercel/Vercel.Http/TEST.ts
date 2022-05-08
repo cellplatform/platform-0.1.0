@@ -1,4 +1,4 @@
-import { expect, Test, TestUtil } from '../../web.test';
+import { expect, Test, TestUtil } from '../../test';
 import { Util } from './common';
 import { VercelHttp } from '.';
 

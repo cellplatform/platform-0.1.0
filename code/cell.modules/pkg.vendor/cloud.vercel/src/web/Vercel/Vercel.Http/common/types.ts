@@ -1,12 +1,14 @@
-import * as t from '../../../web/common/types';
+import * as t from '../../../common/types';
 
-export * from '../../../web/common/types';
+/**
+ * Export
+ */
+export * from '../../../common/types';
 export * from '../types';
 
 /**
  * Internal
  */
-
 type Q = Record<string, string | number | undefined>;
 
 export type Ctx = {

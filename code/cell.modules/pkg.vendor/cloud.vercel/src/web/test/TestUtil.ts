@@ -1,6 +1,6 @@
-import { rx, t, Filesystem, Http } from '../web/common';
+import { rx, t, Filesystem, Http } from '../common';
 
-import { VERCEL_TEST_TOKEN } from '../__SECRET__';
+import { VERCEL_TEST_TOKEN } from '../../__SECRET__';
 
 let _fs: undefined | t.Fs;
 

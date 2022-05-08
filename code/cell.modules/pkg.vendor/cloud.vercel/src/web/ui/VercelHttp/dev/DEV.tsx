@@ -2,12 +2,12 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { VercelHttp, VercelHttpProps } from '..';
-import { TestUtil } from '../../../web.test';
+import { TestUtil } from '../../../test';
 import { css, cuid, t, value } from '../../common';
 import { DevFilesystem } from '../../dev';
 import { ModuleInfo } from '../../ModuleInfo';
 
-import { Vercel } from '../../../web.Vercel';
+import { Vercel } from '../../../Vercel';
 
 type Ctx = {
   token: string;

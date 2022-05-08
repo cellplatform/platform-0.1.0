@@ -1,1 +1,1 @@
-export * from '../web.Vercel/Vercel.Http';
+export * from '../web/Vercel/Vercel.Http';

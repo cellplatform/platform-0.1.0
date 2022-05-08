@@ -1,4 +1,4 @@
-import * as t from '../web/common/types';
+import * as t from '../common/types';
 
 type Id = string;
 type Milliseconds = number;
