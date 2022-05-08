@@ -1,5 +1,5 @@
 import { nodefs, t, expect, rx } from '../test';
-import { VercelHttp } from '../node.VercelHttp';
+import { VercelHttp } from '../Vercel.Http';
 
 import { BusController, BusEvents } from '.';
 import { DEFAULT, Filesystem } from './common';

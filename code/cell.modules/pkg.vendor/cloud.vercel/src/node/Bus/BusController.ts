@@ -1,4 +1,4 @@
-import { VercelHttp } from '../node.VercelHttp';
+import { VercelHttp } from '../Vercel.Http';
 import { BusEvents, DEFAULT, rx, slug, t } from './common';
 
 type Id = string;

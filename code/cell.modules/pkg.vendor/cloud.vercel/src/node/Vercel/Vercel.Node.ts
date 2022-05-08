@@ -1,5 +1,5 @@
 import { nodefs, rx, Filesystem } from './common';
-import { VercelHttp } from '../node.VercelHttp';
+import { VercelHttp } from '../Vercel.Http';
 
 type ApiToken = string;
 type DirectoryPath = string;
