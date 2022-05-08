@@ -1,6 +1,6 @@
-import { t, Filesize } from './common';
+import { t, Filesize } from '../common';
 
-type DirectoryPath = string;
+type DirPath = string;
 
 /**
  * Filesystem helpers for working with Vercel.
@@ -9,7 +9,7 @@ export const VercelFs = {
   /**
    * Read directory into a "bundle" (manifest WITH binary file data).
    */
-  async readdir(fs: t.Fs, path?: DirectoryPath) {
+  async readdir(fs: t.Fs, path?: DirPath) {
     if (typeof path === 'string' && !(await fs.is.dir(path))) {
       throw new Error(`Path is not a directory: "${path}"`);
     }

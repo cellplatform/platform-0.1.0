@@ -1,6 +1,6 @@
-import { t, rx } from './common';
-import { VercelFs } from './Vercel.Fs';
-import { VercelHttp } from './Vercel.Http';
+import { t, rx } from '../common';
+import { VercelFs } from '../Vercel.Fs';
+import { VercelHttp } from '../Vercel.Http';
 
 type ApiToken = string;
 type DirectoryPath = string;
