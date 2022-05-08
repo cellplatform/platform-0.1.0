@@ -1,9 +1,9 @@
 import { t, deleteUndefined } from './common';
-import { VercelDeploymentFiles } from './VercelHttp.Files.Deployment';
+import { VercelHttpDeploymentFiles } from './VercelHttp.Files.Deployment';
 
 type Url = string;
 
-export function VercelTeamDeployment(args: {
+export function VercelHttpTeamDeployment(args: {
   ctx: t.Ctx;
   url: Url; // "<id>.vercel.app" or alias url.
   team: t.VercelHttpTeam;
@@ -54,7 +54,7 @@ export function VercelTeamDeployment(args: {
       const files = (
         !ok
           ? {}
-          : VercelDeploymentFiles({
+          : VercelHttpDeploymentFiles({
               ctx,
               teamId,
               deploymentId,

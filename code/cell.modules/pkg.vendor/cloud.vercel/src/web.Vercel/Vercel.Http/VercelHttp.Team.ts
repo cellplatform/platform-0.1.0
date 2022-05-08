@@ -1,8 +1,8 @@
 import { t } from './common';
-import { VercelTeamDeployment } from './VercelHttp.Team.Deployment';
-import { VercelTeamProject } from './VercelHttp.Team.Project';
+import { VercelHttpTeamDeployment } from './VercelHttp.Team.Deployment';
+import { VercelHttpTeamProject } from './VercelHttp.Team.Project';
 
-export function VercelTeam(args: { ctx: t.Ctx; teamId: string }): t.VercelHttpTeam {
+export function VercelHttpTeam(args: { ctx: t.Ctx; teamId: string }): t.VercelHttpTeam {
   const { ctx, teamId } = args;
   const { headers, http } = ctx;
 
@@ -41,7 +41,7 @@ export function VercelTeam(args: { ctx: t.Ctx; teamId: string }): t.VercelHttpTe
      * Work on a single project within the team.
      */
     project(name) {
-      return VercelTeamProject({ ctx, name, team: api });
+      return VercelHttpTeamProject({ ctx, name, team: api });
     },
 
     /**
@@ -68,7 +68,7 @@ export function VercelTeam(args: { ctx: t.Ctx; teamId: string }): t.VercelHttpTe
      * Work on a single deployment within a team.
      */
     deployment(url) {
-      return VercelTeamDeployment({ ctx, url, team: api });
+      return VercelHttpTeamDeployment({ ctx, url, team: api });
     },
   };
 

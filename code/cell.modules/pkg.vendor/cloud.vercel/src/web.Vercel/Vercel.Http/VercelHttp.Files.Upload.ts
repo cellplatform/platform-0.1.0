@@ -2,7 +2,7 @@ import { DEFAULT, Mime, shasum, t, time, deleteUndefined } from './common';
 
 type Id = string;
 
-export function VercelUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.VercelHttpUploadFiles {
+export function VercelHttpUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.VercelHttpUploadFiles {
   const { ctx, teamId } = args;
   const { http, fs } = ctx;
 

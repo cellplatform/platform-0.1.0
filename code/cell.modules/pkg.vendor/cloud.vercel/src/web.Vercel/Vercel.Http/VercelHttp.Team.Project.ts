@@ -1,7 +1,7 @@
 import { t, deleteUndefined } from './common';
 import { VercellHttpDeploy } from './VercelHttp.Deploy';
 
-export function VercelTeamProject(args: {
+export function VercelHttpTeamProject(args: {
   ctx: t.Ctx;
   name: string;
   team: t.VercelHttpTeam;

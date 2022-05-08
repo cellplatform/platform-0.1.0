@@ -2,7 +2,7 @@ import { t, Path, deleteUndefined } from './common';
 
 type Id = string;
 
-export function VercelDeploymentFiles(args: {
+export function VercelHttpDeploymentFiles(args: {
   ctx: t.Ctx;
   teamId: Id;
   deploymentId: Id;

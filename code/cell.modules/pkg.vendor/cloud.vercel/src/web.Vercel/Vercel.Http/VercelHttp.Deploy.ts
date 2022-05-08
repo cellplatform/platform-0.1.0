@@ -1,5 +1,5 @@
 import { asArray, t, Util, deleteUndefined, log } from './common';
-import { VercelUploadFiles } from './VercelHttp.Files.Upload';
+import { VercelHttpUploadFiles } from './VercelHttp.Files.Upload';
 import { VercelFs } from '../Vercel.Fs';
 
 /**
@@ -33,7 +33,7 @@ export async function VercellHttpDeploy(
    * Upload files.
    */
   const uploaded = await (async () => {
-    const client = VercelUploadFiles({ ctx, teamId });
+    const client = VercelHttpUploadFiles({ ctx, teamId });
     const res = await client.upload(source, { beforeUpload });
     const { ok, error, total } = res;
     const files = res.files.map((item) => item.file);

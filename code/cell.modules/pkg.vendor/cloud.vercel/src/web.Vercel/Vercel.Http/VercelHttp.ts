@@ -1,5 +1,5 @@
 import { Http, t, Util } from './common';
-import { VercelTeam } from './VercelHttp.Team';
+import { VercelHttpTeam } from './VercelHttp.Team';
 
 /**
  * A wrapper around the Vercel HTTP endpoints API.
@@ -64,7 +64,7 @@ export function VercelHttp(args: {
      * Retrieve a single team.
      */
     team(teamId) {
-      return VercelTeam({ ctx, teamId });
+      return VercelHttpTeam({ ctx, teamId });
     },
   };
 
