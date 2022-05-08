@@ -17,8 +17,8 @@ async function deploy(team: string, project: string, dir: string, alias?: string
   };
 
   const deployment = Vercel.Deploy({ token, dir, team, project, beforeUpload });
-  const info = await deployment.info();
 
+  const info = await deployment.info();
   console.log();
   console.log('deploying:');
   console.log(' • size:  ', info.files.toString());
@@ -35,15 +35,29 @@ async function deploy(team: string, project: string, dir: string, alias?: string
     { ensureProject: true },
   );
 
-  const status = res.status;
-  const name = res.deployment.name;
+  const { status } = res;
+  const { name, urls } = res.deployment;
 
   console.log(res.deployment);
-  console.log('-------------------------------------------');
+  console.log('urls', urls);
+  console.log('-------------------------...------------------');
   console.log(status);
   console.log(name);
   if (res.error) console.log('error', res.error);
   console.log();
+
+  console.log('urls', urls);
+  // status
+  // res.ur
+  console.group('🌳 urls');
+  console.log('inspect:', urls.inspect);
+  console.log('public:');
+  urls.public.forEach((url) => {
+    console.log(' • ', url);
+  });
+  // console.log("urls.", urls.public)
+
+  console.groupEnd();
 
   return { status, name };
 }
