@@ -48,7 +48,11 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Debug');
 
-    e.button('tmp', async (e) => {
+    e.button('tmp', (e) => {
+      console.log('Crypto', Crypto);
+    });
+
+    e.button('tmp: deploy', async (e) => {
       const { http, fs, token } = e.ctx;
 
       http.$.pipe().subscribe((e) => {

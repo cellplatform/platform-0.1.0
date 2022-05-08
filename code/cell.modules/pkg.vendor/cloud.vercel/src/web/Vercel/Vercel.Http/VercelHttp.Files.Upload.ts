@@ -21,7 +21,6 @@ export function VercelHttpUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.Verc
       const headers = {
         ...ctx.headers,
         'x-vercel-digest': digest,
-        'Content-Length': contentLength.toString(),
         'Content-Type': contentType,
       };
 

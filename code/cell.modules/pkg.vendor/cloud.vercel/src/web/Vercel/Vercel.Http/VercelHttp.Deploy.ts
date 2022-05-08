@@ -61,6 +61,7 @@ export async function VercellHttpDeploy(
       const total = uploaded.errors.length;
       console.log('Failed Uploading:');
       uploaded.errors.forEach((item, i) => log.info(`${i + 1} of ${total}`, item));
+      console.log();
     }
 
     throw new Error(`Failed uploading ${total.failed} of ${total.files} files.`);
