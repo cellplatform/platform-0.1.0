@@ -20,7 +20,7 @@ export const PropListValue: React.FC<PropListValueProps> = (props) => {
   const value = item.value;
   const isCopyable = item.isCopyable(props.defaults);
 
-  const [isOver, setIsOver] = useState<boolean>(false);
+  const [isOver, setOver] = useState<boolean>(false);
   const [message, setMessage] = useState<React.ReactNode>();
 
   const cursor = item.value.onClick ? 'pointer' : undefined;
@@ -108,8 +108,8 @@ export const PropListValue: React.FC<PropListValueProps> = (props) => {
     <div
       {...styles.base}
       title={item.tooltip}
-      onMouseEnter={() => setIsOver(true)}
-      onMouseLeave={() => setIsOver(false)}
+      onMouseEnter={() => setOver(true)}
+      onMouseLeave={() => setOver(false)}
     >
       {renderValue()}
     </div>
