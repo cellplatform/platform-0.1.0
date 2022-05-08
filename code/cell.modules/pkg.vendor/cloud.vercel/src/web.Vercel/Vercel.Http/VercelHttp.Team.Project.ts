@@ -1,5 +1,5 @@
 import { t, deleteUndefined } from './common';
-import { Deploy } from './Deploy';
+import { VercellHttpDeploy } from './VercelHttp.Deploy';
 
 export function VercelTeamProject(args: {
   ctx: t.Ctx;
@@ -81,7 +81,7 @@ export function VercelTeamProject(args: {
         throw new Error(`Failed to deploy while retrieving team details. [${code}] ${message}`);
       }
 
-      return Deploy({
+      return VercellHttpDeploy({
         ...args,
         ctx,
         team: { id: teamId, name: teamInfo.team?.name ?? '' },

@@ -13,7 +13,7 @@ import { VercelFs } from '../Vercel.Fs';
  *    https://vercel.com/docs/cli#project/redirects
  *
  */
-export async function Deploy(
+export async function VercellHttpDeploy(
   args: t.VercelHttpDeployArgs & {
     ctx: t.Ctx;
     team: { id: string; name: string };

@@ -29,7 +29,7 @@ export const DevFilesystem: React.FC<DevFilesystemProps> = (props) => {
 
   const elTitle = (
     <div {...styles.title}>
-      <Icons.HardDrive color={Color.alpha(COLORS.DARK, 0.7)} size={20} />
+      <Icons.HardDrive color={Color.lighten(COLORS.DARK, 55)} size={20} />
       <div>{`"${props.fs.id}"`}</div>
     </div>
   );

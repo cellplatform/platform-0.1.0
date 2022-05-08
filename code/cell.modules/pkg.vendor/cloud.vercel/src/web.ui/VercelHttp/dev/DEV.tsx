@@ -48,20 +48,90 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Debug');
 
-    e.button('tmp', (e) => {
+    e.button('tmp', async (e) => {
       const { http, fs, token } = e.ctx;
 
+      http.$.pipe().subscribe((e) => {
+        // console.log('e', e);
+        // e.payload.
+      });
+
+      http.req$.subscribe((e) => {
+        console.log('REQ', e);
+        e.modify.header('content-length', '');
+        // e.modify.headers((p) => {
+
+        // })
+        // const headers = { ...e.headers };
+        // e.modify.headers = headers;
+      });
+
+      http.res$.subscribe((e) => {
+        console.log('RES', e);
+      });
+
+      const alias = 'tmp-deploy.db.team';
+
       /**
-       * TODO 🐷
+       * CONFIGURE
        */
-      // const api = VercelHttpApi({ fs, http, token });
-      // console.log('api', api);
-      console.log('TODO', e.ctx);
-      console.log('Vercel', Vercel);
+      const deployment = Vercel.Deploy({
+        http,
+        fs,
+        token,
+        dir: '',
+        team: 'tdb',
+        project: 'tdb-tmp-deploy',
+        async beforeUpload(e) {
+          console.log('beforeUpload', e);
+        },
+      });
 
-      const vercel = Vercel.Http({ fs, http, token });
+      console.group('🌳 Deployment');
 
-      console.log('vercel', vercel);
+      const info = await deployment.info();
+      console.log('info', info);
+      console.log('info.size.toString()', info.size.toString());
+      console.log('-------------------------------------------');
+
+      /**
+       * COMMIT (DEPLOY)
+       */
+      const res = await deployment.commit(
+        {
+          target: alias ? 'production' : 'staging',
+          regions: ['sfo1'],
+          alias,
+          // routes: [{ src: '/foo', dest: '/' }],
+        },
+        { ensureProject: true },
+      );
+
+      /**
+       * OUTPUT
+       */
+      const { status } = res;
+      const { name, urls } = res.deployment;
+
+      console.log(res.deployment);
+      console.log('urls', urls);
+      console.log('-------------------------...------------------');
+      console.log(status);
+      console.log(name);
+      if (res.error) console.log('error', res.error);
+      console.log();
+
+      console.log('urls', urls);
+
+      console.group('🌼 urls');
+      console.log('inspect:', urls.inspect);
+      console.log('public:');
+      urls.public.forEach((url) => {
+        console.log(' • ', url);
+      });
+
+      console.groupEnd();
+      console.groupEnd();
     });
 
     e.hr();
