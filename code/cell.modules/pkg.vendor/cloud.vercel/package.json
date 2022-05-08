@@ -23,8 +23,8 @@
     "deploy.web": "ts-node -T script.ts/deploy-web",
     "deploy.sample": "ts-node -T script.ts/deploy-sample",
     "deploy.sys": "ts-node -T script.ts/deploy-sys",
-    "deploy.tmp.node": "ts-node -T script.ts/deploy-tmp-node",
     "deploy.ts": "ts-node -T script.ts/deploy-typescript",
+    "deploy.zip": "ts-node -T script.ts/deploy-zip",
     "tmp": "ts-node -T script.ts/tmp"
   },
   "dependencies": {

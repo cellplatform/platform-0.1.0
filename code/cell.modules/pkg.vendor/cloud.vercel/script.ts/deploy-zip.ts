@@ -1,4 +1,4 @@
-import { Vercel } from 'vendor.cloud.vercel/lib/node';
+import { Vercel, t } from 'vendor.cloud.vercel/lib/node';
 
 const token = process.env.VERCEL_TEST_TOKEN;
 
@@ -11,21 +11,24 @@ const token = process.env.VERCEL_TEST_TOKEN;
  */
 async function deploy(team: string, project: string, dir: string, alias?: string) {
   const deployment = Vercel.Deploy({ token, dir, team, project });
-
   const info = await deployment.info();
+
   console.log();
   console.log('deploying:');
   console.log(' • size:  ', info.files.toString());
   console.log(' • alias: ', alias);
   console.log();
 
-  const wait = deployment.commit({
-    // target: alias ? 'production' : 'staging',
-    regions: ['sfo1'],
-    alias,
-  });
+  const res = await deployment.commit(
+    {
+      target: alias ? 'production' : 'staging',
+      regions: ['sfo1'],
+      alias,
+      // routes: [{ src: '/foo', dest: '/' }],
+    },
+    { ensureProject: true },
+  );
 
-  const res = await wait;
   const status = res.status;
   const name = res.deployment.name;
 
@@ -33,10 +36,11 @@ async function deploy(team: string, project: string, dir: string, alias?: string
   console.log('-------------------------------------------');
   console.log(status);
   console.log(name);
+  if (res.error) console.log('error', res.error);
   console.log();
 
   return { status, name };
 }
 
-// tmp.node
-deploy('tdb', 'tmp', 'dist/node', 'foo.tmp.db.team');
+// DEV
+deploy('tdb', 'tdb-tmp-deploy', 'static.test/data');

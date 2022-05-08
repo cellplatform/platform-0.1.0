@@ -38,30 +38,15 @@ async function deploy(team: string, project: string, dir: string, alias?: string
   const { status } = res;
   const { name, urls } = res.deployment;
 
-  console.log(res.deployment);
-  console.log('urls', urls);
-  console.log('-------------------------...------------------');
   console.log(status);
   console.log(name);
+  console.log('- ', urls.inspect);
+  urls.public.forEach((url) => console.log('- ', url));
   if (res.error) console.log('error', res.error);
   console.log();
-
-  console.log('urls', urls);
-  // status
-  // res.ur
-  console.group('🌳 urls');
-  console.log('inspect:', urls.inspect);
-  console.log('public:');
-  urls.public.forEach((url) => {
-    console.log(' • ', url);
-  });
-  // console.log("urls.", urls.public)
-
-  console.groupEnd();
 
   return { status, name };
 }
 
 // DEV
-// deploy('tdb', 'db-dev', 'dist/node', 'dev.db.team');
-deploy('tdb', 'db-dev', 'dist/node');
+deploy('tdb', 'db-tmp-deploy', 'dist/node');
