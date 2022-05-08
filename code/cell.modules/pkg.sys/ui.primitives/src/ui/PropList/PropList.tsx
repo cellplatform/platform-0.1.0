@@ -43,6 +43,7 @@ const View: React.FC<PropListProps> = (props) => {
       ...Style.toMargins(props.margin),
       ...Style.toPadding(props.padding),
     }),
+    items: css({}),
     title: css({ marginBottom: 5 }),
   };
 
@@ -76,7 +77,7 @@ const View: React.FC<PropListProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       {elTitle}
-      <div>{elItems}</div>
+      <div {...styles.items}>{elItems}</div>
     </div>
   );
 };

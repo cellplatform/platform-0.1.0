@@ -68,10 +68,7 @@ export const PropListValue: React.FC<PropListValueProps> = (props) => {
       userSelect: 'none',
       fontWeight: item.value.bold ? 'bold' : undefined,
     }),
-    component: css({
-      flex: 1,
-      display: 'flex',
-    }),
+    component: css({ flex: 1, Flex: 'center-end' }),
   };
 
   const renderValue = () => {
@@ -103,6 +100,7 @@ export const PropListValue: React.FC<PropListValueProps> = (props) => {
         </div>
       );
     }
+
     return null;
   };
 

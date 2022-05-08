@@ -22,6 +22,7 @@ const styles = {
     height: 30,
     borderRadius: 4,
   }),
+  bgRed: css({ backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */ }),
 };
 
 export const items: t.PropListItem[] = [
@@ -62,5 +63,17 @@ export const items: t.PropListItem[] = [
         e.message(<div style={{ color: COLORS.MAGENTA }}>clicked!</div>, 1200);
       },
     },
+  },
+  {
+    label: 'div',
+    value: <div {...styles.bgRed}>hello</div>,
+  },
+  {
+    label: 'div (flex: 1)',
+    value: (
+      <div {...styles.bgRed} style={{ flex: 1 }}>
+        hello
+      </div>
+    ),
   },
 ];
