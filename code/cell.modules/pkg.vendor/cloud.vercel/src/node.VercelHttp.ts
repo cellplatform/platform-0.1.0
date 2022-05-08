@@ -1,1 +1,1 @@
-export * from '../src/node.VercelHttp__';
+export * from '../src/web.Vercel/Vercel.Http';

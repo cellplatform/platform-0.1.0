@@ -40,8 +40,8 @@ async function deploy(team: string, project: string, dir: string, alias?: string
 
   console.log(status);
   console.log(name);
-  console.log('- ', urls.inspect);
-  urls.public.forEach((url) => console.log('- ', url));
+  console.log(' • ', urls.inspect);
+  urls.public.forEach((url) => console.log(' • ', url));
   if (res.error) console.log('error', res.error);
   console.log();
 
