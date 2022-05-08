@@ -48,32 +48,17 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Debug');
 
-    e.button('tmp', (e) => {
-      console.log('Crypto', Crypto);
+    e.button('tmp: upload', (e) => {
+      // console.log('Crypto', Crypto);
+
+      const { http, fs, token } = e.ctx;
+
+      const v = Vercel.Http({ token, http, fs });
+      // v.
     });
 
     e.button('tmp: deploy', async (e) => {
       const { http, fs, token } = e.ctx;
-
-      http.$.pipe().subscribe((e) => {
-        // console.log('e', e);
-        // e.payload.
-      });
-
-      http.req$.subscribe((e) => {
-        console.log('REQ', e);
-        e.modify.header('content-length', '');
-        // e.modify.headers((p) => {
-
-        // })
-        // const headers = { ...e.headers };
-        // e.modify.headers = headers;
-      });
-
-      http.res$.subscribe((e) => {
-        console.log('RES', e);
-      });
-
       const alias = 'tmp-deploy.db.team';
 
       /**
