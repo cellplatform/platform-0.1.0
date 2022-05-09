@@ -11,7 +11,9 @@ const token = process.env.VERCEL_TEST_TOKEN;
  */
 async function deploy(team: string, project: string, dir: string, alias?: string) {
   const deployment = Vercel.Deploy({ token, dir, team, project });
-  await Vercel.Log.beforeDeploy(deployment, { alias });
+  const info = await deployment.info();
+
+  Vercel.Log.beforeDeploy({ info, alias });
 
   const res = await deployment.commit({
     // target: alias ? 'production' : 'staging',

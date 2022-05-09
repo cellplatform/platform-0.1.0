@@ -1,9 +1,8 @@
 import { log, t } from './common';
 
 export const VercelLog = {
-  async beforeDeploy(deployment: t.VercelDeploy, options: { alias?: string } = {}) {
-    const { alias } = options;
-    const info = await deployment.info();
+  beforeDeploy(args: { info: t.VercelSourceBundleInfo; alias?: string }) {
+    const { info, alias } = args;
 
     log.info();
     log.info.gray('deploying:');
