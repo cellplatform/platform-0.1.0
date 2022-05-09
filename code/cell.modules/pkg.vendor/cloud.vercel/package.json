@@ -1,6 +1,6 @@
 {
   "name": "vendor.cloud.vercel",
-  "version": "0.0.32",
+  "version": "0.0.36",
   "main": "lib/node/index",
   "types": "lib/node/index.d.ts",
   "sideEffects": false,
