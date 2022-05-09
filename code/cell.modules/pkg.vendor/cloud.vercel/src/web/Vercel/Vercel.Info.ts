@@ -1,7 +1,10 @@
 import { t, Filesize } from '../common';
 import { VercelFs } from './Vercel.Fs';
+import { VercelHttpInfo } from './Vercel.Http/VercelHttp.Info';
 
 export const VercelInfo = {
+  Http: VercelHttpInfo,
+
   /**
    * Derive information about a deployment bundle.
    */

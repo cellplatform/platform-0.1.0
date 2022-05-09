@@ -82,6 +82,15 @@ export const VercelDeploy = (args: VercelDeployArgs) => {
      * Write the deployment to the cloud.
      */
     async commit(config: t.VercelHttpDeployConfig = {}, options: { ensureProject?: boolean } = {}) {
+      const info = await client.info();
+      if (info.error) {
+        console.log('status: ', info.status);
+        console.log('error:  ', info.error);
+        console.log('hint:    Possibly an expired API token.');
+        console.log();
+        throw new Error(info.error.message);
+      }
+
       const team = await getTeam(args.team);
       const project = team.project(args.project);
 

@@ -1,5 +1,6 @@
 import { Http, t, Util } from './common';
 import { VercelHttpTeam } from './VercelHttp.Team';
+import { VercelHttpInfo } from './VercelHttp.Info';
 
 /**
  * A wrapper around the Vercel HTTP endpoints API.
@@ -23,16 +24,7 @@ export function VercelHttp(args: {
     ctx,
 
     async info() {
-      // https://vercel.com/docs/rest-api#endpoints/user/get-the-authenticated-user
-      const url = 'https://api.vercel.com/www/user';
-      const res = await http.get(url, { headers });
-
-      const { ok, status } = res;
-      const json = res.json as any;
-      const user = json as t.VercelHttpUser;
-      const error = ok ? undefined : (json.error as t.VercelHttpError);
-
-      return { ok, status, user, error };
+      return VercelHttpInfo.user(ctx);
     },
 
     teams: {

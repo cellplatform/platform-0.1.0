@@ -26,17 +26,18 @@ export type VercelHttpResponse = {
  */
 export type VercelHttp = {
   ctx: VercelHttpCtx;
-  info(): Promise<Res & { user: t.VercelHttpUser }>;
+  info(): Promise<Res & { user?: t.VercelHttpUser }>;
   teams: VercelHttpTeams;
   team(id: string): VercelHttpTeam;
 };
 
+export type VercelHttpHeaders = { [key: string]: string };
 export type VercelHttpCtx = {
-  headers: { [key: string]: string };
-  token: string;
-  Authorization: string;
   fs: t.Fs;
   http: t.Http;
+  headers: VercelHttpHeaders;
+  token: string;
+  Authorization: string;
   url(version: number, path: string, query?: Q): string;
 };
 
