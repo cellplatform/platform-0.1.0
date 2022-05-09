@@ -1,6 +1,6 @@
-import { asArray, t, Util, deleteUndefined, log } from './common';
+import { VercelInfo } from '../Vercel.Info';
+import { asArray, deleteUndefined, log, t, Util } from './common';
 import { VercelHttpUploadFiles } from './VercelHttp.Files.Upload';
-import { VercelFs } from '../Vercel.Fs';
 
 /**
  * Create a new deployment.
@@ -74,7 +74,7 @@ export async function VercellHttpDeploy(
    * Append the deployment's {meta} data object with
    * the manifest {module} details.
    */
-  const info = await VercelFs.info({ fs, source, name: args.name });
+  const info = await VercelInfo.bundle({ fs, source, name: args.name });
   const { name, meta } = info;
 
   /**

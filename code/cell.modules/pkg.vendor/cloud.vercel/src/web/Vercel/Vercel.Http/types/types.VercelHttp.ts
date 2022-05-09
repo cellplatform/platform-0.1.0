@@ -9,6 +9,7 @@ type Mime = string;
 type Milliseconds = number;
 type FilePath = string;
 type DirPath = string;
+type Q = Record<string, string | number | undefined>;
 
 export type VercelMeta = { key: string; value: string };
 export type VercelTargetFlag = 'staging' | 'production';
@@ -24,9 +25,19 @@ export type VercelHttpResponse = {
  * https://vercel.com/docs/api
  */
 export type VercelHttp = {
+  ctx: VercelHttpCtx;
   info(): Promise<Res & { user: t.VercelHttpUser }>;
   teams: VercelHttpTeams;
   team(id: string): VercelHttpTeam;
+};
+
+export type VercelHttpCtx = {
+  headers: { [key: string]: string };
+  token: string;
+  Authorization: string;
+  fs: t.Fs;
+  http: t.Http;
+  url(version: number, path: string, query?: Q): string;
 };
 
 /**
@@ -250,15 +261,20 @@ export type VercelHttpDeployResponse = VercelHttpResponse & {
   paths: string[];
 };
 
-export type VercelHttpDeployMeta = VercelHttpDeployMetaModule | VercelHttpDeployMetaPlainFiles;
-export type VercelHttpDeployMetaModule = t.ModuleManifestInfo & {
-  kind: 'bundle:code/module';
-  modulehash: string; // [manifest].hash.module
-  fileshash: string; //  [manifest].hash.files
-  bytes: string;
-};
-export type VercelHttpDeployMetaPlainFiles = {
-  kind: 'bundle:plain/files';
+/**
+ * Deployment Meta-data.
+ */
+type MetaCommon = {
   version: string;
-  fileshash: string;
+  bytes: string;
+  fileshash: string; // Hash of all file-hashes within the bundle (sorted by name).
+};
+
+export type VercelHttpDeployMeta = VercelHttpDeployMetaModule | VercelHttpDeployMetaPlainFiles;
+export type VercelHttpDeployMetaModule = MetaCommon & {
+  kind: 'bundle:code/module';
+  namespace: string;
+};
+export type VercelHttpDeployMetaPlainFiles = MetaCommon & {
+  kind: 'bundle:plain/files';
 };

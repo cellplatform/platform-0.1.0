@@ -20,6 +20,8 @@ export function VercelHttp(args: {
   const { headers } = ctx;
 
   const api: t.VercelHttp = {
+    ctx,
+
     async info() {
       // https://vercel.com/docs/rest-api#endpoints/user/get-the-authenticated-user
       const url = 'https://api.vercel.com/www/user';

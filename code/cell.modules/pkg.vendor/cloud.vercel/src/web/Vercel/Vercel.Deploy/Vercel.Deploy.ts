@@ -1,17 +1,16 @@
 import { t, rx } from '../common';
 import { VercelFs } from '../Vercel.Fs';
 import { VercelHttp } from '../Vercel.Http';
+import { VercelInfo } from '../Vercel.Info';
 
 type ApiToken = string;
-type DirectoryPath = string;
 type Name = string;
 type Milliseconds = number;
 
-type Args = {
+type VercelDeployArgs = {
   http: t.Http;
   fs: t.Fs;
   token: ApiToken;
-  dir: DirectoryPath; // TEMP 🐷 remove
   team: Name;
   project: Name;
   timeout?: Milliseconds;
@@ -24,16 +23,10 @@ type Args = {
  * Upstream cloud provider: - AWS Lambdas
  *                          - Geo-cached.
  */
-export const VercelDeploy = (args: Args) => {
-  const { fs, http, beforeUpload, token, dir } = args;
+export const VercelDeploy = (args: VercelDeployArgs) => {
+  const { fs, http, beforeUpload, token } = args;
   const { dispose, dispose$ } = rx.disposable(args.dispose$);
-  // const { client, dir, fs, dispose, dispose$ } = VercelNode(args);
-
   const client = VercelHttp({ token, fs, http });
-
-  // client.
-
-  // const { dispoe } = client;
 
   const getTeam = async (teamName: string) => {
     const team = await client.teams.byName(teamName);
@@ -64,7 +57,6 @@ export const VercelDeploy = (args: Args) => {
   return {
     dispose,
     dispose$,
-    dir,
     client,
     team: args.team,
     project: args.project,
@@ -74,23 +66,16 @@ export const VercelDeploy = (args: Args) => {
      */
     async info() {
       const source = await VercelFs.readdir(fs);
-      return VercelFs.info({ fs, source });
+      return VercelInfo.bundle({ fs, source });
     },
 
     /**
      * Read in the bundle manifest.
      */
     async manifest<T extends t.Manifest>(): Promise<T | undefined> {
-      // const manifest = await fs.manifest<T>()
-      // const path = nodefs.join(dir, 'index.json');
-      // const exists = await nodefs.pathExists(path);
-      // return !exists ? undefined : ((await nodefs.readJson(path)) as T);
-
-      /**
-       * TODO 🐷
-       */
-
-      return undefined;
+      const path = fs.join('index.json');
+      const exists = await fs.exists(path);
+      return !exists ? undefined : await fs.json.read<T>(path);
     },
 
     /**

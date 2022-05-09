@@ -1,4 +1,4 @@
-import { nodefs, rx, Filesystem } from './common';
+import { nodefs, rx, Filesystem, Http } from './common';
 import { VercelHttp } from '../Vercel.Http';
 
 type ApiToken = string;
@@ -16,13 +16,14 @@ type Args = {
  */
 export const VercelNode = (args: Args) => {
   const { token, timeout = 30000 } = args;
+  const driver = nodefs.resolve(args.dir ?? '');
 
-  const dir = nodefs.resolve(args.dir ?? '');
   const bus = rx.bus();
-  const store = Filesystem.Controller({ bus, driver: dir });
+  const http = Http.create();
+  const store = Filesystem.Controller({ bus, driver });
   const fs = store.fs({ timeout });
   const client = VercelHttp({ fs, token });
 
   const { dispose, dispose$ } = store;
-  return { dispose, dispose$, dir, fs, client };
+  return { dispose, dispose$, fs, client, http };
 };

@@ -42,7 +42,7 @@ export function VercelHttpUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.Verc
     },
 
     /**
-     * Upload a directory of file.
+     * Upload a directory of files.
      */
     async upload(source, options = {}) {
       const { beforeUpload } = options;

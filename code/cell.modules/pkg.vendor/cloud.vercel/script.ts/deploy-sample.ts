@@ -49,4 +49,5 @@ async function deploy(team: string, project: string, dir: string, alias?: string
 }
 
 // DEV
-deploy('tdb', 'tdb-tmp-deploy', 'dist/node');
+// deploy('tdb', 'tdb-tmp-deploy', 'dist/node');
+deploy('tdb', 'tdb-tmp-deploy', 'static.test/data');

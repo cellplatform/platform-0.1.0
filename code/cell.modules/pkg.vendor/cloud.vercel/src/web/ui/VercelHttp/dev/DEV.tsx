@@ -9,6 +9,8 @@ import { ModuleInfo } from '../../ModuleInfo';
 
 import { Vercel } from '../../../Vercel';
 
+import { VercelHttpUploadFiles } from '../../../Vercel/Vercel.Http/VercelHttp.Files.Upload';
+
 type Ctx = {
   token: string;
   bus: t.EventBus;
@@ -48,17 +50,18 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Debug');
 
-    e.button('tmp: upload', (e) => {
-      // console.log('Crypto', Crypto);
-
-      const { http, fs, token } = e.ctx;
-
-      const v = Vercel.Http({ token, http, fs });
-      // v.
-    });
-
     e.button('tmp: deploy', async (e) => {
-      const { http, fs, token } = e.ctx;
+      const { http, token } = e.ctx;
+      const fs = e.ctx.fs.dir('foo');
+      const client = Vercel.Http({ token, http, fs });
+      const ctx = client.ctx;
+
+      const m = await fs.manifest();
+      console.log('m', m);
+
+      console.log('-------------------------------------------');
+
+      // const { http, fs, token } = e.ctx;
       const alias = 'tmp-deploy.db.team';
 
       /**
@@ -68,7 +71,6 @@ export const actions = DevActions<Ctx>()
         http,
         fs,
         token,
-        dir: '',
         team: 'tdb',
         project: 'tdb-tmp-deploy',
         async beforeUpload(e) {
@@ -102,25 +104,15 @@ export const actions = DevActions<Ctx>()
       const { status } = res;
       const { name, urls } = res.deployment;
 
-      console.log(res.deployment);
-      console.log('urls', urls);
-      console.log('-------------------------...------------------');
+      console.log('res', res);
+
+      console.log('-------------------------------------------');
       console.log(status);
       console.log(name);
+      console.log(' • ', urls.inspect);
+      urls.public.forEach((url) => console.log(' • ', url));
       if (res.error) console.log('error', res.error);
       console.log();
-
-      console.log('urls', urls);
-
-      console.group('🌼 urls');
-      console.log('inspect:', urls.inspect);
-      console.log('public:');
-      urls.public.forEach((url) => {
-        console.log(' • ', url);
-      });
-
-      console.groupEnd();
-      console.groupEnd();
     });
 
     e.hr();
@@ -129,7 +121,9 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Filesystem');
 
-    const toPath = (count: number) => `foo/my-file-${count + 1}.json`;
+    const toPath = (count: number) => {
+      return count === 0 ? `foo/index.json` : `foo/my-file-${count}.json`;
+    };
 
     e.button('add', async (e) => {
       const msg = cuid().repeat(value.random(1, 50));
@@ -155,7 +149,7 @@ export const actions = DevActions<Ctx>()
       if (last) await fs.delete(last.path);
     });
 
-    e.button('delete: all (reset)', async (e) => {
+    e.button('delete all (clear)', async (e) => {
       const fs = e.ctx.fs;
       const files = (await fs.manifest()).files;
       await Promise.all(files.map((file) => fs.delete(file.path)));

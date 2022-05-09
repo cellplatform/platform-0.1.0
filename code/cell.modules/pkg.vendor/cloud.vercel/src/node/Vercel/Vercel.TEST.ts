@@ -1,7 +1,12 @@
-import { expect, nodefs, t, ManifestFiles } from '../test';
 import { Vercel } from '.';
+import { expect, ManifestFiles, t } from '../test';
 
 const token = process.env.VERCEL_TEST_TOKEN ?? '';
+
+/**
+ * TODO 🐷
+ * - move tests to Web
+ */
 
 describe('Vercel', () => {
   describe('VercelFs', () => {
@@ -13,7 +18,6 @@ describe('Vercel', () => {
         expect(files.length).to.eql(2);
         expect(files.map(({ path }) => path)).to.eql(manifest.files.map(({ path }) => path));
         expect((manifest as any).kind).to.eql('dir');
-
         dispose();
       });
 
@@ -31,16 +35,15 @@ describe('Vercel', () => {
       it('module', async () => {
         const { fs, dispose } = Vercel.Node({ token, dir: 'static.test' });
         const source = 'node';
-        const info = await Vercel.Fs.info({ fs, source });
+        const info = await Vercel.Info.bundle({ fs, source });
+
         expect(info.meta.kind).to.eql('bundle:code/module');
         expect(info.version).to.eql(info.meta.version);
         expect(info.name).to.eql(`vercel.sample.node-v${info.version}`);
         expect(info.size.bytes).to.greaterThan(500);
 
         const dir = await Vercel.Fs.readdir(fs, source);
-        const hash = ManifestFiles.hash(
-          dir.manifest.files.filter((file) => file.path !== 'index.json'),
-        );
+        const hash = dir.manifest.hash.files;
 
         expect(info.meta.fileshash).to.eql(hash);
         expect(info.files.total).to.eql(2);
@@ -51,7 +54,7 @@ describe('Vercel', () => {
       it('raw folder', async () => {
         const source = 'child';
         const { fs, dispose } = Vercel.Node({ token, dir: 'static.test' });
-        const info = await Vercel.Fs.info({ fs, source });
+        const info = await Vercel.Info.bundle({ fs, source });
         const dir = await Vercel.Fs.readdir(fs, source);
         const hash = ManifestFiles.hash(dir.manifest.files);
 
@@ -68,7 +71,7 @@ describe('Vercel', () => {
       it('files.toString()', async () => {
         const { fs, dispose } = Vercel.Node({ token, dir: 'static.test' });
         const source = 'node';
-        const info = await Vercel.Fs.info({ fs, source });
+        const info = await Vercel.Info.bundle({ fs, source });
 
         const res = info.files.toString();
         dispose();
@@ -87,7 +90,6 @@ describe('Vercel', () => {
 
     it('init', () => {
       const deployment = Vercel.Deploy({ token, dir, team, project });
-      expect(deployment.dir).to.eql(nodefs.resolve(dir));
       expect(deployment.team).to.eql(team);
       expect(deployment.project).to.eql(project);
     });
@@ -111,7 +113,7 @@ describe('Vercel', () => {
       });
 
       it('does not exist', async () => {
-        const deployment = Vercel.Deploy({ token, dir: 'static.test/data', team, project });
+        const deployment = Vercel.Deploy({ token, dir: 'static.test/child', team, project });
         const manifest = await deployment.manifest();
         expect(manifest).to.eql(undefined);
       });
