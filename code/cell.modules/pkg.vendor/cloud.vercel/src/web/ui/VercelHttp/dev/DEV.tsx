@@ -3,13 +3,10 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { VercelHttp, VercelHttpProps } from '..';
 import { TestUtil } from '../../../test';
+import { Vercel } from '../../../Vercel';
 import { css, cuid, t, value } from '../../common';
 import { DevFilesystem } from '../../dev';
 import { ModuleInfo } from '../../ModuleInfo';
-
-import { Vercel } from '../../../Vercel';
-
-import { VercelHttpUploadFiles } from '../../../Vercel/Vercel.Http/VercelHttp.Files.Upload';
 
 type Ctx = {
   token: string;
@@ -53,8 +50,7 @@ export const actions = DevActions<Ctx>()
     e.button('tmp: deploy', async (e) => {
       const { http, token } = e.ctx;
       const fs = e.ctx.fs.dir('foo');
-      const client = Vercel.Http({ token, http, fs });
-      const ctx = client.ctx;
+      const client = Vercel.Http({ token, fs });
 
       const m = await fs.manifest();
       console.log('m', m);
@@ -63,6 +59,11 @@ export const actions = DevActions<Ctx>()
 
       // const { http, fs, token } = e.ctx;
       const alias = 'tmp-deploy.db.team';
+
+      /**
+       * TODO 🐷
+       * Remove need for HTTP to be passed to deploy.
+       */
 
       /**
        * CONFIGURE

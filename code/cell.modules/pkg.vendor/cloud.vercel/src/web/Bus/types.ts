@@ -9,7 +9,7 @@ export type VercelInfo = {
   /**
    * https://vercel.com/docs/api#endpoints
    */
-  endpoint?: {
+  endpoint: {
     alive: boolean;
     user?: t.VercelHttpUser;
     error?: t.VercelHttpError;

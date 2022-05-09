@@ -33,10 +33,9 @@ export function BusController(args: {
     const { tx = slug() } = e;
 
     const endpoint: t.VercelInfo['endpoint'] = await (async () => {
-      if (!e.endpoint) return undefined;
       const res = await client.info();
       const { user, error } = res;
-      const alive = user && !error;
+      const alive = Boolean(user && !error);
       return { alive, user, error };
     })();
 
