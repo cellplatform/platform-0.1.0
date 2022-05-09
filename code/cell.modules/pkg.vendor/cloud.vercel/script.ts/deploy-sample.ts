@@ -17,13 +17,7 @@ async function deploy(team: string, project: string, dir: string, alias?: string
   };
 
   const deployment = Vercel.Deploy({ token, dir, team, project, beforeUpload });
-
-  const info = await deployment.info();
-  console.log();
-  console.log('deploying:');
-  console.log(' • size:  ', info.files.toString());
-  console.log(' • alias: ', alias);
-  console.log();
+  await Vercel.Log.beforeDeploy(deployment, { alias });
 
   const res = await deployment.commit(
     {
@@ -35,17 +29,8 @@ async function deploy(team: string, project: string, dir: string, alias?: string
     { ensureProject: true },
   );
 
-  const { status } = res;
-  const { name, urls } = res.deployment;
-
-  console.log(status);
-  console.log(name);
-  console.log(' • ', urls.inspect);
-  urls.public.forEach((url) => console.log(' • ', url));
-  if (res.error) console.log('error', res.error);
-  console.log();
-
-  return { status, name };
+  // Finish up.
+  Vercel.Log.afterDeploy(res);
 }
 
 // DEV

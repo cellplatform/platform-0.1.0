@@ -1,4 +1,4 @@
-import { Vercel, t } from 'vendor.cloud.vercel/lib/node';
+import { Vercel } from 'vendor.cloud.vercel/lib/node';
 
 const token = process.env.VERCEL_TEST_TOKEN;
 
@@ -11,13 +11,7 @@ const token = process.env.VERCEL_TEST_TOKEN;
  */
 async function deploy(team: string, project: string, dir: string, alias?: string) {
   const deployment = Vercel.Deploy({ token, dir, team, project });
-  const info = await deployment.info();
-
-  console.log();
-  console.log('deploying:');
-  console.log(' • size:  ', info.files.toString());
-  console.log(' • alias: ', alias);
-  console.log();
+  await Vercel.Log.beforeDeploy(deployment, { alias });
 
   const res = await deployment.commit(
     {
@@ -29,17 +23,8 @@ async function deploy(team: string, project: string, dir: string, alias?: string
     { ensureProject: true },
   );
 
-  const status = res.status;
-  const name = res.deployment.name;
-
-  console.log(res.deployment);
-  console.log('-------------------------------------------');
-  console.log(status);
-  console.log(name);
-  if (res.error) console.log('error', res.error);
-  console.log();
-
-  return { status, name };
+  // Finish up.
+  Vercel.Log.afterDeploy(res);
 }
 
 // DEV

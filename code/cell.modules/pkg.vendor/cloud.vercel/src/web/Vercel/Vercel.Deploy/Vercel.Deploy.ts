@@ -3,8 +3,8 @@ import { VercelFs } from '../Vercel.Fs';
 import { VercelHttp } from '../Vercel.Http';
 import { VercelInfo } from '../Vercel.Info';
 
-type ApiToken = string;
 type Name = string;
+type ApiToken = string;
 type Milliseconds = number;
 
 type VercelDeployArgs = {
@@ -54,7 +54,7 @@ export const VercelDeploy = (args: VercelDeployArgs) => {
     };
   };
 
-  return {
+  const api: t.VercelDeploy = {
     dispose,
     dispose$,
     client,
@@ -81,7 +81,10 @@ export const VercelDeploy = (args: VercelDeployArgs) => {
     /**
      * Write the deployment to the cloud.
      */
-    async commit(config: t.VercelHttpDeployConfig = {}, options: { ensureProject?: boolean } = {}) {
+    async commit(
+      config: t.VercelHttpDeployConfig = {},
+      options: t.VercelDeploymentCommitOptions = {},
+    ) {
       const info = await client.info();
       if (info.error) {
         console.log('status: ', info.status);
@@ -111,4 +114,6 @@ export const VercelDeploy = (args: VercelDeployArgs) => {
      */
     ensureProject,
   };
+
+  return api;
 };

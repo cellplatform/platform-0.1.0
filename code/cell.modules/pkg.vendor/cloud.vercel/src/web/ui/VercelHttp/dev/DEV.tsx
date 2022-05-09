@@ -83,7 +83,7 @@ export const actions = DevActions<Ctx>()
 
       const info = await deployment.info();
       console.log('info', info);
-      console.log('info.size.toString()', info.size.toString());
+      console.log('info.size.toString()', info.files.size.toString());
       console.log('-------------------------------------------');
 
       /**

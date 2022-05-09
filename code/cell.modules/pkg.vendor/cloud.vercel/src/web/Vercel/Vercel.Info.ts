@@ -36,20 +36,19 @@ export const VercelInfo = {
       }
     }
 
-    const size = {
-      bytes: bundle.manifest.files.reduce((acc, next) => acc + next.bytes, 0),
-      toString: () => Filesize(size.bytes),
-    };
-
     const files = {
-      total: bundle.files.length,
       hash: meta.fileshash,
+      total: bundle.files.length,
+      size: {
+        bytes: bundle.manifest.files.reduce((acc, next) => acc + next.bytes, 0),
+        toString: () => Filesize(files.size.bytes),
+      },
       toString() {
         const total = files.total;
         const fileSummary = `${total} ${total === 1 ? 'file' : 'files'}`;
         const sha256 = meta.fileshash.substring('sha256-'.length);
         const hash = `SHA256( ${sha256.substring(0, 5)}..${sha256.substring(sha256.length - 5)} )`;
-        return `${size.toString()} (${fileSummary}) | ${hash}`;
+        return `${files.size.toString()} (${fileSummary}) | ${hash}`;
       },
     };
 
@@ -59,12 +58,14 @@ export const VercelInfo = {
     name = name ?? `unnamed-v${version}`;
 
     // Finish up.
-    return {
+    const info: t.VercelSourceBundleInfo = {
       name,
       version,
-      meta,
       files,
-      size,
+      meta,
+      source: bundle,
     };
+
+    return info;
   },
 };

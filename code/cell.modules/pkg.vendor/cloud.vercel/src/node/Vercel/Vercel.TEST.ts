@@ -40,7 +40,7 @@ describe('Vercel', () => {
         expect(info.meta.kind).to.eql('bundle:code/module');
         expect(info.version).to.eql(info.meta.version);
         expect(info.name).to.eql(`vercel.sample.node-v${info.version}`);
-        expect(info.size.bytes).to.greaterThan(500);
+        expect(info.files.size.bytes).to.greaterThan(500);
 
         const dir = await Vercel.Fs.readdir(fs, source);
         const hash = dir.manifest.hash.files;
@@ -61,7 +61,7 @@ describe('Vercel', () => {
         expect(info.name).to.eql(`unnamed-v0.0.0`);
         expect(info.version).to.eql('0.0.0');
         expect(info.meta.fileshash).to.eql(hash);
-        expect(info.size.bytes).to.greaterThan(500);
+        expect(info.files.size.bytes).to.greaterThan(500);
         expect(info.files.total).to.eql(3);
         expect(info.files.hash).to.eql(hash);
 
@@ -127,7 +127,7 @@ describe('Vercel', () => {
         expect(info.meta.kind).to.eql('bundle:code/module');
         expect(info.version).to.eql(info.meta.version);
         expect(info.name).to.eql(`vercel.sample.node-v${info.version}`);
-        expect(info.size.bytes).to.greaterThan(500);
+        expect(info.files.size.bytes).to.greaterThan(500);
       });
 
       it('without manifest (raw folder)', async () => {
@@ -136,7 +136,7 @@ describe('Vercel', () => {
 
         expect(info.name).to.eql(`unnamed-v0.0.0`);
         expect(info.version).to.eql('0.0.0');
-        expect(info.size.bytes).to.greaterThan(500);
+        expect(info.files.size.bytes).to.greaterThan(500);
       });
     });
   });

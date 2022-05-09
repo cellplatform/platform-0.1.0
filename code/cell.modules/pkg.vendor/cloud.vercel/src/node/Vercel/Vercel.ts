@@ -3,6 +3,7 @@ import { VercelHttp as Http } from '../Vercel.Http';
 import { VercelFs as Fs, VercelInfo as Info } from './common';
 import { VercelDeploy as Deploy } from './Vercel.Deploy';
 import { VercelNode as Node } from './Vercel.Node';
+import { VercelLog as Log } from './Vercel.Log';
 
 export const Vercel = {
   Fs,
@@ -12,4 +13,5 @@ export const Vercel = {
   Deploy,
   Node,
   Info,
+  Log,
 };

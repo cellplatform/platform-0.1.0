@@ -2,6 +2,7 @@ import { t } from './common';
 
 type Id = string;
 type Name = string;
+type Semver = string;
 type Timestamp = number; // An Integer representing a date in milliseconds since the UNIX epoch.
 type Res = VercelHttpResponse;
 type Sha1 = string;
@@ -227,6 +228,19 @@ export type VercelRoute = { src: string; dest: string };
 export type VercelFile = { path: string; data?: Uint8Array };
 export type VercelManifest = t.Manifest | t.DirManifest | t.ModuleManifest;
 export type VercelSourceBundle = { manifest: VercelManifest; files: t.VercelFile[] };
+
+export type VercelSourceBundleInfo = {
+  name: string;
+  version: Semver;
+  meta: t.VercelHttpDeployMeta;
+  source: t.VercelSourceBundle;
+  files: {
+    hash: Sha1;
+    total: number;
+    size: { bytes: number; toString(): string };
+    toString(): string;
+  };
+};
 
 /**
  * https://vercel.com/docs/api#endpoints/deployments/create-a-new-deployment
