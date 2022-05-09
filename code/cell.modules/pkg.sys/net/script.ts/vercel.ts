@@ -11,15 +11,11 @@ const token = process.env.VERCEL_TEST_TOKEN;
  */
 export async function deploy(team: string, project: string, alias: string) {
   const deployment = Vercel.Deploy({ token, dir: 'dist/web', team, project });
-
   const info = await deployment.info();
-  console.log();
-  console.log('deploying:');
-  console.log(' • size:  ', info.files.toString());
-  console.log(' • alias: ', alias);
-  console.log();
 
-  const wait = deployment.commit(
+  Vercel.Log.beforeDeploy({ info, alias });
+
+  const res = await deployment.commit(
     {
       target: 'production',
       regions: ['sfo1'],
@@ -28,16 +24,6 @@ export async function deploy(team: string, project: string, alias: string) {
     { ensureProject: true },
   );
 
-  const res = await wait;
-  const status = res.status;
-  const name = res.deployment.name;
-
-  console.log(res.deployment);
-  console.log('-------------------------------------------');
-  console.log(status);
-  console.log(name);
-  if (res.error) console.log('res.error', res.error);
-  console.log();
-
-  return { status, name };
+  // Finish up.
+  Vercel.Log.afterDeploy(res);
 }
