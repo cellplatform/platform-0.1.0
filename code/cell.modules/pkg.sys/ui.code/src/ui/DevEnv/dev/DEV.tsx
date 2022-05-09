@@ -7,6 +7,9 @@ import { CodeEditor } from '../../../api';
 import { DevFilesystem } from '../../dev';
 import { Filesystem, rx, slug, t } from '../common';
 import { evalCode } from './DEV.eval';
+import { TestUtil } from '../../../test';
+
+import { Vercel } from 'vendor.cloud.vercel/lib/web';
 
 type Ctx = {
   bus: t.EventBus<any>;
@@ -51,7 +54,7 @@ export const actions = DevActions<Ctx>()
 
     const fs = { bus, id: 'fs.dev.code' };
     const storage = Filesystem.IndexedDb.create(fs);
-    const path = 'dev/DevEnv/code.js';
+    const path = 'dev/DevEnv/doc.md';
     const getFs = async () => (await storage).fs;
     const getEditorCode = () => ctx.editor?.text.get.fire();
     const getSavedCode = async () => new TextDecoder().decode(await (await getFs()).read(path));
@@ -71,11 +74,11 @@ export const actions = DevActions<Ctx>()
         instance: { bus, id: `foo.${slug()}` },
         focusOnLoad: true,
 
-        language: 'typescript',
+        // language: 'typescript',
         // language: 'javascript',
 
-        // language: 'markdown',
-        // text: '# title',
+        language: 'markdown',
+        text: SAMPLE_MD,
 
         // language: 'json',
         // text: '{ "count": 123 }\n',
@@ -157,6 +160,70 @@ export const actions = DevActions<Ctx>()
 
     e.component((e) => {
       return <DevFilesystem fs={e.ctx.fs} style={{ Margin: [5, 10, 20, 35] }} />;
+    });
+
+    e.hr(1, 0.1);
+
+    e.button('deploy state (vercel)', async (e) => {
+      //
+
+      const { http, token } = TestUtil;
+      const alias = 'tmp-deploy.db.team';
+
+      // const fs = e.ctx.fs.dir('foo');
+
+      const fs = Filesystem.Web.Events(e.ctx.fs).fs('dev');
+
+      const m = await fs.manifest();
+
+      console.log('m', m);
+
+      /**
+       * CONFIGURE
+       */
+      const deployment = Vercel.Deploy({
+        http,
+        fs,
+        token,
+        team: 'tdb',
+        project: 'tdb-tmp-deploy',
+      });
+
+      console.group('🌳 Deployment');
+
+      const info = await deployment.info();
+      console.log('info', info);
+      console.log('info.size.toString()', info.files.size.toString());
+      console.log('-------------------------------------------');
+
+      /**
+       * COMMIT (DEPLOY)
+       */
+      const res = await deployment.commit(
+        {
+          target: alias ? 'production' : 'staging',
+          regions: ['sfo1'],
+          alias,
+          // routes: [{ src: '/foo', dest: '/' }],
+        },
+        { ensureProject: true },
+      );
+
+      /**
+       * OUTPUT
+       */
+      const { status } = res;
+      const { name, urls } = res.deployment;
+
+      console.log('res', res);
+
+      console.log('-------------------------------------------');
+      console.log(status);
+      console.log(name);
+      console.log(' • ', urls.inspect);
+      urls.public.forEach((url) => console.log(' • ', url));
+      if (res.error) console.log('error', res.error);
+      console.log();
     });
 
     e.hr();

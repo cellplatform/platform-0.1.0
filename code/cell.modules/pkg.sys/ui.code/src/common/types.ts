@@ -14,6 +14,7 @@ export {
 export { NetworkBus } from '@platform/cell.types';
 export { IStateObject, IStateObjectWritable } from '@platform/state.types';
 export { EventBus, Event, Disposable, Json, NpmPackageJson } from '@platform/types';
+export { Http } from '@platform/http.types';
 
 /**
  * @system
