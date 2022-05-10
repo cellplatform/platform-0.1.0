@@ -9,6 +9,8 @@ import {
   MdLock,
   MdLockOpen,
   MdQrCode,
+  MdVisibility,
+  MdVisibilityOff,
 } from 'react-icons/md';
 import { RiFileCopyFill, RiTerminalBoxFill } from 'react-icons/ri';
 import { VscSymbolEvent } from 'react-icons/vsc';
@@ -26,4 +28,5 @@ export const Icons = {
   Arrow: { Back: icon(MdArrowBack), Forward: icon(MdArrowForward) },
   Event: icon(VscSymbolEvent),
   Keyboard: { fill: icon(BsKeyboardFill), outline: icon(BsKeyboard) },
+  Visibility: { On: icon(MdVisibility), Off: icon(MdVisibilityOff) },
 };

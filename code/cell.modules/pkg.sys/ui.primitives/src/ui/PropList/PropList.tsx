@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { COLORS, css, FC, Style, t, constants } from './common';
+import { COLORS, css, FC, Style, t, DEFAULTS, THEMES } from './common';
 import { FieldBuilder } from './Fields';
 import { PropListItem } from './PropList.Item';
 import { PropListTitle } from './PropList.Title';
@@ -10,15 +10,10 @@ import { Util } from './Util';
 export { PropListProps };
 
 /**
- * Constants
- */
-const { DEFAULT } = constants;
-
-/**
  * Component
  */
 const View: React.FC<PropListProps> = (props) => {
-  const { title, theme = DEFAULT.THEME } = props;
+  const { title, theme = DEFAULTS.theme } = props;
   const items = Util.asItems(props.items);
   const width = typeof props.width === 'number' ? { fixed: props.width } : props.width;
   const height = typeof props.height === 'number' ? { fixed: props.height } : props.height;
@@ -86,13 +81,15 @@ const View: React.FC<PropListProps> = (props) => {
  * Export (API)
  */
 type Fields = {
-  constants: typeof constants;
+  THEMES: typeof THEMES;
+  DEFAULTS: typeof DEFAULTS;
   builder<F extends string>(): t.PropListFieldBuilder<F>;
 };
 export const PropList = FC.decorate<PropListProps, Fields>(
   View,
   {
-    constants,
+    THEMES,
+    DEFAULTS,
     builder<F extends string>() {
       return FieldBuilder<F>();
     },

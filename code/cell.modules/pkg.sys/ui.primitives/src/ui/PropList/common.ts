@@ -4,7 +4,8 @@ export * from '../../common';
 /**
  * Constants
  */
-const THEMES: t.PropListTheme[] = ['Light', 'Dark'];
-const THEME: t.PropListTheme = 'Light';
-export const DEFAULT = { THEME };
-export const constants = { DEFAULT, THEMES };
+export const THEMES: t.PropListTheme[] = ['Light', 'Dark'];
+export const DEFAULTS = {
+  theme: THEMES[0],
+  fontSize: 12,
+};

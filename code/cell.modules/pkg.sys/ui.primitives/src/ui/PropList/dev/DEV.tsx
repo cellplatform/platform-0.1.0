@@ -39,7 +39,7 @@ export const actions = DevActions<Ctx>()
       config
         .view('buttons')
         .title('theme')
-        .items(PropList.constants.THEMES)
+        .items(PropList.THEMES)
         .initial(config.ctx.props.theme)
         .pipe((e) => {
           if (e.changing) e.ctx.props.theme = e.changing?.next[0].value;
@@ -93,7 +93,7 @@ export const actions = DevActions<Ctx>()
 
   .subject((e) => {
     const { props } = e.ctx;
-    const theme = props.theme ?? PropList.constants.DEFAULT.THEME;
+    const theme = props.theme ?? PropList.DEFAULTS.theme;
     const isLight = theme === 'Light';
 
     e.settings({

@@ -1,5 +1,5 @@
 import React from 'react';
-import { css, CssValue, t, COLORS } from './common';
+import { css, CssValue, t, DEFAULTS } from './common';
 import { Util } from './Util';
 
 export type PropListTitleProps = {
@@ -20,7 +20,7 @@ export const PropListTitle: React.FC<PropListTitleProps> = (props) => {
       width: '100%',
       flex: 1,
       fontWeight: 'bold',
-      fontSize: 13,
+      fontSize: DEFAULTS.fontSize + 1,
       color: theme.color.base,
     }),
     ellipsis: css({

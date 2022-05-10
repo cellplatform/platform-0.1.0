@@ -57,6 +57,7 @@ const imports = {
 
   TextCopy: import('./ui/Text.Copy/dev/DEV'),
   TextSyntax: import('./ui/Text.Syntax/dev/DEV'),
+  TextSecret: import('./ui/Text.Secret/dev/DEV'),
   TextInput: import('./ui/Text.Input/dev/DEV'),
 
   UnitTests: import('./Dev.UnitTests'),
