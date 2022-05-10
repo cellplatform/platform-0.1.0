@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { css, CssValue, pkg, PropList } from '../common';
-import { ModuleInfoConstants, DEFAULT } from './constants';
+import { css, CssValue, pkg, PropList, Text } from '../common';
+import { DEFAULT } from './constants';
 import * as k from './types';
 
 export type ModuleInfoProps = {
@@ -22,34 +22,21 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
     config = DEFAULT.CONFIG,
   } = props;
 
-  const Text = {
-    Token(props: { token?: string; hidden?: boolean }) {
-      /**
-       * TODO 🐷
-       */
-      const styles = {
-        base: css({ backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */ }),
-      };
-      return (
-        <div {...styles.base}>
-          {props.hidden ? 'HIDDEN' : 'SECRET'} {props.token}
-        </div>
-      );
-    },
+  const secret = (hidden: boolean) => {
+    const fontSize = PropList.DEFAULTS.fontSize;
+    const token = config.token;
+    return {
+      data: <Text.Secret text={token} hidden={hidden} fontSize={fontSize} />,
+      clipboard: () => token,
+    };
   };
 
   const items = PropList.builder<k.ModuleInfoFields>()
     .field('Module', { label: 'Module', value: `${pkg.name}@${pkg.version}` })
     .field('Module.Name', { label: 'Name', value: pkg.name })
     .field('Module.Version', { label: 'Version', value: pkg.version })
-    .field('Token.API', {
-      label: 'API Token',
-      value: <Text.Token token={config.token} hidden={false} />,
-    })
-    .field('Token.API.Hidden', {
-      label: 'API Token',
-      value: <Text.Token token={config.token} hidden={true} />,
-    })
+    .field('Token.API', { label: 'API Token', value: secret(false) })
+    .field('Token.API.Hidden', { label: 'API Token', value: secret(true) })
     .items(fields);
 
   /**

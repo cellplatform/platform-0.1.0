@@ -13,7 +13,11 @@ export const actions = DevActions<Ctx>()
   .namespace('ui.ModuleInfo')
   .context((e) => {
     if (e.prev) return e.prev;
-    const ctx: Ctx = { props: {} };
+    const ctx: Ctx = {
+      props: {
+        config: { token: 'abcdefg123456==' },
+      },
+    };
     return ctx;
   })
 
