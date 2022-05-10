@@ -22,6 +22,11 @@ export { Http } from '@platform/http.types';
 export { Fs, SysFsEvents } from 'sys.fs/lib/types';
 
 /**
+ * @vender
+ */
+export { VercelHttpDeployResponse } from 'vendor.cloud.vercel/lib/types';
+
+/**
  * @local
  */
 export * from '../types';

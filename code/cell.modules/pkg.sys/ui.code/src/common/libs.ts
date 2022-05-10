@@ -20,6 +20,7 @@ export { Http } from '@platform/http';
  * @system
  */
 export { IpcBus } from 'sys.runtime.electron';
-export { Filesystem } from 'sys.fs';
+export { Filesystem, Filesize } from 'sys.fs';
 export { ObjectView } from 'sys.ui.primitives/lib/ui/ObjectView';
 export { PropList } from 'sys.ui.primitives/lib/ui/PropList';
+export { HashChip } from 'sys.ui.primitives/lib/ui/HashChip';
