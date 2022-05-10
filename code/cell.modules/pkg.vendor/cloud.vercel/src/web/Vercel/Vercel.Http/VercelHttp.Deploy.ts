@@ -1,5 +1,5 @@
 import { VercelInfo } from '../Vercel.Info';
-import { asArray, deleteUndefined, log, t, Util } from './common';
+import { asArray, deleteUndefined, log, t, Util, time } from './common';
 import { VercelHttpUploadFiles } from './VercelHttp.Files.Upload';
 
 /**
@@ -21,6 +21,8 @@ export async function VercellHttpDeploy(
     silent?: boolean;
   },
 ): Promise<t.VercelHttpDeployResponse> {
+  const timer = time.timer();
+
   const { ctx, source, team, project, beforeUpload, silent = false } = args;
   const { http, fs, headers } = ctx;
   const teamId = team.id;
@@ -69,6 +71,7 @@ export async function VercellHttpDeploy(
 
   const files = uploaded.files;
   const paths = files.map(({ file }) => file);
+  const bytes = files.reduce((acc, next) => acc + next.size, 0);
 
   /**
    * Append the deployment's {meta} data object with
@@ -107,12 +110,14 @@ export async function VercellHttpDeploy(
    * Response
    */
   const { ok, status } = res;
+  const elapsed = timer.elapsed.msec;
   const error = ok ? undefined : (json.error as t.VercelHttpError);
   const aliasUrls = target !== 'production' ? [] : alias.map((url) => `https://${url}`);
   const urls = {
     inspect: Util.ensureHttps(json.inspectorUrl),
     public: [Util.ensureHttps(json.url), ...aliasUrls],
   };
+
   const deployment: t.VercelHttpDeployResponse['deployment'] = {
     id: json.id ?? '',
     name,
@@ -123,6 +128,8 @@ export async function VercellHttpDeploy(
     alias,
     meta,
     urls,
+    bytes,
+    elapsed,
   };
 
   return deleteUndefined({ ok, status, deployment, paths, error });

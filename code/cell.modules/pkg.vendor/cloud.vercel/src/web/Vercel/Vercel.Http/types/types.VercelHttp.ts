@@ -272,6 +272,8 @@ export type VercelHttpDeployResponse = VercelHttpResponse & {
     alias: string[];
     meta: VercelHttpDeployMeta;
     urls: { inspect: string; public: string[] };
+    bytes: number;
+    elapsed: Milliseconds;
   };
   paths: string[];
 };
