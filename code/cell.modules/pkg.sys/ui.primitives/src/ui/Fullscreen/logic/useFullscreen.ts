@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { rx, t } from '../common';
 import { FullscreenAPI } from './API';
 import { FullscreenController } from './Controller';
+import { FullscreenEvents } from './Events';
 
 /**
  * Hook for binding a UI element [ref] to the Browser Fullscreen API.
@@ -18,9 +19,13 @@ import { FullscreenController } from './Controller';
  *
  */
 export function useFullscreen<H extends HTMLElement = HTMLDivElement>(
-  options: { ref?: RefObject<H>; instance?: t.FullscreenInstance } = {},
+  options: {
+    ref?: RefObject<H>;
+    instance?: t.FullscreenInstance;
+    onChanged?: (e: t.FullscreenChanged) => void;
+  } = {},
 ): t.Fullscreen<H> {
-  const { instance } = options;
+  const { instance, onChanged } = options;
 
   const _ref = useRef<H>(null);
   const ref = options.ref || _ref;
@@ -28,7 +33,10 @@ export function useFullscreen<H extends HTMLElement = HTMLDivElement>(
 
   useEffect(() => {
     const dispose$ = new Subject<void>();
-    if (instance) FullscreenController({ ref, instance, dispose$ });
+    if (instance) {
+      FullscreenController({ ref, instance, dispose$ });
+      FullscreenEvents({ instance, dispose$ }).changed.$.subscribe((e) => onChanged?.(e));
+    }
     return () => rx.done(dispose$);
   }, [instance?.id]); // eslint-disable-line
 
