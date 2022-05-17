@@ -6,11 +6,9 @@ export function VercelHttpUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.Verc
   const { ctx, teamId } = args;
   const { http, fs } = ctx;
 
-  const toMimetype = (path: string) => {
-    const BINARY = 'application/octet-stream';
-    const mime = Mime.toType(path, BINARY);
-    if (mime === 'application/zip') return BINARY; // HACK: Vercel rejects this mime-type (as of May 2022, issue opened with them).
-    return mime;
+  const toContentType = (path: string): string => {
+    const DEFAULT = 'application/octet-stream';
+    return Mime.toType(path, DEFAULT);
   };
 
   const api: t.VercelHttpUploadFiles = {
@@ -22,7 +20,7 @@ export function VercelHttpUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.Verc
       const timer = time.timer();
       const body = input;
       const contentLength = body.byteLength;
-      const contentType = toMimetype(path);
+      const contentType = toContentType(path);
 
       const digest = shasum(body);
       const headers = {
@@ -79,6 +77,7 @@ export function VercelHttpUploadFiles(args: { ctx: t.Ctx; teamId?: Id }): t.Verc
           await beforeUpload({
             path,
             data,
+            contentType: toContentType(path),
             toString: () => new TextDecoder().decode(data),
             modify(input) {
               if (typeof input === 'string') data = new TextEncoder().encode(input);

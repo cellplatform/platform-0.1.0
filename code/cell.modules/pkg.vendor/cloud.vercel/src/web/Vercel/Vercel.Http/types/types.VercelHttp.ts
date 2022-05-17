@@ -167,6 +167,7 @@ export type VercelHttpBeforeFileUpload = (args: VercelHttpBeforeFileUploadArgs) 
 export type VercelHttpBeforeFileUploadArgs = {
   path: FilePath;
   data: Uint8Array;
+  contentType: Mime;
   modify(input: Uint8Array | string): void;
   toString(): string;
 };
