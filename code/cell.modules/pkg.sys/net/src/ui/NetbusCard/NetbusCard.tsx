@@ -4,7 +4,7 @@ import { Button, Card, css, CssValue, EventPipe, ObjectView, t, useEventHistory 
 import { CardBody } from '../primitives';
 
 export type NetbusCardProps = {
-  netbus: t.PeerNetbus<any>;
+  instance: { network: t.PeerNetwork; id: t.Id };
   padding?: t.CssEdgesInput;
   showAsCard?: boolean;
   margin?: t.CssEdgesInput;
@@ -12,7 +12,9 @@ export type NetbusCardProps = {
 };
 
 export const NetbusCard: React.FC<NetbusCardProps> = (props) => {
-  const { netbus, padding = [18, 20, 15, 20], showAsCard = true } = props;
+  const { padding = [18, 20, 15, 20], showAsCard = true } = props;
+  const network = props.instance.network;
+  const netbus = network.netbus;
 
   const history = useEventHistory(netbus);
   const total = history.total;

@@ -3,12 +3,12 @@ import React, { useState } from 'react';
 import { COLORS, css, CssValue, Event, Icons, t } from '../common';
 
 export type NetworkCardTitlebarProps = {
-  network: t.PeerNetwork;
+  instance: { network: t.PeerNetwork; id: t.Id };
   style?: CssValue;
 };
 
 export const NetworkCardTitlebar: React.FC<NetworkCardTitlebarProps> = (props) => {
-  const { network } = props;
+  const { network } = props.instance;
   const self = network.self;
   const iconSize = 20;
 

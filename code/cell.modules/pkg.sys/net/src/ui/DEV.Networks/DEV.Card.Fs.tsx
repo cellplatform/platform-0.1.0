@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { color, css, CssValue, t, Card, CardBody } from './DEV.common';
 
 export type DevFsCardProps = {
-  network: t.PeerNetwork;
+  instance: { network: t.PeerNetwork; id: t.Id };
   style?: CssValue;
 };
 

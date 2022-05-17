@@ -31,12 +31,12 @@ export type DevSampleAppProps = {
 };
 
 export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
-  const instance = 'instance.app';
+  const id = 'instance.app';
   const [network, setNetwork] = useState<t.PeerNetwork>();
   const bus = network?.bus ? rx.busAsType<k.NetworkCardEvent>(network?.bus) : undefined;
 
   const [overlay, setOverlay] = useState<undefined | t.NetworkCardOverlay>();
-  const keybrd = Keyboard.useKeyboard({ bus, instance });
+  const keybrd = Keyboard.useKeyboard({ bus, instance: id });
   const fullscreen = Fullscreen.useFullscreen();
 
   /**
@@ -65,7 +65,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     if (bus) {
       const $ = bus.$.pipe(
         takeUntil(dispose$),
-        filter((e) => e.payload.instance === instance),
+        filter((e) => e.payload.instance === id),
       );
 
       rx.payload<k.NetworkCardOverlayEvent>($, 'sys.net/ui.NetworkCard/Overlay')
@@ -75,7 +75,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
       const closeOverlay = () => {
         bus.fire({
           type: 'sys.net/ui.NetworkCard/Overlay',
-          payload: { instance, render: undefined },
+          payload: { instance: id, render: undefined },
         });
       };
 
@@ -106,8 +106,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
       if (!network) return <Spinner />;
       return (
         <DevNetworkCard
-          instance={instance}
-          network={network}
+          instance={{ network, id }}
           showPlaceholder={true}
           style={styles.networkCard}
         />
@@ -123,7 +122,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
       if (!network) return null;
 
       return (
-        <DevOverlay bus={network.bus} instance={instance} style={styles.fullscreen}>
+        <DevOverlay bus={network.bus} instance={id} style={styles.fullscreen}>
           {overlay.render({ size })}
         </DevOverlay>
       );

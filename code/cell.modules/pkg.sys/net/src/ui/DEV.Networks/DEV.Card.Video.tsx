@@ -14,15 +14,16 @@ import {
 } from './DEV.common';
 
 export type DevVideoCardProps = {
-  instance: t.Id;
-  network: t.PeerNetwork;
+  instance: { network: t.PeerNetwork; id: t.Id };
   stream?: MediaStream;
   style?: CssValue;
 };
 
 export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
-  const { network, stream, instance } = props;
+  const { stream } = props;
 
+  const network = props.instance.network;
+  const instance = props.instance.id;
   const bus = rx.busAsType<t.NetworkCardEvent>(network.bus);
   const resize = useResizeObserver();
 

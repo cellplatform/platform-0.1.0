@@ -70,13 +70,10 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
           if (e.kind !== 'Default') return;
 
           const data = e.data as D;
+          const network = data.network;
+
           return (
-            <DevNetworkCard
-              key={e.index}
-              instance={props.instance}
-              network={data.network}
-              child={child}
-            />
+            <DevNetworkCard key={e.index} instance={{ id: instance, network }} child={child} />
           );
         },
       }}

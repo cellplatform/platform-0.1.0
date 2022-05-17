@@ -7,13 +7,13 @@ import { color, css, CssValue, k, List, R, rx, t } from '../common';
 import { BodyColumnTitle } from './Body.Column';
 
 export type BodyColumnRightProps = {
-  instance: t.Id;
-  network: t.PeerNetwork;
+  instance: { network: t.PeerNetwork; id: t.Id };
   style?: CssValue;
 };
 
 export const BodyColumnRight: React.FC<BodyColumnRightProps> = (props) => {
-  const { network, instance } = props;
+  const { instance } = props;
+  const network = instance.network;
   const bus = rx.busAsType<k.NetworkCardEvent>(network.bus);
 
   type P = { id: string; connections: t.PeerConnectionStatus[] };
@@ -52,7 +52,7 @@ export const BodyColumnRight: React.FC<BodyColumnRightProps> = (props) => {
 
   const elPeersList = (
     <List.Layout
-      instance={{ bus, id: instance }}
+      instance={{ bus, id: instance.id }}
       style={{ marginLeft: 0 }}
       orientation={'y'}
       bullet={{ edge: 'near', size: 12 }}
@@ -86,7 +86,7 @@ export const BodyColumnRight: React.FC<BodyColumnRightProps> = (props) => {
                 const media = e.target === 'Icon:Left' ? stream?.media : undefined;
                 bus.fire({
                   type: 'sys.net/ui.NetworkCard/PeerClick',
-                  payload: { instance, network, peer, media },
+                  payload: { instance: instance.id, network, peer, media },
                 });
               }}
             />

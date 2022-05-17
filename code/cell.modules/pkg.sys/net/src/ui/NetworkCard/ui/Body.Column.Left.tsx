@@ -5,16 +5,15 @@ import { css, CssValue, t, useLocalPeer } from '../common';
 import { BodyColumnHr, BodyColumnTitle } from './Body.Column';
 
 export type BodyColumnLeftProps = {
-  instance: t.Id;
-  network: t.PeerNetwork;
-  self: t.PeerId;
+  instance: { network: t.PeerNetwork; id: t.Id };
   style?: CssValue;
 };
 
 export const BodyColumnLeft: React.FC<BodyColumnLeftProps> = (props) => {
-  const { network, instance } = props;
+  const { instance } = props;
+  const network = instance.network;
   const bus = network.bus;
-  const self = useLocalPeer({ bus, self: props.self });
+  const self = useLocalPeer({ bus, self: network.self });
 
   /**
    * [Render]

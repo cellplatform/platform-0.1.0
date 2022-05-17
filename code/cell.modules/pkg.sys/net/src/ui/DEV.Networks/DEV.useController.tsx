@@ -10,11 +10,11 @@ import { css, LocalPeerCard, rx, t, PeerNetwork, CmdBar } from './DEV.common';
  * Hooks
  */
 export function useController(args: {
-  instance: t.Id;
-  network: t.PeerNetwork;
+  instance: { network: t.PeerNetwork; id: t.Id };
   defaultChild?: JSX.Element;
 }) {
-  const { network, instance, defaultChild } = args;
+  const { instance, defaultChild } = args;
+  const network = instance.network;
   const [child, setChild] = useState<undefined | JSX.Element>(defaultChild);
 
   /**
@@ -22,7 +22,7 @@ export function useController(args: {
    */
   useEffect(() => {
     const { netbus } = network;
-    const commandBar = CmdBar.Events({ instance: { bus: network.bus, id: instance } });
+    const commandBar = CmdBar.Events({ instance: { bus: network.bus, id: instance.id } });
 
     const dispose$ = new Subject<void>();
     const dispose = () => {
@@ -34,7 +34,7 @@ export function useController(args: {
     const bus = rx.busAsType<k.NetworkCardEvent>(network.bus);
     const $ = bus.$.pipe(
       takeUntil(dispose$),
-      filter((e) => e.payload.instance === instance),
+      filter((e) => e.payload.instance === instance.id),
     );
 
     /**
@@ -56,14 +56,7 @@ export function useController(args: {
     rx.payload<k.NetworkCardPeerClickEvent>($, 'sys.net/ui.NetworkCard/PeerClick')
       .pipe(filter((e) => Boolean(e.media)))
       .subscribe((e) => {
-        setChild(
-          <DevVideoCard
-            instance={instance}
-            network={network}
-            style={styles.child}
-            stream={e.media}
-          />,
-        );
+        setChild(<DevVideoCard instance={instance} style={styles.child} stream={e.media} />);
       });
 
     rx.payload<k.NetworkCardCloseChildEvent>($, 'sys.net/ui.NetworkCard/CloseChild')

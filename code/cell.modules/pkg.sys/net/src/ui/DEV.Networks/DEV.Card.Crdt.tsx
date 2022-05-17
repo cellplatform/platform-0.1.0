@@ -7,7 +7,7 @@ import { CrdtDocEvents } from 'sys.data.crdt/lib/types';
 import { Button, Card, CardBody, css, CssValue, ObjectView, t } from './DEV.common';
 
 export type DevCrdtCardProps = {
-  network: t.PeerNetwork;
+  instance: { network: t.PeerNetwork; id: t.Id };
   style?: CssValue;
 };
 
@@ -18,7 +18,7 @@ const DEFAULT = {
 type T = { count: number; msg?: string };
 
 export const DevCrdtCard: React.FC<DevCrdtCardProps> = (props) => {
-  const { network } = props;
+  const { network } = props.instance;
   const { bus, netbus } = network;
 
   const [doc, setDoc] = useState<undefined | CrdtDocEvents<T>>();

@@ -5,15 +5,13 @@ import { BodyColumnLeft } from './Body.Column.Left';
 import { BodyColumnRight } from './Body.Column.Right';
 
 export type NetworkCardBodyProps = {
-  instance: t.Id;
-  network: t.PeerNetwork;
-  self: t.PeerId;
+  instance: { network: t.PeerNetwork; id: t.Id };
   style?: CssValue;
 };
 
 export const NetworkCardBody: React.FC<NetworkCardBodyProps> = (props) => {
-  const { self, network } = props;
-  const bus = network.bus;
+  const { instance } = props;
+  const bus = instance.network.bus;
 
   /**
    * [Render]
@@ -39,14 +37,9 @@ export const NetworkCardBody: React.FC<NetworkCardBodyProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       {elDivider}
-      <BodyColumnLeft
-        instance={props.instance}
-        network={network}
-        self={self}
-        style={styles.column}
-      />
+      <BodyColumnLeft instance={instance} style={styles.column} />
       {elDivTraceEdges}
-      <BodyColumnRight instance={props.instance} network={network} style={styles.column} />
+      <BodyColumnRight instance={props.instance} style={styles.column} />
       {elDivider}
       {elDebug}
     </div>
