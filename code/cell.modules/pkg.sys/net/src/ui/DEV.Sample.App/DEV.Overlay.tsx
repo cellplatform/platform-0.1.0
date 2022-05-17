@@ -3,7 +3,7 @@ import { rx, color, COLORS, css, CssValue, t, Icons, Button } from './DEV.common
 
 type Pixels = number;
 
-export type DevFullscreenProps = {
+export type DevOverlayProps = {
   children?: React.ReactNode;
   bus: t.EventBus<any>;
   instance: t.Id;
@@ -11,7 +11,7 @@ export type DevFullscreenProps = {
   style?: CssValue;
 };
 
-export const DevFullscreen: React.FC<DevFullscreenProps> = (props) => {
+export const DevOverlay: React.FC<DevOverlayProps> = (props) => {
   const { instance, blur = 5 } = props;
   const bus = rx.busAsType<t.NetworkCardEvent>(props.bus);
 

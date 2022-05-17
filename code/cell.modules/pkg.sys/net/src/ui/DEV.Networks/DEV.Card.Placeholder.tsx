@@ -1,5 +1,6 @@
 import React from 'react';
-import { color, css, CssValue, t } from '../../common';
+
+import { color, css, CssValue } from '../../common';
 
 type Pixels = number;
 
@@ -10,8 +11,6 @@ export type DevCardPlaceholderProps = {
 
 export const DevCardPlaceholder: React.FC<DevCardPlaceholderProps> = (props) => {
   const { backgroundBlur = 10 } = props;
-
-  console.log('backgroundBlur', backgroundBlur);
 
   /**
    * [Render]

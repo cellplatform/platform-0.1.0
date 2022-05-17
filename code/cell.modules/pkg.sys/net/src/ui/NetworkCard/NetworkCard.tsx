@@ -32,7 +32,7 @@ export const NetworkCard: React.FC<NetworkCardProps> = (props) => {
     fill: css({ flex: 1 }),
   };
 
-  const elHeader = <NetworkCardTitlebar bus={bus} self={self} />;
+  const elHeader = <NetworkCardTitlebar network={network} />;
 
   const elBody = (
     <CardBody header={{ el: elHeader }} style={styles.fill}>

@@ -1,18 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import { css, CssValue, Icons, t } from '../common';
+import { COLORS, css, CssValue, Event, Icons, t } from '../common';
 
 export type NetworkCardTitlebarProps = {
-  bus: t.EventBus<any>;
-  self: t.PeerId;
+  network: t.PeerNetwork;
   style?: CssValue;
 };
 
 export const NetworkCardTitlebar: React.FC<NetworkCardTitlebarProps> = (props) => {
+  const { network } = props;
+  const self = network.self;
   const iconSize = 20;
 
-  const DISABLED = 0.1;
-  const ENABLED = 1;
+  const [status, setStatus] = useState<t.PeerStatus>();
+  const totalConnections = status?.connections.length ?? 0;
+
+  /**
+   * [Lifecycle]
+   */
+  const events = Event.useEventsRef(() => network.events.peer.clone());
+  events.status(self).changed$.subscribe((e) => setStatus(e.peer));
 
   /**
    * [Render]
@@ -34,7 +41,12 @@ export const NetworkCardTitlebar: React.FC<NetworkCardTitlebarProps> = (props) =
       <div {...styles.icons}>
         {/* <Icons.FsNetworkDrive style={styles.icon} size={iconSize} opacity={0.7} /> */}
         {/* <Icons.Bus style={styles.icon} size={iconSize} opacity={ENABLED} /> */}
-        <Icons.Antenna style={styles.icon} size={iconSize} opacity={0.7} />
+        <Icons.Antenna
+          style={styles.icon}
+          size={iconSize}
+          color={COLORS.DARK}
+          opacity={totalConnections === 0 ? 0.2 : 0.7}
+        />
       </div>
     </>
   );

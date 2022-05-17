@@ -18,7 +18,7 @@ export { UAParser };
  */
 export { events, FC } from '@platform/react';
 export { log } from '@platform/log/lib/client';
-export { css, color, CssValue, formatColor, Style } from '@platform/css';
+export { css, color, Color, CssValue, formatColor, Style } from '@platform/css';
 export { useResizeObserver } from '@platform/react';
 export { rx, defaultValue, cuid, time, deleteUndefined, asArray, slug } from '@platform/util.value';
 export { StateObject } from '@platform/state';
@@ -30,3 +30,5 @@ export { NetworkBus } from '@platform/cell.runtime/lib/NetworkBus';
  */
 export { Filesystem } from 'sys.fs';
 export { WebRuntime } from 'sys.runtime.web.ui';
+export { Fullscreen } from 'sys.ui.primitives/lib/ui/Fullscreen';
+export { Event } from 'sys.ui.primitives/lib/ui/Event';

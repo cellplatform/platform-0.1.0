@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 
 import {
   Button,
@@ -22,8 +22,8 @@ export type DevVideoCardProps = {
 
 export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
   const { network, stream, instance } = props;
-  const bus = rx.busAsType<t.NetworkCardEvent>(network.bus);
 
+  const bus = rx.busAsType<t.NetworkCardEvent>(network.bus);
   const resize = useResizeObserver();
 
   /**
@@ -39,13 +39,16 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
     },
     header: {},
     toolbar: {
-      base: css({ Flex: 'x-center-center' }),
-      body: css({}),
-      button: css({ height: 20 }),
+      section: css({ Flex: 'x-center-center' }),
+      button: css({
+        height: 20,
+        marginRight: 15,
+        ':last-child': { marginRight: 0 },
+      }),
     },
   };
 
-  const onFullScreenClick = () => {
+  const handleExpandWindowClick = () => {
     bus.fire({
       type: 'sys.net/ui.NetworkCard/Overlay',
       payload: {
@@ -66,22 +69,33 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
     });
   };
 
-  const onCloseChild = () => {
+  const handleCloseExpandedWindow = () => {
     bus.fire({
       type: 'sys.net/ui.NetworkCard/CloseChild',
       payload: { instance },
     });
   };
 
+  const handleStartScreenShare = () => {
+    /**
+     * TODO 🐷
+     */
+    console.log('🌳⚡️ StartScreenShare');
+  };
+
   const elHeader = (
     <>
-      <div>{'Video'}</div>
-      <div {...styles.toolbar.base}>
-        <Button {...styles.toolbar.button}>
-          <Icons.FullScreen.Open size={20} onClick={onFullScreenClick} />
+      <div {...styles.toolbar.section}>
+        <Button style={styles.toolbar.button} tooltip={'Close'}>
+          <Icons.Close size={20} onClick={handleCloseExpandedWindow} />
         </Button>
-        <Button {...styles.toolbar.button}>
-          <Icons.Close size={20} onClick={onCloseChild} />
+      </div>
+      <div {...styles.toolbar.section}>
+        <Button style={styles.toolbar.button} tooltip={'Start Screen Share'}>
+          <Icons.ScreenShare.Start size={24} onClick={handleStartScreenShare} opacity={0.2} />
+        </Button>
+        <Button style={styles.toolbar.button} tooltip={'Expand Window'}>
+          <Icons.Window.Expand size={20} onClick={handleExpandWindowClick} />
         </Button>
       </div>
     </>

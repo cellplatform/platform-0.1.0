@@ -281,6 +281,8 @@ export const actions = DevActions<Ctx>()
       e.ctx.debug.deploymentResponse = res;
     });
 
+    e.hr();
+
     e.component((e) => {
       const data = e.ctx.debug.deploymentResponse;
       if (!data) return null;
@@ -355,8 +357,6 @@ export const actions = DevActions<Ctx>()
         </div>
       );
     });
-
-    e.hr();
   })
 
   .subject((e) => {
