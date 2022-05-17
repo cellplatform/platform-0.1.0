@@ -2,9 +2,9 @@ import React from 'react';
 
 import { CardBody } from '../primitives';
 import { CmdCard, css, CssValue, t } from './common';
-import { NetworkCardBody } from './components/Body';
-import { NetworkCardChild } from './components/Child';
-import { NetworkCardTitlebar } from './components/Titlebar';
+import { NetworkCardBody } from './ui/Body';
+import { NetworkCardChild } from './ui/Child';
+import { NetworkCardTitlebar } from './ui/Titlebar';
 
 export type NetworkCardProps = {
   instance: t.Id;
