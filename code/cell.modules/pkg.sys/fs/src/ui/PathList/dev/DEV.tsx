@@ -7,6 +7,7 @@ type Ctx = {
   bus: t.EventBus;
   fs: t.Fs;
   props: PathListStatefulProps;
+  debug: { render: boolean };
 };
 
 /**
@@ -27,12 +28,20 @@ export const actions = DevActions<Ctx>()
       bus,
       fs,
       props: { instance, scroll: true },
+      debug: { render: true },
     };
 
     return ctx;
   })
 
   .items((e) => {
+    e.boolean('render', (e) => {
+      if (e.changing) e.ctx.debug.render = e.changing.next;
+      e.boolean.current = e.ctx.debug.render;
+    });
+
+    e.hr();
+
     e.title('Props');
 
     e.boolean('scroll', (e) => {
@@ -82,12 +91,14 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    const debug = e.ctx.debug;
+
     e.settings({
       host: { background: -0.04 },
       layout: {
         label: {
-          topLeft: '<PathListStateful>',
-          topRight: `Filesystem: "${e.ctx.props.instance.id}"`,
+          topLeft: '<PathList.Stateful>',
+          bottomRight: `filesystem: "${e.ctx.props.instance.id}"`,
         },
         position: [150, null],
         width: 450,
@@ -98,7 +109,8 @@ export const actions = DevActions<Ctx>()
     });
 
     const style = { flex: 1 };
-    e.render(<PathListStateful {...e.ctx.props} style={style} />);
+
+    e.render(debug.render && <PathListStateful {...e.ctx.props} style={style} />);
   });
 
 export default actions;

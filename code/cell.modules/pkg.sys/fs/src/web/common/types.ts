@@ -33,5 +33,5 @@ export {
 /**
  * @system
  */
-export { Dropped, DroppedFile } from 'sys.ui.primitives/lib/types';
 export { S3SignedPostOptions } from '@platform/fs.s3.types';
+export { Dropped, DroppedFile } from 'sys.ui.primitives/lib/types';
