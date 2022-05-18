@@ -1,28 +1,14 @@
 import React from 'react';
 import { debounceTime } from 'rxjs/operators';
-import { LOREM, DevActions, TestSuiteRunResponse, ObjectView } from 'sys.ui.dev';
+import { DevActions, LOREM, TestSuiteRunResponse } from 'sys.ui.dev';
+import { Vercel } from 'vendor.cloud.vercel/lib/web';
+import { ModuleInfo as VercelModuleInfo } from 'vendor.cloud.vercel/lib/web/ui/ModuleInfo';
 
 import { DevEnv, DevEnvProps } from '..';
 import { CodeEditor } from '../../../api';
 import { DevFilesystem } from '../../dev';
-import {
-  css,
-  Http,
-  Filesystem,
-  rx,
-  slug,
-  t,
-  PropList,
-  Filesize,
-  HashChip,
-  COLORS,
-  time,
-} from '../common';
+import { Filesystem, Http, rx, slug, t } from '../common';
 import { evalCode } from './DEV.eval';
-import { Icons } from '../../Icons';
-
-import { Vercel } from 'vendor.cloud.vercel/lib/web';
-import { ModuleInfo } from 'vendor.cloud.vercel/lib/web/ui/ModuleInfo';
 
 type Ctx = {
   bus: t.EventBus<any>;
@@ -32,7 +18,7 @@ type Ctx = {
   editor?: t.CodeEditorInstanceEvents;
   onReady: t.DevEnvReadyHandler;
   runTests(code?: string): Promise<TestSuiteRunResponse | undefined>;
-  debug: { deploymentResponse?: t.VercelHttpDeployResponse };
+  debug: { deployment?: t.VercelHttpDeployResponse };
 };
 
 const SAMPLE_TEST = `
@@ -210,9 +196,9 @@ export const actions = DevActions<Ctx>()
 
     e.component((e) => {
       return (
-        <ModuleInfo
+        <VercelModuleInfo
           fields={['Module', 'Token.API.Hidden']}
-          config={{ token: e.ctx.token }}
+          data={{ token: e.ctx.token }}
           style={{ Margin: [30, 45, 30, 38] }}
         />
       );
@@ -278,83 +264,20 @@ export const actions = DevActions<Ctx>()
       if (res.error) console.log('error', res.error);
       console.log();
 
-      e.ctx.debug.deploymentResponse = res;
+      e.ctx.debug.deployment = res;
     });
 
     e.hr();
 
     e.component((e) => {
-      const data = e.ctx.debug.deploymentResponse;
+      const data = e.ctx.debug.deployment;
       if (!data) return null;
-
-      const urls = data.deployment.urls;
-
-      const styles = {
-        base: css({ Margin: [10, 40, 10, 40] }),
-      };
-
-      const Anchor = (props: { label?: string; url: string }) => {
-        let label = (props.label ?? props.url).trim();
-        if (label.endsWith('vercel.app')) label = 'perma-link';
-        const styles = {
-          base: css({ color: COLORS.BLUE }),
-        };
-        return (
-          <a href={props.url} target={'_blank'} rel="noreferrer" {...styles.base}>
-            {label}
-          </a>
-        );
-      };
-
-      const LinkLabel = (props: { text?: string }) => {
-        const styles = {
-          base: css({ Flex: 'x-center-center' }),
-          icon: css({ marginRight: 5, opacity: 0.35 }),
-        };
-        return (
-          <div {...styles.base}>
-            <Icons.Link color={COLORS.DARK} size={12} style={styles.icon} />
-            <div>{props.text}</div>
-          </div>
-        );
-      };
-
-      const ok = data.ok;
-      const bytes = data.deployment.bytes;
-      const totalFiles = data.paths.length;
-      const totalFilesSuffix = totalFiles === 0 ? 'file' : 'files';
-      const size = `${Filesize(bytes, { spacer: '' })} (${totalFiles} ${totalFilesSuffix})`;
-      const status = `${data.status}${ok ? ' OK' : ''}`;
-      const elapsed = time.duration(data.deployment.elapsed).toString();
-
       return (
-        <div {...styles.base}>
-          <PropList
-            style={{ MarginY: [20, 0, 20, 0] }}
-            defaults={{ clipboard: false }}
-            title={'Deployment'}
-            items={[
-              { label: 'fileshash', value: <HashChip text={data.deployment.meta.fileshash} /> },
-              {
-                label: 'status',
-                value: <div>{status}</div>,
-              },
-              { label: 'elapsed', value: { data: elapsed } },
-              { label: 'name', value: { data: data.deployment.name } },
-              { label: 'size', value: { data: size } },
-              { label: 'kind', value: { data: data.deployment.meta.kind } },
-              {
-                label: <LinkLabel text={'deployment'} />,
-                value: <Anchor label={'inspect'} url={urls.inspect} />,
-              },
-              ...urls.public.map((url) => ({
-                label: <LinkLabel text={'public'} />,
-                value: <Anchor url={url} />,
-              })),
-            ]}
-          />
-          <ObjectView name={'deployment.response'} data={data} fontSize={10} expandPaths={['$']} />
-        </div>
+        <VercelModuleInfo
+          fields={['Deployment.Response']}
+          data={{ deploymentResponse: data }}
+          style={{ Margin: [10, 40, 10, 40] }}
+        />
       );
     });
   })

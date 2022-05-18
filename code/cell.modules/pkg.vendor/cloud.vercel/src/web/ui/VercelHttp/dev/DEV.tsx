@@ -216,18 +216,11 @@ export const actions = DevActions<Ctx>()
     e.component((e) => {
       const data = e.ctx.output.deployment;
       if (!data) return null;
-
-      const json = JSON.stringify(data);
-      console.log('json', json);
-
       return (
-        <ObjectView
-          name={'deployment'}
-          data={data}
-          style={{ MarginX: 15 }}
-          fontSize={10}
-          expandPaths={['$']}
-          expandLevel={5}
+        <ModuleInfo
+          fields={['Deployment.Response']}
+          data={{ deploymentResponse: data }}
+          style={{ Margin: [10, 40, 10, 40] }}
         />
       );
     });
