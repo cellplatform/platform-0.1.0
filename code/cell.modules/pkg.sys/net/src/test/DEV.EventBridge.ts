@@ -1,4 +1,4 @@
-import { log, MediaStream, slug, t, PeerNetwork } from '../DEV.common';
+import { log, MediaStream, slug, t, PeerNetwork } from './DEV.libs';
 
 export const EventBridge = {
   ref: (self: t.PeerId, kind: t.PeerConnectionKindMedia) => `${kind}:${self}`,
@@ -7,9 +7,11 @@ export const EventBridge = {
 
   /**
    * Bridges events between the [Media] and [Net] modules.
+   *
    * NOTE:
    *    This event connector pattern enables strong
    *    de-coupling between the modules.
+   *
    */
   startEventBridge(args: { self: t.PeerId; bus: t.EventBus<any> }) {
     const bus = args.bus as t.EventBus<t.PeerEvent | t.MediaEvent>;
@@ -20,7 +22,7 @@ export const EventBridge = {
     };
 
     /**
-     * NETWORK => VIDEO => NETWORK
+     * [NETWORK] => [VIDEO] => [NETWORK]
      */
     events.net.media(args.self).req$.subscribe(async (e) => {
       const { self, kind } = e;

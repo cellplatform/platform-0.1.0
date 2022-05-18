@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { color } from '@platform/css';
 
-import { Icons, COLORS, css, Textbox } from '../DEV.common';
+import { Icons, COLORS, css, Textbox, color } from '../DEV.common';
 
 export type DevEventBusTextboxProps = {
   onBroadcast?: (e: { message: string; filter: string }) => void;
@@ -17,9 +16,10 @@ export const DevEventBusTextbox: React.FC<DevEventBusTextboxProps> = (props) => 
   const [message, setMessage] = useState('');
 
   const broadcast = () => {
-    if (props.onBroadcast) {
-      props.onBroadcast({ message: message.trim(), filter: filter.trim() });
-    }
+    props.onBroadcast?.({
+      message: message.trim(),
+      filter: filter.trim(),
+    });
   };
 
   const elFilter = (

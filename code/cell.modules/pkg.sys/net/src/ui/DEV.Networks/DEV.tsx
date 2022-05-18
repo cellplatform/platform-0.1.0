@@ -1,18 +1,8 @@
 import React from 'react';
 
 import { DevActions, ObjectView, TEST } from '../../test';
-import {
-  color,
-  COLORS,
-  css,
-  DevConstants,
-  EventBridge,
-  MediaStream,
-  PeerNetwork,
-  rx,
-} from './DEV.common';
+import { color, COLORS, css, DevConstants } from './DEV.common';
 import { DevSample, DevSampleProps } from './DEV.Sample';
-import { DevEventList } from './DEV.EventList';
 
 const IMAGE = {
   // "Desert Scene"
@@ -269,19 +259,8 @@ export default actions;
  * Helpers
  */
 
-async function createNetwork() {
-  const bus = rx.bus();
-  const signal = TEST.SIGNAL;
-  const { network } = await PeerNetwork.start({ bus, signal });
-
-  MediaStream.Controller({ bus });
-  EventBridge.startEventBridge({ self: network.netbus.self, bus });
-
-  return network;
-}
-
 async function addNetwork(ctx: Ctx, redraw: () => void) {
-  const network = await createNetwork();
+  const network = await TEST.createNetwork();
   network.status.$.subscribe(redraw);
   ctx.props.networks.push(network);
 }

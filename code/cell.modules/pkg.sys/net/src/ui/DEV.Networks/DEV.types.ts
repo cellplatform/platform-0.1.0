@@ -1,7 +1,6 @@
-export * from '../../common/types';
+export * from '../NetworkCard/dev/DEV.types';
 
 /**
  * Views
  */
 export type DevViewKind = 'URI' | 'Single' | 'Collection';
-export type DevChildKind = 'Placeholder' | 'Netbus' | 'Crdt' | 'Filesystem' | 'Video';

@@ -3,7 +3,7 @@ import React from 'react';
 import { Label } from '../Label';
 import { List, color, COLORS, css, CssValue, DevConstants, t } from './DEV.common';
 import { DevEmpty } from './DEV.Empty';
-import { DevNetworkCard } from './DEV.NetworkCard';
+import { DevNetworkCard } from './DEV.ref';
 
 export type DevSampleProps = {
   instance: t.Id;

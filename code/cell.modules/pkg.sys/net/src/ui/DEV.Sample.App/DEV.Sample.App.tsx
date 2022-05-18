@@ -3,7 +3,8 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { TEST } from '../../test';
-import { DevNetworkCard } from '../DEV.Networks/DEV.NetworkCard';
+
+import { DevNetworkCard } from '../NetworkCard/dev/DEV.NetworkCard';
 import * as k from '../NetworkCard/types';
 import {
   Button,
@@ -89,10 +90,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({
-      Absolute: 0,
-      backgroundColor: Color.format(1),
-    }),
+    base: css({ Absolute: 0, backgroundColor: Color.format(1) }),
     bg: css({ Absolute: 0, backgroundColor: Color.format(-0.06) }),
     layout: css({ Absolute: 0 }),
     networkCard: css({ pointerEvents: 'auto' }),
@@ -104,13 +102,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     position: { x: 'center', y: 'center' },
     render() {
       if (!network) return <Spinner />;
-      return (
-        <DevNetworkCard
-          instance={{ network, id }}
-          showPlaceholder={true}
-          style={styles.networkCard}
-        />
-      );
+      return <DevNetworkCard instance={{ network, id }} style={styles.networkCard} />;
     },
   };
 
