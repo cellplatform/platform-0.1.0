@@ -9,7 +9,7 @@ type Ctx = {
 };
 
 const DEFAULT = {
-  BULLET: { edge: 'near', size: 60 } as t.ListBulletRendererArgs['bullet'],
+  BULLET: { edge: 'near', size: 60 } as t.ListItemRendererArgs['bullet'],
 };
 
 const Util = {

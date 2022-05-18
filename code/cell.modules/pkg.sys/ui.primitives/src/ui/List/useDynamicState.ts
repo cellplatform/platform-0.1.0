@@ -72,7 +72,7 @@ export function useDynamicItemState(args: {
   };
 
   const [state, setState] = useState<S>();
-  const [is, setIs] = useState<t.ListBulletRenderFlags>(toFlags());
+  const [is, setIs] = useState<t.ListItemRenderFlags>(toFlags());
 
   /**
    * [Lifecycle]

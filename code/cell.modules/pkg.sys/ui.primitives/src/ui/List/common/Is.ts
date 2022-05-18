@@ -18,7 +18,7 @@ export const Is = {
     orientation: t.ListOrientation;
     bullet: { edge: t.ListBulletEdge };
     state?: t.ListState;
-  }): t.ListBulletRenderFlags {
+  }): t.ListItemRenderFlags {
     const { index, total, orientation, bullet, state } = args;
 
     const selection = state?.selection?.indexes;

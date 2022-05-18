@@ -12,7 +12,7 @@ const bodyRenderCount: number[] = []; // Debug 🐷. Keep a tally of the number 
  * based on an input "type" flag.
  */
 export function sampleBulletFactory(getCtx: () => RenderCtx) {
-  const fn: t.ListBulletRenderer = (e) => {
+  const fn: t.ListItemRenderer = (e) => {
     const ctx = getCtx();
     const bulletKind = ctx.bulletKind;
 
@@ -45,7 +45,7 @@ export function sampleBulletFactory(getCtx: () => RenderCtx) {
  * based on an input "type" flag.
  */
 export function sampleBodyFactory(getCtx: () => RenderCtx) {
-  const fn: t.ListBulletRenderer = (e) => {
+  const fn: t.ListItemRenderer = (e) => {
     const ctx = getCtx();
     const bodyKind = ctx.bodyKind;
 
