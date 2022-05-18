@@ -12,9 +12,7 @@ export const actions = DevActions<Ctx>()
   .namespace('ui.Text')
   .context((e) => {
     if (e.prev) return e.prev;
-    const ctx: Ctx = {
-      // props: {},
-    };
+    const ctx: Ctx = {};
     return ctx;
   })
 
