@@ -9,6 +9,7 @@ const ALL_FIELDS: m.ModuleInfoFields[] = [
   'Module.Version',
   'Token.API',
   'Token.API.Hidden',
+  'Deployment.Response',
 ];
 
 /**
@@ -19,8 +20,9 @@ const DEFAULT_FIELDS: m.ModuleInfoFields[] = ['Module.Name', 'Module.Version'];
 /**
  * Default configuration settings.
  */
-const DEFAULT_CONFIG: m.ModuleInfoConfig = {
+const DEFAULT_DATA: m.ModuleInfoData = {
   token: undefined,
+  deploymentResponse: undefined,
 };
 
 /**
@@ -28,7 +30,7 @@ const DEFAULT_CONFIG: m.ModuleInfoConfig = {
  */
 export const DEFAULT = {
   FIELDS: DEFAULT_FIELDS,
-  CONFIG: DEFAULT_CONFIG,
+  DATA: DEFAULT_DATA,
 };
 
 export const ModuleInfoConstants = {

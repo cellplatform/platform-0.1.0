@@ -3,10 +3,11 @@ import React from 'react';
 import { css, CssValue, pkg, PropList, Text } from '../common';
 import { DEFAULT } from './constants';
 import * as k from './types';
+import { toDeploymentResponse } from './ModuleInfo.deployment';
 
 export type ModuleInfoProps = {
   fields?: k.ModuleInfoFields[];
-  config?: k.ModuleInfoConfig;
+  data?: k.ModuleInfoData;
   width?: number;
   minWidth?: number;
   maxWidth?: number;
@@ -14,17 +15,11 @@ export type ModuleInfoProps = {
 };
 
 export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
-  const {
-    width,
-    minWidth = 230,
-    maxWidth,
-    fields = DEFAULT.FIELDS,
-    config = DEFAULT.CONFIG,
-  } = props;
+  const { width, minWidth = 230, maxWidth, fields = DEFAULT.FIELDS, data = DEFAULT.DATA } = props;
 
   const secret = (hidden: boolean) => {
     const fontSize = PropList.DEFAULTS.fontSize;
-    const token = config.token;
+    const token = data.token;
     return {
       data: <Text.Secret text={token} hidden={hidden} fontSize={fontSize} />,
       clipboard: () => token,
@@ -37,6 +32,7 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
     .field('Module.Version', { label: 'Version', value: pkg.version })
     .field('Token.API', { label: 'API Token', value: secret(false) })
     .field('Token.API.Hidden', { label: 'API Token', value: secret(true) })
+    .field('Deployment.Response', () => toDeploymentResponse(data.deploymentResponse))
     .items(fields);
 
   /**

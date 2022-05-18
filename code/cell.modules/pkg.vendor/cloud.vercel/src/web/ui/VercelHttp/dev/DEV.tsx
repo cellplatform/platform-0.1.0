@@ -12,7 +12,10 @@ type Ctx = {
   bus: t.EventBus;
   props: VercelHttpProps;
   fs: t.Fs;
-  output?: any;
+  output: {
+    json?: any;
+    deployment?: t.VercelHttpDeployResponse;
+  };
 };
 
 /**
@@ -31,6 +34,7 @@ export const actions = DevActions<Ctx>()
       bus,
       fs,
       props: {},
+      output: {},
     };
 
     return ctx;
@@ -111,6 +115,8 @@ export const actions = DevActions<Ctx>()
       urls.public.forEach((url) => console.log(' • ', url));
       if (res.error) console.log('error', res.error);
       console.log();
+
+      e.ctx.output.deployment = res;
     });
 
     e.hr();
@@ -180,7 +186,7 @@ export const actions = DevActions<Ctx>()
           <ModuleInfo
             style={{ marginBottom: 15 }}
             fields={['Module', 'Token.API.Hidden']}
-            config={{ token }}
+            data={{ token }}
           />
           <DevFilesystem fs={TestUtil.fs.instance} />
         </div>
@@ -202,10 +208,29 @@ export const actions = DevActions<Ctx>()
       console.log('res', res);
       console.log('res.json', res.json);
 
-      e.ctx.output = res.json;
+      e.ctx.output.json = res.json;
     });
 
     e.hr();
+
+    e.component((e) => {
+      const data = e.ctx.output.deployment;
+      if (!data) return null;
+
+      const json = JSON.stringify(data);
+      console.log('json', json);
+
+      return (
+        <ObjectView
+          name={'deployment'}
+          data={data}
+          style={{ MarginX: 15 }}
+          fontSize={10}
+          expandPaths={['$']}
+          expandLevel={5}
+        />
+      );
+    });
 
     e.component((e) => {
       return (

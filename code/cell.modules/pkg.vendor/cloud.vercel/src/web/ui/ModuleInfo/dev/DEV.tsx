@@ -3,6 +3,7 @@ import { DevActions } from 'sys.ui.dev';
 import { ModuleInfo, ModuleInfoProps } from '..';
 import { ModuleInfoConstants } from '../constants';
 import * as k from '../types';
+import { SAMPLE } from './DEV.data';
 
 type Ctx = { props: ModuleInfoProps };
 
@@ -15,7 +16,10 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
     const ctx: Ctx = {
       props: {
-        config: { token: 'abcdefg123456==' },
+        data: {
+          token: 'abcdefg123456==',
+          deploymentResponse: SAMPLE.deployment.response,
+        },
       },
     };
     return ctx;
