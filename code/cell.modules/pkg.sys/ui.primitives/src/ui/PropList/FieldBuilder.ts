@@ -7,10 +7,11 @@ export function FieldBuilder<F extends string>(): PropListFieldBuilder<F> {
   type H = PropListItemFactory | PropListItem;
   const handlers: [F, H][] = [];
   const find = (name: F) => handlers.find((item) => item[0] === name)?.[1];
+
   const run = (name: F) => {
     const item = find(name);
     const res = typeof item === 'function' ? item() : item;
-    return res ? { ...res } : undefined;
+    return res ? res : undefined;
   };
 
   const api: PropListFieldBuilder<F> = {
@@ -27,7 +28,15 @@ export function FieldBuilder<F extends string>(): PropListFieldBuilder<F> {
      * Convert fields to <PropList> items.
      */
     items(fields: F[] = []) {
-      return fields.map((name) => run(name)).filter((item) => Boolean(item)) as PropListItem[];
+      const list: PropListItem[] = [];
+
+      fields.filter(Boolean).forEach((name) => {
+        const res = run(name);
+        if (!res) return;
+        (Array.isArray(res) ? res : [res]).forEach((item) => list.push(item));
+      });
+
+      return list;
     },
   };
 

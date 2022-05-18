@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { COLORS, css, FC, Style, t, DEFAULTS, THEMES } from './common';
-import { FieldBuilder } from './Fields';
+import { FieldBuilder } from './FieldBuilder';
 import { PropListItem } from './PropList.Item';
 import { PropListTitle } from './PropList.Title';
 import { PropListProps } from './types';

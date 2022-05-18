@@ -3,9 +3,29 @@ import { DevActions } from 'sys.ui.dev';
 
 import { PropList, PropListProps } from '..';
 import { COLORS, css, Icons } from './DEV.common';
-import { items, LOREM } from './DEV.Sample.Items';
+import { sampleItems, LOREM } from './DEV.Samples';
+import { BuilderSample, MyFields } from './DEV.Sample.Builder';
 
-type Ctx = { props: PropListProps };
+type SampleKind = 'Samples' | 'Builder';
+
+type Ctx = {
+  props: PropListProps;
+  debug: { source: SampleKind; fields?: MyFields[] };
+};
+
+const Util = {
+  toItems(ctx: Ctx) {
+    const debug = ctx.debug;
+    if (debug.source === 'Samples') return sampleItems;
+
+    if (debug.source === 'Builder') {
+      const fields = debug.fields;
+      return BuilderSample.toItems({ fields });
+    }
+
+    return [];
+  },
+};
 
 /**
  * Actions
@@ -16,12 +36,16 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
     return {
       props: {
-        items,
+        // items,
         title: 'MyTitle',
         titleEllipsis: true,
         defaults: { clipboard: false },
         theme: 'Light',
         // theme: 'Dark',
+      },
+      debug: {
+        source: 'Samples',
+        // source: 'Builder',
       },
     };
   })
@@ -91,10 +115,48 @@ export const actions = DevActions<Ctx>()
     e.hr();
   })
 
+  .items((e) => {
+    e.title('Debug');
+
+    e.select((config) => {
+      const items: SampleKind[] = ['Samples', 'Builder'];
+      config
+        .title('sample source')
+        .items(items)
+        .initial(config.ctx.debug.source)
+        .view('buttons')
+        .pipe((e) => {
+          if (e.changing) e.ctx.debug.source = e.changing?.next[0].value;
+        });
+    });
+
+    e.hr(1, 0.1);
+
+    e.select((config) =>
+      config
+        .title('builder fields:')
+        .items(BuilderSample.allFields)
+        .initial(undefined)
+        .clearable(true)
+        .view('buttons')
+        .multi(true)
+        .pipe((e) => {
+          if (e.changing) {
+            const next = e.changing.next.map(({ value }) => value) as MyFields[];
+            e.ctx.debug.fields = next.length === 0 ? undefined : next;
+          }
+        }),
+    );
+
+    e.hr();
+  })
+
   .subject((e) => {
     const { props } = e.ctx;
+
     const theme = props.theme ?? PropList.DEFAULTS.theme;
     const isLight = theme === 'Light';
+    const items = Util.toItems(e.ctx);
 
     e.settings({
       host: { background: isLight ? -0.04 : COLORS.DARK },
@@ -105,7 +167,7 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    e.render(<PropList {...props} style={{ flex: 1 }} />);
+    e.render(<PropList {...props} items={items} style={{ flex: 1 }} />);
   });
 
 export default actions;
