@@ -24,7 +24,7 @@ export const Is = {
     const selection = state?.selection?.indexes;
     const selected = ListState.Selection.isSelected(selection, index);
 
-    return {
+    const is = {
       empty: total === 0,
       single: total === 1,
       first: index === 0,
@@ -41,6 +41,14 @@ export const Is = {
         over: state ? state.mouse?.over === index : false,
         down: state ? state.mouse?.down === index : false,
       },
+      get previous() {
+        return is.first ? undefined : Is.toItemFlags({ ...args, index: index - 1 });
+      },
+      get next() {
+        return is.last ? undefined : Is.toItemFlags({ ...args, index: index + 1 });
+      },
     };
+
+    return is;
   },
 };
