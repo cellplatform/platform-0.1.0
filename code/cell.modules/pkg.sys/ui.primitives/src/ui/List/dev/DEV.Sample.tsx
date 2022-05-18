@@ -31,6 +31,7 @@ export const DevSample: React.FC<DevSampleProps> = (args) => {
    */
   if (!isVirtual) {
     let items = args.items;
+
     const MAX = 10;
     if (items.length > MAX) {
       // NB: Curtail long lists to prevent rendering blow-out
@@ -56,7 +57,7 @@ export const DevSample: React.FC<DevSampleProps> = (args) => {
       // NB: These are fixed sizes for testing only.
       //     Will not adjust if the card content expands.
       let size = e.is.vertical ? 84 : 250; // Debug card (default).
-      if (kind === 'Card') size = e.is.vertical ? 49 : 167;
+      if (kind === 'Card') size = e.is.vertical ? 53 : 167;
       if (kind === 'Vanilla') size = e.is.vertical ? 23 : 118;
 
       if (!e.is.first) size += spacing;
