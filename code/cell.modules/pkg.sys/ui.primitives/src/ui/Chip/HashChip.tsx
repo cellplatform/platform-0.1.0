@@ -1,14 +1,11 @@
 import React from 'react';
 
-import { color, css, CssValue, COLORS, copyToClipboard } from '../../common';
-import { Icons } from '../Icons';
-import { Button } from '../../ui.ref/button/Button';
+import { Color, css, CssValue, copyToClipboard, Icons, Button } from './common';
+import { View, height } from './Chip.View';
 
 type HashValue = string;
 
-const DEFAULT = {
-  LENGTH: 8,
-};
+const DEFAULT = { LENGTH: 6 };
 
 type ClipboardText = (e: ClipboardTextArgs) => string;
 type ClipboardTextArgs = { hash: string; text: string; algorithm: string };
@@ -44,69 +41,26 @@ export const HashChip: React.FC<HashChipProps> = (props) => {
   /**
    * [Render]
    */
-  const height = 14;
   const styles = {
-    base: css({
-      Flex: 'horizontal-stretch-stretch',
-      display: inline ? 'block' : 'inline-block',
-      position: 'relative',
-      boxSizing: 'border-box',
-      userSelect: 'none',
-      fontSize: 9,
-      height,
-      overflow: 'hidden',
-      lineHeight: 1,
-    }),
-    icon: css({ marginRight: 3 }),
-    chip: css({
-      height: height - 2, // NB: Border
-      padding: 0,
-      PaddingX: 4,
-      backgroundColor: color.alpha(COLORS.DARK, 0.08),
-      border: `solid 1px ${color.format(-0.06)}`,
-      borderRadius: 2,
-      Flex: 'horizontal-center-center',
-    }),
-    hash: {
-      base: css({
-        paddingTop: 2,
-        paddingBottom: 1,
-        fontFamily: 'monospace',
-      }),
-      prefix: css({
-        fontWeight: 600,
-        color:
-          prefixColor === undefined ? color.alpha(COLORS.DARK, 0.5) : color.format(prefixColor),
-      }),
-      text: css({
-        marginLeft: prefix ? 4 : undefined,
-        paddingLeft: prefix ? 4 : undefined,
-        borderLeft: prefix ? `solid 1px ${color.format(-0.12)}` : undefined,
-        color: color.alpha(COLORS.DARK, 0.9),
-      }),
-    },
-    empty: css({ opacity: 0.4 }),
+    hashPrefix: css({ color: Color.format(prefixColor) }),
   };
 
-  const elEmpty = !text && <div {...styles.empty}>No Hash</div>;
-  const elPrefix = prefix && <div {...css(styles.hash.base, styles.hash.prefix)}>{prefix}</div>;
-
-  const elText = text && (
-    <div {...css(styles.hash.base, styles.hash.text)}>
+  const elIcon = icon && <Icons.QRCode size={height} />;
+  const elHashPrefix = prefix && <div {...css(styles.hashPrefix)}>{prefix}</div>;
+  const elHashText = text && (
+    <div>
       {clipboard && <Button onClick={handleClipboardClick}>{text}</Button>}
       {!clipboard && text}
     </div>
   );
 
   return (
-    <div {...css(styles.base, props.style)} title={hash.tooltip}>
-      {icon && <Icons.QRCode size={height} style={styles.icon} />}
-      <div {...styles.chip}>
-        {elEmpty}
-        {elPrefix}
-        {elText}
-      </div>
-    </div>
+    <View
+      tooltip={hash.tooltip}
+      empty={'No Hash'}
+      body={[elHashPrefix, elHashText]}
+      prefix={elIcon}
+    />
   );
 };
 

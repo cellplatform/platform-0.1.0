@@ -1,6 +1,6 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
-import { HashChip, HashChipProps } from '..';
+import { Chip, HashChipProps } from '..';
 import { COLORS } from '../../common';
 
 type Ctx = { props: HashChipProps };
@@ -43,9 +43,9 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.props.icon;
     });
 
-    e.boolean('prefix: null', (e) => {
-      if (e.changing) e.ctx.props.prefix = e.changing.next ? null : undefined;
-      e.boolean.current = e.ctx.props.prefix === null;
+    e.boolean('prefix', (e) => {
+      if (e.changing) e.ctx.props.prefix = e.changing.next ? undefined : null;
+      e.boolean.current = e.ctx.props.prefix === undefined;
     });
 
     e.hr();
@@ -66,7 +66,7 @@ export const actions = DevActions<Ctx>()
 
     e.button('default (undefined)', (e) => (e.ctx.props.prefixColor = undefined));
     e.button('magenta', (e) => (e.ctx.props.prefixColor = COLORS.MAGENTA));
-    e.button('-0.8', (e) => (e.ctx.props.prefixColor = -0.8));
+    e.button('-0.3', (e) => (e.ctx.props.prefixColor = -0.3));
 
     e.hr();
   })
@@ -74,7 +74,9 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Hash Length');
 
-    e.button('8 (default)', (e) => (e.ctx.props.length = 8));
+    e.button('4', (e) => (e.ctx.props.length = 4));
+    e.button('6 (default)', (e) => (e.ctx.props.length = 6));
+    e.button('8', (e) => (e.ctx.props.length = 8));
     e.button('20', (e) => (e.ctx.props.length = 20));
     e.button('long', (e) => (e.ctx.props.length = 5000));
 
@@ -86,7 +88,7 @@ export const actions = DevActions<Ctx>()
       host: { background: -0.04 },
       layout: { cropmarks: -0.2 },
     });
-    e.render(<HashChip {...e.ctx.props} />);
+    e.render(<Chip.Hash {...e.ctx.props} />);
   });
 
 export default actions;

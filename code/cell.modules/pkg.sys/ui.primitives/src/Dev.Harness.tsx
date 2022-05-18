@@ -43,12 +43,12 @@ const imports = {
 
   FullScreen: import('./ui/Fullscreen/dev/DEV'),
 
-  HashChip: import('./ui/HashChip/dev/DEV'),
+  Chip: import('./ui/Chip/dev/DEV.Chip'),
+  HashChip: import('./ui/Chip/dev/DEV.HashChip'),
 
   Button: import('./ui.ref/button/Button.dev/DEV'),
   Switch: import('./ui.ref/button/Switch.dev/DEV'),
   OptionButtons: import('sys.ui.dev/lib/ui/OptionButtons/dev/DEV'),
-  // OptionButtons: import('./ui/OptionButtons/DEV'),
 
   Svg: import('./ui/Image.Svg/dev/DEV'),
 
