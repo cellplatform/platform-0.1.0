@@ -9,10 +9,8 @@ import { DevFilesystem } from '../../dev';
 import { ModuleInfo } from '../../ModuleInfo';
 
 type Ctx = {
-  token: string;
   bus: t.EventBus;
   props: VercelHttpProps;
-  http: t.Http;
   fs: t.Fs;
   output?: any;
 };
@@ -25,14 +23,12 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const { bus, http, token } = TestUtil;
+    const { bus } = TestUtil;
     const fs = TestUtil.fs.events;
     TestUtil.fs.init();
 
     const ctx: Ctx = {
-      token,
       bus,
-      http,
       fs,
       props: {},
     };
@@ -48,7 +44,8 @@ export const actions = DevActions<Ctx>()
     e.title('Debug');
 
     e.button('tmp: deploy', async (e) => {
-      const { http, token } = e.ctx;
+      const { http, token } = TestUtil;
+
       const fs = e.ctx.fs.dir('foo');
       const client = Vercel.Http({ token, fs });
 
@@ -158,6 +155,16 @@ export const actions = DevActions<Ctx>()
 
     e.hr();
 
+    e.textbox((config) =>
+      config.placeholder('update token').pipe((e) => {
+        if (e.changing?.action === 'invoke') {
+          const next = e.changing.next || '';
+          TestUtil.Token.write(next);
+          e.redraw();
+        }
+      }),
+    );
+
     e.component((e) => {
       const styles = {
         base: css({
@@ -165,9 +172,16 @@ export const actions = DevActions<Ctx>()
           Margin: [20, 45, 30, 45],
         }),
       };
+
+      const token = TestUtil.token;
+
       return (
         <div {...styles.base}>
-          <ModuleInfo style={{ marginBottom: 15 }} fields={['Module', 'Token.API']} />
+          <ModuleInfo
+            style={{ marginBottom: 15 }}
+            fields={['Module', 'Token.API.Hidden']}
+            config={{ token }}
+          />
           <DevFilesystem fs={TestUtil.fs.instance} />
         </div>
       );
@@ -180,8 +194,7 @@ export const actions = DevActions<Ctx>()
     e.title('Vercel API');
 
     e.button('GET: /www/user', async (e) => {
-      const http = e.ctx.http;
-
+      const http = TestUtil.http;
       const url = 'https://api.vercel.com/www/user';
       const res = await http.get(url);
 
