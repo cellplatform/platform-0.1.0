@@ -55,6 +55,7 @@ const imports = {
   Tree: import('./ui/Tree/dev/DEV'),
   StackPanel: import('./ui/StackPanel/dev/DEV'),
 
+  Text: import('./ui/Text/dev/DEV'),
   TextCopy: import('./ui/Text.Copy/dev/DEV'),
   TextSyntax: import('./ui/Text.Syntax/dev/DEV'),
   TextSecret: import('./ui/Text.Secret/dev/DEV'),
