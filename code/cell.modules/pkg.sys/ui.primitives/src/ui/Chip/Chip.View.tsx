@@ -13,6 +13,7 @@ export type ChipProps = {
   inline?: boolean;
   tooltip?: string;
   empty?: React.ReactNode;
+  color?: string | number;
   style?: CssValue;
 };
 
@@ -40,7 +41,7 @@ export const View: React.FC<ChipProps> = (props) => {
       fontFamily: 'monospace',
       fontSize: 9,
       fontWeight: 600,
-      color: Color.alpha(COLORS.DARK, 0.9),
+      color: props.color ?? Color.alpha(COLORS.DARK, 0.8),
     }),
     chip: css({
       height: height - 2, // NB: Border

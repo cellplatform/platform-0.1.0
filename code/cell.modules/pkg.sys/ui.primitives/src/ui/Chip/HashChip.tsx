@@ -22,7 +22,7 @@ export type HashChipProps = {
 };
 
 export const HashChip: React.FC<HashChipProps> = (props) => {
-  const { clipboard = true, inline = true, icon, prefixColor } = props;
+  const { clipboard = true, icon, prefixColor } = props;
   const length = Math.max(5, props.length ?? DEFAULT.LENGTH);
   const hash = parseHash(props.text || '');
   const text = hash.text ? hash.text.substring(hash.text.length - length) : '';
@@ -60,6 +60,8 @@ export const HashChip: React.FC<HashChipProps> = (props) => {
       empty={'No Hash'}
       body={[elHashPrefix, elHashText]}
       prefix={elIcon}
+      inline={props.inline}
+      style={props.style}
     />
   );
 };
