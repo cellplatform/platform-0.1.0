@@ -1,5 +1,5 @@
 import { FC, THEMES, DEFAULT } from './common';
-import { View, ChipProps, toBodyArray } from './Chip.View';
+import { Chip as View, ChipProps, toBodyArray } from './Chip.View';
 import { HashChip as Hash } from './Chip.HashChip';
 
 export { ChipProps };

@@ -13,7 +13,7 @@ import {
   DEFAULT,
   COLORS,
 } from './common';
-import { View as Chip, height } from './Chip.View';
+import { Chip as Chip, height } from './Chip.View';
 
 const DEFAULT_LENGTH = 6;
 

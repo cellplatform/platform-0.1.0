@@ -23,7 +23,7 @@ export type ChipProps = {
 /**
  * Component
  */
-export const View: React.FC<ChipProps> = (props) => {
+export const Chip: React.FC<ChipProps> = (props) => {
   const { inline = true, theme = DEFAULT.THEME, borderRadius = 2 } = props;
   const body = (Array.isArray(props.body) ? props.body : [props.body]).filter(Boolean);
   const isEmpty = body.length === 0;
