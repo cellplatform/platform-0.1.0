@@ -8,7 +8,7 @@ import { DevEnv, DevEnvProps } from '..';
 import { CodeEditor } from '../../../api';
 import { DevFilesystem } from '../../dev';
 import { Filesystem, Http, rx, slug, t } from '../common';
-import { evalCode } from './DEV.eval';
+import { evalCode } from './DEV.evaluate';
 
 type Ctx = {
   bus: t.EventBus<any>;

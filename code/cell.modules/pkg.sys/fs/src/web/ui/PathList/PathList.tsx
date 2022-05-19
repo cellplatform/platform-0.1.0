@@ -14,7 +14,7 @@ export type PathListProps = {
   scroll?: boolean;
   spinning?: boolean;
   padding?: t.CssEdgesInput;
-  selection?: t.ListSelectionConfig;
+  selection?: t.ListSelectionConfig | boolean;
   tabIndex?: number;
   style?: CssValue;
 };
@@ -100,7 +100,7 @@ const View: React.FC<PathListProps> = (props) => {
  */
 function wrangleTabIndex(props: PathListProps) {
   if (typeof props.tabIndex === 'number') return props.tabIndex;
-  if (props.selection?.keyboard) return -1;
+  if (List.wrangle.selection(props.selection).keyboard) return -1;
   return undefined;
 }
 

@@ -14,7 +14,7 @@ export type PathListStatefulProps = {
   dir?: DirPath;
   scroll?: boolean;
   padding?: t.CssEdgesInput;
-  selection?: t.ListSelectionConfig;
+  selection?: t.ListSelectionConfig | boolean;
   tabIndex?: number;
   style?: CssValue;
 };
