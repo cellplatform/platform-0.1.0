@@ -20,6 +20,7 @@ export const actions = DevActions<Ctx>()
         clipboard: true,
         inline: true,
         icon: true,
+        theme: 'Light',
       },
     };
     return ctx;
@@ -27,6 +28,17 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('HashChip');
+
+    e.select((config) => {
+      config
+        .view('buttons')
+        .title('theme')
+        .items(Chip.Hash.THEMES)
+        .initial(config.ctx.props.theme)
+        .pipe((e) => {
+          if (e.changing) e.ctx.props.theme = e.changing?.next[0].value;
+        });
+    });
 
     e.boolean('clipboard', (e) => {
       if (e.changing) e.ctx.props.clipboard = e.changing.next;
@@ -84,10 +96,16 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    const isLight = e.ctx.props.theme === 'Light';
+
     e.settings({
-      host: { background: -0.04 },
-      layout: { cropmarks: -0.2 },
+      host: { background: isLight ? -0.04 : COLORS.DARK },
+      layout: {
+        cropmarks: isLight ? -0.2 : 0.2,
+        labelColor: isLight ? -0.5 : 0.8,
+      },
     });
+
     e.render(<Chip.Hash {...e.ctx.props} />);
   });
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Color, COLORS, css, CssValue } from './common';
+import { Color, COLORS, css, CssValue, t } from './common';
 
 export const height = 14;
 
@@ -14,6 +14,7 @@ export type ChipProps = {
   tooltip?: string;
   empty?: React.ReactNode;
   color?: string | number;
+  theme?: t.ChipTheme;
   style?: CssValue;
 };
 
@@ -21,7 +22,7 @@ export type ChipProps = {
  * Component
  */
 export const View: React.FC<ChipProps> = (props) => {
-  const { inline = true } = props;
+  const { inline = true, theme = 'Light' } = props;
   const body = (Array.isArray(props.body) ? props.body : [props.body]).filter(Boolean);
   const isEmpty = body.length === 0;
 

@@ -1,4 +1,4 @@
-import { FC } from '../../common';
+import { FC, THEMES } from './common';
 import { View, ChipProps, height, toBodyArray } from './Chip.View';
 import { HashChip as Hash } from './HashChip';
 
@@ -10,11 +10,11 @@ export { ChipProps };
 
 type Fields = {
   toBodyArray: typeof toBodyArray;
-  height: number;
   Hash: typeof Hash;
+  THEMES: typeof THEMES;
 };
 export const Chip = FC.decorate<ChipProps, Fields>(
   View,
-  { toBodyArray, height, Hash },
+  { toBodyArray, Hash, THEMES },
   { displayName: 'Chip' },
 );

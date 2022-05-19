@@ -108,9 +108,7 @@ export const actions = DevActions<Ctx>()
     const isLight = theme === 'Light';
 
     e.settings({
-      host: {
-        background: isLight ? -0.04 : COLORS.DARK,
-      },
+      host: { background: isLight ? -0.04 : COLORS.DARK },
       layout: {
         cropmarks: isLight ? -0.2 : 0.2,
         labelColor: isLight ? -0.5 : 0.8,

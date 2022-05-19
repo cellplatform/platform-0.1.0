@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { Chip, ChipProps } from '..';
-import { Icons, Button } from '../common';
+import { COLORS, Icons, Button } from '../common';
 
 type Ctx = { props: ChipProps };
 
@@ -17,6 +17,7 @@ export const actions = DevActions<Ctx>()
         inline: true,
         tooltip: 'My Tooltip',
         body: ['One', 'Two'],
+        theme: 'Light',
       },
     };
     return ctx;
@@ -28,6 +29,17 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Props');
+
+    e.select((config) => {
+      config
+        .view('buttons')
+        .title('theme')
+        .items(Chip.THEMES)
+        .initial(config.ctx.props.theme)
+        .pipe((e) => {
+          if (e.changing) e.ctx.props.theme = e.changing?.next[0].value;
+        });
+    });
 
     e.boolean('inline', (e) => {
       if (e.changing) e.ctx.props.inline = e.changing.next;
@@ -100,10 +112,16 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    const isLight = e.ctx.props.theme === 'Light';
+
     e.settings({
-      host: { background: -0.04 },
-      layout: { cropmarks: -0.2 },
+      host: { background: isLight ? -0.04 : COLORS.DARK },
+      layout: {
+        cropmarks: isLight ? -0.2 : 0.2,
+        labelColor: isLight ? -0.5 : 0.8,
+      },
     });
+
     e.render(<Chip {...e.ctx.props} />);
   });
 

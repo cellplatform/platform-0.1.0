@@ -1,12 +1,14 @@
 import React from 'react';
 
-import { Color, css, CssValue, copyToClipboard, Icons, Button } from './common';
-import { View, height } from './Chip.View';
-
-type HashValue = string;
+import { FC, Color, css, CssValue, copyToClipboard, Icons, Button, t, THEMES } from './common';
+import { View as Chip, height } from './Chip.View';
 
 const DEFAULT = { LENGTH: 6 };
 
+/**
+ * Types
+ */
+type HashValue = string;
 type ClipboardText = (e: ClipboardTextArgs) => string;
 type ClipboardTextArgs = { hash: string; text: string; algorithm: string };
 
@@ -18,10 +20,14 @@ export type HashChipProps = {
   icon?: boolean;
   prefix?: string | null;
   prefixColor?: string | number;
+  theme?: t.ChipTheme;
   style?: CssValue;
 };
 
-export const HashChip: React.FC<HashChipProps> = (props) => {
+/**
+ * Component
+ */
+export const View: React.FC<HashChipProps> = (props) => {
   const { clipboard = true, icon, prefixColor } = props;
   const length = Math.max(5, props.length ?? DEFAULT.LENGTH);
   const hash = parseHash(props.text || '');
@@ -55,12 +61,13 @@ export const HashChip: React.FC<HashChipProps> = (props) => {
   );
 
   return (
-    <View
+    <Chip
       tooltip={hash.tooltip}
       empty={'No Hash'}
       body={[elHashPrefix, elHashText]}
       prefix={elIcon}
       inline={props.inline}
+      theme={props.theme}
       style={props.style}
     />
   );
@@ -92,3 +99,16 @@ export function parseHash(hash: string) {
     },
   };
 }
+
+/**
+ * Export
+ */
+
+type Fields = {
+  THEMES: typeof THEMES;
+};
+export const HashChip = FC.decorate<HashChipProps, Fields>(
+  View,
+  { THEMES },
+  { displayName: 'HashChip' },
+);
