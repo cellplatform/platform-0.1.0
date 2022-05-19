@@ -74,7 +74,7 @@ const View: React.FC<SelectionConfigProps> = (props) => {
       onChange?.({ config: { ...(config || CONFIG), multi } });
     });
 
-    add('AllowEmpty', 'Allow empty selection', config?.allowEmpty, indent, (e) => {
+    add('AllowEmpty', 'Allow nothing to be selected', config?.allowEmpty, indent, (e) => {
       const allowEmpty = !Boolean(e.value.data);
       onChange?.({ config: { ...(config || CONFIG), allowEmpty } });
     });
