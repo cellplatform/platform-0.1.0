@@ -42,6 +42,7 @@ export type PropListItem = {
   value?: React.ReactNode | PropListValue;
   tooltip?: string;
   visible?: boolean;
+  indent?: number;
 };
 
 /**

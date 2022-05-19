@@ -81,4 +81,6 @@ export const sampleItems: t.PropListItem[] = [
     label: 'token',
     value: <Text.Secret text={'abcdefg123456'} fontSize={DEFAULTS.fontSize} />,
   },
+  { label: 'indent foo', value: 1234, indent: 15 },
+  { label: 'indent bar', value: 5678, indent: 15 },
 ];
