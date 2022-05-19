@@ -1,8 +1,8 @@
-import { FC, THEMES, DEFAULT } from './common';
+import { DEFAULT, FC, THEMES } from './common';
 import { usePathListState } from './logic/usePathListState';
 import { PathListStateful as Stateful } from './PathList.Stateful';
-import { PathList as View } from './ui/PathList';
 import { PathListProps } from './types';
+import { PathList as View } from './ui/PathList';
 import { wrangle } from './wrangle';
 
 /**

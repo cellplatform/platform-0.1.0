@@ -1,3 +1,3 @@
 export * from './PathList';
 export * from './PathList.Stateful';
-export { PathListProps } from './types';
+export { PathListProps, PathListStatefulProps } from './types';

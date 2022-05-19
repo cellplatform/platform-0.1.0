@@ -13,9 +13,7 @@ export const FileDropTarget: React.FC<FileDropTargetProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({
-      position: 'relative',
-    }),
+    base: css({ position: 'relative' }),
     over: {
       base: css({ Absolute: 0, Flex: 'center-center' }),
       inner: css({

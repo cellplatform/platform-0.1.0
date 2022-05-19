@@ -1,24 +1,7 @@
 import React from 'react';
 
-import { CssValue, t } from './common';
 import { PathList } from './PathList';
-
-type FilesystemId = string;
-type DirPath = string;
-
-/**
- * Types
- */
-export type PathListStatefulProps = {
-  instance: { bus: t.EventBus<any>; id: FilesystemId };
-  dir?: DirPath;
-  scroll?: boolean;
-  padding?: t.CssEdgesInput;
-  selection?: t.ListSelectionConfig | boolean;
-  tabIndex?: number;
-  theme?: t.PathListTheme;
-  style?: CssValue;
-};
+import { PathListStatefulProps } from './types';
 
 /**
  * <PathList> with state configured.
