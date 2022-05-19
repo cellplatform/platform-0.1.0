@@ -7,4 +7,4 @@ export { Fs } from '@platform/cell.types/lib/types.Fs';
 /**
  * @local
  */
-export * from '../web/FsDriver.IndexedDb/types';
+export * from '../FsDriver.IndexedDb/types';
