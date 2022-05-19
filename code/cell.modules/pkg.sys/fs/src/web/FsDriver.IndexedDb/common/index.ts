@@ -1,7 +1,7 @@
-import { Schema } from '../../web/common';
+import { Schema } from '../../common';
 
-export * from '../../web/common';
-export * from '../../web.IndexedDb';
+export * from '../../common';
+export * from '../../IndexedDb';
 export * from './Db.Lookup';
 export * from './Image';
 

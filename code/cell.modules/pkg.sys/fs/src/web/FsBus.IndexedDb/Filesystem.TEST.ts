@@ -1,4 +1,4 @@
-import { Test, expect, TEST } from '../web.test';
+import { Test, expect, TEST } from '../test';
 import { Filesystem } from '.';
 import { rx, DEFAULT, Hash, t } from './common';
 

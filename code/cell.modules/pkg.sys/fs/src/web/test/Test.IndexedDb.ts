@@ -1,5 +1,5 @@
-import { IndexedDb } from '../web.IndexedDb';
-import { NAME, t } from '../web.FsDriver.IndexedDb/common';
+import { IndexedDb } from '../IndexedDb';
+import { NAME, t } from '../FsDriver.IndexedDb/common';
 
 type T = {
   name: string;

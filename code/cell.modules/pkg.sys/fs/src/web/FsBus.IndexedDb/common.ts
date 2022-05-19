@@ -1,4 +1,4 @@
-export * from '../web/common';
+export * from '../common';
 
 export const DEFAULT = {
   FILESYSTEM_ID: 'fs',

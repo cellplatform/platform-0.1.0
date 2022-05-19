@@ -1,6 +1,6 @@
 import { t, DEFAULT } from './common';
 import { Filesystem as FilesystemWeb } from '@platform/cell.fs.bus/lib/web';
-import { FsDriverLocal } from '../web.FsDriver.IndexedDb';
+import { FsDriverLocal } from '../FsDriver.IndexedDb';
 
 type FilesystemId = string;
 type Milliseconds = number;

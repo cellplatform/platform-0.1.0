@@ -1,5 +1,5 @@
 import { FsDriverLocal } from '..';
-import { expect, Test, TestIndexedDb, TEST } from '../../web.test';
+import { expect, Test, TestIndexedDb, TEST } from '../../test';
 import { Hash, Path, slug, Stream, t } from '../common';
 
 export default Test.describe('FsDriver (IndexedDB)', (e) => {

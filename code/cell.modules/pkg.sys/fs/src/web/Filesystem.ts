@@ -1,6 +1,6 @@
 import { Path } from './common';
 import { Filesystem as Web } from '@platform/cell.fs.bus/lib/web';
-import { Filesystem as IndexedDb } from '../web.FsBus.IndexedDb';
+import { Filesystem as IndexedDb } from './FsBus.IndexedDb';
 
 export const Filesystem = {
   Web,
