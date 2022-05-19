@@ -126,7 +126,7 @@ export function sampleBodyFactory(getCtx: () => RenderCtx) {
 }
 
 function selectedRadius(is: t.ListItemRenderFlags, radius: number) {
-  const top = is.previous?.selected ? 0 : radius;
-  const bottom = is.next?.selected ? 0 : radius;
+  const top = is.previous()?.selected ? 0 : radius;
+  const bottom = is.next()?.selected ? 0 : radius;
   return `${top}px ${top}px ${bottom}px ${bottom}px `;
 }

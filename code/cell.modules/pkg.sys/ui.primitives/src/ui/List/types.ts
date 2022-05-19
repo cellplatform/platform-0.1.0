@@ -67,8 +67,8 @@ export type ListItemRenderFlags = {
   focused: boolean;
   scrolling: boolean;
   mouse: { over: boolean; down: boolean };
-  previous: ListItemRenderFlags | undefined;
-  next: ListItemRenderFlags | undefined;
+  previous(): ListItemRenderFlags | undefined;
+  next(): ListItemRenderFlags | undefined;
 };
 
 export type GetListItemSize = (args: GetListItemSizeArgs) => Pixels;

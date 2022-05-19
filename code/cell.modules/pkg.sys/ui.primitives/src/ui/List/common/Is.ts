@@ -24,6 +24,7 @@ export const Is = {
 
     let _previous: t.ListItemRenderFlags | undefined;
     let _next: t.ListItemRenderFlags | undefined;
+    const sibling = (index: number) => Is.toItemFlags({ ...args, index });
 
     const is = {
       empty: total === 0,
@@ -55,13 +56,13 @@ export const Is = {
         const selection = state?.selection?.indexes;
         return ListState.Selection.isSelected(selection, index);
       },
-      get previous() {
+      previous() {
         if (is.first) return undefined;
-        return _previous || (_previous = Is.toItemFlags({ ...args, index: index - 1 }));
+        return _previous || (_previous = sibling(index - 1));
       },
-      get next() {
+      next() {
         if (is.last) return undefined;
-        return _next || (_next = Is.toItemFlags({ ...args, index: index + 1 }));
+        return _next || (_next = sibling(index + 1));
       },
     };
 

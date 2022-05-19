@@ -1,10 +1,11 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
-import { BulletConnectorLinesProps, List } from '../..';
-import { Is, t } from '../../common';
+import { BulletConnectorLinesProps, List } from '..';
+import { Is, t } from '../common';
 
 type Ctx = {
+  ready: boolean;
   props: BulletConnectorLinesProps;
 };
 
@@ -14,7 +15,9 @@ const DEFAULT = {
 
 const Util = {
   update(ctx: Ctx) {
-    ctx.props.is = Is.toItemFlags(ctx.props);
+    const { index, total, orientation, bullet } = ctx.props;
+    const args = { index, total, orientation, bullet };
+    ctx.props.is = Is.toItemFlags(args);
     return ctx;
   },
 };
@@ -28,6 +31,7 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const ctx: Ctx = {
+      ready: false,
       props: {
         kind: 'Default',
         index: 0,
@@ -37,7 +41,7 @@ export const actions = DevActions<Ctx>()
         bullet: DEFAULT.BULLET,
         spacing: {},
         radius: 20,
-        is: {} as any, // HACK 🐷
+        is: undefined as any, // HACK 🐷
       },
     };
 
@@ -46,8 +50,9 @@ export const actions = DevActions<Ctx>()
   })
 
   .init(async (e) => {
-    const { ctx, bus } = e;
+    const { ctx } = e;
     Util.update(e.ctx);
+    ctx.ready = true;
   })
 
   .items((e) => {
@@ -161,9 +166,10 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    const el = <List.Renderers.Bullet.ConnectorLines {...e.ctx.props} />;
-
-    e.render(el);
+    if (e.ctx.ready) {
+      const el = <List.Renderers.Bullet.ConnectorLines {...e.ctx.props} />;
+      e.render(el);
+    }
   });
 
 export default actions;

@@ -10,7 +10,7 @@ const imports = {
 
   Bullet: import('./ui/Bullet/dev/DEV'),
   List: import('./ui/List/dev/DEV'),
-  ListConnectorLines: import('./ui/List/renderers/dev/DEV.ConnectorLines'),
+  ListConnectorLines: import('./ui/List/dev/DEV.ConnectorLines'),
 
   Antechamber: import('./ui/Antechamber/dev/DEV'),
   DotTabstrip: import('./ui/DotTabstrip/dev/DEV'),
