@@ -61,8 +61,7 @@ export const actions = DevActions<Ctx>()
     e.select((config) => {
       config
         .view('buttons')
-        .title('theme')
-        .items(TextSyntax.constants.THEMES)
+        .items(TextSyntax.THEMES.map((value) => ({ label: `theme: ${value}`, value })))
         .initial(config.ctx.props.theme)
         .pipe((e) => {
           if (e.changing) e.ctx.props.theme = e.changing?.next[0].value;
@@ -173,7 +172,7 @@ export const actions = DevActions<Ctx>()
     const { props, debug } = e.ctx;
     const { inlineBlock } = props;
 
-    const theme = props.theme ?? TextSyntax.constants.DEFAULT.THEME;
+    const theme = props.theme ?? TextSyntax.DEFAULT.THEME;
     const isLight = theme === 'Light';
 
     e.settings({

@@ -32,8 +32,7 @@ export const actions = DevActions<Ctx>()
     e.select((config) => {
       config
         .view('buttons')
-        .title('theme')
-        .items(Chip.Hash.THEMES)
+        .items(Chip.Hash.THEMES.map((value) => ({ label: `theme: ${value}`, value })))
         .initial(config.ctx.props.theme)
         .pipe((e) => {
           if (e.changing) e.ctx.props.theme = e.changing?.next[0].value;

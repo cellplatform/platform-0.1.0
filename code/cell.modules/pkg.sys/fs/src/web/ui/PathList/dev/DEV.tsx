@@ -52,13 +52,14 @@ export const actions = DevActions<Ctx>()
     e.select((config) => {
       config
         .view('buttons')
-        .title('theme')
-        .items(PathList.THEMES)
+        .items(PathList.THEMES.map((value) => ({ label: `theme: ${value}`, value })))
         .initial(config.ctx.props.theme)
         .pipe((e) => {
           if (e.changing) e.ctx.props.theme = e.changing?.next[0].value;
         });
     });
+
+    e.hr(1, 0.1);
 
     e.boolean('scroll', (e) => {
       if (e.changing) e.ctx.props.scroll = e.changing.next;

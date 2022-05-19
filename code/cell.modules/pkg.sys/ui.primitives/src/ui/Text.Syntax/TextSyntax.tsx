@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 
-import { color, constants, css, DEFAULT, FC, Style } from './common';
+import { color, constants, css, FC, Style } from './common';
+import { THEMES, DEFAULT } from './common.const';
 import { DefaultTokenizer } from './logic/Tokenizer';
 import { TextSyntaxProps } from './types';
 import { Util } from './Util';
@@ -22,7 +23,7 @@ const View: React.FC<TextSyntaxProps> = (props) => {
   } = props;
 
   const colors = {
-    ...(theme === 'Light' ? constants.COLORS.LIGHT : constants.COLORS.DARK),
+    ...(theme === 'Light' ? DEFAULT.LIGHT : DEFAULT.DARK),
     ...props.colors,
   };
 
@@ -71,10 +72,11 @@ const View: React.FC<TextSyntaxProps> = (props) => {
  * Export
  */
 type Fields = {
-  constants: typeof constants;
+  THEMES: typeof THEMES;
+  DEFAULT: typeof DEFAULT;
 };
 export const TextSyntax = FC.decorate<TextSyntaxProps, Fields>(
   View,
-  { constants },
+  { THEMES, DEFAULT },
   { displayName: 'TextSyntax' },
 );
