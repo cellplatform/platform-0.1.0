@@ -1,7 +1,7 @@
 import React from 'react';
 import { Color, COLORS, css, CssValue, t } from '../../common';
 
-import { PathListStateful } from 'sys.fs/lib/ui/PathList';
+import { PathListStateful, PathList } from 'sys.fs/lib/web/ui/PathList';
 import { Icons } from '../Icons';
 
 export type DevFilesystemProps = {
