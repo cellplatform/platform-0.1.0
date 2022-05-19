@@ -45,7 +45,6 @@ export function useDynamicState(args: {
 
   /**
    * API
-   
    */
   return {
     instance: { bus: bus ? rx.bus.instance(bus) : '', id },
@@ -66,13 +65,7 @@ export function useDynamicItemState(args: {
   type S = t.ListState | undefined;
   const { index, total, orientation, bullet } = args;
   const { edge } = bullet;
-
-  const toFlags = (state?: S) => {
-    return Is.toItemFlags({ index, total, state, orientation, bullet: { edge } });
-  };
-
   const [state, setState] = useState<S>();
-  const [is, setIs] = useState<t.ListItemRenderFlags>(toFlags());
 
   /**
    * [Lifecycle]
@@ -83,11 +76,7 @@ export function useDynamicItemState(args: {
 
     if (args.state) {
       const updateState = (fn: (prev: S) => S) => {
-        setState((prev) => {
-          const state = fn(prev);
-          setIs(toFlags(state));
-          return state;
-        });
+        setState((prev) => fn(prev));
       };
 
       const changed$ = args.state.changed$.pipe(takeUntil(dispose$));
@@ -103,10 +92,17 @@ export function useDynamicItemState(args: {
         map((selection) => ({
           selection,
           isSelected: Selection.isSelected(selection.indexes, index),
+          isPrevSelected: Selection.isSelected(selection.indexes, index - 1),
+          isNextSelected: Selection.isSelected(selection.indexes, index + 1),
         })),
         distinctUntilChanged((prev, next) => {
           if (prev.isSelected !== next.isSelected) return false;
-          return prev.isSelected ? prev.selection.isFocused === next.selection.isFocused : true;
+          if (prev.isPrevSelected !== next.isPrevSelected) return false;
+          if (prev.isNextSelected !== next.isNextSelected) return false;
+          if (prev.isSelected) {
+            return prev.selection.isFocused === next.selection.isFocused;
+          }
+          return true;
         }),
       );
 
@@ -126,5 +122,17 @@ export function useDynamicItemState(args: {
   /**
    * API
    */
-  return { index, state, is };
+  return {
+    index,
+    state,
+    get is() {
+      return Is.toItemFlags({
+        index,
+        total,
+        orientation,
+        bullet: { edge },
+        state: () => state,
+      });
+    },
+  };
 }

@@ -8,10 +8,7 @@ import { useDynamicItemState } from './useDynamicState';
  * Types
  */
 type Pixels = number;
-type R = {
-  bullet?: t.ListItemRenderer;
-  body: t.ListItemRenderer;
-};
+type R = { bullet?: t.ListItemRenderer; body: t.ListItemRenderer };
 
 export type ListLayoutItemProps = {
   instance: t.ListInstance;

@@ -103,9 +103,14 @@ export function sampleBodyFactory(getCtx: () => RenderCtx) {
 
       const left = data.msg;
       const right = e.is.scrolling ? `(scrolling) ${renderCount}` : renderCount;
+      const radius = selectedRadius(e.is, 6);
 
       return (
-        <Card style={styles.card.base} border={{ color: borderColor }} background={background}>
+        <Card
+          style={styles.card.base}
+          border={{ color: borderColor, radius }}
+          background={background}
+        >
           {elComponent}
           <div {...css(styles.card.data.base, styles.card.data.bottomLeft)}>{left}</div>
           <div {...css(styles.card.data.base, styles.card.data.bottomRight)}>{right}</div>
@@ -118,4 +123,10 @@ export function sampleBodyFactory(getCtx: () => RenderCtx) {
   };
 
   return fn;
+}
+
+function selectedRadius(is: t.ListItemRenderFlags, radius: number) {
+  const top = is.previous?.selected ? 0 : radius;
+  const bottom = is.next?.selected ? 0 : radius;
+  return `${top}px ${top}px ${bottom}px ${bottom}px `;
 }
