@@ -154,7 +154,7 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.1);
 
-    e.title('Selection');
+    e.title('Behavior');
 
     e.component((e) => {
       return (
@@ -163,7 +163,6 @@ export const actions = DevActions<Ctx>()
           config={e.ctx.debug.selection}
           style={{ Margin: [10, 20, 10, 40] }}
           onChange={({ config }) => {
-            console.log('SelectionConfig // next', config);
             e.change.ctx((ctx) => (ctx.debug.selection = config));
           }}
         />

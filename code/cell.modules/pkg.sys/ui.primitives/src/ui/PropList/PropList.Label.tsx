@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { color, css, CssValue, t } from './common';
+import { css, CssValue, t } from './common';
 import { Util } from './Util';
 
 export type PropListLabelProps = {

@@ -59,6 +59,7 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
   const keyboardState$ = keyboard.state$.pipe(takeUntil(dispose$));
   const keydown$ = keyboard.keypress$.pipe(
     takeUntil(dispose$),
+    filter((e) => Boolean(config.keyboard)),
     filter((e) => e.is.down),
   );
 
