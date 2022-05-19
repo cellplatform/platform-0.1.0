@@ -13,6 +13,7 @@ export const PathList: React.FC<PathListProps> = (props) => {
   const { scroll = true, files = [], spinning, theme = DEFAULT.THEME } = props;
   const total = files.length;
   const isEmpty = total === 0;
+  const isLight = theme === 'Light';
 
   const list: t.ListProps = {
     instance: props.instance,
@@ -53,7 +54,7 @@ export const PathList: React.FC<PathListProps> = (props) => {
 
   const elSpinner = spinning && (
     <div {...styles.spinner}>
-      <Spinner color={COLORS.DARK} size={18} />
+      <Spinner color={isLight ? COLORS.DARK : 1} size={18} />
     </div>
   );
 
