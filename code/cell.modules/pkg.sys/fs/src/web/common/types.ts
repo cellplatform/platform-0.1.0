@@ -6,7 +6,7 @@ export { Observable } from 'rxjs';
  */
 export { Disposable, EventBus, Json, JsonMap, Event, NpmPackageJson } from '@platform/types';
 export { Http, HttpMethod } from '@platform/http.types';
-export { CssEdgesInput } from '@platform/css/lib/types';
+export { CssEdgesInput, CssValue } from '@platform/css/lib/types';
 export {
   Fs,
   FsFileInfo,

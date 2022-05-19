@@ -1,7 +1,7 @@
 import React from 'react';
 import { TEST, DevActions } from '../../../test';
-import { PathListStateful, PathListStatefulProps } from '..';
-import { t, rx, cuid, value, Filesystem, List } from '../common';
+import { PathList, PathListStatefulProps } from '..';
+import { t, rx, cuid, value, Filesystem, List, COLORS } from '../common';
 
 type Ctx = {
   bus: t.EventBus;
@@ -31,6 +31,7 @@ export const actions = DevActions<Ctx>()
         instance,
         scroll: true,
         selection: List.SelectionConfig.default,
+        theme: PathList.DEFAULT.THEME,
       },
       debug: { render: true },
     };
@@ -47,6 +48,17 @@ export const actions = DevActions<Ctx>()
     e.hr();
 
     e.title('Props');
+
+    e.select((config) => {
+      config
+        .view('buttons')
+        .title('theme')
+        .items(PathList.THEMES)
+        .initial(config.ctx.props.theme)
+        .pipe((e) => {
+          if (e.changing) e.ctx.props.theme = e.changing?.next[0].value;
+        });
+    });
 
     e.boolean('scroll', (e) => {
       if (e.changing) e.ctx.props.scroll = e.changing.next;
@@ -113,25 +125,27 @@ export const actions = DevActions<Ctx>()
   .subject((e) => {
     const debug = e.ctx.debug;
     const instance = e.ctx.props.instance;
+    const isLight = e.ctx.props.theme === 'Light';
 
     e.settings({
-      host: { background: -0.04 },
+      host: { background: isLight ? -0.04 : COLORS.DARK },
       layout: {
         label: {
           topLeft: '<PathList.Stateful>',
           bottomLeft: `${rx.bus.instance(instance.bus)}`,
           bottomRight: `filesystem: "${instance.id}"`,
         },
+        cropmarks: isLight ? -0.2 : 0.2,
+        labelColor: isLight ? -0.5 : 0.8,
+        background: isLight ? 1 : undefined,
         position: [150, null],
         width: 450,
         border: -0.1,
-        cropmarks: -0.2,
-        background: 1,
       },
     });
 
     const style = { flex: 1 };
-    e.render(debug.render && <PathListStateful {...e.ctx.props} style={style} />);
+    e.render(debug.render && <PathList.Stateful {...e.ctx.props} style={style} />);
   });
 
 export default actions;

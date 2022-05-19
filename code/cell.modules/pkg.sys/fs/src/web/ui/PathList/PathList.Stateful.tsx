@@ -16,6 +16,7 @@ export type PathListStatefulProps = {
   padding?: t.CssEdgesInput;
   selection?: t.ListSelectionConfig | boolean;
   tabIndex?: number;
+  theme?: t.PathListTheme;
   style?: CssValue;
 };
 
@@ -34,6 +35,7 @@ export const PathListStateful: React.FC<PathListStatefulProps> = (props) => {
       padding={props.padding}
       selection={props.selection}
       tabIndex={props.tabIndex}
+      theme={props.theme}
       style={props.style}
     />
   );

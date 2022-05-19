@@ -1,20 +1,18 @@
 import React from 'react';
 
 import { Color, COLORS, List, t } from '../common';
-import { Row } from './Row';
+import { Row } from './PathList.Row';
+
+const ConnectorLines = List.Renderers.Bullet.ConnectorLines;
 
 /**
  * Render the bullet of an item
  */
 export const bullet: t.ListItemRenderer = (e) => {
-  return (
-    <List.Renderers.Bullet.ConnectorLines
-      {...e}
-      radius={5}
-      lineWidth={2}
-      lineColor={Color.alpha(COLORS.DARK, 0.15)}
-    />
-  );
+  const data = e.data as t.PathListItemData;
+  const { theme } = data;
+  const lineColor = theme === 'Light' ? Color.alpha(COLORS.DARK, 0.15) : 0.3;
+  return <ConnectorLines {...e} radius={5} lineWidth={2} lineColor={lineColor} />;
 };
 
 /**
@@ -22,8 +20,9 @@ export const bullet: t.ListItemRenderer = (e) => {
  */
 export const body: t.ListItemRenderer = (e) => {
   if (e.kind !== 'Default') return;
-  const file = e.data as t.ManifestFile;
-  return <Row index={e.index} file={file} is={e.is} />;
+  const data = e.data as t.PathListItemData;
+  const { file, theme } = data;
+  return <Row index={e.index} theme={theme} file={file} is={e.is} />;
 };
 
 /**
