@@ -1,2 +1,2 @@
 export * from './Chip';
-export * from './HashChip';
+export * from './Chip.HashChip';

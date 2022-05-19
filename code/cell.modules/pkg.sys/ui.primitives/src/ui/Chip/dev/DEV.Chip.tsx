@@ -17,7 +17,7 @@ export const actions = DevActions<Ctx>()
         inline: true,
         tooltip: 'My Tooltip',
         body: ['One', 'Two'],
-        theme: 'Light',
+        theme: Chip.DEFAULT.THEME,
       },
     };
     return ctx;
@@ -41,6 +41,8 @@ export const actions = DevActions<Ctx>()
         });
     });
 
+    e.hr(1, 0.1);
+
     e.boolean('inline', (e) => {
       if (e.changing) e.ctx.props.inline = e.changing.next;
       e.boolean.current = e.ctx.props.inline;
@@ -61,7 +63,10 @@ export const actions = DevActions<Ctx>()
 
     e.boolean('show: suffix', (e) => {
       const props = e.ctx.props;
-      if (e.changing) props.suffix = e.changing.next ? <Icons.QRCode size={14} /> : undefined;
+      if (e.changing) {
+        const color = props.theme === 'Light' ? COLORS.DARK : 1;
+        props.suffix = e.changing.next ? <Icons.QRCode size={14} color={color} /> : undefined;
+      }
       e.boolean.current = Boolean(props.suffix);
     });
 

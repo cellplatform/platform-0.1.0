@@ -1,9 +1,21 @@
 import React from 'react';
 
-import { FC, Color, css, CssValue, copyToClipboard, Icons, Button, t, THEMES } from './common';
+import {
+  FC,
+  Color,
+  css,
+  CssValue,
+  copyToClipboard,
+  Icons,
+  Button,
+  t,
+  THEMES,
+  DEFAULT,
+  COLORS,
+} from './common';
 import { View as Chip, height } from './Chip.View';
 
-const DEFAULT = { LENGTH: 6 };
+const DEFAULT_LENGTH = 6;
 
 /**
  * Types
@@ -28,10 +40,11 @@ export type HashChipProps = {
  * Component
  */
 export const View: React.FC<HashChipProps> = (props) => {
-  const { clipboard = true, icon, prefixColor } = props;
-  const length = Math.max(5, props.length ?? DEFAULT.LENGTH);
+  const { clipboard = true, icon, prefixColor, theme = DEFAULT.THEME } = props;
+  const length = Math.max(5, props.length ?? DEFAULT_LENGTH);
   const hash = parseHash(props.text || '');
   const text = hash.text ? hash.text.substring(hash.text.length - length) : '';
+  const isLight = theme === 'Light';
 
   const algorithm = hash.algorithm.toUpperCase();
   let prefix = algorithm;
@@ -51,7 +64,8 @@ export const View: React.FC<HashChipProps> = (props) => {
     hashPrefix: css({ color: Color.format(prefixColor) }),
   };
 
-  const elIcon = icon && <Icons.QRCode size={height} />;
+  const iconColor = isLight ? Color.alpha(COLORS.DARK, 0.8) : 1;
+  const elIcon = icon && <Icons.QRCode size={height} color={iconColor} />;
   const elHashPrefix = prefix && <div {...css(styles.hashPrefix)}>{prefix}</div>;
   const elHashText = text && (
     <div>

@@ -20,7 +20,7 @@ export const actions = DevActions<Ctx>()
         clipboard: true,
         inline: true,
         icon: true,
-        theme: 'Light',
+        theme: Chip.DEFAULT.THEME,
       },
     };
     return ctx;
@@ -39,6 +39,8 @@ export const actions = DevActions<Ctx>()
           if (e.changing) e.ctx.props.theme = e.changing?.next[0].value;
         });
     });
+
+    e.hr(1, 0.1);
 
     e.boolean('clipboard', (e) => {
       if (e.changing) e.ctx.props.clipboard = e.changing.next;
