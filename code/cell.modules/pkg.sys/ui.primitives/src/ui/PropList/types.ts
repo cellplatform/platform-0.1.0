@@ -38,7 +38,7 @@ export type PropListDefaults = {
  * A single row within a [PropList].
  */
 export type PropListItem = {
-  label: React.ReactNode;
+  label?: React.ReactNode;
   value?: React.ReactNode | PropListValue;
   tooltip?: string;
   visible?: boolean;

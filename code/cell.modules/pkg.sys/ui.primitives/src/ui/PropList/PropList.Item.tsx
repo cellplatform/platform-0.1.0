@@ -17,6 +17,7 @@ export type PropListItemProps = {
 export const PropListItem: React.FC<PropListItemProps> = (props) => {
   const { data, isFirst, isLast, defaults } = props;
   const theme = Util.theme(props.theme);
+  const hasValue = Boolean(data.label);
 
   /**
    * [Render]
@@ -33,7 +34,7 @@ export const PropListItem: React.FC<PropListItemProps> = (props) => {
 
   return (
     <div {...styles.base} title={data.tooltip}>
-      <PropListLabel data={data} defaults={defaults} theme={props.theme} />
+      {hasValue && <PropListLabel data={data} defaults={defaults} theme={props.theme} />}
       <PropListValue
         item={data}
         isFirst={isFirst}

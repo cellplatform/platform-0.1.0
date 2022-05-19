@@ -61,7 +61,8 @@ export const sampleItems: t.PropListItem[] = [
       data: <div {...styles.value}>value</div>,
       clipboard: () => `random: ${Math.random()}`,
       onClick(e) {
-        e.message(<div style={{ color: COLORS.MAGENTA }}>clicked!</div>, 1200);
+        const el = <div style={{ color: COLORS.MAGENTA }}>clicked!</div>;
+        e.message(el, 1200);
       },
     },
   },
@@ -71,11 +72,7 @@ export const sampleItems: t.PropListItem[] = [
   },
   {
     label: 'div (flex: 1)',
-    value: (
-      <div {...styles.bgRed} style={{ flex: 1 }}>
-        hello
-      </div>
-    ),
+    value: <div {...css(styles.bgRed, { flex: 1 })}>hello</div>,
   },
   {
     label: 'token',
@@ -83,4 +80,5 @@ export const sampleItems: t.PropListItem[] = [
   },
   { label: 'indent foo', value: 1234, indent: 15 },
   { label: 'indent bar', value: 5678, indent: 15 },
+  { value: <div {...css(styles.bgRed, { flex: 1, height: 50 })}>value only</div> },
 ];
