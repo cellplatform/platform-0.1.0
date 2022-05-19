@@ -4,6 +4,7 @@ import { distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
 
 import { ListState } from '../List.State';
 import { Is, rx, t } from './common';
+import { wrangle } from './wrangle';
 
 type Index = number;
 
@@ -13,11 +14,11 @@ type Index = number;
 export function useDynamicState(args: {
   total: number;
   props: t.ListProps;
-  selection?: t.ListSelectionConfig;
+  selection?: t.ListSelectionConfig | boolean;
 }) {
-  const { total, props, selection } = args;
+  const { total, props } = args;
   const { instance, orientation } = props;
-  const { multi, clearOnBlur, allowEmpty, keyboard } = selection ?? {};
+  const { multi, clearOnBlur, allowEmpty, keyboard } = wrangle.selection(args.selection);
   const bus = instance?.bus;
   const id = instance?.id ?? '';
 

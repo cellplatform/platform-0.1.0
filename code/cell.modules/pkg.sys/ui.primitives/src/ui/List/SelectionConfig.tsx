@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 
 import { PropList } from '../PropList';
-import { FC, css, CssValue, t } from './common';
+import { FC, css, CssValue, t, DEFAULT_SELECTION } from './common';
+import { wrangle } from './wrangle';
 
 /**
  * Types
@@ -10,12 +11,12 @@ export type SelectionConfigFields = 'Enabled' | 'Multi' | 'AllowEmpty' | 'ClearO
 export type SelectionConfigProps = {
   fields?: SelectionConfigFields[];
   title?: string;
-  config?: t.ListSelectionConfig;
+  config?: t.ListSelectionConfig | boolean;
   style?: CssValue;
   onChange?: (e: { config?: t.ListSelectionConfig }) => void;
 };
 
-const CONFIG: t.ListSelectionConfig = { multi: true, allowEmpty: true, keyboard: true };
+const CONFIG: t.ListSelectionConfig = DEFAULT_SELECTION;
 const FIELDS: SelectionConfigFields[] = [
   'Enabled',
   'Multi',
@@ -29,7 +30,8 @@ const DEFAULTS = { CONFIG, FIELDS };
  * Component
  */
 const View: React.FC<SelectionConfigProps> = (props) => {
-  const { config, onChange, fields = FIELDS } = props;
+  const { onChange, fields = FIELDS } = props;
+  const config = wrangle.selection(props.config);
   const isEnabled = isConfigEnabled(config);
   const [prev, setPrev] = useState<t.ListSelectionConfig>();
 

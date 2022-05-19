@@ -4,6 +4,7 @@ import { Renderers } from './renderers';
 import { useDynamicState } from './useDynamicState';
 import { ListEvents as Events } from './Events';
 import { SelectionConfig } from './SelectionConfig';
+import { wrangle } from './wrangle';
 
 export const List = {
   Events,
@@ -12,4 +13,5 @@ export const List = {
   Renderers,
   SelectionConfig,
   useDynamicState,
+  wrangle,
 };
