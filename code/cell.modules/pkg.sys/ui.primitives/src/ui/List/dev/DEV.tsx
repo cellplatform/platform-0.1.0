@@ -78,7 +78,7 @@ export const actions = DevActions<Ctx>()
         virtualPadding: true,
         canFocus: true,
         virtualScroll: true,
-        selection: List.SelectionConfig.DEFAULT.CONFIG,
+        selection: List.SelectionConfig.default,
       },
       redraw: () => time.delay(0, () => events.redraw.fire()),
     };
@@ -152,8 +152,10 @@ export const actions = DevActions<Ctx>()
         });
     });
 
-    e.hr(1, 0.1);
+    e.hr();
+  })
 
+  .items((e) => {
     e.title('Behavior');
 
     e.component((e) => {

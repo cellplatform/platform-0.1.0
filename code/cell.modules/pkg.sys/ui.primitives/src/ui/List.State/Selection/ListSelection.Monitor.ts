@@ -203,7 +203,6 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
   keydown$
     .pipe(
       filter(() => _selection.isFocused),
-      filter((e) => config.keyboard ?? true),
       filter((e) => e.is.arrow || e.key === 'Home' || e.key === 'End'),
     )
     .subscribe((e) => {

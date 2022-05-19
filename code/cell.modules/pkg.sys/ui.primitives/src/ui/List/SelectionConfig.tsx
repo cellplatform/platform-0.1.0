@@ -23,7 +23,7 @@ const FIELDS: SelectionConfigFields[] = [
   'ClearOnBlur',
   'Keyboard',
 ];
-const DEFAULT = { CONFIG, FIELDS };
+const DEFAULTS = { CONFIG, FIELDS };
 
 /**
  * Component
@@ -86,7 +86,7 @@ const View: React.FC<SelectionConfigProps> = (props) => {
 
     add('Keyboard', 'Keyboard support', config?.keyboard, indent, (e) => {
       const keyboard = !Boolean(e.value.data);
-      onChange?.({ config: { ...(config || DEFAULT.CONFIG), keyboard } });
+      onChange?.({ config: { ...(config || DEFAULTS.CONFIG), keyboard } });
     });
   }
 
@@ -110,10 +110,11 @@ function isConfigEnabled(config?: t.ListSelectionConfig) {
  */
 type Fields = {
   isConfigEnabled: typeof isConfigEnabled;
-  DEFAULT: typeof DEFAULT;
+  DEFAULTS: typeof DEFAULTS;
+  default: t.ListSelectionConfig;
 };
 export const SelectionConfig = FC.decorate<SelectionConfigProps, Fields>(
   View,
-  { isConfigEnabled, DEFAULT },
+  { isConfigEnabled, DEFAULTS, default: CONFIG },
   { displayName: 'SelectionConfig' },
 );
