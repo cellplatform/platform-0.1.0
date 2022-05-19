@@ -3,10 +3,10 @@ import { Harness } from 'sys.ui.dev';
 import { t } from './web/common';
 
 const imports = {
-  ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
-  PathList: import('./ui/PathList/dev/DEV'),
-  PathListCard: import('./ui/PathList.Card/dev/DEV'),
-  FileDropTarget: import('./ui/FileDropTarget/dev/DEV'),
+  ModuleInfo: import('./web/ui/ModuleInfo/dev/DEV'),
+  PathList: import('./web/ui/PathList/dev/DEV'),
+  PathListCard: import('./web/ui/PathList.Card/dev/DEV'),
+  FileDropTarget: import('./web/ui/FileDropTarget/dev/DEV'),
   UnitTests: import('./Dev.UnitTests'),
 };
 

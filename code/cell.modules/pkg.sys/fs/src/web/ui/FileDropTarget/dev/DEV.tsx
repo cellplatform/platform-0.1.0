@@ -1,5 +1,5 @@
 import React from 'react';
-import { TEST, DevActions } from '../../../web.test';
+import { TEST, DevActions } from '../../../../web.test';
 import { FileDropTargetStateful, FileDropTargetStatefulProps } from '..';
 import { PathListStateful } from '../../PathList';
 import { t, rx, Filesystem, Icons, css } from '../common';

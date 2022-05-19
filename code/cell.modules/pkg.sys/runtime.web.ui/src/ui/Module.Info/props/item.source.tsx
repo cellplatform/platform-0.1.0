@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { t, Button, css, HashChip } from '../../common';
+import { t, Button, css, Chip } from '../../common';
 import { Icons } from '../../Icons';
 import { DEFAULT } from '../constants';
 
@@ -36,7 +36,7 @@ export function toSourceUrl(args: { href: string; hash?: string }): P {
   );
 
   const elChip = hash && (
-    <HashChip text={hash} style={styles.hash} length={DEFAULT.HASH_CHIP_LENGTH} />
+    <Chip.Hash text={hash} style={styles.hash} length={DEFAULT.HASH_CHIP_LENGTH} />
   );
 
   const data = (

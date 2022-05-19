@@ -1,4 +1,4 @@
-export * from '../web/common';
+export * from '../common';
 
 /**
  * @system

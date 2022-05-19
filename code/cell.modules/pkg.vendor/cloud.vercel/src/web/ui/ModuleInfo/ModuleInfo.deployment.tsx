@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { t, time, Filesize, HashChip, COLORS, css } from '../common';
+import { t, time, Filesize, Chip, COLORS, css } from '../common';
 import { Icons } from '../Icons';
 
 export function toDeploymentResponse(data?: t.VercelHttpDeployResponse) {
@@ -22,7 +22,7 @@ export function toDeploymentResponse(data?: t.VercelHttpDeployResponse) {
     { label: 'status', value: <div>{status}</div> },
     { label: 'elapsed', value: { data: elapsed } },
     { label: 'name', value: { data: data.deployment.name } },
-    { label: 'fileshash', value: <HashChip text={data.deployment.meta.fileshash} /> },
+    { label: 'fileshash', value: <Chip.Hash text={data.deployment.meta.fileshash} /> },
     { label: 'size', value: { data: size } },
     { label: 'kind', value: { data: data.deployment.meta.kind } },
     {
