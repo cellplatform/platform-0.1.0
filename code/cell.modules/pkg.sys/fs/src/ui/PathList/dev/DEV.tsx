@@ -1,7 +1,7 @@
 import React from 'react';
 import { TEST, DevActions } from '../../../web.test';
 import { PathListStateful, PathListStatefulProps } from '..';
-import { t, rx, cuid, value, Filesystem } from '../common';
+import { t, rx, cuid, value, Filesystem, List } from '../common';
 
 type Ctx = {
   bus: t.EventBus;
@@ -27,7 +27,11 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       bus,
       fs,
-      props: { instance, scroll: true },
+      props: {
+        instance,
+        scroll: true,
+        selection: List.SelectionConfig.default,
+      },
       debug: { render: true },
     };
 
@@ -47,6 +51,22 @@ export const actions = DevActions<Ctx>()
     e.boolean('scroll', (e) => {
       if (e.changing) e.ctx.props.scroll = e.changing.next;
       e.boolean.current = e.ctx.props.scroll;
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Behavior');
+
+    e.component((e) => {
+      return (
+        <List.SelectionConfig
+          config={e.ctx.props.selection}
+          style={{ Margin: [10, 20, 10, 30] }}
+          onChange={({ config }) => e.change.ctx((ctx) => (ctx.props.selection = config))}
+        />
+      );
     });
 
     e.hr();
@@ -92,13 +112,15 @@ export const actions = DevActions<Ctx>()
 
   .subject((e) => {
     const debug = e.ctx.debug;
+    const instance = e.ctx.props.instance;
 
     e.settings({
       host: { background: -0.04 },
       layout: {
         label: {
           topLeft: '<PathList.Stateful>',
-          bottomRight: `filesystem: "${e.ctx.props.instance.id}"`,
+          bottomLeft: `${rx.bus.instance(instance.bus)}`,
+          bottomRight: `filesystem: "${instance.id}"`,
         },
         position: [150, null],
         width: 450,
@@ -109,7 +131,6 @@ export const actions = DevActions<Ctx>()
     });
 
     const style = { flex: 1 };
-
     e.render(debug.render && <PathListStateful {...e.ctx.props} style={style} />);
   });
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { FC, CssValue, t } from './common';
+import { CssValue, t } from './common';
 import { PathList } from './PathList';
 
 type FilesystemId = string;
@@ -14,38 +14,27 @@ export type PathListStatefulProps = {
   dir?: DirPath;
   scroll?: boolean;
   padding?: t.CssEdgesInput;
+  selection?: t.ListSelectionConfig;
+  tabIndex?: number;
   style?: CssValue;
 };
 
 /**
- * Component
+ * <PathList> with state configured.
  */
-const View: React.FC<PathListStatefulProps> = (props) => {
+export const PathListStateful: React.FC<PathListStatefulProps> = (props) => {
   const { instance, dir } = props;
   const state = PathList.useState({ instance, dir });
-
-  /**
-   * [Render]
-   */
   return (
     <PathList
+      instance={instance}
       scroll={props.scroll}
       files={state.files}
       spinning={!state.ready}
-      style={props.style}
       padding={props.padding}
+      selection={props.selection}
+      tabIndex={props.tabIndex}
+      style={props.style}
     />
   );
 };
-
-/**
- * Export
- */
-type Fields = {
-  useState: typeof PathList.useState;
-};
-export const PathListStateful = FC.decorate<PathListStatefulProps, Fields>(
-  View,
-  { useState: PathList.useState },
-  { displayName: 'PathListStateful' },
-);

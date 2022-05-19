@@ -1,10 +1,10 @@
 export * from '../../types';
+export { Observable } from 'rxjs';
 
 /**
  * @platform
  */
 export { Disposable, EventBus, Json, JsonMap, Event, NpmPackageJson } from '@platform/types';
-export { Observable } from 'rxjs';
 export { Http, HttpMethod } from '@platform/http.types';
 export { CssEdgesInput } from '@platform/css/lib/types';
 export {
@@ -34,4 +34,13 @@ export {
  * @system
  */
 export { S3SignedPostOptions } from '@platform/fs.s3.types';
-export { Dropped, DroppedFile } from 'sys.ui.primitives/lib/types';
+export {
+  Dropped,
+  DroppedFile,
+  ListItemRenderer,
+  ListItemRenderFlags,
+  ListSelectionConfig,
+  ListProps,
+  GetListItem,
+  GetListItemSize,
+} from 'sys.ui.primitives/lib/types';
