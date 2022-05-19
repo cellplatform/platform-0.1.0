@@ -1,7 +1,7 @@
 import { IRouterMock, RouterMock } from '@platform/cell.router/lib/test/RouterMock';
 
 import { Path, rx, t, TestFs } from '../test';
-import { Filesystem } from '../node';
+import { Filesystem } from '..';
 
 type FilesystemId = string;
 

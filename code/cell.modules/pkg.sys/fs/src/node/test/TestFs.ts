@@ -1,7 +1,7 @@
 import { FsIndexerLocal, FsDriverLocal } from '@platform/cell.fs.local';
 import { fs } from '@platform/fs';
 
-import { Hash } from '../web/common';
+import { Hash } from '../../web/common';
 
 const tmp = fs.resolve('tmp');
 
