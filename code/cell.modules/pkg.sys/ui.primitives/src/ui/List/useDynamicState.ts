@@ -65,6 +65,8 @@ export function useDynamicItemState(args: {
   type S = t.ListState | undefined;
   const { index, total, orientation, bullet } = args;
   const { edge } = bullet;
+  const selectionConfig = args.state?.selection;
+
   const [state, setState] = useState<S>();
 
   /**
@@ -87,6 +89,7 @@ export function useDynamicItemState(args: {
       );
 
       const selection$ = changed$.pipe(
+        filter((e) => isSelectionConfigured(selectionConfig)),
         filter((e) => e.kind === 'Selection'),
         map((e) => e.change as t.ListSelectionState),
         map((selection) => ({
@@ -117,7 +120,7 @@ export function useDynamicItemState(args: {
     }
 
     return () => dispose$.next();
-  }, [index, total, orientation, edge]); // eslint-disable-line
+  }, [index, total, orientation, edge, selectionConfig]); // eslint-disable-line
 
   /**
    * API
@@ -135,4 +138,13 @@ export function useDynamicItemState(args: {
       });
     },
   };
+}
+
+/**
+ * Helpers
+ */
+
+function isSelectionConfigured(config?: t.ListSelectionConfig) {
+  if (!config) return false;
+  return Object.values(config).filter((value) => value !== undefined).length > 0;
 }

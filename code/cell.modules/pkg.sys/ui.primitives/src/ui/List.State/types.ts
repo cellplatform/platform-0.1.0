@@ -12,7 +12,11 @@ export type ListState = {
   selection?: ListSelectionState;
 };
 
-export type ListStateLazy = { get: () => t.ListState; changed$: Observable<ListStateChange> };
+export type ListStateLazy = {
+  get: () => t.ListState;
+  changed$: Observable<ListStateChange>;
+  selection?: t.ListSelectionConfig;
+};
 
 export type ListStateChange = ListStateChangeMouse | ListStateChangeSelection;
 export type ListStateChangeMouse = { kind: 'Mouse'; change: ListMouseChange };
@@ -31,10 +35,9 @@ export type ListMouse = { over: Index; down: Index };
  */
 export type ListSelectionState = { indexes: ListSelection; isFocused: boolean };
 export type ListSelection = Index[];
-
 export type ListSelectionConfig = {
   multi?: boolean; // Allow selection of multiple items.
-  clearOnBlur?: boolean;
   allowEmpty?: boolean;
+  clearOnBlur?: boolean;
   keyboard?: boolean; // Support keyboard interaction (default: true).
 };

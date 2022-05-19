@@ -78,6 +78,7 @@ export const actions = DevActions<Ctx>()
         virtualPadding: true,
         canFocus: true,
         virtualScroll: true,
+        selection: List.SelectionConfig.DEFAULT.CONFIG,
       },
       redraw: () => time.delay(0, () => events.redraw.fire()),
     };
@@ -91,51 +92,6 @@ export const actions = DevActions<Ctx>()
 
     const TOTAL = 10;
     new Array(TOTAL).fill(ctx).forEach(() => Util.addItem(ctx));
-
-    /**
-     * TEMP 🐷
-     *  List Selection
-     */
-
-    /**
-     * TODO 🐷
-     * - Ensure [ListSelection] usage does not cause total list redraws.
-     */
-
-    // const getCtx = (): t.ListStateCtx => {
-    //   return {
-    //     orientation: e.ctx.props.orientation,
-    //     total: e.ctx.items.length,
-    //   };
-    // };
-
-    // console.group('🌳 INIT');
-    // console.log('bus', rx.bus.instance(bus));
-    // console.log('instance', instance);
-    // console.groupEnd();
-
-    // const monitor = ListState.Monitor({
-    //   bus,
-    //   instance,
-    //   list: {
-    //     multi: true,
-    //     clearOnBlur: false,
-    //     allowEmpty: true,
-    //   },
-    //   getCtx,
-    // });
-
-    // monitor.changed$.subscribe(() => {
-    //   // console.log('changed$', e);
-    //   ctx.props.state = monitor.state;
-    //   // e.redraw();
-    // });
-
-    // selection.changed$.subscribe(() => {
-    //   ctx.props.selection = selection;
-    //   e.redraw();
-    //   console.log('TODO remove dev redraw');
-    // });
   })
 
   .items((e) => {
@@ -194,6 +150,24 @@ export const actions = DevActions<Ctx>()
             e.ctx.redraw();
           }
         });
+    });
+
+    e.hr(1, 0.1);
+
+    e.title('Selection');
+
+    e.component((e) => {
+      return (
+        <List.SelectionConfig
+          // fields={['Keyboard', 'Multi', 'Enabled']}
+          config={e.ctx.debug.selection}
+          style={{ Margin: [10, 20, 10, 40] }}
+          onChange={({ config }) => {
+            console.log('SelectionConfig // next', config);
+            e.change.ctx((ctx) => (ctx.debug.selection = config));
+          }}
+        />
+      );
     });
 
     e.hr();

@@ -19,7 +19,7 @@ export const DevSample: React.FC<DevSampleProps> = (args) => {
   const dynamic = List.useDynamicState({
     total,
     props,
-    selection: { multi: true, allowEmpty: true },
+    selection: debug.selection,
   });
 
   /**
