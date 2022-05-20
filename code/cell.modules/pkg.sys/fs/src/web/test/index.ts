@@ -1,4 +1,4 @@
-export { DevActions, Test, expect } from 'sys.ui.dev';
+export { DevActions, Test, expect, ObjectView } from 'sys.ui.dev';
 
 export * from '../common';
 export * from './Test.IndexedDb';

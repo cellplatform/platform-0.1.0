@@ -9,3 +9,4 @@ export { Fs } from '@platform/cell.types/lib/types.Fs';
  */
 export * from './FsDriver.IndexedDb/types';
 export * from './ui/PathList/types';
+export * from './ui/FsCard/types';
