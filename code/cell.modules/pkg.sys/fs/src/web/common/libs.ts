@@ -19,7 +19,6 @@ export { Path, PathUri } from '@platform/cell.fs';
 /**
  * @system
  */
-export { IpcBus } from 'sys.runtime.electron';
 export { useDragTarget } from 'sys.ui.primitives/lib/hooks/DragTarget';
 export { PropList } from 'sys.ui.primitives/lib/ui/PropList';
 export { List } from 'sys.ui.primitives/lib/ui/List';
