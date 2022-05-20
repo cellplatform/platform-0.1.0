@@ -1,19 +1,23 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 
-import { COLORS, css, List, Spinner, Style, t, DEFAULT } from '../common';
+import { COLORS, css, DEFAULT, List, Spinner, Style, t, time } from '../common';
 import { PathListProps } from '../types';
-import { renderers } from './renderers';
-import { Row } from './PathList.Row';
 import { wrangle } from '../wrangle';
+import { DropTarget } from './DropTarget';
+import { Row } from './PathList.Row';
+import { renderers } from './renderers';
 
 /**
  * Component
  */
 export const PathList: React.FC<PathListProps> = (props) => {
-  const { scroll = true, files = [], spinning, theme = DEFAULT.THEME } = props;
+  const { instance, scroll = true, files = [], spinning, theme = DEFAULT.THEME } = props;
   const total = files.length;
   const isEmpty = total === 0;
   const isLight = theme === 'Light';
+
+  const targetRef = useRef<HTMLDivElement>(null);
+  const [isDragOver, setDragOver] = useState(false);
 
   const list: t.ListProps = {
     instance: props.instance,
@@ -49,7 +53,30 @@ export const PathList: React.FC<PathListProps> = (props) => {
       padding: 12,
     }),
     spinner: css({ Flex: 'center-center', padding: 8 }),
-    list: { marginLeft: 5, flex: 1 },
+    list: {
+      marginLeft: 5,
+      flex: 1,
+      opacity: isDragOver ? 0.3 : 1,
+      filter: `blur(${isDragOver ? 3 : 0}px)`,
+      transition: `opacity 100ms, filter 100ms`,
+    },
+  };
+
+  const toData = (file: t.ManifestFile): t.PathListItemData => ({ file, theme });
+  const ListView = {
+    simple() {
+      const items = files.map((file) => ({ data: toData(file) }));
+      return <List.Layout {...list} items={items} state={dynamic.state} style={styles.list} />;
+    },
+    virtual() {
+      const getData: t.GetListItem = (index) => ({ data: toData(files[index]) });
+      const getSize: t.GetListItemSize = () => Row.height;
+      const items = { total, getData, getSize };
+      return <List.Virtual {...list} items={items} state={dynamic.state} style={styles.list} />;
+    },
+    render() {
+      return scroll ? ListView.virtual() : ListView.simple();
+    },
   };
 
   const elSpinner = spinning && (
@@ -59,29 +86,24 @@ export const PathList: React.FC<PathListProps> = (props) => {
   );
 
   const elEmpty = isEmpty && !elSpinner && <div {...styles.empty}>No files to display</div>;
+  const elList = !elSpinner && !elEmpty && ListView.render();
 
-  const toData = (file: t.ManifestFile): t.PathListItemData => ({ file, theme });
-
-  const toSimpleList = (files: t.ManifestFile[]) => {
-    const items = files.map((file) => ({ data: toData(file) }));
-    return <List.Layout {...list} items={items} state={dynamic.state} style={styles.list} />;
-  };
-
-  const toVirtualList = (files: t.ManifestFile[]) => {
-    const getData: t.GetListItem = (index) => ({ data: toData(files[index]) });
-
-    const getSize: t.GetListItemSize = (e) => Row.height;
-    const items = { total, getData, getSize };
-    return <List.Virtual {...list} items={items} state={dynamic.state} style={styles.list} />;
-  };
-
-  const elList = !elSpinner && !elEmpty && (scroll ? toVirtualList(files) : toSimpleList(files));
+  const elDropTarget = props.droppable && (
+    <DropTarget
+      instance={instance}
+      targetRef={targetRef}
+      theme={theme}
+      onDragOver={(e) => time.delay(0, () => setDragOver(e.isOver))}
+      onDrop={props.onDrop}
+    />
+  );
 
   return (
-    <div {...css(styles.base, props.style)}>
+    <div ref={targetRef} {...css(styles.base, props.style)}>
       {elSpinner}
       {elEmpty}
       {elList}
+      {elDropTarget}
     </div>
   );
 };

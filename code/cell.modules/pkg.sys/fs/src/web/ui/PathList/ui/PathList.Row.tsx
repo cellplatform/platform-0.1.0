@@ -13,6 +13,8 @@ export type RowProps = {
 
 const View: React.FC<RowProps> = (props) => {
   const { file, is, theme } = props;
+
+  const path = file.path;
   const size = Filesize(file.bytes, { round: 1, spacer: '' });
   const selectedBorder = Color.alpha(COLORS.DARK, 0.1);
   const isLight = theme === 'Light';
@@ -29,10 +31,10 @@ const View: React.FC<RowProps> = (props) => {
       border: `solid 1px ${TRANSPARENT}`,
 
       padding: 2,
-      marginLeft: 2,
       paddingLeft: 4,
+      marginLeft: 2,
 
-      Flex: 'horizontal-center-spaceBetween',
+      Flex: 'horizontal-stretch-spaceBetween',
     },
     selected: is.selected && {
       backgroundColor: Color.alpha(COLORS.BLUE, 0.15),
@@ -42,28 +44,34 @@ const View: React.FC<RowProps> = (props) => {
       borderTopColor: is.previous()?.selected ? undefined : selectedBorder,
       borderBottomColor: is.next()?.selected ? undefined : selectedBorder,
     },
-    path: css({
-      flex: 1,
-      position: 'relative',
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      paddingTop: 1,
-    }),
+    path: {
+      base: css({
+        flex: 1,
+        position: 'relative',
+        paddingTop: 1,
+        display: 'flex',
+      }),
+      ellipsis: css({
+        Absolute: 0,
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+      }),
+    },
   };
 
   return (
     <div {...css(styles.base, styles.selected, props.style)}>
-      <div {...styles.path}>{file.path}</div>
-      <div>
-        <Chip.Hash
-          text={file.filehash}
-          prefix={size}
-          clipboard={(e) => `${file.path}#${e.hash}`}
-          length={4}
-          theme={theme}
-        />
+      <div {...styles.path.base}>
+        <div {...styles.path.ellipsis}>{path}</div>
       </div>
+      <Chip.Hash
+        text={file.filehash}
+        prefix={size}
+        clipboard={(e) => `${path}#${e.hash}`}
+        length={4}
+        theme={theme}
+      />
     </div>
   );
 };
@@ -74,7 +82,7 @@ const View: React.FC<RowProps> = (props) => {
 type Fields = { height: number };
 export const Row = FC.decorate<RowProps, Fields>(
   View,
-  { height: 21 },
+  { height: 20 },
   { displayName: 'PathList.Row' },
 );
 

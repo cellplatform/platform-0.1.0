@@ -7,8 +7,8 @@ import { PathListStatefulProps } from './types';
  * <PathList> with state configured.
  */
 export const PathListStateful: React.FC<PathListStatefulProps> = (props) => {
-  const { instance, dir } = props;
-  const state = PathList.useState({ instance, dir });
+  const { instance, dir, droppable } = props;
+  const state = PathList.useState({ instance, dir, droppable });
   return (
     <PathList
       instance={instance}
@@ -20,6 +20,8 @@ export const PathListStateful: React.FC<PathListStatefulProps> = (props) => {
       tabIndex={props.tabIndex}
       theme={props.theme}
       style={props.style}
+      droppable={droppable}
+      onDrop={state.onDrop}
     />
   );
 };

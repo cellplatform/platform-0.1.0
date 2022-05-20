@@ -79,7 +79,7 @@ export function useDragTarget<T extends HTMLElement>(
       el.removeEventListener('mouseleave', handleMouseLeave);
       el.removeEventListener('drop', handleDrop);
     };
-  }, [ref, isEnabled]); // eslint-disable-line
+  }, [ref, isEnabled, onDrop]); // eslint-disable-line
 
   return {
     ref,

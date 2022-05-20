@@ -32,6 +32,7 @@ export const actions = DevActions<Ctx>()
         scroll: true,
         selection: List.SelectionConfig.default,
         theme: PathList.DEFAULT.THEME,
+        droppable: true,
       },
       debug: { render: true },
     };
@@ -64,6 +65,11 @@ export const actions = DevActions<Ctx>()
     e.boolean('scroll', (e) => {
       if (e.changing) e.ctx.props.scroll = e.changing.next;
       e.boolean.current = e.ctx.props.scroll;
+    });
+
+    e.boolean('droppable', (e) => {
+      if (e.changing) e.ctx.props.droppable = e.changing.next;
+      e.boolean.current = e.ctx.props.droppable;
     });
 
     e.hr();
@@ -137,11 +143,11 @@ export const actions = DevActions<Ctx>()
           bottomRight: `filesystem: "${instance.id}"`,
         },
         cropmarks: isLight ? -0.2 : 0.2,
+        border: isLight ? -0.1 : 0.1,
         labelColor: isLight ? -0.5 : 0.8,
         background: isLight ? 1 : undefined,
         position: [150, null],
         width: 450,
-        border: -0.1,
       },
     });
 

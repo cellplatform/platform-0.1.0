@@ -107,7 +107,7 @@ export async function readDropEvent(e: DragEvent) {
 
 async function toFilePayload(file: File, name?: string) {
   const filename = name || file.name;
-  const mimetype = file.type;
+  const mimetype = file.type || 'application/octet-stream';
   const data = new Uint8Array(await (file as any).arrayBuffer());
   const payload: F = { path: filename, data, mimetype };
   return payload;

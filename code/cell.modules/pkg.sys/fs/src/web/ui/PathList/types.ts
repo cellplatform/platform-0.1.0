@@ -4,8 +4,8 @@ type FilesystemId = string;
 type DirectoryPath = string;
 
 export type PathListTheme = 'Light' | 'Dark';
-
 export type PathListInstance = { bus: t.EventBus<any>; id: FilesystemId };
+export type PathListDroppedHandler = (e: t.Dropped) => void;
 
 /**
  * <Component>
@@ -15,6 +15,7 @@ type PathListCommonProps = {
   scroll?: boolean;
   padding?: t.CssEdgesInput;
   selection?: t.ListSelectionConfig | boolean;
+  droppable?: boolean; // Support drag-drop from host OS.
   tabIndex?: number;
   theme?: t.PathListTheme;
   style?: t.CssValue;
@@ -23,6 +24,7 @@ type PathListCommonProps = {
 export type PathListProps = PathListCommonProps & {
   files?: t.ManifestFile[];
   spinning?: boolean;
+  onDrop?: PathListDroppedHandler;
 };
 
 export type PathListStatefulProps = PathListCommonProps & {
@@ -30,9 +32,9 @@ export type PathListStatefulProps = PathListCommonProps & {
 };
 
 /**
- * Item
+ * Item (Row)
  */
 export type PathListItemData = {
-  theme: PathListTheme;
   file: t.ManifestFile;
+  theme: PathListTheme;
 };
