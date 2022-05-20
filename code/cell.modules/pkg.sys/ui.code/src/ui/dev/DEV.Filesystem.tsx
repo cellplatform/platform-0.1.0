@@ -1,7 +1,7 @@
 import React from 'react';
 import { Color, COLORS, css, CssValue, t } from '../../common';
 
-import { PathListStateful, PathList } from 'sys.fs/lib/web/ui/PathList';
+import { Filesystem } from 'sys.fs/lib/web/ui';
 import { Icons } from '../Icons';
 
 export type DevFilesystemProps = {
@@ -37,7 +37,12 @@ export const DevFilesystem: React.FC<DevFilesystemProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       {elTitle}
-      <PathListStateful instance={props.fs} scroll={false} droppable={true} selection={true} />
+      <Filesystem.PathList.Stateful
+        instance={props.fs}
+        scroll={false}
+        droppable={true}
+        selection={true}
+      />
     </div>
   );
 };

@@ -206,12 +206,16 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.1);
 
+    /**
+     * TODO 🐷 Temp
+     * - move within Vercel vendor module itself.
+     */
     e.button('push (to "cloud")', async (e) => {
       const token = e.ctx.token;
       const Authorization = `Bearer ${token}`;
       const headers = { Authorization };
       const http = Http.create({ headers });
-      const fs = Filesystem.Web.Events(e.ctx.fs).fs();
+      const fs = Filesystem.IndexedDb.Events(e.ctx.fs).fs();
 
       const alias = 'deploy.tmp.db.team';
 
