@@ -1,6 +1,6 @@
 {
   "name": "sys.fs",
-  "version": "0.0.13",
+  "version": "0.0.15",
   "main": "lib/web/index",
   "types": "lib/web/index.d.ts",
   "sideEffects": false,
@@ -19,7 +19,8 @@
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
     "clean": "yarn reset && cell.compiler clean $@",
-    "reset": "rm -rf tmp"
+    "reset": "rm -rf tmp",
+    "deploy": "ts-node -T script.ts/vercel.run"
   },
   "dependencies": {
     "@platform/cell.fs.bus": "0.0.9",
