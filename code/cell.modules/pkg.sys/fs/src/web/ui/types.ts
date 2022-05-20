@@ -1,7 +1,7 @@
 import * as t from '../common/types';
 
-export * from './FsPathList/types';
-export * from './FsCard/types';
+export * from './Fs.PathList/types';
+export * from './Fs.Card/types';
 
 type InstanceId = string;
 type FilesystemId = string;

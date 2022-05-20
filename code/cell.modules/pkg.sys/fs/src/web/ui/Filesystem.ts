@@ -1,6 +1,6 @@
 import { ModuleInfo } from './ModuleInfo';
-import { FsPathList as PathList } from './FsPathList';
-import { FsCard as Card } from './FsCard';
+import { FsPathList as PathList } from './Fs.PathList';
+import { FsCard as Card } from './Fs.Card';
 import { Filesystem as IndexedDb } from '../FsBus.IndexedDb';
 import { Path } from './common';
 
