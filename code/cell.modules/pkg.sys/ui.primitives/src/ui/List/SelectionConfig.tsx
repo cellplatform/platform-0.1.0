@@ -71,7 +71,7 @@ const View: React.FC<SelectionConfigProps> = (props) => {
   if (isEnabled) {
     const indent = 15;
 
-    add('Multi', 'Allow multiple item selection', config?.multi, indent, (e) => {
+    add('Multi', 'Allow multi-item selection', config?.multi, indent, (e) => {
       const multi = !Boolean(e.value.data);
       onChange?.({ config: { ...(config || CONFIG), multi } });
     });

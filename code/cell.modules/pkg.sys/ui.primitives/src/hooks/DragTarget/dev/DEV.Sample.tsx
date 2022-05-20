@@ -27,6 +27,7 @@ export const Sample: React.FC<SampleProps> = (props) => {
   const drag = useDragTarget<HTMLDivElement>({
     isEnabled,
     onDrop: (e) => console.log('⚡️ onDropped (optional)', e),
+    onDragOver: (e) => console.log('⚡️ onDragOver (optional)', e),
   });
 
   // const rootRef = React.useRef<HTMLDivElement>(null);
