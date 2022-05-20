@@ -1,5 +1,5 @@
 import React from 'react';
-import { TEST, DevActions } from '../../../test';
+import { TEST, DevActions, ObjectView } from '../../../test';
 import { PathList, PathListStatefulProps } from '..';
 import { t, rx, cuid, value, Filesystem, List, COLORS } from '../common';
 
@@ -7,7 +7,10 @@ type Ctx = {
   bus: t.EventBus;
   fs: t.Fs;
   props: PathListStatefulProps;
-  debug: { render: boolean };
+  debug: {
+    render: boolean;
+    json?: any;
+  };
 };
 
 /**
@@ -96,7 +99,7 @@ export const actions = DevActions<Ctx>()
 
     const toPath = (count: number) => `foo/my-file-${count + 1}.json`;
 
-    e.button('add', async (e) => {
+    e.button('add (generate sample)', async (e) => {
       const msg = cuid().repeat(value.random(1, 50));
       const fs = e.ctx.fs;
       const total = (await fs.manifest()).files.length;
@@ -120,13 +123,43 @@ export const actions = DevActions<Ctx>()
       if (last) await fs.delete(last.path);
     });
 
-    e.button('delete: all (reset)', async (e) => {
+    e.hr(1, 0.1);
+
+    e.button('clear: (delete all)', async (e) => {
       const fs = e.ctx.fs;
       const files = (await fs.manifest()).files;
       await Promise.all(files.map((file) => fs.delete(file.path)));
     });
+  })
 
+  .items((e) => {
     e.hr();
+
+    e.component((e) => {
+      return (
+        <ObjectView
+          name={'props'}
+          data={e.ctx.props}
+          style={{ MarginX: 15 }}
+          fontSize={10}
+          expandPaths={['$']}
+        />
+      );
+    });
+
+    e.hr(1, 0.1);
+
+    e.component((e) => {
+      return (
+        <ObjectView
+          name={'current'}
+          data={e.ctx.debug.json}
+          style={{ MarginX: 15 }}
+          fontSize={10}
+          expandPaths={['$']}
+        />
+      );
+    });
   })
 
   .subject((e) => {
@@ -145,7 +178,7 @@ export const actions = DevActions<Ctx>()
         cropmarks: isLight ? -0.2 : 0.2,
         border: isLight ? -0.1 : 0.1,
         labelColor: isLight ? -0.5 : 0.8,
-        background: isLight ? 1 : undefined,
+        background: isLight ? 1 : 0.02,
         position: [150, null],
         width: 450,
       },

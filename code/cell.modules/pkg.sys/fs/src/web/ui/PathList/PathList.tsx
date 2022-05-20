@@ -3,7 +3,7 @@ import { usePathListState } from './logic/usePathListState';
 import { PathListStateful as Stateful } from './PathList.Stateful';
 import { PathListProps } from './types';
 import { PathList as View } from './ui/PathList';
-import { wrangle } from './wrangle';
+import { wrangle } from './ui/wrangle';
 
 /**
  * Export

@@ -1,5 +1,5 @@
-import { List } from './common';
-import { PathListProps } from './types';
+import { List } from '../common';
+import { PathListProps } from '../types';
 
 export const wrangle = {
   tabIndex(props: PathListProps) {

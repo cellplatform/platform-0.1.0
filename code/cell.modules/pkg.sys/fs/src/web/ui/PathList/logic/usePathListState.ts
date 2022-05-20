@@ -19,8 +19,8 @@ export function usePathListState(args: {
   const { bus, id } = args.instance;
 
   const [ready, setReady] = useState(false);
+  const [drop, setDropHandler] = useState<{ handler: t.PathListDroppedHandler }>();
   const [files, setFiles] = useState<t.ManifestFile[]>([]);
-  const [drop, setDrop] = useState<{ handler: t.PathListDroppedHandler }>();
 
   /**
    * Lifecycle
@@ -41,16 +41,17 @@ export function usePathListState(args: {
     events.changed$.pipe(debounceTime(debounce)).subscribe(readPaths);
 
     /**
-     * File drop handler.
+     * Handle when file drag-dropped from host OS.
      */
     if (droppable) {
       const handler: t.PathListDroppedHandler = async (e) => {
+        if (isDisposed) return;
         const wait = e.files
-          .map((file) => ({ file, path: toPath(file, e.dir) }))
+          .map((file) => ({ file, path: Path.fromFile(file, e.dir) }))
           .map(({ file, path }) => fs.write(path, file.data));
         await Promise.all(wait);
       };
-      setDrop({ handler });
+      setDropHandler({ handler });
     }
 
     /**
@@ -77,24 +78,20 @@ export function usePathListState(args: {
   /**
    * API
    */
-  return {
-    id,
-    ready,
-    files,
-    onDrop: drop?.handler,
-  };
+  return { id, ready, files, onDrop: drop?.handler };
 }
 
 /**
  * [Helpers]
  */
-const toPath = (file: t.DroppedFile, dir?: string) => {
-  const prepend = (left: string, right: string) =>
-    `${left.replace(/\/*$/, '')}/${right.replace(/^\/*/, '')}`;
 
-  let path = file.path;
-  if (dir) path = prepend(dir, path);
-  // if (rootDir) path = prepend(rootDir, path);
+const Path = {
+  fromFile(file: { path: string }, dir?: string) {
+    const path = file.path;
+    return dir ? Path.prepend(dir, path) : path;
+  },
 
-  return path;
+  prepend(left: string, right: string) {
+    return `${left.replace(/\/*$/, '')}/${right.replace(/^\/*/, '')}`;
+  },
 };
