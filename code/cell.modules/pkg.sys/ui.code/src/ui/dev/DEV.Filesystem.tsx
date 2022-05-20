@@ -1,7 +1,7 @@
 import React from 'react';
 import { Color, COLORS, css, CssValue, t } from '../../common';
 
-import { PathListStateful } from 'sys.fs/lib/ui/PathList';
+import { PathListStateful, PathList } from 'sys.fs/lib/web/ui/PathList';
 import { Icons } from '../Icons';
 
 export type DevFilesystemProps = {
@@ -10,15 +10,11 @@ export type DevFilesystemProps = {
 };
 
 export const DevFilesystem: React.FC<DevFilesystemProps> = (props) => {
-  const state = PathListStateful.useState({ instance: props.fs });
-
   /**
    * [Render]
    */
   const styles = {
-    base: css({
-      color: COLORS.DARK,
-    }),
+    base: css({ color: COLORS.DARK }),
     title: css({
       fontFamily: 'monospace',
       fontSize: 12,
@@ -33,7 +29,7 @@ export const DevFilesystem: React.FC<DevFilesystemProps> = (props) => {
 
   const elTitle = (
     <div {...styles.title}>
-      <Icons.HardDrive color={Color.alpha(COLORS.DARK, 0.7)} size={20} />
+      <Icons.HardDrive color={COLORS.DARK} size={20} />
       <div>{`"${props.fs.id}"`}</div>
     </div>
   );
@@ -41,7 +37,7 @@ export const DevFilesystem: React.FC<DevFilesystemProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       {elTitle}
-      <PathListStateful instance={props.fs} scroll={false} />
+      <PathListStateful instance={props.fs} scroll={false} selection={true} />
     </div>
   );
 };

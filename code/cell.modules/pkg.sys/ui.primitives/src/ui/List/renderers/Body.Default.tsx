@@ -4,7 +4,7 @@ import { Card } from '../../Card';
 import { ObjectView } from '../../ObjectView';
 import { css, CssValue, t } from '../common';
 
-export type BodyDefaultProps = t.ListBulletRendererArgs & {
+export type BodyDefaultProps = t.ListItemRendererArgs & {
   width?: string | number;
   minWidth?: string | number;
   expandPaths?: string[];

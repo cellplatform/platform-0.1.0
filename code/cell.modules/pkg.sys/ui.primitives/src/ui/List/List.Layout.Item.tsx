@@ -8,10 +8,7 @@ import { useDynamicItemState } from './useDynamicState';
  * Types
  */
 type Pixels = number;
-type R = {
-  bullet?: t.ListBulletRenderer;
-  body: t.ListBulletRenderer;
-};
+type R = { bullet?: t.ListItemRenderer; body: t.ListItemRenderer };
 
 export type ListLayoutItemProps = {
   instance: t.ListInstance;
@@ -53,8 +50,8 @@ export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
   const spacing = formatSpacing(props.spacing);
   const invertedOrientation = orientation === 'x' ? 'y' : 'x';
   const scrolling = Boolean(props.isScrolling);
-  const is: t.ListBulletRenderFlags = { ...dynamic.is, scrolling };
-  const args: t.ListBulletRendererArgs = {
+  const is: t.ListItemRenderFlags = { ...dynamic.is, scrolling };
+  const args: t.ListItemRendererArgs = {
     kind: 'Default',
     index,
     total,
@@ -94,18 +91,14 @@ export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
     }),
   };
 
-  const renderContent: t.ListBulletRenderer = (args: t.ListBulletRendererArgs) => {
+  const renderContent: t.ListItemRenderer = (args: t.ListItemRendererArgs) => {
     const parts = renderParts(args, renderers);
     const elBullet = parts.bullet && <div {...styles.bullet.outer}>{parts.bullet}</div>;
     const elBody = <div {...styles.body.outer}>{parts.body}</div>;
     return placeInOrder(args.bullet.edge, elBullet, elBody);
   };
 
-  const renderSpacer = (
-    args: t.ListBulletRendererArgs,
-    edge: 'before' | 'after',
-    offset: Pixels,
-  ) => {
+  const renderSpacer = (args: t.ListItemRendererArgs, edge: 'before' | 'after', offset: Pixels) => {
     if (offset === 0) return null;
 
     const styles = {
@@ -124,7 +117,7 @@ export const ListLayoutItem: React.FC<ListLayoutItemProps> = (props) => {
       }),
     };
 
-    const e: t.ListBulletRendererArgs = {
+    const e: t.ListItemRendererArgs = {
       ...args,
       kind: 'Spacing',
       is: { ...is, spacer: true },
@@ -222,15 +215,15 @@ function placeInOrder(edge: t.ListBulletEdge, bullet: RenderOutput, body: Render
 }
 
 function renderPart(
-  e: t.ListBulletRendererArgs,
-  renderer: t.ListBulletRenderer,
-  defaultRenderer?: t.ListBulletRenderer,
+  e: t.ListItemRendererArgs,
+  renderer: t.ListItemRenderer,
+  defaultRenderer?: t.ListItemRenderer,
 ) {
   const el = renderer(e);
   return (el === undefined ? defaultRenderer?.(e) : el) as JSX.Element | null;
 }
 
-function renderParts(e: t.ListBulletRendererArgs, renderers: R) {
+function renderParts(e: t.ListItemRendererArgs, renderers: R) {
   return {
     bullet: renderers.bullet ? renderPart(e, renderers.bullet) : undefined,
     body: renderPart(e, renderers.body, DEFAULT_RENDERER.body),

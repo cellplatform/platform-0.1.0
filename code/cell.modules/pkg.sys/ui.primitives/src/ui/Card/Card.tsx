@@ -10,7 +10,7 @@ export type CardProps = {
   showAsCard?: boolean;
   padding?: t.CssEdgesInput; // NB: padding is dropped if "NOT" showing as card.
   margin?: t.CssEdgesInput;
-  border?: { color?: number | string; radius?: number };
+  border?: { color?: number | string; radius?: number | string };
   width?: number | { fixed?: number; min?: number; max?: number };
   height?: number | { fixed?: number; min?: number; max?: number };
   userSelect?: string | boolean;

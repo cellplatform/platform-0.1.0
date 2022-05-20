@@ -2,24 +2,22 @@ import React from 'react';
 
 import { CardBody } from '../primitives';
 import { CmdCard, css, CssValue, t } from './common';
-import { NetworkCardBody } from './components/Body';
-import { NetworkCardChild } from './components/Child';
-import { NetworkCardTitlebar } from './components/Titlebar';
+import { NetworkCardBody } from './ui/Body';
+import { NetworkCardChild } from './ui/Child';
+import { NetworkCardTitlebar } from './ui/Titlebar';
 
 export type NetworkCardProps = {
-  instance: t.Id;
-  network: t.PeerNetwork;
+  instance: { network: t.PeerNetwork; id: t.Id };
   child?: JSX.Element;
   style?: CssValue;
 };
 
 export const NetworkCard: React.FC<NetworkCardProps> = (props) => {
-  const { network, child, instance } = props;
-  const { bus, netbus } = network;
-  const self = netbus.self;
+  const { child, instance } = props;
+  const { bus, netbus } = instance.network;
 
   const { state } = CmdCard.useController({
-    instance: { bus, id: instance },
+    instance: { bus, id: instance.id },
     initial: CmdCard.defaultState({ body: { render: () => elBody } }),
   });
 
@@ -32,15 +30,15 @@ export const NetworkCard: React.FC<NetworkCardProps> = (props) => {
     fill: css({ flex: 1 }),
   };
 
-  const elHeader = <NetworkCardTitlebar bus={bus} self={self} />;
+  const elHeader = <NetworkCardTitlebar instance={instance} />;
 
   const elBody = (
     <CardBody header={{ el: elHeader }} style={styles.fill}>
-      <NetworkCardBody instance={instance} self={self} network={network} style={styles.fill} />
+      <NetworkCardBody instance={instance} style={styles.fill} />
     </CardBody>
   );
 
-  const elRoot = <CmdCard instance={{ bus, id: instance }} style={styles.root} state={state} />;
+  const elRoot = <CmdCard instance={{ bus, id: instance.id }} style={styles.root} state={state} />;
   const elChild = child && <NetworkCardChild>{child}</NetworkCardChild>;
 
   return (

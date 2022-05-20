@@ -3,7 +3,8 @@ import { DevActions, Test } from 'sys.ui.dev';
 import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
 const Imports = {
-  BusEvents: import('./web.BusEvents/TEST'),
+  Bus: import('./web/Bus/TEST'),
+  VercelHttp: import('./web/Vercel/Vercel.Http/TEST'),
 };
 
 type Ctx = { results?: TestSuiteRunResponse };

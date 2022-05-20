@@ -1,12 +1,15 @@
 import { t } from './common';
 
+type Id = string;
 type Milliseconds = number;
 
 /**
  * Event API for interacting with a network.
  */
 export type PeerEvents = t.Disposable & {
+  instance: { bus: Id };
   $: t.Observable<t.PeerEvent>;
+  clone(dispose$?: t.Observable<any>): PeerEvents;
 
   create(
     signal: string,

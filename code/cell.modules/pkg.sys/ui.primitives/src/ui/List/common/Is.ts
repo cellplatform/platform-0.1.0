@@ -17,14 +17,16 @@ export const Is = {
     total: number;
     orientation: t.ListOrientation;
     bullet: { edge: t.ListBulletEdge };
-    state?: t.ListState;
-  }): t.ListBulletRenderFlags {
-    const { index, total, orientation, bullet, state } = args;
+    state?: () => t.ListState | undefined;
+  }): t.ListItemRenderFlags {
+    const { index, total, orientation, bullet } = args;
+    const getState = () => args.state?.();
 
-    const selection = state?.selection?.indexes;
-    const selected = ListState.Selection.isSelected(selection, index);
+    let _previous: t.ListItemRenderFlags | undefined;
+    let _next: t.ListItemRenderFlags | undefined;
+    const sibling = (index: number) => Is.toItemFlags({ ...args, index });
 
-    return {
+    const is = {
       empty: total === 0,
       single: total === 1,
       first: index === 0,
@@ -35,12 +37,35 @@ export const Is = {
       spacer: false,
       scrolling: false, // NB: default - Overridden elsewhere {...is, scrolling: <actual> }.
       bullet: { near: bullet.edge === 'near', far: bullet.edge === 'far' },
-      focused: state?.selection?.isFocused ?? false,
-      selected,
       mouse: {
-        over: state ? state.mouse?.over === index : false,
-        down: state ? state.mouse?.down === index : false,
+        get over() {
+          const state = getState();
+          return state ? state?.mouse?.over === index : false;
+        },
+        get down() {
+          const state = getState();
+          return state ? state?.mouse?.down === index : false;
+        },
+      },
+      get focused() {
+        const state = getState();
+        return state?.selection?.isFocused ?? false;
+      },
+      get selected() {
+        const state = getState();
+        const selection = state?.selection?.indexes;
+        return ListState.Selection.isSelected(selection, index);
+      },
+      previous() {
+        if (is.first) return undefined;
+        return _previous || (_previous = sibling(index - 1));
+      },
+      next() {
+        if (is.last) return undefined;
+        return _next || (_next = sibling(index + 1));
       },
     };
+
+    return is;
   },
 };

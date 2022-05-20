@@ -6,8 +6,9 @@ import { t } from './common';
 const imports = {
   ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
   LocalPeerCard: import('./ui/LocalPeerCard/dev/DEV'),
-  NetbusCard: import('./ui/NetbusCard/dev/DEV'),
   Label: import('./ui/Label/dev/DEV'),
+  NetbusCard: import('./ui/NetbusCard/dev/DEV'),
+  NetworkCard: import('./ui/NetworkCard/dev/DEV'),
   Networks: import('./ui/DEV.Networks/DEV'),
   Sample: import('./ui/DEV.Sample/DEV'),
 

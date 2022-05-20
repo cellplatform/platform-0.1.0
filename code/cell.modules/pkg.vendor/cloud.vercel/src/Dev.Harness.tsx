@@ -3,8 +3,8 @@ import { Harness } from 'sys.ui.dev';
 import { t } from './web/common';
 
 const imports = {
-  ModuleInfo: import('./web.ui/ModuleInfo/dev/DEV'),
-  VercelHttp: import('./web.ui/VercelHttp/dev/DEV'),
+  ModuleInfo: import('./web/ui/ModuleInfo/dev/DEV'),
+  VercelHttp: import('./web/ui/VercelHttp/dev/DEV'),
   UnitTests: import('./Dev.UnitTests'),
 };
 

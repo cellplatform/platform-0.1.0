@@ -133,10 +133,11 @@ const View: React.FC<EventPipeProps> = (props) => {
  * Export
  */
 type Fields = {
-  constants: typeof constants;
+  THEMES: typeof THEMES;
+  DEFAULT: typeof DEFAULT;
 };
 export const EventPipe = FC.decorate<EventPipeProps, Fields>(
   View,
-  { constants },
+  { THEMES, DEFAULT },
   { displayName: 'EventPipe' },
 );

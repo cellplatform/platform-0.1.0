@@ -1,4 +1,4 @@
-import { time, expect, Http, t } from '../test';
+import { time, expect, Http, t } from '../node/test';
 import { HttpClient } from '@platform/cell.client';
 import { IReqPostFuncBody } from '@platform/cell.types';
 import { Schema } from '@platform/cell.schema';

@@ -1,6 +1,9 @@
-import { expect } from 'chai';
+import { Subject } from 'rxjs';
+import { expect, Test } from 'sys.ui.dev';
+
+import { PeerEvents } from '.';
+import { rx } from '../common';
 import { EventNamespace } from './EventNamespace';
-import { Test } from 'sys.ui.dev';
 
 export default Test.describe('PeerEvents', (e) => {
   e.describe('is', (e) => {
@@ -44,6 +47,63 @@ export default Test.describe('PeerEvents', (e) => {
     e.it('is.fs.base', () => {
       expect(is.fs.base({ type: 'foo', payload })).to.eql(false);
       expect(is.fs.base({ type: 'sys.net/fs', payload })).to.eql(true);
+    });
+  });
+
+  e.describe('instance', (e) => {
+    e.it('instance { bus } id', () => {
+      const bus = rx.bus();
+      const events = PeerEvents(bus);
+      expect(events.instance.bus).to.eql(rx.bus.instance(bus));
+    });
+  });
+
+  e.describe('clone', (e) => {
+    e.it('different instance', () => {
+      const bus = rx.bus();
+      const root = PeerEvents(bus);
+      const clone = root.clone();
+      expect(root).to.not.equal(clone);
+    });
+
+    e.it('disposes from { dispose$ } parameter', () => {
+      const bus = rx.bus();
+      const dispose$ = new Subject<void>();
+      const events = PeerEvents(bus, { dispose$ });
+
+      let count = 0;
+      events.dispose$.subscribe(() => count++);
+
+      events.dispose();
+      expect(count).to.eql(1);
+    });
+
+    e.it('disposes clone without disposing of source (root)', () => {
+      const bus = rx.bus();
+      const root = PeerEvents(bus);
+      const clone = root.clone();
+
+      const disposed: string[] = [];
+      root.dispose$.subscribe(() => disposed.push('events-1'));
+      clone.dispose$.subscribe(() => disposed.push('events-2'));
+
+      clone.dispose();
+      expect(disposed).to.eql(['events-2']);
+    });
+
+    e.it('disposes when source (root) events is disposed', () => {
+      const bus = rx.bus();
+      const root = PeerEvents(bus);
+      const clone1 = root.clone();
+      const clone2 = clone1.clone();
+
+      const disposed: string[] = [];
+      root.dispose$.subscribe(() => disposed.push('events-1'));
+      clone1.dispose$.subscribe(() => disposed.push('events-2'));
+      clone2.dispose$.subscribe(() => disposed.push('events-3'));
+
+      root.dispose();
+      expect(disposed).to.eql(['events-3', 'events-2', 'events-1']);
     });
   });
 });

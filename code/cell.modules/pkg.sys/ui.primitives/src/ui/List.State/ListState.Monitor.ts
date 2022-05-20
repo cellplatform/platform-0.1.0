@@ -44,7 +44,11 @@ export function ListStateMonitor(args: ListStateMonitorArgs) {
     next({ kind: 'Selection', change: e });
   });
 
-  const lazy: t.ListStateLazy = { changed$, get: () => _state };
+  const lazy: t.ListStateLazy = {
+    changed$,
+    get: () => _state,
+    selection: args.selection,
+  };
 
   /**
    * API

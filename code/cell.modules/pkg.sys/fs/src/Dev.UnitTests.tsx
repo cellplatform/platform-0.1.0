@@ -3,9 +3,9 @@ import { DevActions, Test } from 'sys.ui.dev';
 import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
 const Imports = {
-  FsBus: import('./web.FsBus.IndexedDb/Filesystem.TEST'),
-  FsDriver: import('./web.FsDriver.IndexedDb/FsDriver/FsDriver.TEST'),
-  FsIndexer: import('./web.FsDriver.IndexedDb/FsIndexer/FsIndexer.TEST'),
+  FsBus: import('./web/FsBus.IndexedDb/Filesystem.TEST'),
+  FsDriver: import('./web/FsDriver.IndexedDb/FsDriver/FsDriver.TEST'),
+  FsIndexer: import('./web/FsDriver.IndexedDb/FsIndexer/FsIndexer.TEST'),
 };
 
 type Ctx = { results?: TestSuiteRunResponse };

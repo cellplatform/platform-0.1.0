@@ -79,8 +79,7 @@ export const actions = DevActions<Ctx>()
     e.select((config) => {
       config
         .view('buttons')
-        .title('theme')
-        .items(EventPipe.constants.THEMES)
+        .items(EventPipe.THEMES.map((value) => ({ label: `theme: ${value}`, value })))
         .initial(config.ctx.props.theme)
         .pipe((e) => {
           if (e.changing) e.ctx.props.theme = e.changing?.next[0].value;
@@ -98,7 +97,7 @@ export const actions = DevActions<Ctx>()
     const { props, bus, debug } = e.ctx;
 
     const size = 300;
-    const theme = props.theme ?? EventPipe.constants.DEFAULT.THEME;
+    const theme = props.theme ?? EventPipe.DEFAULT.THEME;
     const isLight = theme === 'Light';
     const { orientation } = props;
 

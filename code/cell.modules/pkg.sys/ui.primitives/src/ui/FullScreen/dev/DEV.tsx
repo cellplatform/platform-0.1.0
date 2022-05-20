@@ -1,8 +1,9 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { DevSample, DevSampleProps } from './DEV.Sample';
-import { rx, t, slug, time } from '../common';
+
 import { Fullscreen } from '..';
+import { rx, slug, t } from '../common';
+import { DevSample, DevSampleProps } from './DEV.Sample';
 
 type Ctx = {
   instance: t.FullscreenInstance;
@@ -35,6 +36,10 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx, bus } = e;
+
+    ctx.events.$.subscribe((e) => {
+      // console.log('⚡️', e.type, e.payload);
+    });
   })
 
   .items((e) => {

@@ -1,7 +1,7 @@
-import { firstValueFrom, Subject, of, timeout } from 'rxjs';
-import { take, filter, takeUntil, map, catchError } from 'rxjs/operators';
-import { cuid, rx, t, slug, UriUtil } from '../common';
+import { firstValueFrom, Observable, of, timeout } from 'rxjs';
+import { catchError, filter, map, take, takeUntil } from 'rxjs/operators';
 
+import { cuid, rx, slug, t, UriUtil } from '../common';
 import { EventNamespace } from './EventNamespace';
 
 type Milliseconds = number;
@@ -9,10 +9,19 @@ type Milliseconds = number;
 /**
  * Helpers for working with the events model for a [PeerNetwork].
  */
-export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
-  const dispose$ = new Subject<void>();
-  const dispose = () => dispose$.next();
+export function PeerEvents(
+  eventbus: t.EventBus<any>,
+  options: { dispose$?: Observable<any> } = {},
+): t.PeerEvents {
+  const disposable = rx.disposable(options.dispose$);
+  const { dispose, dispose$ } = disposable;
   const bus = rx.busAsType<t.PeerEvent>(eventbus);
+
+  const clone = (dispose$?: t.Observable<any>) => {
+    const events = PeerEvents(eventbus, { dispose$ });
+    disposable?.dispose$.pipe(take(1)).subscribe(events.dispose);
+    return events;
+  };
 
   const bus$ = bus.$.pipe(
     takeUntil(dispose$),
@@ -327,9 +336,11 @@ export function PeerEvents(eventbus: t.EventBus<any>): t.PeerEvents {
   };
 
   return {
+    instance: { bus: rx.bus.instance(bus) },
     $: bus$,
     dispose,
     dispose$: dispose$.pipe(take(1)),
+    clone,
 
     create,
     created,

@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.primitives",
-  "version": "0.0.104",
+  "version": "0.0.108",
   "sideEffects": false,
   "scripts": {
     "start": "cell.compiler dev $@",
@@ -11,7 +11,8 @@
     "watch": "cell.compiler watch $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cell.compiler serve $@"
+    "serve": "cell.compiler serve $@",
+    "deploy": "ts-node -T script.ts/vercel.run"
   },
   "dependencies": {
     "@dnd-kit/core": "3.1.1",

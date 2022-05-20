@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { color, css, CssValue, t } from './common';
+import { css, CssValue, t } from './common';
 import { Util } from './Util';
 
 export type PropListLabelProps = {
@@ -21,6 +21,7 @@ export const PropListLabel: React.FC<PropListLabelProps> = (props) => {
       userSelect: 'none',
       position: 'relative',
       marginRight: 15,
+      marginLeft: props.data.indent,
       color: theme.color.alpha(0.4),
     }),
   };

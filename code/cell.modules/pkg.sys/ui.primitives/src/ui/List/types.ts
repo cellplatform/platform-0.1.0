@@ -20,7 +20,7 @@ export type ListBulletSpacing = { before?: Pixels; after?: Pixels };
  */
 export type ListProps = {
   instance?: t.ListInstance;
-  renderers?: { bullet?: t.ListBulletRenderer; body?: t.ListBulletRenderer };
+  renderers?: { bullet?: t.ListItemRenderer; body?: t.ListItemRenderer };
   state?: t.ListStateLazy;
   orientation?: t.ListOrientation;
   bullet?: { edge?: t.ListBulletEdge; size?: Pixels };
@@ -42,8 +42,8 @@ export type ListItem<T = any> = {
 /**
  * Rendering
  */
-export type ListBulletRenderer = (e: ListBulletRendererArgs) => JSX.Element | null | undefined; // <null> == nothing, <undefined> == use default
-export type ListBulletRendererArgs<T = any> = {
+export type ListItemRenderer = (e: ListItemRendererArgs) => JSX.Element | null | undefined; // <null> == nothing, <undefined> == use default
+export type ListItemRendererArgs<T = any> = {
   kind: 'Default' | 'Spacing';
   index: number;
   total: number;
@@ -51,9 +51,9 @@ export type ListBulletRendererArgs<T = any> = {
   orientation: ListOrientation;
   bullet: { edge: ListBulletEdge; size: Pixels };
   spacing: ListBulletSpacing;
-  is: ListBulletRenderFlags;
+  is: ListItemRenderFlags;
 };
-export type ListBulletRenderFlags = {
+export type ListItemRenderFlags = {
   empty: boolean;
   single: boolean;
   first: boolean;
@@ -67,6 +67,8 @@ export type ListBulletRenderFlags = {
   focused: boolean;
   scrolling: boolean;
   mouse: { over: boolean; down: boolean };
+  previous(): ListItemRenderFlags | undefined;
+  next(): ListItemRenderFlags | undefined;
 };
 
 export type GetListItemSize = (args: GetListItemSizeArgs) => Pixels;

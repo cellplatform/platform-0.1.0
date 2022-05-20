@@ -1,20 +1,24 @@
 import React from 'react';
 import { debounceTime } from 'rxjs/operators';
-import { LOREM, DevActions, TestSuiteRunResponse } from 'sys.ui.dev';
+import { DevActions, LOREM, TestSuiteRunResponse } from 'sys.ui.dev';
+import { Vercel } from 'vendor.cloud.vercel/lib/web';
+import { ModuleInfo as VercelModuleInfo } from 'vendor.cloud.vercel/lib/web/ui/ModuleInfo';
 
 import { DevEnv, DevEnvProps } from '..';
 import { CodeEditor } from '../../../api';
 import { DevFilesystem } from '../../dev';
-import { Filesystem, rx, slug, t } from '../common';
-import { evalCode } from './DEV.eval';
+import { Filesystem, Http, rx, slug, t } from '../common';
+import { evalCode } from './DEV.evaluate';
 
 type Ctx = {
   bus: t.EventBus<any>;
+  token: string;
   fs: { bus: t.EventBus<any>; id: string };
   props: DevEnvProps;
   editor?: t.CodeEditorInstanceEvents;
   onReady: t.DevEnvReadyHandler;
   runTests(code?: string): Promise<TestSuiteRunResponse | undefined>;
+  debug: { deployment?: t.VercelHttpDeployResponse };
 };
 
 const SAMPLE_TEST = `
@@ -38,6 +42,20 @@ ${LOREM}
 
 `.substring(1);
 
+const Util = {
+  token: {
+    key: 'tmp.dev.token.vercel', // TEMP 🐷 HACK: this is not high enough security long-term to store private-keys.
+    read() {
+      return localStorage.getItem(Util.token.key) ?? '';
+    },
+    write(ctx: Ctx, token: string) {
+      localStorage.setItem(Util.token.key, token);
+      ctx.token = token;
+      return token;
+    },
+  },
+};
+
 /**
  * Actions
  */
@@ -51,7 +69,7 @@ export const actions = DevActions<Ctx>()
 
     const fs = { bus, id: 'fs.dev.code' };
     const storage = Filesystem.IndexedDb.create(fs);
-    const path = 'dev/DevEnv/code.js';
+    const path = 'dev/DevEnv/doc.md';
     const getFs = async () => (await storage).fs;
     const getEditorCode = () => ctx.editor?.text.get.fire();
     const getSavedCode = async () => new TextDecoder().decode(await (await getFs()).read(path));
@@ -67,15 +85,16 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       bus,
       fs,
+      token: Util.token.read(),
       props: {
         instance: { bus, id: `foo.${slug()}` },
         focusOnLoad: true,
 
-        language: 'typescript',
+        // language: 'typescript',
         // language: 'javascript',
 
-        // language: 'markdown',
-        // text: '# title',
+        language: 'markdown',
+        text: SAMPLE_MD,
 
         // language: 'json',
         // text: '{ "count": 123 }\n',
@@ -115,6 +134,7 @@ export const actions = DevActions<Ctx>()
           return update(undefined);
         }
       },
+      debug: {},
     };
 
     return ctx;
@@ -160,6 +180,106 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr();
+  })
+
+  .items((e) => {
+    e.title('Deploy State');
+
+    e.textbox((config) =>
+      config.placeholder('update token').pipe((e) => {
+        if (e.changing?.action === 'invoke') {
+          const next = e.changing.next || '';
+          Util.token.write(e.ctx, next);
+        }
+      }),
+    );
+
+    e.component((e) => {
+      return (
+        <VercelModuleInfo
+          fields={['Module', 'Token.API.Hidden']}
+          data={{ token: e.ctx.token }}
+          style={{ Margin: [30, 45, 30, 38] }}
+        />
+      );
+    });
+
+    e.hr(1, 0.1);
+
+    e.button('push (to "cloud")', async (e) => {
+      const token = e.ctx.token;
+      const Authorization = `Bearer ${token}`;
+      const headers = { Authorization };
+      const http = Http.create({ headers });
+      const fs = Filesystem.Web.Events(e.ctx.fs).fs('dev');
+
+      const alias = 'tmp-deploy.db.team';
+
+      console.log('manifest', await fs.manifest());
+
+      /**
+       * CONFIGURE
+       */
+      const deployment = Vercel.Deploy({
+        http,
+        fs,
+        token,
+        team: 'tdb',
+        project: 'tdb-tmp-deploy',
+      });
+
+      console.group('🌳 Deployment');
+
+      const info = await deployment.info();
+      console.log('info', info);
+      console.log('info.size.toString()', info.files.size.toString());
+      console.log('-------------------------------------------');
+
+      /**
+       * COMMIT (DEPLOY)
+       */
+      const res = await deployment.commit(
+        {
+          target: alias ? 'production' : 'staging',
+          regions: ['sfo1'],
+          alias,
+          // routes: [{ src: '/foo', dest: '/' }],
+        },
+        { ensureProject: true },
+      );
+
+      /**
+       * OUTPUT
+       */
+      const { status } = res;
+      const { name, urls } = res.deployment;
+
+      console.log('res', res);
+
+      console.log('-------------------------------------------');
+      console.log(status);
+      console.log(name);
+      console.log(' • ', urls.inspect);
+      urls.public.forEach((url) => console.log(' • ', url));
+      if (res.error) console.log('error', res.error);
+      console.log();
+
+      e.ctx.debug.deployment = res;
+    });
+
+    e.hr();
+
+    e.component((e) => {
+      const data = e.ctx.debug.deployment;
+      if (!data) return null;
+      return (
+        <VercelModuleInfo
+          fields={['Deployment.Response']}
+          data={{ deploymentResponse: data }}
+          style={{ Margin: [10, 40, 10, 40] }}
+        />
+      );
+    });
   })
 
   .subject((e) => {

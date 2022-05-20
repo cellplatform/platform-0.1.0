@@ -13,6 +13,8 @@ export * from './hooks/UIEvent/types';
 
 export * from './keyboard/types';
 
+export * from './ui/Chip/types';
+
 export * from './ui/List/types';
 export * from './ui/List.State/types';
 export * from './ui/DotTabstrip/types';

@@ -3,14 +3,14 @@ import { Harness } from 'sys.ui.dev';
 import { t } from './common';
 
 const imports = {
-  Keyboard: import('./keyboard/dev/DEV'),
-
   hookDragTarget: import('./hooks/DragTarget/dev/DEV'),
   hookUIEvents: import('./hooks/UIEvent/dev/DEV'),
 
+  Keyboard: import('./keyboard/dev/DEV'),
+
   Bullet: import('./ui/Bullet/dev/DEV'),
   List: import('./ui/List/dev/DEV'),
-  ListConnectorLines: import('./ui/List/renderers/dev/DEV.ConnectorLines'),
+  ListConnectorLines: import('./ui/List/dev/DEV.ConnectorLines'),
 
   Antechamber: import('./ui/Antechamber/dev/DEV'),
   DotTabstrip: import('./ui/DotTabstrip/dev/DEV'),
@@ -43,20 +43,22 @@ const imports = {
 
   FullScreen: import('./ui/Fullscreen/dev/DEV'),
 
-  HashChip: import('./ui/HashChip/dev/DEV'),
+  Chip: import('./ui/Chip/dev/DEV.Chip'),
+  HashChip: import('./ui/Chip/dev/DEV.HashChip'),
 
   Button: import('./ui.ref/button/Button.dev/DEV'),
   Switch: import('./ui.ref/button/Switch.dev/DEV'),
   OptionButtons: import('sys.ui.dev/lib/ui/OptionButtons/dev/DEV'),
-  // OptionButtons: import('./ui/OptionButtons/DEV'),
 
   Svg: import('./ui/Image.Svg/dev/DEV'),
 
   Tree: import('./ui/Tree/dev/DEV'),
   StackPanel: import('./ui/StackPanel/dev/DEV'),
 
+  Text: import('./ui/Text/dev/DEV'),
   TextCopy: import('./ui/Text.Copy/dev/DEV'),
   TextSyntax: import('./ui/Text.Syntax/dev/DEV'),
+  TextSecret: import('./ui/Text.Secret/dev/DEV'),
   TextInput: import('./ui/Text.Input/dev/DEV'),
 
   UnitTests: import('./Dev.UnitTests'),

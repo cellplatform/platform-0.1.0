@@ -25,6 +25,7 @@ export type DebugCtx = {
   virtualPadding: boolean;
   canFocus: boolean;
   mouseState?: t.ListMouse;
+  selection?: t.ListSelectionConfig;
 };
 
 export type RenderCtx = {

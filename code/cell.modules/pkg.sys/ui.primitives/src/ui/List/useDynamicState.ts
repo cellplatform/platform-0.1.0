@@ -4,6 +4,7 @@ import { distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
 
 import { ListState } from '../List.State';
 import { Is, rx, t } from './common';
+import { wrangle } from './wrangle';
 
 type Index = number;
 
@@ -13,11 +14,11 @@ type Index = number;
 export function useDynamicState(args: {
   total: number;
   props: t.ListProps;
-  selection?: t.ListSelectionConfig;
+  selection?: t.ListSelectionConfig | boolean;
 }) {
-  const { total, props, selection } = args;
+  const { total, props } = args;
   const { instance, orientation } = props;
-  const { multi, clearOnBlur, allowEmpty, keyboard } = selection ?? {};
+  const { multi, clearOnBlur, allowEmpty, keyboard } = wrangle.selection(args.selection);
   const bus = instance?.bus;
   const id = instance?.id ?? '';
 
@@ -45,7 +46,6 @@ export function useDynamicState(args: {
 
   /**
    * API
-   
    */
   return {
     instance: { bus: bus ? rx.bus.instance(bus) : '', id },
@@ -66,13 +66,9 @@ export function useDynamicItemState(args: {
   type S = t.ListState | undefined;
   const { index, total, orientation, bullet } = args;
   const { edge } = bullet;
-
-  const toFlags = (state?: S) => {
-    return Is.toItemFlags({ index, total, state, orientation, bullet: { edge } });
-  };
+  const selectionConfig = args.state?.selection;
 
   const [state, setState] = useState<S>();
-  const [is, setIs] = useState<t.ListBulletRenderFlags>(toFlags());
 
   /**
    * [Lifecycle]
@@ -83,11 +79,7 @@ export function useDynamicItemState(args: {
 
     if (args.state) {
       const updateState = (fn: (prev: S) => S) => {
-        setState((prev) => {
-          const state = fn(prev);
-          setIs(toFlags(state));
-          return state;
-        });
+        setState((prev) => fn(prev));
       };
 
       const changed$ = args.state.changed$.pipe(takeUntil(dispose$));
@@ -98,15 +90,23 @@ export function useDynamicItemState(args: {
       );
 
       const selection$ = changed$.pipe(
+        filter((e) => isSelectionConfigured(selectionConfig)),
         filter((e) => e.kind === 'Selection'),
         map((e) => e.change as t.ListSelectionState),
         map((selection) => ({
           selection,
           isSelected: Selection.isSelected(selection.indexes, index),
+          isPrevSelected: Selection.isSelected(selection.indexes, index - 1),
+          isNextSelected: Selection.isSelected(selection.indexes, index + 1),
         })),
         distinctUntilChanged((prev, next) => {
           if (prev.isSelected !== next.isSelected) return false;
-          return prev.isSelected ? prev.selection.isFocused === next.selection.isFocused : true;
+          if (prev.isPrevSelected !== next.isPrevSelected) return false;
+          if (prev.isNextSelected !== next.isNextSelected) return false;
+          if (prev.isSelected) {
+            return prev.selection.isFocused === next.selection.isFocused;
+          }
+          return true;
         }),
       );
 
@@ -121,10 +121,31 @@ export function useDynamicItemState(args: {
     }
 
     return () => dispose$.next();
-  }, [index, total, orientation, edge]); // eslint-disable-line
+  }, [index, total, orientation, edge, selectionConfig]); // eslint-disable-line
 
   /**
    * API
    */
-  return { index, state, is };
+  return {
+    index,
+    state,
+    get is() {
+      return Is.toItemFlags({
+        index,
+        total,
+        orientation,
+        bullet: { edge },
+        state: () => state,
+      });
+    },
+  };
+}
+
+/**
+ * Helpers
+ */
+
+function isSelectionConfigured(config?: t.ListSelectionConfig) {
+  if (!config) return false;
+  return Object.values(config).filter((value) => value !== undefined).length > 0;
 }

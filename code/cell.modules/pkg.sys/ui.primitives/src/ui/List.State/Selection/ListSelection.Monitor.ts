@@ -59,6 +59,7 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
   const keyboardState$ = keyboard.state$.pipe(takeUntil(dispose$));
   const keydown$ = keyboard.keypress$.pipe(
     takeUntil(dispose$),
+    filter((e) => Boolean(config.keyboard)),
     filter((e) => e.is.down),
   );
 
@@ -202,7 +203,6 @@ export function ListSelectionMonitor(args: ListSelectionMonitorArgs) {
   keydown$
     .pipe(
       filter(() => _selection.isFocused),
-      filter((e) => config.keyboard ?? true),
       filter((e) => e.is.arrow || e.key === 'Home' || e.key === 'End'),
     )
     .subscribe((e) => {

@@ -3,10 +3,12 @@ import { readDropEvent } from './util';
 import { t } from '../common';
 
 type OnDrop = (e: t.Dropped) => void;
+
 type Args<T extends HTMLElement> = {
   ref?: React.RefObject<T>;
   isEnabled?: boolean;
   onDrop?: OnDrop;
+  onDragOver?: (e: { isOver: boolean }) => void;
 };
 
 /**
@@ -21,8 +23,15 @@ export function useDragTarget<T extends HTMLElement>(
   const [isDragOver, setDragOver] = useState<boolean>(false);
   const [dropped, setDropped] = useState<t.Dropped | undefined>();
 
+  const changeDragOver = (isOver: boolean) => {
+    setDragOver((prev) => {
+      if (isOver !== prev) args.onDragOver?.({ isOver });
+      return isOver;
+    });
+  };
+
   const reset = () => {
-    setDragOver(false);
+    changeDragOver(false);
     setDropped(undefined);
   };
 
@@ -30,12 +39,12 @@ export function useDragTarget<T extends HTMLElement>(
     const el = ref.current as HTMLElement;
     let count = 0;
 
-    const dragHandler = (fn?: () => void) => {
+    const dragHandler = (fn?: (e: Event) => void) => {
       return (e: Event) => {
         if (isEnabled) {
           e.preventDefault();
-          fn?.();
-          setDragOver(count > 0);
+          fn?.(e);
+          changeDragOver(count > 0);
         }
       };
     };
@@ -48,7 +57,7 @@ export function useDragTarget<T extends HTMLElement>(
     const handleDrop = async (e: DragEvent) => {
       if (isEnabled) {
         e.preventDefault();
-        setDragOver(false);
+        changeDragOver(false);
         count = 0;
         const { dir, files, urls } = await readDropEvent(e);
         const dropped: t.Dropped = { dir, files, urls };
@@ -70,7 +79,7 @@ export function useDragTarget<T extends HTMLElement>(
       el.removeEventListener('mouseleave', handleMouseLeave);
       el.removeEventListener('drop', handleDrop);
     };
-  }, [ref, isEnabled]); // eslint-disable-line
+  }, [ref, isEnabled, onDrop]); // eslint-disable-line
 
   return {
     ref,

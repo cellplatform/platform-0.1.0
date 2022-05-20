@@ -18,4 +18,4 @@ export { Filesystem } from 'sys.fs/lib/node';
 /**
  * Local
  */
-export { BusEvents } from '../../web.BusEvents';
+export { BusEvents } from '../../web/Bus';

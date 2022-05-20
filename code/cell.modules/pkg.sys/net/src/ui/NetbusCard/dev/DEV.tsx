@@ -2,7 +2,7 @@ import React from 'react';
 
 import { NetbusCard, NetbusCardProps } from '..';
 import { PeerNetwork } from '../../../web.PeerNetwork';
-import { DevActions, ObjectView, TEST } from '../../../test';
+import { DevActions, ObjectView, TEST, slug } from '../../../test';
 
 type Ctx = {
   props: NetbusCardProps;
@@ -25,8 +25,9 @@ export const actions = DevActions<Ctx>()
     const { ctx, bus } = e;
     const signal = TEST.SIGNAL;
     const { network } = await PeerNetwork.start({ bus, signal });
-    const { netbus } = network;
-    ctx.props = { showAsCard: true, netbus };
+
+    const instance = { network, id: `foo.${slug()}` };
+    ctx.props = { instance, showAsCard: true };
   })
 
   .items((e) => {
@@ -38,7 +39,7 @@ export const actions = DevActions<Ctx>()
     });
 
     e.button('fire', (e) => {
-      const netbus = e.ctx.props.netbus;
+      const netbus = e.ctx.props.instance.network.netbus;
       netbus.fire({ type: 'Foo', payload: { msg: 123 } });
     });
 
@@ -50,6 +51,8 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    const instance = e.ctx.props.instance;
+
     e.settings({
       host: { background: -0.04 },
       layout: {
@@ -58,7 +61,7 @@ export const actions = DevActions<Ctx>()
         height: 300,
       },
     });
-    e.render(<NetbusCard {...e.ctx.props} />);
+    e.render(instance && <NetbusCard {...e.ctx.props} />);
   });
 
 export default actions;

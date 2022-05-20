@@ -10,18 +10,21 @@ import {
   MdArrowForward,
   MdClose,
   MdFace,
+  MdFullscreen,
+  MdFullscreenExit,
   MdHelpOutline,
   MdKeyboard,
   MdLock,
   MdLockOpen,
   MdMore,
   MdNoEncryption,
+  MdOpenInFull,
+  MdOutlineScreenShare,
+  MdOutlineStopScreenShare,
   MdPortableWifiOff,
   MdSend,
   MdSettingsInputAntenna,
   MdWifi,
-  MdFullscreen,
-  MdFullscreenExit,
 } from 'react-icons/md';
 import { TiUpload } from 'react-icons/ti';
 
@@ -49,4 +52,6 @@ export const Icons = {
   Keyboard: icon(MdKeyboard),
   More: icon(MdMore),
   FullScreen: { Open: icon(MdFullscreen), Exit: icon(MdFullscreenExit) },
+  Window: { Expand: icon(MdOpenInFull) },
+  ScreenShare: { Start: icon(MdOutlineScreenShare), Stop: icon(MdOutlineStopScreenShare) },
 };

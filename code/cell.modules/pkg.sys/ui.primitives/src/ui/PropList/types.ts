@@ -24,7 +24,7 @@ export type PropListFieldBuilder<F extends string> = {
   field(name: F, item: PropListItemFactory | PropListItem): PropListFieldBuilder<F>;
   items(fields?: F[]): PropListItem[];
 };
-export type PropListItemFactory = () => PropListItem | undefined;
+export type PropListItemFactory = () => PropListItem | PropListItem[] | undefined;
 
 /**
  * Default values used when optional properties are ommitted.
@@ -38,10 +38,11 @@ export type PropListDefaults = {
  * A single row within a [PropList].
  */
 export type PropListItem = {
-  label: React.ReactNode;
+  label?: React.ReactNode;
   value?: React.ReactNode | PropListValue;
   tooltip?: string;
   visible?: boolean;
+  indent?: number;
 };
 
 /**

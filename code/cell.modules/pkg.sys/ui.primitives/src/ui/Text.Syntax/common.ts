@@ -1,2 +1,2 @@
 export * from '../../common';
-export { constants, DEFAULT } from './common.const';
+export * from './common.const';

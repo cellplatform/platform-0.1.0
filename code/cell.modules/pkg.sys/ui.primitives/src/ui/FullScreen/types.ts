@@ -14,6 +14,7 @@ export type Fullscreen<H extends HTMLElement = HTMLDivElement> = {
   isFullscreen: boolean;
   enter(): Promise<void>;
   exit(): Promise<void>;
+  toggle(): Promise<{ from: boolean; to: boolean }>;
 };
 
 export type FullscreenStatus = {

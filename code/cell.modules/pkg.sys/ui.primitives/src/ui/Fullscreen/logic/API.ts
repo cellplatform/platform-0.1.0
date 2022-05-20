@@ -42,6 +42,17 @@ export function FullscreenAPI<H extends HTMLElement = HTMLDivElement>(args: {
     async exit() {
       if (isFullscreen()) document.exitFullscreen();
     },
+
+    /**
+     * Request [enter] or [exit] fullscreen depending on current state.
+     */
+    async toggle() {
+      const from = api.isFullscreen;
+      const to = !from;
+      if (to) await api.enter();
+      if (!to) await api.exit();
+      return { from, to };
+    },
   };
 
   return api;

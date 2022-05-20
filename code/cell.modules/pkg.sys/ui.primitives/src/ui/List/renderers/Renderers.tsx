@@ -11,7 +11,7 @@ export const Renderers = {
    * Wrap a component within a "renderer" signature function.
    */
   asRenderer(Component: React.FC<any>) {
-    return function renderer(e: t.ListBulletRendererArgs) {
+    return function renderer(e: t.ListItemRendererArgs) {
       return <Component {...e} />;
     };
   },

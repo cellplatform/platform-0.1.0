@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { color, css, CssValue, t, HashChip, PropList } from '../../common';
+import { color, css, CssValue, t, Chip, PropList } from '../../common';
 import { toPropsList } from './props/toList';
 import * as k from './types';
 import { DEFAULT } from './constants';
@@ -51,7 +51,7 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
   };
 
   const elModuleHash = fields.includes('hash.module:title') && (
-    <HashChip text={moduleHash} icon={true} length={DEFAULT.HASH_CHIP_LENGTH} />
+    <Chip.Hash text={moduleHash} icon={true} length={DEFAULT.HASH_CHIP_LENGTH} />
   );
 
   const elTitle = (
