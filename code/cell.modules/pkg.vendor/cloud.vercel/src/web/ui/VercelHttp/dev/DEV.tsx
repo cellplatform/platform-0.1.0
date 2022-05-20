@@ -213,7 +213,7 @@ export const actions = DevActions<Ctx>()
       if (!data) return null;
       return (
         <ModuleInfo
-          fields={['Deployment.Response']}
+          fields={['Deploy.Response']}
           data={{ deploymentResponse: data }}
           style={{ Margin: [10, 40, 10, 40] }}
         />

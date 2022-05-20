@@ -186,7 +186,7 @@ export const actions = DevActions<Ctx>()
     e.title('Deploy State');
 
     e.textbox((config) =>
-      config.placeholder('update token').pipe((e) => {
+      config.placeholder('set token').pipe((e) => {
         if (e.changing?.action === 'invoke') {
           const next = e.changing.next || '';
           Util.token.write(e.ctx, next);
@@ -211,9 +211,9 @@ export const actions = DevActions<Ctx>()
       const Authorization = `Bearer ${token}`;
       const headers = { Authorization };
       const http = Http.create({ headers });
-      const fs = Filesystem.Web.Events(e.ctx.fs).fs('dev');
+      const fs = Filesystem.Web.Events(e.ctx.fs).fs();
 
-      const alias = 'tmp-deploy.db.team';
+      const alias = 'deploy.tmp.db.team';
 
       console.log('manifest', await fs.manifest());
 
@@ -274,7 +274,7 @@ export const actions = DevActions<Ctx>()
       if (!data) return null;
       return (
         <VercelModuleInfo
-          fields={['Deployment.Response']}
+          fields={['Deploy.Response']}
           data={{ deploymentResponse: data }}
           style={{ Margin: [10, 40, 10, 40] }}
         />
