@@ -37,7 +37,7 @@ export const DevFilesystem: React.FC<DevFilesystemProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       {elTitle}
-      <PathListStateful instance={props.fs} scroll={false} selection={true} />
+      <PathListStateful instance={props.fs} scroll={false} droppable={true} selection={true} />
     </div>
   );
 };
