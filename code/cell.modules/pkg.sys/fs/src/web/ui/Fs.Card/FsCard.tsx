@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Color, COLORS, css, CssValue, t, CmdCard, FC, DEFAULT, THEMES } from './common';
 
 export type FsCardProps = {
-  instance: t.FsCardInstance;
+  instance: t.FsViewInstance;
   showAsCard?: boolean;
   theme?: t.FsCardTheme;
   style?: CssValue;

@@ -167,8 +167,8 @@ export const actions = DevActions<Ctx>()
       layout: {
         label: {
           topLeft: '<Fs.PathList.Stateful>',
-          bottomLeft: `${rx.bus.instance(instance.bus)}`,
-          bottomRight: `filesystem: "${instance.id}"`,
+          bottomLeft: `${rx.bus.instance(instance.bus)}("${instance.id}")`,
+          bottomRight: `filesystem: "${instance.fs}"`,
         },
         cropmarks: isLight ? -0.2 : 0.2,
         labelColor: isLight ? -0.5 : 0.8,

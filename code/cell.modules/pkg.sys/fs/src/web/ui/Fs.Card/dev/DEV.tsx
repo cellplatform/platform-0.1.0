@@ -94,7 +94,8 @@ export const actions = DevActions<Ctx>()
       layout: {
         label: {
           topLeft: '<Fs.Card>',
-          bottomLeft: `${rx.bus.instance(instance.bus)}`,
+          bottomLeft: `${rx.bus.instance(instance.bus)}("${instance.id}")`,
+          bottomRight: `filesystem: "${instance.fs}"`,
         },
         width: 550,
         height: 400,
