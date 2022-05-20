@@ -269,19 +269,20 @@ export default Test.describe('FsDriver (IndexedDB)', (e) => {
 
     e.it('write (stream)', async () => {
       const { fs } = await testCreate();
-      const uri = 'path:foo/index.html';
+      const path = 'static/test/foo.json';
+      const uri = `path:foo/${path}`;
 
-      const body = (await fetch('/index.html')).body as ReadableStream;
+      const body = (await fetch(path)).body as ReadableStream;
       expect(Stream.isReadableStream(body)).to.eql(true);
 
       const res1 = await fs.driver.write(uri, body);
       const res2 = await fs.driver.read(uri);
+      fs.dispose();
 
       const decode = (input?: Uint8Array) => new TextDecoder().decode(input);
-      expect(decode(res1.file.data)).to.include('<!DOCTYPE html>');
-      expect(decode(res2.file?.data)).to.include('<!DOCTYPE html>');
 
-      fs.dispose();
+      expect(decode(res1.file.data)).to.include('"name": "foo"');
+      expect(decode(res2.file?.data)).to.include('"name": "foo"');
     });
 
     e.it('write (replace)', async () => {
