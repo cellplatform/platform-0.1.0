@@ -1,17 +1,15 @@
 import * as t from '../../common/types';
 
-type FilesystemId = string;
 type DirectoryPath = string;
 
 export type PathListTheme = 'Light' | 'Dark';
-export type PathListInstance = { bus: t.EventBus<any>; id: FilesystemId };
 export type PathListDroppedHandler = (e: t.Dropped) => void;
 
 /**
  * <Component>
  */
 type PathListCommonProps = {
-  instance: PathListInstance;
+  instance: t.FsViewInstance;
   scroll?: boolean;
   padding?: t.CssEdgesInput;
   selection?: t.ListSelectionConfig | boolean;

@@ -10,14 +10,14 @@ type Milliseconds = number;
  */
 export async function BusController(args: {
   bus: t.EventBus<any>;
-  id: FilesystemId;
+  fs: FilesystemId;
   filter?: (e: t.SysFsEvent) => boolean;
   httpFactory?: (host: string | number) => t.IHttpClient;
   timeout?: Milliseconds;
   dispose$?: t.Observable<any>;
 }) {
   const { bus, filter, httpFactory, timeout } = args;
-  const id = (args.id ?? '').trim() || DEFAULT.FILESYSTEM_ID;
+  const id = (args.fs ?? '').trim() || DEFAULT.FILESYSTEM_ID;
 
   // Start the driver.
   const local = await FsDriverLocal({ id });

@@ -1,10 +1,9 @@
 import React from 'react';
-import { TEST, DevActions, ObjectView } from '../../../test';
+
 import { FsPathList, PathListStatefulProps } from '..';
-import { t, rx, cuid, value, IndexedDb, List, COLORS } from '../common';
+import { COLORS, cuid, DevActions, List, ObjectView, rx, t, TestFs, value } from '../../../test';
 
 type Ctx = {
-  bus: t.EventBus;
   fs: t.Fs;
   props: PathListStatefulProps;
   debug: {
@@ -17,18 +16,13 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.Fs.PathList.Stateful')
+  .namespace('ui.Fs.PathList')
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const bus = rx.bus();
-    const instance = { bus, id: TEST.FS_DEV };
-
-    IndexedDb.create(instance);
-    const fs = IndexedDb.Events(instance).fs();
+    const { fs, instance } = TestFs.init();
 
     const ctx: Ctx = {
-      bus,
       fs,
       props: {
         instance,

@@ -2,7 +2,7 @@ import React from 'react';
 import { Color, COLORS, css, CssValue, t, useDragTarget } from '../common';
 
 export type DropTargetProps = {
-  instance: t.PathListInstance;
+  instance: t.FsViewInstance;
   targetRef: React.RefObject<HTMLDivElement>;
   theme: t.PathListTheme;
   style?: CssValue;

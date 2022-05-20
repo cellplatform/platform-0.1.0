@@ -12,9 +12,9 @@ export const FsPathListStateful: React.FC<PathListStatefulProps> = (props) => {
   return (
     <FsPathList
       instance={instance}
-      scroll={props.scroll}
       files={state.files}
       spinning={!state.ready}
+      scroll={props.scroll}
       padding={props.padding}
       selection={props.selection}
       tabIndex={props.tabIndex}

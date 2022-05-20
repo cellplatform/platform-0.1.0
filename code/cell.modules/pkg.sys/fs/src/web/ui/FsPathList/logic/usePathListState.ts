@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { debounceTime } from 'rxjs/operators';
 
-import { Filesystem, t } from '../common';
+import { rx, Filesystem, t } from '../common';
 
+type FilesystemId = string;
 type DirectoryPath = string;
 type Milliseconds = number;
 
@@ -10,13 +11,13 @@ type Milliseconds = number;
  * Manages keeping a list of paths in sync with the underlying filesystem.
  */
 export function usePathListState(args: {
-  instance: t.PathListInstance;
+  instance: t.FsViewInstance;
   dir?: DirectoryPath;
   droppable?: boolean;
   debounce?: Milliseconds;
 }) {
-  const { dir, debounce = 50, droppable } = args;
-  const { bus, id } = args.instance;
+  const { dir, debounce = 50, droppable, instance } = args;
+  const { bus } = instance;
 
   const [ready, setReady] = useState(false);
   const [drop, setDropHandler] = useState<{ handler: t.PathListDroppedHandler }>();
@@ -27,7 +28,7 @@ export function usePathListState(args: {
    */
   useEffect(() => {
     let isDisposed = false;
-    const events = Filesystem.Events({ bus, id });
+    const events = Filesystem.Events({ bus, id: instance.fs });
     const fs = events.fs(dir);
 
     /**
@@ -73,12 +74,17 @@ export function usePathListState(args: {
       isDisposed = true;
       events.dispose();
     };
-  }, [id, files, dir, debounce, droppable]); // eslint-disable-line
+  }, [instance.id, instance.fs, files, dir, debounce, droppable]); // eslint-disable-line
 
   /**
    * API
    */
-  return { id, ready, files, onDrop: drop?.handler };
+  return {
+    instance: { bus: rx.bus.instance(bus), id: instance.id, fs: instance.fs },
+    ready,
+    files,
+    onDrop: drop?.handler,
+  };
 }
 
 /**

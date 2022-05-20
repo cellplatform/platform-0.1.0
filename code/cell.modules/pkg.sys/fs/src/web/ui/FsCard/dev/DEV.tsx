@@ -1,8 +1,10 @@
 import React from 'react';
-import { COLORS, Color, DevActions, ObjectView, rx, slug, t } from '../../../test';
+
 import { FsCard, FsCardProps } from '..';
+import { COLORS, DevActions, ObjectView, rx, t, TestFs } from '../../../test';
 
 type Ctx = {
+  fs: t.Fs;
   props: FsCardProps;
   debug: { render: boolean };
 };
@@ -15,10 +17,10 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const bus = rx.bus();
-    const instance: t.FsCardInstance = { bus, id: `foo.${slug()}` };
+    const { fs, instance } = TestFs.init();
 
     const ctx: Ctx = {
+      fs,
       props: {
         instance,
         showAsCard: true,

@@ -1,4 +1,4 @@
-import { Test, expect, TEST } from '../../test';
+import { Test, expect, TestFs } from '../../test';
 
 import { FsDriverLocal } from '..';
 import { Hash, t, ManifestHash, time, Path } from '../common';
@@ -7,7 +7,7 @@ export default Test.describe('FsIndexer (IndexedDB)', (e) => {
   const EMPTY_HASH = Hash.sha256([]);
 
   const testCreate = async () => {
-    const id = TEST.FS_DEV;
+    const id = TestFs.id;
     const fs = await FsDriverLocal({ id });
     return { fs, name: id, deleteAll: () => deleteAll(fs) };
   };

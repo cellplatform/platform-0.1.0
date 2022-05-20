@@ -1,10 +1,10 @@
-import { Test, expect, TEST } from '../test';
+import { Test, expect, TestFs } from '../test';
 import { Filesystem } from '.';
 import { rx, DEFAULT, Hash, t } from './common';
 
 export default Test.describe('FsBus (IndexedDB)', (e) => {
   const testPrep = async (options: { clear?: boolean } = {}) => {
-    const id = TEST.FS_DEV;
+    const id = TestFs.id;
     const bus = rx.bus();
     const { store } = await Filesystem.create({ bus, id });
     const fs = store.fs();
