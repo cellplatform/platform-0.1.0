@@ -20,7 +20,7 @@ export const VercelLog = {
 
     const logUrl = (url: string) => {
       const text = url.includes('vercel') ? log.gray(url) : log.white(url);
-      log.info.gray(' • ', text);
+      log.info.gray(` • ${text}`);
     };
 
     log.info(ok ? log.green(status) : log.yellow(status));
