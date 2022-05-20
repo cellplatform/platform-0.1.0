@@ -6,7 +6,6 @@ const imports = {
   ModuleInfo: import('./web/ui/ModuleInfo/dev/DEV'),
   PathList: import('./web/ui/PathList/dev/DEV'),
   PathListCard: import('./web/ui/PathList.Card/dev/DEV'),
-  FileDropTarget: import('./web/ui/FileDropTarget/dev/DEV'),
   UnitTests: import('./Dev.UnitTests'),
 };
 
