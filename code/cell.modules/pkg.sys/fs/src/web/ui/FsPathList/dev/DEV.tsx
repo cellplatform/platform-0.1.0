@@ -1,6 +1,6 @@
 import React from 'react';
 import { TEST, DevActions, ObjectView } from '../../../test';
-import { PathList, PathListStatefulProps } from '..';
+import { FsPathList, PathListStatefulProps } from '..';
 import { t, rx, cuid, value, IndexedDb, List, COLORS } from '../common';
 
 type Ctx = {
@@ -17,7 +17,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.PathList.Stateful')
+  .namespace('ui.Fs.PathList.Stateful')
   .context((e) => {
     if (e.prev) return e.prev;
 
@@ -34,7 +34,7 @@ export const actions = DevActions<Ctx>()
         instance,
         scroll: true,
         selection: List.SelectionConfig.default,
-        theme: PathList.DEFAULT.THEME,
+        theme: FsPathList.DEFAULT.THEME,
         droppable: true,
       },
       debug: { render: true },
@@ -57,7 +57,7 @@ export const actions = DevActions<Ctx>()
     e.select((config) => {
       config
         .view('buttons')
-        .items(PathList.THEMES.map((value) => ({ label: `theme: ${value}`, value })))
+        .items(FsPathList.THEMES.map((value) => ({ label: `theme: ${value}`, value })))
         .initial(config.ctx.props.theme)
         .pipe((e) => {
           if (e.changing) e.ctx.props.theme = e.changing?.next[0].value;
@@ -172,7 +172,7 @@ export const actions = DevActions<Ctx>()
       host: { background: isLight ? -0.04 : COLORS.DARK },
       layout: {
         label: {
-          topLeft: '<PathList.Stateful>',
+          topLeft: '<Fs.PathList.Stateful>',
           bottomLeft: `${rx.bus.instance(instance.bus)}`,
           bottomRight: `filesystem: "${instance.id}"`,
         },
@@ -186,7 +186,7 @@ export const actions = DevActions<Ctx>()
     });
 
     const style = { flex: 1 };
-    e.render(debug.render && <PathList.Stateful {...e.ctx.props} style={style} />);
+    e.render(debug.render && <FsPathList.Stateful {...e.ctx.props} style={style} />);
   });
 
 export default actions;

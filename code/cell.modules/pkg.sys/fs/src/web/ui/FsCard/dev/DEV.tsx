@@ -11,7 +11,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.FsCard')
+  .namespace('ui.Fs.Card')
   .context((e) => {
     if (e.prev) return e.prev;
 
@@ -91,7 +91,7 @@ export const actions = DevActions<Ctx>()
       host: { background: isLight ? -0.04 : COLORS.DARK },
       layout: {
         label: {
-          topLeft: '<Filesystem.Card>',
+          topLeft: '<Fs.Card>',
           bottomLeft: `${rx.bus.instance(instance.bus)}`,
         },
         width: 550,

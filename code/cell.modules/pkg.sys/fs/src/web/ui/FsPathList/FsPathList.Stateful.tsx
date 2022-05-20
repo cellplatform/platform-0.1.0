@@ -1,16 +1,16 @@
 import React from 'react';
 
-import { PathList } from './PathList';
+import { FsPathList } from './FsPathList';
 import { PathListStatefulProps } from './types';
 
 /**
  * <PathList> with state configured.
  */
-export const PathListStateful: React.FC<PathListStatefulProps> = (props) => {
+export const FsPathListStateful: React.FC<PathListStatefulProps> = (props) => {
   const { instance, dir, droppable } = props;
-  const state = PathList.useState({ instance, dir, droppable });
+  const state = FsPathList.useState({ instance, dir, droppable });
   return (
-    <PathList
+    <FsPathList
       instance={instance}
       scroll={props.scroll}
       files={state.files}

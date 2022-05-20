@@ -1,5 +1,5 @@
 import { ModuleInfo } from './ModuleInfo';
-import { PathList } from './PathList';
+import { FsPathList } from './FsPathList';
 import { FsCard as Card } from './FsCard';
 import { Filesystem as IndexedDb } from '../FsBus.IndexedDb';
 import { Path } from './common';
@@ -10,6 +10,6 @@ export const Filesystem = {
 
   // <Component>
   ModuleInfo,
-  PathList,
+  PathList: FsPathList,
   Card,
 };
