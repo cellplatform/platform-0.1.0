@@ -1,6 +1,6 @@
 {
   "name": "sys.fs",
-  "version": "0.0.17",
+  "version": "0.0.21",
   "main": "lib/web/index",
   "types": "lib/web/index.d.ts",
   "sideEffects": false,
