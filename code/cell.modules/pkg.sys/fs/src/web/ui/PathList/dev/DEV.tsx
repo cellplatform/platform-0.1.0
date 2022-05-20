@@ -48,9 +48,10 @@ export const actions = DevActions<Ctx>()
       if (e.changing) e.ctx.debug.render = e.changing.next;
       e.boolean.current = e.ctx.debug.render;
     });
-
     e.hr();
+  })
 
+  .items((e) => {
     e.title('Props');
 
     e.select((config) => {
@@ -176,8 +177,8 @@ export const actions = DevActions<Ctx>()
           bottomRight: `filesystem: "${instance.id}"`,
         },
         cropmarks: isLight ? -0.2 : 0.2,
-        border: isLight ? -0.1 : 0.1,
         labelColor: isLight ? -0.5 : 0.8,
+        border: isLight ? -0.1 : 0.1,
         background: isLight ? 1 : 0.02,
         position: [150, null],
         width: 450,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { DevActions, ObjectView, rx, slug, t } from '../../../test';
+import { COLORS, Color, DevActions, ObjectView, rx, slug, t } from '../../../test';
 import { FsCard, FsCardProps } from '..';
 
 type Ctx = {
@@ -11,7 +11,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.Filesystem.Card')
+  .namespace('ui.FsCard')
   .context((e) => {
     if (e.prev) return e.prev;
 
@@ -22,6 +22,7 @@ export const actions = DevActions<Ctx>()
       props: {
         instance,
         showAsCard: true,
+        theme: 'Light',
       },
       debug: { render: true },
     };
@@ -37,12 +38,23 @@ export const actions = DevActions<Ctx>()
       if (e.changing) e.ctx.debug.render = e.changing.next;
       e.boolean.current = e.ctx.debug.render;
     });
-
     e.hr();
   })
 
   .items((e) => {
     e.title('Props');
+
+    e.select((config) => {
+      config
+        .view('buttons')
+        .items(FsCard.THEMES.map((value) => ({ label: `theme: ${value}`, value })))
+        .initial(config.ctx.props.theme)
+        .pipe((e) => {
+          if (e.changing) e.ctx.props.theme = e.changing?.next[0].value;
+        });
+    });
+
+    e.hr(1, 0.1);
 
     e.boolean('showAsCard', (e) => {
       if (e.changing) e.ctx.props.showAsCard = e.changing.next;
@@ -73,9 +85,10 @@ export const actions = DevActions<Ctx>()
   .subject((e) => {
     const { props, debug } = e.ctx;
     const instance = props.instance;
+    const isLight = e.ctx.props.theme === 'Light';
 
     e.settings({
-      host: { background: -0.04 },
+      host: { background: isLight ? -0.04 : COLORS.DARK },
       layout: {
         label: {
           topLeft: '<Filesystem.Card>',
@@ -83,7 +96,8 @@ export const actions = DevActions<Ctx>()
         },
         width: 550,
         height: 400,
-        cropmarks: -0.2,
+        cropmarks: isLight ? -0.2 : 0.2,
+        labelColor: isLight ? -0.5 : 0.8,
       },
     });
 
