@@ -1,7 +1,7 @@
 import React from 'react';
 import { TEST, DevActions, ObjectView } from '../../../test';
 import { PathList, PathListStatefulProps } from '..';
-import { t, rx, cuid, value, Filesystem, List, COLORS } from '../common';
+import { t, rx, cuid, value, IndexedDb, List, COLORS } from '../common';
 
 type Ctx = {
   bus: t.EventBus;
@@ -24,8 +24,8 @@ export const actions = DevActions<Ctx>()
     const bus = rx.bus();
     const instance = { bus, id: TEST.FS_DEV };
 
-    Filesystem.create(instance);
-    const fs = Filesystem.Events(instance).fs();
+    IndexedDb.create(instance);
+    const fs = IndexedDb.Events(instance).fs();
 
     const ctx: Ctx = {
       bus,

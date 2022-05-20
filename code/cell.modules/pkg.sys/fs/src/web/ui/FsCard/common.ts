@@ -1,7 +1,5 @@
 import { t } from '../common';
-
 export * from '../common';
-export { Filesystem } from '../../FsBus.IndexedDb';
 
 export const THEMES: t.FsCardTheme[] = ['Light', 'Dark'];
 
