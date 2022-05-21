@@ -41,6 +41,9 @@ export {
   ListItemRenderFlags,
   ListSelectionConfig,
   ListProps,
+  ListState,
+  ListStateChange,
+  ListStateLazy,
   GetListItem,
   GetListItemSize,
 } from 'sys.ui.primitives/lib/types';

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { debounceTime } from 'rxjs/operators';
 
-import { rx, Filesystem, t } from '../common';
+import { Filesystem, List, rx, t } from '../common';
 
 type FilesystemId = string;
 type DirectoryPath = string;
@@ -15,12 +15,13 @@ export function usePathListState(args: {
   dir?: DirectoryPath;
   droppable?: boolean;
   debounce?: Milliseconds;
+  onStateChange?: t.FsPathListStateChangedHandler;
 }) {
   const { dir, debounce = 50, droppable, instance } = args;
   const { bus } = instance;
 
   const [ready, setReady] = useState(false);
-  const [drop, setDropHandler] = useState<{ handler: t.PathListDroppedHandler }>();
+  const [drop, setDropHandler] = useState<{ handler: t.FsPathListDroppedHandler }>();
   const [files, setFiles] = useState<t.ManifestFile[]>([]);
 
   /**
@@ -28,8 +29,19 @@ export function usePathListState(args: {
    */
   useEffect(() => {
     let isDisposed = false;
-    const events = Filesystem.Events({ bus, id: instance.fs });
-    const fs = events.fs(dir);
+    const { dispose$, dispose } = rx.disposable();
+
+    const listEvents = List.Events({ instance: { bus, id: instance.id }, dispose$ });
+    const fsEvents = Filesystem.Events({ bus, id: instance.fs, dispose$ });
+    const fs = fsEvents.fs(dir);
+
+    /**
+     * Bubble state changes through callback handlers.
+     */
+    listEvents.state.changed$.subscribe((e) => {
+      const { kind, from, to } = e;
+      args.onStateChange?.({ kind, from, to });
+    });
 
     /**
      * Read file-system.
@@ -39,16 +51,16 @@ export function usePathListState(args: {
       const { files } = await fs.manifest();
       setFiles(files);
     };
-    events.changed$.pipe(debounceTime(debounce)).subscribe(readPaths);
+    fsEvents.changed$.pipe(debounceTime(debounce)).subscribe(readPaths);
 
     /**
      * Handle when file drag-dropped from host OS.
      */
     if (droppable) {
-      const handler: t.PathListDroppedHandler = async (e) => {
+      const handler: t.FsPathListDroppedHandler = async (e) => {
         if (isDisposed) return;
         const wait = e.files
-          .map((file) => ({ file, path: Path.fromFile(file, e.dir) }))
+          .map((file) => ({ file, path: PathUtil.fromFile(file, e.dir) }))
           .map(({ file, path }) => fs.write(path, file.data));
         await Promise.all(wait);
       };
@@ -65,14 +77,14 @@ export function usePathListState(args: {
       setReady(true);
     };
 
-    if (!ready) events.ready().then(init);
+    if (!ready) fsEvents.ready().then(init);
 
     /**
      * [Dispose]
      */
     return () => {
       isDisposed = true;
-      events.dispose();
+      dispose();
     };
   }, [instance.id, instance.fs, files, dir, debounce, droppable]); // eslint-disable-line
 
@@ -83,6 +95,7 @@ export function usePathListState(args: {
     instance: { bus: rx.bus.instance(bus), id: instance.id, fs: instance.fs },
     ready,
     files,
+    total: files.length,
     onDrop: drop?.handler,
   };
 }
@@ -91,10 +104,10 @@ export function usePathListState(args: {
  * [Helpers]
  */
 
-const Path = {
+const PathUtil = {
   fromFile(file: { path: string }, dir?: string) {
     const path = file.path;
-    return dir ? Path.prepend(dir, path) : path;
+    return dir ? PathUtil.prepend(dir, path) : path;
   },
 
   prepend(left: string, right: string) {

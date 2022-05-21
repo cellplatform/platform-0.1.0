@@ -2,37 +2,55 @@ import * as t from '../../common/types';
 
 type DirectoryPath = string;
 
-export type PathListTheme = 'Light' | 'Dark';
-export type PathListDroppedHandler = (e: t.Dropped) => void;
+export type FsPathListTheme = 'Light' | 'Dark';
+export type FsPathListDroppedHandler = (e: t.Dropped) => void;
 
 /**
  * <Component>
  */
-type PathListCommonProps = {
+export type FsPathListCommonProps = {
   instance: t.FsViewInstance;
   scroll?: boolean;
   padding?: t.CssEdgesInput;
   selection?: t.ListSelectionConfig | boolean;
   droppable?: boolean; // Support drag-drop from host OS.
   tabIndex?: number;
-  theme?: t.PathListTheme;
+  theme?: t.FsPathListTheme;
   style?: t.CssValue;
 };
 
-export type PathListProps = PathListCommonProps & {
+export type FsPathListProps = FsPathListCommonProps & {
+  state?: t.ListStateLazy;
   files?: t.ManifestFile[];
   spinning?: boolean;
-  onDrop?: PathListDroppedHandler;
+  onDrop?: FsPathListDroppedHandler;
 };
 
-export type PathListStatefulProps = PathListCommonProps & {
+export type FsPathListStatefulProps = FsPathListCommonProps & {
   dir?: DirectoryPath;
+  onStateChange?: t.FsPathListStateChangedHandler;
 };
 
 /**
  * Item (Row)
  */
-export type PathListItemData = {
+export type FsPathListItemData = {
   file: t.ManifestFile;
-  theme: PathListTheme;
+  theme: FsPathListTheme;
+};
+
+/**
+ * State
+ */
+export type FsPathListState = t.ListState;
+
+/**
+ * Event Handlers
+ */
+
+export type FsPathListStateChangedHandler = (e: FsPathListStateChangedHandlerArgs) => void;
+export type FsPathListStateChangedHandlerArgs = {
+  kind: t.ListStateChange['kind'];
+  from: FsPathListState;
+  to: FsPathListState;
 };
