@@ -15,10 +15,10 @@ export function useDynamicState(args: {
   total: number;
   instance?: t.ListInstance;
   orientation?: t.ListOrientation;
-  selection?: t.ListSelectionConfig | boolean;
+  selectable?: t.ListSelectionConfig | boolean;
 }) {
   const { total, instance, orientation } = args;
-  const { multi, clearOnBlur, allowEmpty, keyboard } = wrangle.selection(args.selection);
+  const { multi, clearOnBlur, allowEmpty, keyboard } = wrangle.selection(args.selectable);
   const bus = instance?.bus;
   const id = instance?.id ?? '';
 

@@ -22,7 +22,7 @@ export const DevSample: React.FC<DevSampleProps> = (args) => {
     total,
     instance,
     orientation,
-    selection: debug.selection,
+    selectable: debug.selectable,
   });
 
   /**
