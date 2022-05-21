@@ -34,16 +34,3 @@ export {
  * @system
  */
 export { S3SignedPostOptions } from '@platform/fs.s3.types';
-export {
-  Dropped,
-  DroppedFile,
-  ListItemRenderer,
-  ListItemRenderFlags,
-  ListSelectionConfig,
-  ListProps,
-  ListState,
-  ListStateChange,
-  ListStateLazy,
-  GetListItem,
-  GetListItemSize,
-} from 'sys.ui.primitives/lib/types';
