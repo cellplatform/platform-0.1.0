@@ -20,6 +20,9 @@ export const DevSample: React.FC<DevSampleProps> = (args) => {
     total,
     props,
     selection: debug.selection,
+    handlers: {
+      onSelectionChanged: (e) => console.log('⚡️ onSelectionChanged', e),
+    },
   });
 
   /**

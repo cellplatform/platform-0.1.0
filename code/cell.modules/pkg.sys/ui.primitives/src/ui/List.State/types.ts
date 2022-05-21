@@ -2,6 +2,7 @@ import { Observable } from 'rxjs';
 
 import * as t from '../../types';
 
+type Id = string;
 type Index = number;
 
 /**
@@ -41,3 +42,13 @@ export type ListSelectionConfig = {
   clearOnBlur?: boolean;
   keyboard?: boolean; // Support keyboard interaction (default: true).
 };
+
+/**
+ * Event handlers.
+ */
+export type ListEventHandlers = {
+  onSelectionChanged?: ListSelectionChangedHandler;
+};
+
+export type ListSelectionChangedHandler = (e: ListSelectionChangedHandlerArgs) => void;
+export type ListSelectionChangedHandlerArgs = { instance: Id; selection: t.ListSelectionState };

@@ -15,8 +15,9 @@ export function useDynamicState(args: {
   total: number;
   props: t.ListProps;
   selection?: t.ListSelectionConfig | boolean;
+  handlers?: t.ListEventHandlers;
 }) {
-  const { total, props } = args;
+  const { total, props, handlers } = args;
   const { instance, orientation } = props;
   const { multi, clearOnBlur, allowEmpty, keyboard } = wrangle.selection(args.selection);
   const bus = instance?.bus;
@@ -35,6 +36,7 @@ export function useDynamicState(args: {
         instance,
         getCtx,
         selection: { multi, clearOnBlur, allowEmpty, keyboard },
+        handlers,
       });
 
       setState(monitor.lazy);
@@ -42,7 +44,7 @@ export function useDynamicState(args: {
     }
 
     return () => dispose$.next();
-  }, [bus, instance, total, orientation, multi, clearOnBlur, allowEmpty, keyboard]);
+  }, [bus, instance, total, orientation, multi, clearOnBlur, allowEmpty, keyboard]); // eslint-disable-line
 
   /**
    * API

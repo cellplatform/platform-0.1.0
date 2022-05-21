@@ -9,13 +9,14 @@ type ListStateMonitorArgs = {
   selection?: t.ListSelectionConfig;
   reset$?: Observable<any>;
   getCtx: () => t.ListStateCtx;
+  handlers?: t.ListEventHandlers;
 };
 
 /**
  * Root level monitor for managing list state.
  */
 export function ListStateMonitor(args: ListStateMonitorArgs) {
-  const { instance, getCtx } = args;
+  const { instance, getCtx, handlers = {} } = args;
   const { bus, id } = instance;
 
   const mouse = ListMouseMonitor({ instance });
@@ -42,6 +43,7 @@ export function ListStateMonitor(args: ListStateMonitorArgs) {
   selection.changed$.subscribe((e) => {
     setState((prev) => ({ ...prev, selection: e }));
     next({ kind: 'Selection', change: e });
+    handlers?.onSelectionChanged?.({ instance: id, selection: e });
   });
 
   const lazy: t.ListStateLazy = {
