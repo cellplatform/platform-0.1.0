@@ -13,11 +13,11 @@ type Index = number;
  */
 export function useDynamicState(args: {
   total: number;
-  props: t.ListProps;
+  instance?: t.ListInstance;
+  orientation?: t.ListOrientation;
   selection?: t.ListSelectionConfig | boolean;
 }) {
-  const { total, props } = args;
-  const { instance, orientation } = props;
+  const { total, instance, orientation } = args;
   const { multi, clearOnBlur, allowEmpty, keyboard } = wrangle.selection(args.selection);
   const bus = instance?.bus;
   const id = instance?.id ?? '';
@@ -32,16 +32,17 @@ export function useDynamicState(args: {
     if (bus) {
       const getCtx = (): t.ListStateCtx => ({ orientation, total });
       const monitor = ListState.Monitor({
-        instance,
         getCtx,
+        instance,
         selection: { multi, clearOnBlur, allowEmpty, keyboard },
+        initial: state?.get(),
       });
 
       setState(monitor.lazy);
       dispose$.subscribe(monitor.dispose);
     }
 
-    return () => dispose$.next();
+    return () => rx.done(dispose$);
   }, [bus, instance, total, orientation, multi, clearOnBlur, allowEmpty, keyboard]); // eslint-disable-line
 
   /**
@@ -68,7 +69,7 @@ export function useDynamicItemState(args: {
   const { edge } = bullet;
   const selectionConfig = args.state?.selection;
 
-  const [state, setState] = useState<S>();
+  const [state, setState] = useState<S>(args.state?.get());
 
   /**
    * [Lifecycle]
@@ -120,7 +121,7 @@ export function useDynamicItemState(args: {
       });
     }
 
-    return () => dispose$.next();
+    return () => rx.done(dispose$);
   }, [index, total, orientation, edge, selectionConfig]); // eslint-disable-line
 
   /**
