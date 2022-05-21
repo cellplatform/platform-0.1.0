@@ -8,7 +8,7 @@ import { List } from './common';
  * <PathList> with state configured.
  */
 export const FsPathListStateful: React.FC<FsPathListStatefulProps> = (props) => {
-  const { instance, dir, droppable, onStateChange } = props;
+  const { instance, dir, droppable, selectable, onStateChange } = props;
 
   const state = FsPathList.useState({ instance, dir, droppable, onStateChange });
 
@@ -18,12 +18,7 @@ export const FsPathListStateful: React.FC<FsPathListStatefulProps> = (props) => 
    */
 
   const total = state.total;
-  const dynamic = List.useDynamicState({
-    total,
-    instance,
-    orientation: 'y',
-    selection: props.selection,
-  });
+  const dynamic = List.useDynamicState({ total, instance, orientation: 'y', selectable });
 
   return (
     <FsPathList
@@ -33,7 +28,7 @@ export const FsPathListStateful: React.FC<FsPathListStatefulProps> = (props) => 
       spinning={!state.ready}
       scroll={props.scroll}
       padding={props.padding}
-      selection={props.selection}
+      selectable={props.selectable}
       tabIndex={props.tabIndex}
       theme={props.theme}
       style={props.style}

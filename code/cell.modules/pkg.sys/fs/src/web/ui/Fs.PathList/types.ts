@@ -12,7 +12,7 @@ export type FsPathListCommonProps = {
   instance: t.FsViewInstance;
   scroll?: boolean;
   padding?: t.CssEdgesInput;
-  selection?: t.ListSelectionConfig | boolean;
+  selectable?: t.ListSelectionConfig | boolean;
   droppable?: boolean; // Support drag-drop from host OS.
   tabIndex?: number;
   theme?: t.FsPathListTheme;

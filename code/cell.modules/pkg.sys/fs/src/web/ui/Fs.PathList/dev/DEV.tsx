@@ -27,7 +27,7 @@ export const actions = DevActions<Ctx>()
       props: {
         instance,
         scroll: true,
-        selection: List.SelectionConfig.default,
+        selectable: List.SelectionConfig.default,
         theme: FsPathList.DEFAULT.THEME,
         droppable: true,
         onStateChange: (e) => change.ctx((ctx) => (ctx.output.state = e.to)),
@@ -84,9 +84,9 @@ export const actions = DevActions<Ctx>()
     e.component((e) => {
       return (
         <List.SelectionConfig
-          config={e.ctx.props.selection}
+          config={e.ctx.props.selectable}
           style={{ Margin: [10, 20, 10, 30] }}
-          onChange={({ config }) => e.change.ctx((ctx) => (ctx.props.selection = config))}
+          onChange={({ config }) => e.change.ctx((ctx) => (ctx.props.selectable = config))}
         />
       );
     });
