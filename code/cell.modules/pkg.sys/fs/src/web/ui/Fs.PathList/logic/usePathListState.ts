@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { debounceTime } from 'rxjs/operators';
 
-import { Filesystem, List, rx, t } from '../common';
+import { Filesystem, rx, t, List } from '../common';
 
-type FilesystemId = string;
 type DirectoryPath = string;
 type Milliseconds = number;
 
@@ -14,15 +13,19 @@ export function usePathListState(args: {
   instance: t.FsViewInstance;
   dir?: DirectoryPath;
   droppable?: boolean;
+  selectable?: t.ListSelectionConfig | boolean;
   debounce?: Milliseconds;
   onStateChange?: t.FsPathListStateChangedHandler;
 }) {
-  const { dir, debounce = 50, droppable, instance } = args;
+  const { dir, debounce = 50, droppable, instance, selectable } = args;
   const { bus } = instance;
 
   const [ready, setReady] = useState(false);
   const [drop, setDropHandler] = useState<{ handler: t.FsPathListDroppedHandler }>();
   const [files, setFiles] = useState<t.ManifestFile[]>([]);
+
+  const total = files.length;
+  const listState = List.useDynamicState({ total, instance, orientation: 'y', selectable });
 
   /**
    * Lifecycle
@@ -95,7 +98,8 @@ export function usePathListState(args: {
     instance: { bus: rx.bus.instance(bus), id: instance.id, fs: instance.fs },
     ready,
     files,
-    total: files.length,
+    total,
+    lazy: listState.state,
     onDrop: drop?.handler,
   };
 }
