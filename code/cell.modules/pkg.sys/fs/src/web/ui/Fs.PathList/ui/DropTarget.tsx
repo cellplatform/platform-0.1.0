@@ -4,9 +4,9 @@ import { Color, COLORS, css, CssValue, t, useDragTarget } from '../common';
 export type DropTargetProps = {
   instance: t.FsViewInstance;
   targetRef: React.RefObject<HTMLDivElement>;
-  theme: t.PathListTheme;
+  theme: t.FsPathListTheme;
   style?: CssValue;
-  onDrop?: t.PathListDroppedHandler;
+  onDrop?: t.FsPathListDroppedHandler;
   onDragOver?: (e: { isOver: boolean }) => void;
 };
 

@@ -6,7 +6,7 @@ export { Filesystem as IndexedDb } from '../../FsBus.IndexedDb';
 /**
  * Constants
  */
-export const THEMES: t.PathListTheme[] = ['Light', 'Dark'];
+export const THEMES: t.FsPathListTheme[] = ['Light', 'Dark'];
 
-const THEME: t.PathListTheme = 'Light';
+const THEME: t.FsPathListTheme = 'Light';
 export const DEFAULT = { THEME };
