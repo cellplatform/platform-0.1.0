@@ -1,6 +1,6 @@
 import { Observable, Subject, takeUntil } from 'rxjs';
 
-import { t, rx } from '../common';
+import { t, rx } from './common';
 import { ListMouseMonitor } from './Mouse';
 import { ListSelectionMonitor } from './Selection';
 
@@ -8,6 +8,7 @@ type ListStateMonitorArgs = {
   instance: t.ListInstance;
   selection?: t.ListSelectionConfig;
   reset$?: Observable<any>;
+  initial?: t.ListState; // Initial state.
   getCtx: () => t.ListStateCtx;
 };
 
@@ -16,7 +17,8 @@ type ListStateMonitorArgs = {
  */
 export function ListStateMonitor(args: ListStateMonitorArgs) {
   const { instance, getCtx } = args;
-  const { bus, id } = instance;
+  const { id } = instance;
+  const bus = rx.busAsType<t.ListEvent>(instance.bus);
 
   const mouse = ListMouseMonitor({ instance });
   const selection = ListSelectionMonitor({ instance, getCtx, config: args.selection });
@@ -31,16 +33,24 @@ export function ListStateMonitor(args: ListStateMonitorArgs) {
   const next = (e: t.ListStateChange) => _changed$.next(e);
   const changed$ = _changed$.pipe(takeUntil(dispose$));
 
-  let _state: t.ListState = {};
-  const setState = (fn: (prev: t.ListState) => t.ListState) => (_state = fn(_state));
+  let _state: t.ListState = args.initial ?? {};
+
+  const setState = (kind: t.ListStateChange['kind'], fn: (prev: t.ListState) => t.ListState) => {
+    const from = { ..._state };
+    const to = (_state = fn(from));
+    bus.fire({
+      type: 'sys.ui.List/State:changed',
+      payload: { instance: id, kind, from, to },
+    });
+  };
 
   mouse.changed$.subscribe((e) => {
-    setState((prev) => ({ ...prev, mouse: e.state }));
+    setState('Mouse', (prev) => ({ ...prev, mouse: e.state }));
     next({ kind: 'Mouse', change: e });
   });
 
   selection.changed$.subscribe((e) => {
-    setState((prev) => ({ ...prev, selection: e }));
+    setState('Selection', (prev) => ({ ...prev, selection: e }));
     next({ kind: 'Selection', change: e });
   });
 

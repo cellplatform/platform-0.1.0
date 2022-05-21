@@ -1,40 +1,39 @@
 import React from 'react';
-import { TEST, DevActions } from '../../../test';
-import { PathList, PathListStatefulProps } from '..';
-import { t, rx, cuid, value, Filesystem, List, COLORS } from '../common';
+
+import { FsPathList, PathListStatefulProps } from '..';
+import { DevActions, List, ObjectView, TestFs } from '../../../test';
+import { value, Path, COLORS, cuid, rx, t } from '../common';
 
 type Ctx = {
-  bus: t.EventBus;
   fs: t.Fs;
   props: PathListStatefulProps;
-  debug: { render: boolean };
+  debug: { render: boolean; dir: string };
+  output: { state?: any };
 };
 
 /**
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.PathList.Stateful')
+  .namespace('ui.Fs.PathList')
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const bus = rx.bus();
-    const instance = { bus, id: TEST.FS_DEV };
-
-    Filesystem.create(instance);
-    const fs = Filesystem.Events(instance).fs();
+    const change = e.change;
+    const { fs, instance } = TestFs.init();
 
     const ctx: Ctx = {
-      bus,
       fs,
       props: {
         instance,
         scroll: true,
-        selection: List.SelectionConfig.default,
-        theme: PathList.DEFAULT.THEME,
+        selectable: List.SelectionConfig.default,
+        theme: FsPathList.DEFAULT.THEME,
         droppable: true,
+        onStateChange: (e) => change.ctx((ctx) => (ctx.output.state = e.to)),
       },
-      debug: { render: true },
+      debug: { render: true, dir: '' },
+      output: {},
     };
 
     return ctx;
@@ -46,14 +45,18 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.debug.render;
     });
 
-    e.hr();
+    e.button('redraw', (e) => e.redraw());
 
+    e.hr();
+  })
+
+  .items((e) => {
     e.title('Props');
 
     e.select((config) => {
       config
         .view('buttons')
-        .items(PathList.THEMES.map((value) => ({ label: `theme: ${value}`, value })))
+        .items(FsPathList.THEMES.map((value) => ({ label: `theme: ${value}`, value })))
         .initial(config.ctx.props.theme)
         .pipe((e) => {
           if (e.changing) e.ctx.props.theme = e.changing?.next[0].value;
@@ -81,9 +84,9 @@ export const actions = DevActions<Ctx>()
     e.component((e) => {
       return (
         <List.SelectionConfig
-          config={e.ctx.props.selection}
+          config={e.ctx.props.selectable}
           style={{ Margin: [10, 20, 10, 30] }}
-          onChange={({ config }) => e.change.ctx((ctx) => (ctx.props.selection = config))}
+          onChange={({ config }) => e.change.ctx((ctx) => (ctx.props.selectable = config))}
         />
       );
     });
@@ -94,13 +97,29 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Read/Write');
 
-    const toPath = (count: number) => `foo/my-file-${count + 1}.json`;
+    e.textbox((config) =>
+      config
+        .placeholder('within directory')
+        .initial(config.ctx.debug.dir)
+        .pipe((e) => {
+          if (e.changing?.action === 'invoke') {
+            const next = e.changing.next || '';
+            e.ctx.debug.dir = next;
+          }
+        }),
+    );
 
-    e.button('add', async (e) => {
+    e.button('add (generate sample)', async (e) => {
+      const toPath = (ctx: Ctx, count: number) => {
+        const dir = Path.trimSlashes(ctx.debug.dir);
+        const filename = `file-${count + 1}.json`;
+        return dir ? Path.join(dir, filename) : filename;
+      };
+
       const msg = cuid().repeat(value.random(1, 50));
       const fs = e.ctx.fs;
       const total = (await fs.manifest()).files.length;
-      const path = toPath(total);
+      const path = toPath(e.ctx, total);
       const data = { msg, total };
       fs.json.write(path, data);
     });
@@ -120,13 +139,43 @@ export const actions = DevActions<Ctx>()
       if (last) await fs.delete(last.path);
     });
 
-    e.button('delete: all (reset)', async (e) => {
+    e.hr(1, 0.1);
+
+    e.button('clear: (delete all)', async (e) => {
       const fs = e.ctx.fs;
       const files = (await fs.manifest()).files;
       await Promise.all(files.map((file) => fs.delete(file.path)));
     });
+  })
 
+  .items((e) => {
     e.hr();
+
+    e.component((e) => {
+      return (
+        <ObjectView
+          name={'props'}
+          data={e.ctx.props}
+          style={{ MarginX: 15 }}
+          fontSize={10}
+          expandPaths={['$']}
+        />
+      );
+    });
+
+    e.hr(1, 0.1);
+
+    e.component((e) => {
+      return (
+        <ObjectView
+          name={'state.current'}
+          data={e.ctx.output.state}
+          style={{ MarginX: 15 }}
+          fontSize={10}
+          expandPaths={['$', '$.selection']}
+        />
+      );
+    });
   })
 
   .subject((e) => {
@@ -138,21 +187,21 @@ export const actions = DevActions<Ctx>()
       host: { background: isLight ? -0.04 : COLORS.DARK },
       layout: {
         label: {
-          topLeft: '<PathList.Stateful>',
-          bottomLeft: `${rx.bus.instance(instance.bus)}`,
-          bottomRight: `filesystem: "${instance.id}"`,
+          topLeft: '<Fs.PathList.Stateful>',
+          bottomLeft: `${rx.bus.instance(instance.bus)}("${instance.id}")`,
+          bottomRight: `filesystem:"${instance.fs}"`,
         },
         cropmarks: isLight ? -0.2 : 0.2,
-        border: isLight ? -0.1 : 0.1,
         labelColor: isLight ? -0.5 : 0.8,
-        background: isLight ? 1 : undefined,
+        border: isLight ? -0.1 : 0.1,
+        background: isLight ? 1 : 0.02,
         position: [150, null],
         width: 450,
       },
     });
 
     const style = { flex: 1 };
-    e.render(debug.render && <PathList.Stateful {...e.ctx.props} style={style} />);
+    e.render(debug.render && <FsPathList.Stateful {...e.ctx.props} style={style} />);
   });
 
 export default actions;

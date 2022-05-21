@@ -159,10 +159,16 @@ export const actions = DevActions<Ctx>()
       await Promise.all(files.map((file) => fs.delete(file.path)));
     });
 
+    e.hr(1, 0.1);
+
+    e.component((e) => {
+      return <DevFilesystem fs={TestUtil.fs.instance} style={{ Margin: [20, 45, 20, 45] }} />;
+    });
+
     e.hr();
 
     e.textbox((config) =>
-      config.placeholder('update token').pipe((e) => {
+      config.placeholder('set token').pipe((e) => {
         if (e.changing?.action === 'invoke') {
           const next = e.changing.next || '';
           TestUtil.Token.write(next);
@@ -172,24 +178,13 @@ export const actions = DevActions<Ctx>()
     );
 
     e.component((e) => {
-      const styles = {
-        base: css({
-          Flex: 'y-stretch-stretch',
-          Margin: [20, 45, 30, 45],
-        }),
-      };
-
       const token = TestUtil.token;
-
       return (
-        <div {...styles.base}>
-          <ModuleInfo
-            style={{ marginBottom: 15 }}
-            fields={['Module', 'Token.API.Hidden']}
-            data={{ token }}
-          />
-          <DevFilesystem fs={TestUtil.fs.instance} />
-        </div>
+        <ModuleInfo
+          style={{ Margin: [30, 55, 30, 55] }}
+          fields={['Module', 'Token.API.Hidden']}
+          data={{ token }}
+        />
       );
     });
 
@@ -218,7 +213,7 @@ export const actions = DevActions<Ctx>()
       if (!data) return null;
       return (
         <ModuleInfo
-          fields={['Deployment.Response']}
+          fields={['Deploy.Response']}
           data={{ deploymentResponse: data }}
           style={{ Margin: [10, 40, 10, 40] }}
         />

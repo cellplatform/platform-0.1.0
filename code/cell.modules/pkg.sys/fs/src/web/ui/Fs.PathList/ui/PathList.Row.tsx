@@ -2,22 +2,27 @@ import React from 'react';
 import { FC, COLORS, Color, css, CssValue, t, Chip, Filesize } from '../common';
 
 const TRANSPARENT = Color.format(0);
+const { DARK, BLUE } = COLORS;
 
 export type RowProps = {
   index: number;
   file: t.ManifestFile;
   is: t.ListItemRenderFlags;
-  theme: t.PathListTheme;
+  theme: t.FsPathListTheme;
   style?: CssValue;
 };
 
 const View: React.FC<RowProps> = (props) => {
   const { file, is, theme } = props;
+  const isLight = theme === 'Light';
 
   const path = file.path;
   const size = Filesize(file.bytes, { round: 1, spacer: '' });
-  const selectedBorder = Color.alpha(COLORS.DARK, 0.1);
-  const isLight = theme === 'Light';
+  const selectedBorder = is.focused
+    ? Color.alpha(DARK, 0.1)
+    : isLight
+    ? Color.alpha(DARK, 0.05)
+    : Color.format(0.06);
 
   /**
    * [Render]
@@ -27,7 +32,7 @@ const View: React.FC<RowProps> = (props) => {
       position: 'relative',
       boxSizing: 'border-box',
       fontSize: 12,
-      color: isLight ? COLORS.DARK : Color.format(0.8),
+      color: isLight ? DARK : Color.format(0.8),
       border: `solid 1px ${TRANSPARENT}`,
 
       padding: 2,
@@ -37,7 +42,11 @@ const View: React.FC<RowProps> = (props) => {
       Flex: 'horizontal-stretch-spaceBetween',
     },
     selected: is.selected && {
-      backgroundColor: Color.alpha(COLORS.BLUE, 0.15),
+      backgroundColor: is.focused
+        ? Color.alpha(BLUE, 0.15)
+        : isLight
+        ? Color.alpha(DARK, 0.06)
+        : Color.format(0.06),
       borderRadius: selectedBorderRadius(is, 4),
       borderLeftColor: selectedBorder,
       borderRightColor: selectedBorder,
@@ -79,6 +88,7 @@ const View: React.FC<RowProps> = (props) => {
 /**
  * Export
  */
+
 type Fields = { height: number };
 export const Row = FC.decorate<RowProps, Fields>(
   View,

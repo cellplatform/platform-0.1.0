@@ -4,9 +4,8 @@ import { t } from './web/common';
 
 const imports = {
   ModuleInfo: import('./web/ui/ModuleInfo/dev/DEV'),
-  PathList: import('./web/ui/PathList/dev/DEV'),
-  PathListCard: import('./web/ui/PathList.Card/dev/DEV'),
-  FileDropTarget: import('./web/ui/FileDropTarget/dev/DEV'),
+  FsCard: import('./web/ui/Fs.Card/dev/DEV'),
+  FsPathList: import('./web/ui/Fs.PathList/dev/DEV'),
   UnitTests: import('./Dev.UnitTests'),
 };
 

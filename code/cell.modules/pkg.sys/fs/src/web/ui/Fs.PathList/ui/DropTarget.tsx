@@ -2,11 +2,11 @@ import React from 'react';
 import { Color, COLORS, css, CssValue, t, useDragTarget } from '../common';
 
 export type DropTargetProps = {
-  instance: t.PathListInstance;
+  instance: t.FsViewInstance;
   targetRef: React.RefObject<HTMLDivElement>;
-  theme: t.PathListTheme;
+  theme: t.FsPathListTheme;
   style?: CssValue;
-  onDrop?: t.PathListDroppedHandler;
+  onDrop?: t.FsPathListDroppedHandler;
   onDragOver?: (e: { isOver: boolean }) => void;
 };
 
@@ -34,7 +34,7 @@ export const DropTarget: React.FC<DropTargetProps> = (props) => {
         border: `dashed 1px ${isLight ? Color.alpha(COLORS.DARK, 0.2) : Color.format(0.2)}`,
         backgroundColor: isLight ? Color.format(0.7) : Color.format(0.2),
         borderRadius: 5,
-        boxShadow: `0 0px 16px 0 ${Color.format(-0.1)}`,
+        boxShadow: `0 0px 20px 0 ${Color.format(-0.08)}`,
       }),
     },
   };

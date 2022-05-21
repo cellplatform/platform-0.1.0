@@ -9,7 +9,7 @@ const ALL_FIELDS: m.ModuleInfoFields[] = [
   'Module.Version',
   'Token.API',
   'Token.API.Hidden',
-  'Deployment.Response',
+  'Deploy.Response',
 ];
 
 /**

@@ -8,4 +8,4 @@ export { Fs } from '@platform/cell.types/lib/types.Fs';
  * @local
  */
 export * from './FsDriver.IndexedDb/types';
-export * from './ui/PathList/types';
+export * from './ui/types';

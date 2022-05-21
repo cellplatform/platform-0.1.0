@@ -1,8 +1,8 @@
 import React, { useRef, useState } from 'react';
 
-import { COLORS, css, DEFAULT, List, Spinner, Style, t, time } from '../common';
-import { PathListProps } from '../types';
-import { wrangle } from '../wrangle';
+import { COLORS, Color, css, DEFAULT, List, Spinner, Style, t, time } from '../common';
+import { FsPathListProps } from '../types';
+import { wrangle } from './wrangle';
 import { DropTarget } from './DropTarget';
 import { Row } from './PathList.Row';
 import { renderers } from './renderers';
@@ -10,7 +10,7 @@ import { renderers } from './renderers';
 /**
  * Component
  */
-export const PathList: React.FC<PathListProps> = (props) => {
+export const PathList: React.FC<FsPathListProps> = (props) => {
   const { instance, scroll = true, files = [], spinning, theme = DEFAULT.THEME } = props;
   const total = files.length;
   const isEmpty = total === 0;
@@ -20,18 +20,12 @@ export const PathList: React.FC<PathListProps> = (props) => {
   const [isDragOver, setDragOver] = useState(false);
 
   const list: t.ListProps = {
-    instance: props.instance,
+    instance,
     renderers,
     orientation: 'y',
     bullet: { edge: 'near', size: 12 },
     tabIndex: wrangle.tabIndex(props),
   };
-
-  const dynamic = List.useDynamicState({
-    total,
-    props: list,
-    selection: props.selection,
-  });
 
   /**
    * [Render]
@@ -47,32 +41,32 @@ export const PathList: React.FC<PathListProps> = (props) => {
     }),
     empty: css({
       Flex: 'center-center',
-      opacity: 0.3,
+      padding: 12,
       fontSize: 12,
       fontStyle: 'italic',
-      padding: 12,
+      color: isLight ? Color.alpha(COLORS.DARK, 0.3) : Color.format(0.3),
     }),
     spinner: css({ Flex: 'center-center', padding: 8 }),
     list: {
-      marginLeft: 5,
       flex: 1,
-      opacity: isDragOver ? 0.3 : 1,
+      marginLeft: 5,
+      opacity: isDragOver ? 0.2 : 1,
       filter: `blur(${isDragOver ? 3 : 0}px)`,
       transition: `opacity 100ms, filter 100ms`,
     },
   };
 
-  const toData = (file: t.ManifestFile): t.PathListItemData => ({ file, theme });
+  const toData = (file: t.ManifestFile): t.FsPathListItemData => ({ file, theme });
   const ListView = {
     simple() {
       const items = files.map((file) => ({ data: toData(file) }));
-      return <List.Layout {...list} items={items} state={dynamic.state} style={styles.list} />;
+      return <List.Layout {...list} items={items} state={props.state} style={styles.list} />;
     },
     virtual() {
       const getData: t.GetListItem = (index) => ({ data: toData(files[index]) });
       const getSize: t.GetListItemSize = () => Row.height;
       const items = { total, getData, getSize };
-      return <List.Virtual {...list} items={items} state={dynamic.state} style={styles.list} />;
+      return <List.Virtual {...list} items={items} state={props.state} style={styles.list} />;
     },
     render() {
       return scroll ? ListView.virtual() : ListView.simple();

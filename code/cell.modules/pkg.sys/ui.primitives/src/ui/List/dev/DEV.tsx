@@ -78,7 +78,7 @@ export const actions = DevActions<Ctx>()
         virtualPadding: true,
         canFocus: true,
         virtualScroll: true,
-        selection: List.SelectionConfig.default,
+        selectable: List.SelectionConfig.default,
       },
       redraw: () => time.delay(0, () => events.redraw.fire()),
     };
@@ -88,7 +88,7 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx } = e;
-    const { bus, id: instance } = ctx;
+    const { bus, events } = ctx;
 
     const TOTAL = 10;
     new Array(TOTAL).fill(ctx).forEach(() => Util.addItem(ctx));
@@ -99,6 +99,8 @@ export const actions = DevActions<Ctx>()
       if (e.changing) e.ctx.renderCtx.enabled = e.changing.next;
       e.boolean.current = e.ctx.renderCtx.enabled;
     });
+
+    e.button('redraw', (e) => e.ctx.redraw());
 
     e.hr();
   })
@@ -162,10 +164,10 @@ export const actions = DevActions<Ctx>()
       return (
         <List.SelectionConfig
           // fields={['Keyboard', 'Multi', 'Enabled']}
-          config={e.ctx.debug.selection}
+          config={e.ctx.debug.selectable}
           style={{ Margin: [10, 20, 10, 40] }}
           onChange={({ config }) => {
-            e.change.ctx((ctx) => (ctx.debug.selection = config));
+            e.change.ctx((ctx) => (ctx.debug.selectable = config));
           }}
         />
       );

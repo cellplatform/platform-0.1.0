@@ -1,11 +1,11 @@
 import { filter, takeUntil } from 'rxjs/operators';
 
+import { Stream } from '../web.Stream';
 import { BusEventsCell } from './BusEvents.Cell';
 import { BusEventsFs } from './BusEvents.Fs';
 import { BusEventsIndexer } from './BusEvents.Indexer';
 import { BusEventsIo } from './BusEvents.Io';
 import { rx, t, timeoutWrangler } from './common';
-import { Stream } from '../web.Stream';
 
 type FilesystemId = string;
 type Milliseconds = number;
@@ -19,9 +19,10 @@ export function BusEvents(args: {
   filter?: (e: t.SysFsEvent) => boolean;
   timeout?: Milliseconds; // Default timeout.
   toUint8Array?: t.SysFsToUint8Array;
+  dispose$?: t.Observable<any>;
 }): t.SysFsEvents {
   const { id } = args;
-  const { dispose, dispose$ } = rx.disposable();
+  const { dispose, dispose$ } = rx.disposable(args.dispose$);
   const bus = rx.busAsType<t.SysFsEvent>(args.bus);
   const is = BusEvents.is;
   const toUint8Array = args.toUint8Array ?? Stream.toUint8Array;

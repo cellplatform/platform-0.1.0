@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { ListChildComponentProps } from 'react-window';
 
 import { t } from './common';

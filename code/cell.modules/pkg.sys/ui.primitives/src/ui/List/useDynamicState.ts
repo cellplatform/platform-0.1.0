@@ -13,12 +13,12 @@ type Index = number;
  */
 export function useDynamicState(args: {
   total: number;
-  props: t.ListProps;
-  selection?: t.ListSelectionConfig | boolean;
+  instance?: t.ListInstance;
+  orientation?: t.ListOrientation;
+  selectable?: t.ListSelectionConfig | boolean;
 }) {
-  const { total, props } = args;
-  const { instance, orientation } = props;
-  const { multi, clearOnBlur, allowEmpty, keyboard } = wrangle.selection(args.selection);
+  const { total, instance, orientation } = args;
+  const { multi, clearOnBlur, allowEmpty, keyboard } = wrangle.selection(args.selectable);
   const bus = instance?.bus;
   const id = instance?.id ?? '';
 
@@ -32,17 +32,18 @@ export function useDynamicState(args: {
     if (bus) {
       const getCtx = (): t.ListStateCtx => ({ orientation, total });
       const monitor = ListState.Monitor({
-        instance,
         getCtx,
+        instance,
         selection: { multi, clearOnBlur, allowEmpty, keyboard },
+        initial: state?.get(),
       });
 
       setState(monitor.lazy);
       dispose$.subscribe(monitor.dispose);
     }
 
-    return () => dispose$.next();
-  }, [bus, instance, total, orientation, multi, clearOnBlur, allowEmpty, keyboard]);
+    return () => rx.done(dispose$);
+  }, [bus, instance, total, orientation, multi, clearOnBlur, allowEmpty, keyboard]); // eslint-disable-line
 
   /**
    * API
@@ -68,7 +69,7 @@ export function useDynamicItemState(args: {
   const { edge } = bullet;
   const selectionConfig = args.state?.selection;
 
-  const [state, setState] = useState<S>();
+  const [state, setState] = useState<S>(args.state?.get());
 
   /**
    * [Lifecycle]
@@ -78,10 +79,6 @@ export function useDynamicItemState(args: {
     const dispose$ = new Subject<void>();
 
     if (args.state) {
-      const updateState = (fn: (prev: S) => S) => {
-        setState((prev) => fn(prev));
-      };
-
       const changed$ = args.state.changed$.pipe(takeUntil(dispose$));
       const mouse$ = changed$.pipe(
         filter((e) => e.kind === 'Mouse'),
@@ -112,15 +109,15 @@ export function useDynamicItemState(args: {
 
       mouse$.subscribe((e) => {
         const mouse = e.state;
-        updateState((prev) => ({ ...prev, mouse }));
+        setState((prev) => ({ ...prev, mouse }));
       });
 
       selection$.subscribe(({ selection }) => {
-        updateState((prev) => ({ ...prev, selection }));
+        setState((prev) => ({ ...prev, selection }));
       });
     }
 
-    return () => dispose$.next();
+    return () => rx.done(dispose$);
   }, [index, total, orientation, edge, selectionConfig]); // eslint-disable-line
 
   /**
