@@ -174,5 +174,7 @@ export type ListStateChangedEvent = {
 };
 export type ListStateChanged = {
   instance: Id;
-  change: t.ListStateChange;
+  kind: t.ListStateChange['kind'];
+  from: t.ListState;
+  to: t.ListState;
 };

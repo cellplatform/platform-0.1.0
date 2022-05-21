@@ -79,10 +79,6 @@ export function useDynamicItemState(args: {
     const dispose$ = new Subject<void>();
 
     if (args.state) {
-      const updateState = (fn: (prev: S) => S) => {
-        setState((prev) => fn(prev));
-      };
-
       const changed$ = args.state.changed$.pipe(takeUntil(dispose$));
       const mouse$ = changed$.pipe(
         filter((e) => e.kind === 'Mouse'),
@@ -113,11 +109,11 @@ export function useDynamicItemState(args: {
 
       mouse$.subscribe((e) => {
         const mouse = e.state;
-        updateState((prev) => ({ ...prev, mouse }));
+        setState((prev) => ({ ...prev, mouse }));
       });
 
       selection$.subscribe(({ selection }) => {
-        updateState((prev) => ({ ...prev, selection }));
+        setState((prev) => ({ ...prev, selection }));
       });
     }
 

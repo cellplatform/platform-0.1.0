@@ -88,7 +88,7 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx } = e;
-    const { bus, id: instance } = ctx;
+    const { bus, events } = ctx;
 
     const TOTAL = 10;
     new Array(TOTAL).fill(ctx).forEach(() => Util.addItem(ctx));
@@ -99,6 +99,8 @@ export const actions = DevActions<Ctx>()
       if (e.changing) e.ctx.renderCtx.enabled = e.changing.next;
       e.boolean.current = e.ctx.renderCtx.enabled;
     });
+
+    e.button('redraw', (e) => e.ctx.redraw());
 
     e.hr();
   })

@@ -8,6 +8,7 @@ type ListStateMonitorArgs = {
   instance: t.ListInstance;
   selection?: t.ListSelectionConfig;
   reset$?: Observable<any>;
+  initial?: t.ListState; // Initial state.
   getCtx: () => t.ListStateCtx;
 };
 
@@ -32,23 +33,24 @@ export function ListStateMonitor(args: ListStateMonitorArgs) {
   const next = (e: t.ListStateChange) => _changed$.next(e);
   const changed$ = _changed$.pipe(takeUntil(dispose$));
 
-  changed$.subscribe((change) => {
+  let _state: t.ListState = args.initial ?? {};
+
+  const setState = (kind: t.ListStateChange['kind'], fn: (prev: t.ListState) => t.ListState) => {
+    const from = { ..._state };
+    const to = (_state = fn(from));
     bus.fire({
       type: 'sys.ui.List/State:changed',
-      payload: { instance: id, change },
+      payload: { instance: id, kind, from, to },
     });
-  });
-
-  let _state: t.ListState = {};
-  const setState = (fn: (prev: t.ListState) => t.ListState) => (_state = fn(_state));
+  };
 
   mouse.changed$.subscribe((e) => {
-    setState((prev) => ({ ...prev, mouse: e.state }));
+    setState('Mouse', (prev) => ({ ...prev, mouse: e.state }));
     next({ kind: 'Mouse', change: e });
   });
 
   selection.changed$.subscribe((e) => {
-    setState((prev) => ({ ...prev, selection: e }));
+    setState('Selection', (prev) => ({ ...prev, selection: e }));
     next({ kind: 'Selection', change: e });
   });
 

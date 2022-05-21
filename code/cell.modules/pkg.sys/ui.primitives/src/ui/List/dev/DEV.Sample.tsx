@@ -13,12 +13,15 @@ export type DevSampleProps = {
 
 export const DevSample: React.FC<DevSampleProps> = (args) => {
   const { props, debug, renderCtx } = args;
+  const { instance, orientation } = props;
+
   const total = args.items.length;
   const isVirtual = debug.virtualScroll;
 
   const dynamic = List.useDynamicState({
     total,
-    props,
+    instance,
+    orientation,
     selection: debug.selection,
   });
 
