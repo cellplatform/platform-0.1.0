@@ -1,20 +1,18 @@
-import { animationFrameScheduler, Subject } from 'rxjs';
-import { filter, observeOn, takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
 import { Is, rx, t } from './common';
 
 /**
  * Types
  */
-type Index = number;
 type E = t.ListEvents;
+type Index = number;
 
 /**
  * Event (API)
  */
 export const ListEvents: t.ListEventsFactory = (args) => {
-  const dispose$ = new Subject<void>();
-  const dispose = () => dispose$.next();
+  const { dispose$, dispose } = rx.disposable(args.dispose$);
   const bus = rx.busAsType<t.ListEvent>(args.instance.bus);
   const instance = args.instance.id;
 
@@ -22,7 +20,6 @@ export const ListEvents: t.ListEventsFactory = (args) => {
     takeUntil(dispose$),
     filter((e) => Is.listEvent(e)),
     filter((e) => e.payload.instance === instance),
-    observeOn(animationFrameScheduler),
   );
 
   const scroll: E['scroll'] = {
@@ -66,6 +63,10 @@ export const ListEvents: t.ListEventsFactory = (args) => {
     };
   };
 
+  const state: E['state'] = {
+    changed$: rx.payload<t.ListStateChangedEvent>($, 'sys.ui.List/State:changed'),
+  };
+
   /**
    * API
    */
@@ -79,5 +80,6 @@ export const ListEvents: t.ListEventsFactory = (args) => {
     redraw,
     focus,
     item,
+    state,
   };
 };

@@ -84,7 +84,10 @@ export type GetListItem = (index: number) => ListItem | undefined;
 /**
  * EVENTS (API)
  */
-export type ListEventsFactory = (args: { instance: ListInstance }) => ListEvents;
+export type ListEventsFactory = (args: {
+  instance: ListInstance;
+  dispose$?: Observable<any>;
+}) => ListEvents;
 export type ListEvents = Disposable & {
   bus: Id;
   instance: Id;
@@ -101,19 +104,25 @@ export type ListEvents = Disposable & {
     $: Observable<ListFocus>;
     fire(isFocused?: boolean): void;
   };
+  state: {
+    changed$: Observable<ListStateChanged>;
+  };
   item(index: Index): ListItemEvents;
 };
 
 export type ListItemEvents = {
-  changed: {
-    $: Observable<ListItemChanged>;
-  };
+  changed: { $: Observable<ListItemChanged> };
 };
 
 /**
  * EVENT Definitions
  */
-export type ListEvent = ListScrollEvent | ListRedrawEvent | ListFocusEvent | ListItemChangedEvent;
+export type ListEvent =
+  | ListScrollEvent
+  | ListRedrawEvent
+  | ListFocusEvent
+  | ListItemChangedEvent
+  | ListStateChangedEvent;
 
 /**
  * Initiates a scroll operation on the list.
@@ -157,4 +166,13 @@ export type ListItemChanged = {
   instance: Id;
   index: Index;
   state: { list: t.ListState };
+};
+
+export type ListStateChangedEvent = {
+  type: 'sys.ui.List/State:changed';
+  payload: ListStateChanged;
+};
+export type ListStateChanged = {
+  instance: Id;
+  change: t.ListStateChange;
 };

@@ -1,6 +1,6 @@
 import { Observable, Subject, takeUntil } from 'rxjs';
 
-import { t, rx } from '../common';
+import { t, rx } from './common';
 import { ListMouseMonitor } from './Mouse';
 import { ListSelectionMonitor } from './Selection';
 
@@ -9,15 +9,15 @@ type ListStateMonitorArgs = {
   selection?: t.ListSelectionConfig;
   reset$?: Observable<any>;
   getCtx: () => t.ListStateCtx;
-  handlers?: t.ListEventHandlers;
 };
 
 /**
  * Root level monitor for managing list state.
  */
 export function ListStateMonitor(args: ListStateMonitorArgs) {
-  const { instance, getCtx, handlers = {} } = args;
-  const { bus, id } = instance;
+  const { instance, getCtx } = args;
+  const { id } = instance;
+  const bus = rx.busAsType<t.ListEvent>(instance.bus);
 
   const mouse = ListMouseMonitor({ instance });
   const selection = ListSelectionMonitor({ instance, getCtx, config: args.selection });
@@ -32,6 +32,13 @@ export function ListStateMonitor(args: ListStateMonitorArgs) {
   const next = (e: t.ListStateChange) => _changed$.next(e);
   const changed$ = _changed$.pipe(takeUntil(dispose$));
 
+  changed$.subscribe((change) => {
+    bus.fire({
+      type: 'sys.ui.List/State:changed',
+      payload: { instance: id, change },
+    });
+  });
+
   let _state: t.ListState = {};
   const setState = (fn: (prev: t.ListState) => t.ListState) => (_state = fn(_state));
 
@@ -43,7 +50,6 @@ export function ListStateMonitor(args: ListStateMonitorArgs) {
   selection.changed$.subscribe((e) => {
     setState((prev) => ({ ...prev, selection: e }));
     next({ kind: 'Selection', change: e });
-    handlers?.onSelectionChanged?.({ instance: id, selection: e });
   });
 
   const lazy: t.ListStateLazy = {

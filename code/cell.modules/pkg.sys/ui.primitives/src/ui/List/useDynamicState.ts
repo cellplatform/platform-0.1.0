@@ -15,9 +15,8 @@ export function useDynamicState(args: {
   total: number;
   props: t.ListProps;
   selection?: t.ListSelectionConfig | boolean;
-  handlers?: t.ListEventHandlers;
 }) {
-  const { total, props, handlers } = args;
+  const { total, props } = args;
   const { instance, orientation } = props;
   const { multi, clearOnBlur, allowEmpty, keyboard } = wrangle.selection(args.selection);
   const bus = instance?.bus;
@@ -36,7 +35,6 @@ export function useDynamicState(args: {
         instance,
         getCtx,
         selection: { multi, clearOnBlur, allowEmpty, keyboard },
-        handlers,
       });
 
       setState(monitor.lazy);
