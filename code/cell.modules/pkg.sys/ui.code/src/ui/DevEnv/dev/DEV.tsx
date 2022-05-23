@@ -3,6 +3,7 @@ import { debounceTime } from 'rxjs/operators';
 import { DevActions, LOREM, TestSuiteRunResponse } from 'sys.ui.dev';
 import { Vercel } from 'vendor.cloud.vercel/lib/web';
 import { ModuleInfo as VercelModuleInfo } from 'vendor.cloud.vercel/lib/web/ui/ModuleInfo';
+import { TestFs } from 'sys.fs/lib/web/test/Test.Fs';
 
 import { DevEnv, DevEnvProps } from '..';
 import { CodeEditor } from '../../../api';
@@ -11,9 +12,11 @@ import { Filesystem, Http, rx, slug, t } from '../common';
 import { evalCode } from './DEV.evaluate';
 
 type Ctx = {
+  instance: t.FsViewInstance;
   bus: t.EventBus<any>;
+
   token: string;
-  fs: { bus: t.EventBus<any>; id: string };
+  fs: t.Fs;
   props: DevEnvProps;
   editor?: t.CodeEditorInstanceEvents;
   onReady: t.DevEnvReadyHandler;
@@ -67,15 +70,19 @@ export const actions = DevActions<Ctx>()
     const bus = rx.bus();
     let editor: t.CodeEditorInstanceEvents | undefined;
 
-    const fs = { bus, id: 'fs.dev.code' };
-    const storage = Filesystem.IndexedDb.create(fs);
-    const path = 'dev/DevEnv/doc.md';
-    const getFs = async () => (await storage).fs;
+    const path = 'index.json';
+    const change = e.change;
+    const { fs, instance } = TestFs.init();
+
+    // const fs = { bus, id: 'fs.dev.code' };
+    // const storage = Filesystem.IndexedDb.create(fs);
+
+    // const getFs = async () => (await storage).fs;
     const getEditorCode = () => ctx.editor?.text.get.fire();
-    const getSavedCode = async () => new TextDecoder().decode(await (await getFs()).read(path));
+    const getSavedCode = async () => new TextDecoder().decode(await fs.read(path));
 
     const handleChanged = async () => {
-      const fs = await getFs();
+      // const fs = await getFs();
       const text = await getEditorCode();
       ctx.runTests(text);
       await fs.write(path, text);
@@ -83,6 +90,7 @@ export const actions = DevActions<Ctx>()
     };
 
     const ctx: Ctx = {
+      instance,
       bus,
       fs,
       token: Util.token.read(),
@@ -93,11 +101,17 @@ export const actions = DevActions<Ctx>()
         // language: 'typescript',
         // language: 'javascript',
 
-        language: 'markdown',
-        text: SAMPLE_MD,
+        // language: 'markdown',
+        // text: SAMPLE_MD,
 
-        // language: 'json',
-        // text: '{ "count": 123 }\n',
+        language: 'json',
+        // text: '{  ` "count": 123 }\n',
+        text: `
+{
+  ref: "route configuration (vercel.json)",
+  refUrl: "https://vercel.com/docs/project-configuration"
+}        
+        `,
       },
 
       get editor() {
@@ -105,7 +119,11 @@ export const actions = DevActions<Ctx>()
       },
 
       async onReady(args) {
-        const text = (await getSavedCode()) || SAMPLE_TEST;
+        // const text = (await getSavedCode()) || SAMPLE_TEST;
+        const text = await getSavedCode();
+
+        console.log('saved code', text);
+
         editor = args.editor;
         editor.text.set(text);
         editor.text.changed$.pipe(debounceTime(500)).subscribe(handleChanged);
@@ -176,7 +194,24 @@ export const actions = DevActions<Ctx>()
     e.title('Filesystem');
 
     e.component((e) => {
-      return <DevFilesystem fs={e.ctx.fs} style={{ Margin: [5, 10, 20, 35] }} />;
+      return <DevFilesystem instance={e.ctx.instance} style={{ Margin: [5, 10, 20, 35] }} />;
+    });
+
+    e.hr(1, 0.1);
+
+    e.button('[TODO] delete selected', async (e) => {
+      /**
+       * TODO 🐷
+       */
+      // const fs = e.ctx.fs;
+      // const first = (await fs.manifest()).files[0];
+      // if (first) await fs.delete(first.path);
+    });
+
+    e.button('delete all (clear)', async (e) => {
+      const fs = e.ctx.fs;
+      const files = (await fs.manifest()).files;
+      await Promise.all(files.map((file) => fs.delete(file.path)));
     });
 
     e.hr();
@@ -215,7 +250,8 @@ export const actions = DevActions<Ctx>()
       const Authorization = `Bearer ${token}`;
       const headers = { Authorization };
       const http = Http.create({ headers });
-      const fs = Filesystem.IndexedDb.Events(e.ctx.fs).fs();
+      // const fs = Filesystem.IndexedDb.Events(e.ctx.fs).fs();
+      const fs = e.ctx.fs;
 
       const alias = 'deploy.tmp.db.team';
 

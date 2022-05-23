@@ -5,14 +5,12 @@ import { Filesystem } from 'sys.fs/lib/web/ui';
 import { Icons } from '../Icons';
 
 export type DevFilesystemProps = {
-  fs: { bus: t.EventBus<any>; id: string };
+  instance: t.FsViewInstance;
   style?: CssValue;
 };
 
 export const DevFilesystem: React.FC<DevFilesystemProps> = (props) => {
-  const { fs } = props;
-  const bus = fs.bus;
-  const id = 'sample.instance';
+  const { instance } = props;
 
   /**
    * [Render]
@@ -20,8 +18,8 @@ export const DevFilesystem: React.FC<DevFilesystemProps> = (props) => {
   const styles = {
     base: css({ color: COLORS.DARK }),
     title: css({
-      fontFamily: 'monospace',
       fontSize: 12,
+      fontFamily: 'monospace',
       color: Color.alpha(COLORS.DARK, 0.8),
       fontWeight: 500,
       paddingBottom: 3,
@@ -34,7 +32,7 @@ export const DevFilesystem: React.FC<DevFilesystemProps> = (props) => {
   const elTitle = (
     <div {...styles.title}>
       <Icons.HardDrive color={COLORS.DARK} size={20} />
-      <div>{`"${props.fs.id}"`}</div>
+      <div>{`"${instance.fs}"`}</div>
     </div>
   );
 
@@ -42,7 +40,7 @@ export const DevFilesystem: React.FC<DevFilesystemProps> = (props) => {
     <div {...css(styles.base, props.style)}>
       {elTitle}
       <Filesystem.PathList.Stateful
-        instance={{ bus, id, fs: fs.id }}
+        instance={instance}
         scroll={false}
         droppable={true}
         selectable={true}

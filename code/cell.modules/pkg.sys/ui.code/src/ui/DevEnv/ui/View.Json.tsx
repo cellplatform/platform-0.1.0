@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
-import { css, CssValue, ObjectView, t } from '../common';
+import { Color, css, CssValue, ObjectView, t } from '../common';
 
 export type JsonViewProps = {
   text?: string;
@@ -9,6 +8,7 @@ export type JsonViewProps = {
 
 export const JsonView: React.FC<JsonViewProps> = (props) => {
   const [json, setJson] = useState<t.Json | undefined>();
+  const [error, setError] = useState<Error | undefined>();
 
   /**
    * Lifecycle
@@ -18,16 +18,24 @@ export const JsonView: React.FC<JsonViewProps> = (props) => {
     const text = props.text;
     let json: t.Json | undefined = undefined;
 
-    if (typeof text === 'string') {
+    // const text;
+    console.log('text', text);
+
+    if (typeof text === 'string' && text) {
       try {
         json = JSON.parse(text);
+        setError(undefined);
       } catch (error: any) {
-        console.log('Failed to parse JSON', error);
+        console.log('Caught error (not thrown).\nFailed to parse JSON', error);
+        setError(error);
       }
     }
 
     setJson(json);
   }, [props.text]);
+
+  console.log('parsed json:', json);
+  const BORDER_HR = `solid 5px ${Color.format(-0.1)}`;
 
   /**
    * [Render]
@@ -38,7 +46,30 @@ export const JsonView: React.FC<JsonViewProps> = (props) => {
       boxSizing: 'border-box',
       Padding: [20, 30],
       Scroll: true,
+      Flex: 'y-stretch-stretch',
+    }),
+    title: css({
+      paddingBottom: 12,
+      marginBottom: 15,
+      borderBottom: BORDER_HR,
+    }),
+    body: css({
+      flex: 1,
+    }),
+    footer: css({
+      borderTop: BORDER_HR,
+      paddingTop: 12,
     }),
   };
-  return <div {...css(styles.base, props.style)}>{json && <ObjectView data={json} />}</div>;
+
+  const elJson = json && <ObjectView data={json} />;
+  const elFooter = error && <div>{error.message}</div>;
+
+  return (
+    <div {...css(styles.base, props.style)}>
+      <div {...styles.title}>JSON</div>
+      <div {...styles.body}>{elJson}</div>
+      <div {...styles.footer}>{elFooter}</div>
+    </div>
+  );
 };
