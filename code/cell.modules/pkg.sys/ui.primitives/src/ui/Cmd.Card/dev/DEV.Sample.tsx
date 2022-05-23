@@ -3,8 +3,7 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 
 import { CmdCard, CmdCardProps } from '..';
 import { t } from '../common';
-import { Util } from '../Util';
-import { SampleRenderer } from './DEV.Renderers';
+import { SampleRenderers } from './DEV.Renderers';
 
 export type DevSampleProps = {
   props: CmdCardProps;
@@ -17,10 +16,10 @@ export type DevSampleProps = {
  */
 export const DevSample: React.FC<DevSampleProps> = (args) => {
   const controller = CmdCard.useController({
+    controller: SampleController,
     instance: args.props.instance,
     enabled: args.isControllerEnabled,
     onChange: args.onStateChange,
-    controller: DevSampleController,
   });
 
   return <CmdCard {...args.props} state={controller.state} style={{ flex: 1 }} />;
@@ -29,10 +28,10 @@ export const DevSample: React.FC<DevSampleProps> = (args) => {
 /**
  * CONTROLLER (logic "wrapper")
  */
-export function DevSampleController(args: t.CmdCardControllerArgs) {
-  const initial = Util.state.default({
-    body: { render: SampleRenderer.body },
-    backdrop: { render: SampleRenderer.backdrop },
+function SampleController(args: t.CmdCardControllerArgs) {
+  const initial = CmdCard.defaultState({
+    body: { render: SampleRenderers.body },
+    backdrop: { render: SampleRenderers.backdrop },
   });
 
   const card = CmdCard.Controller({ ...args, initial });
@@ -56,7 +55,7 @@ export function DevSampleController(args: t.CmdCardControllerArgs) {
     });
   });
 
-  // commandbar.
+  // Command-bar.
   card.commandbar.onExecuteCommand(async (e) => {
     //
     // console.log('DEV onExecuteCommand', e);

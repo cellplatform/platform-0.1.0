@@ -10,6 +10,10 @@ export type DevFilesystemProps = {
 };
 
 export const DevFilesystem: React.FC<DevFilesystemProps> = (props) => {
+  const { fs } = props;
+  const bus = fs.bus;
+  const id = 'sample.instance';
+
   /**
    * [Render]
    */
@@ -38,10 +42,10 @@ export const DevFilesystem: React.FC<DevFilesystemProps> = (props) => {
     <div {...css(styles.base, props.style)}>
       {elTitle}
       <Filesystem.PathList.Stateful
-        instance={props.fs}
+        instance={{ bus, id, fs: fs.id }}
         scroll={false}
         droppable={true}
-        selection={true}
+        selectable={true}
       />
     </div>
   );

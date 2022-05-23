@@ -13,4 +13,5 @@ export {
   GetListItem,
   GetListItemSize,
   CmdCardControllerArgs,
+  CmdCardRender,
 } from 'sys.ui.primitives/lib/types';

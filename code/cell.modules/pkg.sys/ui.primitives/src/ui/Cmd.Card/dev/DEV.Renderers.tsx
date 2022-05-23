@@ -89,7 +89,7 @@ const renderSampleBackdrop: t.CmdCardRender<B> = (e) => {
 /**
  * INDEX
  */
-export const SampleRenderer = {
+export const SampleRenderers = {
   backdrop: renderSampleBackdrop,
   body: renderSampleBody,
 };

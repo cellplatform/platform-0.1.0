@@ -136,7 +136,7 @@ export const actions = DevActions<Ctx>()
     (async () => {
       const fs = await filesystem;
       const id = fs.id;
-      const { events } = await Filesystem.IndexedDb.Controller({ bus, id });
+      const { events } = await Filesystem.IndexedDb.Controller({ bus, fs: 'test-instane' });
       Filesystem.IndexedDb.Network({ events, netbus });
     })();
 

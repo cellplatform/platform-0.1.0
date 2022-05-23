@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { FsPathList, PathListStatefulProps } from '..';
-import { DevActions, List, ObjectView, TestFs } from '../../../test';
-import { value, Path, COLORS, cuid, rx, t } from '../common';
+import { DevActions, ObjectView, TestFs } from '../../../test';
+import { value, Path, List, COLORS, cuid, rx, t } from '../common';
 
 type Ctx = {
   fs: t.Fs;
