@@ -44,6 +44,14 @@ export const DevFilesystem: React.FC<DevFilesystemProps> = (props) => {
         scroll={false}
         droppable={true}
         selectable={true}
+        onStateChange={(e) => {
+          //
+          console.group('🌳 ');
+          console.log('PathList State Change');
+          console.log('e', e);
+
+          console.groupEnd();
+        }}
       />
     </div>
   );

@@ -323,12 +323,19 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    const docRefs = 'https://vercel.com/docs/project-configuration#project-configuration/redirects';
+
     e.settings({
       host: { background: -0.04 },
       layout: {
         label: {
           topLeft: '<DevEnv>',
           topRight: `language: ${e.ctx.props.language}`,
+          bottomLeft: (
+            <div>
+              <a href={docRefs}>{`WORKING // Reference Docs (Vercel)`}</a>
+            </div>
+          ),
         },
         position: [100, 80],
         border: -0.1,
