@@ -7,8 +7,7 @@ import { TestFs } from 'sys.fs/lib/web/test/Test.Fs';
 
 import { DevEnv, DevEnvProps } from '..';
 import { CodeEditor } from '../../../api';
-import { DevFilesystem } from '../../dev';
-import { Filesystem, Http, rx, slug, t } from '../common';
+import { Http, rx, slug, t, Filesystem } from '../common';
 import { evalCode } from './DEV.evaluate';
 
 type Ctx = {
@@ -194,7 +193,21 @@ export const actions = DevActions<Ctx>()
     e.title('Filesystem');
 
     e.component((e) => {
-      return <DevFilesystem instance={e.ctx.instance} style={{ Margin: [5, 10, 20, 35] }} />;
+      return (
+        <Filesystem.PathList.Stateful
+          style={{ Margin: [5, 10, 20, 10], height: 150 }}
+          instance={e.ctx.instance}
+          scroll={true}
+          droppable={true}
+          selectable={true}
+          onStateChange={(e) => {
+            console.group('🌳 ');
+            console.log('<FsPathList> State Change');
+            console.log('e', e);
+            console.groupEnd();
+          }}
+        />
+      );
     });
 
     e.hr(1, 0.1);
