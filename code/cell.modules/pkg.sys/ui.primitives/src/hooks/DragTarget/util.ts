@@ -38,8 +38,6 @@ export async function readDropEvent(e: DragEvent) {
   const files: F[] = [];
   const urls: string[] = [];
 
-  let isDirectory = false;
-
   const process = async (item: DataTransferItem) => {
     if (item.kind === 'string') {
       const text = await readString(item);
@@ -60,7 +58,6 @@ export async function readDropEvent(e: DragEvent) {
       }
 
       if (entry.isDirectory) {
-        isDirectory = true;
         const dir = await readDir(entry);
         dir.forEach((file) => files.push(file));
       }
@@ -81,15 +78,8 @@ export async function readDropEvent(e: DragEvent) {
   // Remove root "/" character.
   files.forEach((file) => (file.path = file.path.replace(/^\//, '')));
 
-  // Process directory name.
-  let dir = '';
-  if (isDirectory && files.length > 0) {
-    dir = files[0].path.substring(0, files[0].path.indexOf('/'));
-    files.forEach((file) => (file.path = file.path.substring(dir.length + 1)));
-  }
-
   // Finish up.
-  return { dir, files, urls };
+  return { files, urls };
 }
 
 /**
