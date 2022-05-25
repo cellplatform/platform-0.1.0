@@ -31,10 +31,6 @@ type DirectoryReader = {
   ): void;
 };
 
-type DataTransferItem = {
-  getAsString(success: (text: string) => void): void;
-};
-
 /**
  * Read out file data from a drag-drop-event.
  */
@@ -44,50 +40,45 @@ export async function readDropEvent(e: DragEvent) {
 
   let isDirectory = false;
 
-  if (e.dataTransfer?.items) {
-    for (let i = 0; i < e.dataTransfer.items.length; i++) {
-      const item = e.dataTransfer.items[i];
+  const process = async (item: DataTransferItem) => {
+    if (item.kind === 'string') {
+      const text = await readString(item);
+      if (isUrl(text)) urls.push(text);
+    } else if (typeof item.webkitGetAsEntry === 'function') {
+      /**
+       * Webkit advanced file API.
+       * NB: This allows reading in full directories.
+       */
+      const entry = item.webkitGetAsEntry() as Entry | null;
+      if (entry === null) {
+        throw new Error('Nothing dropped: item.webkitGetAsEntry() is null');
+      }
 
-      if (item.kind === 'string') {
-        const text = await readString(item);
-        if (isUrl(text)) {
-          urls.push(text);
-        }
-      } else if (typeof item.webkitGetAsEntry === 'function') {
-        /**
-         * Webkit advanced file API.
-         * NB: This allows reading in full directories.
-         */
-        const entry = item.webkitGetAsEntry() as Entry | null;
-        if (entry === null) {
-          throw new Error('Nothing dropped: item.webkitGetAsEntry() is null');
-        }
+      if (entry.isFile) {
+        const file = await readFile(entry);
+        files.push(file);
+      }
 
-        if (entry.isFile) {
-          const file = await readFile(entry);
-          files.push(file);
-        }
-
-        if (entry.isDirectory) {
-          isDirectory = true;
-          const dir = await readDir(entry);
-          dir.forEach((file) => files.push(file));
-        }
-      } else {
-        /**
-         * Standard DOM drop handler.
-         */
-        if (item.kind === 'file') {
-          const file = item.getAsFile();
-          if (file) {
-            files.push(await toFilePayload(file));
-          }
-        }
+      if (entry.isDirectory) {
+        isDirectory = true;
+        const dir = await readDir(entry);
+        dir.forEach((file) => files.push(file));
+      }
+    } else {
+      /**
+       * Standard DOM drop handler.
+       */
+      if (item.kind === 'file') {
+        const file = item.getAsFile();
+        if (file) files.push(await toFilePayload(file));
       }
     }
-  }
+  };
 
-  // Remove root "/".
+  const items = toDataTransferItemArray(e.dataTransfer?.items);
+  await Promise.all(items.map(process));
+
+  // Remove root "/" character.
   files.forEach((file) => (file.path = file.path.replace(/^\//, '')));
 
   // Process directory name.
@@ -104,6 +95,16 @@ export async function readDropEvent(e: DragEvent) {
 /**
  * [Helpers]
  */
+
+function toDataTransferItemArray(items?: DataTransferItemList): DataTransferItem[] {
+  const list: DataTransferItem[] = [];
+  if (items) {
+    for (let i = 0; i < items.length; i++) {
+      list.push(items[i]);
+    }
+  }
+  return list;
+}
 
 async function toFilePayload(file: File, name?: string) {
   const filename = name || file.name;
@@ -146,9 +147,8 @@ function readEntries(dir: DirectoryEntry) {
     dir.createReader().readEntries(
       async (results: (FileEntry | DirectoryEntry)[]) => {
         for (const item of results) {
-          if (item.isFile) {
-            files.push(item);
-          }
+          if (item.isFile) files.push(item);
+
           if (item.isDirectory) {
             const children = await readEntries(item);
             children.forEach((file) => files.push(file));
