@@ -14,3 +14,8 @@ export { useDragTarget } from 'sys.ui.primitives/lib/hooks/DragTarget';
 export { PropList } from 'sys.ui.primitives/lib/ui/PropList';
 export { List } from 'sys.ui.primitives/lib/ui/List';
 export { CmdCard } from 'sys.ui.primitives/lib/ui/Cmd.Card';
+
+/**
+ * @local
+ */
+export { Filesize } from '../../Filesize';

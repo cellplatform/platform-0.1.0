@@ -6,6 +6,7 @@ const Imports = {
   FsBus: import('./web/FsBus.IndexedDb/Filesystem.TEST'),
   FsDriver: import('./web/FsDriver.IndexedDb/FsDriver/FsDriver.TEST'),
   FsIndexer: import('./web/FsDriver.IndexedDb/FsIndexer/FsIndexer.TEST'),
+  Filesize: import('./web/Filesize/Filesize.TEST'),
 };
 
 type Ctx = { results?: TestSuiteRunResponse };
@@ -19,6 +20,7 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     e.ctx.results = await Test.run(Object.values(Imports));
+    // e.ctx.results = await Test.run(Imports.Filesize);
   })
 
   .items((e) => {

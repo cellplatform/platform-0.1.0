@@ -62,9 +62,7 @@ export function usePathListState(args: {
     if (droppable) {
       const handler: t.FsPathListDroppedHandler = async (e) => {
         if (isDisposed) return;
-        const wait = e.files
-          .map((file) => ({ file, path: PathUtil.fromFile(file, e.dir) }))
-          .map(({ file, path }) => fs.write(path, file.data));
+        const wait = e.files.map(({ path, data }) => fs.write(path, data));
         await Promise.all(wait);
       };
       setDropHandler({ handler });
@@ -103,18 +101,3 @@ export function usePathListState(args: {
     onDrop: drop?.handler,
   };
 }
-
-/**
- * [Helpers]
- */
-
-const PathUtil = {
-  fromFile(file: { path: string }, dir?: string) {
-    const path = file.path;
-    return dir ? PathUtil.prepend(dir, path) : path;
-  },
-
-  prepend(left: string, right: string) {
-    return `${left.replace(/\/*$/, '')}/${right.replace(/^\/*/, '')}`;
-  },
-};
