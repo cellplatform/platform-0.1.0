@@ -101,6 +101,7 @@ export const actions = DevActions<Ctx>()
       config
         .placeholder('within directory')
         .initial(config.ctx.debug.dir)
+        .indent(25)
         .pipe((e) => {
           if (e.changing?.action === 'invoke') {
             const next = e.changing.next || '';
