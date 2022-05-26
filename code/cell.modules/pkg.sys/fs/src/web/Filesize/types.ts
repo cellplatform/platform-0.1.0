@@ -3,10 +3,12 @@ export type FilesizeOptions = {
    * Decimal place, default is 2
    */
   round?: number;
+
   /**
    * Decimal separator character, default is `.`
    */
   separator?: string;
+
   /**
    * Character between the result and suffix, default is ` `
    */
