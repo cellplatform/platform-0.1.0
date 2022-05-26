@@ -1,4 +1,5 @@
-import { expect, t, Test } from '../test';
+import { t } from '../common';
+import { expect, Test } from '../test';
 import { Is } from './Is';
 
 export default Test.describe('Common: Is (flags)', (e) => {

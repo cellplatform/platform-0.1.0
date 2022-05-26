@@ -1,6 +1,6 @@
-import { t, expect, Test } from '../../test';
-
-import { Themes, Theme } from '.';
+import { Theme, Themes } from '.';
+import { t } from '../../common';
+import { expect, Test } from '../../test';
 
 export default Test.describe('Theme', (e) => {
   e.describe('shade', (e) => {

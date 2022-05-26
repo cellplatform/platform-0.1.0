@@ -1,9 +1,8 @@
 import React from 'react';
 import { debounceTime } from 'rxjs/operators';
-import { DevActions, LOREM, TestSuiteRunResponse } from 'sys.ui.dev';
+import { DevActions, LOREM, TestSuiteRunResponse, TestFs } from '../../../test';
 import { Vercel } from 'vendor.cloud.vercel/lib/web';
 import { ModuleInfo as VercelModuleInfo } from 'vendor.cloud.vercel/lib/web/ui/ModuleInfo';
-import { TestFs } from 'sys.fs/lib/web/test/Test.Fs';
 
 import { DevEnv, DevEnvProps } from '..';
 import { CodeEditor } from '../../../api';
@@ -20,7 +19,10 @@ type Ctx = {
   editor?: t.CodeEditorInstanceEvents;
   onReady: t.DevEnvReadyHandler;
   runTests(code?: string): Promise<TestSuiteRunResponse | undefined>;
-  debug: { deployment?: t.VercelHttpDeployResponse };
+  debug: {
+    deployment?: t.VercelHttpDeployResponse;
+    fs: { selection?: t.ListSelectionState };
+  };
 };
 
 const SAMPLE_TEST = `
@@ -151,7 +153,7 @@ export const actions = DevActions<Ctx>()
           return update(undefined);
         }
       },
-      debug: {},
+      debug: { fs: {} },
     };
 
     return ctx;
@@ -193,6 +195,7 @@ export const actions = DevActions<Ctx>()
     e.title('Filesystem');
 
     e.component((e) => {
+      const change = e.change;
       return (
         <Filesystem.PathList.Stateful
           style={{ Margin: [5, 10, 20, 10], height: 150 }}
@@ -201,6 +204,10 @@ export const actions = DevActions<Ctx>()
           droppable={true}
           selectable={true}
           onStateChange={(e) => {
+            if (e.kind === 'Selection') {
+              change.ctx((ctx) => (ctx.debug.fs.selection = e.to.selection));
+            }
+
             console.group('🌳 ');
             console.log('<FsPathList> State Change');
             console.log('e', e);
@@ -213,12 +220,12 @@ export const actions = DevActions<Ctx>()
     e.hr(1, 0.1);
 
     e.button('[TODO] delete selected', async (e) => {
-      /**
-       * TODO 🐷
-       */
-      // const fs = e.ctx.fs;
-      // const first = (await fs.manifest()).files[0];
-      // if (first) await fs.delete(first.path);
+      const selection = e.ctx.debug.fs.selection;
+      if (selection) {
+        const fs = e.ctx.fs;
+        const files = (await fs.manifest()).files.filter((f, i) => selection.indexes.includes(i));
+        await Promise.all(files.map((file) => fs.delete(file.path)));
+      }
     });
 
     e.button('delete all (clear)', async (e) => {
