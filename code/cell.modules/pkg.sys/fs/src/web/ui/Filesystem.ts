@@ -8,6 +8,7 @@ export { Path, Filesize };
 
 export const Filesystem = {
   IndexedDb,
+  Events: IndexedDb.Events,
   Filesize,
   Path,
 

@@ -4,6 +4,7 @@ import { Filesize } from './Filesize';
 
 export const Filesystem = {
   IndexedDb,
+  Events: IndexedDb.Events,
   Filesize,
   Path,
 };
