@@ -1,13 +1,14 @@
-import { rx, t, Filesystem, Http } from '../common';
+import { rx, t, Filesystem, Http, slug } from '../common';
 import { Token } from './TestUtil.Token';
 
 let _fs: undefined | t.Fs;
+const bus = rx.bus();
 
 /**
  * Unit-test helpers.
  */
 export const TestUtil = {
-  bus: rx.bus(),
+  bus,
   Token,
 
   get token() {
@@ -23,17 +24,21 @@ export const TestUtil = {
    * Filesystem
    */
   fs: {
+    id: 'fs:dev.tests',
     ready: false,
     get instance() {
       const bus = TestUtil.bus;
-      return { bus, id: 'fs:dev.tests' };
+      const fs = TestUtil.fs.id;
+      return { bus, id: `instance.foo`, fs };
     },
     get events() {
-      return _fs || (_fs = Filesystem.Events(TestUtil.fs.instance).fs());
+      const id = TestUtil.fs.id;
+      return _fs || (_fs = Filesystem.Events({ bus, id }).fs());
     },
     async init() {
       if (!TestUtil.fs.ready) {
-        await Filesystem.create(TestUtil.fs.instance);
+        const id = TestUtil.fs.id;
+        await Filesystem.IndexedDb.create({ bus, id });
         TestUtil.fs.ready = true;
       }
       return TestUtil.fs.events;

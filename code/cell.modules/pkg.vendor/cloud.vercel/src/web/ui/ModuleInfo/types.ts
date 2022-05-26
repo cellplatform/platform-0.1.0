@@ -6,6 +6,7 @@ export type ModuleInfoFields =
   | 'Module.Version'
   | 'Token.API'
   | 'Token.API.Hidden'
+  | 'Deploy.Domain'
   | 'Deploy.Response';
 
 export type ModuleInfoData = {

@@ -4,8 +4,7 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { VercelHttp, VercelHttpProps } from '..';
 import { TestUtil } from '../../../test';
 import { Vercel } from '../../../Vercel';
-import { css, cuid, t, value } from '../../common';
-import { DevFilesystem } from '../../dev';
+import { css, cuid, t, value, Filesystem } from '../../common';
 import { ModuleInfo } from '../../ModuleInfo';
 
 type Ctx = {
@@ -161,8 +160,21 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.1);
 
+    e.title('Filesystem ("Package")');
+
     e.component((e) => {
-      return <DevFilesystem fs={TestUtil.fs.instance} style={{ Margin: [20, 45, 20, 45] }} />;
+      return (
+        <Filesystem.PathList.Stateful
+          style={{ Margin: [5, 10, 20, 10], height: 150 }}
+          instance={TestUtil.fs.instance}
+          scroll={true}
+          droppable={true}
+          selectable={true}
+          onStateChange={(e) => {
+            //
+          }}
+        />
+      );
     });
 
     e.hr();
@@ -240,7 +252,9 @@ export const actions = DevActions<Ctx>()
       actions: { width: 400 },
       layout: {
         label: '<VercelHttp>',
-        position: [150, 80],
+        // position: [150, 80],
+        width: 400,
+        height: 200,
         border: -0.1,
         cropmarks: -0.2,
         background: 1,
