@@ -214,11 +214,11 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.1);
 
-    e.button('[TODO] delete selected', async (e) => {
+    e.button('delete selected', async (e) => {
       const selection = e.ctx.debug.fs.selection;
       if (selection) {
         const fs = e.ctx.fs;
-        const files = (await fs.manifest()).files.filter((f, i) => selection.indexes.includes(i));
+        const files = (await fs.manifest()).files.filter((_, i) => selection.indexes.includes(i));
         await Promise.all(files.map((file) => fs.delete(file.path)));
       }
     });
@@ -245,10 +245,12 @@ export const actions = DevActions<Ctx>()
     );
 
     e.component((e) => {
+      const token = e.ctx.token;
+      const domain = e.ctx.deployment.domain;
       return (
         <VercelModuleInfo
-          fields={['Module', 'Token.API.Hidden']}
-          data={{ token: e.ctx.token }}
+          fields={['Module', 'Token.API.Hidden', 'Deploy.Domain']}
+          data={{ token, deployment: { domain } }}
           style={{ Margin: [30, 45, 30, 38] }}
         />
       );
@@ -258,8 +260,8 @@ export const actions = DevActions<Ctx>()
 
     e.textbox((config) =>
       config
-        .placeholder('domain alias')
-        .initial(config.ctx.deployment.domain)
+        .placeholder('set domain alias')
+        // .initial(config.ctx.deployment.domain)
         .pipe((e) => {
           if (e.changing?.action === 'invoke') {
             e.ctx.deployment.domain = e.changing.next || '';
@@ -276,12 +278,9 @@ export const actions = DevActions<Ctx>()
       const Authorization = `Bearer ${token}`;
       const headers = { Authorization };
       const http = Http.create({ headers });
-      // const fs = Filesystem.IndexedDb.Events(e.ctx.fs).fs();
       const fs = e.ctx.fs;
 
       const alias = e.ctx.deployment.domain;
-
-      console.log('manifest', await fs.manifest());
 
       /**
        * CONFIGURE
@@ -335,12 +334,12 @@ export const actions = DevActions<Ctx>()
     e.hr();
 
     e.component((e) => {
-      const deploymentResponse = e.ctx.deployment.response;
-      if (!deploymentResponse) return null;
+      const response = e.ctx.deployment.response;
+      if (!response) return null;
       return (
         <VercelModuleInfo
           fields={['Deploy.Response']}
-          data={{ deploymentResponse }}
+          data={{ deployment: { response } }}
           style={{ Margin: [10, 40, 10, 40] }}
         />
       );

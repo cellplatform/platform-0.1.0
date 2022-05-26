@@ -60,7 +60,7 @@ export const TextSecret: React.FC<TextSecretProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
-      {!isEmpty && <VisibleIcon color={color} size={fontSize + 5} style={styles.icon} />}
+      {!isEmpty && <VisibleIcon color={color} size={fontSize + 2} style={styles.icon} />}
       {!isEmpty && <div {...styles.text}>{text}</div>}
       {isEmpty && <div {...styles.empty}>(empty)</div>}
     </div>
