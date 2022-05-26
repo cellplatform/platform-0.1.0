@@ -23,7 +23,7 @@ const DEFAULT_FIELDS: m.ModuleInfoFields[] = ['Module.Name', 'Module.Version'];
  */
 const DEFAULT_DATA: m.ModuleInfoData = {
   token: undefined,
-  deploymentResponse: undefined,
+  deployment: { response: undefined, domain: undefined },
 };
 
 /**

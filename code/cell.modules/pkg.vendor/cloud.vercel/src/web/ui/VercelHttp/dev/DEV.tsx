@@ -11,6 +11,7 @@ type Ctx = {
   bus: t.EventBus;
   props: VercelHttpProps;
   fs: t.Fs;
+  domain: string;
   output: {
     json?: any;
     deployment?: t.VercelHttpDeployResponse;
@@ -32,6 +33,7 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       bus,
       fs,
+      domain: 'tmp.db.team',
       props: {},
       output: {},
     };
@@ -48,6 +50,7 @@ export const actions = DevActions<Ctx>()
 
     e.button('tmp: deploy', async (e) => {
       const { http, token } = TestUtil;
+      const alias = e.ctx.domain;
 
       const fs = e.ctx.fs.dir('foo');
       const client = Vercel.Http({ token, fs });
@@ -58,7 +61,6 @@ export const actions = DevActions<Ctx>()
       console.log('-------------------------------------------');
 
       // const { http, fs, token } = e.ctx;
-      const alias = 'tmp-deploy.db.team';
 
       /**
        * TODO 🐷
@@ -191,11 +193,12 @@ export const actions = DevActions<Ctx>()
 
     e.component((e) => {
       const token = TestUtil.token;
+      const domain = e.ctx.domain;
       return (
         <ModuleInfo
           style={{ Margin: [30, 55, 30, 55] }}
-          fields={['Module', 'Token.API.Hidden']}
-          data={{ token }}
+          fields={['Module', 'Token.API.Hidden', 'Deploy.Domain']}
+          data={{ token, deployment: { domain } }}
         />
       );
     });
@@ -221,12 +224,12 @@ export const actions = DevActions<Ctx>()
     e.hr();
 
     e.component((e) => {
-      const data = e.ctx.output.deployment;
-      if (!data) return null;
+      const response = e.ctx.output.deployment;
+      if (!response) return null;
       return (
         <ModuleInfo
           fields={['Deploy.Response']}
-          data={{ deploymentResponse: data }}
+          data={{ deployment: { response } }}
           style={{ Margin: [10, 40, 10, 40] }}
         />
       );

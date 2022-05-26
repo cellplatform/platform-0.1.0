@@ -11,5 +11,8 @@ export type ModuleInfoFields =
 
 export type ModuleInfoData = {
   token?: string;
-  deploymentResponse?: t.VercelHttpDeployResponse;
+  deployment?: {
+    response?: t.VercelHttpDeployResponse;
+    domain?: string; // DNS alias.
+  };
 };

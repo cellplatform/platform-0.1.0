@@ -32,7 +32,8 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
     .field('Module.Version', { label: 'Version', value: pkg.version })
     .field('Token.API', { label: 'API Token', value: secret(false) })
     .field('Token.API.Hidden', { label: 'API Token', value: secret(true) })
-    .field('Deploy.Response', () => toDeploymentResponse(data.deploymentResponse))
+    .field('Deploy.Domain', { label: 'Domain', value: data.deployment?.domain ?? '-' })
+    .field('Deploy.Response', () => toDeploymentResponse(data.deployment?.response))
     .items(fields);
 
   /**

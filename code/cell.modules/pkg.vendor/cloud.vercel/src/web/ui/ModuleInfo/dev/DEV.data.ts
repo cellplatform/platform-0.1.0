@@ -30,5 +30,6 @@ const DEPLOYMENT_RESPONSE: t.VercelHttpDeployResponse = {
 export const SAMPLE = {
   deployment: {
     response: DEPLOYMENT_RESPONSE,
+    domain: 'tmp.db.team',
   },
 };
