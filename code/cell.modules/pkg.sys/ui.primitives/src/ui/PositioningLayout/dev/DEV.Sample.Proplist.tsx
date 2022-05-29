@@ -26,14 +26,14 @@ function toList(args: {
 }) {
   const { id, info, overlaps } = args;
   const index = info ? `${info.index}` : '?';
-  const list: t.PropListItem[] = [{ label: `layer-${index}`, value: `id:"${id}"` }];
+  const list: t.PropListItem[] = [{ label: `Layer [index-${index}]`, value: `id:"${id}"` }];
 
   if (info) {
     const { position, size } = info;
     list.push(
       ...[
-        { label: 'position (x, y)', value: `${position.x} ${position.y}` },
-        { label: 'size', value: `x:${size.x} y:${size.y}, ${size.width}x${size.height}px` },
+        { label: 'Position (x, y)', value: `${position.x} ${position.y}` },
+        { label: 'Size', value: `x:${size.x} y:${size.y}, ${size.width}x${size.height}px` },
       ],
     );
 
