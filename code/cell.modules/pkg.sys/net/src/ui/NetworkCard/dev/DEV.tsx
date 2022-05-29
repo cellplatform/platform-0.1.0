@@ -1,10 +1,7 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { NetworkCard, NetworkCardProps } from '..';
-import { t, TEST, slug, CHILD_KINDS } from './DEV.common';
-// import { useDevController } from './DEV.useController';
-// import { DevCardPlaceholder } from './DEV.Card.Placeholder';
-// import { DevChild } from './DEV.Child';
+import { NetworkCardProps } from '..';
+import { t, TEST, slug, CHILD_KINDS, rx } from './DEV.common';
 import { DevNetworkCard } from './DEV.NetworkCard';
 
 type Ctx = {
@@ -43,8 +40,11 @@ export const actions = DevActions<Ctx>()
     e.select((config) => {
       config
         .view('buttons')
-        .title('ChildKind')
-        .items([{ label: '<undefined> (use controller)', value: undefined }, ...CHILD_KINDS])
+        // .title('ChildKind')
+        .items([
+          { label: 'childKind: <undefined>', value: undefined },
+          ...CHILD_KINDS.map((value) => ({ label: `childKind: ${value}`, value })),
+        ])
         .initial(config.ctx.debug.childKind)
         .pipe((e) => {
           if (e.changing) e.ctx.debug.childKind = e.changing?.next[0].value;
@@ -68,16 +68,34 @@ export const actions = DevActions<Ctx>()
 
   .subject((e) => {
     const { props, debug } = e.ctx;
+    const network = props?.instance.network;
+    const bus = network?.bus;
+    const netbus = network?.netbus;
+
+    const toId = rx.bus.instance;
 
     e.settings({
       host: { background: -0.04 },
       layout: {
-        label: '<NetworkCard>',
+        label: {
+          topLeft: '<NetworkCard>',
+          bottomLeft: bus && netbus ? `${toId(bus)} | ${toId(netbus)}` : undefined,
+        },
         cropmarks: -0.2,
       },
     });
 
-    e.render(props && <DevNetworkCard instance={props.instance} child={debug.childKind} />);
+    e.render(
+      props && (
+        <DevNetworkCard
+          instance={props.instance}
+          child={debug.childKind}
+          onExecuteCommand={(e) => {
+            console.log('⚡️ onExecuteCommand', e);
+          }}
+        />
+      ),
+    );
   });
 
 export default actions;

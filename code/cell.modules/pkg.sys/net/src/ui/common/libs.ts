@@ -17,6 +17,7 @@ export { Spinner } from 'sys.ui.primitives/lib/ui.ref/spinner/Spinner';
 
 export { EventStack } from 'sys.ui.primitives/lib/ui/Event.Stack';
 export { EventPipe } from 'sys.ui.primitives/lib/ui/Event.Pipe';
+export { EventList } from 'sys.ui.primitives/lib/ui/Event.List';
 
 export { Keyboard } from 'sys.ui.primitives/lib/keyboard';
 

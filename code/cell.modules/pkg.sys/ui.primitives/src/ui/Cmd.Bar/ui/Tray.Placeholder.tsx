@@ -30,10 +30,13 @@ const View: React.FC<TrayPlaceholderProps> = (props) => {
       overflow: 'hidden',
       Flex: 'center-center',
     }),
+    text: css({ opacity: 0.4 }),
   };
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.body}>{text}</div>
+      <div {...styles.body}>
+        <div {...styles.text}>{text}</div>
+      </div>
     </div>
   );
 };

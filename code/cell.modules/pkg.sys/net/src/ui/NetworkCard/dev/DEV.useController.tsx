@@ -62,25 +62,6 @@ export function useDevController(args: {
       .pipe()
       .subscribe((e) => setChild(defaultChild));
 
-    /**
-     * List for actions from the [CommandBar] textbox.
-     */
-    commandBar.action.$.subscribe(async (e) => {
-      /**
-       * 🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳
-       * TODO 🐷
-       * - parse and interpret the command text.
-       *
-       * 🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳
-       */
-      const remote = e.text;
-
-      const self = network.self;
-      const isReliable = true;
-      const autoStartVideo = true;
-      await LocalPeerCard.connect({ bus, remote, self, isReliable, autoStartVideo });
-    });
-
     return () => dispose();
   }, [network, instance, defaultChild]);
 

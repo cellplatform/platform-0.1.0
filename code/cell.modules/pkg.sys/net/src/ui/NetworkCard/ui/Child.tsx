@@ -7,6 +7,9 @@ import { color, COLORS, css, CssValue, t } from '../common';
  * - Factor <DevEventBusCard> into root `web.ui` folder
  */
 
+/**
+ * Types
+ */
 export type NetworkCardChildProps = {
   children?: React.ReactNode;
   style?: CssValue;
@@ -15,6 +18,9 @@ export type NetworkCardChildProps = {
   maxWidth?: number;
 };
 
+/**
+ * Component
+ */
 export const NetworkCardChild: React.FC<NetworkCardChildProps> = (props) => {
   const { minWidth, maxWidth, width } = props;
 

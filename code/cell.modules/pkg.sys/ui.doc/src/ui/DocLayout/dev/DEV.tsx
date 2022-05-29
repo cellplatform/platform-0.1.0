@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { DocLayout, DocLayoutProps } from '..';
-import { t,  DEFAULT } from '../common';
+import { t, DEFAULT } from '../common';
 
 type Ctx = {
   size?: t.DomRect;
