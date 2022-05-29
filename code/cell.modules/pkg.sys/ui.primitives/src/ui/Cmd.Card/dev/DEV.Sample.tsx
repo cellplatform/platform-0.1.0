@@ -20,6 +20,9 @@ export const DevSample: React.FC<DevSampleProps> = (args) => {
     instance: args.props.instance,
     enabled: args.isControllerEnabled,
     onChange: args.onStateChange,
+    onExecuteCommand(e) {
+      console.log('onExecuteCommand:', e);
+    },
   });
 
   return <CmdCard {...args.props} state={controller.state} style={{ flex: 1 }} />;

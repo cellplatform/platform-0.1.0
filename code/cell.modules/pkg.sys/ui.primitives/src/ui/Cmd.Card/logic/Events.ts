@@ -43,7 +43,8 @@ export function CmdCardEvents(args: t.CmdCardEventsArgs) {
           filter((e) => Boolean(e.text)),
         ).subscribe((e) => {
           const trigger = e.kind;
-          fn({ trigger });
+          const text = state.current.commandbar.text ?? '';
+          fn({ trigger, text });
         });
       },
     },
