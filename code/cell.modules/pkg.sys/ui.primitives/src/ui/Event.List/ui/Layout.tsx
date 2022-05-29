@@ -4,8 +4,6 @@ import { List } from '../../List';
 import { color, CONSTANTS, css, CssValue, t } from '../common';
 import { EventListRow } from './Row';
 
-type Id = string;
-
 /**
  * Types
  */
