@@ -32,7 +32,7 @@ export function useHistoryController(args: {
    * Lifecycle
    */
   useEffect(() => {
-    const store = Filesystem.Web.Events({ bus, id });
+    const store = Filesystem.Events({ bus, id });
     const fs = store.fs();
     let index = -1;
 
