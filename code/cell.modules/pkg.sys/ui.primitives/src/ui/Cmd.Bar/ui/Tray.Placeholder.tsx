@@ -25,10 +25,10 @@ const View: React.FC<TrayPlaceholderProps> = (props) => {
       Absolute: 6,
       border: `dashed 1px ${color.format(0.25)}`,
       borderRadius: 4,
-      Flex: 'center-center',
       fontSize: 11,
       color: color.format(0.7),
       overflow: 'hidden',
+      Flex: 'center-center',
     }),
   };
   return (
