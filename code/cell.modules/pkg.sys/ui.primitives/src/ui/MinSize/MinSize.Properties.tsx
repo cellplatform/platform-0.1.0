@@ -2,11 +2,10 @@ import React from 'react';
 
 import { PropList } from '../PropList';
 import { COLORS, css, CssValue, t, toMinSizeFlags, value } from './common';
-import { MinSizeProps } from './MinSize';
 
 export type MinSizePropertiesProps = {
   title?: string;
-  props: MinSizeProps;
+  props: { minWidth?: number; minHeight?: number; hideStrategy?: t.MinSizeHideStrategy };
   size?: t.DomRect;
   style?: CssValue;
 };
@@ -42,14 +41,24 @@ export const MinSizeProperties: React.FC<MinSizePropertiesProps> = (props) => {
         color: is.tooShort ? COLORS.MAGENTA : COLORS.BLUE,
       },
     },
-    { label: 'minWidth', value: { data: toNumberString(minWidth, 'px') } },
-    { label: 'minHeight', value: { data: toNumberString(minHeight, 'px') } },
-    { label: 'hideStrategy', value: { data: hideStrategy ?? '-' } },
+    {
+      label: 'minimum width',
+      value: {
+        data: toNumberString(minWidth, 'px'),
+      },
+    },
+    {
+      label: 'minimum height',
+      value: {
+        data: toNumberString(minHeight, 'px'),
+      },
+    },
+    { label: 'hide strategy', value: { data: hideStrategy ?? '-' } },
   ];
 
   return (
     <div {...css(styles.base, props.style)}>
-      <PropList title={props.title ?? 'Props'} items={items} defaults={{ monospace: true }} />
+      <PropList title={props.title} items={items} defaults={{ monospace: true }} />
     </div>
   );
 };

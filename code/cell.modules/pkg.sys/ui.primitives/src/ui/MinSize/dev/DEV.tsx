@@ -2,7 +2,6 @@ import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 
 import { MinSize, MinSizeProps } from '..';
-import { MinSizeProperties } from '../MinSize.Properties';
 import { MinSizeHideStrategies, color, t, css } from '../common';
 
 import { SampleChild } from './DEV.Sample.Child';
@@ -44,7 +43,8 @@ export const actions = DevActions<Ctx>()
 
     e.component((e) => {
       return (
-        <MinSizeProperties
+        <MinSize.Properties
+          title={'<MinSize.Properties>'}
           size={e.ctx.size}
           props={e.ctx.props}
           style={{ MarginX: 20, MarginY: 10 }}
@@ -103,16 +103,23 @@ export const actions = DevActions<Ctx>()
       },
     };
 
-    const elWarning = (
-      <div {...styles.warning.base}>
-        <div {...styles.warning.inner}>Too Small</div>
-      </div>
-    );
+    const lazyWarning: t.MinSizeRenderWarning = (e) => {
+      const { is } = e;
+      let message = 'Screen is too small.';
+      if (is.tooNarrow && !is.tooShort) message = `Screen is too narrow.`;
+      if (!is.tooNarrow && is.tooShort) message = `Screen is too short.`;
+
+      return (
+        <div {...styles.warning.base}>
+          <div {...styles.warning.inner}>{message}</div>
+        </div>
+      );
+    };
 
     const { minWidth, minHeight } = e.ctx.props;
     const el = (
-      <MinSize {...e.ctx.props} style={{ flex: 1 }} warningElement={elWarning}>
-        <SampleChild minWidth={minWidth} minHeight={minHeight} />
+      <MinSize {...e.ctx.props} style={{ flex: 1 }} warningElement={lazyWarning}>
+        <SampleChild size={e.ctx.size} minWidth={minWidth} minHeight={minHeight} />
       </MinSize>
     );
 
