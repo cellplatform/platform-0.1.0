@@ -1,2 +1,1 @@
-// export * from '../web.MyBus/types';
-export type TypeFoo = 'FOO';
+export * from '../ui/DocLayout/types';
