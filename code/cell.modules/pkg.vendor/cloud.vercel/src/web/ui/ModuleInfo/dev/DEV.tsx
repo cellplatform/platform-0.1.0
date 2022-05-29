@@ -18,7 +18,7 @@ export const actions = DevActions<Ctx>()
       props: {
         data: {
           token: 'abcdefg123456==',
-          deploymentResponse: SAMPLE.deployment.response,
+          deployment: SAMPLE.deployment,
         },
       },
     };

@@ -59,8 +59,8 @@ export function useDragTarget<T extends HTMLElement>(
         e.preventDefault();
         changeDragOver(false);
         count = 0;
-        const { dir, files, urls } = await readDropEvent(e);
-        const dropped: t.Dropped = { dir, files, urls };
+        const { files, urls } = await readDropEvent(e);
+        const dropped: t.Dropped = { files, urls };
         setDropped(dropped);
         onDrop?.(dropped);
       }

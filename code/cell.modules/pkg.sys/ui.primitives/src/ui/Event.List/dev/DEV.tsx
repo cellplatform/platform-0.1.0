@@ -4,7 +4,7 @@ import { NetworkBusMock } from 'sys.runtime.web';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { EventList, EventListProps } from '..';
-import { rx, t } from '../common';
+import { rx, t, slug } from '../common';
 import * as k from '../types';
 
 /**
@@ -72,15 +72,15 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const bus = rx.bus();
-    const instance = 'sample.foo';
-    const events = EventList.Events({ bus, instance });
+    const instance = { bus, id: `foo.${slug()}` };
+    const events = EventList.Events({ instance });
 
     const netbus = NetworkBusMock({ local: 'local-id', remotes: ['peer-1', 'peer-2'] });
     const ctx: Ctx = {
       bus,
       netbus,
       events,
-      props: { bus: netbus, debug: {} },
+      props: { instance, bus: netbus, debug: {} },
       debug: {
         fireCount: 0,
         busKind: 'netbus',
@@ -136,6 +136,13 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
+    e.title('Events');
+    e.button('⚡️ scroll: Top', (e) => e.ctx.events.scroll('Top'));
+    e.button('⚡️ scroll: Bottom', (e) => e.ctx.events.scroll('Bottom'));
+    e.hr();
+  })
+
+  .items((e) => {
     e.title('Debug');
 
     e.boolean('busid ("instance")', (e) => {
@@ -151,9 +158,6 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr(1, 0.1);
-
-    e.button('[TODO] scroll: Top', (e) => e.ctx.events.scroll.fire('Top'));
-    e.button('[TODO] scroll: Bottom', (e) => e.ctx.events.scroll.fire('Bottom'));
 
     e.hr();
 

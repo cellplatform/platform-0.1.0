@@ -6,13 +6,14 @@ import { t } from './common';
  */
 export function NetworkController(args: { events: t.SysFsEvents; netbus: t.NetworkBus<any> }) {
   const { events } = args;
-  //
 
   /**
    * TODO 🐷 WIP
    */
+  console.group('🌳 WIP: fs.NetworkController');
   console.log('network');
   console.log('events.id', events.id);
+  console.groupEnd();
 
   events.$.subscribe((e) => {
     console.log('$ NetworkController:', e);

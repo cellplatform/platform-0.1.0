@@ -1,24 +1,27 @@
 import React from 'react';
 import { debounceTime } from 'rxjs/operators';
-import { DevActions, LOREM, TestSuiteRunResponse } from 'sys.ui.dev';
+import { DevActions, LOREM, TestSuiteRunResponse, TestFs } from '../../../test';
 import { Vercel } from 'vendor.cloud.vercel/lib/web';
 import { ModuleInfo as VercelModuleInfo } from 'vendor.cloud.vercel/lib/web/ui/ModuleInfo';
 
 import { DevEnv, DevEnvProps } from '..';
 import { CodeEditor } from '../../../api';
-import { DevFilesystem } from '../../dev';
-import { Filesystem, Http, rx, slug, t } from '../common';
+import { Http, rx, slug, t, Filesystem } from '../common';
 import { evalCode } from './DEV.evaluate';
 
 type Ctx = {
+  instance: t.FsViewInstance;
   bus: t.EventBus<any>;
+
   token: string;
-  fs: { bus: t.EventBus<any>; id: string };
+  fs: t.Fs;
   props: DevEnvProps;
   editor?: t.CodeEditorInstanceEvents;
   onReady: t.DevEnvReadyHandler;
   runTests(code?: string): Promise<TestSuiteRunResponse | undefined>;
-  debug: { deployment?: t.VercelHttpDeployResponse };
+
+  debug: { fs: { selection?: t.ListSelectionState } };
+  deployment: { response?: t.VercelHttpDeployResponse; domain: string };
 };
 
 const SAMPLE_TEST = `
@@ -67,15 +70,14 @@ export const actions = DevActions<Ctx>()
     const bus = rx.bus();
     let editor: t.CodeEditorInstanceEvents | undefined;
 
-    const fs = { bus, id: 'fs.dev.code' };
-    const storage = Filesystem.IndexedDb.create(fs);
-    const path = 'dev/DevEnv/doc.md';
-    const getFs = async () => (await storage).fs;
+    const path = 'index.json';
+    const change = e.change;
+    const { fs, instance } = TestFs.init();
+
     const getEditorCode = () => ctx.editor?.text.get.fire();
-    const getSavedCode = async () => new TextDecoder().decode(await (await getFs()).read(path));
+    const getSavedCode = async () => new TextDecoder().decode(await fs.read(path));
 
     const handleChanged = async () => {
-      const fs = await getFs();
       const text = await getEditorCode();
       ctx.runTests(text);
       await fs.write(path, text);
@@ -83,6 +85,7 @@ export const actions = DevActions<Ctx>()
     };
 
     const ctx: Ctx = {
+      instance,
       bus,
       fs,
       token: Util.token.read(),
@@ -93,11 +96,17 @@ export const actions = DevActions<Ctx>()
         // language: 'typescript',
         // language: 'javascript',
 
-        language: 'markdown',
-        text: SAMPLE_MD,
+        // language: 'markdown',
+        // text: SAMPLE_MD,
 
-        // language: 'json',
-        // text: '{ "count": 123 }\n',
+        language: 'json',
+        // text: '{  ` "count": 123 }\n',
+        text: `
+{
+  ref: "route configuration (vercel.json)",
+  refUrl: "https://vercel.com/docs/project-configuration"
+}        
+        `,
       },
 
       get editor() {
@@ -105,7 +114,11 @@ export const actions = DevActions<Ctx>()
       },
 
       async onReady(args) {
-        const text = (await getSavedCode()) || SAMPLE_TEST;
+        // const text = (await getSavedCode()) || SAMPLE_TEST;
+        const text = await getSavedCode();
+
+        console.log('saved code', text);
+
         editor = args.editor;
         editor.text.set(text);
         editor.text.changed$.pipe(debounceTime(500)).subscribe(handleChanged);
@@ -134,7 +147,8 @@ export const actions = DevActions<Ctx>()
           return update(undefined);
         }
       },
-      debug: {},
+      debug: { fs: {} },
+      deployment: { domain: 'tmp.ro.db.team' },
     };
 
     return ctx;
@@ -173,10 +187,46 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('Filesystem');
+    e.title('Filesystem ("Package")');
 
     e.component((e) => {
-      return <DevFilesystem fs={e.ctx.fs} style={{ Margin: [5, 10, 20, 35] }} />;
+      const change = e.change;
+      return (
+        <Filesystem.PathList.Stateful
+          style={{ Margin: [5, 10, 20, 10], height: 150 }}
+          instance={e.ctx.instance}
+          scroll={true}
+          droppable={true}
+          selectable={true}
+          onStateChange={(e) => {
+            if (e.kind === 'Selection') {
+              change.ctx((ctx) => (ctx.debug.fs.selection = e.to.selection));
+            }
+
+            console.group('🌳 ');
+            console.log('<FsPathList> State Change');
+            console.log('e', e);
+            console.groupEnd();
+          }}
+        />
+      );
+    });
+
+    e.hr(1, 0.1);
+
+    e.button('delete selected', async (e) => {
+      const selection = e.ctx.debug.fs.selection;
+      if (selection) {
+        const fs = e.ctx.fs;
+        const files = (await fs.manifest()).files.filter((_, i) => selection.indexes.includes(i));
+        await Promise.all(files.map((file) => fs.delete(file.path)));
+      }
+    });
+
+    e.button('delete all (clear)', async (e) => {
+      const fs = e.ctx.fs;
+      const files = (await fs.manifest()).files;
+      await Promise.all(files.map((file) => fs.delete(file.path)));
     });
 
     e.hr();
@@ -195,16 +245,29 @@ export const actions = DevActions<Ctx>()
     );
 
     e.component((e) => {
+      const token = e.ctx.token;
+      const domain = e.ctx.deployment.domain;
       return (
         <VercelModuleInfo
-          fields={['Module', 'Token.API.Hidden']}
-          data={{ token: e.ctx.token }}
+          fields={['Module', 'Token.API.Hidden', 'Deploy.Domain']}
+          data={{ token, deployment: { domain } }}
           style={{ Margin: [30, 45, 30, 38] }}
         />
       );
     });
 
     e.hr(1, 0.1);
+
+    e.textbox((config) =>
+      config
+        .placeholder('set domain alias')
+        // .initial(config.ctx.deployment.domain)
+        .pipe((e) => {
+          if (e.changing?.action === 'invoke') {
+            e.ctx.deployment.domain = e.changing.next || '';
+          }
+        }),
+    );
 
     /**
      * TODO 🐷 Temp
@@ -215,11 +278,9 @@ export const actions = DevActions<Ctx>()
       const Authorization = `Bearer ${token}`;
       const headers = { Authorization };
       const http = Http.create({ headers });
-      const fs = Filesystem.IndexedDb.Events(e.ctx.fs).fs();
+      const fs = e.ctx.fs;
 
-      const alias = 'deploy.tmp.db.team';
-
-      console.log('manifest', await fs.manifest());
+      const alias = e.ctx.deployment.domain;
 
       /**
        * CONFIGURE
@@ -247,7 +308,6 @@ export const actions = DevActions<Ctx>()
           target: alias ? 'production' : 'staging',
           regions: ['sfo1'],
           alias,
-          // routes: [{ src: '/foo', dest: '/' }],
         },
         { ensureProject: true },
       );
@@ -268,18 +328,18 @@ export const actions = DevActions<Ctx>()
       if (res.error) console.log('error', res.error);
       console.log();
 
-      e.ctx.debug.deployment = res;
+      e.ctx.deployment.response = res;
     });
 
     e.hr();
 
     e.component((e) => {
-      const data = e.ctx.debug.deployment;
-      if (!data) return null;
+      const response = e.ctx.deployment.response;
+      if (!response) return null;
       return (
         <VercelModuleInfo
           fields={['Deploy.Response']}
-          data={{ deploymentResponse: data }}
+          data={{ deployment: { response } }}
           style={{ Margin: [10, 40, 10, 40] }}
         />
       );

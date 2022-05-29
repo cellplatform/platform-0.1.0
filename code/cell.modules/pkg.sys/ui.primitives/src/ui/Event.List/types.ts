@@ -27,23 +27,17 @@ export type EventListDebugEdge = 'TopLeft' | 'TopRight' | 'BottomLeft' | 'Bottom
 /**
  * EVENTS (API)
  */
-export type EventListEventsFactory = (args: {
-  bus: EventBus<any>;
-  instance: Id;
-}) => EventListEvents;
+export type EventListEventsFactory = (args: { instance: EventListInstance }) => EventListEvents;
 
 export type EventListEvents = Disposable & {
-  bus: Id;
-  instance: Id;
+  instance: { bus: Id; id: Id };
   $: Observable<EventListEvent>;
-  scroll: {
-    $: Observable<EventListScroll>;
-    fire(target: EventListScroll['target'], options?: { align?: EventListAlign }): void;
-  };
   click: {
     $: Observable<EventListClicked>;
     fire(args: { index: Index; item: t.EventHistoryItem }): void;
   };
+  redraw(): void;
+  scroll(target: t.ListScroll['target'], options?: { align?: t.ListItemAlign }): void;
 };
 
 /**

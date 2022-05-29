@@ -2,8 +2,8 @@
  * @platform
  */
 export { log } from '@platform/log/lib/client';
-export { css, color, CssValue, Style, formatColor } from '@platform/css';
-export { useResizeObserver } from '@platform/react';
+export { css, Color, CssValue, Style, formatColor } from '@platform/css';
+export { useResizeObserver, FC } from '@platform/react';
 export { rx, slug } from '@platform/util.value';
 
 /**

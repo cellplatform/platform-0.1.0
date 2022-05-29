@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { COLORS, css, CssValue, Event, Icons, t } from '../common';
+import { COLORS, Color, css, CssValue, Event, Icons, t } from '../common';
 
 export type NetworkCardTitlebarProps = {
   instance: { network: t.PeerNetwork; id: t.Id };
@@ -14,6 +14,7 @@ export const NetworkCardTitlebar: React.FC<NetworkCardTitlebarProps> = (props) =
 
   const [status, setStatus] = useState<t.PeerStatus>();
   const totalConnections = status?.connections.length ?? 0;
+  const hasPeers = totalConnections > 0;
 
   /**
    * [Lifecycle]
@@ -44,8 +45,7 @@ export const NetworkCardTitlebar: React.FC<NetworkCardTitlebarProps> = (props) =
         <Icons.Antenna
           style={styles.icon}
           size={iconSize}
-          color={COLORS.DARK}
-          opacity={totalConnections === 0 ? 0.2 : 0.7}
+          color={hasPeers ? COLORS.CYAN : Color.alpha(COLORS.DARK, 0.2)}
         />
       </div>
     </>

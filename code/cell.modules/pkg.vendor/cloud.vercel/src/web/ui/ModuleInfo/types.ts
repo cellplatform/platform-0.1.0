@@ -6,9 +6,13 @@ export type ModuleInfoFields =
   | 'Module.Version'
   | 'Token.API'
   | 'Token.API.Hidden'
+  | 'Deploy.Domain'
   | 'Deploy.Response';
 
 export type ModuleInfoData = {
   token?: string;
-  deploymentResponse?: t.VercelHttpDeployResponse;
+  deployment?: {
+    response?: t.VercelHttpDeployResponse;
+    domain?: string; // DNS alias.
+  };
 };

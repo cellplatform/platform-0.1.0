@@ -10,16 +10,21 @@ export type NetworkCardProps = {
   instance: { network: t.PeerNetwork; id: t.Id };
   child?: JSX.Element;
   style?: CssValue;
+  onExecuteCommand?: t.CmdCardExecuteCommandHandler;
 };
 
 export const NetworkCard: React.FC<NetworkCardProps> = (props) => {
-  const { child, instance } = props;
+  const { child, instance, onExecuteCommand } = props;
   const { bus, netbus } = instance.network;
+  const id = instance.id;
 
-  const { state } = CmdCard.useController({
-    instance: { bus, id: instance.id },
+  const card = CmdCard.useController({
+    instance: { bus, id },
     initial: CmdCard.defaultState({ body: { render: () => elBody } }),
+    onExecuteCommand,
   });
+
+  const isReady = Boolean(card.state?.ready);
 
   /**
    * [Render]
@@ -28,6 +33,13 @@ export const NetworkCard: React.FC<NetworkCardProps> = (props) => {
     base: css({ boxSizing: 'border-box', Flex: 'x-stretch-stretch' }),
     root: css({ minWidth: 600, minHeight: 300, display: 'flex' }),
     fill: css({ flex: 1 }),
+    debug: {
+      busid: css({
+        Absolute: [null, null, -20, 0],
+        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+        fontFamily: 'monospace',
+      }),
+    },
   };
 
   const elHeader = <NetworkCardTitlebar instance={instance} />;
@@ -38,8 +50,8 @@ export const NetworkCard: React.FC<NetworkCardProps> = (props) => {
     </CardBody>
   );
 
-  const elRoot = <CmdCard instance={{ bus, id: instance.id }} style={styles.root} state={state} />;
-  const elChild = child && <NetworkCardChild>{child}</NetworkCardChild>;
+  const elRoot = <CmdCard instance={{ bus, id }} style={styles.root} state={card.state} />;
+  const elChild = child && isReady && <NetworkCardChild>{child}</NetworkCardChild>;
 
   return (
     <div {...css(styles.base, props.style)}>

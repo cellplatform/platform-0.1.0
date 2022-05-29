@@ -3,9 +3,9 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { TEST } from '../../test';
-
 import { DevNetworkCard } from '../NetworkCard/dev/DEV.NetworkCard';
 import * as k from '../NetworkCard/types';
+import { DevBelow } from './DEV.Below';
 import {
   Button,
   Color,
@@ -23,6 +23,7 @@ import {
   Spinner,
   t,
   WebRuntime,
+  LocalPeerCard,
 } from './DEV.common';
 import { DevOverlay } from './DEV.Overlay';
 
@@ -35,10 +36,47 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
   const id = 'instance.app';
   const [network, setNetwork] = useState<t.PeerNetwork>();
   const bus = network?.bus ? rx.busAsType<k.NetworkCardEvent>(network?.bus) : undefined;
+  const netbus = network?.netbus;
 
   const [overlay, setOverlay] = useState<undefined | t.NetworkCardOverlay>();
   const keybrd = Keyboard.useKeyboard({ bus, instance: id });
   const fullscreen = Fullscreen.useFullscreen();
+
+  /**
+   * TODO 🐷 HACK
+   * Move to sensible place (and put within a formal "language command pack (grammar)")
+   */
+  const onExecuteCommand__TEMP: t.CmdCardExecuteCommandHandler = async (e) => {
+    if (!netbus) return;
+    if (!bus) return;
+    if (!network) return;
+
+    const text = e.text.trim();
+
+    /**
+     * 🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳
+     * TODO 🐷
+     * - parse and interpret the command text.
+     *
+     * 🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳
+     */
+
+    if (text.startsWith('fire ')) {
+      const type = text.substring(text.indexOf(' '));
+      if (type) {
+        console.log('fire');
+        netbus.target.remote({ type, payload: { msg: 'hello' } });
+      }
+    }
+
+    if (text.startsWith('peer:')) {
+      const remote = text;
+      const self = network.self;
+      const isReliable = true;
+      const autoStartVideo = true;
+      await LocalPeerCard.connect({ bus, remote, self, isReliable, autoStartVideo });
+    }
+  };
 
   /**
    * Initialize network
@@ -93,16 +131,38 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     base: css({ Absolute: 0, backgroundColor: Color.format(1) }),
     bg: css({ Absolute: 0, backgroundColor: Color.format(-0.06) }),
     layout: css({ Absolute: 0 }),
-    networkCard: css({ pointerEvents: 'auto' }),
-    fullscreen: css({ pointerEvents: 'auto' }),
   };
 
   const CardLayer: t.PositioningLayer = {
     id: 'layer.Card',
     position: { x: 'center', y: 'center' },
-    render() {
+    render(e) {
       if (!network) return <Spinner />;
-      return <DevNetworkCard instance={{ network, id }} style={styles.networkCard} />;
+      const styles = { base: css({ pointerEvents: 'auto' }) };
+      return (
+        <DevNetworkCard
+          instance={{ network, id }}
+          style={styles.base}
+          onExecuteCommand={onExecuteCommand__TEMP}
+        />
+      );
+    },
+  };
+
+  const CardBelow: t.PositioningLayer = {
+    id: 'layer.Card.Below',
+    position: { x: 'center', y: 'bottom' },
+    render(e) {
+      const card = e.find.first(CardLayer.id);
+      if (!network || !card) return null;
+
+      return (
+        <DevBelow
+          network={network}
+          siblings={{ root: e.size, card: card.size }}
+          style={{ pointerEvents: 'auto' }}
+        />
+      );
     },
   };
 
@@ -113,8 +173,9 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
       if (!overlay?.render) return null;
       if (!network) return null;
 
+      const styles = { base: css({ pointerEvents: 'auto' }) };
       return (
-        <DevOverlay bus={network.bus} instance={id} style={styles.fullscreen}>
+        <DevOverlay bus={network.bus} instance={id} style={styles.base}>
           {overlay.render({ size })}
         </DevOverlay>
       );
@@ -125,9 +186,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     id: 'layer.Fullscreen',
     position: { x: 'right', y: 'top' },
     render(e) {
-      const styles = {
-        base: css({ pointerEvents: 'auto', Margin: [3, 4, null, null] }),
-      };
+      const styles = { base: css({ pointerEvents: 'auto', Margin: [3, 4, null, null] }) };
       const Icon = fullscreen.isFullscreen ? Icons.FullScreen.Exit : Icons.FullScreen.Open;
       return (
         <Button style={styles.base} onClick={fullscreen.toggle}>
@@ -160,7 +219,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     <div ref={fullscreen.ref} {...css(styles.base, props.style)}>
       <div {...styles.bg} />
       <PositioningLayout
-        layers={[VersionLayer, FullscreenLayer, CardLayer, OverlayLayer]}
+        layers={[VersionLayer, FullscreenLayer, CardLayer, CardBelow, OverlayLayer]}
         style={styles.layout}
         childPointerEvents={'none'}
       />

@@ -42,7 +42,7 @@ export const BodyColumnLeft: React.FC<BodyColumnLeftProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
-      <BodyColumnTitle>{'LOCAL'}</BodyColumnTitle>
+      <BodyColumnTitle>{'SELF'}</BodyColumnTitle>
       {elPeer}
       <BodyColumnHr />
     </div>

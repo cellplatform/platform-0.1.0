@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { FsPathList, PathListStatefulProps } from '..';
-import { DevActions, List, ObjectView, TestFs } from '../../../test';
-import { value, Path, COLORS, cuid, rx, t } from '../common';
+import { DevActions, ObjectView, TestFs } from '../../../test';
+import { value, Path, List, COLORS, cuid, rx, t } from '../common';
 
 type Ctx = {
   fs: t.Fs;
@@ -101,6 +101,7 @@ export const actions = DevActions<Ctx>()
       config
         .placeholder('within directory')
         .initial(config.ctx.debug.dir)
+        .indent(25)
         .pipe((e) => {
           if (e.changing?.action === 'invoke') {
             const next = e.changing.next || '';

@@ -1,8 +1,8 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 
-import { PositioningLayout, PositioningLayoutProps, PositioningLayoutSizeHandler } from '..';
-import { t, rx } from '../common';
+import { PositioningLayout, PositioningLayoutProps } from '..';
+import { rx, t } from '../common';
 import { PositioningLayoutConfig } from '../PositioningLayout.Config';
 import { PositioningLayoutConfigStack } from '../PositioningLayout.ConfigStack';
 import { DevSample } from './DEV.Sample';
@@ -13,13 +13,12 @@ type Ctx = {
   bus: t.EventBus;
   props: PositioningLayoutProps;
   debug: { size?: t.DomRect; current?: Index };
-  onSize: PositioningLayoutSizeHandler;
 };
 
 const insert = (ctx: Ctx, position: t.BoxPosition) => {
   const layers = ctx.props.layers ?? (ctx.props.layers = []);
   const layer: t.PositioningLayer = {
-    id: `thing-${layers.length + 1}`,
+    id: `foo-${layers.length + 1}`,
     position,
     render(e) {
       const info = e.find.first(layer.id);
@@ -39,15 +38,15 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
+    const change = e.change;
     const bus = rx.bus();
 
     const ctx: Ctx = {
       bus,
-      props: {},
-      debug: { current: 0 },
-      onSize(args) {
-        e.change.ctx((ctx) => (ctx.debug.size = args.size));
+      props: {
+        onSize: (e) => change.ctx((ctx) => (ctx.debug.size = e.size)),
       },
+      debug: { current: 0 },
     };
 
     insert(ctx, { x: 'center', y: 'bottom' });
@@ -126,7 +125,7 @@ export const actions = DevActions<Ctx>()
         background: 1,
       },
     });
-    e.render(<PositioningLayout {...e.ctx.props} style={{ flex: 1 }} onSize={e.ctx.onSize} />);
+    e.render(<PositioningLayout {...e.ctx.props} style={{ flex: 1 }} />);
   });
 
 export default actions;

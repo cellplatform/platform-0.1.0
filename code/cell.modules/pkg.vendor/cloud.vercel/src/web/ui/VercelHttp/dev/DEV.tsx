@@ -4,14 +4,14 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { VercelHttp, VercelHttpProps } from '..';
 import { TestUtil } from '../../../test';
 import { Vercel } from '../../../Vercel';
-import { css, cuid, t, value } from '../../common';
-import { DevFilesystem } from '../../dev';
+import { css, cuid, t, value, Filesystem } from '../../common';
 import { ModuleInfo } from '../../ModuleInfo';
 
 type Ctx = {
   bus: t.EventBus;
   props: VercelHttpProps;
   fs: t.Fs;
+  domain: string;
   output: {
     json?: any;
     deployment?: t.VercelHttpDeployResponse;
@@ -33,6 +33,7 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       bus,
       fs,
+      domain: 'tmp.db.team',
       props: {},
       output: {},
     };
@@ -49,6 +50,7 @@ export const actions = DevActions<Ctx>()
 
     e.button('tmp: deploy', async (e) => {
       const { http, token } = TestUtil;
+      const alias = e.ctx.domain;
 
       const fs = e.ctx.fs.dir('foo');
       const client = Vercel.Http({ token, fs });
@@ -59,7 +61,6 @@ export const actions = DevActions<Ctx>()
       console.log('-------------------------------------------');
 
       // const { http, fs, token } = e.ctx;
-      const alias = 'tmp-deploy.db.team';
 
       /**
        * TODO 🐷
@@ -161,8 +162,21 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.1);
 
+    e.title('Filesystem ("Package")');
+
     e.component((e) => {
-      return <DevFilesystem fs={TestUtil.fs.instance} style={{ Margin: [20, 45, 20, 45] }} />;
+      return (
+        <Filesystem.PathList.Stateful
+          style={{ Margin: [5, 10, 20, 10], height: 150 }}
+          instance={TestUtil.fs.instance}
+          scroll={true}
+          droppable={true}
+          selectable={true}
+          onStateChange={(e) => {
+            //
+          }}
+        />
+      );
     });
 
     e.hr();
@@ -179,11 +193,12 @@ export const actions = DevActions<Ctx>()
 
     e.component((e) => {
       const token = TestUtil.token;
+      const domain = e.ctx.domain;
       return (
         <ModuleInfo
           style={{ Margin: [30, 55, 30, 55] }}
-          fields={['Module', 'Token.API.Hidden']}
-          data={{ token }}
+          fields={['Module', 'Token.API.Hidden', 'Deploy.Domain']}
+          data={{ token, deployment: { domain } }}
         />
       );
     });
@@ -209,12 +224,12 @@ export const actions = DevActions<Ctx>()
     e.hr();
 
     e.component((e) => {
-      const data = e.ctx.output.deployment;
-      if (!data) return null;
+      const response = e.ctx.output.deployment;
+      if (!response) return null;
       return (
         <ModuleInfo
           fields={['Deploy.Response']}
-          data={{ deploymentResponse: data }}
+          data={{ deployment: { response } }}
           style={{ Margin: [10, 40, 10, 40] }}
         />
       );
@@ -240,7 +255,9 @@ export const actions = DevActions<Ctx>()
       actions: { width: 400 },
       layout: {
         label: '<VercelHttp>',
-        position: [150, 80],
+        // position: [150, 80],
+        width: 400,
+        height: 200,
         border: -0.1,
         cropmarks: -0.2,
         background: 1,

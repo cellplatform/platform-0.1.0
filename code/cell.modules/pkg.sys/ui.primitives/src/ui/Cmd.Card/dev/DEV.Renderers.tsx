@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { COLORS, color, css, t } from '../common';
+import { COLORS, Color, css, t } from '../common';
 import { ObjectView } from 'sys.ui.dev';
 import { Button } from '../../../ui.ref/button/Button';
 
@@ -23,9 +23,9 @@ const renderSampleBody: t.CmdCardRender<A> = (e) => {
     base: css({
       Absolute: 40,
       Flex: 'center-center',
-      border: `dashed 1px ${color.format(-0.2)}`,
-      backgroundColor: color.alpha(COLORS.DARK, 0.04),
-      borderRadius: 10,
+      border: `dashed 1px ${Color.alpha(COLORS.MAGENTA, 0.2)}`,
+      backgroundColor: Color.alpha(COLORS.DARK, 0.04),
+      borderRadius: 5,
     }),
     title: css({ Absolute: [10, null, null, 12] }),
     render: css({ Absolute: [5, 8, null, null], fontSize: 11, opacity: 0.5 }),
@@ -62,8 +62,8 @@ const renderSampleBackdrop: t.CmdCardRender<B> = (e) => {
       Absolute: [10, 10, 0, 10],
       Size: e.size,
       Flex: 'center-center',
-      color: color.format(1),
-      border: `dashed 1px ${color.format(0.3)}`,
+      color: Color.format(1),
+      border: `dashed 1px ${Color.format(0.3)}`,
       backgroundColor: 'rgba(255, 0, 0, 0.06)',
       borderRadius: 5,
     }),
@@ -89,7 +89,7 @@ const renderSampleBackdrop: t.CmdCardRender<B> = (e) => {
 /**
  * INDEX
  */
-export const SampleRenderer = {
+export const SampleRenderers = {
   backdrop: renderSampleBackdrop,
   body: renderSampleBody,
 };

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { MinSizeProperties as Properties } from './MinSize.Properties';
 
 import {
   css,
@@ -11,28 +11,27 @@ import {
   t,
   toMinSizeFlags,
   MinSizeDefaults,
+  FC,
+  rx,
 } from './common';
-
-export type MinSizeResizeEvent = { size: t.DomRect; is: t.MinSizeFlags };
-export type MinSizeResizeEventHandler = (e: MinSizeResizeEvent) => void;
 
 export type MinSizeProps = {
   children?: React.ReactNode;
   minWidth?: number;
   minHeight?: number;
   hideStrategy?: t.MinSizeHideStrategy;
-  warningElement?: React.ReactNode;
+  warningElement?: React.ReactNode | t.MinSizeRenderWarning;
   rootResize?: t.ResizeObserver;
   showDebugSize?: boolean;
   style?: CssValue;
-  onResize?: MinSizeResizeEventHandler;
+  onResize?: t.MinSizeResizeEventHandler;
 };
 
 /**
  * A container element that prevents showing content when
  * the width/height is too small.
  */
-export const MinSize: React.FC<MinSizeProps> = (props) => {
+const View: React.FC<MinSizeProps> = (props) => {
   const { minWidth, minHeight, hideStrategy = MinSizeDefaults.hideStrategy } = props;
 
   const size = useResizeObserver({ root: props.rootResize });
@@ -44,7 +43,8 @@ export const MinSize: React.FC<MinSizeProps> = (props) => {
    * Lifecycle.
    */
   useEffect(() => {
-    const dispose$ = new Subject<void>();
+    const { dispose$, dispose } = rx.disposable();
+
     /**
      * Bubble resize event.
      */
@@ -55,7 +55,7 @@ export const MinSize: React.FC<MinSizeProps> = (props) => {
       if (props.onResize) props.onResize({ size, is });
     });
 
-    return () => dispose$.next();
+    return () => dispose();
   }, [minWidth, minHeight]); // eslint-disable-line
 
   /**
@@ -92,7 +92,13 @@ export const MinSize: React.FC<MinSizeProps> = (props) => {
     },
   };
 
-  const elWarning = !ok && Boolean(is) ? props.warningElement : undefined;
+  const elWarning = (() => {
+    if (ok || !is) return undefined;
+    if (typeof props.warningElement === 'function') {
+      return props.warningElement({ size: size.rect, is });
+    }
+    return props.warningElement;
+  })();
 
   const elDebugSize = props.showDebugSize && size.ready && (
     <div {...styles.size.base}>
@@ -125,3 +131,16 @@ export const MinSize: React.FC<MinSizeProps> = (props) => {
     </div>
   );
 };
+
+/**
+ * Export
+ */
+
+type Fields = {
+  Properties: typeof Properties;
+};
+export const MinSize = FC.decorate<MinSizeProps, Fields>(
+  View,
+  { Properties },
+  { displayName: 'MinSize' },
+);

@@ -77,8 +77,14 @@ export type CmdCardEvents = {
     blur(): void;
     select(): void;
     cursor: { start(): void; end(): void };
-    onExecuteCommand(fn: (e: { trigger: 'Key:Enter' }) => any): void;
+    onExecuteCommand(fn: CmdCardExecuteCommandHandler): void;
   };
+};
+
+export type CmdCardExecuteCommandHandler = (e: CmdCardExecuteCommandArgs) => any;
+export type CmdCardExecuteCommandArgs = {
+  trigger: 'Key:Enter';
+  text: string;
 };
 
 /**

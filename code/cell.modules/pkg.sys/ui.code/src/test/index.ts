@@ -1,4 +1,3 @@
-export { expect, Test } from 'sys.ui.dev';
+export { expect, Test, DevActions, LOREM, TestSuiteRunResponse, toObject } from 'sys.ui.dev';
 export { is } from '@platform/util.is';
-
-export * from '../common';
+export { TestFs } from 'sys.fs/lib/web/test/Test.Fs';

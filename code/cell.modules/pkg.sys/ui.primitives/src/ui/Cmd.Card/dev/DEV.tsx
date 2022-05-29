@@ -7,7 +7,7 @@ import { CmdCard, CmdCardProps } from '..';
 import { EventList } from '../../Event.List';
 import { css, rx, slug, t, Util } from '../common';
 import { CmdCardInfoProps } from '../ui/Info';
-import { SampleRenderer, A, B } from './DEV.Renderers';
+import { SampleRenderers, A, B } from './DEV.Renderers';
 import { DevSample } from './DEV.Sample';
 import { DevSidePanel } from './DEV.SidePanel';
 
@@ -198,7 +198,7 @@ export const actions = DevActions<Ctx>()
     });
 
     e.button('sample renderers (toggle)', async (e) => {
-      const { body, backdrop } = SampleRenderer;
+      const { body, backdrop } = SampleRenderers;
       await e.ctx.events.state.patch((state) => {
         const exists = Boolean(state.body.render);
 

@@ -5,6 +5,7 @@ import { color, css, CssValue, FC, t } from '../../common';
  * Types
  */
 export type TrayPlaceholderProps = {
+  text?: string;
   is: t.CmdBarRenderPartFlags;
   style?: CssValue;
 };
@@ -13,6 +14,8 @@ export type TrayPlaceholderProps = {
  * Component
  */
 const View: React.FC<TrayPlaceholderProps> = (props) => {
+  const { text = 'system tray' } = props;
+
   /**
    * [Render]
    */
@@ -22,15 +25,18 @@ const View: React.FC<TrayPlaceholderProps> = (props) => {
       Absolute: 6,
       border: `dashed 1px ${color.format(0.25)}`,
       borderRadius: 4,
-      Flex: 'center-center',
       fontSize: 11,
       color: color.format(0.7),
       overflow: 'hidden',
+      Flex: 'center-center',
     }),
+    text: css({ opacity: 0.4 }),
   };
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.body}>placeholder tray</div>
+      <div {...styles.body}>
+        <div {...styles.text}>{text}</div>
+      </div>
     </div>
   );
 };
