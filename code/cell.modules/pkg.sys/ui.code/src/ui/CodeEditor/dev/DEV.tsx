@@ -1,16 +1,16 @@
 import React from 'react';
 import { debounceTime } from 'rxjs/operators';
-import { DevActions, ObjectView } from 'sys.ui.dev';
+import { DevActions, ObjectView, TestFilesystem } from '../../../test';
 
 import { CodeEditor as CodeEditorView, CodeEditorProps } from '..';
 import { CodeEditor } from '../../../api';
-import { Filesystem, rx, t, deleteUndefined, constants } from '../common';
+import { rx, t, deleteUndefined, constants } from '../common';
 
 type Ctx = {
   bus: t.EventBus;
   props: CodeEditorProps;
   global: t.CodeEditorEvents;
-  filestore(): Promise<t.SysFsEvents>;
+  fs: t.Fs;
   instance?: t.CodeEditorInstanceEvents;
   debug: {
     focusedEditor?: t.CodeEditorInstance;
@@ -43,19 +43,13 @@ export const actions = DevActions<Ctx>()
 
     const bus = rx.bus();
     const global = CodeEditor.events(bus);
-
-    let fs: t.SysFsEvents | undefined;
-    const filestore = async () => {
-      if (fs) return fs;
-      const { store } = await Filesystem.IndexedDb.create({ bus, id: 'fs.sample.code' });
-      return (fs = store.events);
-    };
+    const { fs } = TestFilesystem.init({ bus });
 
     const ctx: Ctx = {
       bus,
       props: { language: 'typescript' },
       global,
-      filestore,
+      fs,
       debug: {},
     };
     return ctx;
@@ -83,10 +77,9 @@ export const actions = DevActions<Ctx>()
 
     const read = (filename: string) => {
       e.button(`read: ${filename}`, async (e) => {
-        const instance = e.ctx.instance;
-        if (!instance) return;
+        if (!e.ctx.instance) return;
 
-        const fs = (await e.ctx.filestore()).fs();
+        const fs = e.ctx.fs;
         const exists = await fs.exists(filename);
         const data = await fs.read(filename);
         const bytes = data?.byteLength;
@@ -113,7 +106,7 @@ export const actions = DevActions<Ctx>()
     e.hr(1, 0.1);
 
     e.button('delete (all)', async (e) => {
-      const fs = (await e.ctx.filestore()).fs();
+      const fs = e.ctx.fs;
       const filenames = Object.values(FILENAME);
       for (const path of filenames) {
         await fs.delete(path);
@@ -278,7 +271,7 @@ export const actions = DevActions<Ctx>()
 
     const saveOnChange = (editor: t.CodeEditorInstance, filename: string) => {
       editor.events.text.changed$.pipe(debounceTime(500)).subscribe(async (e) => {
-        const fs = (await ctx.filestore()).fs();
+        const fs = ctx.fs;
         const text = editor.text;
         const data = new TextEncoder().encode(text);
         const res = await fs.write(filename, data);

@@ -1,6 +1,6 @@
 import React from 'react';
 import { debounceTime } from 'rxjs/operators';
-import { DevActions, LOREM, TestSuiteRunResponse, TestFs } from '../../../test';
+import { DevActions, LOREM, TestSuiteRunResponse, TestFilesystem } from '../../../test';
 import { Vercel } from 'vendor.cloud.vercel/lib/web';
 import { ModuleInfo as VercelModuleInfo } from 'vendor.cloud.vercel/lib/web/ui/ModuleInfo';
 
@@ -71,8 +71,7 @@ export const actions = DevActions<Ctx>()
     let editor: t.CodeEditorInstanceEvents | undefined;
 
     const path = 'index.json';
-    const change = e.change;
-    const { fs, instance } = TestFs.init();
+    const { fs, instance } = TestFilesystem.init();
 
     const getEditorCode = () => ctx.editor?.text.get.fire();
     const getSavedCode = async () => new TextDecoder().decode(await fs.read(path));
