@@ -1,12 +1,11 @@
-import { Test, expect, TestFs } from '../test';
+import { Test, expect, TestFilesystem } from '../test';
 import { Filesystem } from '.';
 import { rx, DEFAULT, Hash, t } from './common';
 
 export default Test.describe('FsBus (IndexedDB)', (e) => {
   const testPrep = async (options: { clear?: boolean } = {}) => {
-    const id = TestFs.id;
     const bus = rx.bus();
-    const { store } = await Filesystem.create({ bus, id });
+    const { store } = await Filesystem.create({ bus, fs: TestFilesystem.id }).ready();
     const fs = store.fs();
 
     const dispose = store.dispose;
@@ -29,7 +28,7 @@ export default Test.describe('FsBus (IndexedDB)', (e) => {
 
   e.it('id (default)', async () => {
     const bus = rx.bus();
-    const { store } = await Filesystem.create({ bus });
+    const { store } = await Filesystem.create({ bus }).ready();
     expect(store.id).to.eql(DEFAULT.FILESYSTEM_ID);
     store.dispose();
   });

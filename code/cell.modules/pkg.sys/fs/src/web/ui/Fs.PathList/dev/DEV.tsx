@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { FsPathList, PathListStatefulProps } from '..';
-import { DevActions, ObjectView, TestFs } from '../../../test';
+import { DevActions, ObjectView, TestFilesystem } from '../../../test';
 import { value, Path, List, COLORS, cuid, rx, t } from '../common';
 
 type Ctx = {
@@ -20,7 +20,7 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const change = e.change;
-    const { fs, instance } = TestFs.init();
+    const { fs, instance } = TestFilesystem.init();
 
     const ctx: Ctx = {
       fs,
