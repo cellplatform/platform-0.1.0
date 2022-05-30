@@ -26,7 +26,7 @@ type Ctx = {
   self: t.PeerId;
   bus: t.EventBus<t.PeerEvent | t.DevEvent>;
   netbus: t.PeerNetbus;
-  fs(): Promise<t.Fs>;
+  fs: t.Fs;
   signal: string; // Signalling server network address (host/path).
   events?: CtxEvents;
   connectTo?: string;
@@ -132,11 +132,12 @@ export const actions = DevActions<Ctx>()
     /**
      * Filesystem (networked).
      */
-    const filesystem = Filesystem.IndexedDb.create({ bus, id: DEFAULT.fs });
+    const filesystem = Filesystem.IndexedDb.create({ bus, fs: DEFAULT.fs });
+    // res.
+    Filesystem.IndexedDb.Network({ events: filesystem.events, netbus });
     (async () => {
-      const fs = await filesystem;
-      const events = Filesystem.Events({ bus, id: fs.id });
-      Filesystem.IndexedDb.Network({ events, netbus });
+      // const fs = await filesystem;
+      // const events = Filesystem.Events({ bus, id: fs.id });
     })();
 
     return {
@@ -146,7 +147,8 @@ export const actions = DevActions<Ctx>()
       events,
       signal,
       connectTo: '',
-      fs: async () => (await filesystem).fs,
+      fs: filesystem.fs,
+      // fs: async () => (await filesystem).fs,
       toFlags: () => flags,
       toStrategy: () => strategy,
       fullscreen: (value) => (flags.isFullscreen = value),
