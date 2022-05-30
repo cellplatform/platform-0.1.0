@@ -26,6 +26,7 @@ export const Filesystem = {
     } = {},
   ) {
     const { timeout, dispose$ } = options;
+
     const bus = options.bus ?? rx.bus();
     const id = (options.fs ?? '').trim() || DEFAULT.FILESYSTEM_ID;
 

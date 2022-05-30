@@ -10,3 +10,4 @@ export { Event, EventBus, Disposable, NpmPackageJson, DomRect } from '@platform/
  * @system
  */
 export { MinSizeResizeEventHandler, MinSizeFlags } from 'sys.ui.primitives/lib/types';
+export { Fs, FsViewInstance } from 'sys.fs/lib/types';

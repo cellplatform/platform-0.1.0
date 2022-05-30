@@ -7,7 +7,7 @@ type Milliseconds = number;
  * Helpers for testing UI components.
  */
 export const TestFilesystem = {
-  id: 'fs:sys.fs.dev',
+  id: 'fs:sys.dev',
 
   /**
    * Initialize a new test filesystem view instance.
