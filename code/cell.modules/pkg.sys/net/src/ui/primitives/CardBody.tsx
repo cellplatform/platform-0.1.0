@@ -20,8 +20,8 @@ export const CardBody: React.FC<CardBodyProps> = (props) => {
     base: css({
       position: 'relative',
       Flex: 'y-stretch-stretch',
-      flex: 1,
       boxSizing: 'border-box',
+      flex: 1,
     }),
     body: css({
       flex: 1,

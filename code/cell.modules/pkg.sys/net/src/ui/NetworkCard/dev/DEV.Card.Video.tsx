@@ -2,8 +2,8 @@ import React from 'react';
 
 import {
   Button,
-  Card,
-  CardBody,
+  Color,
+  COLORS,
   css,
   CssValue,
   Icons,
@@ -30,22 +30,29 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
   /**
    * [Render]
    */
+  const borderRadius = 20;
   const styles = {
-    base: css({ width: 300, display: 'flex' }),
-    body: css({ flex: 1, position: 'relative' }),
-    footer: {
-      base: css({ flex: 1, Flex: 'x-center-center', fontSize: 13, PaddingY: 5 }),
-      pipe: css({ flex: 1 }),
-      footer: css({ fontSize: 14 }),
-    },
-    header: {},
-    toolbar: {
-      section: css({ Flex: 'x-center-center' }),
-      button: css({
-        height: 20,
-        marginRight: 15,
-        ':last-child': { marginRight: 0 },
+    base: css({
+      position: 'relative',
+      width: 300,
+      borderRadius,
+      display: 'flex',
+      overflow: 'hidden',
+    }),
+    body: {
+      base: css({ Absolute: 0 }),
+      border: css({
+        Absolute: 0,
+        borderRadius,
+        pointerEvents: 'none',
+        border: `solid 3px ${Color.alpha(COLORS.DARK, 0.1)}`,
       }),
+    },
+    toolbar: {
+      base: css({ Absolute: [0, 0, null, 0], Flex: 'x-spaceBetween-stretch' }),
+      section: css({ Flex: 'x-center-center', padding: 10 }),
+      button: css({ height: 20, marginRight: 15, ':last-child': { marginRight: 0 } }),
+      icon: css({ filter: `drop-shadow(0 2px 5px ${Color.format(-0.5)})` }),
     },
   };
 
@@ -77,29 +84,29 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
     });
   };
 
-  const handleStartScreenShare = () => {
-    /**
-     * TODO 🐷
-     */
-    console.log('🌳⚡️ StartScreenShare');
-  };
-
-  const elHeader = (
-    <>
+  const elToolbar = (
+    <div {...styles.toolbar.base}>
       <div {...styles.toolbar.section}>
         <Button style={styles.toolbar.button} tooltip={'Close'}>
-          <Icons.Close size={20} onClick={handleCloseExpandedWindow} />
+          <Icons.Close
+            size={20}
+            color={1}
+            style={styles.toolbar.icon}
+            onClick={handleCloseExpandedWindow}
+          />
         </Button>
       </div>
       <div {...styles.toolbar.section}>
-        <Button style={styles.toolbar.button} tooltip={'Start Screen Share'}>
-          <Icons.ScreenShare.Start size={24} onClick={handleStartScreenShare} opacity={0.2} />
-        </Button>
         <Button style={styles.toolbar.button} tooltip={'Expand Window'}>
-          <Icons.Window.Expand size={20} onClick={handleExpandWindowClick} />
+          <Icons.Window.Expand
+            size={18}
+            color={1}
+            style={styles.toolbar.icon}
+            onClick={handleExpandWindowClick}
+          />
         </Button>
       </div>
-    </>
+    </div>
   );
 
   const elVideo = stream && resize.ready && (
@@ -113,20 +120,19 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
   );
 
   const elBody = (
-    <div ref={resize.ref} {...styles.body}>
+    <div ref={resize.ref} {...styles.body.base}>
       {elVideo}
     </div>
   );
 
-  const elFooter = (
-    <div {...styles.footer}>
-      <div>{'Footer'}</div>
-    </div>
-  );
+  const elBodyBorder = <div {...styles.body.border} />;
 
   return (
-    <Card style={css(styles.base, props.style)}>
-      <CardBody header={{ el: elHeader, height: 38, padding: [8, 8, 8, 12] }}>{elBody}</CardBody>
-    </Card>
+    <div {...css(styles.base, props.style)}>
+      {elBody}
+      {elToolbar}
+      {/* <CardBody header={{ el: elHeader, height: 38, padding: [8, 8, 8, 12] }}>{elBody}</CardBody> */}
+      {elBodyBorder}
+    </div>
   );
 };
