@@ -2,7 +2,7 @@ import React from 'react';
 import { css, CssValue } from '../common';
 
 export type EmptyProps = {
-  text?: string;
+  text?: React.ReactNode;
   style?: CssValue;
 };
 
@@ -13,17 +13,8 @@ export const Empty: React.FC<EmptyProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({
-      flex: 1,
-      display: 'flex',
-      Flex: 'y-stretch-center',
-      padding: 10,
-    }),
-    label: css({
-      fontSize: 12,
-      fontStyle: 'italic',
-      opacity: 0.4,
-    }),
+    base: css({ flex: 1, display: 'flex', Flex: 'y-stretch-center', padding: 10 }),
+    label: css({ fontSize: 12, fontStyle: 'italic', opacity: 0.4 }),
   };
 
   return (

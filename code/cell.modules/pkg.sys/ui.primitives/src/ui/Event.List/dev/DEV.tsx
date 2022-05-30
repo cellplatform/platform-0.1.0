@@ -157,8 +157,6 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = Boolean(debug.tracelines);
     });
 
-    e.hr(1, 0.1);
-
     e.hr();
 
     e.component((e) => {

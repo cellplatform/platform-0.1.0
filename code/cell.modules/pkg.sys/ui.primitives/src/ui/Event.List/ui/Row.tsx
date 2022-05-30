@@ -78,7 +78,7 @@ export const EventListRow: React.FC<EventListRowProps> = (props) => {
             size={6}
             body={{
               radius: 15,
-              borderColor: color.alpha(COLORS.DARK, 0.2),
+              borderColor: color.alpha(COLORS.DARK, 0.3),
               backgroundColor: 1,
             }}
           >
