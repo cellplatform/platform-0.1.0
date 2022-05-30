@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { debounceTime } from 'rxjs/operators';
 
-import { Filesystem, rx, t, List } from '../common';
+import { Filesystem, rx, t, List, time } from '../common';
 
 type DirectoryPath = string;
 type Milliseconds = number;
@@ -21,8 +21,9 @@ export function usePathListState(args: {
   const { bus } = instance;
 
   const [ready, setReady] = useState(false);
-  const [drop, setDropHandler] = useState<{ handler: t.FsPathListDroppedHandler }>();
   const [files, setFiles] = useState<t.ManifestFile[]>([]);
+  const [drop, setDropHandler] = useState<{ handler: t.FsPathListDroppedHandler }>();
+  const [dropping, setDropping] = useState(false);
 
   const total = files.length;
   const listState = List.useDynamicState({ total, instance, orientation: 'y', selectable });
@@ -62,8 +63,13 @@ export function usePathListState(args: {
     if (droppable) {
       const handler: t.FsPathListDroppedHandler = async (e) => {
         if (isDisposed) return;
+        setDropping(true);
+
+        await time.wait(0); // NB: Allow screen to redraw (spinner starts) before processing the file.
         const wait = e.files.map(({ path, data }) => fs.write(path, data));
         await Promise.all(wait);
+
+        setDropping(false);
       };
       setDropHandler({ handler });
     }
@@ -99,5 +105,8 @@ export function usePathListState(args: {
     total,
     lazy: listState.state,
     onDrop: drop?.handler,
+    get spinning() {
+      return !ready || dropping;
+    },
   };
 }

@@ -9,14 +9,20 @@ import { FsPathListStatefulProps } from './types';
 export const FsPathListStateful: React.FC<FsPathListStatefulProps> = (props) => {
   const { instance, dir, droppable, selectable, onStateChange } = props;
 
-  const state = FsPathList.useState({ instance, dir, droppable, selectable, onStateChange });
+  const state = FsPathList.useState({
+    instance,
+    dir,
+    droppable,
+    selectable,
+    onStateChange,
+  });
 
   return (
     <FsPathList
       instance={instance}
       files={state.files}
       state={state.lazy}
-      spinning={!state.ready}
+      spinning={state.spinning}
       scroll={props.scroll}
       padding={props.padding}
       selectable={props.selectable}
