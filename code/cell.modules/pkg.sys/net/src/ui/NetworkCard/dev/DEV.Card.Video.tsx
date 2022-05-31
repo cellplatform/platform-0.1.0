@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   Button,
@@ -27,6 +27,9 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
   const bus = rx.busAsType<t.NetworkCardEvent>(network.bus);
   const resize = useResizeObserver();
 
+  const [isOverToolbar, setOverToolbar] = useState(false);
+  const overToolbarHandler = (isOver: boolean) => () => setOverToolbar(isOver);
+
   /**
    * [Render]
    */
@@ -38,6 +41,7 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
       borderRadius,
       display: 'flex',
       overflow: 'hidden',
+      boxSizing: 'border-box',
     }),
     body: {
       base: css({ Absolute: 0 }),
@@ -49,10 +53,17 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
       }),
     },
     toolbar: {
-      base: css({ Absolute: [0, 0, null, 0], Flex: 'x-spaceBetween-stretch' }),
+      base: css({
+        Absolute: [0, 0, null, 0],
+        Flex: 'x-spaceBetween-stretch',
+        backgroundColor: isOverToolbar ? Color.alpha(COLORS.DARK, 0.4) : Color.format(0),
+        backdropFilter: `blur(${isOverToolbar ? 12 : 0}px)`,
+        transition: `background-color 300ms, backdrop-filter 300ms`,
+        paddingRight: 3,
+      }),
       section: css({ Flex: 'x-center-center', padding: 10 }),
       button: css({ height: 20, marginRight: 15, ':last-child': { marginRight: 0 } }),
-      icon: css({ filter: `drop-shadow(0 2px 5px ${Color.format(-0.5)})` }),
+      icon: css({ filter: `drop-shadow(0 1px 4px ${Color.format(-0.2)})` }),
     },
   };
 
@@ -85,7 +96,11 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
   };
 
   const elToolbar = (
-    <div {...styles.toolbar.base}>
+    <div
+      {...styles.toolbar.base}
+      onMouseEnter={overToolbarHandler(true)}
+      onMouseLeave={overToolbarHandler(false)}
+    >
       <div {...styles.toolbar.section}>
         <Button style={styles.toolbar.button} tooltip={'Close'}>
           <Icons.Close
@@ -131,7 +146,6 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
     <div {...css(styles.base, props.style)}>
       {elBody}
       {elToolbar}
-      {/* <CardBody header={{ el: elHeader, height: 38, padding: [8, 8, 8, 12] }}>{elBody}</CardBody> */}
       {elBodyBorder}
     </div>
   );
