@@ -73,13 +73,13 @@ export type VercelInfoReqEvent = {
   type: 'vendor.vercel/info:req';
   payload: VercelInfoReq;
 };
-export type VercelInfoReq = { tx: string; id: Id };
+export type VercelInfoReq = { tx: string; instance: Id };
 
 export type VercelInfoResEvent = {
   type: 'vendor.vercel/info:res';
   payload: VercelInfoRes;
 };
-export type VercelInfoRes = { tx: string; id: Id; info?: VercelInfo; error?: string };
+export type VercelInfoRes = { tx: string; instance: Id; info?: VercelInfo; error?: string };
 
 /**
  * Deploy
@@ -90,7 +90,7 @@ export type VercelDeployReqEvent = {
 };
 export type VercelDeployReq = {
   tx: string;
-  id: Id;
+  instance: Id;
   team: IdOrName;
   project: Name;
   source: t.VercelSourceBundle;
@@ -103,7 +103,7 @@ export type VercelDeployResEvent = {
 };
 export type VercelDeployRes = {
   tx: string;
-  id: Id;
+  instance: Id;
   paths: string[];
   deployment?: t.VercelHttpDeployResponse['deployment'];
   error?: string;
