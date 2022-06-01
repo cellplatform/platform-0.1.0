@@ -6,7 +6,7 @@ const WORDS = LOREM.split(' ');
 /**
  * Helpers for working with "lorem ipsum" text.
  */
-export const lorem = {
+export const Lorem = {
   text: LOREM,
   toString: () => LOREM,
 

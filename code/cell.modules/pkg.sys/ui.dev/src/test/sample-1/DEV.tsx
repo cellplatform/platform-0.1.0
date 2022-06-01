@@ -1,6 +1,6 @@
 import React from 'react';
 import { DevActions } from '../..';
-import { css, COLORS, color, time, lorem } from '../../common';
+import { css, COLORS, color, time, Lorem } from '../../common';
 import { Component } from './Component';
 import { Button } from '../../ui/Primitives';
 
@@ -21,7 +21,7 @@ type Ctx = {
   throw?: boolean;
 };
 
-const LOREM = lorem.words(12, '.');
+const LOREM = Lorem.words(12, '.');
 
 const markdown = () => {
   let text = '';
