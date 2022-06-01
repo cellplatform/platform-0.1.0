@@ -5,7 +5,9 @@ import { t } from './common';
 const imports = {
   Design: import('./ui/Design/DEV'),
   ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
-  DocLayout: import('./ui/DocLayout/dev/DEV'),
+  DocLayout: import('./ui/Doc.Layout/dev/DEV'),
+  DocHeadline: import('./ui/Doc.Headline/dev/DEV'),
+  DocBlock: import('./ui/Doc.Block/dev/DEV'),
   UnitTests: import('./Dev.UnitTests'),
 };
 

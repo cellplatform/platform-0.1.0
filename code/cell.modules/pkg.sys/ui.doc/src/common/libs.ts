@@ -7,7 +7,8 @@ export const R = { mergeDeepRight };
 export { log } from '@platform/log/lib/client';
 export { css, Color, CssValue, Style, formatColor } from '@platform/css';
 export { useResizeObserver, FC } from '@platform/react';
-export { rx, slug } from '@platform/util.value';
+export { rx, slug, time } from '@platform/util.value';
+export { Http } from '@platform/http';
 
 /**
  * @system

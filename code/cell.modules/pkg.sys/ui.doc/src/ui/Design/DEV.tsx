@@ -16,11 +16,8 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const { fs, instance } = TestFilesystem.init();
+    const ctx: Ctx = { instance, fs };
 
-    const ctx: Ctx = {
-      instance,
-      fs,
-    };
     return ctx;
   })
 
@@ -38,7 +35,6 @@ export const actions = DevActions<Ctx>()
     e.title(`Filesystem`);
 
     e.component((e) => {
-      const change = e.change;
       return (
         <Filesystem.PathList.Stateful
           style={{ Margin: [5, 10, 20, 10], height: 150 }}
@@ -46,12 +42,6 @@ export const actions = DevActions<Ctx>()
           scroll={true}
           droppable={true}
           selectable={true}
-          onStateChange={(e) => {
-            console.group('🌳 ');
-            console.log('<FsPathList> State Change');
-            console.log('e', e);
-            console.groupEnd();
-          }}
         />
       );
     });
