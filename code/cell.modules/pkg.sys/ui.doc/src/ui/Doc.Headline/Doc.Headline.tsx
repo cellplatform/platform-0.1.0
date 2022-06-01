@@ -37,24 +37,30 @@ export const DocHeadline: React.FC<DocHeadlineProps> = (props) => {
       fontWeight: 700,
       marginBottom: title || subtitle ? 6 : 0,
     }),
-    headline: css({
+    displayFont: {
       fontFamily: 'Neuton',
-      fontSize: 46,
       fontStyle: 'normal',
       letterSpacing: '-0.006em',
-      lineHeight: '1em',
+    },
+    headline: css({
+      fontSize: 46,
       marginBottom: subtitle ? 20 : 0,
     }),
     subtitle: css({
-      fontSize: 22,
+      fontSize: 32,
       opacity: 0.6,
-      lineHeight: '1.4em',
+      lineHeight: 1.15,
+      letterSpacing: '-0.006em',
     }),
   };
 
   const elCategory = category && <div {...styles.category}>{category}</div>;
-  const elTitle = title && <SanitizeHtml style={styles.headline} html={title} />;
-  const elSubtitle = subtitle && <SanitizeHtml style={styles.subtitle} html={subtitle} />;
+  const elTitle = title && (
+    <SanitizeHtml style={css(styles.headline, styles.displayFont)} html={title} />
+  );
+  const elSubtitle = subtitle && (
+    <SanitizeHtml style={css(styles.subtitle, styles.displayFont)} html={subtitle} />
+  );
 
   return (
     <div {...css(styles.base, props.style)}>

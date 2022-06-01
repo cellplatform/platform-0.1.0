@@ -3,7 +3,7 @@ import React from 'react';
 import { DocBlock, DocBlockProps } from '..';
 import { DevActions, ObjectView } from '../../../test';
 import { SAMPLE } from './DEV.Sample';
-import { css } from '../common';
+import { COLORS, css } from '../common';
 
 type Ctx = {
   props: DocBlockProps;
@@ -67,7 +67,7 @@ export const actions = DevActions<Ctx>()
     const debug = e.ctx.debug;
 
     e.settings({
-      host: { background: -0.04 },
+      host: { background: COLORS.BG },
       layout: {
         width: debug.width,
         position: [80, null, 130, null],

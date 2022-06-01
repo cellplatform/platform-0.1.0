@@ -17,3 +17,4 @@ export { Filesystem } from 'sys.fs/lib/web/ui';
 export { WebRuntime } from 'sys.runtime.web';
 export { PropList } from 'sys.ui.primitives/lib/ui/PropList';
 export { MinSize } from 'sys.ui.primitives/lib/ui/MinSize';
+export { Photo } from 'sys.ui.primitives/lib/ui/Photo';

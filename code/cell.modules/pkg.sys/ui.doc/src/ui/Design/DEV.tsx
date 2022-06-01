@@ -59,7 +59,7 @@ export const actions = DevActions<Ctx>()
 
   .subject((e) => {
     e.settings({
-      host: { background: -0.04 },
+      host: { background: COLORS.BG },
       layout: {
         label: {
           topLeft: '<Design>',
@@ -75,7 +75,7 @@ export const actions = DevActions<Ctx>()
     const styles = {
       base: css({
         flex: 1,
-        backgroundImage: `url(/static/tmp.images/design.png)`,
+        backgroundImage: `url(/static/.tmp.images/design.png)`,
         backgroundSize: 'contain',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center center',

@@ -1,10 +1,15 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { DocImage, DocImageProps } from '..';
+import { COLORS } from '../common';
 
 type Ctx = {
   props: DocImageProps;
   debug: { width: number };
+};
+
+export const SAMPLE = {
+  URL: `/static/dev.images/banner-image.png`,
 };
 
 /**
@@ -14,8 +19,12 @@ export const actions = DevActions<Ctx>()
   .namespace('ui.Doc.Image')
   .context((e) => {
     if (e.prev) return e.prev;
+
     const ctx: Ctx = {
-      props: {},
+      props: {
+        url: SAMPLE.URL,
+        borderRadius: DocImage.DEFAULT.borderRadius,
+      },
       debug: { width: 720 },
     };
     return ctx;
@@ -38,6 +47,15 @@ export const actions = DevActions<Ctx>()
         });
     });
 
+    e.hr(1, 0.1);
+
+    e.boolean('borderRadius', (e) => {
+      if (e.changing) {
+        e.ctx.props.borderRadius = e.changing.next ? DocImage.DEFAULT.borderRadius : 0;
+      }
+      e.boolean.current = Boolean(e.ctx.props.borderRadius);
+    });
+
     e.hr();
 
     e.component((e) => {
@@ -57,14 +75,14 @@ export const actions = DevActions<Ctx>()
     const debug = e.ctx.debug;
 
     e.settings({
-      host: { background: -0.04 },
+      host: { background: COLORS.BG },
       layout: {
         width: debug.width,
         cropmarks: -0.2,
         border: -0.04,
       },
     });
-    e.render(<DocImage {...e.ctx.props} />);
+    e.render(<DocImage {...e.ctx.props} width={debug.width} />);
   });
 
 export default actions;

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { DocHeadline, DocHeadlineProps } from '..';
 import { DevActions, Lorem, ObjectView, TestFilesystem } from '../../../test';
-import { Filesystem, t } from '../common';
+import { Filesystem, t, COLORS } from '../common';
 
 type Ctx = {
   props: DocHeadlineProps;
@@ -11,7 +11,11 @@ type Ctx = {
 };
 
 const SAMPLE = {
-  SUBITLE: `Web3 is giving us the opportunity to rewrite how groups of people come together and do things in the world to work and play.\nBut will the next line break properly?`,
+  CATEGORY: 'conceptual framework',
+  HELLO_WORLD: 'Hello World!',
+  SUBTITLE: `Web3 is giving us the opportunity to rewrite how groups of people come together and do things in the world to work and play.\nBut will the next line break properly?`,
+  OLD_POND: `Old pond. A frog jumps in.\nThe sound of water.`,
+  LOREM: Lorem.toString(),
 };
 
 /**
@@ -28,9 +32,9 @@ export const actions = DevActions<Ctx>()
       fs,
       instance,
       props: {
-        title: 'Hello world!',
+        title: SAMPLE.HELLO_WORLD,
         category: 'conceptual framework',
-        subtitle: SAMPLE.SUBITLE,
+        subtitle: SAMPLE.SUBTITLE,
       },
     };
     return ctx;
@@ -77,28 +81,22 @@ export const actions = DevActions<Ctx>()
     e.hr(1, 0.1);
 
     e.button('category: <undefined>', (e) => (e.ctx.props.category = undefined));
-    e.button('category: "conceptual framework"', (e) => {
-      e.ctx.props.category = 'conceptual framework';
-    });
-    e.button('category: long', (e) => (e.ctx.props.category = Lorem.toString()));
+    e.button(`category: "${SAMPLE.CATEGORY}"`, (e) => (e.ctx.props.category = SAMPLE.CATEGORY));
+    e.button('category: long', (e) => (e.ctx.props.category = SAMPLE.LOREM));
 
     e.hr(1, 0.1);
 
     e.button('title: <undefined>', (e) => (e.ctx.props.title = undefined));
-    e.button('title: "Hello World!"', (e) => (e.ctx.props.title = 'Hello world!'));
-    e.button('title: line break', (e) => {
-      e.ctx.props.title = `Old pond. A frog jumps in.\nThe sound of water.`;
-    });
-    e.button('title: long', (e) => (e.ctx.props.title = Lorem.toString()));
+    e.button('title: "Hello World!"', (e) => (e.ctx.props.title = SAMPLE.HELLO_WORLD));
+    e.button('title: line break', (e) => (e.ctx.props.title = SAMPLE.OLD_POND));
+    e.button('title: long', (e) => (e.ctx.props.title = SAMPLE.LOREM));
 
     e.hr(1, 0.1);
 
     e.button('subtitle: <undefined>', (e) => (e.ctx.props.subtitle = undefined));
 
-    e.button('subtitle: sample', (e) => {
-      e.ctx.props.subtitle = SAMPLE.SUBITLE;
-    });
-    e.button('subtitle: long', (e) => (e.ctx.props.subtitle = Lorem.toString()));
+    e.button('subtitle: sample', (e) => (e.ctx.props.subtitle = SAMPLE.SUBTITLE));
+    e.button('subtitle: long', (e) => (e.ctx.props.subtitle = SAMPLE.LOREM));
 
     e.hr();
   })
@@ -124,7 +122,7 @@ export const actions = DevActions<Ctx>()
   .subject((e) => {
     e.settings({
       actions: { width: 350 },
-      host: { background: -0.04 },
+      host: { background: COLORS.BG },
       layout: {
         cropmarks: -0.2,
         border: -0.04,

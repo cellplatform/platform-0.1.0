@@ -25,8 +25,12 @@ Style.global(
       ':last-child': { marginBottom: 0 },
     },
     a: { color: COLORS.BLUE },
-    ul: { lineHeight: '1.4em' },
-    li: { marginBottom: 12 },
+    ul: {
+      lineHeight: '1.4em',
+      marginTop: 40,
+      marginBottom: 40,
+    },
+    li: { marginBottom: 16 },
     hr: {
       border: 'none',
       borderTop: `solid 3px ${Color.format(-0.1)}`,

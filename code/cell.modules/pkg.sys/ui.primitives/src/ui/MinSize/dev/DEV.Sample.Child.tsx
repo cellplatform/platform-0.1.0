@@ -1,5 +1,5 @@
 import React from 'react';
-import { lorem } from 'sys.ui.dev';
+import { Lorem } from 'sys.ui.dev';
 
 import { css, t, CssValue } from '../common';
 
@@ -25,8 +25,8 @@ export const SampleChild: React.FC<SampleChildProps> = (props) => {
       <p>
         minimum size: {minWidth ?? '-'} x {minHeight ?? '-'}
       </p>
-      <p>{lorem.text}</p>
-      <p>{lorem.text}</p>
+      <p>{Lorem.toString()}</p>
+      <p>{Lorem.toString()}</p>
     </div>
   );
 };

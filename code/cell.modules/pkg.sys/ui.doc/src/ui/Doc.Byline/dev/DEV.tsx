@@ -1,6 +1,7 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { DocByline, DocBylineProps } from '..';
+import { COLORS } from '../common';
 
 type Ctx = {
   props: DocBylineProps;
@@ -57,7 +58,7 @@ export const actions = DevActions<Ctx>()
     const debug = e.ctx.debug;
 
     e.settings({
-      host: { background: -0.04 },
+      host: { background: COLORS.BG },
       layout: {
         width: debug.width,
         cropmarks: -0.2,
