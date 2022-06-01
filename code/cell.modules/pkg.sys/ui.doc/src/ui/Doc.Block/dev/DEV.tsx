@@ -19,7 +19,7 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const ctx: Ctx = {
-      props: { markdown: SAMPLE.PARA },
+      props: { markdown: SAMPLE.MARKDOWN },
       debug: { width: 720 },
     };
 

@@ -1,7 +1,11 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { DocLayout, DocLayoutProps } from '..';
-import { t, DEFAULT } from '../common';
+import { t } from '../common';
+
+import { DocHeadline } from '../../Doc.Headline';
+import { DocBlock } from '../../Doc.Block';
+import { SAMPLE as BLOCK_SAMPLE } from '../../Doc.Block/dev/DEV.Sample';
 
 type Ctx = {
   size?: t.DomRect;
@@ -19,11 +23,23 @@ export const actions = DevActions<Ctx>()
 
     const change = e.change;
 
+    const elHealine = (
+      <DocHeadline
+        style={{ marginBottom: 100 }}
+        category={'conceptual framework'}
+        title={'Hello world!'}
+        subtitle={
+          'Web3 is giving us the opportunity to rewrite how groups of people come together and do things in the world. But are we importing a core concept from our existing paradigm without realising it?'
+        }
+      />
+    );
+    const elBlock = <DocBlock markdown={BLOCK_SAMPLE.MARKDOWN} />;
+
     const ctx: Ctx = {
       props: {
+        blocks: [elHealine, elBlock],
         scrollable: true,
         tracelines: true,
-        sizes: DEFAULT.sizes,
         onResize: (e) => change.ctx((ctx) => (ctx.size = e.size)),
       },
       debug: { render: true },
@@ -94,10 +110,10 @@ export const actions = DevActions<Ctx>()
       host: { background: -0.04 },
       layout: {
         label: {
-          topLeft: '<DocLayout>',
+          topLeft: '<Doc.Layout>',
           topRight: `${size?.width ?? '-'} x ${size?.height ?? '-'} px`,
         },
-        position: [150, 80],
+        position: [80, 80, 130, 80],
         cropmarks: -0.2,
       },
     });

@@ -1,7 +1,7 @@
 import { Lorem } from 'sys.ui.dev';
 
 export const SAMPLE = {
-  PARA: `
+  MARKDOWN: `
 **Amazing** as this is, what is more incredible is that this dynamic holds true for human-built 
 systems too. This scaling effect is the fundamental dynamic that makes companies work. 
 As a business grows, it is essentially building a set of branching hierarchies that 

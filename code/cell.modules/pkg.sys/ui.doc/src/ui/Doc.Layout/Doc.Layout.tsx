@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Color, COLORS, css, CssValue, t, FC, MinSize, DEFAULT, R } from './common';
+import { Color, COLORS, css, CssValue, t, FC, MinSize, R } from './common';
 import { TooSmall } from './ui/TooSmall';
 
 export type DocLayoutProps = {
   scrollable?: boolean;
   tracelines?: boolean;
-  sizes?: Partial<t.DocLayoutSizes>;
+  blocks?: JSX.Element[];
   style?: CssValue;
   onResize?: t.MinSizeResizeEventHandler;
 };
@@ -14,10 +14,10 @@ export type DocLayoutProps = {
  * Component
  */
 const View: React.FC<DocLayoutProps> = (props) => {
-  const { scrollable = true, tracelines = false } = props;
+  const { scrollable = true, tracelines = false, blocks = [] } = props;
 
-  const min = R.mergeDeepRight(DEFAULT.sizes, props.sizes || {});
-  const traceBorder = `solid 1px ${Color.format(-0.06)}`;
+  // const min = R.mergeDeepRight(DEFAULT.sizes, props.sizes || {});
+  const traceBorder = `solid 1px ${Color.alpha(COLORS.MAGENTA, tracelines ? 0.1 : 0)}`;
 
   /**
    * [Render]
@@ -28,32 +28,33 @@ const View: React.FC<DocLayoutProps> = (props) => {
       color: COLORS.DARK,
       boxSizing: 'border-box',
       Flex: 'y-stretch-center',
+      Scroll: scrollable,
+      paddingBottom: 120,
     }),
     block: {
       base: css({
         borderRight: traceBorder,
         borderLeft: traceBorder,
-        minWidth: 400,
+        width: 720,
         PaddingY: 15,
       }),
     },
   };
 
-  const elBlock = <div {...styles.block.base}>Hello</div>;
+  const elBlocks = blocks.map((el, i) => {
+    return (
+      <div key={`block.${i}`} {...styles.block.base}>
+        {el}
+      </div>
+    );
+  });
 
-  const elBase = (
-    <div {...styles.base}>
-      {elBlock}
-      {elBlock}
-      {elBlock}
-      {elBlock}
-    </div>
-  );
+  const elBase = <div {...styles.base}>{elBlocks}</div>;
 
   return (
     <MinSize
-      minWidth={min.doc.min.width}
-      minHeight={min.doc.min.height}
+      minWidth={300}
+      // minHeight={min.doc.min.height}
       warningElement={(e) => <TooSmall is={e.is} size={e.size} />}
       style={props.style}
       onResize={props.onResize}
@@ -70,10 +71,10 @@ const View: React.FC<DocLayoutProps> = (props) => {
  */
 
 type Fields = {
-  DEFAULT: typeof DEFAULT;
+  // DEFAULT: typeof DEFAULT;
 };
 export const DocLayout = FC.decorate<DocLayoutProps, Fields>(
   View,
-  { DEFAULT },
-  { displayName: 'DocLayout' },
+  // { DEFAULT },
+  { displayName: 'Doc.Layout' },
 );
