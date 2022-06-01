@@ -5,7 +5,8 @@ import { DocLayoutProps } from '..';
 import { Doc } from '../../Doc';
 import { SAMPLE as BLOCK_SAMPLE } from '../../Doc.Block/dev/DEV.Sample';
 import { COLORS, DEFAULT, t } from '../common';
-import { SAMPLE } from '../../Doc.Image/dev/DEV';
+import { SAMPLE as IMAGE_SAMPLE } from '../../Doc.Image/dev/DEV';
+import { SAMPLE as BYLINE_SAMPLE } from '../../Doc.Byline/dev/DEV';
 
 type Ctx = {
   size?: t.DomRect;
@@ -21,11 +22,15 @@ const Util = {
   blocks(ctx: Ctx) {
     const width = ctx.debug.width;
 
-    const elBannerImage = <Doc.Image url={SAMPLE.URL} width={width} />;
+    const elBannerImage = <Doc.Image url={IMAGE_SAMPLE.URL} width={width} />;
+
+    const elByline = (
+      <Doc.Byline avatarUrl={BYLINE_SAMPLE.avatarUrl} style={{ marginBottom: 60 }} />
+    );
 
     const elHeadline = (
       <Doc.Headline
-        style={{ marginBottom: 100 }}
+        style={{ marginBottom: 50 }}
         category={'conceptual framework'}
         title={'Hello world!'}
         subtitle={
@@ -36,9 +41,7 @@ const Util = {
 
     const elBlock = <Doc.Block markdown={BLOCK_SAMPLE.MARKDOWN} />;
 
-    const elByline = <Doc.Byline />;
-
-    return [elBannerImage, elHeadline, elByline, elBlock];
+    return [elBannerImage, elByline, elHeadline, elBlock];
   },
 };
 

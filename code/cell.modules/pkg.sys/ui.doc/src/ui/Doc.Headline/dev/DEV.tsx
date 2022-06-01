@@ -1,19 +1,18 @@
 import React from 'react';
 
 import { DocHeadline, DocHeadlineProps } from '..';
-import { DevActions, Lorem, ObjectView, TestFilesystem } from '../../../test';
+import { DevActions, Lorem, ObjectView } from '../../../test';
 import { Filesystem, t, COLORS } from '../common';
 
 type Ctx = {
   props: DocHeadlineProps;
-  instance: t.FsViewInstance;
-  fs: t.Fs;
+  debug: { width: number };
 };
 
 const SAMPLE = {
   CATEGORY: 'conceptual framework',
   HELLO_WORLD: 'Hello World!',
-  SUBTITLE: `Web3 is giving us the opportunity to rewrite how groups of people come together and do things in the world to work and play.\nBut will the next line break properly?`,
+  SUBTITLE: `Web3 is giving us the opportunity to rewrite how groups of people come together and do things in the world.\nBut will the next line break properly?`,
   OLD_POND: `Old pond. A frog jumps in.\nThe sound of water.`,
   LOREM: Lorem.toString(),
 };
@@ -26,16 +25,13 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const { fs, instance } = TestFilesystem.init();
-
     const ctx: Ctx = {
-      fs,
-      instance,
       props: {
         title: SAMPLE.HELLO_WORLD,
         category: 'conceptual framework',
         subtitle: SAMPLE.SUBTITLE,
       },
+      debug: { width: 720 },
     };
     return ctx;
   })
@@ -46,32 +42,6 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.button('redraw', (e) => e.redraw());
-    e.hr();
-  })
-
-  .items((e) => {
-    e.title(`Filesystem`);
-
-    e.component((e) => {
-      return (
-        <Filesystem.PathList.Stateful
-          style={{ Margin: [5, 10, 20, 10], height: 150 }}
-          instance={e.ctx.instance}
-          scroll={true}
-          droppable={true}
-          selectable={true}
-        />
-      );
-    });
-
-    e.hr(1, 0.1);
-
-    e.button('delete all (clear)', async (e) => {
-      const fs = e.ctx.fs;
-      const files = (await fs.manifest()).files;
-      await Promise.all(files.map((file) => fs.delete(file.path)));
-    });
-
     e.hr();
   })
 
@@ -104,6 +74,16 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Dev');
 
+    e.select((config) => {
+      config
+        .items([300, 720].map((value) => ({ label: `width: ${value}px`, value })))
+        .initial(720)
+        .view('buttons')
+        .pipe((e) => {
+          if (e.changing) e.ctx.debug.width = e.changing?.next[0].value;
+        });
+    });
+
     e.hr();
 
     e.component((e) => {
@@ -120,13 +100,15 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    const debug = e.ctx.debug;
+
     e.settings({
-      actions: { width: 350 },
       host: { background: COLORS.BG },
+      actions: { width: 350 },
       layout: {
+        width: debug.width,
         cropmarks: -0.2,
         border: -0.04,
-        width: 720,
       },
     });
 

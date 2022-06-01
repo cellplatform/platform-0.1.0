@@ -26,10 +26,7 @@ const View: React.FC<DocImageProps> = (props) => {
       overflow: 'hidden',
       borderRadius,
     }),
-    image: css({
-      width,
-      display: 'block',
-    }),
+    image: css({ width, display: 'block' }),
   };
 
   /**

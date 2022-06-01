@@ -8,6 +8,10 @@ type Ctx = {
   debug: { width: number };
 };
 
+export const SAMPLE = {
+  avatarUrl: '/static/.tmp.images/avatar.png',
+};
+
 /**
  * Actions
  */
@@ -16,7 +20,7 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
     const ctx: Ctx = {
-      props: {},
+      props: { avatarUrl: SAMPLE.avatarUrl },
       debug: { width: 720 },
     };
     return ctx;
@@ -65,7 +69,8 @@ export const actions = DevActions<Ctx>()
         border: -0.04,
       },
     });
-    e.render(<DocByline {...e.ctx.props} />);
+
+    e.render(<DocByline {...e.ctx.props} style={{ flex: 1 }} />);
   });
 
 export default actions;
