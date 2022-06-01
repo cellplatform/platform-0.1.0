@@ -10,6 +10,7 @@ const imports = {
   DocByline: import('./ui/Doc.Byline/dev/DEV'),
   DocBlock: import('./ui/Doc.Block/dev/DEV'),
   DocImage: import('./ui/Doc.Image/dev/DEV'),
+  DocQuote: import('./ui/Doc.Quote/dev/DEV'),
   UnitTests: import('./Dev.UnitTests'),
 };
 
