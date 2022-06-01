@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Color, COLORS, css, CssValue, t, PropList, Button } from '../common';
+import React from 'react';
+import { Chip, COLORS, css, CssValue, PropList, t } from '../common';
 
 export type PropsProps = {
   style?: CssValue;
@@ -17,15 +17,8 @@ export const Props: React.FC<PropsProps> = (props) => {
     link: css({ color: COLORS.BLUE }),
   };
 
-  const identityUrl = 'https://etherscan.io/address/0x66Ab0BC088212195b0d9e9FEB12F3f93fF6f8fF1';
-
-  const elIdentity = (
-    <Button>
-      <a href={identityUrl} target={'_blank'} rel={'noreferrer'} {...styles.link}>
-        {'0x66Ab'}
-      </a>
-    </Button>
-  );
+  const hash = '0x66Ab0BC088212195b0d9e9FEB12F3f93fF6f8fF1'; // TEMP 🐷
+  const elIdentity = <Chip.Hash text={hash.substring(0, 6)} clipboard={() => hash} />;
 
   const items: t.PropListItem[] = [
     { label: 'Version', value: `0.1.3 (Jun 2022)` },
@@ -33,5 +26,7 @@ export const Props: React.FC<PropsProps> = (props) => {
     { label: 'Identity', value: elIdentity },
   ];
 
-  return <PropList items={items} style={css(styles.base, props.style)} />;
+  return (
+    <PropList items={items} style={css(styles.base, props.style)} defaults={{ clipboard: false }} />
+  );
 };

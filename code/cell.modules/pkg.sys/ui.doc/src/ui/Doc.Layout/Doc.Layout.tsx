@@ -7,7 +7,10 @@ export type DocLayoutProps = {
   scrollable?: boolean;
   tracelines?: boolean;
   blocks?: JSX.Element[];
-  footerPadding?: boolean | number;
+  padding?: {
+    header?: boolean | number;
+    footer?: boolean | number;
+  };
   blockSpacing?: { y?: number };
   style?: CssValue;
   onResize?: t.MinSizeResizeEventHandler;
@@ -18,10 +21,20 @@ export type DocLayoutProps = {
  * Component
  */
 const View: React.FC<DocLayoutProps> = (props) => {
-  const { scrollable = true, tracelines = false, blocks = [], blockSpacing = {} } = props;
+  const {
+    scrollable = true,
+    tracelines = false,
+    blocks = [],
+    blockSpacing = {},
+    padding = {},
+  } = props;
 
   const traceBorder = `solid 1px ${Color.alpha(COLORS.MAGENTA, tracelines ? 0.1 : 0)}`;
-  const footerPadding = props.footerPadding === true ? DEFAULT.footerPadding : props.footerPadding;
+
+  const PADDING = {
+    header: padding.header === true ? DEFAULT.padding.header : padding.header,
+    footer: padding.footer === true ? DEFAULT.padding.footer : padding.footer,
+  };
 
   /**
    * [Render]
@@ -33,7 +46,8 @@ const View: React.FC<DocLayoutProps> = (props) => {
       boxSizing: 'border-box',
       Flex: 'y-stretch-center',
       Scroll: scrollable,
-      paddingBottom: footerPadding,
+      paddingTop: PADDING.header,
+      paddingBottom: PADDING.footer,
     }),
     block: {
       base: css({

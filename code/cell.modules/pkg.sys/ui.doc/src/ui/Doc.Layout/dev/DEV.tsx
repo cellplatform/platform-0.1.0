@@ -19,6 +19,10 @@ const Util = {
     return ctx.props.blockSpacing || (ctx.props.blockSpacing = {});
   },
 
+  padding(ctx: Ctx) {
+    return ctx.props.padding || (ctx.props.padding = {});
+  },
+
   blocks(ctx: Ctx) {
     const width = ctx.debug.width;
 
@@ -41,7 +45,13 @@ const Util = {
 
     const elBlock = <Doc.Block markdown={BLOCK_SAMPLE.MARKDOWN} />;
 
-    return [elBannerImage, elByline, elHeadline, elBlock];
+    return [
+      // Blocks:
+      elBannerImage,
+      elByline,
+      elHeadline,
+      elBlock,
+    ];
   },
 };
 
@@ -58,7 +68,7 @@ export const actions = DevActions<Ctx>()
       props: {
         scrollable: true,
         tracelines: true,
-        footerPadding: DEFAULT.footerPadding,
+        padding: { header: undefined, footer: DEFAULT.padding.footer },
         blockSpacing: { y: DEFAULT.blockspacing.y },
         onResize: (e) => change.ctx((ctx) => (ctx.size = e.size)),
         onBlockClick: (e) => console.log('⚡️ onBlockClick:', e),
@@ -89,15 +99,24 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.props.scrollable;
     });
 
-    e.boolean('footerPadding', (e) => {
-      if (e.changing) e.ctx.props.footerPadding = e.changing.next;
-      e.boolean.current = Boolean(e.ctx.props.footerPadding);
-    });
-
     e.boolean('blockSpacing.y', (e) => {
       const blockSpacing = Util.blockSpacing(e.ctx);
       if (e.changing) blockSpacing.y = e.changing.next ? 15 : 0;
       e.boolean.current = Boolean(blockSpacing.y);
+    });
+
+    e.hr(1, 0.1);
+
+    e.boolean('padding.header', (e) => {
+      const padding = Util.padding(e.ctx);
+      if (e.changing) padding.header = e.changing.next;
+      e.boolean.current = Boolean(padding.header);
+    });
+
+    e.boolean('padding.footer', (e) => {
+      const padding = Util.padding(e.ctx);
+      if (e.changing) padding.footer = e.changing.next;
+      e.boolean.current = Boolean(padding.footer);
     });
 
     e.hr();
