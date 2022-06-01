@@ -37,7 +37,7 @@ export type VercelEvents = t.Disposable & {
   info: {
     req$: t.Observable<t.VercelInfoReq>;
     res$: t.Observable<t.VercelInfoRes>;
-    get(options?: { timeout?: Milliseconds; endpoint?: boolean }): Promise<VercelInfoRes>;
+    get(options?: { timeout?: Milliseconds }): Promise<VercelInfoRes>;
   };
 
   deploy: {
@@ -73,7 +73,7 @@ export type VercelInfoReqEvent = {
   type: 'vendor.vercel/info:req';
   payload: VercelInfoReq;
 };
-export type VercelInfoReq = { tx: string; id: Id; endpoint: boolean };
+export type VercelInfoReq = { tx: string; id: Id };
 
 export type VercelInfoResEvent = {
   type: 'vendor.vercel/info:res';

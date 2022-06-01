@@ -33,7 +33,6 @@ export function BusEvents(args: {
     async get(options = {}) {
       const { timeout: msecs = 90000 } = options;
       const tx = slug();
-      const endpoint = Boolean(options.endpoint);
 
       const first = firstValueFrom(
         info.res$.pipe(
@@ -45,7 +44,7 @@ export function BusEvents(args: {
 
       bus.fire({
         type: 'vendor.vercel/info:req',
-        payload: { tx, id, endpoint },
+        payload: { tx, id },
       });
 
       const res = await first;
@@ -88,7 +87,7 @@ export function BusEvents(args: {
    * API
    */
   return {
-    instance: { id, bus: rx.bus.instance(bus) },
+    instance: { bus: rx.bus.instance(bus), id },
     $,
     is,
     dispose,
