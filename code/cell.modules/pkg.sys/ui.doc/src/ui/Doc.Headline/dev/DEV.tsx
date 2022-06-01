@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { DocHeadline, DocHeadlineProps } from '..';
-import { DevActions, ObjectView, TestFilesystem, Lorem } from '../../../test';
+import { DevActions, Lorem, ObjectView, TestFilesystem } from '../../../test';
 import { Filesystem, t } from '../common';
 
 type Ctx = {
@@ -127,6 +127,7 @@ export const actions = DevActions<Ctx>()
       host: { background: -0.04 },
       layout: {
         cropmarks: -0.2,
+        border: -0.04,
         width: 720,
       },
     });

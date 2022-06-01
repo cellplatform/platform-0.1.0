@@ -1,12 +1,9 @@
 import React from 'react';
-
-import { DocBlock, DocBlockProps } from '..';
-import { DevActions, ObjectView } from '../../../test';
-import { SAMPLE } from './DEV.Sample';
-import { css } from '../common';
+import { DevActions, ObjectView } from 'sys.ui.dev';
+import { DocByline, DocBylineProps } from '..';
 
 type Ctx = {
-  props: DocBlockProps;
+  props: DocBylineProps;
   debug: { width: number };
 };
 
@@ -14,15 +11,13 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.Doc.Block')
+  .namespace('ui.Doc.Byline')
   .context((e) => {
     if (e.prev) return e.prev;
-
     const ctx: Ctx = {
-      props: { markdown: SAMPLE.PARA },
+      props: {},
       debug: { width: 720 },
     };
-
     return ctx;
   })
 
@@ -46,15 +41,10 @@ export const actions = DevActions<Ctx>()
     e.hr();
 
     e.component((e) => {
-      const markdown = e.ctx.props.markdown ?? '';
-      const props = {
-        ...e.ctx.props,
-        markdown: markdown ? `${markdown.substring(0, 50)}...` : undefined,
-      };
       return (
         <ObjectView
           name={'props'}
-          data={props}
+          data={e.ctx.props}
           style={{ MarginX: 15 }}
           fontSize={10}
           expandPaths={['$']}
@@ -70,19 +60,11 @@ export const actions = DevActions<Ctx>()
       host: { background: -0.04 },
       layout: {
         width: debug.width,
-        position: [80, null, 130, null],
         cropmarks: -0.2,
         border: -0.04,
       },
     });
-
-    const styles = { base: css({ Scroll: true }) };
-
-    e.render(
-      <div {...styles.base}>
-        <DocBlock {...e.ctx.props} />
-      </div>,
-    );
+    e.render(<DocByline {...e.ctx.props} />);
   });
 
 export default actions;

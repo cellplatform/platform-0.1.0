@@ -7,7 +7,9 @@ const imports = {
   ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
   DocLayout: import('./ui/Doc.Layout/dev/DEV'),
   DocHeadline: import('./ui/Doc.Headline/dev/DEV'),
+  DocByline: import('./ui/Doc.Byline/dev/DEV'),
   DocBlock: import('./ui/Doc.Block/dev/DEV'),
+  DocImage: import('./ui/Doc.Image/dev/DEV'),
   UnitTests: import('./Dev.UnitTests'),
 };
 
