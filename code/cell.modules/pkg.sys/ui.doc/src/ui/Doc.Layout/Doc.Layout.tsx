@@ -11,6 +11,7 @@ export type DocLayoutProps = {
   blockSpacing?: { y?: number };
   style?: CssValue;
   onResize?: t.MinSizeResizeEventHandler;
+  onBlockClick?: t.DocBlockClickHandler;
 };
 
 /**
@@ -40,7 +41,7 @@ const View: React.FC<DocLayoutProps> = (props) => {
         PaddingY: blockSpacing.y ?? DEFAULT.blockspacing.y,
         ':first-child': { paddingTop: 0 },
 
-        // Debug (tracelines)
+        // Debug (tracelines).
         borderRight: traceBorder,
         borderLeft: traceBorder,
         borderBottom: traceBorder,
@@ -49,9 +50,13 @@ const View: React.FC<DocLayoutProps> = (props) => {
     },
   };
 
-  const elBlocks = blocks.map((el, i) => {
+  const elBlocks = blocks.map((el, index) => {
     return (
-      <div key={`block.${i}`} {...styles.block.base}>
+      <div
+        key={`block.${index}`}
+        {...styles.block.base}
+        onClick={() => props.onBlockClick?.({ index })}
+      >
         {el}
       </div>
     );

@@ -58,6 +58,7 @@ export const actions = DevActions<Ctx>()
         footerPadding: DEFAULT.footerPadding,
         blockSpacing: { y: DEFAULT.blockspacing.y },
         onResize: (e) => change.ctx((ctx) => (ctx.size = e.size)),
+        onBlockClick: (e) => console.log('⚡️ onBlockClick:', e),
       },
       debug: { render: true, width: 720 },
     };
