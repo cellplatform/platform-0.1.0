@@ -127,7 +127,6 @@ export const actions = DevActions<Ctx>()
           topLeft: '<Deploy>',
           topRight: `filesystem: "${TestUtil.filesystem.instance.fs}"`,
         },
-        // width: 300,
         cropmarks: -0.2,
       },
     });

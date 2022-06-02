@@ -35,6 +35,7 @@ export type DeployProps = {
  * - Generate [Manifests] before deploy
  * - Display response in <CardStack>
  * - Stack up and store list of deployments in .log file (within FS)
+ * - "Filesystem ID" within <PropsList>
  */
 
 export const Deploy: React.FC<DeployProps> = (props) => {
