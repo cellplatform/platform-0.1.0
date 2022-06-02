@@ -54,14 +54,6 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Dev');
 
-    e.button('filesystem: delete all', async (e) => {
-      const fs = e.ctx.fs;
-      const files = (await fs.manifest()).files;
-      await Promise.all(files.map((file) => fs.delete(file.path)));
-    });
-
-    e.hr(1, 0.1);
-
     e.textbox((config) =>
       config.placeholder('set api token').pipe((e) => {
         if (e.changing?.action === 'invoke') {
@@ -71,6 +63,16 @@ export const actions = DevActions<Ctx>()
         }
       }),
     );
+
+    e.hr(1, 0.1);
+
+    e.title('Filesystem');
+
+    e.button('filesystem: delete all', async (e) => {
+      const fs = e.ctx.fs;
+      const files = (await fs.manifest()).files;
+      await Promise.all(files.map((file) => fs.delete(file.path)));
+    });
 
     e.hr();
 

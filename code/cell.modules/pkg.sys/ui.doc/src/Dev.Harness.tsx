@@ -11,6 +11,9 @@ const imports = {
   DocBlock: import('./ui/Doc.Block/dev/DEV'),
   DocImage: import('./ui/Doc.Image/dev/DEV'),
   DocQuote: import('./ui/Doc.Quote/dev/DEV'),
+
+  SampleDeploy: import('./ui/DEV.Sample.Deploy/DEV'),
+
   UnitTests: import('./Dev.UnitTests'),
 };
 
