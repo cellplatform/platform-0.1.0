@@ -3,7 +3,7 @@ export * from '../ui/common';
 /**
  * @system
  */
-export { DevActions, ObjectView, Test, expect, LocalStorage, toObject, lorem } from 'sys.ui.dev';
+export { DevActions, ObjectView, Test, expect, LocalStorage, toObject, Lorem } from 'sys.ui.dev';
 export { MediaStream, MediaEvent, VideoStream } from 'sys.ui.video/lib/ui/MediaStream';
 export { Card } from 'sys.ui.primitives/lib/ui/Card';
 

@@ -10,7 +10,9 @@ const imports = {
   NetbusCard: import('./ui/NetbusCard/dev/DEV'),
   NetworkCard: import('./ui/NetworkCard/dev/DEV'),
   Networks: import('./ui/DEV.Networks/DEV'),
+
   Sample: import('./ui/DEV.Sample/DEV'),
+  SampleDeploy: import('./ui/DEV.Sample.Deploy/DEV'),
 
   UnitTests: import('./Dev.UnitTests'),
 };
