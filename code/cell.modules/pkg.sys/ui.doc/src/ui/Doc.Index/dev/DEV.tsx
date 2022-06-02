@@ -1,11 +1,11 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { DocIndex, DocIndexProps } from '..';
-import { COLORS } from '../common';
+import { COLORS, t } from '../common';
 
 type Ctx = {
+  size?: t.DomRect;
   props: DocIndexProps;
-  debug: { width: number };
 };
 
 /**
@@ -15,10 +15,12 @@ export const actions = DevActions<Ctx>()
   .namespace('ui.Doc.Index')
   .context((e) => {
     if (e.prev) return e.prev;
+    const change = e.change;
 
     const ctx: Ctx = {
-      props: {},
-      debug: { width: 720 },
+      props: {
+        onResize: (e) => change.ctx((ctx) => (ctx.size = e.size)),
+      },
     };
 
     return ctx;
@@ -47,19 +49,22 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const debug = e.ctx.debug;
+    const { props, size } = e.ctx;
 
     e.settings({
       host: { background: COLORS.BG },
       layout: {
-        label: '<Doc.Index>',
-        width: debug.width,
+        label: {
+          topLeft: '<Doc.Index>',
+          topRight: `${size?.width ?? '-'} x ${size?.height ?? '-'} px`,
+        },
+        position: [80, 80, 120, 80],
         cropmarks: -0.2,
         border: -0.04,
       },
     });
 
-    e.render(<DocIndex {...e.ctx.props} style={{ flex: 1 }} />);
+    e.render(<DocIndex {...props} style={{ flex: 1 }} />);
   });
 
 export default actions;
