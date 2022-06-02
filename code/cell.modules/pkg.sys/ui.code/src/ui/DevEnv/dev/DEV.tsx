@@ -12,7 +12,6 @@ import { evalCode } from './DEV.evaluate';
 type Ctx = {
   instance: t.FsViewInstance;
   bus: t.EventBus<any>;
-
   token: string;
   fs: t.Fs;
   props: DevEnvProps;
@@ -249,7 +248,7 @@ export const actions = DevActions<Ctx>()
       return (
         <VercelModuleInfo
           fields={['Module', 'Token.API.Hidden', 'Deploy.Domain']}
-          data={{ token, deployment: { domain } }}
+          data={{ token, deploy: { domain } }}
           style={{ Margin: [30, 45, 30, 38] }}
         />
       );
@@ -338,7 +337,7 @@ export const actions = DevActions<Ctx>()
       return (
         <VercelModuleInfo
           fields={['Deploy.Response']}
-          data={{ deployment: { response } }}
+          data={{ deploy: { response } }}
           style={{ Margin: [10, 40, 10, 40] }}
         />
       );
