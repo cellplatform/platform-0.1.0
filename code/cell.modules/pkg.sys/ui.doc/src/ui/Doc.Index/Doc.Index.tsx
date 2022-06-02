@@ -10,6 +10,7 @@ export type DocIndexProps = {
 
 export const DocIndex: React.FC<DocIndexProps> = (props) => {
   const resize = useResizeObserver({ onSize: (size) => props.onResize?.({ size }) });
+  const size = resize.rect;
 
   /**
    * [Render]
@@ -21,6 +22,7 @@ export const DocIndex: React.FC<DocIndexProps> = (props) => {
         Absolute: 0,
         Flex: 'x-center-center',
         Scroll: true,
+        PaddingX: 20,
       }),
       inner: css({
         width: 720, // TODO 🐷 take from page resizer
@@ -56,7 +58,7 @@ export const DocIndex: React.FC<DocIndexProps> = (props) => {
     </div>
   );
 
-  const elLogo = (
+  const elLogo = size.width > 950 && (
     <div {...styles.logo.base}>
       <span {...styles.logo.subdomain}>ro</span>.db.team
     </div>

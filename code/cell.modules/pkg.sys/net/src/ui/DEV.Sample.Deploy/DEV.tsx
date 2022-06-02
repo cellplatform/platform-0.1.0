@@ -92,7 +92,10 @@ export const actions = DevActions<Ctx>()
   .subject((e) => {
     e.settings({
       host: { background: -0.04 },
-      layout: {},
+      layout: {
+        position: [100, null, null, null],
+        cropmarks: 0,
+      },
     });
 
     e.render(<Deploy {...e.ctx.props} />);
