@@ -14,7 +14,7 @@ export type DocLayoutProps = {
   blockSpacing?: { y?: number };
   style?: CssValue;
   onResize?: t.MinSizeResizeEventHandler;
-  onBlockClick?: t.DocBlockClickHandler;
+  onBlockClick?: t.DocLayoutBlockClickHandler;
 };
 
 /**

@@ -7,11 +7,16 @@ import { SAMPLE as BLOCK_SAMPLE } from '../../Doc.Block/dev/DEV.Sample';
 import { COLORS, DEFAULT, t } from '../common';
 import { SAMPLE as IMAGE_SAMPLE } from '../../Doc.Image/dev/DEV';
 import { SAMPLE as BYLINE_SAMPLE } from '../../Doc.Byline/dev/DEV';
+import { SAMPLE as DEFS } from '../../DEV.Sample.data/SAMPLE.DocDefs';
 
 type Ctx = {
   size?: t.DomRect;
   props: DocLayoutProps;
-  debug: { render: boolean; width: number };
+  debug: {
+    sampleId: 'Sample' | 'Flows' | 'Scale';
+    render: boolean;
+    width: number;
+  };
 };
 
 const Util = {
@@ -23,7 +28,7 @@ const Util = {
     return ctx.props.padding || (ctx.props.padding = {});
   },
 
-  blocks(ctx: Ctx) {
+  sampleBlocks(ctx: Ctx) {
     const width = ctx.debug.width;
 
     const elBannerImage = <Doc.Image url={IMAGE_SAMPLE.URL} width={width} />;
@@ -58,6 +63,22 @@ const Util = {
       elImage,
     ];
   },
+
+  toDef(ctx: Ctx) {
+    const key = ctx.debug.sampleId;
+
+    if (key === 'Flows') return DEFS.FLOWS;
+    if (key === 'Scale') return DEFS.SCALE;
+    return undefined;
+  },
+
+  toBlocks(ctx: Ctx) {
+    const key = ctx.debug.sampleId;
+    if (key === 'Sample') return Util.sampleBlocks(ctx);
+
+    const def = Util.toDef(ctx);
+    return def ? Doc.toBlockElements(def) : [];
+  },
 };
 
 /**
@@ -78,14 +99,18 @@ export const actions = DevActions<Ctx>()
         onResize: (e) => change.ctx((ctx) => (ctx.size = e.size)),
         onBlockClick: (e) => console.log('⚡️ onBlockClick:', e),
       },
-      debug: { render: true, width: 720 },
+      debug: {
+        render: true,
+        width: 720,
+        sampleId: 'Sample',
+      },
     };
     return ctx;
   })
 
   .init(async (e) => {
     const { ctx, bus } = e;
-    ctx.props.blocks = Util.blocks(ctx);
+    ctx.props.blocks = Util.sampleBlocks(ctx);
   })
 
   .items((e) => {
@@ -93,6 +118,19 @@ export const actions = DevActions<Ctx>()
       if (e.changing) e.ctx.debug.render = e.changing.next;
       e.boolean.current = e.ctx.debug.render;
     });
+
+    e.select((config) => {
+      const ITEMS: Ctx['debug']['sampleId'][] = ['Sample', 'Flows', 'Scale'];
+      config
+        .title('Title')
+        .items(ITEMS)
+        .initial(config.ctx.debug.sampleId)
+        .view('buttons')
+        .pipe((e) => {
+          if (e.changing) e.ctx.debug.sampleId = e.changing?.next[0].value;
+        });
+    });
+
     e.hr();
   })
 
@@ -152,6 +190,9 @@ export const actions = DevActions<Ctx>()
 
   .subject((e) => {
     const { props, debug, size } = e.ctx;
+    const def = Util.toDef(e.ctx);
+
+    console.log('def', def);
 
     e.settings({
       host: { background: COLORS.BG },
@@ -159,6 +200,7 @@ export const actions = DevActions<Ctx>()
         label: {
           topLeft: '<Doc.Layout>',
           topRight: `${size?.width ?? '-'} x ${size?.height ?? '-'} px`,
+          bottomLeft: def ? `path: ${def.path}` : undefined,
         },
         position: [80, 80, 130, 80],
         cropmarks: -0.2,
@@ -166,7 +208,9 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    e.render(debug.render && <Doc.Layout {...props} style={{ flex: 1 }} />);
+    e.render(
+      debug.render && <Doc.Layout {...props} blocks={Util.toBlocks(e.ctx)} style={{ flex: 1 }} />,
+    );
   });
 
 export default actions;

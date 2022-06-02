@@ -4,6 +4,7 @@ import { DocImage as Image } from '../Doc.Image';
 import { DocByline as Byline } from '../Doc.Byline';
 import { DocLayout as Layout } from '../Doc.Layout';
 import { DocIndex as Index } from '../Doc.Index';
+import { toBlockElements } from './Doc.toBlocks';
 
 export const Doc = {
   Index,
@@ -12,4 +13,5 @@ export const Doc = {
   Byline,
   Block,
   Image,
+  toBlockElements,
 };
