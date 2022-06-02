@@ -59,7 +59,7 @@ export const DocHeadline: React.FC<DocHeadlineProps> = (props) => {
       lineHeight: 0.9,
     }),
     subtitle: css({
-      fontSize: 32,
+      fontSize: 28,
       opacity: 0.6,
       lineHeight: 1.15,
       letterSpacing: '-0.006em',

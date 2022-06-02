@@ -58,7 +58,7 @@ but at a high level there are two fundamental dynamics to understand:
     {
       kind: 'Image',
       url: 'https://tdb-txfs4hhl5-tdb.vercel.app/scale-dymamics-list.png',
-      margin: { top: 40, bottom: 40 },
+      margin: { top: 10, bottom: 20 },
     },
 
     {
@@ -268,7 +268,7 @@ scale making them useful to the world.
     {
       kind: 'Image',
       url: 'https://tdb-l67ov2q2s-tdb.vercel.app/scale-diagram.png',
-      margin: { top: 0, bottom: 0 },
+      margin: { top: 30, bottom: 30 },
     },
 
     {

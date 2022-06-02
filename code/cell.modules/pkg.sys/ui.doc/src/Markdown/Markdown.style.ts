@@ -12,8 +12,8 @@ Style.global(
     h2: {
       fontSize: 20,
       letterSpacing: '-0.006em',
-      // textTransform: 'uppercase',
       marginTop: '2em',
+      // textTransform: 'uppercase',
       // fontWeight: 900,
       // opacity: 0.9,
       ':first-child': { marginTop: 0 },
