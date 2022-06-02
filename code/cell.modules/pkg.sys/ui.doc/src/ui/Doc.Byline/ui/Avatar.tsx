@@ -11,7 +11,7 @@ export const Avatar: React.FC<AvatarProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({}),
+    base: css({ borderRadius: 64, overflow: 'hidden' }),
     image: css({ width: 64, display: 'block' }),
   };
 

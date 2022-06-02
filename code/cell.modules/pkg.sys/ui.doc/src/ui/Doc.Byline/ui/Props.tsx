@@ -2,6 +2,8 @@ import React from 'react';
 import { Chip, COLORS, css, CssValue, PropList, t } from '../common';
 
 export type PropsProps = {
+  version: string;
+  author: string;
   style?: CssValue;
 };
 
@@ -21,8 +23,8 @@ export const Props: React.FC<PropsProps> = (props) => {
   const elIdentity = <Chip.Hash text={hash.substring(0, 6)} clipboard={() => hash} />;
 
   const items: t.PropListItem[] = [
-    { label: 'Version', value: `0.1.3 (Jun 2022)` },
-    { label: 'Author', value: 'Rowan Yeoman' },
+    { label: 'Version', value: props.version },
+    { label: 'Author', value: props.author },
     { label: 'Identity', value: elIdentity },
   ];
 

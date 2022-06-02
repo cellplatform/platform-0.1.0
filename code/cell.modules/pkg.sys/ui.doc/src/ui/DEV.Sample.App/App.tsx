@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { SAMPLE } from '../DEV.Sample.data/SAMPLE.DocDefs';
+import { SAMPLE } from '../DEV.Sample.data';
 import { DocIndex } from '../Doc.Index';
 import { COLORS, css, CssValue } from './common';
 

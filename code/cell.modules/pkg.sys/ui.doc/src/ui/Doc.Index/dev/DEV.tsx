@@ -2,7 +2,7 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { DocIndex, DocIndexProps } from '..';
 import { COLORS, t } from '../common';
-import { SAMPLE } from '../../DEV.Sample.data/SAMPLE.DocDefs';
+import { SAMPLE } from '../../DEV.Sample.data';
 
 type Ctx = {
   size?: t.DomRect;

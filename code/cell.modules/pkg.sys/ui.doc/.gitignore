@@ -1,2 +1,3 @@
 script.ts/vercel.run.ts
 static/.tmp.*
+static/tmp/

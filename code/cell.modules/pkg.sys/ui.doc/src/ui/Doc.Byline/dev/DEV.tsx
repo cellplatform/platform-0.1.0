@@ -20,7 +20,10 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
     const ctx: Ctx = {
-      props: { avatarUrl: SAMPLE.avatarUrl },
+      props: {
+        version: '0.1.3 (Jun 2022)',
+        author: { name: 'Philious Fogg', avatar: SAMPLE.avatarUrl },
+      },
       debug: { width: 720 },
     };
     return ctx;

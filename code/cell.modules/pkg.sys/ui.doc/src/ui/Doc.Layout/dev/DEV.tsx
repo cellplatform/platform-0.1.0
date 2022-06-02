@@ -7,7 +7,7 @@ import { SAMPLE as BLOCK_SAMPLE } from '../../Doc.Block/dev/DEV.Sample';
 import { COLORS, DEFAULT, t } from '../common';
 import { SAMPLE as IMAGE_SAMPLE } from '../../Doc.Image/dev/DEV';
 import { SAMPLE as BYLINE_SAMPLE } from '../../Doc.Byline/dev/DEV';
-import { SAMPLE as DEFS } from '../../DEV.Sample.data/SAMPLE.DocDefs';
+import { SAMPLE as DEFS } from '../../DEV.Sample.data';
 
 type Ctx = {
   size?: t.DomRect;
@@ -34,7 +34,11 @@ const Util = {
     const elBannerImage = <Doc.Image url={IMAGE_SAMPLE.URL} width={width} />;
 
     const elByline = (
-      <Doc.Byline avatarUrl={BYLINE_SAMPLE.avatarUrl} style={{ marginBottom: 60 }} />
+      <Doc.Byline
+        version={'0.1.3 (Jun 2022)'}
+        author={{ name: 'Philious Fogg', avatar: BYLINE_SAMPLE.avatarUrl }}
+        style={{ marginBottom: 60 }}
+      />
     );
 
     const elHeadline = (
@@ -76,8 +80,9 @@ const Util = {
     const key = ctx.debug.sampleId;
     if (key === 'Sample') return Util.sampleBlocks(ctx);
 
+    const width = ctx.debug.width;
     const def = Util.toDef(ctx);
-    return def ? Doc.toBlockElements(def) : [];
+    return def ? Doc.toBlockElements({ def, width }) : [];
   },
 };
 
@@ -102,7 +107,8 @@ export const actions = DevActions<Ctx>()
       debug: {
         render: true,
         width: 720,
-        sampleId: 'Sample',
+        // sampleId: 'Sample',
+        sampleId: 'Flows',
       },
     };
     return ctx;
@@ -192,8 +198,6 @@ export const actions = DevActions<Ctx>()
     const { props, debug, size } = e.ctx;
     const def = Util.toDef(e.ctx);
 
-    console.log('def', def);
-
     e.settings({
       host: { background: COLORS.BG },
       layout: {
@@ -208,9 +212,10 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    e.render(
-      debug.render && <Doc.Layout {...props} blocks={Util.toBlocks(e.ctx)} style={{ flex: 1 }} />,
-    );
+    if (debug.render) {
+      const blocks = Util.toBlocks(e.ctx);
+      e.render(<Doc.Layout {...props} blocks={blocks} style={{ flex: 1 }} />);
+    }
   });
 
 export default actions;

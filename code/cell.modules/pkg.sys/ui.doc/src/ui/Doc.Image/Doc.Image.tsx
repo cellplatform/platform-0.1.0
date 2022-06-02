@@ -8,6 +8,7 @@ export type DocImageProps = {
   url?: string;
   width?: number;
   borderRadius?: number;
+  credit?: React.ReactNode;
   style?: CssValue;
 };
 
@@ -15,7 +16,7 @@ export type DocImageProps = {
  * Component
  */
 const View: React.FC<DocImageProps> = (props) => {
-  const { width, borderRadius = DEFAULT.borderRadius } = props;
+  const { url, width, borderRadius = DEFAULT.borderRadius, credit } = props;
 
   /**
    * [Render]
@@ -23,10 +24,19 @@ const View: React.FC<DocImageProps> = (props) => {
   const styles = {
     base: css({
       position: 'relative',
+      color: COLORS.DARK,
+    }),
+    body: css({
       overflow: 'hidden',
       borderRadius,
     }),
     image: css({ width, display: 'block' }),
+    credit: css({
+      marginTop: 3,
+      fontSize: 11,
+      textAlign: 'right',
+      opacity: 0.4,
+    }),
   };
 
   /**
@@ -37,7 +47,8 @@ const View: React.FC<DocImageProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
-      {props.url && <img src={props.url} {...styles.image} />}
+      <div {...styles.body}>{url && <img src={url} {...styles.image} />}</div>
+      {credit && <div {...styles.credit}>{credit}</div>}
     </div>
   );
 };

@@ -10,6 +10,7 @@ type Ctx = {
 
 export const SAMPLE = {
   URL: `/static/dev.images/banner-image.png`,
+  CREDIT: 'Photo by Foobar of Magnum',
 };
 
 /**
@@ -24,6 +25,7 @@ export const actions = DevActions<Ctx>()
       props: {
         url: SAMPLE.URL,
         borderRadius: DocImage.DEFAULT.borderRadius,
+        credit: SAMPLE.CREDIT,
       },
       debug: { width: 720 },
     };
@@ -56,6 +58,11 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = Boolean(e.ctx.props.borderRadius);
     });
 
+    e.boolean('credit', (e) => {
+      if (e.changing) e.ctx.props.credit = e.changing.next ? SAMPLE.CREDIT : undefined;
+      e.boolean.current = Boolean(e.ctx.props.credit);
+    });
+
     e.hr();
 
     e.component((e) => {
@@ -79,7 +86,6 @@ export const actions = DevActions<Ctx>()
       layout: {
         width: debug.width,
         cropmarks: -0.2,
-        border: -0.04,
       },
     });
     e.render(<DocImage {...e.ctx.props} width={debug.width} />);

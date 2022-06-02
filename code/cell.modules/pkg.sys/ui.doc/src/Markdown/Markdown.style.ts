@@ -21,11 +21,12 @@ Style.global(
     p: {
       fontSize: 17,
       lineHeight: '1.7em',
+      marginTop: '1.2em',
       ':first-child': { marginTop: 0 },
       ':last-child': { marginBottom: 0 },
     },
     a: { color: COLORS.BLUE },
-    ul: {
+    'ul, ol': {
       lineHeight: '1.4em',
       marginTop: 40,
       marginBottom: 40,
