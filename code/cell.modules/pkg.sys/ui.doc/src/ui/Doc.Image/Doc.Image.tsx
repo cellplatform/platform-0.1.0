@@ -35,7 +35,7 @@ const View: React.FC<DocImageProps> = (props) => {
       marginTop: 3,
       fontSize: 11,
       textAlign: 'right',
-      opacity: 0.4,
+      opacity: 0.3,
     }),
   };
 
