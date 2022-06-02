@@ -33,6 +33,8 @@ export type DeployProps = {
  * - Do not require HTTP to be passed to Vercel (make it optional)
  * - Deploying message - update with details
  * - Generate [Manifests] before deploy
+ * - Display response in <CardStack>
+ * - Stack up and store list of deployments in .log file (within FS)
  */
 
 export const Deploy: React.FC<DeployProps> = (props) => {
