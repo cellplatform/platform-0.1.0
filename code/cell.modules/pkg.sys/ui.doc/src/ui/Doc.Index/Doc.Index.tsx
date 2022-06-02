@@ -8,6 +8,7 @@ export type DocIndexProps = {
   items?: t.DocDef[];
   style?: CssValue;
   onResize?: (e: { size: t.DomRect }) => void;
+  onSelectItem?: (e: { def: t.DocDef }) => void;
 };
 
 export const DocIndex: React.FC<DocIndexProps> = (props) => {
@@ -48,16 +49,16 @@ export const DocIndex: React.FC<DocIndexProps> = (props) => {
     }),
   };
 
-  const elHeadlines = items.map((item, i) => {
+  const elHeadlines = items.map((def, i) => {
     return (
       <div {...styles.headline} key={`headline.${i}`}>
         <DocHeadline
-          id={item.id}
-          category={item.category}
-          title={item.title}
-          subtitle={item.subtitle}
+          id={def.id}
+          category={def.category}
+          title={def.title}
+          subtitle={def.subtitle}
           onClick={(e) => {
-            console.log('headline.onClick', e);
+            props.onSelectItem?.({ def });
           }}
         />
       </div>

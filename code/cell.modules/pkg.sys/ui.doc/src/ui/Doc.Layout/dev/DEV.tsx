@@ -131,11 +131,12 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.debug.render;
     });
 
+    e.hr(1, 0.1);
+
     e.select((config) => {
       const ITEMS: Ctx['debug']['sampleId'][] = ['Sample', 'Flows', 'Scale'];
       config
-        .title('Title')
-        .items(ITEMS)
+        .items(ITEMS.map((value) => ({ label: `content: "${value}"`, value })))
         .initial(config.ctx.debug.sampleId)
         .view('buttons')
         .pipe((e) => {

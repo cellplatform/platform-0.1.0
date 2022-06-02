@@ -5,6 +5,7 @@ import { t } from './common';
 const imports = {
   Design: import('./ui/Design/DEV'),
   ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
+  RouteContainer: import('./ui/RouteContainer/dev/DEV'),
   DocIndex: import('./ui/Doc.Index/dev/DEV'),
   DocLayout: import('./ui/Doc.Layout/dev/DEV'),
   DocHeadline: import('./ui/Doc.Headline/dev/DEV'),

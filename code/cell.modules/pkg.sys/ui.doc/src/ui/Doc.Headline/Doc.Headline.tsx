@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { COLORS, css, CssValue, FONT, Font, SanitizeHtml } from './common';
+import { COLORS, css, CssValue, FONT, Font, SanitizeHtml, Button } from './common';
 
 export type DocHeadlineProps = {
   id?: string;
@@ -15,7 +15,7 @@ export type DocHeadlineProps = {
  * REF: https://google-webfonts-helper.herokuapp.com/fonts/neuton?subsets=latin
  */
 export const DocHeadline: React.FC<DocHeadlineProps> = (props) => {
-  const { id = '', category } = props;
+  const { id = '', category, onClick } = props;
 
   const fonts = Font.useFont([FONT.NEUTON.REGULAR, FONT.NEUTON.ITALIC]);
   if (!fonts.ready) return null;
@@ -26,9 +26,7 @@ export const DocHeadline: React.FC<DocHeadlineProps> = (props) => {
   /**
    * Handlers
    */
-  const handleClick = () => {
-    props.onClick?.({ id, title });
-  };
+  const handleClick = () => onClick?.({ id, title });
 
   /**
    * [Render]
@@ -36,7 +34,6 @@ export const DocHeadline: React.FC<DocHeadlineProps> = (props) => {
   const styles = {
     base: css({
       position: 'relative',
-      color: COLORS.DARK,
       fontKerning: 'auto',
       cursor: props.onClick ? 'pointer' : 'default',
     }),
@@ -49,6 +46,7 @@ export const DocHeadline: React.FC<DocHeadlineProps> = (props) => {
       userSelect: 'none',
     }),
     displayFont: {
+      color: COLORS.DARK,
       fontFamily: 'Neuton',
       fontStyle: 'normal',
       letterSpacing: '-0.006em',
@@ -74,12 +72,18 @@ export const DocHeadline: React.FC<DocHeadlineProps> = (props) => {
     <SanitizeHtml style={css(styles.subtitle, styles.displayFont)} html={subtitle} />
   );
 
-  return (
-    <div {...css(styles.base, props.style)} onClick={handleClick}>
+  const elements = (
+    <>
       {elCategory}
       {elTitle}
       {elSubtitle}
-    </div>
+    </>
+  );
+
+  const elButtonElements = <Button onClick={() => handleClick()}>{elements}</Button>;
+
+  return (
+    <div {...css(styles.base, props.style)}>{Boolean(onClick) ? elButtonElements : elements}</div>
   );
 };
 
