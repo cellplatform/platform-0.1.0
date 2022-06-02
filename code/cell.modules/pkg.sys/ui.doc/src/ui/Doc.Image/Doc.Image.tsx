@@ -9,6 +9,7 @@ export type DocImageProps = {
   width?: number;
   borderRadius?: number;
   credit?: React.ReactNode;
+  margin?: { top?: number; bottom?: number };
   style?: CssValue;
 };
 
@@ -16,7 +17,7 @@ export type DocImageProps = {
  * Component
  */
 const View: React.FC<DocImageProps> = (props) => {
-  const { url, width, borderRadius = DEFAULT.borderRadius, credit } = props;
+  const { url, width, borderRadius = DEFAULT.borderRadius, credit, margin = {} } = props;
 
   /**
    * [Render]
@@ -25,6 +26,8 @@ const View: React.FC<DocImageProps> = (props) => {
     base: css({
       position: 'relative',
       color: COLORS.DARK,
+      marginTop: margin.top,
+      marginBottom: margin.bottom,
     }),
     body: css({
       overflow: 'hidden',

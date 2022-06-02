@@ -98,7 +98,8 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       props: {
         scrollable: true,
-        tracelines: true,
+        // tracelines: true,
+        tracelines: false,
         padding: { header: undefined, footer: DEFAULT.padding.footer },
         blockSpacing: { y: DEFAULT.blockspacing.y },
         onResize: (e) => change.ctx((ctx) => (ctx.size = e.size)),
@@ -108,7 +109,8 @@ export const actions = DevActions<Ctx>()
         render: true,
         width: 720,
         // sampleId: 'Sample',
-        sampleId: 'Flows',
+        // sampleId: 'Flows',
+        sampleId: 'Scale',
       },
     };
     return ctx;

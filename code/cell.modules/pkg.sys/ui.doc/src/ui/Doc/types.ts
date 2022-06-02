@@ -26,4 +26,5 @@ export type DocDefImageBlock = {
   kind: 'Image';
   url: string;
   credit?: string;
+  margin?: { top?: number; bottom?: number };
 };

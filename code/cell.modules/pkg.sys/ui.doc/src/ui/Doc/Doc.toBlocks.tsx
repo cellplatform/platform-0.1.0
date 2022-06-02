@@ -30,7 +30,7 @@ export function toBlockElements(props: { def: t.DocDef; width: number }) {
     if (def.kind === 'Markdown') return <Doc.Block markdown={def.text} />;
 
     if (def.kind === 'Image') {
-      return <Doc.Image url={def.url} credit={def.credit} width={width} />;
+      return <Doc.Image url={def.url} credit={def.credit} width={width} margin={def.margin} />;
     }
 
     return;

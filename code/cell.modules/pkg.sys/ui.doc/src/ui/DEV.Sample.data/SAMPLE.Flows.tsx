@@ -92,7 +92,7 @@ way too much on who’s in charge of the entity and its assets.
 
 Even as we decentralise DAO decision-making via proposal voting, if we are just decentralising 
 the governance of an inherently centralising concept we are repeating this historical pattern 
-and missing the bigger web3 opportunity.
+and missing the bigger Web3 opportunity.
 
 If anything, the success of DAOs has served to exacerbate the tendency towards entity thinking, 
 due to the fact that many DAOs have treasuries that are out of all proportion with the current 
@@ -124,7 +124,7 @@ technology, capital etc) plus the way it is being coordinated toward their goals
 high leverage ways.
 
 Our fixation on treasury assets and protocols as assets is leading us to miss that the 
-incredible potential of web3 can only be realised when networks are set free.
+incredible potential of Web3 can only be realised when networks are set free.
 
 When they are not squeezed through a centralising entity frame, three critical properties 
 become possible for DAO networks:
@@ -143,7 +143,7 @@ become possible for DAO networks:
    shareholder value). DAO networks can genuinely serve the larger needs of the ecosystems 
    they inhabit.
 
-These three qualities hold the potential of what web3 can offer the world, but their 
+These three qualities hold the potential of what Web3 can offer the world, but their 
 actualisation is by no means guaranteed. If we continue to pass everything through an entity 
 thinking filter as our underlying framing, we are more likely to get the heartbreak of more of 
 the same… a world where high-leverage, high-scale things are dominated by centralising power 
