@@ -3,23 +3,32 @@ import React from 'react';
 import { COLORS, css, CssValue, FONT, Font, SanitizeHtml } from './common';
 
 export type DocHeadlineProps = {
+  id?: string;
   category?: string;
   title?: string;
   subtitle?: string;
   style?: CssValue;
+  onClick?: (e: { id: string; title: string }) => void;
 };
 
 /**
  * REF: https://google-webfonts-helper.herokuapp.com/fonts/neuton?subsets=latin
  */
 export const DocHeadline: React.FC<DocHeadlineProps> = (props) => {
-  const { category } = props;
+  const { id = '', category } = props;
 
   const fonts = Font.useFont([FONT.NEUTON.REGULAR, FONT.NEUTON.ITALIC]);
   if (!fonts.ready) return null;
 
   const title = linebreaks(props.title);
   const subtitle = linebreaks(props.subtitle);
+
+  /**
+   * Handlers
+   */
+  const handleClick = () => {
+    props.onClick?.({ id, title });
+  };
 
   /**
    * [Render]
@@ -29,6 +38,7 @@ export const DocHeadline: React.FC<DocHeadlineProps> = (props) => {
       position: 'relative',
       color: COLORS.DARK,
       fontKerning: 'auto',
+      cursor: props.onClick ? 'pointer' : 'default',
     }),
     category: css({
       color: '#E21B22', // Red (deep, rich).
@@ -36,6 +46,7 @@ export const DocHeadline: React.FC<DocHeadlineProps> = (props) => {
       fontSize: 13,
       fontWeight: 700,
       marginBottom: title || subtitle ? 6 : 0,
+      userSelect: 'none',
     }),
     displayFont: {
       fontFamily: 'Neuton',
@@ -45,6 +56,7 @@ export const DocHeadline: React.FC<DocHeadlineProps> = (props) => {
     headline: css({
       fontSize: 46,
       marginBottom: subtitle ? 20 : 0,
+      lineHeight: 0.9,
     }),
     subtitle: css({
       fontSize: 32,
@@ -63,7 +75,7 @@ export const DocHeadline: React.FC<DocHeadlineProps> = (props) => {
   );
 
   return (
-    <div {...css(styles.base, props.style)}>
+    <div {...css(styles.base, props.style)} onClick={handleClick}>
       {elCategory}
       {elTitle}
       {elSubtitle}

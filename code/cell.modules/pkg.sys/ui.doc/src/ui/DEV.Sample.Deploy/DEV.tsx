@@ -40,8 +40,8 @@ export const actions = DevActions<Ctx>()
         instance,
         token: Util.token.read(),
         team: 'tdb',
-        project: 'tdb-tmp',
-        domain: 'tmp.db.team',
+        project: 'tdb-ro',
+        // domain: 'tmp.db.team',
       },
     };
     return ctx;

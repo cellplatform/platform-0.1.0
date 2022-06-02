@@ -1,6 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Color, COLORS, css, CssValue, t } from './common';
+import React from 'react';
+
+import { SAMPLE } from '../DEV.Sample.data/SAMPLE.DocDefs';
 import { DocIndex } from '../Doc.Index';
+import { COLORS, css, CssValue } from './common';
 
 export type AppProps = { style?: CssValue };
 
@@ -11,5 +13,5 @@ export const App: React.FC<AppProps> = (props) => {
       backgroundColor: COLORS.BG,
     }),
   };
-  return <DocIndex style={styles.base} />;
+  return <DocIndex style={styles.base} items={SAMPLE.defs} />;
 };

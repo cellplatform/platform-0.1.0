@@ -45,12 +45,17 @@ const Util = {
 
     const elBlock = <Doc.Block markdown={BLOCK_SAMPLE.MARKDOWN} />;
 
+    const elImage = (
+      <Doc.Image url={'https://tdb-2cxz9824d-tdb.vercel.app/image.png'} width={width} />
+    );
+
     return [
-      // Blocks:
+      // Content Order:
       elBannerImage,
       elByline,
       elHeadline,
       elBlock,
+      elImage,
     ];
   },
 };

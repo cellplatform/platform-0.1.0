@@ -2,6 +2,7 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { DocIndex, DocIndexProps } from '..';
 import { COLORS, t } from '../common';
+import { SAMPLE } from '../../DEV.Sample.data/SAMPLE.DocDefs';
 
 type Ctx = {
   size?: t.DomRect;
@@ -19,6 +20,7 @@ export const actions = DevActions<Ctx>()
 
     const ctx: Ctx = {
       props: {
+        items: SAMPLE.defs,
         onResize: (e) => change.ctx((ctx) => (ctx.size = e.size)),
       },
     };
