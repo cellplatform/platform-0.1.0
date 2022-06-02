@@ -21,6 +21,10 @@ export const TestToken = {
     localStorage.setItem(TestToken.key, token);
     return token;
   },
+
+  /**
+   * HTTP headers.
+   */
   get headers() {
     const token = TestToken.read();
     const Authorization = `Bearer ${token}`;

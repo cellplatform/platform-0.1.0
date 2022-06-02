@@ -10,7 +10,7 @@ const bus = rx.bus();
 export const TestUtil = {
   bus,
   Token: TestToken,
-  fs: TestFilesystem(bus),
+  filesystem: TestFilesystem(bus),
 
   get token() {
     return TestToken.read();

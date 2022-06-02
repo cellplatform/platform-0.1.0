@@ -4,13 +4,13 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { VercelHttp, VercelHttpProps } from '..';
 import { TestUtil } from '../../../test';
 import { Vercel } from '../../../Vercel';
-import { css, cuid, t, value, Filesystem } from '../../common';
+import { cuid, t, value, Filesystem } from '../common';
 import { ModuleInfo } from '../../ModuleInfo';
 
 type Ctx = {
   bus: t.EventBus;
-  props: VercelHttpProps;
   fs: t.Fs;
+  props: VercelHttpProps;
   domain: string;
   output: {
     json?: any;
@@ -26,13 +26,11 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const { bus } = TestUtil;
-    const fs = TestUtil.fs.events;
-    TestUtil.fs.init();
+    TestUtil.filesystem.init();
 
     const ctx: Ctx = {
-      bus,
-      fs,
+      bus: TestUtil.bus,
+      fs: TestUtil.filesystem.events,
       domain: 'tmp.db.team',
       props: {},
       output: {},
@@ -168,7 +166,7 @@ export const actions = DevActions<Ctx>()
       return (
         <Filesystem.PathList.Stateful
           style={{ Margin: [5, 10, 20, 10], height: 150 }}
-          instance={TestUtil.fs.instance}
+          instance={TestUtil.filesystem.instance}
           scroll={true}
           droppable={true}
           selectable={true}
@@ -198,7 +196,7 @@ export const actions = DevActions<Ctx>()
         <ModuleInfo
           style={{ Margin: [30, 55, 30, 55] }}
           fields={['Module', 'Token.API.Hidden', 'Deploy.Domain']}
-          data={{ token, deployment: { domain } }}
+          data={{ token, deploy: { domain } }}
         />
       );
     });
@@ -229,7 +227,7 @@ export const actions = DevActions<Ctx>()
       return (
         <ModuleInfo
           fields={['Deploy.Response']}
-          data={{ deployment: { response } }}
+          data={{ deploy: { response } }}
           style={{ Margin: [10, 40, 10, 40] }}
         />
       );

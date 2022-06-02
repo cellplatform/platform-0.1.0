@@ -9,6 +9,8 @@ const ALL_FIELDS: m.ModuleInfoFields[] = [
   'Module.Version',
   'Token.API',
   'Token.API.Hidden',
+  'Deploy.Team',
+  'Deploy.Project',
   'Deploy.Domain',
   'Deploy.Response',
 ];
@@ -23,7 +25,7 @@ const DEFAULT_FIELDS: m.ModuleInfoFields[] = ['Module.Name', 'Module.Version'];
  */
 const DEFAULT_DATA: m.ModuleInfoData = {
   token: undefined,
-  deployment: { response: undefined, domain: undefined },
+  deploy: { project: undefined, domain: undefined, response: undefined },
 };
 
 /**
