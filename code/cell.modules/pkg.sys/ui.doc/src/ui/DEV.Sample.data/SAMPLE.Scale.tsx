@@ -1,8 +1,4 @@
-import { t, author } from './common';
-
-//https://tdb-4hea4bo0w-tdb.vercel.app/
-// https://tdb-l67ov2q2s-tdb.vercel.app/
-// https://tdb-txfs4hhl5-tdb.vercel.app/
+import { t, author, category } from './common';
 
 /**
  * Document: "Scale"
@@ -14,7 +10,7 @@ export const SCALE: t.DocDef = {
   banner: { url: 'https://tdb-4hea4bo0w-tdb.vercel.app/banner-scale.png' },
   version: '1.0.3 (May 2022)',
   author,
-  category: 'Conceptual Framework Series',
+  category,
   title: `Scale and the levers that\nprovide DAOs their power.`,
   subtitle: `Web3 presents the possibility of a new paradigm to replace the company-centric paradigm that has been evolving over the past 400 years.`,
 
@@ -22,7 +18,7 @@ export const SCALE: t.DocDef = {
     {
       kind: 'Markdown',
       text: `
-As described in [DAOs aren’t things…they are flows](/dao/flows-not-things), Web3 presents the 
+As described in “[DAOs aren’t things; They are flows](/dao/flows-not-things)”, Web3 presents the 
 possibility of a new paradigm to replace the company-centric paradigm that has been evolving 
 over the past 400 years.
 `,
