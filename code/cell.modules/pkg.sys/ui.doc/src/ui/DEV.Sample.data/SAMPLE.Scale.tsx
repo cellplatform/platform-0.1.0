@@ -18,7 +18,7 @@ export const SCALE: t.DocDef = {
     {
       kind: 'Markdown',
       text: `
-As described in “[DAOs aren’t things; They are flows](/dao/flows-not-things)”, Web3 presents the 
+As described in **“DAOs aren’t things; They are flows”**, Web3 presents the 
 possibility of a new paradigm to replace the company-centric paradigm that has been evolving 
 over the past 400 years.
 `,
