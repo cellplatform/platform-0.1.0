@@ -5,7 +5,7 @@ import { COLORS } from '../common';
 
 type Ctx = {
   props: DocBylineProps;
-  debug: { width: number };
+  debug: { width: number; whiteBg: boolean };
 };
 
 export const SAMPLE = {
@@ -22,9 +22,9 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       props: {
         version: '0.1.3 (Jun 2022)',
-        author: { name: 'Philious Fogg', avatar: SAMPLE.avatarUrl },
+        author: { name: 'Rowan Yeoman', avatar: SAMPLE.avatarUrl },
       },
-      debug: { width: 720 },
+      debug: { width: 720, whiteBg: false },
     };
     return ctx;
   })
@@ -35,6 +35,13 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Dev');
+
+    e.boolean('white background', (e) => {
+      if (e.changing) e.ctx.debug.whiteBg = e.changing.next;
+      e.boolean.current = e.ctx.debug.whiteBg;
+    });
+
+    e.hr(1, 0.1);
 
     e.select((config) => {
       config
@@ -65,7 +72,7 @@ export const actions = DevActions<Ctx>()
     const debug = e.ctx.debug;
 
     e.settings({
-      host: { background: COLORS.BG },
+      host: { background: debug.whiteBg ? 1 : COLORS.BG },
       layout: {
         width: debug.width,
         cropmarks: -0.2,
