@@ -1,12 +1,11 @@
 import React, { useRef, useState } from 'react';
 
-import { COLORS, Color, css, DEFAULT, List, Spinner, Style, t, time } from '../common';
+import { Color, COLORS, css, DEFAULT, List, Spinner, Style, t, time } from '../common';
 import { FsPathListProps } from '../types';
-import { wrangle } from './wrangle';
 import { DropTarget } from './DropTarget';
 import { Row } from './PathList.Row';
 import { renderers } from './renderers';
-import { Cursor } from '../Cursor';
+import { wrangle } from './wrangle';
 
 /**
  * Component
@@ -66,21 +65,15 @@ export const PathList: React.FC<FsPathListProps> = (props) => {
 
   const ListView = {
     simple(files: t.FsPathListCursor) {
-      /**
-       * TODO 🐷
-       * - pass as ListCursor (option on non-virtual list in primitives)
-       */
-
-      const items = Cursor.toList(files).map((file) => {
-        return { data: toData(file) };
-      });
-
-      return <List.Layout {...list} items={items} state={props.state} style={styles.list} />;
+      const cursor = toListCursor(files);
+      return <List.Layout {...list} items={cursor} state={props.state} style={styles.list} />;
     },
+
     virtual(files: t.FsPathListCursor) {
       const cursor = toListCursor(files);
       return <List.Virtual {...list} cursor={cursor} state={props.state} style={styles.list} />;
     },
+
     render() {
       return scroll ? ListView.virtual(cursor) : ListView.simple(cursor);
     },

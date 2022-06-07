@@ -3,19 +3,21 @@ import React from 'react';
 import { css, t } from './common';
 import { Renderer } from './Renderer';
 import { useContext } from './useCtx';
+import { Cursor } from './Cursor';
 
 /**
  * Component specific
  */
 export type ListLayoutProps = t.ListProps & {
-  items: t.ListItem[]; // "Simple" list of items.
+  items: t.ListItem[] | t.ListCursor; // "Simple" list of items.
 };
 
 /**
  * Simple (non-virtualized) layout
  */
 export const ListLayout: React.FC<ListLayoutProps> = (props) => {
-  const { items = [], tabIndex } = props;
+  const { tabIndex } = props;
+  const items = wrangleItems(props.items);
   const total = items.length;
 
   const ctx = useContext({ total, instance: props.instance });
@@ -47,3 +49,11 @@ export const ListLayout: React.FC<ListLayoutProps> = (props) => {
     </div>
   );
 };
+
+/**
+ * [Helpers]
+ */
+
+function wrangleItems(input: ListLayoutProps['items']): t.ListItem[] {
+  return Array.isArray(input) ? input : Cursor.toArray(input);
+}

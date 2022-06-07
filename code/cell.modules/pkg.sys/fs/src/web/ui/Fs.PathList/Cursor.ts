@@ -10,13 +10,6 @@ export const Cursor = {
   },
 
   /**
-   * Convert a [File-Cursor] to a simple array.
-   */
-  toList(cursor: t.FsPathListCursor) {
-    return Array.from({ length: cursor.total }).map((v, i) => cursor.getData(i));
-  },
-
-  /**
    * Convert an array of files to a [File-Cursor].
    */
   toFileCursor(files: t.ManifestFile[]): t.FsPathListCursor {
