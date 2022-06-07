@@ -16,6 +16,7 @@ import {
   Fullscreen,
   Icons,
   Keyboard,
+  LocalPeerCard,
   MediaStream,
   PeerNetwork,
   PositioningLayout,
@@ -23,7 +24,6 @@ import {
   Spinner,
   t,
   WebRuntime,
-  LocalPeerCard,
 } from './DEV.common';
 import { DevOverlay } from './DEV.Overlay';
 
@@ -69,7 +69,8 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
       }
     }
 
-    if (text.startsWith('peer:')) {
+    const isCuid = (input: string) => input.startsWith('c') && input.length === 25;
+    if (text.startsWith('peer:') || isCuid(text)) {
       const remote = text;
       const self = network.self;
       const isReliable = true;
