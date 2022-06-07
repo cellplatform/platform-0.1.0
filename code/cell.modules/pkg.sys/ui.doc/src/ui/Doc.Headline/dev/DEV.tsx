@@ -76,7 +76,7 @@ export const actions = DevActions<Ctx>()
 
     e.select((config) => {
       config
-        .items([300, 720].map((value) => ({ label: `width: ${value}px`, value })))
+        .items([720, 300].map((value) => ({ label: `width: ${value}px`, value })))
         .initial(720)
         .view('buttons')
         .pipe((e) => {
@@ -101,18 +101,19 @@ export const actions = DevActions<Ctx>()
 
   .subject((e) => {
     const debug = e.ctx.debug;
+    const width = debug.width;
 
     e.settings({
       host: { background: COLORS.BG },
       actions: { width: 350 },
       layout: {
-        width: debug.width,
+        width,
         cropmarks: -0.2,
         border: -0.04,
       },
     });
 
-    e.render(<DocHeadline {...e.ctx.props} />);
+    e.render(<DocHeadline {...e.ctx.props} hint={{ width }} />);
   });
 
 export default actions;
