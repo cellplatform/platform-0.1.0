@@ -13,7 +13,7 @@ type Pixels = number;
  * Types
  */
 export type ListVirtualProps = t.ListProps & {
-  items: { total: number; getData: t.GetListItem; getSize: t.GetListItemSize };
+  items: t.ListCursor;
   paddingNear?: Pixels;
   paddingFar?: Pixels;
 };
@@ -90,6 +90,12 @@ const View: React.FC<ListVirtualProps> = (props) => {
    *
    *      resetAfterIndex(index: number, shouldForceUpdate?: boolean): void;
    *
+   *  See examples:
+   *      https://codesandbox.io/s/n753oo58vj?file=/src/index.js
+   *      https://codesandbox.io/s/bvaughnreact-window-variable-size-list-vertical-gzqi8?file=/index.js:759-780
+   *
+   *  via issue (search):
+   *      https://github.com/bvaughn/react-window/issues/33 (etc)
    */
 
   const elBody = size.ready && (
