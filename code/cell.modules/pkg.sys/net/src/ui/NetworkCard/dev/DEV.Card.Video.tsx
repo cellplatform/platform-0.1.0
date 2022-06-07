@@ -51,16 +51,17 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
         pointerEvents: 'none',
         border: `solid 3px ${Color.alpha(COLORS.DARK, 0.1)}`,
       }),
+      mouseOverMask: css({
+        Absolute: 0,
+        pointerEvents: 'none',
+        backgroundColor: Color.alpha(COLORS.DARK, 0.5),
+        backdropFilter: `blur(18px)`,
+        opacity: isOver ? 1 : 0,
+        transition: `opacity 300ms`,
+      }),
     },
     toolbar: {
-      base: css({
-        Absolute: [0, 0, null, 0],
-        Flex: 'x-spaceBetween-stretch',
-        backgroundColor: isOver ? Color.alpha(COLORS.DARK, 0.4) : Color.format(0),
-        backdropFilter: `blur(${isOver ? 12 : 0}px)`,
-        transition: `background-color 300ms, backdrop-filter 300ms`,
-        paddingRight: 3,
-      }),
+      base: css({ Absolute: [0, 0, null, 0], Flex: 'x-spaceBetween-stretch', paddingRight: 3 }),
       section: css({ Flex: 'x-center-center', padding: 10 }),
       button: css({ height: 20, marginRight: 15, ':last-child': { marginRight: 0 } }),
       icon: css({ filter: `drop-shadow(0 1px 4px ${Color.format(-0.2)})` }),
@@ -95,13 +96,14 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
     });
   };
 
+  const iconColor = Color.format(1);
   const elToolbar = (
     <div {...styles.toolbar.base}>
       <div {...styles.toolbar.section}>
         <Button style={styles.toolbar.button} tooltip={'Close'}>
           <Icons.Close
             size={20}
-            color={1}
+            color={iconColor}
             style={styles.toolbar.icon}
             onClick={handleCloseExpandedWindow}
           />
@@ -111,7 +113,7 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
         <Button style={styles.toolbar.button} tooltip={'Expand Window'}>
           <Icons.Window.Expand
             size={18}
-            color={1}
+            color={iconColor}
             style={styles.toolbar.icon}
             onClick={handleExpandWindowClick}
           />
@@ -133,6 +135,7 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
   const elBody = (
     <div ref={resize.ref} {...styles.body.base}>
       {elVideo}
+      <div {...styles.body.mouseOverMask} />
     </div>
   );
 
