@@ -2,7 +2,7 @@ import { Test, expect } from '../test';
 import { Filesize } from '.';
 import { Filesystem } from '..';
 
-export default Test.describe.only('Filesize', (e) => {
+export default Test.describe('Filesize', (e) => {
   e.it('default', () => {
     expect(Filesize(1000)).to.eql('1 kB');
   });

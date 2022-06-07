@@ -1,4 +1,4 @@
-import { Disposable, EventBus } from '@platform/types';
+import { Disposable } from '@platform/types';
 import { Observable } from 'rxjs';
 import * as t from '../../common/types';
 
@@ -16,6 +16,7 @@ export type EventListProps = {
   instance?: EventListInstance; // Optional, internally bus/instance used by the UI.
   reset$?: Observable<any>;
   debug?: EventListDebugProps;
+  empty?: React.ReactNode;
   style?: t.CssValue;
 };
 export type EventListDebugProps = {

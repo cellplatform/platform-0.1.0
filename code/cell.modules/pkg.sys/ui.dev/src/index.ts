@@ -15,6 +15,6 @@ export { Test } from './ui/TestSuite';
 export * from './ui/Textbox';
 
 export { LocalStorage } from './web.store';
-export { StateObject, toObject, log, LOREM, lorem } from './common';
+export { StateObject, toObject, log, LOREM, Lorem } from './common';
 
 export * from './types';

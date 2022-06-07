@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { css, CssValue, pkg, PropList, Text } from '../common';
+import { t, css, CssValue, pkg, PropList, Text } from '../common';
 import { DEFAULT } from './constants';
 import * as k from './types';
 import { toDeploymentResponse } from './ModuleInfo.deployment';
@@ -32,8 +32,10 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
     .field('Module.Version', { label: 'Version', value: pkg.version })
     .field('Token.API', { label: 'API Token', value: secret(false) })
     .field('Token.API.Hidden', { label: 'API Token', value: secret(true) })
-    .field('Deploy.Domain', { label: 'Domain (Alias)', value: data.deployment?.domain ?? '-' })
-    .field('Deploy.Response', () => toDeploymentResponse(data.deployment?.response))
+    .field('Deploy.Team', { label: 'Team', value: data.deploy?.team ?? '—' })
+    .field('Deploy.Project', { label: 'Project', value: data.deploy?.project ?? '—' })
+    .field('Deploy.Domain', { label: 'Domain (Alias)', value: data.deploy?.domain ?? '—' })
+    .field('Deploy.Response', () => toDeploymentResponse(data.deploy?.response))
     .items(fields);
 
   /**

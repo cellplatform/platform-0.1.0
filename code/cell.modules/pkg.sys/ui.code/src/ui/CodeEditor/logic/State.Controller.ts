@@ -46,10 +46,10 @@ export function CodeEditorStateController(args: {
   let _fs: t.Fs | undefined;
   const Fs = {
     async init() {
-      const id = args.fs?.id;
+      const fs = args.fs?.id;
       const bus = args.bus;
-      const store = await Filesystem.IndexedDb.create({ bus, id, dispose$ });
-      return store.fs;
+      const ready = await Filesystem.IndexedDb.create({ bus, fs, dispose$ }).ready();
+      return ready.fs;
     },
 
     async get() {

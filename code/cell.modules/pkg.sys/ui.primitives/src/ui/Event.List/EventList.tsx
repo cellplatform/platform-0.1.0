@@ -41,7 +41,7 @@ const View: React.FC<EventListProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
-      {isEmpty && <Empty />}
+      {isEmpty && <Empty text={props.empty} />}
       {elLayout}
       {Boolean(debug.busid) && <DebugBusId bus={bus} debug={debug} />}
     </div>

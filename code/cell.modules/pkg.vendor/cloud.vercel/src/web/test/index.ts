@@ -1,3 +1,5 @@
-export { Test, expect } from 'sys.ui.dev';
+export { Test, expect, DevActions, ObjectView } from 'sys.ui.dev';
+
 export * from '../common';
-export * from './TestUtil';
+export * from './Test.Util';
+export * from './Test.Filesystem';

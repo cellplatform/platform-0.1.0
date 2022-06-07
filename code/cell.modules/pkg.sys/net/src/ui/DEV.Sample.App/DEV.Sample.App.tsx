@@ -46,7 +46,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
    * TODO 🐷 HACK
    * Move to sensible place (and put within a formal "language command pack (grammar)")
    */
-  const onExecuteCommand__TEMP: t.CmdCardExecuteCommandHandler = async (e) => {
+  const executeCommand__TEMP: t.CmdCardExecuteCommandHandler = async (e) => {
     if (!netbus) return;
     if (!bus) return;
     if (!network) return;
@@ -143,7 +143,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
         <DevNetworkCard
           instance={{ network, id }}
           style={styles.base}
-          onExecuteCommand={onExecuteCommand__TEMP}
+          onExecuteCommand={executeCommand__TEMP}
         />
       );
     },

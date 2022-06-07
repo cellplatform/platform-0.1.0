@@ -379,8 +379,6 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.1);
 
-    e.hr(1, 0.1);
-
     e.component((e) => {
       return (
         <ObjectView

@@ -28,8 +28,10 @@ const DEPLOYMENT_RESPONSE: t.VercelHttpDeployResponse = {
 };
 
 export const SAMPLE = {
-  deployment: {
-    response: DEPLOYMENT_RESPONSE,
+  deploy: {
+    team: 'tdb',
+    project: 'foo-bar',
     domain: 'tmp.db.team',
+    response: DEPLOYMENT_RESPONSE,
   },
 };

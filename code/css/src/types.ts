@@ -4,7 +4,16 @@ import { transform } from './css/css';
 export class CssValue {}
 export type Falsy = undefined | null | false;
 export type CssProps = React.CSSProperties;
-export type CssPropsMap = { [selector: string]: CssProps };
+
+export type CssPropsMap = { [selector: string]: CssPropsMapObject };
+export type CssPropsMapObject = CssProps & {
+  ':first-child'?: CssProps;
+  ':last-child'?: CssProps;
+  ':focus'?: CssProps;
+  ':hover'?: CssProps;
+  ':visited'?: CssProps;
+};
+
 export type CssClassName = (...styles: Array<CssProps | undefined>) => string;
 export type CssMergeRules = (...rules: any[]) => CssProps;
 

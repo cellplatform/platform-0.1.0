@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { VariableSizeList as List } from 'react-window';
+import { VariableSizeList } from 'react-window';
 
 import { css, FC, t, useResizeObserver } from './common';
 import { ListEvents } from './Events';
@@ -13,7 +13,7 @@ type Pixels = number;
  * Types
  */
 export type ListVirtualProps = t.ListProps & {
-  items: { total: number; getData: t.GetListItem; getSize: t.GetListItemSize };
+  cursor: t.ListCursor;
   paddingNear?: Pixels;
   paddingFar?: Pixels;
 };
@@ -27,7 +27,7 @@ export type ListVirtualProps = t.ListProps & {
  *
  */
 const View: React.FC<ListVirtualProps> = (props) => {
-  const { items, paddingNear = 0, paddingFar = 0, tabIndex } = props;
+  const { cursor: items, paddingNear = 0, paddingFar = 0, tabIndex } = props;
   const total = items.total;
 
   const ctx = useVirtualContext({ total, instance: props.instance });
@@ -46,7 +46,7 @@ const View: React.FC<ListVirtualProps> = (props) => {
       vertical: orientation === 'y',
     };
     const e: t.GetListItemSizeArgs = { index, total, item, is };
-    return props.items.getSize(e);
+    return props.cursor.getSize(e);
   };
 
   const getData = (index: number): ListVirtualItemProps | undefined => {
@@ -84,8 +84,22 @@ const View: React.FC<ListVirtualProps> = (props) => {
     return <ListVirtualItem {...rest} isScrolling={isScrolling} style={{ ...style, left, top }} />;
   };
 
+  /**
+   * TODO 🐷
+   * - Note: forced redraw may be more efficiently donw with the method:
+   *
+   *      resetAfterIndex(index: number, shouldForceUpdate?: boolean): void;
+   *
+   *  See examples:
+   *      https://codesandbox.io/s/n753oo58vj?file=/src/index.js
+   *      https://codesandbox.io/s/bvaughnreact-window-variable-size-list-vertical-gzqi8?file=/index.js:759-780
+   *
+   *  via issue (search):
+   *      https://github.com/bvaughn/react-window/issues/33 (etc)
+   */
+
   const elBody = size.ready && (
-    <List
+    <VariableSizeList
       key={ctx.redrawKey} // NB: Enable forced "redraws" of the list (via event-bus).
       ref={ctx.listRef}
       width={size.rect.width}
@@ -99,7 +113,7 @@ const View: React.FC<ListVirtualProps> = (props) => {
       itemKey={(index: number) => `row.${index}`}
     >
       {Row}
-    </List>
+    </VariableSizeList>
   );
 
   return (

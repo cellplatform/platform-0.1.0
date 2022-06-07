@@ -13,7 +13,8 @@ export const VercelHttpInfo = {
 
     const { ok, status } = res;
     const json = res.json as any;
-    const user = ok ? (json as t.VercelHttpUser) : undefined;
+
+    const user = ok ? (json.user as t.VercelHttpUser) : undefined;
     const error = ok ? undefined : (json.error as t.VercelHttpError);
 
     return { ok, status, user, error };

@@ -71,6 +71,15 @@ export type ListItemRenderFlags = {
   next(): ListItemRenderFlags | undefined;
 };
 
+/**
+ * Cursor
+ */
+export type ListCursor = {
+  total: number;
+  getData: t.GetListItem;
+  getSize: t.GetListItemSize;
+};
+
 export type GetListItemSize = (args: GetListItemSizeArgs) => Pixels;
 export type GetListItemSizeArgs = {
   index: number;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { DevActions, lorem, ObjectView } from 'sys.ui.dev';
+import { DevActions, Lorem, ObjectView } from 'sys.ui.dev';
 
 import { Card, CardProps } from '..';
 import { css, t } from '../../common';
@@ -82,7 +82,7 @@ export const actions = DevActions<Ctx>()
       }),
     };
 
-    const elBody = <div {...styles.body}>{lorem.toString()}</div>;
+    const elBody = <div {...styles.body}>{Lorem.toString()}</div>;
     const elCard = (
       <Card {...e.ctx.props} onClick={(e) => console.log('click', e)}>
         {elBody}

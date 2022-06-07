@@ -2,7 +2,7 @@ import React from 'react';
 
 import { LocalPeerCard, LocalPeerCardConstants, LocalPeerCardProps } from '..';
 import { PeerNetwork } from '../../..';
-import { DevActions, lorem, ObjectView, TEST } from '../../../test';
+import { DevActions, Lorem, ObjectView, TEST } from '../../../test';
 import { t } from '../../common';
 import * as k from '../types';
 
@@ -54,7 +54,7 @@ export const actions = DevActions<Ctx>()
 
           if (current === 'default') e.ctx.title = undefined;
           if (current === 'custom') e.ctx.title = 'My Title';
-          if (current === 'custom (long)') e.ctx.title = lorem.toString();
+          if (current === 'custom (long)') e.ctx.title = Lorem.toString();
           if (current === 'none (null)') e.ctx.title = null;
         });
     });

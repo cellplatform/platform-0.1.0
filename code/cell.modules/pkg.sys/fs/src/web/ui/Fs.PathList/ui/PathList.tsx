@@ -10,7 +10,7 @@ import { renderers } from './renderers';
 /**
  * Component
  */
-export const PathList: React.FC<FsPathListProps> = (props) => {
+const View: React.FC<FsPathListProps> = (props) => {
   const { instance, scroll = true, files = [], spinning, theme = DEFAULT.THEME } = props;
   const total = files.length;
   const isEmpty = total === 0;
@@ -65,8 +65,8 @@ export const PathList: React.FC<FsPathListProps> = (props) => {
     virtual() {
       const getData: t.GetListItem = (index) => ({ data: toData(files[index]) });
       const getSize: t.GetListItemSize = () => Row.height;
-      const items = { total, getData, getSize };
-      return <List.Virtual {...list} items={items} state={props.state} style={styles.list} />;
+      const cursor: t.ListCursor = { total, getData, getSize };
+      return <List.Virtual {...list} cursor={cursor} state={props.state} style={styles.list} />;
     },
     render() {
       return scroll ? ListView.virtual() : ListView.simple();
@@ -101,3 +101,26 @@ export const PathList: React.FC<FsPathListProps> = (props) => {
     </div>
   );
 };
+
+/**
+ * Export
+ */
+export const PathList = React.memo(View, (prev, next) => {
+  /**
+   * TODO 🐷
+   *
+   * - Fix scroll problem when list is within an ui.dev [ActionsPanel]
+   *
+   *    Scrolling is janky and cuts out on the decay curve.
+   *    The underlying list does not appear to do this, so
+   *    I suspect this is a problem within the <PathList> itself.
+   *
+   *    First thing to try is to remove the files[] array
+   *    and pass in a cursor type structure.
+   *
+   *    The underlying <List> does not re-render at the root level
+   *    but <PathList> does.  Perhaps it's this.
+   *
+   */
+  return false;
+});

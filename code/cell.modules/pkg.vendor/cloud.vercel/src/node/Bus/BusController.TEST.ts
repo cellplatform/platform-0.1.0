@@ -9,7 +9,10 @@ describe('BusController', function () {
   const bus = rx.bus<t.VercelEvent>();
   const busid = rx.bus.instance(bus);
   const instance = { bus };
-  const store = Filesystem.Controller({ bus, driver: nodefs.resolve('static.test') });
+  const store = Filesystem.Controller({
+    bus,
+    driver: nodefs.resolve('static.test'),
+  });
   const fs = store.fs();
 
   describe('Info', () => {
@@ -25,7 +28,16 @@ describe('BusController', function () {
       expect(controller.events.instance.id).to.eql(DEFAULT.id);
       expect(events.instance.id).to.eql(DEFAULT.id);
       expect(events.instance.bus).to.eql(busid);
-      expect(res.info?.endpoint).to.eql(undefined); // NB: The 'endpoint:true' option was not specified.
+
+      const endpoint = res.info?.endpoint;
+      expect(endpoint?.alive).to.eql(true);
+      expect(endpoint?.error).to.eql(undefined);
+
+      const user = endpoint?.user;
+      expect(typeof user?.uid).to.eql('string');
+      expect(typeof user?.email).to.eql('string');
+      expect(typeof user?.name).to.eql('string');
+      expect(typeof user?.username).to.eql('string');
     });
 
     it('explicit id', async () => {

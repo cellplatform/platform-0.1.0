@@ -26,6 +26,14 @@ export type FsPathListProps = FsPathListCommonProps & {
   onDrop?: FsPathListDroppedHandler;
 };
 
+/**
+ * TODO 🐷
+ */
+export type FsPathListCursor = {
+  total: number;
+  getData: (index: number) => t.ManifestFile;
+};
+
 export type FsPathListStatefulProps = FsPathListCommonProps & {
   dir?: DirectoryPath;
   onStateChange?: t.FsPathListStateChangedHandler;

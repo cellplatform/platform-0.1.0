@@ -91,7 +91,7 @@ export const actions = DevActions<Ctx>()
           instance={props.instance}
           child={debug.childKind}
           onExecuteCommand={(e) => {
-            console.log('⚡️ onExecuteCommand', e);
+            console.log('⚡️ onExecuteCommand:', e);
           }}
         />
       ),

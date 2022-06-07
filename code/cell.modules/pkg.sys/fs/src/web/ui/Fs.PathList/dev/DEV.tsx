@@ -1,8 +1,9 @@
 import React from 'react';
 
 import { FsPathList, PathListStatefulProps } from '..';
-import { DevActions, ObjectView, TestFs } from '../../../test';
+import { DevActions, ObjectView, TestFilesystem } from '../../../test';
 import { value, Path, List, COLORS, cuid, rx, t } from '../common';
+import { Filesystem } from '../..';
 
 type Ctx = {
   fs: t.Fs;
@@ -20,7 +21,7 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const change = e.change;
-    const { fs, instance } = TestFs.init();
+    const { fs, instance } = TestFilesystem.init();
 
     const ctx: Ctx = {
       fs,
@@ -91,6 +92,22 @@ export const actions = DevActions<Ctx>()
       );
     });
 
+    e.hr();
+
+    e.component((e) => {
+      return (
+        <Filesystem.PathList.Stateful
+          style={{ Margin: [5, 10, 20, 10], height: 150 }}
+          instance={e.ctx.props.instance}
+          scroll={true}
+          droppable={true}
+          selectable={true}
+        />
+      );
+    });
+  })
+
+  .items((e) => {
     e.hr();
   })
 

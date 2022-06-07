@@ -12,7 +12,7 @@ export function BusEvents(args: {
   instance: { bus: t.EventBus<any>; id?: Id };
   filter?: (e: t.VercelEvent) => boolean;
 }): t.VercelEvents {
-  const id = args.instance.id ?? DEFAULT.id;
+  const instance = args.instance.id ?? DEFAULT.id;
 
   const { dispose, dispose$ } = rx.disposable();
   const bus = rx.busAsType<t.VercelEvent>(args.instance.bus);
@@ -20,7 +20,7 @@ export function BusEvents(args: {
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
-    filter((e) => is.instance(e, id)),
+    filter((e) => is.instance(e, instance)),
     filter((e) => args.filter?.(e) ?? true),
   );
 
@@ -33,7 +33,6 @@ export function BusEvents(args: {
     async get(options = {}) {
       const { timeout: msecs = 90000 } = options;
       const tx = slug();
-      const endpoint = Boolean(options.endpoint);
 
       const first = firstValueFrom(
         info.res$.pipe(
@@ -45,11 +44,11 @@ export function BusEvents(args: {
 
       bus.fire({
         type: 'vendor.vercel/info:req',
-        payload: { tx, id, endpoint },
+        payload: { tx, instance },
       });
 
       const res = await first;
-      return typeof res === 'string' ? { tx, id, error: res } : res;
+      return typeof res === 'string' ? { tx, instance, error: res } : res;
     },
   };
 
@@ -76,11 +75,11 @@ export function BusEvents(args: {
 
       bus.fire({
         type: 'vendor.vercel/deploy:req',
-        payload: { tx, id, source, team, project, config },
+        payload: { tx, instance, source, team, project, config },
       });
 
       const res = await first;
-      return typeof res === 'string' ? { tx, id, paths: [], error: res } : res;
+      return typeof res === 'string' ? { tx, instance, paths: [], error: res } : res;
     },
   };
 
@@ -88,7 +87,7 @@ export function BusEvents(args: {
    * API
    */
   return {
-    instance: { id, bus: rx.bus.instance(bus) },
+    instance: { bus: rx.bus.instance(bus), id: instance },
     $,
     is,
     dispose,
@@ -104,5 +103,5 @@ export function BusEvents(args: {
 const matcher = (startsWith: string) => (input: any) => rx.isEvent(input, { startsWith });
 BusEvents.is = {
   base: matcher('vendor.vercel/'),
-  instance: (e: t.Event, id: Id) => BusEvents.is.base(e) && e.payload?.id === id,
+  instance: (e: t.Event, instance: Id) => BusEvents.is.base(e) && e.payload?.instance === instance,
 };

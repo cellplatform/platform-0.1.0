@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { color, COLORS, css, CssValue, t } from '../common';
+import { color, COLORS, css, CssValue, t } from './common';
 
 export type VercelHttpProps = { style?: CssValue };
 

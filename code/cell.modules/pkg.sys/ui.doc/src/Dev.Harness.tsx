@@ -5,7 +5,17 @@ import { t } from './common';
 const imports = {
   Design: import('./ui/Design/DEV'),
   ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
-  DocLayout: import('./ui/DocLayout/dev/DEV'),
+  RouteContainer: import('./ui/RouteContainer/dev/DEV'),
+  DocIndex: import('./ui/Doc.Index/dev/DEV'),
+  DocLayout: import('./ui/Doc.Layout/dev/DEV'),
+  DocHeadline: import('./ui/Doc.Headline/dev/DEV'),
+  DocByline: import('./ui/Doc.Byline/dev/DEV'),
+  DocBlock: import('./ui/Doc.Block/dev/DEV'),
+  DocImage: import('./ui/Doc.Image/dev/DEV'),
+  DocQuote: import('./ui/Doc.Quote/dev/DEV'),
+
+  SampleDeploy: import('./ui/DEV.Sample.Deploy/DEV'),
+
   UnitTests: import('./Dev.UnitTests'),
 };
 

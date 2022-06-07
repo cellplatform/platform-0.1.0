@@ -17,19 +17,24 @@ export const Filesystem = {
   /**
    * Create a filesystem store with minimal parameters using [IndexedDB].
    */
-  async create(
+  create(
     options: {
       bus?: t.EventBus<any>;
-      id?: FilesystemId;
+      fs?: FilesystemId;
       timeout?: Milliseconds;
       dispose$?: t.Observable<any>;
     } = {},
   ) {
     const { timeout, dispose$ } = options;
+
     const bus = options.bus ?? rx.bus();
-    const id = (options.id ?? '').trim() || DEFAULT.FILESYSTEM_ID;
-    const store = await Controller({ fs: id, bus, timeout, dispose$ });
-    const fs = store.fs({ timeout });
-    return { id, bus, store, fs };
+    const id = (options.fs ?? '').trim() || DEFAULT.FILESYSTEM_ID;
+
+    const controller = Filesystem.Controller({ fs: id, bus, timeout, dispose$ });
+    const events = Filesystem.Events({ bus, id });
+    const fs = events.fs({ timeout });
+
+    const ready = async () => ({ id, bus, fs, store: await controller });
+    return { id, bus, fs, events, ready };
   },
 };

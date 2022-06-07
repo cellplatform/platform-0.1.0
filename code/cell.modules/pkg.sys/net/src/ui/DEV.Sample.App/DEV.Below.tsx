@@ -48,7 +48,7 @@ export const DevBelow: React.FC<DevBelowProps> = (props) => {
       <div {...styles.left}></div>
       <div {...styles.middle}></div>
       <div {...styles.right}>
-        <EventList instance={instance} bus={netbus} style={{ flex: 1 }} />
+        <EventList instance={instance} bus={netbus} empty={''} style={{ flex: 1 }} />
       </div>
     </div>
   );

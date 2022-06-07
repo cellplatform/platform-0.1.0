@@ -1,6 +1,6 @@
 import React from 'react';
 import { debounceTime } from 'rxjs/operators';
-import { DevActions, LOREM, TestSuiteRunResponse, TestFs } from '../../../test';
+import { DevActions, LOREM, TestSuiteRunResponse, TestFilesystem } from '../../../test';
 import { Vercel } from 'vendor.cloud.vercel/lib/web';
 import { ModuleInfo as VercelModuleInfo } from 'vendor.cloud.vercel/lib/web/ui/ModuleInfo';
 
@@ -12,7 +12,6 @@ import { evalCode } from './DEV.evaluate';
 type Ctx = {
   instance: t.FsViewInstance;
   bus: t.EventBus<any>;
-
   token: string;
   fs: t.Fs;
   props: DevEnvProps;
@@ -71,8 +70,7 @@ export const actions = DevActions<Ctx>()
     let editor: t.CodeEditorInstanceEvents | undefined;
 
     const path = 'index.json';
-    const change = e.change;
-    const { fs, instance } = TestFs.init();
+    const { fs, instance } = TestFilesystem.init();
 
     const getEditorCode = () => ctx.editor?.text.get.fire();
     const getSavedCode = async () => new TextDecoder().decode(await fs.read(path));
@@ -250,7 +248,7 @@ export const actions = DevActions<Ctx>()
       return (
         <VercelModuleInfo
           fields={['Module', 'Token.API.Hidden', 'Deploy.Domain']}
-          data={{ token, deployment: { domain } }}
+          data={{ token, deploy: { domain } }}
           style={{ Margin: [30, 45, 30, 38] }}
         />
       );
@@ -339,7 +337,7 @@ export const actions = DevActions<Ctx>()
       return (
         <VercelModuleInfo
           fields={['Deploy.Response']}
-          data={{ deployment: { response } }}
+          data={{ deploy: { response } }}
           style={{ Margin: [10, 40, 10, 40] }}
         />
       );

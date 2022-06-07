@@ -1,6 +1,6 @@
 import { expect } from '../test';
 
-import { LOREM, lorem } from './lorem';
+import { LOREM, Lorem } from './lorem';
 
 describe('lorem (ipsum...)', () => {
   it('LOREM (constant)', () => {
@@ -9,28 +9,28 @@ describe('lorem (ipsum...)', () => {
   });
 
   it('toString', () => {
-    expect(lorem.toString()).to.equal(LOREM);
+    expect(Lorem.toString()).to.equal(LOREM);
   });
 
   it('text', () => {
-    expect(lorem.text).to.equal(LOREM);
+    expect(Lorem.text).to.equal(LOREM);
   });
 
   it('words', () => {
-    expect(lorem.words()).to.eql(LOREM);
+    expect(Lorem.words()).to.eql(LOREM);
 
-    expect(lorem.words(-1)).to.eql('');
-    expect(lorem.words(0)).to.eql('');
+    expect(Lorem.words(-1)).to.eql('');
+    expect(Lorem.words(0)).to.eql('');
 
-    expect(lorem.words(-1)).to.eql('', '.');
-    expect(lorem.words(0)).to.eql('', '.');
+    expect(Lorem.words(-1)).to.eql('', '.');
+    expect(Lorem.words(0)).to.eql('', '.');
 
-    expect(lorem.words(1)).to.eql('Lorem');
-    expect(lorem.words(5)).to.eql('Lorem ipsum dolor sit amet'); // NB: no trailing comma.
-    expect(lorem.words(8)).to.eql('Lorem ipsum dolor sit amet, consectetur adipiscing elit'); // NB: no trailing period.
+    expect(Lorem.words(1)).to.eql('Lorem');
+    expect(Lorem.words(5)).to.eql('Lorem ipsum dolor sit amet'); // NB: no trailing comma.
+    expect(Lorem.words(8)).to.eql('Lorem ipsum dolor sit amet, consectetur adipiscing elit'); // NB: no trailing period.
 
-    expect(lorem.words(1, '.')).to.eql('Lorem.');
-    expect(lorem.words(5, '.')).to.eql('Lorem ipsum dolor sit amet.');
-    expect(lorem.words(8, '.')).to.eql('Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
+    expect(Lorem.words(1, '.')).to.eql('Lorem.');
+    expect(Lorem.words(5, '.')).to.eql('Lorem ipsum dolor sit amet.');
+    expect(Lorem.words(8, '.')).to.eql('Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
   });
 });

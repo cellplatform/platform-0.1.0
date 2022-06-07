@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { FsCard, FsCardProps } from '..';
-import { COLORS, DevActions, ObjectView, rx, t, TestFs } from '../../../test';
+import { COLORS, DevActions, ObjectView, rx, t, TestFilesystem } from '../../../test';
 
 type Ctx = {
   fs: t.Fs;
@@ -17,7 +17,7 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const { fs, instance } = TestFs.init();
+    const { fs, instance } = TestFilesystem.init();
 
     const ctx: Ctx = {
       fs,

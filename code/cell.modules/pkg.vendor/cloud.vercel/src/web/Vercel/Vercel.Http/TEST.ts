@@ -3,7 +3,7 @@ import { Util } from './common';
 import { VercelHttp } from '.';
 
 export default Test.describe('VercelHttp', async (e) => {
-  const fs = await TestUtil.fs.init();
+  const fs = await TestUtil.filesystem.init();
   const { http } = TestUtil;
 
   e.describe('Util', (e) => {

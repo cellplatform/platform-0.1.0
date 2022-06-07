@@ -19,8 +19,6 @@ import {
   MdMore,
   MdNoEncryption,
   MdOpenInFull,
-  MdOutlineScreenShare,
-  MdOutlineStopScreenShare,
   MdPortableWifiOff,
   MdSend,
   MdSettingsInputAntenna,
@@ -53,5 +51,4 @@ export const Icons = {
   More: icon(MdMore),
   FullScreen: { Open: icon(MdFullscreen), Exit: icon(MdFullscreenExit) },
   Window: { Expand: icon(MdOpenInFull) },
-  ScreenShare: { Start: icon(MdOutlineScreenShare), Stop: icon(MdOutlineStopScreenShare) },
 };

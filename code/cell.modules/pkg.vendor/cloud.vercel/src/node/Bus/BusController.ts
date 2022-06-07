@@ -13,10 +13,9 @@ export function BusController(args: {
   filter?: (e: t.VercelEvent) => boolean;
 }) {
   const { token, fs } = args;
-  const id = args.instance.id ?? DEFAULT.id;
+  const instance = args.instance.id ?? DEFAULT.id;
   const bus = rx.busAsType<t.VercelEvent>(args.instance.bus);
-  const instance = { id, bus };
-  const events = BusEvents({ instance, filter: args.filter });
+  const events = BusEvents({ instance: { id: instance, bus }, filter: args.filter });
   const client = VercelHttp({ fs, token });
   const { dispose, dispose$ } = events;
 
@@ -43,7 +42,7 @@ export function BusController(args: {
 
     bus.fire({
       type: 'vendor.vercel/info:res',
-      payload: { tx, id, info },
+      payload: { tx, instance, info },
     });
   });
 
@@ -61,7 +60,7 @@ export function BusController(args: {
       const { error, deployment, paths = [] } = options;
       return bus.fire({
         type: 'vendor.vercel/deploy:res',
-        payload: { id, tx, paths, deployment, error },
+        payload: { tx, instance, paths, deployment, error },
       });
     };
 
@@ -87,7 +86,7 @@ export function BusController(args: {
    * API
    */
   return {
-    instance: { id, bus: rx.bus.instance(bus) },
+    instance: { bus: rx.bus.instance(bus), id: instance },
     dispose,
     dispose$,
     events,

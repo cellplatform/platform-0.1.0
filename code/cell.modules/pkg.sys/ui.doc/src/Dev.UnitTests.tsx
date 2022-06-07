@@ -1,6 +1,7 @@
 import React from 'react';
 import { DevActions, Test } from 'sys.ui.dev';
 import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
+import { COLORS } from './common';
 
 const Imports = {
   Sample: import('./ui/TEST'),
@@ -37,7 +38,7 @@ export const actions = DevActions<Ctx>()
 
   .subject((e) => {
     e.settings({
-      host: { background: -0.04 },
+      host: { background: COLORS.BG },
       layout: {
         label: '<Test.View.Results>',
         position: [150, 80],

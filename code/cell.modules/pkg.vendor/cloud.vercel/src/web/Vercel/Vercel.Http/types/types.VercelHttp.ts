@@ -48,6 +48,7 @@ export type VercelHttpCtx = {
 export type VercelHttpUser = {
   uid: string;
   email: string;
+  name: string;
   username: string;
   avatar: string;
 };

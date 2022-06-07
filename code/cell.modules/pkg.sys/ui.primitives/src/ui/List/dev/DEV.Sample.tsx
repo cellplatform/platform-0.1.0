@@ -70,7 +70,7 @@ export const DevSample: React.FC<DevSampleProps> = (args) => {
     return (
       <List.Virtual
         {...props}
-        items={{ total, getData, getSize }}
+        cursor={{ total, getData, getSize }}
         state={dynamic.state}
         paddingNear={debug.virtualPadding ? 50 : 0}
         paddingFar={debug.virtualPadding ? 150 : 0}
