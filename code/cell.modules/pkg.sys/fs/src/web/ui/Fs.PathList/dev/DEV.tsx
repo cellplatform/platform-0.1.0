@@ -27,7 +27,8 @@ export const actions = DevActions<Ctx>()
       fs,
       props: {
         instance,
-        scroll: true,
+        scrollable: true, // Virtual list.
+        // scrollable: false,
         selectable: List.SelectionConfig.default,
         theme: FsPathList.DEFAULT.THEME,
         droppable: true,
@@ -66,9 +67,9 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.1);
 
-    e.boolean('scroll', (e) => {
-      if (e.changing) e.ctx.props.scroll = e.changing.next;
-      e.boolean.current = e.ctx.props.scroll;
+    e.boolean('scrollable', (e) => {
+      if (e.changing) e.ctx.props.scrollable = e.changing.next;
+      e.boolean.current = e.ctx.props.scrollable;
     });
 
     e.boolean('droppable', (e) => {
@@ -99,7 +100,7 @@ export const actions = DevActions<Ctx>()
         <Filesystem.PathList.Stateful
           style={{ Margin: [5, 10, 20, 10], height: 150 }}
           instance={e.ctx.props.instance}
-          scroll={true}
+          scrollable={true}
           droppable={true}
           selectable={true}
         />

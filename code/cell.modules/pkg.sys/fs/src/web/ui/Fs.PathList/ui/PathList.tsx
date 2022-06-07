@@ -6,13 +6,14 @@ import { wrangle } from './wrangle';
 import { DropTarget } from './DropTarget';
 import { Row } from './PathList.Row';
 import { renderers } from './renderers';
+import { Cursor } from '../Cursor';
 
 /**
  * Component
  */
-const View: React.FC<FsPathListProps> = (props) => {
-  const { instance, scroll = true, files = [], spinning, theme = DEFAULT.THEME } = props;
-  const total = files.length;
+export const PathList: React.FC<FsPathListProps> = (props) => {
+  const { instance, scrollable: scroll = true, cursor, spinning, theme = DEFAULT.THEME } = props;
+  const total = cursor.total;
   const isEmpty = total === 0;
   const isLight = theme === 'Light';
 
@@ -57,19 +58,31 @@ const View: React.FC<FsPathListProps> = (props) => {
   };
 
   const toData = (file: t.ManifestFile): t.FsPathListItemData => ({ file, theme });
+  const toListCursor = (cursor: t.FsPathListCursor): t.ListCursor => {
+    const getData: t.GetListItem = (index) => ({ data: toData(cursor.getData(index)) });
+    const getSize: t.GetListItemSize = () => Row.height;
+    return { total: cursor.total, getData, getSize };
+  };
+
   const ListView = {
-    simple() {
-      const items = files.map((file) => ({ data: toData(file) }));
+    simple(files: t.FsPathListCursor) {
+      /**
+       * TODO 🐷
+       * - pass as ListCursor (option on non-virtual list in primitives)
+       */
+
+      const items = Cursor.toList(files).map((file) => {
+        return { data: toData(file) };
+      });
+
       return <List.Layout {...list} items={items} state={props.state} style={styles.list} />;
     },
-    virtual() {
-      const getData: t.GetListItem = (index) => ({ data: toData(files[index]) });
-      const getSize: t.GetListItemSize = () => Row.height;
-      const cursor: t.ListCursor = { total, getData, getSize };
+    virtual(files: t.FsPathListCursor) {
+      const cursor = toListCursor(files);
       return <List.Virtual {...list} cursor={cursor} state={props.state} style={styles.list} />;
     },
     render() {
-      return scroll ? ListView.virtual() : ListView.simple();
+      return scroll ? ListView.virtual(cursor) : ListView.simple(cursor);
     },
   };
 
@@ -101,26 +114,3 @@ const View: React.FC<FsPathListProps> = (props) => {
     </div>
   );
 };
-
-/**
- * Export
- */
-export const PathList = React.memo(View, (prev, next) => {
-  /**
-   * TODO 🐷
-   *
-   * - Fix scroll problem when list is within an ui.dev [ActionsPanel]
-   *
-   *    Scrolling is janky and cuts out on the decay curve.
-   *    The underlying list does not appear to do this, so
-   *    I suspect this is a problem within the <PathList> itself.
-   *
-   *    First thing to try is to remove the files[] array
-   *    and pass in a cursor type structure.
-   *
-   *    The underlying <List> does not re-render at the root level
-   *    but <PathList> does.  Perhaps it's this.
-   *
-   */
-  return false;
-});

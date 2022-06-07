@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { debounceTime } from 'rxjs/operators';
 
 import { Filesystem, rx, t, List, time } from '../common';
+import { Cursor } from '../Cursor';
 
 type DirectoryPath = string;
 type Milliseconds = number;
@@ -14,6 +15,7 @@ export function usePathListState(args: {
   dir?: DirectoryPath;
   droppable?: boolean;
   selectable?: t.ListSelectionConfig | boolean;
+  scrollable?: boolean;
   debounce?: Milliseconds;
   onStateChange?: t.FsPathListStateChangedHandler;
 }) {
@@ -101,9 +103,10 @@ export function usePathListState(args: {
   return {
     instance: { bus: rx.bus.instance(bus), id: instance.id, fs: instance.fs },
     ready,
-    files,
     total,
-    lazy: listState.state,
+    files,
+    lazyListState: listState.state,
+    cursor: Cursor.toFileCursor(files),
     onDrop: drop?.handler,
     get spinning() {
       return !ready || dropping;

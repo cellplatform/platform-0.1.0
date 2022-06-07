@@ -34,7 +34,7 @@ const View: React.FC<BodyProps> = (props) => {
         // tabIndex={-1}
         instance={instance}
         selectable={List.SelectionConfig.default}
-        scroll={true}
+        scrollable={true}
         droppable={true}
         style={{ flex: 1 }}
       />
