@@ -13,7 +13,7 @@ type Pixels = number;
  * Types
  */
 export type ListVirtualProps = t.ListProps & {
-  items: t.ListCursor;
+  cursor: t.ListCursor;
   paddingNear?: Pixels;
   paddingFar?: Pixels;
 };
@@ -27,7 +27,7 @@ export type ListVirtualProps = t.ListProps & {
  *
  */
 const View: React.FC<ListVirtualProps> = (props) => {
-  const { items, paddingNear = 0, paddingFar = 0, tabIndex } = props;
+  const { cursor: items, paddingNear = 0, paddingFar = 0, tabIndex } = props;
   const total = items.total;
 
   const ctx = useVirtualContext({ total, instance: props.instance });
@@ -46,7 +46,7 @@ const View: React.FC<ListVirtualProps> = (props) => {
       vertical: orientation === 'y',
     };
     const e: t.GetListItemSizeArgs = { index, total, item, is };
-    return props.items.getSize(e);
+    return props.cursor.getSize(e);
   };
 
   const getData = (index: number): ListVirtualItemProps | undefined => {

@@ -55,7 +55,7 @@ export const EventListLayout: React.FC<EventListLayoutProps> = (props) => {
       <List.Virtual
         style={styles.body}
         instance={{ bus, id: instance }}
-        items={{ total, getData, getSize }}
+        cursor={{ total, getData, getSize }}
         spacing={ROW.SPACING}
         orientation={'y'}
         paddingNear={0}
