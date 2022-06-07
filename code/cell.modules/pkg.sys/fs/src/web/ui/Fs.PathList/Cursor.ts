@@ -20,6 +20,6 @@ export const Cursor = {
    * Enumerate a [File-Cursor].
    */
   forEach(cursor: t.FsPathListCursor, callback: (file: t.ManifestFile) => any) {
-    Array.from({ length: cursor.total }).forEach((v, i) => callback(cursor.getData(i)));
+    Array.from({ length: cursor.total }).forEach((_, i) => callback(cursor.getData(i)));
   },
 };
