@@ -15,12 +15,6 @@ export type ListOrientation = 'x' | 'y'; // x:horizontal, y:vertical
 export type ListBulletEdge = 'near' | 'far';
 export type ListBulletSpacing = { before?: Pixels; after?: Pixels };
 
-export type ListCursor = {
-  total: number;
-  getData: t.GetListItem;
-  getSize: t.GetListItemSize;
-};
-
 /**
  * <List> properties.
  */
@@ -75,6 +69,15 @@ export type ListItemRenderFlags = {
   mouse: { over: boolean; down: boolean };
   previous(): ListItemRenderFlags | undefined;
   next(): ListItemRenderFlags | undefined;
+};
+
+/**
+ * Cursor
+ */
+export type ListCursor = {
+  total: number;
+  getData: t.GetListItem;
+  getSize: t.GetListItemSize;
 };
 
 export type GetListItemSize = (args: GetListItemSizeArgs) => Pixels;

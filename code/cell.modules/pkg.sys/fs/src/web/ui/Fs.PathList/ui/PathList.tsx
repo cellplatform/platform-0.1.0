@@ -65,8 +65,8 @@ const View: React.FC<FsPathListProps> = (props) => {
     virtual() {
       const getData: t.GetListItem = (index) => ({ data: toData(files[index]) });
       const getSize: t.GetListItemSize = () => Row.height;
-      const items = { total, getData, getSize };
-      return <List.Virtual {...list} items={items} state={props.state} style={styles.list} />;
+      const cursor: t.ListCursor = { total, getData, getSize };
+      return <List.Virtual {...list} cursor={cursor} state={props.state} style={styles.list} />;
     },
     render() {
       return scroll ? ListView.virtual() : ListView.simple();
