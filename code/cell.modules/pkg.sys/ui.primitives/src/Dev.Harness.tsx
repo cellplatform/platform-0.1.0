@@ -29,6 +29,7 @@ const imports = {
   PositioningLayer: import('./ui/PositioningLayer/dev/DEV'),
   PositioningLayout: import('./ui/PositioningLayout/dev/DEV'),
   Photo: import('./ui/Photo/dev/DEV'),
+  Font: import('./ui/Font/dev/DEV'),
 
   DraggableSort: import('./ui/Draggable.Sort/dev/DEV'),
   DraggableMotion: import('./ui/Draggable.Motion/dev/DEV'),
