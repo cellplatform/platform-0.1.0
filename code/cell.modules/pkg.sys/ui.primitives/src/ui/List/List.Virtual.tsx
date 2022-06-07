@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { VariableSizeList as List } from 'react-window';
+import { VariableSizeList } from 'react-window';
 
 import { css, FC, t, useResizeObserver } from './common';
 import { ListEvents } from './Events';
@@ -84,8 +84,16 @@ const View: React.FC<ListVirtualProps> = (props) => {
     return <ListVirtualItem {...rest} isScrolling={isScrolling} style={{ ...style, left, top }} />;
   };
 
+  /**
+   * TODO 🐷
+   * - Note: forced redraw may be more efficiently donw with the method:
+   *
+   *      resetAfterIndex(index: number, shouldForceUpdate?: boolean): void;
+   *
+   */
+
   const elBody = size.ready && (
-    <List
+    <VariableSizeList
       key={ctx.redrawKey} // NB: Enable forced "redraws" of the list (via event-bus).
       ref={ctx.listRef}
       width={size.rect.width}
@@ -99,7 +107,7 @@ const View: React.FC<ListVirtualProps> = (props) => {
       itemKey={(index: number) => `row.${index}`}
     >
       {Row}
-    </List>
+    </VariableSizeList>
   );
 
   return (
