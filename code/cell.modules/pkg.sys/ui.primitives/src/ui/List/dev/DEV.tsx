@@ -331,7 +331,6 @@ export const actions = DevActions<Ctx>()
 
     Add.button(1);
     Add.button(10);
-    Add.button(100);
     Add.button(1000, '1K');
     Add.button(10000, '10K');
 

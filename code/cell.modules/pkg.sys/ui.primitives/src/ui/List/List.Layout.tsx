@@ -1,9 +1,10 @@
 import React from 'react';
 
-import { css, t } from './common';
+import { css, t, FC } from './common';
 import { Renderer } from './Renderer';
 import { useContext } from './useCtx';
 import { Cursor } from './Cursor';
+import { Wrangle } from './Wrangle';
 
 /**
  * Component specific
@@ -15,9 +16,9 @@ export type ListLayoutProps = t.ListProps & {
 /**
  * Simple (non-virtualized) layout
  */
-export const ListLayout: React.FC<ListLayoutProps> = (props) => {
+const View: React.FC<ListLayoutProps> = (props) => {
   const { tabIndex } = props;
-  const items = wrangleItems(props.items);
+  const items = Wrangle.items(props.items);
   const total = items.length;
 
   const ctx = useContext({ total, instance: props.instance });
@@ -51,9 +52,13 @@ export const ListLayout: React.FC<ListLayoutProps> = (props) => {
 };
 
 /**
- * [Helpers]
+ * Export
  */
-
-function wrangleItems(input: ListLayoutProps['items']): t.ListItem[] {
-  return Array.isArray(input) ? input : Cursor.toArray(input);
-}
+type Fields = {
+  //
+};
+export const ListLayout = FC.decorate<ListLayoutProps, Fields>(
+  View,
+  {},
+  { displayName: 'List.Layout' },
+);

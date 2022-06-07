@@ -86,7 +86,7 @@ const View: React.FC<ListVirtualProps> = (props) => {
 
   /**
    * TODO 🐷
-   * - Note: forced redraw may be more efficiently donw with the method:
+   * - Note: forced redraw may be more efficiently done with the method:
    *
    *      resetAfterIndex(index: number, shouldForceUpdate?: boolean): void;
    *
@@ -135,5 +135,5 @@ type Fields = { Events: t.ListEventsFactory };
 export const ListVirtual = FC.decorate<ListVirtualProps, Fields>(
   View,
   { Events: ListEvents },
-  { displayName: 'ListVirtual' },
+  { displayName: 'List.Virtual' },
 );
