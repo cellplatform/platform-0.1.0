@@ -103,10 +103,8 @@ export function usePathListState(args: {
   return {
     instance: { bus: rx.bus.instance(bus), id: instance.id, fs: instance.fs },
     ready,
-    total,
-    files,
-    lazyListState: listState.state,
-    cursor: Cursor.toFileCursor(files),
+    list: listState.state,
+    data: Cursor.toFileCursor(files),
     onDrop: drop?.handler,
     get spinning() {
       return !ready || dropping;

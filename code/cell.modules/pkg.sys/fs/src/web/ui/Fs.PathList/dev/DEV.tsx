@@ -12,6 +12,25 @@ type Ctx = {
   output: { state?: any };
 };
 
+const Util = {
+  async generateSampleFile(ctx: Ctx) {
+    const fs = ctx.fs;
+
+    const toPath = (ctx: Ctx, count: number) => {
+      const dir = Path.trimSlashes(ctx.debug.dir);
+      const filename = `file-${count + 1}.json`;
+      return dir ? Path.join(dir, filename) : filename;
+    };
+
+    const msg = cuid().repeat(value.random(1, 50));
+    const total = (await fs.manifest()).files.length;
+    const path = toPath(ctx, total);
+    const data = { msg, total };
+
+    fs.json.write(path, data);
+  },
+};
+
 /**
  * Actions
  */
@@ -129,18 +148,13 @@ export const actions = DevActions<Ctx>()
     );
 
     e.button('add (generate sample)', async (e) => {
-      const toPath = (ctx: Ctx, count: number) => {
-        const dir = Path.trimSlashes(ctx.debug.dir);
-        const filename = `file-${count + 1}.json`;
-        return dir ? Path.join(dir, filename) : filename;
-      };
+      Util.generateSampleFile(e.ctx);
+    });
 
-      const msg = cuid().repeat(value.random(1, 50));
-      const fs = e.ctx.fs;
-      const total = (await fs.manifest()).files.length;
-      const path = toPath(e.ctx, total);
-      const data = { msg, total };
-      fs.json.write(path, data);
+    e.button('x10', async (e) => {
+      for (const item of Array.from({ length: 10 })) {
+        await Util.generateSampleFile(e.ctx);
+      }
     });
 
     e.hr(1, 0.1);

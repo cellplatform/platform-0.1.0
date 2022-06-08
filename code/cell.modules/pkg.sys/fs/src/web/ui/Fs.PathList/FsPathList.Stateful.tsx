@@ -32,8 +32,8 @@ export const FsPathListStateful: React.FC<FsPathListStatefulProps> = (props) => 
   return (
     <FsPathList
       instance={instance}
-      cursor={state.cursor}
-      state={state.lazyListState}
+      cursor={state.data}
+      state={state.list}
       spinning={state.spinning}
       scrollable={props.scrollable}
       padding={props.padding}

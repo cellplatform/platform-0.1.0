@@ -58,12 +58,13 @@ export const PathList: React.FC<FsPathListProps> = (props) => {
 
   const toData = (file: t.ManifestFile): t.FsPathListItemData => ({ file, theme });
   const toListCursor = (cursor: t.FsPathListCursor): t.ListCursor => {
+    const total = cursor.total;
     const getData: t.GetListItem = (index) => ({ data: toData(cursor.getData(index)) });
     const getSize: t.GetListItemSize = () => Row.height;
-    return { total: cursor.total, getData, getSize };
+    return { total, getData, getSize };
   };
 
-  const ListView = {
+  const listView = {
     simple(files: t.FsPathListCursor) {
       const cursor = toListCursor(files);
       return <List.Layout {...list} items={cursor} state={props.state} style={styles.list} />;
@@ -75,7 +76,8 @@ export const PathList: React.FC<FsPathListProps> = (props) => {
     },
 
     render() {
-      return scroll ? ListView.virtual(cursor) : ListView.simple(cursor);
+      console.log('render');
+      return scroll ? listView.virtual(cursor) : listView.simple(cursor);
     },
   };
 
@@ -86,7 +88,7 @@ export const PathList: React.FC<FsPathListProps> = (props) => {
   );
 
   const elEmpty = isEmpty && !elSpinner && <div {...styles.empty}>No files to display</div>;
-  const elList = !elSpinner && !elEmpty && ListView.render();
+  const elList = !elSpinner && !elEmpty && listView.render();
 
   const elDropTarget = props.droppable && (
     <DropTarget
