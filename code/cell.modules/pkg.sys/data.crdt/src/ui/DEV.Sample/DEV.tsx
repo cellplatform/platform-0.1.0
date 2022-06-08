@@ -21,7 +21,7 @@ export async function startMockNetwork(args: { total: number; debounce: number }
   const initial: SimpleDoc = { count: 0 };
   const network = await TestNetwork<SimpleDoc>({ total, initial, debounce });
   const docs = await network.docs(DEFAULT.DOC);
-  return { docs };
+  return { docs, network };
 }
 
 /**
@@ -48,13 +48,26 @@ export const actions = DevActions<Ctx>()
     ctx.bus = bus;
 
     const { total, debounce } = ctx;
-    const docs = (await startMockNetwork({ total, debounce })).docs;
+    const mock = await startMockNetwork({ total, debounce });
+    const docs = mock.docs;
     ctx.props.docs = docs;
 
     console.group('🌳 CRDT/INIT');
     console.log('bus', bus);
     console.log('docs', docs);
     console.groupEnd();
+  })
+
+  .items((e) => {
+    /**
+     * TODO 🐷
+     */
+    e.title('[TODO] 🐷');
+
+    e.markdown(`
+- distribute sync protocol through [netbus]
+    `);
+    e.hr();
   })
 
   .items((e) => {
@@ -104,9 +117,8 @@ export const actions = DevActions<Ctx>()
       layout: {
         cropmarks: -0.1,
         label: {
-          topLeft: `Peers`,
+          bottomLeft: `Peers | ${rx.bus.instance(e.ctx.bus)}`,
           bottomRight: `sync debounce: ${e.ctx.debounce}ms`,
-          // bottomLeft: `netbus: ${hasNetbus ? 'online' : 'in-memory'}`,
         },
       },
     });

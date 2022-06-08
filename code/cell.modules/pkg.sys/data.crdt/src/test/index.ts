@@ -1,6 +1,7 @@
-export { Test } from 'sys.ui.dev';
+export { Test, DevActions } from 'sys.ui.dev';
 export { expect } from 'chai';
 
 export * from '../common';
 export * from './TestNetwork';
+export * from './TestFilesystem';
 export { AutomergeDoc } from '../lib.Automerge';
