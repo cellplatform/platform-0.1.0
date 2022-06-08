@@ -3,7 +3,6 @@ import React from 'react';
 import { css, t, FC } from './common';
 import { Renderer } from './Renderer';
 import { useContext } from './useCtx';
-import { Cursor } from './Cursor';
 import { Wrangle } from './Wrangle';
 
 /**

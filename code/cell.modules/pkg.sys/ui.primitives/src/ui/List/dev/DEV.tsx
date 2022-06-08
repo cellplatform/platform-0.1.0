@@ -386,12 +386,11 @@ export const actions = DevActions<Ctx>()
 
       const styles = {
         base: css({ Margin: [0, 0, 0, 20], height: 150, display: 'flex' }),
-        list: { flex: 1 },
       };
 
       return (
         <div {...styles.base}>
-          <List.Virtual cursor={cursor} renderers={renderers} style={styles.list} />
+          <List.Virtual cursor={cursor} renderers={renderers} style={{ flex: 1 }} />
         </div>
       );
     });

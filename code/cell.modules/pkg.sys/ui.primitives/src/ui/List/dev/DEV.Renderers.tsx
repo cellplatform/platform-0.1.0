@@ -97,20 +97,23 @@ export function sampleBodyFactory(getCtx: () => RenderCtx) {
       const { selected, focused } = e.is;
       const bgHighlight = color.alpha(COLORS.MAGENTA, 0.03);
       const bgHighlightBlurred = color.alpha(COLORS.CYAN, 0.08);
-      const borderColor = !selected ? undefined : focused ? COLORS.MAGENTA : -0.5;
-      const background = !selected ? undefined : focused ? bgHighlight : bgHighlightBlurred;
+
+      const background: t.CardBackground = {
+        color: !selected ? undefined : focused ? bgHighlight : bgHighlightBlurred,
+      };
+
+      const border: t.CardBorder = {
+        color: !selected ? undefined : focused ? COLORS.MAGENTA : -0.5,
+        radius: selectedRadius(e.is, 6),
+      };
+
       const renderCount = `render:${bodyRenderCount[e.index]}`;
 
       const left = data.msg;
       const right = e.is.scrolling ? `(scrolling) ${renderCount}` : renderCount;
-      const radius = selectedRadius(e.is, 6);
 
       return (
-        <Card
-          style={styles.card.base}
-          border={{ color: borderColor, radius }}
-          background={background}
-        >
+        <Card style={styles.card.base} border={border} background={background}>
           {elComponent}
           <div {...css(styles.card.data.base, styles.card.data.bottomLeft)}>{left}</div>
           <div {...css(styles.card.data.base, styles.card.data.bottomRight)}>{right}</div>
