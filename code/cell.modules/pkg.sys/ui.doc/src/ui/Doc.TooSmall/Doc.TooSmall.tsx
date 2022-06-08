@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Color, COLORS, css, CssValue, t } from '../../common';
+import { Color, COLORS, css, CssValue, t } from '../common';
 
-export type TooSmallProps = {
+export type DocTooSmallProps = {
   size: t.DomRect;
   is: t.MinSizeFlags;
   style?: CssValue;
 };
 
-export const TooSmall: React.FC<TooSmallProps> = (props) => {
+export const DocTooSmall: React.FC<DocTooSmallProps> = (props) => {
   const { is, size } = props;
 
   if (size.height < 45) return null;

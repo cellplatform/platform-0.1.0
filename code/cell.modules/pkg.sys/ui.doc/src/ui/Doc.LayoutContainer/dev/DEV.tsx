@@ -2,9 +2,10 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { DocLayoutContainer, DocLayoutContainerProps } from '..';
 import { COLORS, t } from '../common';
+import { DevChildSample } from './DEV.ChildSample';
 
 type Ctx = {
-  size?: t.DomRect;
+  sizes?: t.DocLayoutSizes;
   props: DocLayoutContainerProps;
   debug: { render: boolean };
 };
@@ -21,7 +22,7 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       props: {
         tracelines: true,
-        onResize: (e) => change.ctx((ctx) => (ctx.size = e.size)),
+        onResize: (e) => change.ctx((ctx) => (ctx.sizes = e.sizes)),
       },
       debug: { render: true },
     };
@@ -66,14 +67,15 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const { props, debug, size } = e.ctx;
+    const { props, debug, sizes } = e.ctx;
 
     e.settings({
       host: { background: COLORS.BG },
       layout: {
         label: {
           topLeft: '<Doc.LayoutContainer>',
-          topRight: `${size?.width ?? '-'} x ${size?.height ?? '-'} px`,
+          topRight: sizes ? `${sizes.root.width} x ${sizes.root.height} px` : undefined,
+          bottomRight: sizes ? `center column: ${sizes.column.width}px` : undefined,
         },
         position: [80, 80, 130, 80],
         cropmarks: -0.2,
@@ -81,7 +83,13 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    e.render(debug.render && <DocLayoutContainer {...e.ctx.props} style={{ flex: 1 }} />);
+    if (debug.render) {
+      e.render(
+        <DocLayoutContainer {...e.ctx.props} style={{ flex: 1 }}>
+          <DevChildSample />
+        </DocLayoutContainer>,
+      );
+    }
   });
 
 export default actions;

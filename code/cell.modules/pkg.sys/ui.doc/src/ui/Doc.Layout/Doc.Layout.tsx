@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import { Color, COLORS, css, CssValue, DEFAULT, FC, MinSize, t } from './common';
-import { TooSmall } from './ui/TooSmall';
+
+import { DocTooSmall } from '../Doc.TooSmall';
 
 export type DocLayoutProps = {
   scrollable?: boolean;
@@ -81,7 +82,7 @@ const View: React.FC<DocLayoutProps> = (props) => {
   return (
     <MinSize
       minWidth={300}
-      warningElement={(e) => <TooSmall is={e.is} size={e.size} />}
+      warningElement={(e) => <DocTooSmall is={e.is} size={e.size} />}
       style={props.style}
       onResize={props.onResize}
     >

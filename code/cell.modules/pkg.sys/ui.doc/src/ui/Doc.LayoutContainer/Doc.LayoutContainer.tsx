@@ -1,38 +1,52 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { FC, Color, COLORS, css, CssValue, t, MinSize, DEFAULT } from './common';
-import { TooSmall } from './ui/TooSmall';
+import React, { useState } from 'react';
+import { FC, COLORS, css, CssValue, t, MinSize, DEFAULT } from './common';
+
+import { Guides } from './ui/Guides';
+import { DocTooSmall } from '../Doc.TooSmall';
+import { LayoutSize } from './LayoutSize';
 
 export type DocLayoutContainerProps = {
   tracelines?: boolean;
+  min?: { width?: number; height?: number };
   style?: CssValue;
-  onResize?: t.MinSizeResizeEventHandler;
+  onResize?: t.DocResizeHandler;
 };
 
 const View: React.FC<DocLayoutContainerProps> = (props) => {
-  const { tracelines = false } = props;
-
-  console.log('tracelines', tracelines);
+  const { tracelines = false, min } = props;
+  const [sizes, setSizes] = useState<t.DocLayoutSizes>();
 
   /**
    * [Render]
    */
   const styles = {
-    base: css({
-      Absolute: 0,
-      color: COLORS.DARK,
-      boxSizing: 'border-box',
-      backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
-    }),
+    base: css({ Absolute: 0, color: COLORS.DARK, boxSizing: 'border-box' }),
+    body: css({ Absolute: 0, display: 'flex' }),
   };
 
-  const elBase = <div {...styles.base}>{props.children}</div>;
+  const elChildren = React.Children.map(props.children, (child) => {
+    return React.isValidElement(child) ? React.cloneElement(child, { sizes }) : child;
+  });
+
+  const elBase = sizes && (
+    <div {...styles.base}>
+      {tracelines && sizes && <Guides sizes={sizes} />}
+      <div {...styles.body}>{elChildren}</div>
+    </div>
+  );
 
   return (
     <MinSize
-      minWidth={300}
-      warningElement={(e) => <TooSmall is={e.is} size={e.size} />}
+      minWidth={min?.width ?? 320}
+      minHeight={min?.height ?? 150}
+      warningElement={(e) => <DocTooSmall is={e.is} size={e.size} />}
       style={props.style}
-      onResize={props.onResize}
+      onResize={(e) => {
+        const { size, is } = e;
+        const sizes = LayoutSize.toSizes(size);
+        setSizes(sizes);
+        props.onResize?.({ sizes, is });
+      }}
     >
       {elBase}
     </MinSize>
@@ -44,9 +58,10 @@ const View: React.FC<DocLayoutContainerProps> = (props) => {
  */
 type Fields = {
   DEFAULT: typeof DEFAULT;
+  LayoutSize: typeof LayoutSize;
 };
 export const DocLayoutContainer = FC.decorate<DocLayoutContainerProps, Fields>(
   View,
-  { DEFAULT },
+  { DEFAULT, LayoutSize },
   { displayName: 'Doc.LayoutContainer' },
 );
