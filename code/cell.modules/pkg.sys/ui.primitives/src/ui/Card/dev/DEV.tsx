@@ -10,6 +10,12 @@ const DEFAULT = {
   PADDING: [25, 30] as t.CssEdgesInput,
 };
 
+const Util = {
+  toBackground(ctx: Ctx) {
+    return ctx.props.background || (ctx.props.background = {});
+  },
+};
+
 /**
  * Actions
  */
@@ -56,6 +62,20 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.props.showAsCard;
     });
 
+    e.hr(1, 0.1);
+
+    e.boolean('background.color (opacity: 0.1)', (e) => {
+      const bg = Util.toBackground(e.ctx);
+      if (e.changing) bg.color = e.changing.next ? 0.1 : undefined;
+      e.boolean.current = bg.color !== undefined;
+    });
+
+    e.boolean('background.blur (8px)', (e) => {
+      const bg = Util.toBackground(e.ctx);
+      if (e.changing) bg.blur = e.changing.next ? 0.1 : undefined;
+      e.boolean.current = bg.blur !== undefined;
+    });
+
     e.hr();
   })
 
@@ -68,6 +88,7 @@ export const actions = DevActions<Ctx>()
   .subject((e) => {
     e.settings({
       host: { background: -0.04 },
+      actions: { width: 380 },
       layout: {
         label: '<Card>',
         cropmarks: -0.2,
@@ -79,6 +100,7 @@ export const actions = DevActions<Ctx>()
       base: css({}),
       body: css({
         backgroundColor: 'rgba(255, 0, 0, 0.05)' /* RED */,
+        lineHeight: 1.3,
       }),
     };
 
