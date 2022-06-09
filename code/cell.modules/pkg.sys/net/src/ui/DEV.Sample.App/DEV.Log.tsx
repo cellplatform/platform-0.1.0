@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, EventList, rx, t } from '../common';
+import { css, CssValue, EventList, rx, t } from './DEV.common';
+import { DevLayoutVertical } from './DEV.Layout.Vertical';
 
-export type DevBelowProps = {
+export type DevLogProps = {
   network: t.PeerNetwork;
-  siblings: { root: t.DomRect; card: t.DomRect };
+  sizes: { root: t.DomRect; card: t.DomRect };
   style?: CssValue;
 };
 
-export const DevBelow: React.FC<DevBelowProps> = (props) => {
-  const { siblings, network } = props;
+export const DevLog: React.FC<DevLogProps> = (props) => {
+  const { sizes, network } = props;
   const { bus, netbus } = network;
 
   const instance = { bus, id: rx.bus.instance(bus) };
@@ -33,23 +34,23 @@ export const DevBelow: React.FC<DevBelowProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({
-      position: 'relative',
-      width: siblings.card.width,
-      height: siblings.root.height / 2 - siblings.card.height / 2 - 15,
-      Flex: 'x-stretch-stretch',
-    }),
+    base: css({ Absolute: 0, pointerEvents: 'none' }),
+    body: css({ Absolute: [10, 0, 0, 0], boxSizing: 'border-box', Flex: 'x-stretch-stretch' }),
     left: css({ flex: 1 }),
     middle: css({ width: 30 }),
-    right: css({ width: 300, display: 'flex' }),
+    right: css({ position: 'relative', width: 300, display: 'flex' }),
+    log: css({ Absolute: [0, 0, 0, 20] }),
   };
-  return (
-    <div {...css(styles.base, props.style)}>
+
+  const elBody = (
+    <div {...styles.body}>
       <div {...styles.left}></div>
       <div {...styles.middle}></div>
       <div {...styles.right}>
-        <EventList instance={instance} bus={netbus} empty={''} style={{ flex: 1 }} />
+        <EventList instance={instance} bus={netbus} empty={''} style={styles.log} />
       </div>
     </div>
   );
+
+  return <DevLayoutVertical sizes={sizes} below={elBody} style={props.style} />;
 };

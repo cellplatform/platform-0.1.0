@@ -6,7 +6,6 @@ import { TEST } from '../../test';
 import { DevNetworkCard } from '../NetworkCard/dev/DEV.NetworkCard';
 import * as k from '../NetworkCard/types';
 import { DevBackground } from './DEV.Background';
-import { DevBelow } from './DEV.Below';
 import { DevButtonFullscreen } from './DEV.Button.Fullscreen';
 import {
   Color,
@@ -139,7 +138,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     layout: css({ Absolute: 0 }),
   };
 
-  const Background: t.PositioningLayer = {
+  const BackgroundLayer: t.PositioningLayer = {
     id: 'layer.BG',
     position: { x: 'stretch', y: 'stretch' },
     render(e) {
@@ -164,37 +163,13 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     },
   };
 
-  const CardBelow: t.PositioningLayer = {
-    id: 'layer.Card.Below',
-    position: { x: 'center', y: 'bottom' },
-    render(e) {
-      const card = e.find.first(CardLayer.id);
-      if (!network || !card) return null;
-
-      return (
-        <DevBelow
-          network={network}
-          siblings={{ root: e.size, card: card.size }}
-          style={{ pointerEvents: 'auto' }}
-        />
-      );
-    },
-  };
-
-  const Log: t.PositioningLayer = {
+  const LogLayer: t.PositioningLayer = {
     id: 'layer.Card.Log',
     position: { x: 'stretch', y: 'stretch' },
     render(e) {
       const card = e.find.first(CardLayer.id);
       if (!network || !card) return null;
-
-      return (
-        <DevLog
-          network={network}
-          siblings={{ root: e.size, card: card.size }}
-          style={{ pointerEvents: 'auto' }}
-        />
-      );
+      return <DevLog network={network} sizes={{ root: e.size, card: card.size }} />;
     },
   };
 
@@ -236,15 +211,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     <div ref={fullscreen.ref} {...css(styles.base, props.style)}>
       <div {...styles.bg} />
       <PositioningLayout
-        layers={[
-          Background,
-          // Log,
-          VersionLayer,
-          FullscreenLayer,
-          CardLayer,
-          CardBelow,
-          OverlayLayer,
-        ]}
+        layers={[BackgroundLayer, LogLayer, VersionLayer, FullscreenLayer, CardLayer, OverlayLayer]}
         style={styles.layout}
         childPointerEvents={'none'}
       />
