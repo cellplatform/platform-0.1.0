@@ -72,6 +72,22 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
+    e.title('[TODO] 🐷');
+
+    e.markdown(`
+    
+- Self: [sys.fs:ui/<Filesystem.PathList>]
+- Cross Ref: same problem in [sys.ui.doc/<Doc.List>] 
+- Janky scrolling - underlying primitive works [sys.ui.primitives:<List.Virtual>]
+- Delay fixing (P2) because:
+   - works acceptably on Rowan's machine
+   - Fix understandable (because it works in the unerlying library)
+
+    `);
+    e.hr();
+  })
+
+  .items((e) => {
     e.title('Props');
 
     e.select((config) => {
