@@ -13,6 +13,7 @@ const imports = {
 
   Sample: import('./ui/DEV.Sample/DEV'),
   SampleDeploy: import('./ui/DEV.Sample.Deploy/DEV'),
+  SampleApp: import('./ui/DEV.Sample.App/dev/DEV'),
 
   UnitTests: import('./Dev.UnitTests'),
 };

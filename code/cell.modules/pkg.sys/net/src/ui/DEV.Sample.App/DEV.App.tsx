@@ -5,16 +5,15 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { TEST } from '../../test';
 import { DevNetworkCard } from '../NetworkCard/dev/DEV.NetworkCard';
 import * as k from '../NetworkCard/types';
+import { DevBackground } from './DEV.Background';
 import { DevBelow } from './DEV.Below';
+import { DevButtonFullscreen } from './DEV.Button.Fullscreen';
 import {
-  Button,
   Color,
-  COLORS,
   css,
   CssValue,
   EventBridge,
   Fullscreen,
-  Icons,
   Keyboard,
   LocalPeerCard,
   MediaStream,
@@ -23,13 +22,15 @@ import {
   rx,
   Spinner,
   t,
-  WebRuntime,
 } from './DEV.common';
+import { DevLog } from './DEV.Log';
 import { DevOverlay } from './DEV.Overlay';
+import { DevVersion } from './DEV.Version';
 
 export type DevSampleAppProps = {
   allowRubberband?: boolean;
   style?: CssValue;
+  onReady?: (e: { network: t.PeerNetwork }) => void;
 };
 
 export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
@@ -44,7 +45,8 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
 
   /**
    * TODO 🐷 HACK
-   * Move to sensible place (and put within a formal "language command pack (grammar)")
+   *    Move to sensible place (and put within a
+   *    formal "language command pack" (aka. a "grammar")).
    */
   const executeCommand__TEMP: t.CmdCardExecuteCommandHandler = async (e) => {
     if (!netbus) return;
@@ -83,8 +85,11 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
    * Initialize network
    */
   useEffect(() => {
-    Util.createNetwork().then((e) => setNetwork(e));
-  }, []);
+    Util.createNetwork().then((network) => {
+      setNetwork(network);
+      props.onReady?.({ network });
+    });
+  }, []); // eslint-disable-line
 
   /**
    * Initialize page
@@ -129,9 +134,18 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({ Absolute: 0, backgroundColor: Color.format(1) }),
+    base: css({ Absolute: 0, backgroundColor: Color.format(1), overflow: 'hidden' }),
     bg: css({ Absolute: 0, backgroundColor: Color.format(-0.06) }),
     layout: css({ Absolute: 0 }),
+  };
+
+  const Background: t.PositioningLayer = {
+    id: 'layer.BG',
+    position: { x: 'stretch', y: 'stretch' },
+    render(e) {
+      const style = css({ flex: 1, pointerEvents: 'auto' });
+      return <DevBackground style={style} />;
+    },
   };
 
   const CardLayer: t.PositioningLayer = {
@@ -167,6 +181,23 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     },
   };
 
+  const Log: t.PositioningLayer = {
+    id: 'layer.Card.Log',
+    position: { x: 'stretch', y: 'stretch' },
+    render(e) {
+      const card = e.find.first(CardLayer.id);
+      if (!network || !card) return null;
+
+      return (
+        <DevLog
+          network={network}
+          siblings={{ root: e.size, card: card.size }}
+          style={{ pointerEvents: 'auto' }}
+        />
+      );
+    },
+  };
+
   const OverlayLayer: t.PositioningLayer = {
     id: 'layer.Overlay',
     position: { x: 'stretch', y: 'stretch' },
@@ -187,12 +218,8 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     id: 'layer.Fullscreen',
     position: { x: 'right', y: 'top' },
     render(e) {
-      const styles = { base: css({ pointerEvents: 'auto', Margin: [3, 4, null, null] }) };
-      const Icon = fullscreen.isFullscreen ? Icons.FullScreen.Exit : Icons.FullScreen.Open;
       return (
-        <Button style={styles.base} onClick={fullscreen.toggle}>
-          <Icon color={Color.alpha(COLORS.DARK, 0.7)} />
-        </Button>
+        <DevButtonFullscreen isFullscreen={fullscreen.isFullscreen} onClick={fullscreen.toggle} />
       );
     },
   };
@@ -201,18 +228,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     id: 'layer.Version',
     position: { x: 'right', y: 'bottom' },
     render(e) {
-      const styles = {
-        base: css({ pointerEvents: 'auto', Margin: [null, 10, 8, null] }),
-        semver: css({ cursor: 'pointer', opacity: 0.5 }),
-      };
-      const href = `${location.origin}/?dev=Sample`;
-      return (
-        <a href={href} {...styles.base}>
-          <Button>
-            <WebRuntime.ui.ManifestSemver style={styles.semver} fontSize={11} />
-          </Button>
-        </a>
-      );
+      return <DevVersion style={{ Margin: [null, 8, 8, null] }} />;
     },
   };
 
@@ -220,7 +236,15 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     <div ref={fullscreen.ref} {...css(styles.base, props.style)}>
       <div {...styles.bg} />
       <PositioningLayout
-        layers={[VersionLayer, FullscreenLayer, CardLayer, CardBelow, OverlayLayer]}
+        layers={[
+          Background,
+          // Log,
+          VersionLayer,
+          FullscreenLayer,
+          CardLayer,
+          CardBelow,
+          OverlayLayer,
+        ]}
         style={styles.layout}
         childPointerEvents={'none'}
       />
@@ -233,6 +257,9 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
  */
 
 const Util = {
+  /**
+   * Initialize a new network instance (controller AND client).
+   */
   async createNetwork() {
     const bus = rx.bus();
     const signal = TEST.SIGNAL;

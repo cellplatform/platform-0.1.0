@@ -73,7 +73,7 @@ const DEFAULT = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('Sample')
+  .namespace('Sample-0.0.x')
 
   .context((e) => {
     if (e.prev) return e.prev;

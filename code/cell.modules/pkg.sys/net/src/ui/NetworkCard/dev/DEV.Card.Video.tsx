@@ -28,7 +28,7 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
   const resize = useResizeObserver();
 
   const [isOver, setOver] = useState(false);
-  const overHandler = (isOver: boolean) => () => setOver(isOver);
+  const over = (isOver: boolean) => () => setOver(isOver);
 
   /**
    * [Render]
@@ -61,8 +61,14 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
       }),
     },
     toolbar: {
-      base: css({ Absolute: [0, 0, null, 0], Flex: 'x-spaceBetween-stretch', paddingRight: 3 }),
-      section: css({ Flex: 'x-center-center', padding: 10 }),
+      base: css({
+        Absolute: [0, 10, null, 10],
+        paddingRight: 3,
+        borderBottom: `solid 1px ${Color.format(isOver ? 0.2 : 0)}`,
+        transition: `border-color 300ms`,
+        Flex: 'x-spaceBetween-stretch',
+      }),
+      section: css({ Flex: 'x-center-center', PaddingY: 10 }),
       button: css({ height: 20, marginRight: 15, ':last-child': { marginRight: 0 } }),
       icon: css({ filter: `drop-shadow(0 1px 4px ${Color.format(-0.2)})` }),
     },
@@ -142,11 +148,7 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
   const elBodyBorder = <div {...styles.body.border} />;
 
   return (
-    <div
-      {...css(styles.base, props.style)}
-      onMouseEnter={overHandler(true)}
-      onMouseLeave={overHandler(false)}
-    >
+    <div {...css(styles.base, props.style)} onMouseEnter={over(true)} onMouseLeave={over(false)}>
       {elBody}
       {elToolbar}
       {elBodyBorder}

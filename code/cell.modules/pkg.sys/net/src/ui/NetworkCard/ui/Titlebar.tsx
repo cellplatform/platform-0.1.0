@@ -38,14 +38,14 @@ export const NetworkCardTitlebar: React.FC<NetworkCardTitlebarProps> = (props) =
 
   return (
     <>
-      <div {...css(styles.title)}>{'Network Peer'}</div>
+      <div {...css(styles.title)}>{'Peer'}</div>
       <div {...styles.icons}>
         {/* <Icons.FsNetworkDrive style={styles.icon} size={iconSize} opacity={0.7} /> */}
         {/* <Icons.Bus style={styles.icon} size={iconSize} opacity={ENABLED} /> */}
         <Icons.Antenna
           style={styles.icon}
           size={iconSize}
-          color={hasPeers ? COLORS.CYAN : Color.alpha(COLORS.DARK, 0.2)}
+          color={Color.alpha(COLORS.DARK, hasPeers ? 0.7 : 0.1)}
         />
       </div>
     </>
