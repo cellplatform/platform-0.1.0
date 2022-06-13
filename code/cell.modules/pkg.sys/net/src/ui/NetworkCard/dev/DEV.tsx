@@ -11,6 +11,12 @@ type Ctx = {
   };
 };
 
+const Util = {
+  props(ctx: Ctx) {
+    return ctx.props as NetworkCardProps;
+  },
+};
+
 /**
  * Actions
  */
@@ -32,6 +38,17 @@ export const actions = DevActions<Ctx>()
     const instance = { network, id };
 
     ctx.props = { instance };
+  })
+
+  .items((e) => {
+    e.title('props');
+
+    e.boolean('minimized', (e) => {
+      const props = Util.props(e.ctx);
+      if (e.changing) props.minimized = e.changing.next;
+      e.boolean.current = props.minimized;
+    });
+    e.hr();
   })
 
   .items((e) => {
@@ -68,34 +85,35 @@ export const actions = DevActions<Ctx>()
 
   .subject((e) => {
     const { props, debug } = e.ctx;
-    const network = props?.instance.network;
+    const instance = props?.instance;
+    const network = instance?.network;
     const bus = network?.bus;
     const netbus = network?.netbus;
-
     const toId = rx.bus.instance;
 
     e.settings({
       host: { background: -0.04 },
       layout: {
+        cropmarks: -0.2,
         label: {
           topLeft: '<NetworkCard>',
-          bottomLeft: bus && netbus ? `${toId(bus)} | ${toId(netbus)}` : undefined,
+          bottomLeft: bus && netbus && instance ? `${toId(bus)} | ${toId(netbus)}` : undefined,
         },
-        cropmarks: -0.2,
       },
     });
 
-    e.render(
-      props && (
+    if (props) {
+      e.render(
         <DevNetworkCard
+          {...props}
           instance={props.instance}
           child={debug.childKind}
           onExecuteCommand={(e) => {
             console.log('⚡️ onExecuteCommand:', e);
           }}
-        />
-      ),
-    );
+        />,
+      );
+    }
   });
 
 export default actions;

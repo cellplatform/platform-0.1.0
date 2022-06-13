@@ -9,6 +9,7 @@ type Ctx = {
   client?: t.PeerEvents;
   props: DevSampleAppProps;
   output: { status?: any };
+  size?: t.DomRect;
 };
 
 const Util = {
@@ -25,7 +26,7 @@ const Util = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('Sample.App')
+  .namespace('DEV.Sample.App')
   .context((e) => {
     if (e.prev) return e.prev;
     const change = e.change;
@@ -39,6 +40,9 @@ export const actions = DevActions<Ctx>()
             ctx.self = e.network.self;
             ctx.client = e.network.events.peer;
           });
+        },
+        onSize(e) {
+          change.ctx((ctx) => (ctx.size = e.size));
         },
       },
       output: {},
@@ -54,7 +58,7 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Dev');
 
-    e.button('network.status', async (e) => await Util.updateStatus(e.ctx));
+    e.button('read: network.status', async (e) => await Util.updateStatus(e.ctx));
 
     e.hr();
 
@@ -87,10 +91,15 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    const size = e.ctx.size;
+
     e.settings({
       host: { background: -0.04 },
       layout: {
-        label: '<DEV.Sample.App>',
+        label: {
+          topLeft: '<DEV.Sample.App>',
+          topRight: size ? `${size.width} x ${size.height} px` : undefined,
+        },
         position: [150, 80],
         border: -0.1,
         cropmarks: -0.2,

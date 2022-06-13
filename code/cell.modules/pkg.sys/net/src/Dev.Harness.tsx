@@ -7,12 +7,11 @@ const imports = {
   ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
   LocalPeerCard: import('./ui/LocalPeerCard/dev/DEV'),
   Label: import('./ui/Label/dev/DEV'),
-  NetbusCard: import('./ui/NetbusCard/dev/DEV'),
   NetworkCard: import('./ui/NetworkCard/dev/DEV'),
   Networks: import('./ui/DEV.Networks/DEV'),
 
-  Sample: import('./ui/DEV.Sample/DEV'),
   SampleDeploy: import('./ui/DEV.Sample.Deploy/DEV'),
+  Sample: import('./ui/DEV.Sample/DEV'),
   SampleApp: import('./ui/DEV.Sample.App/dev/DEV'),
 
   UnitTests: import('./Dev.UnitTests'),

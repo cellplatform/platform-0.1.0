@@ -10,11 +10,12 @@ export type DevNetworkCardProps = {
   instance: { network: t.PeerNetwork; id: t.Id };
   child?: t.DevChildKind;
   style?: CssValue;
+  minimized?: boolean;
   onExecuteCommand?: t.CmdCardExecuteCommandHandler;
 };
 
 export const DevNetworkCard: React.FC<DevNetworkCardProps> = (props) => {
-  const { instance } = props;
+  const { instance, minimized } = props;
 
   const defaultChild = <DevCardPlaceholder style={{ flex: 1 }} />;
   const ctrl = useDevController({ instance, defaultChild });
@@ -25,6 +26,7 @@ export const DevNetworkCard: React.FC<DevNetworkCardProps> = (props) => {
       instance={instance}
       child={elChild || ctrl.child}
       style={props.style}
+      minimized={minimized}
       onExecuteCommand={props.onExecuteCommand}
     />
   );

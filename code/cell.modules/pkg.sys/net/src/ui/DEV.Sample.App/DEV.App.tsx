@@ -11,25 +11,26 @@ import {
   Color,
   css,
   CssValue,
-  EventBridge,
   Fullscreen,
   Keyboard,
   LocalPeerCard,
-  MediaStream,
-  PeerNetwork,
+  MinSize,
   PositioningLayout,
   rx,
   Spinner,
   t,
 } from './DEV.common';
-import { DevLog } from './DEV.Log';
+import { DevEventLog } from './DEV.EventLog';
+import { DevModule } from './DEV.Module';
 import { DevOverlay } from './DEV.Overlay';
 import { DevVersion } from './DEV.Version';
+import { DevVideos } from './DEV.Videos';
 
 export type DevSampleAppProps = {
   allowRubberband?: boolean;
   style?: CssValue;
   onReady?: (e: { network: t.PeerNetwork }) => void;
+  onSize?: (e: { size: t.DomRect }) => void;
 };
 
 export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
@@ -37,10 +38,118 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
   const [network, setNetwork] = useState<t.PeerNetwork>();
   const bus = network?.bus ? rx.busAsType<k.NetworkCardEvent>(network?.bus) : undefined;
   const netbus = network?.netbus;
+  const netbusExists = Boolean(netbus);
 
   const [overlay, setOverlay] = useState<undefined | t.NetworkCardOverlay>();
   const keybrd = Keyboard.useKeyboard({ bus, instance: id });
   const fullscreen = Fullscreen.useFullscreen();
+
+  const [moduleUrl, setModuleUrl] = useState('');
+  const [minimized, setMinimized] = useState(false);
+
+  useEffect(() => {
+    const { dispose, dispose$ } = rx.disposable();
+
+    netbus?.$.pipe(takeUntil(dispose$)).subscribe(async (e) => {
+      const cmd = e.payload.cmd as string;
+
+      /**
+       * TODO 🐷
+       * - Execute the incoming remote command.
+       * - Check VC (Credentials) and Auth permissions on whether the incoming DID is
+       *   allowed to run that command within your ENV.
+       */
+      console.group('🌳 🚀⚡️ REMOTE SECRUITY/TODO');
+      console.warn('Ensure remote execution is allowed!!!');
+      console.log('event:', e);
+      console.log('cmd:', cmd);
+      console.groupEnd();
+
+      if (bus && netbus && network) {
+        await runCommand({ cmd, bus, netbus, network });
+      }
+    });
+
+    return dispose;
+  }, [netbusExists]); // eslint-disable-line
+
+  const runCommand = async (args: {
+    cmd: string;
+    bus: t.EventBus<any>;
+    netbus: t.PeerNetbus;
+    network: t.PeerNetwork;
+  }) => {
+    const { bus, netbus, network } = args;
+    const cmd = args.cmd.trim();
+
+    /**
+     * 🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳
+     * TODO 🐷
+     *
+     *  - parse and interpret the command text.
+     *
+     *
+     * 🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳
+     */
+
+    const fireRemote = (event: t.Event) => {
+      netbus.target.remote(event);
+    };
+
+    // if (cmd === 'tmp') {
+    //   const ev = CmdCard.Events({ instance: { bus, id } });
+    //   await time.wait(10);
+    //   const res = await ev.state.patch((f) => {
+    //     f.commandbar.text = 'hello';
+    //     f.commandbar.textbox.spinning = true;
+    //   });
+    //   console.log('res', res);
+    // }
+
+    if (cmd.startsWith('fire ')) {
+      const type = cmd.substring(cmd.indexOf(' '));
+      if (type) fireRemote({ type, payload: { msg: 'hello' } });
+    }
+
+    if (cmd.startsWith('remote ') || cmd.startsWith('rem ')) {
+      const text = cmd.substring(cmd.indexOf(' '));
+      fireRemote({
+        type: 'remote:cmd',
+        payload: { cmd: text },
+      });
+    }
+
+    const isCuid = (input: string) => input.startsWith('c') && input.length === 25;
+    if (cmd.startsWith('peer:') || isCuid(cmd)) {
+      const remote = cmd;
+      const self = network.self;
+      const isReliable = true;
+      const autoStartVideo = true;
+      await LocalPeerCard.connect({ bus, remote, self, isReliable, autoStartVideo });
+    }
+
+    if (cmd.startsWith('load ')) {
+      const input = cmd.substring(cmd.indexOf(' ')).trim();
+      if (!input) return setModuleUrl('');
+
+      const stripHttp = (input?: string) => {
+        return (input || '')
+          .replace(/^http\:/, '')
+          .replace(/^https\:/, '')
+          .replace(/^\/\//, '');
+      };
+
+      const [domain, entry] = input.split(' ');
+
+      const url = `https://${stripHttp(domain).trim()}/index.json?entry=./${entry}`;
+      console.log('LOAD remote url:', url);
+      setModuleUrl(url);
+    }
+
+    if (cmd.startsWith('unload')) setModuleUrl('');
+    if (cmd === 'minimize' || cmd === 'min') setMinimized(true);
+    if (cmd === 'maximize' || cmd === 'max') setMinimized(false);
+  };
 
   /**
    * TODO 🐷 HACK
@@ -52,39 +161,15 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     if (!bus) return;
     if (!network) return;
 
-    const text = e.text.trim();
-
-    /**
-     * 🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳
-     * TODO 🐷
-     * - parse and interpret the command text.
-     *
-     * 🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳
-     */
-
-    if (text.startsWith('fire ')) {
-      const type = text.substring(text.indexOf(' '));
-      if (type) {
-        console.log('fire');
-        netbus.target.remote({ type, payload: { msg: 'hello' } });
-      }
-    }
-
-    const isCuid = (input: string) => input.startsWith('c') && input.length === 25;
-    if (text.startsWith('peer:') || isCuid(text)) {
-      const remote = text;
-      const self = network.self;
-      const isReliable = true;
-      const autoStartVideo = true;
-      await LocalPeerCard.connect({ bus, remote, self, isReliable, autoStartVideo });
-    }
+    const cmd = e.text;
+    return runCommand({ cmd, bus, netbus, network });
   };
 
   /**
    * Initialize network
    */
   useEffect(() => {
-    Util.createNetwork().then((network) => {
+    TEST.createNetwork().then((network) => {
       setNetwork(network);
       props.onReady?.({ network });
     });
@@ -142,24 +227,66 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     id: 'layer.BG',
     position: { x: 'stretch', y: 'stretch' },
     render(e) {
-      const style = css({ flex: 1, pointerEvents: 'auto' });
+      const style = css({
+        flex: 1,
+        pointerEvents: 'auto',
+        opacity: moduleUrl ? 0 : 1,
+        transition: `opacity 500ms`,
+      });
       return <DevBackground style={style} />;
+    },
+  };
+
+  const ImportedModuleLayer: t.PositioningLayer = {
+    id: 'layer.Module',
+    position: { x: 'stretch', y: 'stretch' },
+    render(e) {
+      if (!bus) return null;
+      if (!moduleUrl) return null;
+      return <DevModule bus={bus} url={moduleUrl} />;
     },
   };
 
   const CardLayer: t.PositioningLayer = {
     id: 'layer.Card',
-    position: { x: 'center', y: 'center' },
+    position: {
+      x: 'center',
+      y: minimized ? 'bottom' : 'center',
+    },
     render(e) {
       if (!network) return <Spinner />;
-      const styles = { base: css({ pointerEvents: 'auto' }) };
+      const styles = {
+        base: css({
+          pointerEvents: 'auto',
+          Margin: minimized ? [null, null, 15, null] : undefined,
+        }),
+      };
+      console.log('id', id);
       return (
         <DevNetworkCard
           instance={{ network, id }}
           style={styles.base}
+          minimized={minimized}
           onExecuteCommand={executeCommand__TEMP}
         />
       );
+    },
+  };
+  const VideosLayer: t.PositioningLayer = {
+    id: 'layer.Videos',
+    position: { x: 'left', y: 'bottom' },
+    render(e) {
+      if (!network) return null;
+      if (!minimized) return null;
+
+      const styles = {
+        base: css({
+          pointerEvents: 'auto',
+          Margin: [null, null, 15, 15],
+        }),
+      };
+
+      return <DevVideos instance={{ network, id }} style={styles.base} minimized={minimized} />;
     },
   };
 
@@ -167,9 +294,12 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     id: 'layer.Card.Log',
     position: { x: 'stretch', y: 'stretch' },
     render(e) {
+      if (minimized) return;
+      if (moduleUrl) return null;
+
       const card = e.find.first(CardLayer.id);
       if (!network || !card) return null;
-      return <DevLog network={network} sizes={{ root: e.size, card: card.size }} />;
+      return <DevEventLog network={network} sizes={{ root: e.size, card: card.size }} />;
     },
   };
 
@@ -189,10 +319,11 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     },
   };
 
-  const FullscreenLayer: t.PositioningLayer = {
+  const FullscreenButtonLayer: t.PositioningLayer = {
     id: 'layer.Fullscreen',
     position: { x: 'right', y: 'top' },
     render(e) {
+      if (moduleUrl) return null;
       return (
         <DevButtonFullscreen isFullscreen={fullscreen.isFullscreen} onClick={fullscreen.toggle} />
       );
@@ -209,33 +340,28 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
 
   return (
     <div ref={fullscreen.ref} {...css(styles.base, props.style)}>
-      <div {...styles.bg} />
-      <PositioningLayout
-        layers={[BackgroundLayer, LogLayer, VersionLayer, FullscreenLayer, CardLayer, OverlayLayer]}
-        style={styles.layout}
-        childPointerEvents={'none'}
-      />
+      <MinSize
+        minWidth={620}
+        minHeight={330}
+        style={{ Absolute: 0 }}
+        onResize={(e) => props.onSize?.(e)}
+      >
+        <div {...styles.bg} />
+        <PositioningLayout
+          layers={[
+            BackgroundLayer,
+            LogLayer,
+            VersionLayer,
+            FullscreenButtonLayer,
+            ImportedModuleLayer,
+            VideosLayer,
+            CardLayer,
+            OverlayLayer,
+          ]}
+          style={styles.layout}
+          childPointerEvents={'none'}
+        />
+      </MinSize>
     </div>
   );
-};
-
-/**
- * [Helpers]
- */
-
-const Util = {
-  /**
-   * Initialize a new network instance (controller AND client).
-   */
-  async createNetwork() {
-    const bus = rx.bus();
-    const signal = TEST.SIGNAL;
-    const { network } = await PeerNetwork.start({ bus, signal });
-    const self = network.self;
-
-    MediaStream.Controller({ bus });
-    EventBridge.startEventBridge({ self, bus });
-
-    return network;
-  },
 };

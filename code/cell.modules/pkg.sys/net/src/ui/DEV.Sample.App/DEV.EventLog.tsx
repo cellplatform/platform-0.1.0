@@ -4,13 +4,13 @@ import { takeUntil } from 'rxjs/operators';
 import { css, CssValue, EventList, rx, t } from './DEV.common';
 import { DevLayoutVertical } from './DEV.Layout.Vertical';
 
-export type DevLogProps = {
+export type DevEventLogProps = {
   network: t.PeerNetwork;
   sizes: { root: t.DomRect; card: t.DomRect };
   style?: CssValue;
 };
 
-export const DevLog: React.FC<DevLogProps> = (props) => {
+export const DevEventLog: React.FC<DevEventLogProps> = (props) => {
   const { sizes, network } = props;
   const { bus, netbus } = network;
 

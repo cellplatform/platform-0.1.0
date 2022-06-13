@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { NetbusCard } from '../../NetbusCard';
 import { DevCrdtCard } from './DEV.Card.Crdt';
 import { DevFsCard } from './DEV.Card.Fs';
 import { DevCardPlaceholder } from './DEV.Card.Placeholder';
@@ -26,9 +25,6 @@ export const DevChild: React.FC<DevChildProps> = (props) => {
 
   if (kind === 'Placeholder') {
     return defaultChild;
-  }
-  if (kind === 'Netbus') {
-    return <NetbusCard instance={instance} style={styles.child} />;
   }
   if (kind === 'Crdt') {
     return <DevCrdtCard instance={instance} style={styles.child} />;
