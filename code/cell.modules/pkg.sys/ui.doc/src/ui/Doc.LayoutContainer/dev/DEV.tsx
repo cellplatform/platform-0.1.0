@@ -67,7 +67,7 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const { props, debug, sizes } = e.ctx;
+    const { debug, sizes } = e.ctx;
 
     e.settings({
       host: { background: COLORS.BG },

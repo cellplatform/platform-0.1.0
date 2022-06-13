@@ -16,8 +16,8 @@ export const DevChildSample: React.FC<DevChildSampleProps> = (props) => {
   const styles = {
     base: css({
       flex: 1,
-      backgroundColor: 1,
       Flex: 'x-stretch-stretch',
+      backgroundColor: 1,
     }),
     edge: css({ flex: 1 }),
     column: css({

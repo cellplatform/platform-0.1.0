@@ -8,7 +8,7 @@ export type GuidesProps = {
 
 export const Guides: React.FC<GuidesProps> = (props) => {
   const { sizes } = props;
-  const border = `solid 1px ${Color.alpha(COLORS.MAGENTA, 0.3)}`;
+  const border = `solid 1px ${Color.alpha(COLORS.MAGENTA, 0.2)}`;
 
   /**
    * [Render]

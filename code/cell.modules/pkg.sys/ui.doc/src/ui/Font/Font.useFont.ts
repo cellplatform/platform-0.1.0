@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 import { load } from './Font.load';
 
-import { t } from '../common';
+import { t } from './common';
 import { Util } from './Util';
 
 /**
  * Hook for ensuring fonts are loaded within the document.
  */
-export function useFont(definition: t.FontDefinition | t.FontDefinition[]) {
+export function useFont(
+  definition: t.FontDefinition | t.FontDefinition[],
+  options: { onReady?: () => void } = {},
+) {
   const [fonts, setFonts] = useState<FontFace[]>([]);
   const [ready, setReady] = useState(false);
 
@@ -21,6 +24,7 @@ export function useFont(definition: t.FontDefinition | t.FontDefinition[]) {
       if (!isDisposed) {
         setReady(true);
         setFonts(fonts);
+        options.onReady?.();
       }
     });
 
