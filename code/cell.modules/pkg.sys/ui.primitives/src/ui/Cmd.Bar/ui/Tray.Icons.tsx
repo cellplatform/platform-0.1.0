@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Color, COLORS, css, CssValue, t } from '../../common';
+import React from 'react';
+import { css, CssValue } from '../common';
 
 export type TrayIconsProps = {
   items?: JSX.Element[];
@@ -11,11 +11,7 @@ export const TrayIcons: React.FC<TrayIconsProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({
-      flex: 1,
-      PaddingX: 15,
-      Flex: 'x-center-center',
-    }),
+    base: css({ PaddingX: 15, Flex: 'x-center-center' }),
     item: css({
       position: 'relative',
       Size: 24,
@@ -25,13 +21,15 @@ export const TrayIcons: React.FC<TrayIconsProps> = (props) => {
     }),
   };
 
-  const elItems = (props.items || []).map((el, i) => {
-    return (
-      <div key={i} {...styles.item}>
-        {el}
-      </div>
-    );
-  });
-
-  return <div {...css(styles.base, props.style)}>{elItems}</div>;
+  return (
+    <div {...css(styles.base, props.style)}>
+      {(props.items || []).map((el, i) => {
+        return (
+          <div key={i} {...styles.item}>
+            {el}
+          </div>
+        );
+      })}
+    </div>
+  );
 };

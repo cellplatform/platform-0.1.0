@@ -1,19 +1,18 @@
 import React from 'react';
-import { color, css, CssValue, FC, t } from '../../common';
+import { color, css, CssValue } from '../common';
 
 /**
  * Types
  */
 export type TrayPlaceholderProps = {
   placeholder?: string;
-  is: t.CmdBarRenderPartFlags;
   style?: CssValue;
 };
 
 /**
  * Component
  */
-const View: React.FC<TrayPlaceholderProps> = (props) => {
+export const TrayPlaceholder: React.FC<TrayPlaceholderProps> = (props) => {
   const { placeholder = 'system tray' } = props;
 
   /**
@@ -40,14 +39,3 @@ const View: React.FC<TrayPlaceholderProps> = (props) => {
     </div>
   );
 };
-
-/**
- * Export
- */
-
-type Fields = { render: t.CmdBarRenderPart };
-export const TrayPlaceholder = FC.decorate<TrayPlaceholderProps, Fields>(
-  View,
-  { render: (e) => <TrayPlaceholder is={e.is} /> },
-  { displayName: 'Tray' },
-);

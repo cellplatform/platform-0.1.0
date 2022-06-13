@@ -1,6 +1,6 @@
 import React from 'react';
 import { NetworkBusMock } from 'sys.runtime.web';
-import { DevActions, ObjectView } from 'sys.ui.dev';
+import { DevActions, ObjectView, toObject } from 'sys.ui.dev';
 
 import { CmdBar, CmdBarProps } from '..';
 import { Icons, COLORS, rx, slug, t } from '../common';
@@ -9,16 +9,13 @@ import { DevEventPipe } from './DEV.EventPipe';
 type Ctx = {
   netbus: t.NetworkBus<any>;
   props: CmdBarProps;
-  debug: Debug;
   events: t.CmdBarEvents;
+  debug: {
+    fireCount: number; // Total number of fires.
+  };
 };
 
-type Debug = {
-  fireCount: number; // Total number of fires.
-  renderEventPipe: t.CmdBarRenderPart;
-  renderIcons: t.CmdBarRenderPart;
-  renderNothing: t.CmdBarRenderPart;
-};
+type TraySample = 'Icons' | 'EventPipe';
 
 /**
  * Helpers
@@ -38,8 +35,25 @@ const Util = {
     new Array(total).fill(ctx).forEach(fire);
   },
 
-  toTextbox(ctx: Ctx) {
+  textbox(ctx: Ctx) {
     return ctx.props.textbox || (ctx.props.textbox = {});
+  },
+
+  assignTray(ctx: Ctx, kind: TraySample) {
+    const { props } = ctx;
+    props.tray = undefined;
+
+    if (kind === 'Icons') {
+      const items = Array.from({ length: 3 }).map((_, i) => {
+        return <Icons.Face key={`icon-${i}`} color={1} />;
+      });
+      props.tray = <CmdBar.Tray.Icons items={items} />;
+    }
+
+    if (kind === 'EventPipe') {
+      const netbus = toObject(ctx.netbus) as t.NetworkBus;
+      props.tray = <DevEventPipe bus={netbus} style={{ MarginX: 8, width: 150 }} />;
+    }
   },
 };
 
@@ -61,7 +75,6 @@ export const actions = DevActions<Ctx>()
       props: {
         instance,
         textbox: { placeholder: 'my command', pending: false, spinning: false },
-
         onChange({ to }) {
           e.change.ctx((ctx) => (ctx.props.text = to));
         },
@@ -69,22 +82,7 @@ export const actions = DevActions<Ctx>()
           console.log('!onAction', e);
         },
       },
-      debug: {
-        fireCount: 0,
-        renderEventPipe(args) {
-          return <DevEventPipe bus={netbus} style={{ MarginX: 8, width: 150 }} />;
-        },
-        renderIcons(args) {
-          const items = Array.from({ length: 3 }).map((_, i) => {
-            return <Icons.Face key={`icon-${i}`} color={1} />;
-          });
-          return <CmdBar.Tray.Icons items={items} />;
-        },
-        renderNothing(args) {
-          console.log('nothing', null);
-          return null;
-        },
-      },
+      debug: { fireCount: 0 },
     };
 
     return ctx;
@@ -92,54 +90,55 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx } = e;
-
-    // e.ctx.props.tray = { render: e.ctx.debug.renderIcons };
-
-    e.redraw();
+    Util.assignTray(e.ctx, 'EventPipe');
   })
 
   .items((e) => {
     e.title('Props');
 
-    e.select((config) =>
+    e.select((config) => {
+      const SAMPLES: TraySample[] = ['Icons', 'EventPipe'];
       config
-        .title('show (parts):')
-        .items(CmdBar.PARTS)
-        .initial(undefined)
-        .clearable(true)
+        .title('tray (render):')
+        .items([
+          { label: '<undefined> - default', value: undefined },
+          ...SAMPLES.map((value) => ({ label: `sample: ${value}`, value })),
+        ])
+        .initial('EventPipe')
         .view('buttons')
-        .multi(true)
         .pipe((e) => {
           if (e.changing) {
-            const next = e.changing.next.map(({ value }) => value) as t.CmdBarPart[];
-            e.ctx.props.show = next.length === 0 ? undefined : next;
+            const next = e.changing.next[0].value as TraySample;
+            Util.assignTray(e.ctx, next);
           }
-        }),
-    );
+        });
+    });
 
-    e.hr(1, 0.1);
+    e.hr();
+  })
 
+  .items((e) => {
     e.title('Props.Textbox');
 
     e.boolean('spinning', (e) => {
-      const textbox = Util.toTextbox(e.ctx);
+      const textbox = Util.textbox(e.ctx);
       if (e.changing) textbox.spinning = e.changing.next;
       e.boolean.current = textbox.spinning;
     });
 
     e.boolean('pending', (e) => {
-      const textbox = Util.toTextbox(e.ctx);
+      const textbox = Util.textbox(e.ctx);
       if (e.changing) textbox.pending = e.changing.next;
       e.boolean.current = textbox.pending;
     });
 
     e.textbox((config) =>
       config
-        .title('placeholder')
+        .placeholder('placeholder')
         .initial(config.ctx.props.textbox?.placeholder || '<nothing>')
         .pipe((e) => {
           if (e.changing?.action === 'invoke') {
-            const textbox = Util.toTextbox(e.ctx);
+            const textbox = Util.textbox(e.ctx);
             e.textbox.current = e.changing.next || undefined;
             textbox.placeholder = e.textbox.current;
           }
@@ -165,40 +164,11 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('EventBus (Tray Sample)');
 
-    e.select((config) =>
+    e.markdown((config) =>
       config
-        .title('tray (render):')
-        .items([
-          { label: '<undefined> - default', value: undefined },
-          '<null>',
-          'Icons',
-          'EventPipe',
-        ])
-        .initial(undefined)
-        // .initial('Icons')
-        .view('buttons')
-        .pipe((e) => {
-          if (e.changing) {
-            const next = e.changing.next[0].value;
-            e.ctx.props.tray = undefined;
-            const debug = e.ctx.debug;
-
-            if (next === '<null>') {
-              e.ctx.props.tray = { render: debug.renderNothing };
-            }
-
-            if (next === 'Icons') {
-              e.ctx.props.tray = { render: debug.renderIcons };
-            }
-
-            if (next === 'EventPipe') {
-              e.ctx.props.tray = { render: debug.renderEventPipe };
-            }
-          }
-        }),
+        .text(`Fire sample events when tray element is set to the <EventPipe>`)
+        .margin([0, 10, 0, 30]),
     );
-
-    e.hr(1, 0.1);
 
     e.button('EventPipe: fire (1)', (e) => Util.fireSample(e.ctx, 1));
     e.button('EventPipe: fire (100)', (e) => Util.fireSample(e.ctx, 100));
@@ -208,9 +178,6 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Debug');
-
-    e.button('arrangement (1)', (e) => (e.ctx.props.show = ['Input', 'Tray']));
-    e.button('arrangement (2)', (e) => (e.ctx.props.show = ['Tray', 'Input']));
 
     e.hr();
     e.component((e) => {

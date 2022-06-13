@@ -80,5 +80,5 @@ export const CmdCard = FC.decorate<CmdCardProps, Fields>(
     useController: useCmdCardController,
     defaultState: Util.state.default,
   },
-  { displayName: 'CmdCard' },
+  { displayName: 'Cmd.Card' },
 );

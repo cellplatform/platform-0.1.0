@@ -38,7 +38,6 @@ export const DevEventPipe: React.FC<DevEventPipeProps> = (props) => {
    */
   const styles = {
     base: css({
-      flex: 1,
       Flex: 'x-center-center',
       boxSizing: 'border-box',
       overflow: 'hidden',

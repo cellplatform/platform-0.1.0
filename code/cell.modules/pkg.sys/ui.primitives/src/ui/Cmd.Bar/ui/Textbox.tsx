@@ -1,12 +1,12 @@
 import React from 'react';
 
 import { CmdTextbox } from '../../Cmd.Textbox';
-import { css, t } from '../../common';
+import { css, t } from '../common';
 
 /**
  * Types
  */
-export type TextboxProps = t.CmdBarProps & { events: t.CmdBarEvents; is: t.CmdBarRenderPartFlags };
+export type TextboxProps = t.CmdBarProps & { events: t.CmdBarEvents };
 
 /**
  * Component
