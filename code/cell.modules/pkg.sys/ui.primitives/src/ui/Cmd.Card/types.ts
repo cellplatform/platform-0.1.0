@@ -31,6 +31,7 @@ export type CmdCardState = {
   commandbar: {
     text?: string;
     textbox: { pending: boolean; spinning: boolean; placeholder: string };
+    tray?: { render?: t.CmdBarRenderPart; flex?: number };
   };
   body: CmdCardStateBody;
   backdrop: CmdCardStateBackdrop;

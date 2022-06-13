@@ -27,10 +27,10 @@ export const BodyColumnRight: React.FC<BodyColumnRightProps> = (props) => {
   };
 
   useEffect(() => {
-    const dispose$ = new Subject<void>();
+    const { dispose, dispose$ } = rx.disposable();
     const status$ = network.status.$.pipe(takeUntil(dispose$));
     status$.subscribe((e) => updatePeers(e.connections));
-    return () => dispose$.next();
+    return dispose;
   }, []); // eslint-disable-line
 
   /**
