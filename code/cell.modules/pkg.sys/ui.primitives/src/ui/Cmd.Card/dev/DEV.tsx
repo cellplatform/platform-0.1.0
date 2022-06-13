@@ -96,7 +96,11 @@ export const actions = DevActions<Ctx>()
       localbus,
       netbus,
 
-      props: { instance, showAsCard: true },
+      props: {
+        instance,
+        showAsCard: true,
+        minimized: false,
+      },
       events,
       state: {
         onChange(state) {
@@ -158,6 +162,11 @@ export const actions = DevActions<Ctx>()
     e.boolean('showAsCard', (e) => {
       if (e.changing) e.ctx.props.showAsCard = e.changing.next;
       e.boolean.current = e.ctx.props.showAsCard;
+    });
+
+    e.boolean('minimized', (e) => {
+      if (e.changing) e.ctx.props.minimized = e.changing.next;
+      e.boolean.current = e.ctx.props.minimized;
     });
 
     e.hr();
@@ -303,9 +312,10 @@ export const actions = DevActions<Ctx>()
     const { bus, busKind } = Helpers.toBus(e.ctx);
     const props = Helpers.toProps(e.ctx);
     const instance = rx.bus.instance(bus);
+    const minimized = props.minimized;
 
     const SIDEPANEL = { WIDTH: 230 };
-    const showSidebar = debug.showSidebar && width < 600;
+    const showSidebar = debug.showSidebar && !minimized && width < 600;
     const bottomRight = busKind === 'netbus' ? `${instance}` : `${instance} (local)`;
 
     e.settings({
@@ -315,7 +325,7 @@ export const actions = DevActions<Ctx>()
         cropmarks: -0.2,
         offset: showSidebar ? [0 - SIDEPANEL.WIDTH, 0] : undefined,
         width,
-        height,
+        height: minimized ? undefined : height,
         label: {
           topLeft: '<CmdCard>',
           bottomRight: width > 300 ? bottomRight : undefined,

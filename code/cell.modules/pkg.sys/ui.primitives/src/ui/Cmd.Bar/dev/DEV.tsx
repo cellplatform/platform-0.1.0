@@ -3,7 +3,7 @@ import { NetworkBusMock } from 'sys.runtime.web';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { CmdBar, CmdBarProps } from '..';
-import { COLORS, rx, slug, t } from '../common';
+import { Icons, COLORS, rx, slug, t } from '../common';
 import { DevEventPipe } from './DEV.EventPipe';
 
 type Ctx = {
@@ -16,6 +16,8 @@ type Ctx = {
 type Debug = {
   fireCount: number; // Total number of fires.
   renderEventPipe: t.CmdBarRenderPart;
+  renderIcons: t.CmdBarRenderPart;
+  renderNothing: t.CmdBarRenderPart;
 };
 
 /**
@@ -59,6 +61,7 @@ export const actions = DevActions<Ctx>()
       props: {
         instance,
         textbox: { placeholder: 'my command', pending: false, spinning: false },
+
         onChange({ to }) {
           e.change.ctx((ctx) => (ctx.props.text = to));
         },
@@ -69,7 +72,17 @@ export const actions = DevActions<Ctx>()
       debug: {
         fireCount: 0,
         renderEventPipe(args) {
-          return <DevEventPipe bus={netbus} style={{ MarginX: 8 }} />;
+          return <DevEventPipe bus={netbus} style={{ MarginX: 8, width: 150 }} />;
+        },
+        renderIcons(args) {
+          const items = Array.from({ length: 3 }).map((_, i) => {
+            return <Icons.Face key={`icon-${i}`} color={1} />;
+          });
+          return <CmdBar.Tray.Icons items={items} />;
+        },
+        renderNothing(args) {
+          console.log('nothing', null);
+          return null;
         },
       },
     };
@@ -79,6 +92,10 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx } = e;
+
+    // e.ctx.props.tray = { render: e.ctx.debug.renderIcons };
+
+    e.redraw();
   })
 
   .items((e) => {
@@ -87,7 +104,7 @@ export const actions = DevActions<Ctx>()
     e.select((config) =>
       config
         .title('show (parts):')
-        .items(CmdBar.constants.PARTS)
+        .items(CmdBar.PARTS)
         .initial(undefined)
         .clearable(true)
         .view('buttons')
@@ -151,16 +168,31 @@ export const actions = DevActions<Ctx>()
     e.select((config) =>
       config
         .title('tray (render):')
-        .items([{ label: '<undefined> - default', value: undefined }, 'EventPipe'])
+        .items([
+          { label: '<undefined> - default', value: undefined },
+          '<null>',
+          'Icons',
+          'EventPipe',
+        ])
         .initial(undefined)
+        // .initial('Icons')
         .view('buttons')
         .pipe((e) => {
           if (e.changing) {
             const next = e.changing.next[0].value;
             e.ctx.props.tray = undefined;
+            const debug = e.ctx.debug;
+
+            if (next === '<null>') {
+              e.ctx.props.tray = { render: debug.renderNothing };
+            }
+
+            if (next === 'Icons') {
+              e.ctx.props.tray = { render: debug.renderIcons };
+            }
 
             if (next === 'EventPipe') {
-              e.ctx.props.tray = { render: e.ctx.debug.renderEventPipe };
+              e.ctx.props.tray = { render: debug.renderEventPipe };
             }
           }
         }),
@@ -168,9 +200,9 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.1);
 
-    e.button('fire (1)', (e) => Util.fireSample(e.ctx, 1));
-    e.button('fire (100)', (e) => Util.fireSample(e.ctx, 100));
-    e.button('fire (1,000)', (e) => Util.fireSample(e.ctx, 1000));
+    e.button('EventPipe: fire (1)', (e) => Util.fireSample(e.ctx, 1));
+    e.button('EventPipe: fire (100)', (e) => Util.fireSample(e.ctx, 100));
+    e.button('EventPipe: fire (1K)', (e) => Util.fireSample(e.ctx, 1000));
     e.hr();
   })
 
@@ -182,23 +214,35 @@ export const actions = DevActions<Ctx>()
 
     e.hr();
     e.component((e) => {
+      const instance = e.ctx.props.instance;
+      const props = {
+        ...e.ctx.props,
+        instance: { bus: rx.bus.instance(instance.bus), id: instance.id },
+      };
       return (
         <ObjectView
           name={'props'}
-          data={e.ctx.props}
+          data={props}
           style={{ MarginX: 15 }}
           fontSize={10}
-          expandPaths={['$']}
+          expandPaths={['$', '$.instance']}
         />
       );
     });
   })
 
   .subject((e) => {
+    const instance = e.ctx.props.instance;
+
+    console.log('instance', instance);
+
     e.settings({
       host: { background: COLORS.DARK },
       layout: {
-        label: { topLeft: '<CmdBar>' },
+        label: {
+          topLeft: '<CmdBar>',
+          bottomRight: `${rx.bus.instance(instance.bus)}/id:${instance.id}`,
+        },
         width: 600,
         height: 38,
         cropmarks: 0.2,

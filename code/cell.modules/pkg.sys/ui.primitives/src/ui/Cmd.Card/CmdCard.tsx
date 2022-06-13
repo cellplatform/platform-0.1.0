@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { FC, t, CssValue, css, constants, useResizeObserver, Util } from './common';
+import { FC, t, CssValue, css, DEFAULT, useResizeObserver, Util } from './common';
 import { CmdCardLayout, CmdCardLayoutProps } from './ui/Layout';
 import { CmdCardEvents, CmdCardController, useCmdCardController } from './logic';
 import { CmdStateInfo } from './ui/Info';
@@ -14,6 +14,7 @@ export type CmdCardProps = {
   instance: t.CmdCardInstance;
   state?: t.CmdCardState;
   showAsCard?: boolean;
+  minimized?: boolean;
   style?: CssValue;
 };
 
@@ -50,6 +51,7 @@ const View: React.FC<CmdCardProps> = (props) => {
         style={styles.layout}
         borderRadius={radius - 1}
         resize={resize}
+        minimized={props.minimized}
       />
     </Card>
   );
@@ -59,7 +61,7 @@ const View: React.FC<CmdCardProps> = (props) => {
  * Export
  */
 type Fields = {
-  constants: typeof constants;
+  DEFAULT: typeof DEFAULT;
   Info: typeof CmdStateInfo;
   Layout: React.FC<CmdCardLayoutProps>;
   Events: typeof CmdCardEvents;
@@ -70,7 +72,7 @@ type Fields = {
 export const CmdCard = FC.decorate<CmdCardProps, Fields>(
   View,
   {
-    constants,
+    DEFAULT,
     Info: CmdStateInfo,
     Layout: CmdCardLayout,
     Events: CmdCardEvents,

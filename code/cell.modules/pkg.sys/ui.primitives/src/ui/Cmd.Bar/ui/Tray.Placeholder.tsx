@@ -5,7 +5,7 @@ import { color, css, CssValue, FC, t } from '../../common';
  * Types
  */
 export type TrayPlaceholderProps = {
-  text?: string;
+  placeholder?: string;
   is: t.CmdBarRenderPartFlags;
   style?: CssValue;
 };
@@ -14,13 +14,13 @@ export type TrayPlaceholderProps = {
  * Component
  */
 const View: React.FC<TrayPlaceholderProps> = (props) => {
-  const { text = 'system tray' } = props;
+  const { placeholder = 'system tray' } = props;
 
   /**
    * [Render]
    */
   const styles = {
-    base: css({ Absolute: 0 }),
+    base: css({ minWidth: 140 }),
     body: css({
       Absolute: 6,
       border: `dashed 1px ${color.format(0.25)}`,
@@ -35,7 +35,7 @@ const View: React.FC<TrayPlaceholderProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.body}>
-        <div {...styles.text}>{text}</div>
+        <div {...styles.text}>{placeholder}</div>
       </div>
     </div>
   );
@@ -45,11 +45,9 @@ const View: React.FC<TrayPlaceholderProps> = (props) => {
  * Export
  */
 
-type Fields = {
-  render: t.CmdBarRenderPart;
-};
+type Fields = { render: t.CmdBarRenderPart };
 export const TrayPlaceholder = FC.decorate<TrayPlaceholderProps, Fields>(
   View,
   { render: (e) => <TrayPlaceholder is={e.is} /> },
-  { displayName: 'TrayPlaceholder' },
+  { displayName: 'Tray' },
 );

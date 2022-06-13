@@ -1,22 +1,14 @@
 import React from 'react';
 
-import { color, css, FC, t, PARTS } from './common';
+import { time, color, css, FC, t, PARTS } from './common';
 import { CmdBarEvents, CmdBarController } from './logic';
 import { TrayPlaceholder } from './ui/Tray.Placeholder';
 import { Event } from '../Event';
 import { CmdBarProps } from './types';
 import { Textbox } from './ui/Textbox';
+import { TrayIcons } from './ui/Tray.Icons';
 
 export { CmdBarProps };
-
-/**
- * Types
- */
-
-/**
- * Constants
- */
-const constants = { PARTS };
 
 /**
  * Component
@@ -45,14 +37,14 @@ const View: React.FC<CmdBarProps> = (props) => {
     inset: css({ Absolute: 0 }),
     body: css({ flex: 1, Flex: 'x-stretch-stretch' }),
     input: css({
-      flex: props.textbox?.flex ?? 2,
+      flex: props.textbox?.flex ?? 1,
       paddingTop: 10,
       paddingBottom: 4,
     }),
     tray: css({
-      flex: props.tray?.flex ?? 1,
-      display: 'flex',
+      flex: props.tray?.flex,
       position: 'relative',
+      display: 'flex',
     }),
     divider: {
       border: css({
@@ -91,18 +83,22 @@ const View: React.FC<CmdBarProps> = (props) => {
     }
 
     if (part === 'Tray') {
-      const render = props.tray?.render ?? TrayPlaceholder.render;
-      appendDivider();
-      append((e) => (
-        <div {...styles.tray} key={e.key}>
-          {render({ instance, is })}
-        </div>
-      ));
+      const args = { instance, is };
+      let el = props.tray?.render?.(args);
+      if (el === undefined) el = CmdBar.Tray.Default.render(args); // NB: Null response means "no tray"
+      if (el) {
+        appendDivider();
+        append((e) => (
+          <div {...styles.tray} key={e.key}>
+            {el}
+          </div>
+        ));
+      }
     }
   });
 
   return (
-    <div {...css(styles.base, props.style)}>
+    <div {...css(styles.base, props.style)} onMouseDown={() => time.delay(0, events.text.focus)}>
       <div {...styles.body}>{elements}</div>
     </div>
   );
@@ -112,16 +108,21 @@ const View: React.FC<CmdBarProps> = (props) => {
  * Export
  */
 type Fields = {
-  constants: typeof constants;
+  PARTS: typeof PARTS;
   Events: typeof CmdBarEvents;
   Controller: typeof CmdBarController;
+  Tray: { Default: typeof TrayPlaceholder; Icons: typeof TrayIcons };
 };
 export const CmdBar = FC.decorate<CmdBarProps, Fields>(
   View,
   {
-    constants,
+    PARTS,
     Events: CmdBarEvents,
     Controller: CmdBarController,
+    Tray: {
+      Default: TrayPlaceholder,
+      Icons: TrayIcons,
+    },
   },
   { displayName: 'CmdBar' },
 );

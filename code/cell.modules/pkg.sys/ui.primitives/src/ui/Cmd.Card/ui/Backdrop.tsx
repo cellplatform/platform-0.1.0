@@ -11,6 +11,7 @@ export type BackdropProps = {
   instance: t.CmdCardInstance;
   size: t.DomRect;
   state: t.CmdCardState;
+  minimized?: boolean;
   style?: CssValue;
 };
 
@@ -18,7 +19,7 @@ export type BackdropProps = {
  * Component
  */
 export const Backdrop: React.FC<BackdropProps> = (props) => {
-  const { instance, state, size } = props;
+  const { instance, state, size, minimized = false } = props;
   const content = useRenderPart('Backdrop', { instance, size, state });
 
   /**
@@ -32,16 +33,22 @@ export const Backdrop: React.FC<BackdropProps> = (props) => {
       backgroundColor: COLORS.DARK,
       color: COLORS.WHITE,
     }),
-    top: css({ flex: 1, position: 'relative', display: 'flex' }),
+    top: css({
+      flex: 1,
+      position: 'relative',
+      display: minimized ? 'none' : 'flex',
+    }),
     bottom: css({}),
   };
+
+  const elTop = <div {...styles.top}>{content.render()}</div>;
 
   /**
    * Backdrop content.
    */
   return (
     <div {...css(styles.base, props.style)}>
-      <div {...styles.top}>{content.render()}</div>
+      {elTop}
       <div {...styles.bottom}>
         <CmdBar
           instance={instance}

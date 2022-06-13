@@ -3,6 +3,6 @@ export * from '../../common';
 export { Util } from './Util';
 export { CmdBar } from '../Cmd.Bar';
 
-export const constants = {
+export const DEFAULT = {
   FOOTER: { HEIGHT: 38 },
 };
