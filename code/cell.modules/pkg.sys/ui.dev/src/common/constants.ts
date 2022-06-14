@@ -40,7 +40,7 @@ export const DEFAULT = {
 };
 
 export const CSS = {
-  HOST: 'sys.ui.dev.Host',
-  ACTIONS: 'sys.ui.dev.Actions',
-  MARKDOWN: 'sys.ui.dev.Markdown',
+  HOST: 'sys-ui-dev-Host',
+  ACTIONS: 'sys-ui-dev-Actions',
+  MARKDOWN: 'sys-ui-dev-Markdown',
 };
