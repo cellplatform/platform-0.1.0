@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { LocalPeerCard, LocalPeerCardConstants, LocalPeerCardProps } from '..';
+import { LocalPeerCard, LocalPeerCardProps } from '..';
 import { PeerNetwork } from '../../..';
 import { DevActions, Lorem, ObjectView, TEST } from '../../../test';
 import { t } from '../../common';
@@ -64,7 +64,7 @@ export const actions = DevActions<Ctx>()
     e.select((config) =>
       config
         .title('fields:')
-        .items(LocalPeerCardConstants.FIELDS)
+        .items(LocalPeerCard.FIELDS)
         .initial(undefined)
         .clearable(true)
         .view('buttons')

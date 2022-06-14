@@ -3,8 +3,8 @@ import { interval, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { useLocalPeer } from '../../ui.hooks';
-import { CmdTextbox, Card, css, CssValue, Hr, PropList, t } from '../common';
-import { LocalPeerCardConstants } from './constants';
+import { Card, CmdTextbox, css, CssValue, FC, Hr, PropList, t } from '../common';
+import { FIELDS, DEFAULT } from './constants';
 import { Connect, connect } from './LocalPeerCard.connect';
 import { toItems } from './LocalPeerCard.toItems';
 import * as k from './types';
@@ -30,7 +30,7 @@ const View: V = (props) => {
     bus,
     self,
     openConnectionOptions: newConnections = false,
-    fields = LocalPeerCardConstants.DEFAULT.FIELDS,
+    fields = DEFAULT.FIELDS,
     showAsCard = false,
   } = props;
   const title = props.title === null ? undefined : props.title ?? 'Network';
@@ -103,6 +103,13 @@ const View: V = (props) => {
 /**
  * Export (API)
  */
-type C = V & { connect: Connect };
-export const LocalPeerCard: C = View as any;
-LocalPeerCard.connect = connect;
+type Fields = {
+  connect: Connect;
+  FIELDS: typeof FIELDS;
+  DEFAULT: typeof DEFAULT;
+};
+export const LocalPeerCard = FC.decorate<LocalPeerCardProps, Fields>(
+  View,
+  { connect, FIELDS, DEFAULT },
+  { displayName: 'LocalPeer.Card' },
+);

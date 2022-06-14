@@ -3,7 +3,7 @@ import * as k from './types';
 /**
  * Complete list of fields.
  */
-const ALL_FIELDS: k.LocalPeerCardFields[] = [
+export const FIELDS: k.LocalPeerCardFields[] = [
   'PeerId',
   'SignalServer',
   'Lifetime',
@@ -24,9 +24,4 @@ const DEFAULT_FIELDS: k.LocalPeerCardFields[] = [
 
 export const DEFAULT = {
   FIELDS: DEFAULT_FIELDS,
-};
-
-export const LocalPeerCardConstants = {
-  DEFAULT,
-  FIELDS: ALL_FIELDS,
 };
