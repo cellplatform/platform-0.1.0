@@ -7,7 +7,7 @@ import { CmdCard, CmdCardProps } from '..';
 import { EventList } from '../../Event.List';
 import { css, rx, slug, t, Util } from '../common';
 import { CmdCardInfoProps } from '../ui/Info';
-import { SampleRenderers, A, B } from './DEV.Renderers';
+import { SampleRenderers } from './DEV.Renderers';
 import { DevSample } from './DEV.Sample';
 import { DevSidePanel } from './DEV.SidePanel';
 
@@ -100,6 +100,7 @@ export const actions = DevActions<Ctx>()
         instance,
         showAsCard: true,
         minimized: false,
+        tray: <CmdCard.Tray.Placeholder />,
       },
       events,
       state: {
@@ -107,6 +108,7 @@ export const actions = DevActions<Ctx>()
           e.change.ctx((ctx) => (ctx.state.current = state));
         },
       },
+
       debug: {
         render: true,
         fireCount: 0,

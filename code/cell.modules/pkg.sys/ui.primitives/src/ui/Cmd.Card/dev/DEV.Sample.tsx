@@ -21,7 +21,7 @@ export const DevSample: React.FC<DevSampleProps> = (args) => {
     enabled: args.isControllerEnabled,
     onChange: args.onStateChange,
     onExecuteCommand(e) {
-      console.log('onExecuteCommand:', e);
+      console.log('⚡️ onExecuteCommand:', e);
     },
   });
 

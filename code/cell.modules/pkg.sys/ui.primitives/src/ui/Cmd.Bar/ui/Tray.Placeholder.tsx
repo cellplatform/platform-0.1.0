@@ -19,7 +19,7 @@ export const TrayPlaceholder: React.FC<TrayPlaceholderProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({ minWidth: 140 }),
+    base: css({ position: 'relative', minWidth: 140 }),
     body: css({
       Absolute: 6,
       border: `dashed 1px ${color.format(0.25)}`,

@@ -12,6 +12,7 @@ export type BackdropProps = {
   size: t.DomRect;
   state: t.CmdCardState;
   minimized?: boolean;
+  tray?: JSX.Element;
   style?: CssValue;
 };
 
@@ -54,6 +55,7 @@ export const Backdrop: React.FC<BackdropProps> = (props) => {
           instance={instance}
           text={state.commandbar.text}
           textbox={state.commandbar.textbox}
+          tray={props.tray}
         />
       </div>
     </div>

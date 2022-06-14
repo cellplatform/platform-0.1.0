@@ -15,7 +15,7 @@ type Ctx = {
   };
 };
 
-type TraySample = 'Icons' | 'EventPipe';
+type TraySample = 'Placeholder' | 'Icons' | 'EventPipe';
 
 /**
  * Helpers
@@ -53,6 +53,10 @@ const Util = {
     if (kind === 'EventPipe') {
       const netbus = toObject(ctx.netbus) as t.NetworkBus;
       props.tray = <DevEventPipe bus={netbus} style={{ MarginX: 8, width: 150 }} />;
+    }
+
+    if (kind === 'Placeholder') {
+      props.tray = <CmdBar.Tray.Placeholder />;
     }
   },
 };
@@ -97,21 +101,22 @@ export const actions = DevActions<Ctx>()
   .init(async (e) => {
     const { ctx } = e;
 
-    Util.assignTray(e.ctx, 'EventPipe');
+    // Util.assignTray(e.ctx, 'EventPipe');
+    Util.assignTray(e.ctx, 'Placeholder');
   })
 
   .items((e) => {
     e.title('Props');
 
     e.select((config) => {
-      const SAMPLES: TraySample[] = ['Icons', 'EventPipe'];
+      const SAMPLES: TraySample[] = ['Placeholder', 'Icons', 'EventPipe'];
       config
         .title('tray (render):')
         .items([
-          { label: '<undefined> - default', value: undefined },
+          { label: '<undefined>', value: undefined },
           ...SAMPLES.map((value) => ({ label: `sample: ${value}`, value })),
         ])
-        .initial('EventPipe')
+        .initial('Placeholder')
         .view('buttons')
         .pipe((e) => {
           if (e.changing) {

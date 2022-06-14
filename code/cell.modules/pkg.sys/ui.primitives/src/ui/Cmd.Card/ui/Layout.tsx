@@ -12,6 +12,7 @@ export type CmdCardLayoutProps = {
   state: t.CmdCardState;
   borderRadius?: number | string;
   resize?: t.ResizeObserverHook;
+  tray?: JSX.Element;
   minimized?: boolean;
   style?: CssValue;
 };
@@ -51,6 +52,7 @@ export const CmdCardLayout: React.FC<CmdCardLayoutProps> = (props) => {
       state={state}
       size={size}
       minimized={minimized}
+      tray={props.tray}
       style={styles.backdrop}
     />
   );

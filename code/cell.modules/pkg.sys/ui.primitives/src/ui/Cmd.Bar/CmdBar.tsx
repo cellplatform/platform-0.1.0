@@ -68,7 +68,7 @@ type Fields = {
   Events: typeof CmdBarEvents;
   Controller: typeof CmdBarController;
   Tray: {
-    Default: typeof TrayPlaceholder;
+    Placeholder: typeof TrayPlaceholder;
     Icons: typeof TrayIcons;
   };
 };
@@ -78,7 +78,7 @@ export const CmdBar = FC.decorate<CmdBarProps, Fields>(
     Events: CmdBarEvents,
     Controller: CmdBarController,
     Tray: {
-      Default: TrayPlaceholder,
+      Placeholder: TrayPlaceholder,
       Icons: TrayIcons,
     },
   },
