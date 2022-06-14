@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -44,17 +44,13 @@ export const HtmlInput: React.FC<HtmlInputProps> = (props) => {
   } = props;
 
   const instance = props.instance.id;
+  const value = Util.value.format({ value: props.value, maxLength });
+
   const inputRef = useRef<HTMLInputElement>(null);
   const focusState = useFocus(inputRef, { redraw: false });
 
   const keyboard = Keyboard.useKeyboardState({ bus: props.instance.bus, instance });
   const cloneModifierKeys = () => ({ ...keyboard.state.current.modifiers });
-
-  const [value, setValue] = useState('');
-  const updateValue = (args: { value?: string; maxLength?: number } = {}) => {
-    const { value = props.value, maxLength = props.maxLength } = args;
-    setValue(Util.value.format({ value, maxLength }));
-  };
 
   /**
    * [Lifecycle]
@@ -124,7 +120,6 @@ export const HtmlInput: React.FC<HtmlInputProps> = (props) => {
 
     // Update state and alert listeners.
     if (from !== to) {
-      updateValue({ value: to, maxLength });
       onChange?.({ instance, from, to, isMax, char, modifierKeys: cloneModifierKeys() });
     }
   };
@@ -295,7 +290,3 @@ export const HtmlInput: React.FC<HtmlInputProps> = (props) => {
     />
   );
 };
-
-/**
- * [Helpers]
- */

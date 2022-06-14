@@ -1,6 +1,4 @@
-import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-
 import { rx, t, TextInput } from '../common';
 
 type E = t.CmdBarEvents;
@@ -9,8 +7,7 @@ type E = t.CmdBarEvents;
  * Event API.
  */
 export function CmdBarEvents(args: { instance: t.CmdBarInstance; dispose$?: t.Observable<any> }) {
-  const dispose$ = new Subject<void>();
-  const dispose = () => rx.done(dispose$);
+  const { dispose, dispose$ } = rx.disposable();
   args.dispose$?.subscribe(dispose);
 
   const instance = args.instance.id;
@@ -37,11 +34,10 @@ export function CmdBarEvents(args: { instance: t.CmdBarInstance; dispose$?: t.Ob
 
   const text: E['text'] = {
     changed$: rx.payload<t.CmdBarTextChangeEvent>($, 'sys.ui.CmdBar/TextChanged'),
-    change(args) {
-      const { from, to } = args;
+    change(text) {
       bus.fire({
         type: 'sys.ui.CmdBar/TextChanged',
-        payload: { instance, from, to },
+        payload: { instance, text },
       });
     },
     focus: () => textbox.focus.fire(true),

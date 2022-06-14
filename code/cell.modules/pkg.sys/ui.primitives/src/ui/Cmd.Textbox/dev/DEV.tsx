@@ -18,6 +18,7 @@ export const actions = DevActions<Ctx>()
   .namespace('ui.Cmd.Textbox')
   .context((e) => {
     if (e.prev) return e.prev;
+    const change = e.change;
 
     const ctx: Ctx = {
       props: {
@@ -25,12 +26,8 @@ export const actions = DevActions<Ctx>()
         spinner: false,
         pending: false,
         theme: 'Dark',
-        onChange(event) {
-          e.change.ctx((ctx) => {
-            const isControlled = e.current?.debug.isControlled ?? true;
-            const value = isControlled ? event.to : undefined;
-            ctx.props.text = value;
-          });
+        onChange(e) {
+          change.ctx((ctx) => (ctx.props.text = e.to));
         },
         onAction(e) {
           console.log('onAction:', e);

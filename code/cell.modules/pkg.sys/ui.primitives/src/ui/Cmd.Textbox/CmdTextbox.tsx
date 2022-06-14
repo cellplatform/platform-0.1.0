@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { Button } from '../../ui.ref/button/Button';
 import { Spinner } from '../../ui.ref/spinner/Spinner';
@@ -11,7 +11,7 @@ import { TextInput } from '../Text.Input';
  */
 export type CmdTextboxProps = {
   instance?: { bus: t.EventBus<any>; id: string };
-  text?: string; // NB: undefined === handle state internally ("uncontrolled").
+  text?: string;
   placeholder?: string;
   spinner?: boolean;
   pending?: boolean;
@@ -37,11 +37,9 @@ export const CmdTextboxContants = { DEFAULT, THEMES };
  */
 export const CmdTextbox: React.FC<CmdTextboxProps> = (props) => {
   const { theme = 'Light', spinner, pending = false } = props;
-  const isControlled = typeof props.text === 'string';
 
-  const [textState, setTextState] = useState('');
-  const text = isControlled ? props.text : textState;
-  const textTrimmed = (text || '').trim();
+  const text = props.text ?? '';
+  const textTrimmed = text.trim();
 
   const isInvokable = Boolean(textTrimmed && pending);
   const isDark = theme === 'Dark';
@@ -53,7 +51,7 @@ export const CmdTextbox: React.FC<CmdTextboxProps> = (props) => {
     TERMINAL: isDark ? COLORS.WHITE : color.alpha(COL_BASE, 0.8),
   };
   const COL_TEXT = {
-    DEFAULT: color.alpha(COL_BASE, 0.5),
+    DEFAULT: color.alpha(COL_BASE, 0.9),
     PENDING: COL_BASE,
     PLACEHOLDER: isDark ? 0.3 : -0.3,
   };
@@ -124,7 +122,6 @@ export const CmdTextbox: React.FC<CmdTextboxProps> = (props) => {
         selectOnFocus={true}
         onChange={(e) => {
           const { from, to } = e;
-          if (!isControlled) setTextState(to);
           props.onChange?.({ from, to });
         }}
         onEnter={() => {

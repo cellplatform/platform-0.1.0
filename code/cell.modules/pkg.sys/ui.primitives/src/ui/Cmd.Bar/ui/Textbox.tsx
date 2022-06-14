@@ -3,18 +3,10 @@ import React from 'react';
 import { CmdTextbox } from '../../Cmd.Textbox';
 import { css, t } from '../common';
 
-/**
- * Types
- */
 export type TextboxProps = t.CmdBarProps & { events: t.CmdBarEvents };
 
-/**
- * Component
- */
 export const Textbox: React.FC<TextboxProps> = (props) => {
-  const styles = {
-    base: css({ MarginX: 8 }),
-  };
+  const styles = { base: css({ MarginX: 8 }) };
 
   return (
     <CmdTextbox
@@ -26,9 +18,9 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
       pending={props.textbox?.pending}
       style={css(styles.base, props.style)}
       onChange={(e) => {
-        const { from, to } = e;
+        const { to } = e;
         props.onChange?.(e);
-        props.events.text.change({ from, to });
+        props.events.text.change(to);
       }}
       onAction={(e) => {
         const { kind, text } = e;

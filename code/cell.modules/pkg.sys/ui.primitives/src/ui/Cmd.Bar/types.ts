@@ -43,7 +43,7 @@ export type CmdBarEvents = {
   };
   text: {
     changed$: t.Observable<CmdBarTextChange>;
-    change(args: { from: string; to: string }): void;
+    change(text: string): void;
     focus(): void;
     blur(): void;
     select(): void;
@@ -76,4 +76,4 @@ export type CmdBarTextChangeEvent = {
   type: 'sys.ui.CmdBar/TextChanged';
   payload: CmdBarTextChange;
 };
-export type CmdBarTextChange = { instance: Id; from: string; to: string };
+export type CmdBarTextChange = { instance: Id; text: string };

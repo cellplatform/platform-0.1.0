@@ -64,6 +64,7 @@ export const actions = DevActions<Ctx>()
   .namespace('ui.Cmd.Bar')
   .context((e) => {
     if (e.prev) return e.prev;
+    const change = e.change;
 
     const instance = { bus: rx.bus(), id: `foo.${slug()}` };
     const events = CmdBar.Controller({ instance });
@@ -76,7 +77,7 @@ export const actions = DevActions<Ctx>()
         instance,
         textbox: { placeholder: 'my command', pending: false, spinning: false },
         onChange({ to }) {
-          e.change.ctx((ctx) => (ctx.props.text = to));
+          // change.ctx((ctx) => (ctx.props.text = to));
         },
         onAction(e) {
           console.log('!onAction', e);
@@ -85,11 +86,17 @@ export const actions = DevActions<Ctx>()
       debug: { fireCount: 0 },
     };
 
+    events.text.changed$.subscribe((e) => {
+      // NB: Or do this in the direct [onChange] handler.
+      change.ctx((ctx) => (ctx.props.text = e.text));
+    });
+
     return ctx;
   })
 
   .init(async (e) => {
     const { ctx } = e;
+
     Util.assignTray(e.ctx, 'EventPipe');
   })
 
@@ -151,12 +158,14 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Events');
 
-    e.button('⚡️ Focus', (e) => e.ctx.events.text.focus());
-    e.button('⚡️ Blur', (e) => e.ctx.events.text.blur());
+    e.button('⚡️ focus', (e) => e.ctx.events.text.focus());
+    e.button('⚡️ blur', (e) => e.ctx.events.text.blur());
     e.hr(1, 0.1);
-    e.button('⚡️ Select (All)', (e) => e.ctx.events.text.select());
-    e.button('⚡️ Cursor: Start', (e) => e.ctx.events.text.cursor.start());
-    e.button('⚡️ Cursor: End', (e) => e.ctx.events.text.cursor.end());
+    e.button('⚡️ cursor: start', (e) => e.ctx.events.text.cursor.start());
+    e.button('⚡️ cursor: end', (e) => e.ctx.events.text.cursor.end());
+    e.hr(1, 0.1);
+    e.button('⚡️ select (all)', (e) => e.ctx.events.text.select());
+    e.button('⚡️ change text', (e) => e.ctx.events.text.change('Foobar'));
 
     e.hr();
   })
@@ -200,8 +209,6 @@ export const actions = DevActions<Ctx>()
 
   .subject((e) => {
     const instance = e.ctx.props.instance;
-
-    console.log('instance', instance);
 
     e.settings({
       host: { background: COLORS.DARK },
