@@ -1,1 +1,1 @@
-export * from './NetworkCard/types';
+export * from './Network.Card/types';

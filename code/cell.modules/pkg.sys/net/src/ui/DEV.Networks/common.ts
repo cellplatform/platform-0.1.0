@@ -11,7 +11,7 @@ export { Semver } from 'sys.ui.primitives/lib/ui/Semver';
  * @local
  */
 export * from '../common';
-export * from '../NetworkCard';
+export * from '../Network.Card';
 export { PeerNetwork } from '../..';
 
 export { useLocalPeer } from '../../ui.hooks';
@@ -28,7 +28,7 @@ export { EventBridge } from '../DEV.Sample/DEV.event';
  * Constants
  */
 export const VIEWS: t.DevViewKind[] = ['URI', 'Single', 'Collection'];
-import { CHILD_KINDS } from '../NetworkCard/dev/common';
+import { CHILD_KINDS } from '../Network.Card/dev/common';
 
 const VIEW: t.DevViewKind = 'Collection';
 const DEFAULT = { VIEW };

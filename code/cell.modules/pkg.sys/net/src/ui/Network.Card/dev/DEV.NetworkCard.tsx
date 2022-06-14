@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { NetworkCard } from '../NetworkCard';
+import { NetworkCard } from '..';
 import { DevCardPlaceholder } from './DEV.Card.Placeholder';
 import { DevChild } from './DEV.Child';
 import { CssValue, t } from './common';

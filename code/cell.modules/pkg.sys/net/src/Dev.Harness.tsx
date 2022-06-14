@@ -7,7 +7,7 @@ const imports = {
   ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
   LocalPeerCard: import('./ui/LocalPeer.Card/dev/DEV'),
   Label: import('./ui/Label/dev/DEV'),
-  NetworkCard: import('./ui/NetworkCard/dev/DEV'),
+  NetworkCard: import('./ui/Network.Card/dev/DEV'),
   Networks: import('./ui/DEV.Networks/DEV'),
 
   SampleDeploy: import('./ui/DEV.Sample.Deploy/DEV'),

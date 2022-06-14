@@ -3,8 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { TEST } from '../../test';
-import { DevNetworkCard } from '../NetworkCard/dev/DEV.NetworkCard';
-import * as k from '../NetworkCard/types';
+import { DevNetworkCard } from '../Network.Card/dev/DEV.NetworkCard';
 import { DevBackground } from './DEV.Background';
 import { DevButtonFullscreen } from './DEV.Button.Fullscreen';
 import {
@@ -37,7 +36,7 @@ export type DevSampleAppProps = {
 export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
   const id = 'instance.app';
   const [network, setNetwork] = useState<t.PeerNetwork>();
-  const bus = network?.bus ? rx.busAsType<k.NetworkCardEvent>(network?.bus) : undefined;
+  const bus = network?.bus ? rx.busAsType<t.NetworkCardEvent>(network?.bus) : undefined;
   const netbus = network?.netbus;
   const netbusExists = Boolean(netbus);
 
@@ -198,7 +197,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
         filter((e) => e.payload.instance === id),
       );
 
-      rx.payload<k.NetworkCardOverlayEvent>($, 'sys.net/ui.NetworkCard/Overlay')
+      rx.payload<t.NetworkCardOverlayEvent>($, 'sys.net/ui.NetworkCard/Overlay')
         .pipe()
         .subscribe((e) => setOverlay(e));
 
