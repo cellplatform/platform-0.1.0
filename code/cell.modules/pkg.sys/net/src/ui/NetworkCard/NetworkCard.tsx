@@ -10,6 +10,7 @@ export type NetworkCardProps = {
   instance: { network: t.PeerNetwork; id: t.Id };
   child?: JSX.Element;
   minimized?: boolean;
+  tray?: JSX.Element;
   style?: CssValue;
   onExecuteCommand?: t.CmdCardExecuteCommandHandler;
 };
@@ -53,7 +54,13 @@ export const NetworkCard: React.FC<NetworkCardProps> = (props) => {
   );
 
   const elRoot = (
-    <CmdCard instance={{ bus, id }} style={styles.root} state={card.state} minimized={minimized} />
+    <CmdCard
+      instance={{ bus, id }}
+      style={styles.root}
+      state={card.state}
+      minimized={minimized}
+      tray={props.tray}
+    />
   );
   const elChild = child && isReady && (
     <NetworkCardChild style={styles.child}>{child}</NetworkCardChild>

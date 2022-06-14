@@ -11,6 +11,7 @@ export type DevNetworkCardProps = {
   child?: t.DevChildKind;
   style?: CssValue;
   minimized?: boolean;
+  tray?: JSX.Element;
   onExecuteCommand?: t.CmdCardExecuteCommandHandler;
 };
 
@@ -27,6 +28,7 @@ export const DevNetworkCard: React.FC<DevNetworkCardProps> = (props) => {
       child={elChild || ctrl.child}
       style={props.style}
       minimized={minimized}
+      tray={props.tray}
       onExecuteCommand={props.onExecuteCommand}
     />
   );

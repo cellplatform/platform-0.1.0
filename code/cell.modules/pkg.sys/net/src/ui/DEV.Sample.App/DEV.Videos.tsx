@@ -5,11 +5,12 @@ import { css, CssValue, R, rx, t, VideoStream } from './DEV.common';
 
 export type DevVideosProps = {
   instance: { network: t.PeerNetwork; id: t.Id };
-  minimized: boolean;
+  video: { width: number; height: number; radius: number };
   style?: CssValue;
 };
 
 export const DevVideos: React.FC<DevVideosProps> = (props) => {
+  const { video } = props;
   const { network } = props.instance;
 
   type P = { id: string; connections: t.PeerConnectionStatus[] };
@@ -56,9 +57,9 @@ export const DevVideos: React.FC<DevVideosProps> = (props) => {
         key={i}
         stream={media}
         isMuted={true}
-        width={64}
-        height={64}
-        borderRadius={6}
+        width={video.width}
+        height={video.height}
+        borderRadius={video.radius}
         backgroundColor={-0.03}
         style={styles.item}
       />

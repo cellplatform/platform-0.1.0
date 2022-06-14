@@ -39,7 +39,7 @@ export const DevEventLog: React.FC<DevEventLogProps> = (props) => {
     left: css({ flex: 1 }),
     middle: css({ width: 30 }),
     right: css({ position: 'relative', width: 300, display: 'flex' }),
-    log: css({ Absolute: [0, 0, 0, 20] }),
+    log: css({ Absolute: [0, 0, 0, 20], pointerEvents: 'auto' }),
   };
 
   const elBody = (

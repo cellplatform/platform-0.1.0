@@ -25,6 +25,7 @@ import { DevModule } from './DEV.Module';
 import { DevOverlay } from './DEV.Overlay';
 import { DevVersion } from './DEV.Version';
 import { DevVideos } from './DEV.Videos';
+import { DevTray } from './DEV.Tray';
 
 export type DevSampleAppProps = {
   allowRubberband?: boolean;
@@ -261,12 +262,15 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
           Margin: minimized ? [null, null, 15, null] : undefined,
         }),
       };
-      console.log('id', id);
+
+      const elTray = <DevTray instance={{ network, id }} />;
+
       return (
         <DevNetworkCard
           instance={{ network, id }}
           style={styles.base}
           minimized={minimized}
+          tray={elTray}
           onExecuteCommand={executeCommand__TEMP}
         />
       );
@@ -286,7 +290,13 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
         }),
       };
 
-      return <DevVideos instance={{ network, id }} style={styles.base} minimized={minimized} />;
+      return (
+        <DevVideos
+          instance={{ network, id }}
+          style={styles.base}
+          video={{ width: 64, height: 64, radius: 6 }}
+        />
+      );
     },
   };
 
@@ -354,7 +364,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
             VersionLayer,
             FullscreenButtonLayer,
             ImportedModuleLayer,
-            VideosLayer,
+            // VideosLayer,
             CardLayer,
             OverlayLayer,
           ]}
