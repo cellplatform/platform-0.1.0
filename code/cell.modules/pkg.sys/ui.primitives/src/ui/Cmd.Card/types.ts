@@ -24,6 +24,19 @@ export type CmdCardRenderState<S extends O> = {
 };
 
 /**
+ * <Component>
+ */
+export type CmdCardProps = {
+  instance: t.CmdCardInstance;
+  state?: t.CmdCardState;
+  tray?: JSX.Element;
+  body?: JSX.Element;
+  showAsCard?: boolean;
+  minimized?: boolean;
+  style?: t.CssValue;
+};
+
+/**
  * STATE
  */
 export type CmdCardState = {
@@ -32,7 +45,7 @@ export type CmdCardState = {
     text?: string;
     textbox: { pending: boolean; spinning: boolean; placeholder: string };
   };
-  body: CmdCardStateBody;
+  // body: CmdCardStateBody;
   backdrop: CmdCardStateBackdrop;
 };
 

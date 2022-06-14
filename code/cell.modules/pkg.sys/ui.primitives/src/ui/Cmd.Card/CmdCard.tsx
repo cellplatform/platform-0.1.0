@@ -6,18 +6,12 @@ import { CmdCardEvents, CmdCardController, useCmdCardController } from './logic'
 import { CmdStateInfo } from './ui/Info';
 
 import { Card } from '../Card';
+import { CmdCardProps } from './types';
 
 /**
  * Types
  */
-export type CmdCardProps = {
-  instance: t.CmdCardInstance;
-  state?: t.CmdCardState;
-  tray?: JSX.Element;
-  showAsCard?: boolean;
-  minimized?: boolean;
-  style?: CssValue;
-};
+export { CmdCardProps };
 
 /**
  * Component
@@ -33,8 +27,8 @@ const View: React.FC<CmdCardProps> = (props) => {
   const radius = showAsCard ? 4 : 0;
   const styles = {
     base: css({
-      display: 'flex',
       visibility: resize.ready ? 'visible' : 'hidden',
+      display: 'flex',
     }),
     layout: css({ flex: 1 }),
   };
@@ -43,8 +37,8 @@ const View: React.FC<CmdCardProps> = (props) => {
     <Card
       ref={resize.ref}
       showAsCard={showAsCard}
-      style={css(styles.base, props.style)}
       border={{ radius }}
+      style={css(styles.base, props.style)}
     >
       <CmdCardLayout
         instance={instance}

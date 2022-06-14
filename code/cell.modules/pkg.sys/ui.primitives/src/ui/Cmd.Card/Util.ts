@@ -21,11 +21,11 @@ export const Util = {
     default(partial?: t.PartialDeep<t.CmdCardState>): t.CmdCardState {
       const base: t.CmdCardState = {
         ready: false,
-        body: {
-          render: Util.renderNull,
-          state: {} as any,
-          show: 'CommandBar',
-        },
+        // body: {
+        //   render: Util.renderNull,
+        //   state: {} as any,
+        //   show: 'CommandBar',
+        // },
         backdrop: {
           render: Util.renderNull,
           state: {} as any,

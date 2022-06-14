@@ -10,6 +10,7 @@ import { CmdCardInfoProps } from '../ui/Info';
 import { SampleRenderers } from './DEV.Renderers';
 import { DevSample } from './DEV.Sample';
 import { DevSidePanel } from './DEV.SidePanel';
+import { DevBody } from './DEV.Body';
 
 type Ctx = {
   localbus: t.EventBus<any>;
@@ -95,14 +96,16 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       localbus,
       netbus,
+      events,
 
       props: {
         instance,
         showAsCard: true,
         minimized: false,
         tray: <CmdCard.Tray.Placeholder />,
+        body: <DevBody />,
       },
-      events,
+
       state: {
         onChange(state) {
           e.change.ctx((ctx) => (ctx.state.current = state));
@@ -202,40 +205,32 @@ export const actions = DevActions<Ctx>()
       });
     });
 
-    e.button('[TODO] isOpen (toggle)', async (e) => {
-      await e.ctx.events.state.patch((state) => {
-        state.body.isOpen = !Boolean(state.body.isOpen);
-      });
-    });
-
     e.button('sample renderers (toggle)', async (e) => {
       const { body, backdrop } = SampleRenderers;
       await e.ctx.events.state.patch((state) => {
-        const exists = Boolean(state.body.render);
-
+        // const exists = Boolean(state.body.render);
         /**
          * TODO 🐷
          * - make ".render" method optional (undefined ===> [.renderNull])
          */
-
-        state.body.render = exists ? (Util.renderNull as any) : body;
-        state.backdrop.render = exists ? (Util.renderNull as any) : backdrop;
+        // state.body.render = exists ? (Util.renderNull as any) : body;
+        // state.backdrop.render = exists ? (Util.renderNull as any) : backdrop;
       });
     });
 
-    e.select((config) => {
-      config
-        .title('body.show')
-        .items(['Hidden', 'CommandBar', 'FullScreen'])
-        .initial('CommandBar')
-        .view('buttons')
-        .pipe(async (e) => {
-          if (e.changing) {
-            const next = e.changing?.next[0].value;
-            await e.ctx.events.state.patch((state) => (state.body.show = next));
-          }
-        });
-    });
+    // e.select((config) => {
+    //   config
+    //     .title('body.show')
+    //     .items(['Hidden', 'CommandBar', 'FullScreen'])
+    //     .initial('CommandBar')
+    //     .view('buttons')
+    //     .pipe(async (e) => {
+    //       if (e.changing) {
+    //         const next = e.changing?.next[0].value;
+    //         await e.ctx.events.state.patch((state) => (state.body.show = next));
+    //       }
+    //     });
+    // });
 
     e.hr();
   })

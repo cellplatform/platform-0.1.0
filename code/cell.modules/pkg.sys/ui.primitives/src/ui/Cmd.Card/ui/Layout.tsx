@@ -10,6 +10,7 @@ import { BodyMemo } from './Body';
 export type CmdCardLayoutProps = {
   instance: t.CmdCardInstance;
   state: t.CmdCardState;
+  body?: JSX.Element;
   borderRadius?: number | string;
   resize?: t.ResizeObserverHook;
   tray?: JSX.Element;

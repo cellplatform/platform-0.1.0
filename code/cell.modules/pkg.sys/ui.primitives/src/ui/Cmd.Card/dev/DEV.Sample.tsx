@@ -33,7 +33,7 @@ export const DevSample: React.FC<DevSampleProps> = (args) => {
  */
 function SampleController(args: t.CmdCardControllerArgs) {
   const initial = CmdCard.defaultState({
-    body: { render: SampleRenderers.body },
+    // body: { render: SampleRenderers.body },
     backdrop: { render: SampleRenderers.backdrop },
   });
 

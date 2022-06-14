@@ -31,5 +31,5 @@ export {
 /**
  * @local
  */
-export * from '../../ui/LocalPeerCard';
+export * from '../../ui/LocalPeer.Card';
 export * from '../../ui.hooks';

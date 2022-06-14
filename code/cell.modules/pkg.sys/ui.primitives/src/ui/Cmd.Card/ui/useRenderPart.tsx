@@ -63,7 +63,7 @@ export function useRenderPart<S extends O = O>(
     part,
     props,
     render(): JSX.Element | undefined | null {
-      if (part === 'Body') return state.body.render?.(props);
+      // if (part === 'Body') return state.body.render?.(props);
       if (part === 'Backdrop') return state.backdrop.render?.(props);
       return null;
     },
@@ -82,7 +82,6 @@ function toPart<S extends O>(state: t.CmdCardState, part: t.CmdCardPart): S {
     return state as S;
   };
 
-  if (part === 'Body') return done(state.body.state);
   if (part === 'Backdrop') return done(state.backdrop.state);
   throw new Error(`CmdCard part '${part}' not supported`);
 }

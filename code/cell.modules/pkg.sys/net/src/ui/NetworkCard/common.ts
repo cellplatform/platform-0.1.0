@@ -2,7 +2,7 @@ export * from '../common';
 export { PeerNetwork } from '../..';
 
 export { useLocalPeer } from '../../ui.hooks';
-export { LocalPeerCard } from '../LocalPeerCard';
+export { LocalPeerCard } from '../LocalPeer.Card';
 
 /**
  * @system

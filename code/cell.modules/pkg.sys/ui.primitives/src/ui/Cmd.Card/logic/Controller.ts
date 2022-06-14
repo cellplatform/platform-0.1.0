@@ -1,8 +1,6 @@
 import { CmdBar, Json, t, time } from '../common';
 import { CmdCardEvents } from '../logic';
 
-type O = Record<string, unknown>;
-
 /**
  * State controller for the <CmdCard>.
  */
