@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 import { CrdtBus } from 'sys.data.crdt';
 import { CrdtDocEvents } from 'sys.data.crdt/lib/types';
 
-import { Button, Card, CardBody, css, CssValue, ObjectView, t } from './DEV.common';
+import { Button, Card, CardBody, css, CssValue, ObjectView, t } from './common';
 
 export type DevCrdtCardProps = {
   instance: { network: t.PeerNetwork; id: t.Id };

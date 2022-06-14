@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { COLORS, css, CssValue } from './DEV.common';
+import { COLORS, css, CssValue } from './common';
 
 export type DevBackgroundProps = { style?: CssValue };
 

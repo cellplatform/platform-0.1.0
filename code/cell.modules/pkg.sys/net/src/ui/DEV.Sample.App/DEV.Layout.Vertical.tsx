@@ -1,5 +1,5 @@
 import React from 'react';
-import { Color, css, CssValue, t } from './DEV.common';
+import { Color, css, CssValue, t } from './common';
 
 export type DevLayoutVerticalProps = {
   above?: React.ReactNode;

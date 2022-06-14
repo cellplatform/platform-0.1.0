@@ -28,7 +28,7 @@ export { EventBridge } from '../DEV.Sample/DEV.event';
  * Constants
  */
 export const VIEWS: t.DevViewKind[] = ['URI', 'Single', 'Collection'];
-import { CHILD_KINDS } from '../NetworkCard/dev/DEV.common';
+import { CHILD_KINDS } from '../NetworkCard/dev/common';
 
 const VIEW: t.DevViewKind = 'Collection';
 const DEFAULT = { VIEW };

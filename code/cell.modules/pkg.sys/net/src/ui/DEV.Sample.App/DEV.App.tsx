@@ -19,7 +19,7 @@ import {
   rx,
   Spinner,
   t,
-} from './DEV.common';
+} from './common';
 import { DevEventLog } from './DEV.EventLog';
 import { DevModule } from './DEV.Module';
 import { DevOverlay } from './DEV.Overlay';

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, rx, t } from './DEV.common';
+import { css, CssValue, rx, t } from './common';
 import { DevVideos } from './DEV.Videos';
 
 export type DevTrayProps = {

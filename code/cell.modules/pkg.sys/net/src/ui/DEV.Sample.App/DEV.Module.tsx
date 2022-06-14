@@ -1,7 +1,7 @@
 import React from 'react';
 import { Module } from 'sys.runtime.web.ui/lib/ui/Module';
 
-import { css, CssValue, t } from './DEV.common';
+import { css, CssValue, t } from './common';
 
 export type DevModuleProps = {
   bus: t.EventBus<any>;

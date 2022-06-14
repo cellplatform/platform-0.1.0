@@ -11,7 +11,7 @@ import {
   t,
   useResizeObserver,
   VideoStream,
-} from './DEV.common';
+} from './common';
 
 export type DevVideoCardProps = {
   instance: { network: t.PeerNetwork; id: t.Id };

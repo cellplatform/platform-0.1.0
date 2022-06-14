@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { DevSampleApp, DevSampleAppProps } from '..';
-import { t } from '../DEV.common';
+import { t } from '../common';
 
 type Ctx = {
   self: string;

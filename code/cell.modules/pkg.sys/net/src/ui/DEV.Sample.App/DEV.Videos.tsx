@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, R, rx, t, VideoStream } from './DEV.common';
+import { css, CssValue, R, rx, t, VideoStream } from './common';
 
 export type DevVideosProps = {
   instance: { network: t.PeerNetwork; id: t.Id };

@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { DevVideoCard } from './DEV.Card.Video';
-import { CmdBar, css, LocalPeerCard, PeerNetwork, rx, t } from './DEV.common';
+import { CmdBar, css, LocalPeerCard, PeerNetwork, rx, t } from './common';
 
 /**
  * Hooks

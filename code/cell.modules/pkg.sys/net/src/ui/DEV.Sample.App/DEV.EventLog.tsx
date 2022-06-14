@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, EventList, rx, t } from './DEV.common';
+import { css, CssValue, EventList, rx, t } from './common';
 import { DevLayoutVertical } from './DEV.Layout.Vertical';
 
 export type DevEventLogProps = {

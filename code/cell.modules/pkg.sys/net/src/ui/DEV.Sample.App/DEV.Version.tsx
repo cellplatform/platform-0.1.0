@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Button, css, CssValue, WebRuntime, COLORS, Color, Icons } from './DEV.common';
+import { Button, css, CssValue, WebRuntime, COLORS, Color, Icons } from './common';
 
 export type DevVersionProps = { style?: CssValue };
 

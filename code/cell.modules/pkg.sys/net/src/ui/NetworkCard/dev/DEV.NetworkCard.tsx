@@ -3,7 +3,7 @@ import React from 'react';
 import { NetworkCard } from '../NetworkCard';
 import { DevCardPlaceholder } from './DEV.Card.Placeholder';
 import { DevChild } from './DEV.Child';
-import { CssValue, t } from './DEV.common';
+import { CssValue, t } from './common';
 import { useDevController } from './DEV.useController';
 
 export type DevNetworkCardProps = {

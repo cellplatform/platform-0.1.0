@@ -4,7 +4,7 @@ import { DevCrdtCard } from './DEV.Card.Crdt';
 import { DevFsCard } from './DEV.Card.Fs';
 import { DevCardPlaceholder } from './DEV.Card.Placeholder';
 import { DevVideoCard } from './DEV.Card.Video';
-import { css, t } from './DEV.common';
+import { css, t } from './common';
 
 export type DevChildProps = {
   instance: { network: t.PeerNetwork; id: t.Id };

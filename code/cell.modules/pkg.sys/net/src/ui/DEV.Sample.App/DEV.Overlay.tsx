@@ -1,5 +1,5 @@
 import React from 'react';
-import { rx, color, COLORS, css, CssValue, t, Icons, Button } from './DEV.common';
+import { rx, color, COLORS, css, CssValue, t, Icons, Button } from './common';
 
 type Pixels = number;
 

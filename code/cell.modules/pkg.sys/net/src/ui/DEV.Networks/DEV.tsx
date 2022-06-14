@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { DevActions, ObjectView, TEST } from '../../test';
-import { color, COLORS, css, DevConstants } from './DEV.common';
+import { color, COLORS, css, DevConstants } from './common';
 import { DevSample, DevSampleProps } from './DEV.Sample';
 
 const IMAGE = {

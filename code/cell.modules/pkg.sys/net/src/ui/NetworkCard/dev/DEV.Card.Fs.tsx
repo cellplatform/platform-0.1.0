@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t, Card, CardBody } from './DEV.common';
+import { color, css, CssValue, t, Card, CardBody } from './common';
 
 export type DevFsCardProps = {
   instance: { network: t.PeerNetwork; id: t.Id };

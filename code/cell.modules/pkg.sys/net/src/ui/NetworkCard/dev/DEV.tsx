@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { NetworkCardProps } from '..';
-import { t, TEST, slug, CHILD_KINDS, rx } from './DEV.common';
+import { t, TEST, slug, CHILD_KINDS, rx } from './common';
 import { DevNetworkCard } from './DEV.NetworkCard';
 
 type Ctx = {

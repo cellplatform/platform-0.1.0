@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Color, COLORS, css, CssValue, Icons } from './DEV.common';
+import { Button, Color, COLORS, css, CssValue, Icons } from './common';
 
 export type DevButtonFullscreenProps = {
   isFullscreen: boolean;
