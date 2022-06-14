@@ -44,13 +44,13 @@ export const actions = DevActions<Ctx>()
     e.title('Props');
 
     e.select((config) => {
+      const items = ['default', 'custom', 'custom (long)', 'none (null)'];
       config
-        .title('title')
-        .initial('default')
         .view('buttons')
-        .items(['default', 'custom', 'custom (long)', 'none (null)'])
+        .initial(items[0])
+        .items(items.map((value) => ({ label: `title: ${value}`, value })))
         .pipe((e) => {
-          const current = e.select.current[0]?.value; // NB: always first.
+          const current = e.select.current[0]?.value;
 
           if (current === 'default') e.ctx.title = undefined;
           if (current === 'custom') e.ctx.title = 'My Title';

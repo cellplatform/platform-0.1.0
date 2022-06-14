@@ -35,7 +35,8 @@ const View: V = (props) => {
   } = props;
   const title = props.title === null ? undefined : props.title ?? 'Network';
 
-  const [, setCount] = useState<number>(0);
+  const [peerText, setPeerText] = useState('');
+  const [, setCount] = useState(0);
   const redraw = () => setCount((prev) => prev + 1);
   const local = useLocalPeer({ bus, self });
   const status = local.status;
@@ -75,9 +76,11 @@ const View: V = (props) => {
 
   const elConnect = fields.includes('Connection.Open') && (
     <CmdTextbox
+      text={peerText}
       style={styles.textbox}
       placeholder={'open connection'}
       onAction={(e) => startConnection(e.text)}
+      onChange={(e) => setPeerText(e.to)}
     />
   );
 
