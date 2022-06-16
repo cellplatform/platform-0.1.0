@@ -29,17 +29,8 @@ const View: React.FC<TextInputProps> = (props) => {
 
   const events = Event.useEventsRef(() => TextInputEvents({ instance }));
 
-  /**
-   * Ensure local state is up to date.
-   * NB: The [localState] value is maintained to ensure that carot position
-   *     is gracefully maintained if the outer property is updated asyncronously (HACK)
-   */
-  const valueProp = Util.value.format({ value: props.value, maxLength });
-  const [valueState, setValueState] = useState(valueProp);
-  const hasValue = valueState.length > 0;
-  useEffect(() => {
-    if (valueProp !== valueState) setValueState(valueProp);
-  }, [valueProp]); // eslint-disable-line
+  const value = Util.value.format({ value: props.value, maxLength });
+  const hasValue = value.length > 0;
 
   /**
    * [Lifecycle]
@@ -48,7 +39,7 @@ const View: React.FC<TextInputProps> = (props) => {
     const { autoSize } = props;
     if (autoSize) time.delay(0, () => setWidth(Util.css.toWidth(props))); // NB: Delay is so size measurement returns accurate number.
     if (!autoSize) setWidth(undefined);
-  }, [valueState, props.autoSize]); // eslint-disable-line
+  }, [value, props.autoSize]); // eslint-disable-line
 
   /**
    * [Handlers]
@@ -74,7 +65,6 @@ const View: React.FC<TextInputProps> = (props) => {
     if (isCancelled) return;
 
     // Fire AFTER event.
-    setValueState(e.to);
     fire({ type: 'sys.ui.TextInput/Changed', payload: e });
     props.onChange?.(e);
   };
@@ -134,7 +124,7 @@ const View: React.FC<TextInputProps> = (props) => {
       {...css(valueStyle, styles.placeholder, styles.readonly)}
       onDoubleClick={labelDoubleClickHandler('ReadOnly')}
     >
-      {valueProp}
+      {value}
     </div>
   );
 
@@ -147,7 +137,7 @@ const View: React.FC<TextInputProps> = (props) => {
       isEnabled={isEnabled}
       isPassword={isPassword}
       disabledOpacity={disabledOpacity}
-      value={valueState}
+      value={value}
       maxLength={props.maxLength}
       mask={props.mask}
       valueStyle={valueStyle}
@@ -172,12 +162,7 @@ const View: React.FC<TextInputProps> = (props) => {
   );
 
   const elHint = hasValue && props.hint && (
-    <TextInputHint
-      isEnabled={isEnabled}
-      valueStyle={valueStyle}
-      value={valueState}
-      hint={props.hint}
-    />
+    <TextInputHint isEnabled={isEnabled} valueStyle={valueStyle} value={value} hint={props.hint} />
   );
 
   return (

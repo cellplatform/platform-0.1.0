@@ -5,7 +5,7 @@ import { t } from '../common';
 
 export type DevSampleProps = {
   props: t.TextInputProps;
-  debug: { hint: boolean };
+  debug: { hint: boolean; updateHandlerEnabled: boolean };
 };
 
 export const DevSample: React.FC<DevSampleProps> = (args) => {
@@ -26,8 +26,10 @@ export const DevSample: React.FC<DevSampleProps> = (args) => {
       hint={hint}
       style={{ flex: 1 }}
       onChange={(e) => {
-        setValue(e.to);
-        if (debug.hint) setHint(Util.lookupHint(e.to ?? ''));
+        if (debug.updateHandlerEnabled) {
+          setValue(e.to);
+          if (debug.hint) setHint(Util.lookupHint(e.to ?? ''));
+        }
       }}
     />
   );

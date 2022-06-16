@@ -12,7 +12,9 @@ type Ctx = {
     isNumericMask: boolean;
     status?: t.TextInputStatus;
     hint: boolean;
+    updateHandlerEnabled: boolean;
   };
+  output: { status?: t.TextInputStatus };
 };
 
 /**
@@ -22,7 +24,6 @@ export const actions = DevActions<Ctx>()
   .namespace('ui.Text.Input')
   .context((e) => {
     if (e.prev) return e.prev;
-    const change = e.change;
 
     const instance = { bus: rx.bus(), id: `foo.${slug()}` };
     const events = TextInput.Events({ instance });
@@ -43,7 +44,8 @@ export const actions = DevActions<Ctx>()
         spellCheck: false,
       },
 
-      debug: { render: true, isNumericMask: false, hint: true },
+      debug: { render: true, isNumericMask: false, hint: true, updateHandlerEnabled: true },
+      output: {},
     };
     return ctx;
   })
@@ -174,6 +176,11 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.debug.hint;
     });
 
+    e.boolean('update handler enabled', (e) => {
+      if (e.changing) e.ctx.debug.updateHandlerEnabled = e.changing.next;
+      e.boolean.current = e.ctx.debug.updateHandlerEnabled;
+    });
+
     e.hr(1, 0.1);
 
     e.component((e) => {
@@ -194,7 +201,7 @@ export const actions = DevActions<Ctx>()
       return (
         <ObjectView
           name={'status'}
-          data={e.ctx.debug.status}
+          data={e.ctx.output.status}
           style={{ MarginX: 15 }}
           fontSize={10}
           expandPaths={['$']}
