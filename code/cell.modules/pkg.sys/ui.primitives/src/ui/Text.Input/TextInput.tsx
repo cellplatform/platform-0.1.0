@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 
+import { Event } from '../Event';
 import { css, DEFAULT, FC, rx, t, time } from './common';
 import { TextInputEvents, TextInputMasks } from './logic';
+import { TextInputHint } from './TextInput.Hint';
 import { HtmlInput } from './TextInput.Html';
 import { TextInputProps } from './types';
 import { Util } from './Util';
-import { Event } from '../Event';
 
 export { TextInputProps };
 
@@ -14,20 +15,31 @@ export { TextInputProps };
  */
 const View: React.FC<TextInputProps> = (props) => {
   const {
-    value = '',
     isPassword = false,
     isReadOnly = false,
     isEnabled = true,
     placeholder,
     valueStyle = DEFAULT.TEXT.STYLE,
     disabledOpacity = DEFAULT.DISABLED_OPACITY,
+    maxLength,
   } = props;
 
   const instance: t.TextInputInstance = props.instance ?? { bus: rx.bus(), id: 'default' };
-  const hasValue = value.length > 0;
   const [width, setWidth] = useState<string | number | undefined>();
 
   const events = Event.useEventsRef(() => TextInputEvents({ instance }));
+
+  /**
+   * Ensure local state is up to date.
+   * NB: The [localState] value is maintained to ensure that carot position
+   *     is gracefully maintained if the outer property is updated asyncronously (HACK)
+   */
+  const valueProp = Util.value.format({ value: props.value, maxLength });
+  const [valueState, setValueState] = useState(valueProp);
+  const hasValue = valueState.length > 0;
+  useEffect(() => {
+    if (valueProp !== valueState) setValueState(valueProp);
+  }, [valueProp]); // eslint-disable-line
 
   /**
    * [Lifecycle]
@@ -36,7 +48,7 @@ const View: React.FC<TextInputProps> = (props) => {
     const { autoSize } = props;
     if (autoSize) time.delay(0, () => setWidth(Util.css.toWidth(props))); // NB: Delay is so size measurement returns accurate number.
     if (!autoSize) setWidth(undefined);
-  }, [value, props.autoSize]); // eslint-disable-line
+  }, [valueState, props.autoSize]); // eslint-disable-line
 
   /**
    * [Handlers]
@@ -62,6 +74,7 @@ const View: React.FC<TextInputProps> = (props) => {
     if (isCancelled) return;
 
     // Fire AFTER event.
+    setValueState(e.to);
     fire({ type: 'sys.ui.TextInput/Changed', payload: e });
     props.onChange?.(e);
   };
@@ -98,6 +111,7 @@ const View: React.FC<TextInputProps> = (props) => {
       whiteSpace: 'nowrap',
       overflow: 'hidden',
       userSelect: 'none',
+      pointerEvents: 'none',
     },
     readonly: { userSelect: 'auto' },
     input: {
@@ -120,7 +134,7 @@ const View: React.FC<TextInputProps> = (props) => {
       {...css(valueStyle, styles.placeholder, styles.readonly)}
       onDoubleClick={labelDoubleClickHandler('ReadOnly')}
     >
-      {value}
+      {valueProp}
     </div>
   );
 
@@ -133,11 +147,10 @@ const View: React.FC<TextInputProps> = (props) => {
       isEnabled={isEnabled}
       isPassword={isPassword}
       disabledOpacity={disabledOpacity}
-      value={value}
+      value={valueState}
       maxLength={props.maxLength}
       mask={props.mask}
       valueStyle={valueStyle}
-      selectOnFocus={props.selectOnFocus}
       focusOnLoad={props.focusOnLoad}
       focusAction={props.focusAction}
       onKeyPress={props.onKeyPress}
@@ -158,6 +171,15 @@ const View: React.FC<TextInputProps> = (props) => {
     />
   );
 
+  const elHint = hasValue && props.hint && (
+    <TextInputHint
+      isEnabled={isEnabled}
+      valueStyle={valueStyle}
+      value={valueState}
+      hint={props.hint}
+    />
+  );
+
   return (
     <div
       {...css(styles.base, props.style)}
@@ -170,6 +192,7 @@ const View: React.FC<TextInputProps> = (props) => {
       onMouseLeave={props.onMouseLeave}
     >
       <div {...css(styles.inner)}>
+        {elHint}
         {elPlaceholder}
         {elReadOnly}
         {elInput}

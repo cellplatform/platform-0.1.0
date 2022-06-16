@@ -1,12 +1,18 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { TextInput, TextInputProps } from '..';
-import { t, rx, slug } from '../common';
+import { TextInput } from '..';
+import { t, rx, slug, time } from '../common';
+import { DevSample } from './DEV.Sample';
 
 type Ctx = {
   events: t.TextInputEvents;
-  props: TextInputProps;
-  debug: { render: boolean; isNumericMask: boolean };
+  props: t.TextInputProps;
+  debug: {
+    render: boolean;
+    isNumericMask: boolean;
+    status?: t.TextInputStatus;
+    hint: boolean;
+  };
 };
 
 /**
@@ -29,19 +35,15 @@ export const actions = DevActions<Ctx>()
         placeholder: 'my placeholder',
         placeholderStyle: { italic: true, opacity: 0.3 },
         focusOnLoad: true,
-        focusAction: 'Select',
 
         autoCapitalize: false,
         autoComplete: false,
         autoCorrect: false,
         autoSize: false,
-
-        onChange(e) {
-          change.ctx((ctx) => (ctx.props.value = e.to));
-        },
+        spellCheck: false,
       },
 
-      debug: { render: true, isNumericMask: false },
+      debug: { render: true, isNumericMask: false, hint: true },
     };
     return ctx;
   })
@@ -55,11 +57,25 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
+    e.boolean('render', (e) => {
+      if (e.changing) e.ctx.debug.render = e.changing.next;
+      e.boolean.current = e.ctx.debug.render;
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
     e.title('Props');
 
     e.boolean('isEnabled', (e) => {
       if (e.changing) e.ctx.props.isEnabled = e.changing.next;
       e.boolean.current = e.ctx.props.isEnabled;
+    });
+
+    e.boolean('focusAction: "Select"', (e) => {
+      if (e.changing) e.ctx.props.focusAction = e.changing.next ? 'Select' : undefined;
+      e.boolean.current = Boolean(e.ctx.props.focusAction);
     });
 
     e.hr(1, 0.1);
@@ -111,6 +127,7 @@ export const actions = DevActions<Ctx>()
 
     e.button('⚡️ Status', async (e) => {
       const res = await e.ctx.events.status.get();
+      e.ctx.debug.status = res.status;
       console.group('🌳 Status');
       console.log('status', res.status);
       console.log('size', res.status?.size);
@@ -144,9 +161,17 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Debug');
 
-    e.boolean('render', (e) => {
-      if (e.changing) e.ctx.debug.render = e.changing.next;
-      e.boolean.current = e.ctx.debug.render;
+    let valueCounter = 0;
+    e.button('change: value', (e) => {
+      const focus = e.ctx.events.focus.fire;
+      valueCounter++;
+      e.ctx.props.value = `value-${valueCounter}`;
+      time.delay(0, () => focus());
+    });
+
+    e.boolean('hint (auto-complete)', (e) => {
+      if (e.changing) e.ctx.debug.hint = e.changing.next;
+      e.boolean.current = e.ctx.debug.hint;
     });
 
     e.hr(1, 0.1);
@@ -162,10 +187,24 @@ export const actions = DevActions<Ctx>()
         />
       );
     });
+
+    e.hr(1, 0.1);
+
+    e.component((e) => {
+      return (
+        <ObjectView
+          name={'status'}
+          data={e.ctx.debug.status}
+          style={{ MarginX: 15 }}
+          fontSize={10}
+          expandPaths={['$']}
+        />
+      );
+    });
   })
 
   .subject((e) => {
-    const { props, debug } = e.ctx;
+    const { debug } = e.ctx;
 
     let mask: t.TextInputMaskHandler | undefined;
     if (debug.isNumericMask) mask = TextInput.Masks.isNumeric;
@@ -173,14 +212,15 @@ export const actions = DevActions<Ctx>()
     e.settings({
       host: { background: -0.04 },
       layout: {
-        label: '<TextInput>',
-        width: props.autoSize ? undefined : 200,
+        width: e.ctx.props.autoSize ? undefined : 200,
         cropmarks: -0.2,
       },
     });
 
-    const el = debug.render && <TextInput {...props} mask={mask} style={{ flex: 1 }} />;
-    e.render(el);
+    if (debug.render) {
+      const props = { ...e.ctx.props, mask };
+      e.render(<DevSample props={props} debug={debug} />);
+    }
   });
 
 export default actions;

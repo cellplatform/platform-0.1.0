@@ -1,5 +1,4 @@
-import React, { useEffect, useRef } from 'react';
-import { Subject } from 'rxjs';
+import React, { useEffect, useRef, useState } from 'react';
 import { takeUntil } from 'rxjs/operators';
 
 import { useFocus } from '../../hooks/Focus';
@@ -34,6 +33,7 @@ export type HtmlInputProps = t.TextInputFocusAction &
  */
 export const HtmlInput: React.FC<HtmlInputProps> = (props) => {
   const {
+    value = '',
     events,
     isEnabled = true,
     disabledOpacity = 0.2,
@@ -44,7 +44,6 @@ export const HtmlInput: React.FC<HtmlInputProps> = (props) => {
   } = props;
 
   const instance = props.instance.id;
-  const value = Util.value.format({ value: props.value, maxLength });
 
   const inputRef = useRef<HTMLInputElement>(null);
   const focusState = useFocus(inputRef, { redraw: false });
@@ -53,42 +52,50 @@ export const HtmlInput: React.FC<HtmlInputProps> = (props) => {
   const cloneModifierKeys = () => ({ ...keyboard.state.current.modifiers });
 
   /**
-   * [Lifecycle]
+   * [Lifecycle]: Cursor/focus controller
    */
   useEffect(() => {
-    const dispose$ = new Subject<void>();
+    const { dispose, dispose$ } = rx.disposable();
 
     events.focus.$.pipe(takeUntil(dispose$)).subscribe((e) => {
       if (e.focus) focus();
       if (!e.focus) blur();
     });
+
     events.cursor.$.pipe(takeUntil(dispose$)).subscribe((e) => {
       if (e.action === 'Cursor:Start') cursorToStart();
       if (e.action === 'Cursor:End') cursorToEnd();
     });
+
     events.select.$.pipe(takeUntil(dispose$)).subscribe((e) => {
       selectAll();
     });
 
     if (props.focusOnLoad) time.delay(0, () => focus());
 
-    return () => rx.done(dispose$);
+    return dispose;
   }, []); // eslint-disable-line
 
+  /**
+   * [Lifecycle]: Status response controller.
+   */
   useEffect(() => {
+    const { dispose, dispose$ } = rx.disposable();
+
     const toStatus = (): t.TextInputStatus => {
       const input = inputRef.current;
       const size = { width: input?.offsetWidth ?? -1, height: input?.offsetHeight ?? -1 };
+      const selection = { start: input?.selectionStart ?? -1, end: input?.selectionEnd ?? -1 };
       return {
         instance: events.instance,
         focused: focusState.withinFocus,
         empty: value.length === 0,
         value,
         size,
+        selection,
       };
     };
 
-    const dispose$ = new Subject<void>();
     events.status.req$.pipe(takeUntil(dispose$)).subscribe((e) => {
       const { tx } = e;
       fire({
@@ -97,7 +104,7 @@ export const HtmlInput: React.FC<HtmlInputProps> = (props) => {
       });
     });
 
-    return () => rx.done(dispose$);
+    return dispose;
   }, [value]); // eslint-disable-line
 
   /**
@@ -163,10 +170,12 @@ export const HtmlInput: React.FC<HtmlInputProps> = (props) => {
   };
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    const { focusAction, onFocus, selectOnFocus } = props;
-    if (focusAction === 'Select' || selectOnFocus) selectAll();
+    const { focusAction, onFocus } = props;
+
+    if (focusAction === 'Select') selectAll();
     if (focusAction === 'Cursor:Start') cursorToStart();
     if (focusAction === 'Cursor:End') cursorToEnd();
+
     onFocus?.(e);
     fire({
       type: 'sys.ui.TextInput/Focus',
@@ -210,6 +219,7 @@ export const HtmlInput: React.FC<HtmlInputProps> = (props) => {
 
   const cursorToStart = () => {
     const el = inputRef.current as any;
+
     if (el) {
       el.focus();
       if (el.setSelectionRange) {
