@@ -33,6 +33,9 @@ export const actions = DevActions<Ctx>()
       props: {
         instance,
         isEnabled: true,
+        isReadOnly: false,
+        isPassword: false,
+
         placeholder: 'my placeholder',
         placeholderStyle: { italic: true, opacity: 0.3 },
         focusOnLoad: true,
@@ -51,7 +54,7 @@ export const actions = DevActions<Ctx>()
   })
 
   .init(async (e) => {
-    const { ctx, bus } = e;
+    const { ctx } = e;
 
     ctx.events.$.subscribe((e) => {
       // console.log('events.$:', e);
@@ -74,6 +77,18 @@ export const actions = DevActions<Ctx>()
       if (e.changing) e.ctx.props.isEnabled = e.changing.next;
       e.boolean.current = e.ctx.props.isEnabled;
     });
+
+    e.boolean('isReadOnly', (e) => {
+      if (e.changing) e.ctx.props.isReadOnly = e.changing.next;
+      e.boolean.current = e.ctx.props.isReadOnly;
+    });
+
+    e.boolean('isPassword', (e) => {
+      if (e.changing) e.ctx.props.isPassword = e.changing.next;
+      e.boolean.current = e.ctx.props.isPassword;
+    });
+
+    e.hr(1, 0.1);
 
     e.boolean('focusAction: "Select"', (e) => {
       if (e.changing) e.ctx.props.focusAction = e.changing.next ? 'Select' : undefined;

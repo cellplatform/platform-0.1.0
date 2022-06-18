@@ -1,10 +1,9 @@
 import React from 'react';
 
-import { COLORS, css, CssValue, t } from '../common';
+import { css, CssValue, t } from '../common';
 import { Util } from './Util';
 
 export type TextInputHintProps = {
-  isEnabled: boolean;
   valueStyle: t.TextInputStyle;
   value: string;
   hint: string | JSX.Element;
@@ -15,8 +14,9 @@ export type TextInputHintProps = {
  * Used for displaying an auto-complete "hint".
  */
 export const TextInputHint: React.FC<TextInputHintProps> = (props) => {
-  const { isEnabled, value, hint, valueStyle } = props;
+  const { value, hint, valueStyle } = props;
   const isString = typeof hint === 'string';
+  const fontProps = Util.css.pluckFont(valueStyle);
 
   /**
    * [Render]
@@ -26,15 +26,15 @@ export const TextInputHint: React.FC<TextInputHintProps> = (props) => {
       Absolute: 0,
       pointerEvents: 'none',
       boxSizing: 'border-box',
-      paddingTop: 1,
-      paddingLeft: 2,
-      Flex: 'x-start-start',
+      Flex: 'x-center-start',
     }),
     value: css({
-      ...Util.css.toTextInput(isEnabled, valueStyle),
-      color: COLORS.MAGENTA,
+      ...fontProps,
+      paddingLeft: 2,
+      opacity: 0, // NB: Hidden (placeholder that pushes out the "hint" to the right)
     }),
     hint: css({
+      ...fontProps,
       marginLeft: 1,
       opacity: isString ? 0.3 : 1,
     }),

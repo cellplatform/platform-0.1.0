@@ -141,31 +141,40 @@ export const Util = {
 
     pluckText(props: any) {
       const {
-        fontSize,
         color = -0.7,
-        fontWeight = 'NORMAL',
-        fontFamily = SYSTEM_FONT.SANS.FAMILY,
         align = 'LEFT',
         italic = false,
         opacity = 1,
-        letterSpacing,
-        lineHeight,
         textShadow,
         uppercase = false,
       } = props;
 
       return {
-        fontSize,
+        ...Util.css.pluckFont(props),
         color,
-        fontWeight,
-        fontFamily,
         align,
         italic,
         opacity,
-        letterSpacing,
-        lineHeight,
         textShadow,
         uppercase,
+      };
+    },
+
+    pluckFont(props: any) {
+      const {
+        fontSize,
+        fontWeight = 'NORMAL',
+        fontFamily = SYSTEM_FONT.SANS.FAMILY,
+        letterSpacing,
+        lineHeight,
+      } = props;
+
+      return {
+        fontSize,
+        fontWeight,
+        fontFamily,
+        letterSpacing,
+        lineHeight,
       };
     },
 

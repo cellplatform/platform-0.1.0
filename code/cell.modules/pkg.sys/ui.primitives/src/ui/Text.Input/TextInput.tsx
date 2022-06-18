@@ -90,13 +90,18 @@ const View: React.FC<TextInputProps> = (props) => {
    */
 
   const styles = {
-    base: { position: 'relative', boxSizing: 'border-box', width },
+    base: {
+      position: 'relative',
+      boxSizing: 'border-box',
+      lineHeight: 0,
+      width,
+    },
     inner: { position: 'relative' },
     placeholder: {
       Absolute: 0,
       opacity: isEnabled ? 1 : disabledOpacity,
       transition: `opacity 200ms`,
-      Flex: 'horizontal-center-start',
+      Flex: 'x-center-start',
       paddingLeft: 2, // Ensure the placeholder does not bump into the input-caret.
       whiteSpace: 'nowrap',
       overflow: 'hidden',
@@ -126,6 +131,10 @@ const View: React.FC<TextInputProps> = (props) => {
     >
       {value}
     </div>
+  );
+
+  const elHint = hasValue && props.hint && (
+    <TextInputHint valueStyle={valueStyle} value={value} hint={props.hint} />
   );
 
   const elInput = (
@@ -161,10 +170,6 @@ const View: React.FC<TextInputProps> = (props) => {
     />
   );
 
-  const elHint = hasValue && props.hint && (
-    <TextInputHint isEnabled={isEnabled} valueStyle={valueStyle} value={value} hint={props.hint} />
-  );
-
   return (
     <div
       {...css(styles.base, props.style)}
@@ -176,12 +181,10 @@ const View: React.FC<TextInputProps> = (props) => {
       onMouseEnter={props.onMouseEnter}
       onMouseLeave={props.onMouseLeave}
     >
-      <div {...css(styles.inner)}>
-        {elHint}
-        {elPlaceholder}
-        {elReadOnly}
-        {elInput}
-      </div>
+      {elHint}
+      {elPlaceholder}
+      {elReadOnly}
+      {elInput}
     </div>
   );
 };
