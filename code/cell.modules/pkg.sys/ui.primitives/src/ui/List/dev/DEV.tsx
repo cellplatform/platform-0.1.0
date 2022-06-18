@@ -99,8 +99,51 @@ export const actions = DevActions<Ctx>()
       if (e.changing) e.ctx.renderCtx.enabled = e.changing.next;
       e.boolean.current = e.ctx.renderCtx.enabled;
     });
-
     e.button('redraw', (e) => e.ctx.redraw());
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Items');
+    e.button('clear', (e) => (e.ctx.items = []));
+    e.hr(1, 0.1);
+
+    const Add = {
+      button(total: number, note?: string) {
+        e.button(`add (${note ?? total})`, (e) => Add.handler(e.ctx, total));
+      },
+      handler(ctx: Ctx, total: number) {
+        new Array(total).fill(ctx).forEach((ctx) => Util.addItem(ctx));
+      },
+    };
+
+    Add.button(1);
+    Add.button(10);
+    Add.button(100);
+    Add.button(10000, '10K');
+
+    e.hr(1, 0.1);
+
+    e.button('add (spacing: { before })', (e) => {
+      Util.addItem(e.ctx, { spacing: { before: 30 } });
+    });
+    e.button('add (spacing: { after })', (e) => {
+      Util.addItem(e.ctx, { spacing: { after: 30 } });
+    });
+    e.button('add (spacing: { before, after })', (e) => {
+      Util.addItem(e.ctx, { spacing: { before: 15, after: 30 } });
+    });
+
+    e.hr(1, 0.1);
+
+    e.button('remove: first', (e) => {
+      const items = e.ctx.items;
+      e.ctx.items = items?.slice(0, items.length - 1);
+    });
+    e.button('remove: last', (e) => {
+      const items = e.ctx.items;
+      e.ctx.items = items?.slice(items.length - 1);
+    });
 
     e.hr();
   })
@@ -312,51 +355,6 @@ export const actions = DevActions<Ctx>()
 
     e.button('⚡️ focus', (e) => time.delay(0, () => e.ctx.events.focus.fire()));
     e.button('⚡️ blur', (e) => time.delay(0, () => e.ctx.events.focus.fire(false)));
-    e.hr();
-  })
-
-  .items((e) => {
-    e.title('Items');
-    e.button('clear', (e) => (e.ctx.items = []));
-    e.hr(1, 0.1);
-
-    const Add = {
-      button(total: number, note?: string) {
-        e.button(`add (${note ?? total})`, (e) => Add.handler(e.ctx, total));
-      },
-      handler(ctx: Ctx, total: number) {
-        new Array(total).fill(ctx).forEach((ctx) => Util.addItem(ctx));
-      },
-    };
-
-    Add.button(1);
-    Add.button(10);
-    Add.button(100);
-    Add.button(10000, '10K');
-
-    e.hr(1, 0.1);
-
-    e.button('add (spacing: { before })', (e) => {
-      Util.addItem(e.ctx, { spacing: { before: 30 } });
-    });
-    e.button('add (spacing: { after })', (e) => {
-      Util.addItem(e.ctx, { spacing: { after: 30 } });
-    });
-    e.button('add (spacing: { before, after })', (e) => {
-      Util.addItem(e.ctx, { spacing: { before: 15, after: 30 } });
-    });
-
-    e.hr(1, 0.1);
-
-    e.button('remove: first', (e) => {
-      const items = e.ctx.items;
-      e.ctx.items = items?.slice(0, items.length - 1);
-    });
-    e.button('remove: last', (e) => {
-      const items = e.ctx.items;
-      e.ctx.items = items?.slice(items.length - 1);
-    });
-
     e.hr();
   })
 
