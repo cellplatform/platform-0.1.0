@@ -19,7 +19,7 @@ export type KeyboardHookArgs = {
 /**
  * Hook for working with the current/changing state of the keyboard.
  *
- * NOTE: Does not cause redraws.
+ * NOTE: Does NOT cause redraws.
  */
 export function useKeyboard(args: KeyboardHookArgs): t.KeyboardStateHook {
   const { instance = SINGLETON_INSTANCE } = args;
