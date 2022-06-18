@@ -9,8 +9,8 @@ import { NetworkCardTitlebar } from './ui/Titlebar';
 export type NetworkCardProps = {
   instance: { network: t.PeerNetwork; id: t.Id };
   child?: JSX.Element;
-  minimized?: boolean;
   tray?: JSX.Element;
+  minimized?: boolean;
   style?: CssValue;
   onExecuteCommand?: t.CmdCardExecuteCommandHandler;
 };
@@ -18,11 +18,9 @@ export type NetworkCardProps = {
 export const NetworkCard: React.FC<NetworkCardProps> = (props) => {
   const { child, instance, onExecuteCommand, minimized } = props;
   const { bus } = instance.network;
-  const id = instance.id;
 
   const card = CmdCard.useController({
-    instance: { bus, id },
-    initial: CmdCard.defaultState({ body: { render: () => elBody } }),
+    instance: { bus, id: instance.id },
     onExecuteCommand,
   });
 
@@ -55,21 +53,20 @@ export const NetworkCard: React.FC<NetworkCardProps> = (props) => {
 
   const elRoot = (
     <CmdCard
-      instance={{ bus, id }}
+      {...card.props}
       style={styles.root}
-      state={card.state}
       minimized={minimized}
+      body={elBody}
       tray={props.tray}
     />
   );
-  const elChild = child && isReady && (
-    <NetworkCardChild style={styles.child}>{child}</NetworkCardChild>
-  );
+
+  const elChild = child && <NetworkCardChild style={styles.child}>{child}</NetworkCardChild>;
 
   return (
     <div {...css(styles.base, props.style)}>
-      {elRoot}
-      {elChild}
+      {isReady && elRoot}
+      {isReady && elChild}
     </div>
   );
 };

@@ -3,14 +3,11 @@ import { Harness } from 'sys.ui.dev';
 import { t } from './common';
 
 const imports = {
-  hookDragTarget: import('./hooks/DragTarget/dev/DEV'),
-  hookUIEvents: import('./hooks/UIEvent/dev/DEV'),
-
-  Keyboard: import('./keyboard/dev/DEV'),
-
-  Bullet: import('./ui/Bullet/dev/DEV'),
   List: import('./ui/List/dev/DEV'),
   ListConnectorLines: import('./ui/List/dev/DEV.ConnectorLines'),
+  Bullet: import('./ui/Bullet/dev/DEV'),
+
+  Keyboard: import('./keyboard/dev/DEV'),
 
   Antechamber: import('./ui/Antechamber/dev/DEV'),
   DotTabstrip: import('./ui/DotTabstrip/dev/DEV'),
@@ -62,6 +59,15 @@ const imports = {
   TextSecret: import('./ui/Text.Secret/dev/DEV'),
   TextInput: import('./ui/Text.Input/dev/DEV'),
 
+  /**
+   * Hooks
+   */
+  hookDragTarget: import('./hooks/DragTarget/dev/DEV'),
+  hookUIEvents: import('./hooks/UIEvent/dev/DEV'),
+
+  /**
+   * Tests
+   */
   UnitTests: import('./Dev.UnitTests'),
 };
 

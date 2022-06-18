@@ -27,8 +27,8 @@ export const DevNetworkCard: React.FC<DevNetworkCardProps> = (props) => {
       instance={instance}
       child={elChild || ctrl.child}
       style={props.style}
-      minimized={minimized}
       tray={props.tray}
+      minimized={minimized}
       onExecuteCommand={props.onExecuteCommand}
     />
   );
