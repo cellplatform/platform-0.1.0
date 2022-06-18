@@ -5,13 +5,6 @@ import { rx, t, R } from '../../common';
  */
 export const Util = {
   /**
-   * Render nothing.
-   */
-  renderNull(): JSX.Element | null {
-    return null;
-  },
-
-  /**
    * State helpers.
    */
   state: {
@@ -21,15 +14,6 @@ export const Util = {
     default(partial?: t.PartialDeep<t.CmdCardState>): t.CmdCardState {
       const base: t.CmdCardState = {
         ready: false,
-        // body: {
-        //   render: Util.renderNull,
-        //   state: {} as any,
-        //   show: 'CommandBar',
-        // },
-        backdrop: {
-          render: Util.renderNull,
-          state: {} as any,
-        },
         commandbar: {
           text: '',
           textbox: { pending: false, spinning: false, placeholder: 'command' },

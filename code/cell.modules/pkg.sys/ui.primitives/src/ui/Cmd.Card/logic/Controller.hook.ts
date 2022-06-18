@@ -6,7 +6,6 @@ import { CmdCardController } from './Controller';
 
 export type UseCmdCardControllerArgs = t.CmdCardControllerArgs & {
   enabled?: boolean;
-  controller?: (args: t.CmdCardControllerArgs) => t.CmdCardEventsDisposable; // Wrapper controller (the call-site's behavioral logic)
   onChange?: (e: t.CmdCardState) => void;
   onExecuteCommand?: t.CmdCardExecuteCommandHandler;
 };
@@ -24,10 +23,7 @@ export function useCmdCardController(args: UseCmdCardControllerArgs) {
    * [Lifecycle]
    */
   useEffect(() => {
-    const events =
-      typeof args.controller === 'function'
-        ? args.controller(args)
-        : CmdCardController({ instance, initial: state });
+    const events = CmdCardController({ instance, initial: state });
 
     events.state.$.pipe(filter(() => enabled)).subscribe((next) => {
       setState(next.value);
@@ -41,12 +37,19 @@ export function useCmdCardController(args: UseCmdCardControllerArgs) {
     return () => events.dispose();
   }, [instance.id, busid, enabled]); // eslint-disable-line
 
+  const props: t.CmdCardProps = {
+    instance,
+    commandbar: state?.commandbar,
+  };
+
   /**
-   * API
+   * [API]
    */
   return {
     instance: { bus: busid, id: instance.id },
+    ready: Boolean(state?.ready),
     enabled,
     state,
+    props,
   };
 }

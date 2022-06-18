@@ -1,12 +1,11 @@
 import React from 'react';
 
-import { FC, t, CssValue, css, DEFAULT, useResizeObserver, Util, CmdBar } from './common';
-import { CmdCardLayout, CmdCardLayoutProps } from './ui/Layout';
-import { CmdCardEvents, CmdCardController, useCmdCardController } from './logic';
-import { CmdStateInfo } from './ui/Info';
-
 import { Card } from '../Card';
+import { CmdBar, css, DEFAULT, FC, Util } from './common';
+import { CmdCardController, CmdCardEvents, useCmdCardController } from './logic';
 import { CmdCardProps } from './types';
+import { CmdStateInfo } from './ui/Info';
+import { CmdCardLayout, CmdCardLayoutProps } from './ui/Layout';
 
 /**
  * Types
@@ -18,35 +17,25 @@ export { CmdCardProps };
  */
 const View: React.FC<CmdCardProps> = (props) => {
   const { instance, showAsCard = true } = props;
-  const state = props.state ?? Util.state.default();
-  const resize = useResizeObserver();
 
   /**
    * [Render]
    */
   const radius = showAsCard ? 4 : 0;
   const styles = {
-    base: css({
-      visibility: resize.ready ? 'visible' : 'hidden',
-      display: 'flex',
-    }),
+    base: css({ display: 'flex' }),
     layout: css({ flex: 1 }),
   };
 
   return (
-    <Card
-      ref={resize.ref}
-      showAsCard={showAsCard}
-      border={{ radius }}
-      style={css(styles.base, props.style)}
-    >
+    <Card showAsCard={showAsCard} border={{ radius }} style={css(styles.base, props.style)}>
       <CmdCardLayout
         instance={instance}
-        state={state}
+        commandbar={props.commandbar}
         style={styles.layout}
         borderRadius={radius - 1}
-        resize={resize}
         tray={props.tray}
+        body={props.body}
         minimized={props.minimized}
       />
     </Card>

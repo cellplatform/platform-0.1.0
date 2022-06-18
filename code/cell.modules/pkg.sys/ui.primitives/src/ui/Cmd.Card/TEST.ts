@@ -52,25 +52,25 @@ export default Test.describe('Cmd.Card', (e) => {
         dispose();
       });
 
-      e.it('patch', async () => {
-        const { dispose, events } = Setup.controller();
-        await events.state.patch((prev) => (prev.commandbar.text = 'hello'));
-        expect((await events.state.get()).value?.commandbar.text).to.eql('hello');
-        dispose();
-      });
+      // e.it('patch', async () => {
+      //   const { dispose, events } = Setup.controller();
+      //   await events.state.patch((prev) => (prev.commandbar.text = 'hello'));
+      //   expect((await events.state.get()).value?.commandbar.text).to.eql('hello');
+      //   dispose();
+      // });
 
-      e.it('state$ (Observable)', async () => {
-        const { dispose, events } = Setup.controller();
+      // e.it('state$ (Observable)', async () => {
+      //   const { dispose, events } = Setup.controller();
 
-        const fired: t.CmdCardState[] = [];
-        events.state.$.subscribe((e) => fired.push(e.value));
+      //   const fired: t.CmdCardState[] = [];
+      //   events.state.$.subscribe((e) => fired.push(e.value));
 
-        await events.state.patch((prev) => (prev.commandbar.text = 'hello'));
-        expect(fired.length).to.eql(2);
-        expect(fired[1].commandbar.text).to.eql('hello');
+      //   await events.state.patch((prev) => (prev.commandbar.text = 'hello'));
+      //   expect(fired.length).to.eql(2);
+      //   expect(fired[1].commandbar.text).to.eql('hello');
 
-        dispose();
-      });
+      //   dispose();
+      // });
     });
   });
 

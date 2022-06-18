@@ -5,12 +5,11 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { CmdCard, CmdCardProps } from '..';
 import { EventList } from '../../Event.List';
-import { css, rx, slug, t, Util } from '../common';
+import { css, rx, slug, t } from '../common';
 import { CmdCardInfoProps } from '../ui/Info';
-import { SampleRenderers } from './DEV.Renderers';
+import { DevBody } from './DEV.Body';
 import { DevSample } from './DEV.Sample';
 import { DevSidePanel } from './DEV.SidePanel';
-import { DevBody } from './DEV.Body';
 
 type Ctx = {
   localbus: t.EventBus<any>;
@@ -68,10 +67,6 @@ const Helpers = {
   toProps(ctx: Ctx) {
     const props: CmdCardProps = { ...ctx.props };
     return props;
-  },
-
-  toState(ctx: Ctx) {
-    return ctx.props.state || (ctx.props.state = Util.state.default());
   },
 
   localbus(ctx: Ctx) {
@@ -133,6 +128,8 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx } = e;
+
+    e.ctx.events.commandbar.focus();
   })
 
   .items((e) => {
@@ -204,33 +201,6 @@ export const actions = DevActions<Ctx>()
         textbox.spinning = !Boolean(textbox.spinning);
       });
     });
-
-    e.button('sample renderers (toggle)', async (e) => {
-      const { body, backdrop } = SampleRenderers;
-      await e.ctx.events.state.patch((state) => {
-        // const exists = Boolean(state.body.render);
-        /**
-         * TODO 🐷
-         * - make ".render" method optional (undefined ===> [.renderNull])
-         */
-        // state.body.render = exists ? (Util.renderNull as any) : body;
-        // state.backdrop.render = exists ? (Util.renderNull as any) : backdrop;
-      });
-    });
-
-    // e.select((config) => {
-    //   config
-    //     .title('body.show')
-    //     .items(['Hidden', 'CommandBar', 'FullScreen'])
-    //     .initial('CommandBar')
-    //     .view('buttons')
-    //     .pipe(async (e) => {
-    //       if (e.changing) {
-    //         const next = e.changing?.next[0].value;
-    //         await e.ctx.events.state.patch((state) => (state.body.show = next));
-    //       }
-    //     });
-    // });
 
     e.hr();
   })

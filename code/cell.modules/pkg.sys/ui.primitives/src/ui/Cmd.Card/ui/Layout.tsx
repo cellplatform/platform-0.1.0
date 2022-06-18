@@ -1,19 +1,15 @@
 import React from 'react';
-
-import { css, CssValue, t, useResizeObserver, DEFAULT } from '../common';
-import { BackdropMemo } from './Backdrop';
-import { BodyMemo } from './Body';
+import { CmdBar, Color, COLORS, css, CssValue, DEFAULT, t } from '../common';
 
 /**
  * Types
  */
 export type CmdCardLayoutProps = {
   instance: t.CmdCardInstance;
-  state: t.CmdCardState;
   body?: JSX.Element;
-  borderRadius?: number | string;
-  resize?: t.ResizeObserverHook;
   tray?: JSX.Element;
+  commandbar?: t.CmdCardCommandBar;
+  borderRadius?: number | string;
   minimized?: boolean;
   style?: CssValue;
 };
@@ -22,9 +18,8 @@ export type CmdCardLayoutProps = {
  * Component
  */
 export const CmdCardLayout: React.FC<CmdCardLayoutProps> = (props) => {
-  const { instance, state, borderRadius, minimized = false } = props;
-  const resize = useResizeObserver({ root: props.resize });
-  const size = resize.rect;
+  const { FOOTER } = DEFAULT;
+  const { instance, borderRadius, minimized = false, commandbar } = props;
 
   /**
    * [Render]
@@ -34,34 +29,41 @@ export const CmdCardLayout: React.FC<CmdCardLayoutProps> = (props) => {
       position: 'relative',
       overflow: 'hidden',
       borderRadius,
-      height: minimized ? DEFAULT.FOOTER.HEIGHT : undefined,
+      height: minimized ? FOOTER.HEIGHT : undefined,
     }),
     body: css({
-      Absolute: 0,
-      display: minimized ? 'none' : 'block',
+      Absolute: [0, 0, FOOTER.HEIGHT, 0],
+      display: minimized ? 'none' : 'flex',
+      backgroundColor: Color.format(1),
     }),
-    backdrop: css({ Absolute: 0 }),
+    footer: css({
+      Absolute: [null, 0, 0, 0],
+      height: FOOTER.HEIGHT,
+      backgroundColor: COLORS.DARK,
+      boxSizing: 'border-box',
+      PaddingY: 2,
+      Flex: 'x-stretch-stretch',
+    }),
   };
 
-  const elBody = resize.ready && (
-    <BodyMemo instance={instance} state={state} size={size} style={styles.body} />
-  );
+  const elBody = <div {...styles.body}>{props.body}</div>;
 
-  const elBackdrop = resize.ready && (
-    <BackdropMemo
-      instance={instance}
-      state={state}
-      size={size}
-      minimized={minimized}
-      tray={props.tray}
-      style={styles.backdrop}
-    />
+  const elFooter = (
+    <div {...styles.footer}>
+      <CmdBar
+        instance={instance}
+        text={commandbar?.text}
+        textbox={commandbar?.textbox}
+        tray={props.tray}
+        style={{ flex: 1 }}
+      />
+    </div>
   );
 
   return (
-    <div ref={resize.ref} {...css(styles.base, props.style)}>
-      {elBackdrop}
+    <div {...css(styles.base, props.style)}>
       {elBody}
+      {elFooter}
     </div>
   );
 };

@@ -23,11 +23,16 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       props: {
         placeholder: 'command',
+        hint: '',
         spinner: false,
         pending: false,
         theme: 'Dark',
         onChange(e) {
-          change.ctx((ctx) => (ctx.props.text = e.to));
+          change.ctx((ctx) => {
+            if (ctx.debug.isControlled) {
+              ctx.props.text = e.to;
+            }
+          });
         },
         onAction(e) {
           console.log('onAction:', e);
@@ -56,6 +61,8 @@ export const actions = DevActions<Ctx>()
         });
     });
 
+    e.hr(1, 0.1);
+
     e.boolean('spinner', (e) => {
       if (e.changing) e.ctx.props.spinner = e.changing.next;
       e.boolean.current = e.ctx.props.spinner;
@@ -74,6 +81,18 @@ export const actions = DevActions<Ctx>()
           if (e.changing?.action === 'invoke') {
             e.textbox.current = e.changing.next || undefined;
             e.ctx.props.placeholder = e.textbox.current;
+          }
+        }),
+    );
+
+    e.textbox((config) =>
+      config
+        .title('hint')
+        .initial(config.ctx.props.hint ?? '')
+        .pipe((e) => {
+          if (e.changing?.action === 'invoke') {
+            e.textbox.current = e.changing.next || undefined;
+            e.ctx.props.hint = e.textbox.current;
           }
         }),
     );
