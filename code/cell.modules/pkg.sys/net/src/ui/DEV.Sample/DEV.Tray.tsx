@@ -12,6 +12,7 @@ export type DevTrayProps = {
 export const DevTray: React.FC<DevTrayProps> = (props) => {
   const { instance } = props;
   const network = instance.network;
+  const bus = rx.busAsType<t.NetworkCardEvent>(network.bus);
 
   const [total, setTotal] = useState(0);
 
@@ -38,7 +39,17 @@ export const DevTray: React.FC<DevTrayProps> = (props) => {
 
   return (
     <div {...css(styles.base, props.style)}>
-      <DevVideos instance={props.instance} video={{ width: 22, height: 22, radius: 3 }} />
+      <DevVideos
+        instance={props.instance}
+        video={{ width: 22, height: 22, radius: 3 }}
+        onVideoClick={(e) => {
+          const { peer, media } = e;
+          bus.fire({
+            type: 'sys.net/ui.NetworkCard/PeerClick',
+            payload: { instance: instance.id, network, peer, media },
+          });
+        }}
+      />
     </div>
   );
 };

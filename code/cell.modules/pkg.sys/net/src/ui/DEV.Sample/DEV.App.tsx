@@ -1,6 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+
+import { Observable, Subject, BehaviorSubject, firstValueFrom, timeout, of, interval } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+  tap,
+  catchError,
+} from 'rxjs/operators';
 
 import { TEST } from '../../test';
 import { DevNetworkCard } from '../Network.Card/dev/DEV.NetworkCard';
@@ -18,6 +31,7 @@ import {
   rx,
   Spinner,
   t,
+  CmdBar,
 } from './common';
 import { DevEventLog } from './DEV.EventLog';
 import { DevModule } from './DEV.Module';
@@ -36,9 +50,10 @@ export type DevSampleAppProps = {
 export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
   const id = 'instance.app';
   const [network, setNetwork] = useState<t.PeerNetwork>();
-  const bus = network?.bus ? rx.busAsType<t.NetworkCardEvent>(network?.bus) : undefined;
+  const bus = network?.bus ? network.bus : undefined;
   const netbus = network?.netbus;
   const netbusExists = Boolean(netbus);
+  const busExists = Boolean(bus);
 
   const [overlay, setOverlay] = useState<undefined | t.NetworkCardOverlay>();
   const keybrd = Keyboard.useKeyboard({ bus, instance: id });
@@ -46,6 +61,29 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
 
   const [moduleUrl, setModuleUrl] = useState('');
   const [minimized, setMinimized] = useState(false);
+
+  /**
+   * Keyboard controller
+   */
+  useEffect(() => {
+    const { dispose, dispose$ } = rx.disposable();
+
+    if (bus) {
+      const cmdBar = CmdBar.Events({ instance: { bus, id }, dispose$ });
+
+      keybrd.state$
+        .pipe(
+          map((e) => e.current),
+          filter((e) => e.modifiers.meta),
+          filter((e) => e.pressed[0]?.key === 'k'),
+        )
+        .subscribe((e) => {
+          cmdBar.text.focus();
+        });
+    }
+
+    return dispose;
+  }, [busExists]); // eslint-disable-line
 
   useEffect(() => {
     const { dispose, dispose$ } = rx.disposable();
@@ -92,31 +130,60 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
      * 🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳
      */
 
-    const fireRemote = (event: t.Event) => {
-      netbus.target.remote(event);
-    };
+    // const fireRemoteEvent = (all: boolean, event: t.Event) => {
+    //   netbus.fire(event);
+    // };
 
-    // if (cmd === 'tmp') {
-    //   const ev = CmdCard.Events({ instance: { bus, id } });
-    //   await time.wait(10);
-    //   const res = await ev.state.patch((f) => {
-    //     f.commandbar.text = 'hello';
-    //     f.commandbar.textbox.spinning = true;
-    //   });
-    //   console.log('res', res);
-    // }
+    const fireRemote = (args: { all: boolean }) => {
+      const event = {
+        type: 'remote:cmd',
+        payload: { cmd: cmd.substring(cmd.indexOf(' ')) },
+      };
+      if (args.all) netbus.fire(event);
+      if (!args.all) netbus.target.remote(event);
+    };
 
     if (cmd.startsWith('fire ')) {
       const type = cmd.substring(cmd.indexOf(' '));
-      if (type) fireRemote({ type, payload: { msg: 'hello' } });
+      if (type) {
+        netbus.fire({ type, payload: { msg: 'hello' } });
+      }
     }
 
-    if (cmd.startsWith('remote ') || cmd.startsWith('rem ')) {
-      const text = cmd.substring(cmd.indexOf(' '));
-      fireRemote({
-        type: 'remote:cmd',
-        payload: { cmd: text },
-      });
+    if (cmd.startsWith('all ')) fireRemote({ all: true });
+    if (cmd.startsWith('rem ')) fireRemote({ all: false });
+
+    if (cmd.startsWith('child.video close')) {
+      //
+    }
+
+    if (cmd.startsWith('child.video')) {
+      if (cmd === 'child.video close') {
+        /**
+         * Close the child card.
+         */
+        bus.fire({
+          type: 'sys.net/ui.NetworkCard/CloseChild',
+          payload: { instance: id },
+        });
+      } else {
+        /**
+         * Load first remote peer video into the child card.
+         */
+        const connections = network.status.current.connections;
+        type M = t.PeerConnectionMediaStatus;
+        const first = connections.find((conn) => conn.kind === 'media/video') as M;
+
+        if (first) {
+          const bus = rx.busAsType<t.NetworkCardEvent>(network.bus);
+          const peer = first.id;
+          const media = first.media;
+          bus.fire({
+            type: 'sys.net/ui.NetworkCard/PeerClick',
+            payload: { instance: id, network, peer, media },
+          });
+        }
+      }
     }
 
     const isCuid = (input: string) => input.startsWith('c') && input.length === 25;
@@ -147,8 +214,8 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     }
 
     if (cmd.startsWith('unload')) setModuleUrl('');
-    if (cmd === 'minimize' || cmd === 'min') setMinimized(true);
-    if (cmd === 'maximize' || cmd === 'max') setMinimized(false);
+    if (cmd === 'card.min') setMinimized(true);
+    if (cmd === 'card.max') setMinimized(false);
   };
 
   /**
@@ -227,13 +294,14 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     id: 'layer.BG',
     position: { x: 'stretch', y: 'stretch' },
     render(e) {
+      if (!network) return null;
       const style = css({
         flex: 1,
         pointerEvents: 'auto',
         opacity: moduleUrl ? 0 : 1,
         transition: `opacity 500ms`,
       });
-      return <DevBackground style={style} />;
+      return <DevBackground instance={{ network, id }} style={style} />;
     },
   };
 
@@ -275,6 +343,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
       );
     },
   };
+
   const VideosLayer: t.PositioningLayer = {
     id: 'layer.Videos',
     position: { x: 'left', y: 'bottom' },
@@ -364,8 +433,8 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
             FullscreenButtonLayer,
             ImportedModuleLayer,
             // VideosLayer,
-            CardLayer,
             OverlayLayer,
+            CardLayer,
           ]}
           style={styles.layout}
           childPointerEvents={'none'}

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, R, rx, t, VideoStream } from './common';
+import { css, CssValue, R, rx, t, VideoStream, useLocalPeer } from './common';
 
 export type DevVideosProps = {
   instance: { network: t.PeerNetwork; id: t.Id };
   video: { width: number; height: number; radius: number };
   style?: CssValue;
+  onVideoClick?: (e: { media: MediaStream; peer: t.PeerId }) => void;
 };
 
 export const DevVideos: React.FC<DevVideosProps> = (props) => {
@@ -16,6 +17,9 @@ export const DevVideos: React.FC<DevVideosProps> = (props) => {
   type P = { id: string; connections: t.PeerConnectionStatus[] };
   const [peers, setPeers] = useState<P[]>([]);
   const hasPeers = peers.length > 0;
+
+  type Item = { media: MediaStream; peer: t.PeerId };
+  const self = useLocalPeer({ bus: network.bus, self: network.self });
 
   const updatePeers = (connections: t.PeerConnectionStatus[]) => {
     const grouped = R.groupBy(({ peer }) => peer.remote.id, connections);
@@ -31,6 +35,11 @@ export const DevVideos: React.FC<DevVideosProps> = (props) => {
     return dispose;
   }, []); // eslint-disable-line
 
+  console.group('🌳 ');
+  console.log('self', self);
+  console.log('peers', peers);
+  console.groupEnd();
+
   /**
    * [Render]
    */
@@ -44,17 +53,23 @@ export const DevVideos: React.FC<DevVideosProps> = (props) => {
     }),
   };
 
-  const remoteStreams = peers
+  const remoteStreams: Item[] = peers
     .map((peer) => peer.connections.find((conn) => conn.kind === 'media/video'))
     .filter(Boolean)
     .map((item) => item as t.PeerConnectionMediaStatus)
-    .map((item) => item.media)
-    .filter(Boolean);
+    .filter((item) => Boolean(item.media))
+    .map((item) => {
+      return {
+        media: item.media as MediaStream,
+        peer: item.id,
+      };
+    });
 
-  const elVideos = remoteStreams.map((media, i) => {
+  const toVideoElement = (item: Item) => {
+    const { media, peer } = item;
     return (
       <VideoStream
-        key={i}
+        key={`video.${peer}`}
         stream={media}
         isMuted={true}
         width={video.width}
@@ -62,9 +77,19 @@ export const DevVideos: React.FC<DevVideosProps> = (props) => {
         borderRadius={video.radius}
         backgroundColor={-0.03}
         style={styles.item}
+        onClick={() => props.onVideoClick?.({ media, peer })}
       />
     );
-  });
+  };
 
-  return <div {...css(styles.base, props.style)}>{elVideos}</div>;
+  const elSelfVideo =
+    self.media.video && toVideoElement({ media: self.media.video, peer: self.id });
+  const elPeerVideos = remoteStreams.map((item) => toVideoElement(item));
+
+  return (
+    <div {...css(styles.base, props.style)}>
+      {elSelfVideo}
+      {elPeerVideos}
+    </div>
+  );
 };

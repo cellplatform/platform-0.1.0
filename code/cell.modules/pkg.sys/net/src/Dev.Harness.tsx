@@ -4,15 +4,16 @@ import { Harness } from 'sys.ui.dev';
 import { t } from './common';
 
 const imports = {
+  Sample: import('./ui/DEV.Sample/dev/DEV'),
+  Sample__0_0_0: import('./ui/DEV.Sample-0.0.0/DEV'),
+  SampleDeploy: import('./ui/DEV.Sample.Deploy/DEV'),
+
   ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
+
   LocalPeerCard: import('./ui/LocalPeer.Card/dev/DEV'),
   Label: import('./ui/Label/dev/DEV'),
   NetworkCard: import('./ui/Network.Card/dev/DEV'),
   Networks: import('./ui/DEV.Networks/DEV'),
-
-  SampleDeploy: import('./ui/DEV.Sample.Deploy/DEV'),
-  Sample: import('./ui/DEV.Sample/DEV'),
-  SampleApp: import('./ui/DEV.Sample.App/dev/DEV'),
 
   UnitTests: import('./Dev.UnitTests'),
 };
