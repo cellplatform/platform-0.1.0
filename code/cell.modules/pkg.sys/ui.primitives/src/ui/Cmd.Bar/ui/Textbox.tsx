@@ -13,14 +13,14 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
       instance={props.instance}
       theme={'Dark'}
       text={props.text ?? ''}
+      hint={props.hint}
       placeholder={props.textbox?.placeholder}
       spinner={props.textbox?.spinning}
       pending={props.textbox?.pending}
       style={css(styles.base, props.style)}
       onChange={(e) => {
-        const { to } = e;
         props.onChange?.(e);
-        props.events.text.change(to);
+        props.events.text.onChange___(e.to);
       }}
       onAction={(e) => {
         const { kind, text } = e;

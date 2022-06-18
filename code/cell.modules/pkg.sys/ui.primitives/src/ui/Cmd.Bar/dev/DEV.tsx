@@ -4,55 +4,36 @@ import { DevActions, ObjectView, toObject } from 'sys.ui.dev';
 
 import { CmdBar, CmdBarProps } from '..';
 import { Icons, COLORS, rx, slug, t } from '../common';
-import { DevEventPipe } from './DEV.EventPipe';
+import { DevSample } from './DEV.Sample';
+import { DevLayout } from './DEV.Layout';
 
 type Ctx = {
   netbus: t.NetworkBus<any>;
   props: CmdBarProps;
   events: t.CmdBarEvents;
-  debug: {
-    fireCount: number; // Total number of fires.
-  };
+  debug: { fireCount: number };
+  output: { state?: t.CmdBarState };
+  onStateChange: t.CmdBarStateChangeHandler;
 };
 
-type TraySample = 'Placeholder' | 'Icons' | 'EventPipe';
+type TraySampleKind = 'Placeholder' | 'Icons';
 
 /**
  * Helpers
  */
 const Util = {
-  /**
-   * Fire an event.
-   */
-  async fireSample(ctx: Ctx, total: number) {
-    const fire = (ctx: Ctx) => {
-      ctx.debug.fireCount++;
-      const count = ctx.debug.fireCount;
-      const event: t.Event = { type: `FOO/sample/event-${count}`, payload: { count } };
-      ctx.netbus.fire(event);
-    };
-
-    new Array(total).fill(ctx).forEach(fire);
-  },
-
   textbox(ctx: Ctx) {
     return ctx.props.textbox || (ctx.props.textbox = {});
   },
 
-  assignTray(ctx: Ctx, kind: TraySample) {
+  assignTray(ctx: Ctx, kind: TraySampleKind) {
     const { props } = ctx;
     props.tray = undefined;
 
     if (kind === 'Icons') {
-      const items = Array.from({ length: 3 }).map((_, i) => {
-        return <Icons.Face key={`icon-${i}`} color={1} />;
-      });
+      const keys = Array.from({ length: 3 }).map((_, i) => ({ key: `icon-${i}` }));
+      const items = keys.map((_, i) => <Icons.Face key={`icon-${i}`} color={1} />);
       props.tray = <CmdBar.Tray.Icons items={items} />;
-    }
-
-    if (kind === 'EventPipe') {
-      const netbus = toObject(ctx.netbus) as t.NetworkBus;
-      props.tray = <DevEventPipe bus={netbus} style={{ MarginX: 8, width: 150 }} />;
     }
 
     if (kind === 'Placeholder') {
@@ -88,11 +69,16 @@ export const actions = DevActions<Ctx>()
         },
       },
       debug: { fireCount: 0 },
+      output: {},
+
+      onStateChange(e) {
+        change.ctx((ctx) => (ctx.output.state = e.state));
+      },
     };
 
     events.text.changed$.subscribe((e) => {
       // NB: Or do this in the direct [onChange] handler.
-      change.ctx((ctx) => (ctx.props.text = e.text));
+      // change.ctx((ctx) => (ctx.props.text = e.text));
     });
 
     return ctx;
@@ -103,13 +89,15 @@ export const actions = DevActions<Ctx>()
 
     // Util.assignTray(e.ctx, 'EventPipe');
     Util.assignTray(e.ctx, 'Placeholder');
+
+    e.ctx.events.text.focus();
   })
 
   .items((e) => {
     e.title('Props');
 
     e.select((config) => {
-      const SAMPLES: TraySample[] = ['Placeholder', 'Icons', 'EventPipe'];
+      const SAMPLES: TraySampleKind[] = ['Placeholder', 'Icons'];
       config
         .title('tray (render):')
         .items([
@@ -120,7 +108,7 @@ export const actions = DevActions<Ctx>()
         .view('buttons')
         .pipe((e) => {
           if (e.changing) {
-            const next = e.changing.next[0].value as TraySample;
+            const next = e.changing.next[0].value as TraySampleKind;
             Util.assignTray(e.ctx, next);
           }
         });
@@ -146,7 +134,7 @@ export const actions = DevActions<Ctx>()
 
     e.textbox((config) =>
       config
-        .placeholder('placeholder')
+        .title('placeholder')
         .initial(config.ctx.props.textbox?.placeholder || '<nothing>')
         .pipe((e) => {
           if (e.changing?.action === 'invoke') {
@@ -170,23 +158,8 @@ export const actions = DevActions<Ctx>()
     e.button('⚡️ cursor: end', (e) => e.ctx.events.text.cursor.end());
     e.hr(1, 0.1);
     e.button('⚡️ select (all)', (e) => e.ctx.events.text.select());
-    e.button('⚡️ change text', (e) => e.ctx.events.text.change('Foobar'));
+    e.button('⚡️ change text', (e) => e.ctx.events.text.onChange___('Foobar'));
 
-    e.hr();
-  })
-
-  .items((e) => {
-    e.title('EventBus (Tray Sample)');
-
-    e.markdown((config) =>
-      config
-        .text(`Fire sample events when tray element is set to the <EventPipe>`)
-        .margin([0, 10, 0, 30]),
-    );
-
-    e.button('EventPipe: fire (1)', (e) => Util.fireSample(e.ctx, 1));
-    e.button('EventPipe: fire (100)', (e) => Util.fireSample(e.ctx, 100));
-    e.button('EventPipe: fire (1K)', (e) => Util.fireSample(e.ctx, 1000));
     e.hr();
   })
 
@@ -195,18 +168,37 @@ export const actions = DevActions<Ctx>()
 
     e.hr();
     e.component((e) => {
-      const instance = e.ctx.props.instance;
-      const props = {
-        ...e.ctx.props,
+      const state = e.ctx.output.state;
+      const props = e.ctx.props;
+      const instance = props.instance;
+      const data = {
+        ...props,
         instance: { bus: rx.bus.instance(instance.bus), id: instance.id },
+        text: state?.text ?? props.text,
+        hint: state?.hint ?? props.hint,
+        textbox: state?.textbox ?? props.textbox,
       };
       return (
         <ObjectView
           name={'props'}
-          data={props}
+          data={data}
           style={{ MarginX: 15 }}
           fontSize={10}
-          expandPaths={['$', '$.instance']}
+          expandPaths={['$']}
+        />
+      );
+    });
+
+    e.hr(1, 0.1);
+
+    e.component((e) => {
+      return (
+        <ObjectView
+          name={'state'}
+          data={e.ctx.output.state}
+          style={{ MarginX: 15 }}
+          fontSize={10}
+          expandPaths={['$']}
         />
       );
     });
@@ -217,19 +209,21 @@ export const actions = DevActions<Ctx>()
 
     e.settings({
       host: { background: COLORS.DARK },
-      layout: {
-        label: {
-          topLeft: '<CmdBar>',
-          bottomRight: `${rx.bus.instance(instance.bus)}/id:${instance.id}`,
-        },
-        width: 600,
-        height: 38,
-        cropmarks: 0.2,
-        labelColor: 0.6,
-      },
+      layout: { labelColor: 0.6 },
     });
 
-    e.render(<CmdBar {...e.ctx.props} style={{ flex: 1 }} />);
+    e.render(<DevLayout instance={instance} />, {
+      position: [0, 0, 0, 0],
+    });
+
+    e.render(<DevSample props={e.ctx.props} onStateChange={e.ctx.onStateChange} />, {
+      label: {
+        bottomRight: `${rx.bus.instance(instance.bus)}/id:"${instance.id}"`,
+      },
+      width: 600,
+      height: 38,
+      cropmarks: 0.2,
+    });
   });
 
 export default actions;

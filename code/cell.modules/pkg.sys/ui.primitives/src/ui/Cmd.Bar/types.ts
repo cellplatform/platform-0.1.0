@@ -4,6 +4,9 @@ type Id = string;
 
 export type CmdBarInstance = { bus: t.EventBus<any>; id: Id };
 
+export type CmdBarStateChangeHandler = (e: CmdBarStateChangeHandlerArgs) => void;
+export type CmdBarStateChangeHandlerArgs = { state: t.CmdBarState };
+
 /**
  * <Component>
  */
@@ -12,16 +15,21 @@ export type CmdBarProps = {
   cornerRadius?: [number, number, number, number];
   backgroundColor?: string | number;
   text?: string;
-  textbox?: {
-    placeholder?: string;
-    spinning?: boolean;
-    pending?: boolean;
-    flex?: number;
-  };
+  hint?: string;
+  textbox?: { placeholder?: string; spinning?: boolean; pending?: boolean };
   tray?: JSX.Element;
   style?: t.CssValue;
   onChange?: t.CmdTextboxChangeEventHandler;
   onAction?: t.CmdTextboxActionEventHandler;
+};
+
+/**
+ * State
+ */
+export type CmdBarState = {
+  text: string;
+  hint?: string;
+  textbox: { pending: boolean; spinning: boolean; placeholder: string };
 };
 
 /**
@@ -43,12 +51,13 @@ export type CmdBarEvents = {
   };
   text: {
     changed$: t.Observable<CmdBarTextChange>;
-    change(text: string): void;
+    onChange___(text: string): void; // TEMP 🐷
     focus(): void;
     blur(): void;
     select(): void;
     cursor: { start(): void; end(): void };
   };
+  state: t.JsonLens<CmdBarState>;
 };
 
 /**

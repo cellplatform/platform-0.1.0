@@ -1,12 +1,13 @@
 import React from 'react';
 
-import { time, color, css, FC } from './common';
-import { CmdBarEvents, CmdBarController } from './logic';
-import { TrayPlaceholder } from './ui/Tray.Placeholder';
 import { Event } from '../Event';
+import { color, css, FC, time } from './common';
+import { CmdBarController, CmdBarEvents, useCmdBarController } from './logic';
 import { CmdBarProps } from './types';
+import { CmdBarGrammerInfo } from './ui/Info.Grammer';
 import { Textbox } from './ui/Textbox';
 import { TrayIcons } from './ui/Tray.Icons';
+import { TrayPlaceholder } from './ui/Tray.Placeholder';
 
 export { CmdBarProps };
 
@@ -33,28 +34,21 @@ const View: React.FC<CmdBarProps> = (props) => {
       backgroundColor: color.format(props.backgroundColor),
       borderRadius,
     }),
-    inset: css({ Absolute: 0 }),
     body: css({ flex: 1, Flex: 'x-stretch-stretch' }),
-    input: css({
-      flex: props.textbox?.flex ?? 1,
-      paddingTop: 10,
-      paddingBottom: 4,
+    input: css({ flex: 1, Flex: 'x-center-stretch' }),
+    divider: css({
+      borderLeft: `solid 1px ${color.format(-0.2)}`,
+      borderRight: `solid 1px ${color.format(0.1)}`,
     }),
-    divider: {
-      border: css({
-        borderLeft: `solid 1px ${color.format(-0.2)}`,
-        borderRight: `solid 1px ${color.format(0.1)}`,
-      }),
-    },
   };
 
   return (
-    <div {...css(styles.base, props.style)} onMouseDown={() => time.delay(0, events.text.focus)}>
+    <div {...css(styles.base, props.style)}>
       <div {...styles.body}>
-        <div {...styles.input}>
+        <div {...styles.input} onMouseDown={() => time.delay(0, events.text.focus)}>
           <Textbox {...props} events={events} />
         </div>
-        {props.tray && <div {...styles.divider.border} />}
+        {props.tray && <div {...styles.divider} />}
         {props.tray}
       </div>
     </div>
@@ -67,9 +61,13 @@ const View: React.FC<CmdBarProps> = (props) => {
 type Fields = {
   Events: typeof CmdBarEvents;
   Controller: typeof CmdBarController;
+  useController: typeof useCmdBarController;
   Tray: {
     Placeholder: typeof TrayPlaceholder;
     Icons: typeof TrayIcons;
+  };
+  Grammer: {
+    Info: typeof CmdBarGrammerInfo;
   };
 };
 export const CmdBar = FC.decorate<CmdBarProps, Fields>(
@@ -77,9 +75,13 @@ export const CmdBar = FC.decorate<CmdBarProps, Fields>(
   {
     Events: CmdBarEvents,
     Controller: CmdBarController,
+    useController: useCmdBarController,
     Tray: {
       Placeholder: TrayPlaceholder,
       Icons: TrayIcons,
+    },
+    Grammer: {
+      Info: CmdBarGrammerInfo,
     },
   },
   { displayName: 'Cmd.Bar' },

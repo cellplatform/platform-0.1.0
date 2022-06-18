@@ -1,12 +1,15 @@
 import { filter, takeUntil } from 'rxjs/operators';
-import { rx, t, TextInput } from '../common';
-
-type E = t.CmdBarEvents;
+import { rx, t, TextInput, Json } from '../common';
+import { Util } from '../Util';
 
 /**
  * Event API.
  */
-export function CmdBarEvents(args: { instance: t.CmdBarInstance; dispose$?: t.Observable<any> }) {
+export function CmdBarEvents(args: {
+  instance: t.CmdBarInstance;
+  initial?: t.CmdBarState;
+  dispose$?: t.Observable<any>;
+}) {
   const { dispose, dispose$ } = rx.disposable();
   args.dispose$?.subscribe(dispose);
 
@@ -19,9 +22,14 @@ export function CmdBarEvents(args: { instance: t.CmdBarInstance; dispose$?: t.Ob
     filter((e) => e.type.startsWith('sys.ui.CmdBar/')),
   );
 
+  const json = Json.Bus.Events({ instance: args.instance, dispose$ }).json<t.CmdBarState>(
+    args.initial ?? Util.defaultState(),
+    { key: 'CmdBar' },
+  );
+  const state = json.lens((root) => root);
   const textbox = TextInput.Events({ instance: args.instance, dispose$ });
 
-  const action: E['action'] = {
+  const action: t.CmdBarEvents['action'] = {
     $: rx.payload<t.CmdBarActionEvent>($, 'sys.ui.CmdBar/Action'),
     fire(args) {
       const { text, kind } = args;
@@ -32,9 +40,9 @@ export function CmdBarEvents(args: { instance: t.CmdBarInstance; dispose$?: t.Ob
     },
   };
 
-  const text: E['text'] = {
+  const text: t.CmdBarEvents['text'] = {
     changed$: rx.payload<t.CmdBarTextChangeEvent>($, 'sys.ui.CmdBar/TextChanged'),
-    change(text) {
+    onChange___(text) {
       bus.fire({
         type: 'sys.ui.CmdBar/TextChanged',
         payload: { instance, text },
@@ -57,6 +65,7 @@ export function CmdBarEvents(args: { instance: t.CmdBarInstance; dispose$?: t.Ob
     $,
     dispose,
     dispose$,
+    state,
     action,
     text,
     clone() {

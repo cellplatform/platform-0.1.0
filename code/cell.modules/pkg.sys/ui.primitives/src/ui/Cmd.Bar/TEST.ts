@@ -1,8 +1,7 @@
-import { Subject } from 'rxjs';
 import { expect, Test } from 'sys.ui.dev';
 
 import { CmdBar } from '.';
-import { rx, t, time } from './common';
+import { rx } from './common';
 
 export default Test.describe('Cmd.Bar', (e) => {
   e.describe('Events', (e) => {
