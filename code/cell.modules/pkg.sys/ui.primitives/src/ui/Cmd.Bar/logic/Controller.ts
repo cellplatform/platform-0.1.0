@@ -31,7 +31,6 @@ export function CmdBarController(args: CmdBarControllerArgs): t.CmdBarEventsDisp
   const textbox = TextInput.Events({ instance: args.instance, dispose$ });
 
   textbox.text.changing$.subscribe((e) => {
-    console.log('$ changing:', e);
     patch((state) => (state.text = e.to));
   });
 

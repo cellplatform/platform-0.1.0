@@ -130,10 +130,6 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
      * 🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳
      */
 
-    // const fireRemoteEvent = (all: boolean, event: t.Event) => {
-    //   netbus.fire(event);
-    // };
-
     const fireRemote = (args: { all: boolean }) => {
       const event = {
         type: 'remote:cmd',
@@ -153,12 +149,8 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     if (cmd.startsWith('all ')) fireRemote({ all: true });
     if (cmd.startsWith('rem ')) fireRemote({ all: false });
 
-    if (cmd.startsWith('child.video close')) {
-      //
-    }
-
-    if (cmd.startsWith('child.video')) {
-      if (cmd === 'child.video close') {
+    if (cmd.startsWith('video')) {
+      if (cmd === 'video close') {
         /**
          * Close the child card.
          */
@@ -214,8 +206,8 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     }
 
     if (cmd.startsWith('unload')) setModuleUrl('');
-    if (cmd === 'card.min') setMinimized(true);
-    if (cmd === 'card.max') setMinimized(false);
+    if (cmd === 'min') setMinimized(true);
+    if (cmd === 'max') setMinimized(false);
   };
 
   /**

@@ -21,7 +21,14 @@ export const DevFs: React.FC<DevFsProps> = (props) => {
   };
 
   return (
-    <div {...css(styles.base, props.style)} onMouseEnter={over(true)} onMouseLeave={over(false)}>
+    <div
+      {...css(styles.base, props.style)}
+      onClick={() => {
+        console.log('TODO', 'FileSystem Info');
+      }}
+      onMouseEnter={over(true)}
+      onMouseLeave={over(false)}
+    >
       <Icons.Fs.Drive color={COLORS.DARK} size={32} />
     </div>
   );
