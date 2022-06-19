@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { constants, css, formatColor, t } from '../../common';
+import { constants, css, Color, t } from '../../common';
 
 const KEYS: (keyof t.HostedLabel)[] = ['topLeft', 'topRight', 'bottomLeft', 'bottomRight'];
 
@@ -30,7 +30,7 @@ export const Labels: React.FC<ILabelsProps> = (props: ILabelsProps = {}) => {
     text: {
       fontFamily: constants.FONT.MONO,
       fontSize,
-      color: formatColor(color),
+      color: Color.format(color),
       WebkitAppRegion: 'no-drag', // NB: Window draggable within electron.
     },
     topLeft: { Absolute: [offset.y, null, null, offset.x] },

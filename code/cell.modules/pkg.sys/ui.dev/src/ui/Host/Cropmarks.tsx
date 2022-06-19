@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { css, CssValue, defaultValue, formatColor } from '../../common';
+import { Color, css, CssValue } from '../../common';
 
 export type CropmarksProps = {
   size: number;
@@ -49,7 +49,7 @@ export const CropmarkCorner: React.FC<CropmarkCornerProps> = (props) => {
   const { x, y } = props;
   const margin = props.margin;
   const size = props.size + margin;
-  const color = formatColor(defaultValue(props.color, 1));
+  const color = Color.format(props.color ?? 1);
 
   const styles = {
     base: css({

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { css, CssValue, defaultValue, formatColor, t, constants } from '../../common';
+import { css, CssValue, defaultValue, Color, t, constants } from '../../common';
 import { Subject, SubjectCropmark } from './Subject';
 import { Icons } from '../Icons';
 import { Button } from '../Primitives';
@@ -32,7 +32,7 @@ export const HostLayout: React.FC<HostLayoutProps> = (props) => {
     base: css({
       flex: 1,
       position: 'relative',
-      color: formatColor(host?.color),
+      color: Color.format(host?.color),
       ...toBackground(host),
     }),
     body: css({
@@ -77,7 +77,7 @@ export const HostLayout: React.FC<HostLayoutProps> = (props) => {
       position: abs ? 'absolute' : 'relative',
       Absolute: abs ? [abs.top, abs.right, abs.bottom, abs.left] : undefined,
       border: layout.border ? `solid 1px ${toBorderColor(layout.border)}` : undefined,
-      backgroundColor: formatColor(layout.background),
+      backgroundColor: Color.format(layout.background),
       marginBottom: orientation === 'y' && margin ? margin : undefined,
       marginRight: orientation === 'x' && margin ? margin : undefined,
       marginLeft: layout.offset?.[0],
@@ -131,7 +131,7 @@ const toAbsolute = (input: t.HostedLayout['position']): t.EdgePosition | undefin
 const toBorderColor = (input: t.HostedLayout['border']) => {
   const border = defaultValue(input, true);
   const value = border === true ? 0.3 : border === false ? 0 : border;
-  return formatColor(value);
+  return Color.format(value);
 };
 
 const toBackground = (host?: t.Host): React.CSSProperties => {
@@ -148,6 +148,6 @@ const toBackground = (host?: t.Host): React.CSSProperties => {
   }
 
   return {
-    backgroundColor: formatColor(value),
+    backgroundColor: Color.format(value),
   };
 };
