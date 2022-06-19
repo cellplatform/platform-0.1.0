@@ -49,9 +49,7 @@ export type CmdBarEvents = {
     $: t.Observable<CmdBarAction>;
     fire(args: { text: string; kind: t.CmdTextboxActionKind }): void;
   };
-  text: {
-    changed$: t.Observable<CmdBarTextChange>;
-    onChange___(text: string): void; // TEMP 🐷
+  textbox: {
     focus(): void;
     blur(): void;
     select(): void;
@@ -63,7 +61,7 @@ export type CmdBarEvents = {
 /**
  * [EVENT] Definitions
  */
-export type CmdBarEvent = CmdBarActionEvent | CmdBarTextChangeEvent;
+export type CmdBarEvent = CmdBarActionEvent;
 
 /**
  * Fires when the command is invoked.
@@ -77,12 +75,3 @@ export type CmdBarAction = {
   text: string;
   kind: t.CmdTextboxActionKind;
 };
-
-/**
- * Fires when the textbox changes.
- */
-export type CmdBarTextChangeEvent = {
-  type: 'sys.ui.CmdBar/TextChanged';
-  payload: CmdBarTextChange;
-};
-export type CmdBarTextChange = { instance: Id; text: string };

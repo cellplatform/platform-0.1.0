@@ -4,10 +4,10 @@ import { Event } from '../Event';
 import { color, css, FC, time } from './common';
 import { CmdBarController, CmdBarEvents, useCmdBarController } from './logic';
 import { CmdBarProps } from './types';
-import { CmdBarGrammerInfo } from './ui/Info.Grammer';
-import { Textbox } from './ui/Textbox';
-import { TrayIcons } from './ui/Tray.Icons';
-import { TrayPlaceholder } from './ui/Tray.Placeholder';
+import { CmdBarGrammerInfo } from './view/Info.Grammer';
+import { Textbox } from './view/Textbox';
+import { TrayIcons } from './view/Tray.Icons';
+import { TrayPlaceholder } from './view/Tray.Placeholder';
 
 export { CmdBarProps };
 
@@ -45,7 +45,7 @@ const View: React.FC<CmdBarProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.body}>
-        <div {...styles.input} onMouseDown={() => time.delay(0, events.text.focus)}>
+        <div {...styles.input} onMouseDown={() => time.delay(0, events.textbox.focus)}>
           <Textbox {...props} events={events} />
         </div>
         {props.tray && <div {...styles.divider} />}

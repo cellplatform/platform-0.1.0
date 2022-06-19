@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Color, COLORS, css, CssValue, t, rx } from '../../common';
+import { Color, COLORS, css, CssValue, t, rx } from '../common';
 
 export type DevLogoProps = {
   instance: { network: t.PeerNetwork; id: t.Id };
@@ -15,13 +15,13 @@ export const DevLogo: React.FC<DevLogoProps> = (props) => {
    */
   const styles = {
     base: css({
-      Flex: 'y-start-start',
       fontSize: 14,
       fontWeight: 'bold',
       color: COLORS.DARK,
       opacity: isOver ? 1 : 0.3,
       transition: `opacity 300ms`,
       userSelect: 'none',
+      Flex: 'y-start-start',
     }),
     label: css({ Flex: 'x-center-center' }),
   };

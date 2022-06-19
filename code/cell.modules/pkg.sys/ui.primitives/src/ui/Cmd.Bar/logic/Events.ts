@@ -27,7 +27,7 @@ export function CmdBarEvents(args: {
     { key: 'CmdBar' },
   );
   const state = json.lens((root) => root);
-  const textbox = TextInput.Events({ instance: args.instance, dispose$ });
+  const input = TextInput.Events({ instance: args.instance, dispose$ });
 
   const action: t.CmdBarEvents['action'] = {
     $: rx.payload<t.CmdBarActionEvent>($, 'sys.ui.CmdBar/Action'),
@@ -40,20 +40,13 @@ export function CmdBarEvents(args: {
     },
   };
 
-  const text: t.CmdBarEvents['text'] = {
-    changed$: rx.payload<t.CmdBarTextChangeEvent>($, 'sys.ui.CmdBar/TextChanged'),
-    onChange___(text) {
-      bus.fire({
-        type: 'sys.ui.CmdBar/TextChanged',
-        payload: { instance, text },
-      });
-    },
-    focus: () => textbox.focus.fire(true),
-    blur: () => textbox.focus.fire(false),
-    select: () => textbox.select.fire(),
+  const textbox: t.CmdBarEvents['textbox'] = {
+    focus: () => input.focus.fire(true),
+    blur: () => input.focus.fire(false),
+    select: () => input.select.fire(),
     cursor: {
-      start: () => textbox.cursor.start(),
-      end: () => textbox.cursor.end(),
+      start: () => input.cursor.start(),
+      end: () => input.cursor.end(),
     },
   };
 
@@ -61,13 +54,13 @@ export function CmdBarEvents(args: {
    * API
    */
   const api: t.CmdBarEventsDisposable = {
-    instance: textbox.instance,
+    instance: input.instance,
     $,
     dispose,
     dispose$,
     state,
     action,
-    text,
+    textbox,
     clone() {
       const clone = { ...api };
       delete (clone as any).dispose;

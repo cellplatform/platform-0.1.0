@@ -76,11 +76,6 @@ export const actions = DevActions<Ctx>()
       },
     };
 
-    events.text.changed$.subscribe((e) => {
-      // NB: Or do this in the direct [onChange] handler.
-      // change.ctx((ctx) => (ctx.props.text = e.text));
-    });
-
     return ctx;
   })
 
@@ -90,7 +85,7 @@ export const actions = DevActions<Ctx>()
     // Util.assignTray(e.ctx, 'EventPipe');
     Util.assignTray(e.ctx, 'Placeholder');
 
-    e.ctx.events.text.focus();
+    e.ctx.events.textbox.focus();
   })
 
   .items((e) => {
@@ -151,14 +146,20 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Events');
 
-    e.button('⚡️ focus', (e) => e.ctx.events.text.focus());
-    e.button('⚡️ blur', (e) => e.ctx.events.text.blur());
+    let valueCount = 0;
+
+    e.button('⚡️ focus', (e) => e.ctx.events.textbox.focus());
+    e.button('⚡️ blur', (e) => e.ctx.events.textbox.blur());
     e.hr(1, 0.1);
-    e.button('⚡️ cursor: start', (e) => e.ctx.events.text.cursor.start());
-    e.button('⚡️ cursor: end', (e) => e.ctx.events.text.cursor.end());
+    e.button('⚡️ cursor: start', (e) => e.ctx.events.textbox.cursor.start());
+    e.button('⚡️ cursor: end', (e) => e.ctx.events.textbox.cursor.end());
     e.hr(1, 0.1);
-    e.button('⚡️ select (all)', (e) => e.ctx.events.text.select());
-    e.button('⚡️ change text', (e) => e.ctx.events.text.onChange___('Foobar'));
+    e.button('⚡️ select (all)', (e) => e.ctx.events.textbox.select());
+    e.button('⚡️ change text', (e) => {
+      e.ctx.events.state.patch((state) => {
+        state.text = `value-${valueCount++}`;
+      });
+    });
 
     e.hr();
   })

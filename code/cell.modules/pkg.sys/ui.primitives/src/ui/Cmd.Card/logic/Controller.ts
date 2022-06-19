@@ -24,9 +24,9 @@ export function CmdCardController(args: t.CmdCardControllerArgs): t.CmdCardEvent
   /**
    * Event Listeners.
    */
-  commandbar.text.changed$.subscribe(async (e) => {
-    await patch((state) => (state.commandbar.text = e.text));
-  });
+  // commandbar.text.changed$.subscribe(async (e) => {
+  //   await patch((state) => (state.commandbar.text = e.text));
+  // });
 
   /**
    * API
