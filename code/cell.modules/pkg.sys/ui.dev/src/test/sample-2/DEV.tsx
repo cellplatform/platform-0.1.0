@@ -78,24 +78,30 @@ export const actions = ComposedActions<Ctx>()
    * Render
    */
   .subject((e) => {
+    const offset = [-50, -300] as [number, number];
+
     e.settings({
       host: { background: -0.04 },
       layout: {
-        width: 450,
+        label: {
+          topLeft: 'sample-2',
+          topRight: `offset: [${offset}]`,
+        },
+        offset,
+        width: 400,
         border: -0.1,
         cropmarks: -0.2,
         background: 1,
-        label: 'sample-1',
-        offset: [-50, -300],
       },
     });
 
     /**
      * NOTE: Render within "factory method" (closure).
      */
-    e.render(() => {
-      return e.ctx.el || <Component count={e.ctx.count} />;
-    });
+    e.render(() => e.ctx.el || <Component count={e.ctx.count} />);
+
+    // Render second instance (within default cropmarks configuration)
+    e.render(<div style={{ padding: 15 }}>Foobar</div>, { label: 'Second Item' });
   });
 
 export default actions;

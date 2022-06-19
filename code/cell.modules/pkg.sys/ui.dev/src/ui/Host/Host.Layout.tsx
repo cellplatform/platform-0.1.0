@@ -23,7 +23,7 @@ export const HostLayout: React.FC<HostLayoutProps> = (props) => {
   const { subject, host, actionsVisible, actionsOnEdge } = props;
   const items = subject?.items || [];
   const orientation = defaultValue(host?.orientation, 'y');
-  const spacing = Math.max(0, defaultValue(host?.spacing, 60));
+  const spacing = Math.max(0, host?.spacing ?? 60);
 
   const envLayout = { ...props.env.viaSubject.layout, ...props.env.viaAction.layout };
   const labelColor = envLayout.labelColor ?? -0.5;
@@ -69,7 +69,7 @@ export const HostLayout: React.FC<HostLayoutProps> = (props) => {
     const layout = { ...subject?.layout, ...item.layout };
 
     const abs = toAbsolute(layout.position);
-    const margin = !isLast ? spacing : undefined;
+    const margin = !isLast && layout.position === undefined ? spacing : undefined;
     const cropmark: SubjectCropmark = { size: 15, margin: 6 };
 
     const style = css({
