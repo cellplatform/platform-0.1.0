@@ -25,7 +25,7 @@ export const CmdBarGrammerInfo: React.FC<CmdBarGrammerInfoProps> = (props) => {
   const { width, minWidth = 230, maxWidth } = size;
 
   const items = PropList.builder<Fields>()
-    .field('Namespace', { label: 'Namespace', value: `"sys.crypto"` }) // TODO 🐷
+    .field('Namespace', { label: 'Namespace', value: `sys.crypto` }) // TODO - examnple 🐷
     .field('Instance.Id', { label: 'Instance', value: `"${instance.id}"` })
     .field('Instance.Bus', { label: 'Instance.Bus', value: rx.bus.instance(instance.bus) })
     .items(fields);

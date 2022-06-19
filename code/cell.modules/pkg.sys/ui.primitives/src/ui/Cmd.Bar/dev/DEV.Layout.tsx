@@ -20,7 +20,7 @@ export const DevLayout: React.FC<DevLayoutProps> = (props) => {
     id: 'info',
     position: { x: 'center', y: 'bottom' },
     render(e) {
-      return <CmdBar.Grammer.Info instance={instance} />;
+      return <CmdBar.Grammer.Info instance={instance} style={{ marginBottom: 55 }} />;
     },
   };
 
