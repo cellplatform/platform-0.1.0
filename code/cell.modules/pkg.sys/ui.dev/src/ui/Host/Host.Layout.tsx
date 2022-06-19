@@ -41,9 +41,7 @@ export const HostLayout: React.FC<HostLayoutProps> = (props) => {
       Flex: `${orientation}-center-center`,
       WebkitAppRegion: 'drag', // NB: Window draggable within electron.
     }),
-    fullscreen: {
-      button: css({ Absolute: [4, 7, null, null] }),
-    },
+    fullscreen: { button: css({ Absolute: [4, 7, null, null] }) },
     flipX: css({ transform: 'scaleX(-1)' }),
   };
 
