@@ -167,7 +167,7 @@ export const actions = DevActions<Ctx>()
         <Filesystem.PathList.Stateful
           style={{ Margin: [5, 10, 20, 10], height: 150 }}
           instance={TestUtil.filesystem.instance}
-          scroll={true}
+          scrollable={true}
           droppable={true}
           selectable={true}
           onStateChange={(e) => {

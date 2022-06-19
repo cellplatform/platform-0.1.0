@@ -13,6 +13,7 @@ export type TextInputStatus = {
   empty: boolean;
   value: string;
   size: { width: Pixels; height: Pixels };
+  selection: { start: number; end: number };
 };
 
 /**
@@ -20,6 +21,7 @@ export type TextInputStatus = {
  */
 export type TextInputValue = {
   value?: string;
+  hint?: string | JSX.Element;
   maxLength?: number;
   mask?: t.TextInputMaskHandler;
 };
@@ -63,7 +65,6 @@ export type TextInputStyle = t.TextStyle & { disabledColor?: number | string };
  * Input
  */
 export type TextInputFocusAction = {
-  selectOnFocus?: boolean;
   focusOnLoad?: boolean;
   focusAction?: 'Select' | TextInputCursorAction;
 };

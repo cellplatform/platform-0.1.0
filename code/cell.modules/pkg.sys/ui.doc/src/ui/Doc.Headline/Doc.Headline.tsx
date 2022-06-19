@@ -1,6 +1,5 @@
 import React from 'react';
-
-import { COLORS, css, CssValue, FONT, Font, SanitizeHtml, Button } from './common';
+import { COLORS, css, CssValue, SanitizeHtml, Button } from './common';
 
 export type DocHeadlineProps = {
   id?: string;
@@ -18,9 +17,6 @@ export type DocHeadlineProps = {
 export const DocHeadline: React.FC<DocHeadlineProps> = (props) => {
   const { id = '', category, onClick, hint = {} } = props;
   const widthHint = hint.width ?? -1;
-
-  const fonts = Font.useFont([FONT.NEUTON.REGULAR, FONT.NEUTON.ITALIC]);
-  if (!fonts.ready) return null;
 
   const title = linebreaks(props.title);
   const subtitle = linebreaks(props.subtitle);

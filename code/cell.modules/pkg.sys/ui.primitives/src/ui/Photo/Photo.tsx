@@ -3,8 +3,8 @@ import React from 'react';
 import { css, FC } from '../../common';
 import { DEFAULT } from './common';
 import { PhotoProps } from './types';
-import { DefsSelector } from './ui/Debug.DefsSelector';
-import { Image } from './ui/Image';
+import { DefsSelector } from './view/Debug.DefsSelector';
+import { Image } from './view/Image';
 import { Util } from './Util';
 import { useIndexSequence } from './useIndexSequence';
 

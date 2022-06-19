@@ -17,9 +17,9 @@ export const Keyboard = {
     Monitor: KeyboardStateMonitor,
   },
 
+  useKeyboard, //       Does NOT cause redraws.
+  useKeyboardState, //  Does causes redraws (intentionally by design).
   useEventPipe,
-  useKeyboard,
-  useKeyboardState,
 
   UI: { EventProps },
 };

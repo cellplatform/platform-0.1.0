@@ -13,4 +13,4 @@ export { Card } from 'sys.ui.primitives/lib/ui/Card';
 export { PeerNetwork } from '../web.PeerNetwork';
 export { useLocalPeer } from '../ui.hooks';
 export { CardBody } from '../ui/primitives';
-export { LocalPeerCard } from '../ui/LocalPeerCard';
+export { LocalPeerCard } from '../ui/LocalPeer.Card';

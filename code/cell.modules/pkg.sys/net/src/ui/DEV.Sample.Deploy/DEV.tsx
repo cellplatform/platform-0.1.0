@@ -28,7 +28,7 @@ const Util = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('Sample.Deploy')
+  .namespace('DEV.Sample.Deploy')
   .context((e) => {
     if (e.prev) return e.prev;
 

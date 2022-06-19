@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 
+import { Event } from '../Event';
 import { css, DEFAULT, FC, rx, t, time } from './common';
 import { TextInputEvents, TextInputMasks } from './logic';
+import { TextInputHint } from './TextInput.Hint';
 import { HtmlInput } from './TextInput.Html';
 import { TextInputProps } from './types';
 import { Util } from './Util';
-import { Event } from '../Event';
 
 export { TextInputProps };
 
@@ -14,20 +15,22 @@ export { TextInputProps };
  */
 const View: React.FC<TextInputProps> = (props) => {
   const {
-    value = '',
     isPassword = false,
     isReadOnly = false,
     isEnabled = true,
     placeholder,
     valueStyle = DEFAULT.TEXT.STYLE,
     disabledOpacity = DEFAULT.DISABLED_OPACITY,
+    maxLength,
   } = props;
 
   const instance: t.TextInputInstance = props.instance ?? { bus: rx.bus(), id: 'default' };
-  const hasValue = value.length > 0;
   const [width, setWidth] = useState<string | number | undefined>();
 
   const events = Event.useEventsRef(() => TextInputEvents({ instance }));
+
+  const value = Util.value.format({ value: props.value, maxLength });
+  const hasValue = value.length > 0;
 
   /**
    * [Lifecycle]
@@ -87,17 +90,23 @@ const View: React.FC<TextInputProps> = (props) => {
    */
 
   const styles = {
-    base: { position: 'relative', boxSizing: 'border-box', width },
+    base: {
+      position: 'relative',
+      boxSizing: 'border-box',
+      lineHeight: 0,
+      width,
+    },
     inner: { position: 'relative' },
     placeholder: {
       Absolute: 0,
       opacity: isEnabled ? 1 : disabledOpacity,
       transition: `opacity 200ms`,
-      Flex: 'horizontal-center-start',
+      Flex: 'x-center-start',
       paddingLeft: 2, // Ensure the placeholder does not bump into the input-caret.
       whiteSpace: 'nowrap',
       overflow: 'hidden',
       userSelect: 'none',
+      pointerEvents: 'none',
     },
     readonly: { userSelect: 'auto' },
     input: {
@@ -124,6 +133,10 @@ const View: React.FC<TextInputProps> = (props) => {
     </div>
   );
 
+  const elHint = hasValue && props.hint && (
+    <TextInputHint valueStyle={valueStyle} value={value} hint={props.hint} />
+  );
+
   const elInput = (
     <HtmlInput
       instance={instance}
@@ -137,7 +150,6 @@ const View: React.FC<TextInputProps> = (props) => {
       maxLength={props.maxLength}
       mask={props.mask}
       valueStyle={valueStyle}
-      selectOnFocus={props.selectOnFocus}
       focusOnLoad={props.focusOnLoad}
       focusAction={props.focusAction}
       onKeyPress={props.onKeyPress}
@@ -169,11 +181,10 @@ const View: React.FC<TextInputProps> = (props) => {
       onMouseEnter={props.onMouseEnter}
       onMouseLeave={props.onMouseLeave}
     >
-      <div {...css(styles.inner)}>
-        {elPlaceholder}
-        {elReadOnly}
-        {elInput}
-      </div>
+      {elHint}
+      {elPlaceholder}
+      {elReadOnly}
+      {elInput}
     </div>
   );
 };

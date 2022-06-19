@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { css, defaultValue, formatColor, t } from '../../common';
+import { css, defaultValue, Color, t } from '../../common';
 import { Cropmarks } from './Cropmarks';
 import { Labels } from './Labels';
 
@@ -50,7 +50,7 @@ const SubjectCropmarks: React.FC<SubjectProps> = (props) => {
   if (!cropmarks) return null;
 
   const abs = layout.position;
-  const color = formatColor(cropmarks === true ? 1 : cropmarks);
+  const color = Color.format(cropmarks === true ? 1 : cropmarks);
 
   const size = props.cropmark.size;
   const margin = props.cropmark.margin;

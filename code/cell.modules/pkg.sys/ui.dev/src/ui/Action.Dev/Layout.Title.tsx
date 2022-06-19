@@ -14,6 +14,7 @@ export const LayoutTitle: React.FC<LayoutTitleProps> = (props) => {
       fontSize: 11,
       marginTop: 5,
       marginLeft: 12,
+      marginBottom: 1,
     }),
   };
 

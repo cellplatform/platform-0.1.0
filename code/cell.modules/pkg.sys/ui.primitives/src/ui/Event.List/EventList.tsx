@@ -4,9 +4,9 @@ import { useEventHistory } from '../Event';
 import { CONSTANTS, css, FC, t } from './common';
 import { EventListEvents as Events } from './Events';
 import { EventListProps } from './types';
-import { DebugBusId } from './ui/Debug.BusId';
-import { Empty } from './ui/Empty';
-import { EventListLayout as Layout, EventListLayoutProps } from './ui/Layout';
+import { DebugBusId } from './view/Debug.BusId';
+import { Empty } from './view/Empty';
+import { EventListLayout as Layout, EventListLayoutProps } from './view/Layout';
 import { Util } from './Util';
 
 /**

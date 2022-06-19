@@ -12,6 +12,25 @@ type Ctx = {
   output: { state?: any };
 };
 
+const Util = {
+  async generateSampleFile(ctx: Ctx) {
+    const fs = ctx.fs;
+
+    const toPath = (ctx: Ctx, count: number) => {
+      const dir = Path.trimSlashes(ctx.debug.dir);
+      const filename = `file-${count + 1}.json`;
+      return dir ? Path.join(dir, filename) : filename;
+    };
+
+    const msg = cuid().repeat(value.random(1, 50));
+    const total = (await fs.manifest()).files.length;
+    const path = toPath(ctx, total);
+    const data = { msg, total };
+
+    fs.json.write(path, data);
+  },
+};
+
 /**
  * Actions
  */
@@ -27,7 +46,8 @@ export const actions = DevActions<Ctx>()
       fs,
       props: {
         instance,
-        scroll: true,
+        scrollable: true, // Virtual list.
+        // scrollable: false,
         selectable: List.SelectionConfig.default,
         theme: FsPathList.DEFAULT.THEME,
         droppable: true,
@@ -52,6 +72,22 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
+    e.title('[TODO] 🐷');
+
+    e.markdown(`
+    
+- Self: [sys.fs:ui/<Filesystem.PathList>]
+- Cross Ref: same problem in [sys.ui.doc/<Doc.List>] 
+- Janky scrolling - underlying primitive works [sys.ui.primitives:<List.Virtual>]
+- Delay fixing (P2) because:
+   - works acceptably on Rowan's machine
+   - Fix understandable (because it works in the unerlying library)
+
+    `);
+    e.hr();
+  })
+
+  .items((e) => {
     e.title('Props');
 
     e.select((config) => {
@@ -66,9 +102,9 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.1);
 
-    e.boolean('scroll', (e) => {
-      if (e.changing) e.ctx.props.scroll = e.changing.next;
-      e.boolean.current = e.ctx.props.scroll;
+    e.boolean('scrollable', (e) => {
+      if (e.changing) e.ctx.props.scrollable = e.changing.next;
+      e.boolean.current = e.ctx.props.scrollable;
     });
 
     e.boolean('droppable', (e) => {
@@ -99,7 +135,7 @@ export const actions = DevActions<Ctx>()
         <Filesystem.PathList.Stateful
           style={{ Margin: [5, 10, 20, 10], height: 150 }}
           instance={e.ctx.props.instance}
-          scroll={true}
+          scrollable={true}
           droppable={true}
           selectable={true}
         />
@@ -128,18 +164,13 @@ export const actions = DevActions<Ctx>()
     );
 
     e.button('add (generate sample)', async (e) => {
-      const toPath = (ctx: Ctx, count: number) => {
-        const dir = Path.trimSlashes(ctx.debug.dir);
-        const filename = `file-${count + 1}.json`;
-        return dir ? Path.join(dir, filename) : filename;
-      };
+      Util.generateSampleFile(e.ctx);
+    });
 
-      const msg = cuid().repeat(value.random(1, 50));
-      const fs = e.ctx.fs;
-      const total = (await fs.manifest()).files.length;
-      const path = toPath(e.ctx, total);
-      const data = { msg, total };
-      fs.json.write(path, data);
+    e.button('x10', async (e) => {
+      for (const item of Array.from({ length: 10 })) {
+        await Util.generateSampleFile(e.ctx);
+      }
     });
 
     e.hr(1, 0.1);

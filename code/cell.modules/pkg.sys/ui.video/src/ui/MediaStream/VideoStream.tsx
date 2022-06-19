@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { css, CssValue, defaultValue, t, Style, color } from '../../common';
+import { css, CssValue, t, Style, color } from './common';
+
+type ClickHandler = React.MouseEventHandler<HTMLDivElement>;
 
 export type VideoStreamProps = {
   stream?: MediaStream;
@@ -9,6 +11,11 @@ export type VideoStreamProps = {
   backgroundColor?: string | number;
   isMuted?: boolean;
   style?: CssValue;
+  onClick?: ClickHandler;
+  onMouseDown?: ClickHandler;
+  onMouseUp?: ClickHandler;
+  onMouseEnter?: ClickHandler;
+  onMouseLeave?: ClickHandler;
 };
 
 export const VideoStream: React.FC<VideoStreamProps> = (props) => {
@@ -37,7 +44,14 @@ export const VideoStream: React.FC<VideoStreamProps> = (props) => {
   };
 
   return (
-    <div {...css(styles.base, props.style)}>
+    <div
+      {...css(styles.base, props.style)}
+      onClick={props.onClick}
+      onMouseDown={props.onMouseDown}
+      onMouseUp={props.onMouseUp}
+      onMouseEnter={props.onMouseEnter}
+      onMouseLeave={props.onMouseLeave}
+    >
       <video {...styles.video} ref={videoRef} autoPlay={true} muted={isMuted} />
     </div>
   );

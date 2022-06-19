@@ -1,55 +1,42 @@
 import React from 'react';
 
-import { FC, t, CssValue, css, constants, useResizeObserver, Util } from './common';
-import { CmdCardLayout, CmdCardLayoutProps } from './ui/Layout';
-import { CmdCardEvents, CmdCardController, useCmdCardController } from './logic';
-import { CmdStateInfo } from './ui/Info';
-
 import { Card } from '../Card';
+import { CmdBar, css, DEFAULT, FC, Util } from './common';
+import { CmdCardController, CmdCardEvents, useCmdCardController } from './logic';
+import { CmdCardProps } from './types';
+import { CmdStateInfo } from './view/Info';
+import { CmdCardLayout, CmdCardLayoutProps } from './view/Layout';
 
 /**
  * Types
  */
-export type CmdCardProps = {
-  instance: t.CmdCardInstance;
-  state?: t.CmdCardState;
-  showAsCard?: boolean;
-  style?: CssValue;
-};
+export { CmdCardProps };
 
 /**
  * Component
  */
 const View: React.FC<CmdCardProps> = (props) => {
   const { instance, showAsCard = true } = props;
-  const state = props.state ?? Util.state.default();
-  const resize = useResizeObserver();
 
   /**
    * [Render]
    */
   const radius = showAsCard ? 4 : 0;
   const styles = {
-    base: css({
-      display: 'flex',
-      visibility: resize.ready ? 'visible' : 'hidden',
-    }),
+    base: css({ display: 'flex' }),
     layout: css({ flex: 1 }),
   };
 
   return (
-    <Card
-      ref={resize.ref}
-      showAsCard={showAsCard}
-      style={css(styles.base, props.style)}
-      border={{ radius }}
-    >
+    <Card showAsCard={showAsCard} border={{ radius }} style={css(styles.base, props.style)}>
       <CmdCardLayout
         instance={instance}
-        state={state}
+        commandbar={props.commandbar}
         style={styles.layout}
         borderRadius={radius - 1}
-        resize={resize}
+        tray={props.tray}
+        body={props.body}
+        minimized={props.minimized}
       />
     </Card>
   );
@@ -59,9 +46,10 @@ const View: React.FC<CmdCardProps> = (props) => {
  * Export
  */
 type Fields = {
-  constants: typeof constants;
+  DEFAULT: typeof DEFAULT;
   Info: typeof CmdStateInfo;
   Layout: React.FC<CmdCardLayoutProps>;
+  Tray: typeof CmdBar.Tray;
   Events: typeof CmdCardEvents;
   Controller: typeof CmdCardController;
   useController: typeof useCmdCardController;
@@ -70,13 +58,14 @@ type Fields = {
 export const CmdCard = FC.decorate<CmdCardProps, Fields>(
   View,
   {
-    constants,
+    DEFAULT,
     Info: CmdStateInfo,
     Layout: CmdCardLayout,
+    Tray: CmdBar.Tray,
     Events: CmdCardEvents,
     Controller: CmdCardController,
     useController: useCmdCardController,
     defaultState: Util.state.default,
   },
-  { displayName: 'CmdCard' },
+  { displayName: 'Cmd.Card' },
 );

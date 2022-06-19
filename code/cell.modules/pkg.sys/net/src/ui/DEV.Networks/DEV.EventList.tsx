@@ -1,5 +1,5 @@
 import React from 'react';
-import { css, CssValue, t } from './DEV.common';
+import { css, CssValue, t } from './common';
 import { EventList } from 'sys.ui.primitives/lib/ui/Event.List';
 
 export type DevEventListProps = {

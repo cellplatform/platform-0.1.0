@@ -24,7 +24,7 @@ export const actions = DevActions<Ctx>()
     const bus = rx.bus();
     const instance = { bus };
 
-    Filesystem.IndexedDb.create({ bus, id: DEFAULT.HISTORY.FS });
+    Filesystem.IndexedDb.create({ bus, fs: DEFAULT.HISTORY.FS });
 
     const ctx: Ctx = {
       instance,
@@ -43,7 +43,10 @@ export const actions = DevActions<Ctx>()
           instance={e.ctx.instance}
           style={{ MarginX: 15, marginTop: 10, marginBottom: 30 }}
           focusOnLoad={true}
-          onExportClick={({ url }) => e.ctx.setUrl(url)}
+          onExportClick={({ url }) => {
+            console.log('⚡️ onExportClick | url:', url);
+            e.ctx.setUrl(url);
+          }}
         />
       );
     });

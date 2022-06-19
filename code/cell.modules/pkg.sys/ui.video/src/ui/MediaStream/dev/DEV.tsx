@@ -13,7 +13,7 @@ import { DevLayoutMediaComponents } from './DEV.Layout.MediaComponents';
 import { PositioningLayout } from 'sys.ui.primitives/lib/ui/PositioningLayout';
 import { DevOuter } from './DEV.Layout.Outer';
 
-import { PathListStateful } from 'sys.fs/lib/web/ui/PathList';
+import { FsPathList } from 'sys.fs/lib/web/ui/Fs.PathList';
 
 type SaveTarget = 'Fs.IndexedDb' | 'Download';
 
@@ -72,7 +72,7 @@ export const actions = DevActions<Ctx>()
     const fsid = 'fs.video.sample';
     const store = async () => {
       if (fs) return fs;
-      const res = await Filesystem.IndexedDb.create({ bus, id: fsid });
+      const res = await Filesystem.IndexedDb.create({ bus, fs: fsid }).ready();
       return (fs = res.fs);
     };
 
@@ -336,7 +336,10 @@ export const actions = DevActions<Ctx>()
         };
         return (
           <DevOuter style={styles.base}>
-            <PathListStateful instance={{ bus, id: e.ctx.fsid }} style={{ flex: 1 }} />
+            <FsPathList.Stateful
+              instance={{ bus, id: e.ctx.ref, fs: e.ctx.fsid }}
+              style={{ flex: 1 }}
+            />
           </DevOuter>
         );
       },

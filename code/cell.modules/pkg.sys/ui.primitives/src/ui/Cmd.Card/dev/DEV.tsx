@@ -5,9 +5,9 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { CmdCard, CmdCardProps } from '..';
 import { EventList } from '../../Event.List';
-import { css, rx, slug, t, Util } from '../common';
-import { CmdCardInfoProps } from '../ui/Info';
-import { SampleRenderers, A, B } from './DEV.Renderers';
+import { css, rx, slug, t } from '../common';
+import { CmdCardInfoProps } from '../view/Info';
+import { DevBody } from './DEV.Body';
 import { DevSample } from './DEV.Sample';
 import { DevSidePanel } from './DEV.SidePanel';
 
@@ -69,10 +69,6 @@ const Helpers = {
     return props;
   },
 
-  toState(ctx: Ctx) {
-    return ctx.props.state || (ctx.props.state = Util.state.default());
-  },
-
   localbus(ctx: Ctx) {
     return rx.busAsType<t.CmdCardEvent>(ctx.localbus);
   },
@@ -95,14 +91,22 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       localbus,
       netbus,
-
-      props: { instance, showAsCard: true },
       events,
+
+      props: {
+        instance,
+        showAsCard: true,
+        minimized: false,
+        tray: <CmdCard.Tray.Placeholder />,
+        body: <DevBody />,
+      },
+
       state: {
         onChange(state) {
           e.change.ctx((ctx) => (ctx.state.current = state));
         },
       },
+
       debug: {
         render: true,
         fireCount: 0,
@@ -124,6 +128,8 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx } = e;
+
+    e.ctx.events.commandbar.focus();
   })
 
   .items((e) => {
@@ -160,6 +166,11 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.props.showAsCard;
     });
 
+    e.boolean('minimized', (e) => {
+      if (e.changing) e.ctx.props.minimized = e.changing.next;
+      e.boolean.current = e.ctx.props.minimized;
+    });
+
     e.hr();
   })
 
@@ -189,41 +200,6 @@ export const actions = DevActions<Ctx>()
         const textbox = state.commandbar.textbox;
         textbox.spinning = !Boolean(textbox.spinning);
       });
-    });
-
-    e.button('[TODO] isOpen (toggle)', async (e) => {
-      await e.ctx.events.state.patch((state) => {
-        state.body.isOpen = !Boolean(state.body.isOpen);
-      });
-    });
-
-    e.button('sample renderers (toggle)', async (e) => {
-      const { body, backdrop } = SampleRenderers;
-      await e.ctx.events.state.patch((state) => {
-        const exists = Boolean(state.body.render);
-
-        /**
-         * TODO 🐷
-         * - make ".render" method optional (undefined ===> [.renderNull])
-         */
-
-        state.body.render = exists ? (Util.renderNull as any) : body;
-        state.backdrop.render = exists ? (Util.renderNull as any) : backdrop;
-      });
-    });
-
-    e.select((config) => {
-      config
-        .title('body.show')
-        .items(['Hidden', 'CommandBar', 'FullScreen'])
-        .initial('CommandBar')
-        .view('buttons')
-        .pipe(async (e) => {
-          if (e.changing) {
-            const next = e.changing?.next[0].value;
-            await e.ctx.events.state.patch((state) => (state.body.show = next));
-          }
-        });
     });
 
     e.hr();
@@ -303,9 +279,10 @@ export const actions = DevActions<Ctx>()
     const { bus, busKind } = Helpers.toBus(e.ctx);
     const props = Helpers.toProps(e.ctx);
     const instance = rx.bus.instance(bus);
+    const minimized = props.minimized;
 
     const SIDEPANEL = { WIDTH: 230 };
-    const showSidebar = debug.showSidebar && width < 600;
+    const showSidebar = debug.showSidebar && !minimized && width < 600;
     const bottomRight = busKind === 'netbus' ? `${instance}` : `${instance} (local)`;
 
     e.settings({
@@ -315,7 +292,7 @@ export const actions = DevActions<Ctx>()
         cropmarks: -0.2,
         offset: showSidebar ? [0 - SIDEPANEL.WIDTH, 0] : undefined,
         width,
-        height,
+        height: minimized ? undefined : height,
         label: {
           topLeft: '<CmdCard>',
           bottomRight: width > 300 ? bottomRight : undefined,

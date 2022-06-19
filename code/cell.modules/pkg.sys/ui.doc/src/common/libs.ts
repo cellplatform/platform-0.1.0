@@ -20,3 +20,5 @@ export { MinSize } from 'sys.ui.primitives/lib/ui/MinSize';
 export { Photo } from 'sys.ui.primitives/lib/ui/Photo';
 export { Button } from 'sys.ui.primitives/lib/ui.ref/button/Button';
 export { Chip } from 'sys.ui.primitives/lib/ui/Chip';
+export { List } from 'sys.ui.primitives/lib/ui/List';
+export { Card } from 'sys.ui.primitives/lib/ui/Card';

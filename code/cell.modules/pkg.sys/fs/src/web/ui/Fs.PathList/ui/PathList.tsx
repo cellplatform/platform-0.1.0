@@ -1,18 +1,18 @@
 import React, { useRef, useState } from 'react';
 
-import { COLORS, Color, css, DEFAULT, List, Spinner, Style, t, time } from '../common';
+import { Color, COLORS, css, DEFAULT, List, Spinner, Style, t, time } from '../common';
 import { FsPathListProps } from '../types';
-import { wrangle } from './wrangle';
 import { DropTarget } from './DropTarget';
 import { Row } from './PathList.Row';
 import { renderers } from './renderers';
+import { wrangle } from './wrangle';
 
 /**
  * Component
  */
-const View: React.FC<FsPathListProps> = (props) => {
-  const { instance, scroll = true, files = [], spinning, theme = DEFAULT.THEME } = props;
-  const total = files.length;
+export const PathList: React.FC<FsPathListProps> = (props) => {
+  const { instance, scrollable: scroll = true, cursor, spinning, theme = DEFAULT.THEME } = props;
+  const total = cursor.total;
   const isEmpty = total === 0;
   const isLight = theme === 'Light';
 
@@ -57,19 +57,27 @@ const View: React.FC<FsPathListProps> = (props) => {
   };
 
   const toData = (file: t.ManifestFile): t.FsPathListItemData => ({ file, theme });
-  const ListView = {
-    simple() {
-      const items = files.map((file) => ({ data: toData(file) }));
-      return <List.Layout {...list} items={items} state={props.state} style={styles.list} />;
+  const toListCursor = (cursor: t.FsPathListCursor): t.ListCursor => {
+    const total = cursor.total;
+    const getData: t.GetListItem = (index) => ({ data: toData(cursor.getData(index)) });
+    const getSize: t.GetListItemSize = () => Row.height;
+    return { total, getData, getSize };
+  };
+
+  const listView = {
+    simple(files: t.FsPathListCursor) {
+      const cursor = toListCursor(files);
+      return <List.Layout {...list} items={cursor} state={props.state} style={styles.list} />;
     },
-    virtual() {
-      const getData: t.GetListItem = (index) => ({ data: toData(files[index]) });
-      const getSize: t.GetListItemSize = () => Row.height;
-      const cursor: t.ListCursor = { total, getData, getSize };
+
+    virtual(files: t.FsPathListCursor) {
+      const cursor = toListCursor(files);
       return <List.Virtual {...list} cursor={cursor} state={props.state} style={styles.list} />;
     },
+
     render() {
-      return scroll ? ListView.virtual() : ListView.simple();
+      console.log('render');
+      return scroll ? listView.virtual(cursor) : listView.simple(cursor);
     },
   };
 
@@ -80,7 +88,7 @@ const View: React.FC<FsPathListProps> = (props) => {
   );
 
   const elEmpty = isEmpty && !elSpinner && <div {...styles.empty}>No files to display</div>;
-  const elList = !elSpinner && !elEmpty && ListView.render();
+  const elList = !elSpinner && !elEmpty && listView.render();
 
   const elDropTarget = props.droppable && (
     <DropTarget
@@ -101,26 +109,3 @@ const View: React.FC<FsPathListProps> = (props) => {
     </div>
   );
 };
-
-/**
- * Export
- */
-export const PathList = React.memo(View, (prev, next) => {
-  /**
-   * TODO 🐷
-   *
-   * - Fix scroll problem when list is within an ui.dev [ActionsPanel]
-   *
-   *    Scrolling is janky and cuts out on the decay curve.
-   *    The underlying list does not appear to do this, so
-   *    I suspect this is a problem within the <PathList> itself.
-   *
-   *    First thing to try is to remove the files[] array
-   *    and pass in a cursor type structure.
-   *
-   *    The underlying <List> does not re-render at the root level
-   *    but <PathList> does.  Perhaps it's this.
-   *
-   */
-  return false;
-});

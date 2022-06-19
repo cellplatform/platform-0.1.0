@@ -1,5 +1,5 @@
 import React from 'react';
-import { FC, COLORS, Color, css, CssValue, t, Chip, Filesize } from '../common';
+import { Chip, Color, COLORS, css, CssValue, FC, Filesize, t } from '../common';
 
 const TRANSPARENT = Color.format(0);
 const { DARK, BLUE } = COLORS;
@@ -69,18 +69,26 @@ const View: React.FC<RowProps> = (props) => {
     },
   };
 
+  const elPath = (
+    <div {...styles.path.base}>
+      <div {...styles.path.ellipsis}>{path}</div>
+    </div>
+  );
+
+  const elChip = (
+    <Chip.Hash
+      text={file.filehash}
+      prefix={size}
+      clipboard={(e) => `${path}#${e.hash}`}
+      length={4}
+      theme={theme}
+    />
+  );
+
   return (
     <div {...css(styles.base, styles.selected, props.style)}>
-      <div {...styles.path.base}>
-        <div {...styles.path.ellipsis}>{path}</div>
-      </div>
-      <Chip.Hash
-        text={file.filehash}
-        prefix={size}
-        clipboard={(e) => `${path}#${e.hash}`}
-        length={4}
-        theme={theme}
-      />
+      {elPath}
+      {elChip}
     </div>
   );
 };

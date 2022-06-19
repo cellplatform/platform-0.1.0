@@ -1,36 +1,22 @@
 import React from 'react';
-import { color, css, CssValue, Style, t } from '../../common';
+import { Color, css, Style, t } from '../../common';
+
+import { CardProps } from './types';
+export { CardProps };
 
 /**
  * Types
  */
-export type CardProps = {
-  children?: React.ReactNode;
-  background?: number | string;
-  showAsCard?: boolean;
-  padding?: t.CssEdgesInput; // NB: padding is dropped if "NOT" showing as card.
-  margin?: t.CssEdgesInput;
-  border?: { color?: number | string; radius?: number | string };
-  width?: number | { fixed?: number; min?: number; max?: number };
-  height?: number | { fixed?: number; min?: number; max?: number };
-  userSelect?: string | boolean;
-  shadow?: boolean | t.CssShadow;
-  style?: CssValue;
-
-  onClick?: React.MouseEventHandler;
-  onDoubleClick?: React.MouseEventHandler;
-  onMouseDown?: React.MouseEventHandler;
-  onMouseUp?: React.MouseEventHandler;
-  onMouseEnter?: React.MouseEventHandler;
-  onMouseLeave?: React.MouseEventHandler;
-};
 
 /**
  * Component
  */
 export const Card = React.forwardRef<HTMLDivElement, CardProps>((props, ref) => {
-  const { background = 1, showAsCard = true } = props;
+  const { showAsCard = true } = props;
   const borderColor = props.border?.color ?? -0.2;
+
+  const bg = props.background ?? {};
+  const bgColor = bg.color ?? 1;
 
   const shadow = toShadow(props.shadow);
   const width = typeof props.width === 'number' ? { fixed: props.width } : props.width;
@@ -52,9 +38,10 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>((props, ref) => 
       ...Style.toMargins(props.margin),
     }),
     card: css({
-      border: `solid 1px ${color.format(borderColor)}`,
+      border: `solid 1px ${Color.format(borderColor)}`,
       borderRadius: props.border?.radius ?? 4,
-      background: color.format(background),
+      backgroundColor: Color.format(bgColor),
+      backdropFilter: typeof bg.blur === 'number' ? `blur(${bg.blur}px)` : undefined,
       boxShadow: Style.toShadow(shadow),
       ...Style.toPadding(props.padding),
     }),

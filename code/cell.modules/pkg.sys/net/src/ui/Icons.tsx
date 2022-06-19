@@ -2,7 +2,7 @@ import { Icon } from '@platform/ui.icon';
 import { BiBus } from 'react-icons/bi';
 import { CgDatabase } from 'react-icons/cg';
 import { FaNetworkWired } from 'react-icons/fa';
-import { FiMic, FiMicOff } from 'react-icons/fi';
+import { FiMic, FiMicOff, FiHardDrive } from 'react-icons/fi';
 import { GrNetworkDrive } from 'react-icons/gr';
 import { HiOutlineDatabase } from 'react-icons/hi';
 import {
@@ -43,8 +43,11 @@ export const Icons = {
   Arrow: { Back: icon(MdArrowBack), Forward: icon(MdArrowForward) },
   Bus: icon(BiBus),
   Database: icon(HiOutlineDatabase),
-  FsDrives: icon(CgDatabase),
-  FsNetworkDrive: icon(GrNetworkDrive),
+  Fs: {
+    Drive: icon(FiHardDrive),
+    Drives: icon(CgDatabase),
+    NetworkDrive: icon(GrNetworkDrive),
+  },
   Unknown: icon(MdHelpOutline),
   Network: icon(FaNetworkWired),
   Keyboard: icon(MdKeyboard),

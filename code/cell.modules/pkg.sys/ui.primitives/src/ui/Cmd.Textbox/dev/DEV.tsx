@@ -18,18 +18,20 @@ export const actions = DevActions<Ctx>()
   .namespace('ui.Cmd.Textbox')
   .context((e) => {
     if (e.prev) return e.prev;
+    const change = e.change;
 
     const ctx: Ctx = {
       props: {
         placeholder: 'command',
+        hint: '',
         spinner: false,
         pending: false,
         theme: 'Dark',
-        onChange(event) {
-          e.change.ctx((ctx) => {
-            const isControlled = e.current?.debug.isControlled ?? true;
-            const value = isControlled ? event.to : undefined;
-            ctx.props.text = value;
+        onChange(e) {
+          change.ctx((ctx) => {
+            if (ctx.debug.isControlled) {
+              ctx.props.text = e.to;
+            }
           });
         },
         onAction(e) {
@@ -59,6 +61,8 @@ export const actions = DevActions<Ctx>()
         });
     });
 
+    e.hr(1, 0.1);
+
     e.boolean('spinner', (e) => {
       if (e.changing) e.ctx.props.spinner = e.changing.next;
       e.boolean.current = e.ctx.props.spinner;
@@ -77,6 +81,18 @@ export const actions = DevActions<Ctx>()
           if (e.changing?.action === 'invoke') {
             e.textbox.current = e.changing.next || undefined;
             e.ctx.props.placeholder = e.textbox.current;
+          }
+        }),
+    );
+
+    e.textbox((config) =>
+      config
+        .title('hint')
+        .initial(config.ctx.props.hint ?? '')
+        .pipe((e) => {
+          if (e.changing?.action === 'invoke') {
+            e.textbox.current = e.changing.next || undefined;
+            e.ctx.props.hint = e.textbox.current;
           }
         }),
     );

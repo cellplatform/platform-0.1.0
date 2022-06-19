@@ -1,8 +1,9 @@
 import React from 'react';
 
-import { DocHeadline, DocHeadlineProps } from '..';
+import { DocHeadlineProps } from '..';
 import { DevActions, Lorem, ObjectView } from '../../../test';
-import { Filesystem, t, COLORS } from '../common';
+import { COLORS } from '../common';
+import { Doc } from '../../Doc';
 
 type Ctx = {
   props: DocHeadlineProps;
@@ -50,12 +51,22 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.1);
 
+    e.textbox((config) =>
+      config.placeholder('category').pipe((e) => {
+        if (e.changing?.action === 'invoke') e.ctx.props.category = e.changing.next;
+      }),
+    );
     e.button('category: <undefined>', (e) => (e.ctx.props.category = undefined));
     e.button(`category: "${SAMPLE.CATEGORY}"`, (e) => (e.ctx.props.category = SAMPLE.CATEGORY));
     e.button('category: long', (e) => (e.ctx.props.category = SAMPLE.LOREM));
 
     e.hr(1, 0.1);
 
+    e.textbox((config) =>
+      config.placeholder('title').pipe((e) => {
+        if (e.changing?.action === 'invoke') e.ctx.props.title = e.changing.next;
+      }),
+    );
     e.button('title: <undefined>', (e) => (e.ctx.props.title = undefined));
     e.button('title: "Hello World!"', (e) => (e.ctx.props.title = SAMPLE.HELLO_WORLD));
     e.button('title: line break', (e) => (e.ctx.props.title = SAMPLE.OLD_POND));
@@ -63,8 +74,12 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.1);
 
+    e.textbox((config) =>
+      config.placeholder('subtitle').pipe((e) => {
+        if (e.changing?.action === 'invoke') e.ctx.props.subtitle = e.changing.next;
+      }),
+    );
     e.button('subtitle: <undefined>', (e) => (e.ctx.props.subtitle = undefined));
-
     e.button('subtitle: sample', (e) => (e.ctx.props.subtitle = SAMPLE.SUBTITLE));
     e.button('subtitle: long', (e) => (e.ctx.props.subtitle = SAMPLE.LOREM));
 
@@ -113,7 +128,11 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    e.render(<DocHeadline {...e.ctx.props} hint={{ width }} />);
+    e.render(
+      <Doc.Fonts>
+        <Doc.Headline {...e.ctx.props} hint={{ width }} />
+      </Doc.Fonts>,
+    );
   });
 
 export default actions;

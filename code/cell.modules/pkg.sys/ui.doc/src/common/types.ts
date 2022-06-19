@@ -9,5 +9,19 @@ export { Event, EventBus, Disposable, NpmPackageJson, DomRect } from '@platform/
 /**
  * @system
  */
-export { PropListItem, MinSizeResizeEventHandler, MinSizeFlags } from 'sys.ui.primitives/lib/types';
 export { Fs, FsViewInstance } from 'sys.fs/lib/types';
+export {
+  PropListItem,
+  MinSizeResizeEventHandler,
+  MinSizeFlags,
+  ListItem,
+  ListState,
+  ListStateChange,
+  ListStateLazy,
+  ListCursor,
+  ListItemRenderer,
+  ListItemRenderFlags,
+  GetListItem,
+  GetListItemSize,
+  CardProps,
+} from 'sys.ui.primitives/lib/types';

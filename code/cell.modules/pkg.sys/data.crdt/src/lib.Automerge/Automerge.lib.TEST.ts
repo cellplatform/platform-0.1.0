@@ -1,6 +1,6 @@
 import { AutomergeDoc } from '.';
-import { Automerge, Filesystem, rx, t } from '../common';
-import { expect, Test } from '../test';
+import { Automerge, rx, t } from '../common';
+import { expect, Test, TestFilesystem } from '../test';
 
 /**
  * https://github.com/automerge/automerge
@@ -14,27 +14,12 @@ export default Test.describe('Automerge (CRDT)', (e) => {
     json?: any;
   };
 
-  const PATH = {
-    ROOT: 'tmp/test/Automerge',
-  };
-
+  const PATH = TestFilesystem.PATH;
   const bus = rx.bus();
   let fs: t.Fs;
 
-  const getFilesystem = async (options: { clear?: boolean } = {}) => {
-    const id = 'dev.sys.crdt';
-    const local = fs ?? (fs = (await Filesystem.IndexedDb.create({ bus, id })).fs);
-    if (options.clear) await clearTestFiles(local);
-    return local;
-  };
-
-  const clearTestFiles = async (fs: t.Fs) => {
-    const manifest = await fs.manifest();
-    const files = manifest.files.filter((file) => file.path.startsWith(PATH.ROOT));
-    const paths = files.map((file) => file.path);
-    for (const path of paths) {
-      await fs.delete(path);
-    }
+  const getFilesystem = async (options?: { clear?: boolean }) => {
+    return fs ?? (fs = await TestFilesystem.create(bus, options));
   };
 
   function createTestDoc() {

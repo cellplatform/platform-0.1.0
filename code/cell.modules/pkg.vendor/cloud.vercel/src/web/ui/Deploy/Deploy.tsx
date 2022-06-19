@@ -166,7 +166,7 @@ export const Deploy: React.FC<DeployProps> = (props) => {
         <Filesystem.PathList.Stateful
           instance={instance}
           style={styles.fs.list}
-          scroll={true}
+          scrollable={true}
           droppable={true}
           selectable={true}
         />

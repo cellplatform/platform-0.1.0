@@ -1,4 +1,4 @@
-export * from '../NetworkCard/dev/DEV.types';
+export * from '../Network.Card/dev/DEV.types';
 
 /**
  * Views

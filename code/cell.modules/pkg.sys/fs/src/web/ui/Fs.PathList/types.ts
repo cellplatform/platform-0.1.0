@@ -10,7 +10,7 @@ export type FsPathListDroppedHandler = (e: t.Dropped) => void;
  */
 export type FsPathListCommonProps = {
   instance: t.FsViewInstance;
-  scroll?: boolean;
+  scrollable?: boolean;
   padding?: t.CssEdgesInput;
   selectable?: t.ListSelectionConfig | boolean;
   droppable?: boolean; // Support drag-drop from host OS.
@@ -21,14 +21,11 @@ export type FsPathListCommonProps = {
 
 export type FsPathListProps = FsPathListCommonProps & {
   state?: t.ListStateLazy;
-  files?: t.ManifestFile[];
+  cursor: FsPathListCursor;
   spinning?: boolean;
   onDrop?: FsPathListDroppedHandler;
 };
 
-/**
- * TODO 🐷
- */
 export type FsPathListCursor = {
   total: number;
   getData: (index: number) => t.ManifestFile;
@@ -53,7 +50,7 @@ export type FsPathListItemData = {
 export type FsPathListState = t.ListState;
 
 /**
- * Event Handlers
+ * [EVENT HANDLERS]
  */
 
 export type FsPathListStateChangedHandler = (e: FsPathListStateChangedHandlerArgs) => void;

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { color, css, CssValue, Icons } from './DEV.common';
+import { color, css, CssValue, Icons } from './common';
 
 export type DevEmptyProps = {
   plural?: boolean;

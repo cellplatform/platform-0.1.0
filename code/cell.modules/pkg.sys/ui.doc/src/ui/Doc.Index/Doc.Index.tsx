@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { DocHeadline } from '../Doc.Headline';
 import { Color, css, CssValue, t, useResizeObserver } from './common';
-import { Logo } from './ui/Logo';
 
 export type DocIndexProps = {
   items?: t.DocDef[];
@@ -16,12 +15,6 @@ export const DocIndex: React.FC<DocIndexProps> = (props) => {
 
   const resize = useResizeObserver({ onSize: (size) => props.onResize?.({ size }) });
   const size = resize.rect;
-
-  /**
-   * TODO 🐷
-   * - Move into dedicated router module.
-   */
-  document.title = 'ro.db.team';
 
   /**
    * [Render]
@@ -65,8 +58,6 @@ export const DocIndex: React.FC<DocIndexProps> = (props) => {
     );
   });
 
-  const elLogo = size.width > 950 && <Logo />;
-
   const elBody = resize.ready && (
     <div {...styles.body.scrollOuter}>
       <div {...styles.body.inner}>{elHeadlines}</div>
@@ -75,7 +66,6 @@ export const DocIndex: React.FC<DocIndexProps> = (props) => {
 
   return (
     <div ref={resize.ref} {...css(styles.base, props.style)}>
-      {elLogo}
       {elBody}
     </div>
   );

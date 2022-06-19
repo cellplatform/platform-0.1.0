@@ -38,6 +38,7 @@ export const sampleItems: t.PropListItem[] = [
     label: 'monospace (fontSize: 9)',
     value: { data: 'thing', clipboard: true, monospace: true, color: COLORS.CYAN, fontSize: 9 },
   },
+  { label: 'color', value: { data: 'My Color', color: COLORS.MAGENTA } },
   { label: 'long (ellipsis)', value: LOREM },
   { label: 'bold', value: { data: 'value', bold: true } },
   {

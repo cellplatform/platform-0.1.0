@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { Button } from '../../ui.ref/button/Button';
 import { Spinner } from '../../ui.ref/spinner/Spinner';
@@ -11,7 +11,8 @@ import { TextInput } from '../Text.Input';
  */
 export type CmdTextboxProps = {
   instance?: { bus: t.EventBus<any>; id: string };
-  text?: string; // NB: undefined === handle state internally ("uncontrolled").
+  text?: string;
+  hint?: string;
   placeholder?: string;
   spinner?: boolean;
   pending?: boolean;
@@ -37,11 +38,9 @@ export const CmdTextboxContants = { DEFAULT, THEMES };
  */
 export const CmdTextbox: React.FC<CmdTextboxProps> = (props) => {
   const { theme = 'Light', spinner, pending = false } = props;
-  const isControlled = typeof props.text === 'string';
 
-  const [textState, setTextState] = useState('');
-  const text = isControlled ? props.text : textState;
-  const textTrimmed = (text || '').trim();
+  const text = props.text ?? '';
+  const textTrimmed = text.trim();
 
   const isInvokable = Boolean(textTrimmed && pending);
   const isDark = theme === 'Dark';
@@ -53,7 +52,7 @@ export const CmdTextbox: React.FC<CmdTextboxProps> = (props) => {
     TERMINAL: isDark ? COLORS.WHITE : color.alpha(COL_BASE, 0.8),
   };
   const COL_TEXT = {
-    DEFAULT: color.alpha(COL_BASE, 0.5),
+    DEFAULT: color.alpha(COL_BASE, 0.9),
     PENDING: COL_BASE,
     PLACEHOLDER: isDark ? 0.3 : -0.3,
   };
@@ -62,69 +61,56 @@ export const CmdTextbox: React.FC<CmdTextboxProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({ minWidth: 240, color: COL_BASE, Flex: 'x-stretch-stretch' }),
-    textbox: {
-      base: css({ flex: 1, Flex: 'x-center-center' }),
-      input: css({
-        position: 'relative',
-        flex: 1,
-        top: -5,
-        borderBottom: `dashed 1px ${color.format(isDark ? 0.2 : -0.1)}`,
-      }),
-    },
-    left: {
-      base: css({}),
-      icon: css({ position: 'relative', top: -2, marginRight: 4 }),
-    },
-    right: {
-      base: css({
-        top: -1,
-        Flex: 'x-center-center',
-        position: 'relative',
-        marginLeft: 1,
-      }),
-      divider: css({ width: 4 }),
-    },
-    spinner: css({ top: -2 }),
+    base: css({
+      minWidth: 240,
+      color: COL_BASE,
+      Flex: 'x-center-stretch',
+    }),
+    left: css({}),
+    middle: css({
+      flex: 1,
+      position: 'relative',
+      marginLeft: 4,
+    }),
+    right: css({
+      position: 'relative',
+      Flex: 'x-center-center',
+    }),
+    spinner: css({ position: 'relative' }),
   };
 
-  const elLeft = (
-    <div {...styles.left.base}>
-      <Icons.Terminal color={COL_ICON.TERMINAL} style={styles.left.icon} size={20} />
-    </div>
-  );
+  const elLeft = <Icons.Terminal color={COL_ICON.TERMINAL} size={20} />;
 
   const elSpinner = spinner && (
     <Spinner size={18} color={isDark ? COLORS.WHITE : COLORS.DARK} style={styles.spinner} />
   );
 
   const elActionIcon = pending && !elSpinner && (
-    <Button isEnabled={isInvokable}>
+    <Button isEnabled={isInvokable} style={{ height: 20 }}>
       <Icons.Arrow.Forward size={20} color={COL_ICON.PENDING} />
     </Button>
   );
-  const elRight = <div {...styles.right.base}>{elSpinner || elActionIcon}</div>;
+  const elRight = <div {...styles.right}>{elSpinner || elActionIcon}</div>;
 
-  const elTextbox = (
-    <div {...styles.textbox.base}>
+  const elMiddle = (
+    <div {...styles.middle}>
       <TextInput
         instance={props.instance}
-        style={styles.textbox.input}
         value={text}
+        hint={props.hint}
         placeholder={props.placeholder ?? DEFAULT.PLACEHOLDER}
         valueStyle={{
           color: pending ? COL_TEXT.PENDING : COL_TEXT.DEFAULT,
-          fontSize: 12,
+          fontSize: 14,
         }}
         placeholderStyle={{
           color: COL_TEXT.PLACEHOLDER,
           italic: true,
         }}
         spellCheck={false}
-        selectOnFocus={true}
+        focusAction={'Select'}
         onChange={(e) => {
           const { from, to } = e;
-          if (!isControlled) setTextState(to);
           props.onChange?.({ from, to });
         }}
         onEnter={() => {
@@ -138,7 +124,7 @@ export const CmdTextbox: React.FC<CmdTextboxProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       {elLeft}
-      {elTextbox}
+      {elMiddle}
       {elRight}
     </div>
   );

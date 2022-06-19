@@ -17,5 +17,5 @@ export { rx, slug, cuid, time } from '@platform/util.value';
  */
 export { Filesystem } from 'sys.fs';
 export { WebRuntime } from 'sys.runtime.web';
-export { PropList, PropListItem } from 'sys.ui.primitives/lib/ui/PropList';
+export { PropList } from 'sys.ui.primitives/lib/ui/PropList';
 export { List } from 'sys.ui.primitives/lib/ui/List';

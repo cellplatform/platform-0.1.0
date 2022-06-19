@@ -33,10 +33,10 @@ export function CmdCardEvents(args: t.CmdCardEventsArgs) {
     dispose$,
     state,
     commandbar: {
-      focus: commandbar.text.focus,
-      blur: commandbar.text.blur,
-      select: commandbar.text.select,
-      cursor: commandbar.text.cursor,
+      focus: commandbar.textbox.focus,
+      blur: commandbar.textbox.blur,
+      select: commandbar.textbox.select,
+      cursor: commandbar.textbox.cursor,
       onExecuteCommand(fn) {
         commandbar.action.$.pipe(
           filter((e) => e.kind === 'Key:Enter'),

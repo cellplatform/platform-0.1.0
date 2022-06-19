@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { PropList } from '../PropList';
 import { FC, css, CssValue, t, DEFAULT_SELECTION } from './common';
-import { wrangle } from './wrangle';
+import { Wrangle } from './Wrangle';
 
 /**
  * Types
@@ -31,7 +31,7 @@ const DEFAULTS = { CONFIG, FIELDS };
  */
 const View: React.FC<SelectionConfigProps> = (props) => {
   const { onChange, fields = FIELDS } = props;
-  const config = wrangle.selection(props.config);
+  const config = Wrangle.selection(props.config);
   const isEnabled = isConfigEnabled(config);
   const [prev, setPrev] = useState<t.ListSelectionConfig>();
 

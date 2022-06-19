@@ -7,6 +7,7 @@ export {
   ListItemRenderFlags,
   ListSelectionConfig,
   ListProps,
+  ListItem,
   ListState,
   ListStateChange,
   ListStateLazy,

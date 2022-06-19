@@ -49,12 +49,13 @@ export const SimpleValue: React.FC<SimpleValueProps> = (props) => {
 
   const text = message ? message : value.data?.toString();
   const isString = typeof text === 'string';
+  const asSyntax = isString && !value.color;
 
   return (
     <div {...css(styles.base)}>
       <div {...styles.text} onClick={props.onClick}>
-        {isString && <Text.Syntax text={text} theme={props.theme} style={styles.syntax} />}
-        {!isString && text}
+        {asSyntax && <Text.Syntax text={text} theme={props.theme} style={styles.syntax} />}
+        {!asSyntax && text}
       </div>
       {is.copyActive && !message && <CopyIcon />}
     </div>

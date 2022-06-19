@@ -1,5 +1,5 @@
 import React from 'react';
-import { DevActions, Test } from 'sys.ui.dev';
+import { DevActions, Test, TestFilesystem } from './test';
 import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
 const Imports = {
@@ -50,7 +50,10 @@ export const actions = DevActions<Ctx>()
     e.settings({
       host: { background: -0.04 },
       layout: {
-        label: '<Test.View.Results>',
+        label: {
+          topLeft: '<Test.View.Results>',
+          bottomLeft: `filesystem: "${TestFilesystem.id}"`,
+        },
         position: [150, 80],
         border: -0.1,
         cropmarks: -0.2,

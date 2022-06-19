@@ -25,7 +25,7 @@ export const actions = DevActions<Ctx>()
 
     const bus = rx.bus();
     const instance = { bus };
-    Filesystem.IndexedDb.create({ bus, id: DEFAULT.HISTORY.FS });
+    Filesystem.IndexedDb.create({ bus, fs: DEFAULT.HISTORY.FS });
 
     const ctx: Ctx = {
       instance,

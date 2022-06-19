@@ -2,7 +2,7 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { List } from '..';
-import { ALL, DEFAULTS, rx, slug, t, time, value } from '../common';
+import { css, ALL, DEFAULTS, rx, slug, t, time, value } from '../common';
 import { sampleBodyFactory, sampleBulletFactory } from './DEV.Renderers';
 import { DevSample } from './DEV.Sample';
 import { Ctx, DataSample, RenderCtx } from './DEV.types';
@@ -42,7 +42,7 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const getRenderCtx = () => e.current?.renderCtx as RenderCtx;
-    const renderer = {
+    const renderers = {
       bullet: sampleBulletFactory(getRenderCtx),
       body: sampleBodyFactory(getRenderCtx),
     };
@@ -59,7 +59,7 @@ export const actions = DevActions<Ctx>()
       props: {
         orientation: 'y',
         bullet: { edge: 'near', size: 60 },
-        renderers: renderer,
+        renderers,
         spacing: 10,
         debug: { tracelines: true },
       },
@@ -99,8 +99,51 @@ export const actions = DevActions<Ctx>()
       if (e.changing) e.ctx.renderCtx.enabled = e.changing.next;
       e.boolean.current = e.ctx.renderCtx.enabled;
     });
-
     e.button('redraw', (e) => e.ctx.redraw());
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Items');
+    e.button('clear', (e) => (e.ctx.items = []));
+    e.hr(1, 0.1);
+
+    const Add = {
+      button(total: number, note?: string) {
+        e.button(`add (${note ?? total})`, (e) => Add.handler(e.ctx, total));
+      },
+      handler(ctx: Ctx, total: number) {
+        new Array(total).fill(ctx).forEach((ctx) => Util.addItem(ctx));
+      },
+    };
+
+    Add.button(1);
+    Add.button(10);
+    Add.button(100);
+    Add.button(10000, '10K');
+
+    e.hr(1, 0.1);
+
+    e.button('add (spacing: { before })', (e) => {
+      Util.addItem(e.ctx, { spacing: { before: 30 } });
+    });
+    e.button('add (spacing: { after })', (e) => {
+      Util.addItem(e.ctx, { spacing: { after: 30 } });
+    });
+    e.button('add (spacing: { before, after })', (e) => {
+      Util.addItem(e.ctx, { spacing: { before: 15, after: 30 } });
+    });
+
+    e.hr(1, 0.1);
+
+    e.button('remove: first', (e) => {
+      const items = e.ctx.items;
+      e.ctx.items = items?.slice(0, items.length - 1);
+    });
+    e.button('remove: last', (e) => {
+      const items = e.ctx.items;
+      e.ctx.items = items?.slice(items.length - 1);
+    });
 
     e.hr();
   })
@@ -316,46 +359,38 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('Items');
-    e.button('clear', (e) => (e.ctx.items = []));
-    e.hr(1, 0.1);
-
-    const Add = {
-      button(total: number, note?: string) {
-        e.button(`add (${note ?? total})`, (e) => Add.handler(e.ctx, total));
-      },
-      handler(ctx: Ctx, total: number) {
-        new Array(total).fill(ctx).forEach((ctx) => Util.addItem(ctx));
-      },
-    };
-
-    Add.button(1);
-    Add.button(10);
-    Add.button(100);
-    Add.button(1000, '1K');
-    Add.button(10000, '10K');
-
-    e.hr(1, 0.1);
-
-    e.button('add (spacing: { before })', (e) => {
-      Util.addItem(e.ctx, { spacing: { before: 30 } });
-    });
-    e.button('add (spacing: { after })', (e) => {
-      Util.addItem(e.ctx, { spacing: { after: 30 } });
-    });
-    e.button('add (spacing: { before, after })', (e) => {
-      Util.addItem(e.ctx, { spacing: { before: 15, after: 30 } });
-    });
-
-    e.hr(1, 0.1);
-
-    e.button('remove: first', (e) => {
+    e.component((e) => {
       const items = e.ctx.items;
-      e.ctx.items = items?.slice(0, items.length - 1);
-    });
-    e.button('remove: last', (e) => {
-      const items = e.ctx.items;
-      e.ctx.items = items?.slice(items.length - 1);
+      const total = items.length;
+
+      const getData: t.GetListItem = (index) => items[index];
+      const getSize: t.GetListItemSize = () => 25;
+      const cursor = { total, getData, getSize };
+
+      const getRenderCtx = (): RenderCtx => {
+        return {
+          total,
+          enabled: true,
+          bulletKind: 'Lines',
+          bodyKind: 'Vanilla',
+          connectorRadius: 6,
+          connectorLineWidth: 3,
+        };
+      };
+      const renderers = {
+        bullet: sampleBulletFactory(getRenderCtx),
+        body: sampleBodyFactory(getRenderCtx),
+      };
+
+      const styles = {
+        base: css({ Margin: [0, 0, 0, 20], height: 150, display: 'flex' }),
+      };
+
+      return (
+        <div {...styles.base}>
+          <List.Virtual cursor={cursor} renderers={renderers} style={{ flex: 1 }} />
+        </div>
+      );
     });
 
     e.hr();

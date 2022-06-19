@@ -1,7 +1,7 @@
+import { distinctUntilChanged } from 'rxjs/operators';
+
 import { CmdBar, Json, t, time } from '../common';
 import { CmdCardEvents } from '../logic';
-
-type O = Record<string, unknown>;
 
 /**
  * State controller for the <CmdCard>.
@@ -26,9 +26,15 @@ export function CmdCardController(args: t.CmdCardControllerArgs): t.CmdCardEvent
   /**
    * Event Listeners.
    */
-  commandbar.text.changed$.subscribe(async (e) => {
-    await patch((state) => (state.commandbar.text = e.to));
-  });
+  commandbar.state.$.pipe(distinctUntilChanged((prev, next) => prev.text === next.text)).subscribe(
+    (e) => {
+      /**
+       * TODO 🐷
+       * - This whole state/controller should probably not be up at the <CmdCard> level.
+       */
+      patch((state) => (state.commandbar.text = e.text));
+    },
+  );
 
   /**
    * API
