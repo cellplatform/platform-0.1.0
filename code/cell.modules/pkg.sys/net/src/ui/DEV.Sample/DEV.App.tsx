@@ -78,7 +78,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
           filter((e) => e.pressed[0]?.key === 'k'),
         )
         .subscribe((e) => {
-          cmdBar.text.focus();
+          cmdBar.textbox.focus();
         });
     }
 

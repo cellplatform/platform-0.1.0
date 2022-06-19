@@ -33,9 +33,8 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
       pending={props.textbox?.pending}
       style={css(styles.base, props.style)}
       onChange={(e) => {
-        setText(e.to);
-        props.onChange?.(e);
-        // props.events.text.onChange___(e.to);
+        setText(e.to); // Immediate ("optimistic") local state update.
+        props.onChange?.(e); // Broadcast change.
       }}
       onAction={(e) => {
         const { kind, text } = e;
