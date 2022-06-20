@@ -4,7 +4,7 @@ import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 import { COLORS } from './common';
 
 const Imports = {
-  Sample: import('./ui/TEST'),
+  Route: import('./Route/TEST'),
 };
 
 type Ctx = { results?: TestSuiteRunResponse };
