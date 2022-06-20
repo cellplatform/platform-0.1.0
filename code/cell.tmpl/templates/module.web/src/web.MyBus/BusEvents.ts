@@ -5,7 +5,7 @@ import { rx, slug, t } from './common';
 type Id = string;
 
 /**
- * Event API for the "WebRuntime"
+ * Event API.
  */
 export function BusEvents(args: {
   instance: { bus: t.EventBus<any>; id: Id };

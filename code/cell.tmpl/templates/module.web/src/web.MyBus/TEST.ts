@@ -1,9 +1,9 @@
-import { expect, rx, Test, pkg, slug } from '../test';
 import { MyBus } from '.';
+import { expect, pkg, rx, slug, Test } from '../test';
 
 export default Test.describe('MyBus', (e) => {
   const Create = {
-    instance: (): t.JsonBusInstance => ({ bus: rx.bus(), id: `foo.${slug()}` }),
+    instance: () => ({ bus: rx.bus(), id: `foo.${slug()}` }),
   };
 
   e.describe('is', (e) => {
@@ -25,18 +25,18 @@ export default Test.describe('MyBus', (e) => {
 
     e.it('is.instance', () => {
       const type = 'my.namespace/';
-      expect(is.instance({ type, payload: { id: 'abc' } }, 'abc')).to.eql(true);
-      expect(is.instance({ type, payload: { id: 'abc' } }, '123')).to.eql(false);
-      expect(is.instance({ type: 'foo', payload: { id: 'abc' } }, 'abc')).to.eql(false);
+      expect(is.instance({ type, payload: { instance: 'abc' } }, 'abc')).to.eql(true);
+      expect(is.instance({ type, payload: { instance: 'abc' } }, '123')).to.eql(false);
+      expect(is.instance({ type: 'foo', payload: { instance: 'abc' } }, 'abc')).to.eql(false);
     });
   });
 
   e.describe('Controller/Events', (e) => {
     e.it('info', async () => {
       const instance = Create.instance();
-      const { dispose, events } = MyBus.Controller({ instance });
+      const events = MyBus.Controller({ instance });
       const res = await events.info.get();
-      dispose();
+      events.dispose();
 
       expect(res.instance).to.eql(instance.id);
       expect(res.info?.module.name).to.eql(pkg.name);

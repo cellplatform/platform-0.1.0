@@ -9,8 +9,8 @@ type Id = string;
 export function BusController(args: {
   instance: { bus: t.EventBus<any>; id: Id };
   filter?: (e: t.MyEvent) => boolean;
-  dispose$?: Observable<any>;
-}) {
+  dispose$?: t.Observable<any>;
+}): t.MyEvents {
   const { filter } = args;
 
   const bus = rx.busAsType<t.MyEvent>(args.instance.bus);
@@ -39,10 +39,5 @@ export function BusController(args: {
   /**
    * API
    */
-  return {
-    instance: { bus: rx.bus.instance(bus), id: instance },
-    dispose,
-    dispose$,
-    events,
-  };
+  return events;
 }
