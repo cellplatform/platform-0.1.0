@@ -13,9 +13,6 @@ Style.global(
       fontSize: 20,
       letterSpacing: '-0.006em',
       marginTop: '2em',
-      // textTransform: 'uppercase',
-      // fontWeight: 900,
-      // opacity: 0.9,
       ':first-child': { marginTop: 0 },
     },
     p: {
@@ -39,5 +36,6 @@ Style.global(
       marginBottom: 50,
     },
   },
+
   { prefix: `.${Markdown.className}` },
 );
