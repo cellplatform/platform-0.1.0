@@ -4,7 +4,6 @@ import { delay, filter } from 'rxjs/operators';
 import { DEFAULT, rx, t } from './common';
 import { RouteEvents } from './Route.Events';
 import { SearchParams } from './SearchParams';
-import { Util } from './Util';
 
 /**
  * Event controller for the URL router.
@@ -16,8 +15,7 @@ export function RouteController(args: {
   location?: t.RouteLocation; // NB: use to override the default [window.location] API.
   pushState?: (data: any, title: string, url?: string) => void;
 }) {
-  const { filter, location = window.location, pushState = history.pushState } = args;
-  const isMock = Util.isMock(location);
+  const { filter, location = window.location } = args;
 
   const bus = rx.busAsType<t.RouteEvent>(args.instance.bus);
   const instance = args.instance.id ?? DEFAULT.INSTANCE;
@@ -43,7 +41,7 @@ export function RouteController(args: {
   };
 
   /**
-   * Info (Module)
+   * Info (Module).
    */
   events.info.req$.pipe(delay(0)).subscribe((e) => {
     // NB: delay to ensure the callers treat this as async.
@@ -57,7 +55,7 @@ export function RouteController(args: {
   });
 
   /**
-   * Change
+   * Change.
    */
   events.change.req$.pipe(delay(0)).subscribe((e) => {
     // NB: delay to ensure the callers treat this as async.
@@ -75,18 +73,25 @@ export function RouteController(args: {
       Object.keys(query).forEach((key) => url.searchParams.set(key, query[key]));
     }
 
-    // Update URL state.
-    pushState({}, '', url.href);
+    try {
+      if (args.pushState) args.pushState({}, '', url.href);
+      if (!args.pushState) history.pushState({}, '', url.href);
 
-    // Fire response.
-    bus.fire({
-      type: 'sys.ui.route/change:res',
-      payload: { tx, instance, info: toInfo(url) },
-    });
+      // Fire response.
+      bus.fire({
+        type: 'sys.ui.route/change:res',
+        payload: { tx, instance, info: toInfo(url) },
+      });
+    } catch (error: any) {
+      bus.fire({
+        type: 'sys.ui.route/change:res',
+        payload: { tx, instance, error: error.message },
+      });
+    }
   });
 
   /**
-   * Changed
+   * Changed.
    */
   events.change.res$.subscribe((e) => {
     const url = new URL(location.href);

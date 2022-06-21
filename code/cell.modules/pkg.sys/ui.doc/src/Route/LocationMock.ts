@@ -55,6 +55,5 @@ export function LocationMock(href = 'https://domain.com/mock') {
     },
   };
 
-  (location as any).kind = 'LocationMock';
   return location;
 }

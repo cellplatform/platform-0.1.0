@@ -1,6 +1,5 @@
 import { Route } from '.';
 import { expect, rx, slug, t, Test } from '../test';
-import { Util } from './Util';
 
 export default Test.describe('Route', (e) => {
   const Create = {
@@ -67,21 +66,6 @@ export default Test.describe('Route', (e) => {
       expect(res.info?.url.path).to.eql('/mock');
       expect(res.info?.url.query).to.eql({});
       expect(res.info?.url.hash).to.eql('');
-    });
-
-    e.it('isMock', () => {
-      const test = (input: any, expected: boolean) => {
-        expect(Util.isMock(input)).to.eql(expected);
-      };
-      test(Route.LocationMock(), true);
-      test({ kind: 'LocationMock' }, true); // NB: No flag
-
-      test(location, false);
-      test(null, false);
-      test(undefined, false);
-      test(123, false);
-      test([123], false);
-      test({}, false);
     });
 
     e.it('info (with default [window.location])', async () => {
