@@ -27,7 +27,6 @@ async function deploy(team: string, project: string, dir: string, alias?: string
       target: alias ? 'production' : 'staging',
       regions: ['sfo1'],
       alias,
-      // routes: [{ src: '/foo', dest: '/' }],
     },
     { ensureProject: true },
   );
