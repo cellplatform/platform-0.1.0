@@ -1,5 +1,5 @@
 import { filter, takeUntil } from 'rxjs/operators';
-import { rx, slug, t, DEFAULT } from './common';
+import { time, rx, slug, t, DEFAULT } from './common';
 
 type Id = string;
 
@@ -16,6 +16,9 @@ export function RouteEvents(args: {
   const bus = rx.busAsType<t.RouteEvent>(args.instance.bus);
   const instance = args.instance.id ?? DEFAULT.INSTANCE;
   const is = RouteEvents.is;
+
+  let _ready = false;
+  let _current: t.RouteInfoUrl = DEFAULT.DUMMY_URL;
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
@@ -77,6 +80,19 @@ export function RouteEvents(args: {
     },
   };
 
+  /**
+   * Changed.
+   */
+  const changed$ = rx.payload<t.RouteChangedEvent>($, 'sys.ui.route/changed');
+  changed$.subscribe((e) => (_current = e.info.url));
+
+  // Initialize.
+  time.delay(0, async () => {
+    const url = (await info.get()).info?.url;
+    if (url && _current.href === '') _current = url;
+    _ready = true;
+  });
+
   return {
     instance: { bus: rx.bus.instance(bus), id: instance },
     $,
@@ -85,7 +101,13 @@ export function RouteEvents(args: {
     is,
     info,
     change,
-    changed$: rx.payload<t.RouteChangedEvent>($, 'sys.ui.route/changed'),
+    changed$,
+    get current() {
+      return _current;
+    },
+    get ready() {
+      return _ready;
+    },
   };
 }
 

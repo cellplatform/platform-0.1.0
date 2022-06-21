@@ -27,16 +27,16 @@ export type RouteQueryKeyPair = { key: string; value: string };
  * loaded within a parent module but within the same "page" context.
  */
 export type RouteLocation = {
-  href: string;
   readonly origin: string;
   readonly host: string;
   readonly hostname: string;
   readonly port: string;
   readonly protocol: string;
   readonly search: string;
+  readonly searchParams: RouteLocationSearchParams;
+  href: string;
   pathname: string;
   hash: string;
-  searchParams: RouteLocationSearchParams;
   toString(): string;
 };
 
@@ -55,6 +55,8 @@ export type RouteEvents = t.Disposable & {
   $: t.Observable<t.RouteEvent>;
   instance: { bus: Id; id: Id };
   is: { base(input: any): boolean };
+  ready: boolean;
+  current: RouteInfoUrl;
   info: {
     req$: t.Observable<t.RouteInfoReq>;
     res$: t.Observable<t.RouteInfoRes>;

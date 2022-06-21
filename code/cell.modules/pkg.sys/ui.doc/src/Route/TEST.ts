@@ -1,5 +1,6 @@
 import { Route } from '.';
-import { expect, rx, slug, t, Test } from '../test';
+import { expect, rx, slug, t, Test, time } from '../test';
+import { DEFAULT } from './common';
 
 export default Test.describe('Route', (e) => {
   const Create = {
@@ -77,6 +78,19 @@ export default Test.describe('Route', (e) => {
       expect(res.info?.url.href).to.eql(window.location.href);
       expect(res.info?.secure).to.eql(false);
       expect(res.info?.localhost).to.eql(true);
+    });
+
+    e.it('ready / current', async () => {
+      const { dispose, events, location } = Create.controller();
+
+      expect(events.ready).to.eql(false);
+      expect(events.current).to.eql(DEFAULT.DUMMY_URL);
+
+      await time.wait(10);
+      expect(events.ready).to.eql(true);
+      expect(events.current.href).to.eql(location.href);
+
+      dispose();
     });
 
     e.it('info.url: href / path / query / hash', async () => {
