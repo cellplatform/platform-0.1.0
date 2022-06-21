@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.doc",
-  "version": "0.0.36",
+  "version": "0.0.37",
   "main": "lib/index",
   "sideEffects": false,
   "scripts": {
@@ -17,7 +17,8 @@
     "deploy": "ts-node -T script.ts/vercel.run"
   },
   "dependencies": {
-    "sanitize-html": "2.7.0"
+    "sanitize-html": "2.7.0",
+    "path-to-regexp": "6.2.1"
   },
   "devDependencies": {
     "@platform/cell.compiler": "^0.4.1",
