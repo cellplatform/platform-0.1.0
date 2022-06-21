@@ -1,13 +1,14 @@
 import { RouteController as Controller } from './Route.Controller';
 import { RouteEvents as Events } from './Route.Events';
-import { Location } from './Location';
+import { QueryParams } from './QueryParams';
 import { useRoute } from './Route.useRoute';
 import { Dev } from './view/Dev';
+import { mock } from './Route.mock';
 
 export const Route = {
   Events,
   Controller,
-  Location,
+  QueryParams,
 
   /**
    * Hooks
@@ -25,16 +26,5 @@ export const Route = {
   /**
    * Development
    */
-  Dev: {
-    ...Dev,
-  },
-  mock(href?: string) {
-    const location = Location(href ?? 'https://domain.com/mock');
-
-    const pushState = (data: any, _unused: string, url?: string) => {
-      // See: https://developer.mozilla.org/en-US/docs/Web/API/History/pushState
-      if (url) location.href = url;
-    };
-    return { location, pushState };
-  },
+  Dev: { ...Dev, mock },
 };

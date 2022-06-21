@@ -97,13 +97,7 @@ export function RouteEvents(args: {
   const changed$ = rx.payload<t.RouteChangedEvent>($, 'sys.ui.route/changed');
   changed$.subscribe((e) => (_current = e.info.url));
 
-  // Initialize.
-  time.delay(0, async () => {
-    const url = (await info.get()).info?.url;
-    if (url && _current.href === '') _current = url;
-  });
-
-  // NB: Done this way (with "getters") to protect them from the clone method.
+  // NB: Done this way (with "getters") to protect them from the [clone] method.
   const current: t.RouteInfoUrl = {
     get href() {
       return _current.href;
@@ -119,7 +113,16 @@ export function RouteEvents(args: {
     },
   };
 
-  const api = {
+  const ready = new Promise<t.RouteEvents>((resolve) => {
+    time.delay(0, async () => {
+      // Initialize.
+      const url = (await info.get()).info?.url;
+      if (url && _current.href === '') _current = url;
+      resolve(api.clone());
+    });
+  });
+
+  const api: t.RouteEventsDisposable = {
     instance: { bus: rx.bus.instance(bus), id: instance },
     $,
     dispose,
@@ -129,6 +132,9 @@ export function RouteEvents(args: {
     change,
     changed$,
     current,
+
+    ready: () => ready,
+
     clone() {
       const clone = { ...api };
       delete (clone as any).dispose;

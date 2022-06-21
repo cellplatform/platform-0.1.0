@@ -8,7 +8,7 @@ type Milliseconds = number;
 export type RouteInfo = {
   url: RouteInfoUrl;
   localhost: boolean;
-  secure: boolean; // https (TLS)
+  secure: boolean; // TLS ("https:")
 };
 
 export type RouteInfoUrl = {
@@ -21,31 +21,15 @@ export type RouteInfoUrl = {
 export type RouteQuery = { [key: string]: string };
 export type RouteQueryKeyValue = { key: string; value: string };
 
-/**
- * Abstract mapping of the W3C [window.location] object.
- * Useful for mocking, of running a "sub-module" that thinks in URLs
- * loaded within a parent module but within the same "page" context.
- */
-export type RouteLocation = {
-  readonly origin: string;
-  readonly host: string;
-  readonly hostname: string;
-  readonly port: string;
-  readonly protocol: string;
-  readonly search: string;
-  readonly searchParams: RouteLocationSearchParams;
-  href: string;
-  pathname: string;
-  hash: string;
-  toString(): string;
-};
-
-export type RouteLocationSearchParams = {
-  keys: string[];
+export type RouteQueryParams = {
+  readonly url: URL;
+  readonly keys: string[];
   get(key: string): string | null;
   set(key: string, value: string): void;
   delete(key: string): void;
+  clear(): void;
   toObject(): RouteQuery;
+  toString(): string;
 };
 
 /**
@@ -57,6 +41,7 @@ export type RouteEvents = {
   instance: { bus: Id; id: Id };
   is: { base(input: any): boolean };
   current: RouteInfoUrl;
+  ready(): Promise<RouteEvents>;
   info: {
     req$: t.Observable<t.RouteInfoReq>;
     res$: t.Observable<t.RouteInfoRes>;
