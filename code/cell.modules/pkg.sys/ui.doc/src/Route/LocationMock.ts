@@ -1,4 +1,5 @@
 import { t } from './common';
+import { SearchParams } from './SearchParams';
 
 /**
  * Mock for replacing the default [window.location] object.
@@ -7,9 +8,6 @@ export function LocationMock(href = 'https://domain.com/mock') {
   const url = new URL(href);
 
   const location: t.RouteLocation = {
-    get href() {
-      return url.href;
-    },
     get origin() {
       return url.origin;
     },
@@ -24,6 +22,13 @@ export function LocationMock(href = 'https://domain.com/mock') {
     },
     get protocol() {
       return url.protocol;
+    },
+
+    get href() {
+      return url.href;
+    },
+    set href(value: string) {
+      url.href = value;
     },
 
     get pathname() {
@@ -43,19 +48,13 @@ export function LocationMock(href = 'https://domain.com/mock') {
     get search() {
       return url.search;
     },
-    searchParams: {
-      get keys() {
-        return Array.from(new Set(url.searchParams.keys()));
-      },
-      get: (key: string) => url.searchParams.get(key),
-      set: (key: string, value: string) => url.searchParams.set(key, value),
-      delete: (key: string) => url.searchParams.delete(key),
-    },
+    searchParams: SearchParams(url),
 
     toString() {
       return url.toString();
     },
   };
 
+  (location as any).kind = 'LocationMock';
   return location;
 }

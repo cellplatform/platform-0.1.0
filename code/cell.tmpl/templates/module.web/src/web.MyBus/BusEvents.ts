@@ -47,7 +47,7 @@ export function BusEvents(args: {
       if (res.payload) return res.payload;
 
       const error = res.error?.message ?? 'Failed';
-      return { tx, instance: instance, error };
+      return { tx, instance, error };
     },
   };
 

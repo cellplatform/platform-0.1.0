@@ -13,7 +13,13 @@ export type RouteInfo = {
 
 export type RouteInfoUrl = {
   href: string;
+  path: string;
+  query: RouteQuery;
+  hash: string;
 };
+
+export type RouteQuery = { [key: string]: string };
+export type RouteQueryKeyPair = { key: string; value: string };
 
 /**
  * Abstract mapping of the W3C [window.location] object.
@@ -21,7 +27,7 @@ export type RouteInfoUrl = {
  * loaded within a parent module but within the same "page" context.
  */
 export type RouteLocation = {
-  readonly href: string;
+  href: string;
   readonly origin: string;
   readonly host: string;
   readonly hostname: string;
@@ -30,13 +36,16 @@ export type RouteLocation = {
   readonly search: string;
   pathname: string;
   hash: string;
-  searchParams: {
-    keys: string[];
-    get(key: string): string | null;
-    set(key: string, value: string): void;
-    delete(key: string): void;
-  };
+  searchParams: RouteLocationSearchParams;
   toString(): string;
+};
+
+export type RouteLocationSearchParams = {
+  keys: string[];
+  get(key: string): string | null;
+  set(key: string, value: string): void;
+  delete(key: string): void;
+  toObject(): RouteQuery;
 };
 
 /**
@@ -51,12 +60,28 @@ export type RouteEvents = t.Disposable & {
     res$: t.Observable<t.RouteInfoRes>;
     get(options?: { timeout?: Milliseconds }): Promise<RouteInfoRes>;
   };
+  changed$: t.Observable<t.RouteChanged>;
+  change: {
+    req$: t.Observable<t.RouteChangeReq>;
+    res$: t.Observable<t.RouteChangeRes>;
+    fire(options: {
+      path?: string;
+      hash?: string;
+      query?: RouteQuery | RouteQueryKeyPair[];
+      timeout?: Milliseconds;
+    }): Promise<RouteChangeRes>;
+  };
 };
 
 /**
  * EVENT (DEFINITIONS)
  */
-export type RouteEvent = RouteInfoReqEvent | RouteInfoResEvent;
+export type RouteEvent =
+  | RouteInfoReqEvent
+  | RouteInfoResEvent
+  | RouteChangeReqEvent
+  | RouteChangeResEvent
+  | RouteChangedEvent;
 
 /**
  * Module info.
@@ -76,4 +101,42 @@ export type RouteInfoRes = {
   instance: Id;
   info?: RouteInfo;
   error?: string;
+};
+
+/**
+ * Change
+ */
+export type RouteChangeReqEvent = {
+  type: 'sys.ui.route/change:req';
+  payload: RouteChangeReq;
+};
+export type RouteChangeReq = {
+  tx: string;
+  instance: Id;
+  path?: string;
+  hash?: string;
+  query?: RouteQuery | RouteQueryKeyPair[];
+};
+
+export type RouteChangeResEvent = {
+  type: 'sys.ui.route/change:res';
+  payload: RouteChangeRes;
+};
+export type RouteChangeRes = {
+  tx: string;
+  instance: Id;
+  info?: RouteInfo;
+  error?: string;
+};
+
+/**
+ * Changed
+ */
+export type RouteChangedEvent = {
+  type: 'sys.ui.route/changed';
+  payload: RouteChanged;
+};
+export type RouteChanged = {
+  instance: Id;
+  info: RouteInfo;
 };

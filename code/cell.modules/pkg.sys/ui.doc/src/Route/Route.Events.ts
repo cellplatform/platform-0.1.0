@@ -24,7 +24,7 @@ export function RouteEvents(args: {
   );
 
   /**
-   * Base information about the module.
+   * Base information about the route.
    */
   const info: t.RouteEvents['info'] = {
     req$: rx.payload<t.RouteInfoReqEvent>($, 'sys.ui.route/info:req'),
@@ -46,7 +46,34 @@ export function RouteEvents(args: {
       if (res.payload) return res.payload;
 
       const error = res.error?.message ?? 'Failed';
-      return { tx, instance: instance, error };
+      return { tx, instance, error };
+    },
+  };
+
+  /**
+   * Change operations on the route.
+   */
+  const change: t.RouteEvents['change'] = {
+    req$: rx.payload<t.RouteChangeReqEvent>($, 'sys.ui.route/change:req'),
+    res$: rx.payload<t.RouteChangeResEvent>($, 'sys.ui.route/change:res'),
+    async fire(options = {}) {
+      const { path, hash, query, timeout = 3000 } = options;
+      const tx = slug();
+
+      const op = 'change';
+      const res$ = change.res$.pipe(filter((e) => e.tx === tx));
+      const first = rx.asPromise.first<t.RouteChangeResEvent>(res$, { op, timeout });
+
+      bus.fire({
+        type: 'sys.ui.route/change:req',
+        payload: { tx, instance, path, hash, query },
+      });
+
+      const res = await first;
+      if (res.payload) return res.payload;
+
+      const error = res.error?.message ?? 'Failed';
+      return { tx, instance, error };
     },
   };
 
@@ -57,6 +84,8 @@ export function RouteEvents(args: {
     dispose$,
     is,
     info,
+    change,
+    changed$: rx.payload<t.RouteChangedEvent>($, 'sys.ui.route/changed'),
   };
 }
 
