@@ -4,7 +4,6 @@ export const R = { mergeDeepRight };
 /**
  * @platform
  */
-export { log } from '@platform/log/lib/client';
 export { css, Color, CssValue, Style, formatColor } from '@platform/css';
 export { useResizeObserver, FC } from '@platform/react';
 export { rx, slug, time } from '@platform/util.value';
@@ -22,3 +21,4 @@ export { Button } from 'sys.ui.primitives/lib/ui.ref/button/Button';
 export { Chip } from 'sys.ui.primitives/lib/ui/Chip';
 export { List } from 'sys.ui.primitives/lib/ui/List';
 export { Card } from 'sys.ui.primitives/lib/ui/Card';
+export { Text } from 'sys.ui.primitives/lib/ui/Text';

@@ -19,7 +19,7 @@ export type RouteInfoUrl = {
 };
 
 export type RouteQuery = { [key: string]: string };
-export type RouteQueryKeyPair = { key: string; value: string };
+export type RouteQueryKeyValue = { key: string; value: string };
 
 /**
  * Abstract mapping of the W3C [window.location] object.
@@ -51,11 +51,11 @@ export type RouteLocationSearchParams = {
 /**
  * EVENT (API)
  */
-export type RouteEvents = t.Disposable & {
+export type RouteEventsDisposable = RouteEvents & t.Disposable & { clone(): RouteEvents };
+export type RouteEvents = {
   $: t.Observable<t.RouteEvent>;
   instance: { bus: Id; id: Id };
   is: { base(input: any): boolean };
-  ready: boolean;
   current: RouteInfoUrl;
   info: {
     req$: t.Observable<t.RouteInfoReq>;
@@ -69,9 +69,15 @@ export type RouteEvents = t.Disposable & {
     fire(options: {
       path?: string;
       hash?: string;
-      query?: RouteQuery | RouteQueryKeyPair[];
+      query?: RouteQuery | RouteQueryKeyValue[];
       timeout?: Milliseconds;
     }): Promise<RouteChangeRes>;
+    path(value: string, options?: { timeout?: Milliseconds }): Promise<RouteChangeRes>;
+    hash(value: string, options?: { timeout?: Milliseconds }): Promise<RouteChangeRes>;
+    query(
+      value: RouteQuery | RouteQueryKeyValue[],
+      options?: { timeout?: Milliseconds },
+    ): Promise<RouteChangeRes>;
   };
 };
 
@@ -117,7 +123,7 @@ export type RouteChangeReq = {
   instance: Id;
   path?: string;
   hash?: string;
-  query?: RouteQuery | RouteQueryKeyPair[];
+  query?: RouteQuery | RouteQueryKeyValue[];
 };
 
 export type RouteChangeResEvent = {

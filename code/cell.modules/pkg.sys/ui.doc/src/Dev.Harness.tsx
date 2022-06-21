@@ -6,6 +6,7 @@ const imports = {
   Design: import('./ui/Design/DEV'),
   ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
   Route: import('./Route/dev/DEV'),
+  Router: import('./ui/Router/dev/DEV'),
   RouteContainer: import('./ui/RouteContainer/dev/DEV'),
   DocLayoutContainer: import('./ui/Doc.LayoutContainer/dev/DEV'),
   DocLayout: import('./ui/Doc.Layout/dev/DEV'),

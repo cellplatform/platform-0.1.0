@@ -2,8 +2,8 @@ import { Observable } from 'rxjs';
 import { delay, filter } from 'rxjs/operators';
 
 import { DEFAULT, rx, t } from './common';
+import { SearchParams } from './Location.SearchParams';
 import { RouteEvents } from './Route.Events';
-import { SearchParams } from './SearchParams';
 
 /**
  * Event controller for the URL router.

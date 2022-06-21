@@ -7,10 +7,7 @@ export default Test.describe('Route', (e) => {
     instance: (): t.RouteInstance => ({ bus: rx.bus(), id: `foo.${slug()}` }),
     controller(options: { href?: string } = {}) {
       const instance = Create.instance();
-      const location = Route.LocationMock(options.href);
-      const pushState = (data: any, title: string, url?: string) => {
-        if (url) location.href = url;
-      };
+      const { location, pushState } = Route.mock(options.href);
       const events = Route.Controller({ instance, location, pushState });
       const dispose = events.dispose;
       return { instance, location, events, dispose };
@@ -55,7 +52,7 @@ export default Test.describe('Route', (e) => {
 
     e.it('info (with mock)', async () => {
       const instance = Create.instance();
-      const location = Route.LocationMock();
+      const { location } = Route.mock();
       const events = Route.Controller({ instance, location });
       const res = await events.info.get();
       events.dispose();
@@ -75,21 +72,21 @@ export default Test.describe('Route', (e) => {
       const res = await events.info.get();
       events.dispose();
 
-      expect(res.info?.url.href).to.eql(window.location.href);
-      expect(res.info?.secure).to.eql(false);
-      expect(res.info?.localhost).to.eql(true);
+      const protocol = window.location.protocol;
+      const isLocalhost = window.location.hostname === 'localhost';
+      const isSecure = protocol === 'https:' ? true : false;
+
+      expect(res.info?.url.href).to.eql(window.location.href, 'url.href');
+      expect(res.info?.secure).to.eql(isSecure, 'info.secure');
+      expect(res.info?.localhost).to.eql(isLocalhost, 'info.localhost');
     });
 
-    e.it('ready / current', async () => {
+    e.it('current', async () => {
       const { dispose, events, location } = Create.controller();
+      expect(events.current).to.eql(DEFAULT.DUMMY_URL); // NB: Initial before load it complete.
 
-      expect(events.ready).to.eql(false);
-      expect(events.current).to.eql(DEFAULT.DUMMY_URL);
-
-      await time.wait(10);
-      expect(events.ready).to.eql(true);
+      await time.wait(50);
       expect(events.current.href).to.eql(location.href);
-
       dispose();
     });
 
@@ -105,6 +102,24 @@ export default Test.describe('Route', (e) => {
       expect(url?.path).to.eql('/doc');
       expect(url?.query).to.eql({ foo: '123' });
       expect(url?.hash).to.eql('fragment');
+    });
+
+    e.it('cloneable', async () => {
+      const { dispose, events: parent } = Create.controller();
+      const clone = parent.clone();
+
+      expect(typeof parent.dispose).to.eql('function');
+      expect((clone as any).dispose).to.eql(undefined);
+
+      await clone.change.path('/foo');
+      expect(clone.current.path).to.eql('/foo');
+      expect(parent.current.path).to.eql('/foo');
+
+      await parent.change.path('/bar');
+      expect(clone.current.path).to.eql('/bar');
+      expect(parent.current.path).to.eql('/bar');
+
+      dispose();
     });
 
     e.describe('change', (e) => {
@@ -188,73 +203,73 @@ export default Test.describe('Route', (e) => {
     });
   });
 
-  e.describe('LocationMock', (e) => {
+  e.describe('Location', (e) => {
     e.it('init: default href', () => {
-      const mock = Route.LocationMock();
-      expect(mock.href).to.eql('https://domain.com/mock');
-      expect(mock.pathname).to.eql('/mock');
-      expect(mock.protocol).to.eql('https:');
-      expect(mock.origin).to.eql('https://domain.com');
-      expect(mock.host).to.eql('domain.com');
-      expect(mock.hostname).to.eql('domain.com');
-      expect(mock.port).to.eql('');
+      const { location } = Route.mock();
+      expect(location.href).to.eql('https://domain.com/mock');
+      expect(location.pathname).to.eql('/mock');
+      expect(location.protocol).to.eql('https:');
+      expect(location.origin).to.eql('https://domain.com');
+      expect(location.host).to.eql('domain.com');
+      expect(location.hostname).to.eql('domain.com');
+      expect(location.port).to.eql('');
     });
 
     e.it('init: custom href', () => {
-      const mock = Route.LocationMock('https://foo.org');
-      expect(mock.href).to.eql('https://foo.org/');
-      expect(mock.pathname).to.eql('/');
+      const { location } = Route.mock('https://foo.org');
+      expect(location.href).to.eql('https://foo.org/');
+      expect(location.pathname).to.eql('/');
     });
 
     e.it('change "href"', () => {
-      const mock = Route.LocationMock();
-      expect(mock.href).to.eql('https://domain.com/mock');
+      const { location } = Route.mock();
+      expect(location.href).to.eql('https://domain.com/mock');
 
-      mock.href = 'http://localhost:1234/';
-      expect(mock.href).to.eql('http://localhost:1234/');
-      expect(mock.port).to.eql('1234');
+      location.href = 'http://localhost:1234/';
+      expect(location.href).to.eql('http://localhost:1234/');
+      expect(location.port).to.eql('1234');
     });
 
     e.it('change "pathname"', () => {
-      const mock = Route.LocationMock();
-      mock.pathname = 'foobar';
-      expect(mock.href).to.eql('https://domain.com/foobar');
-      expect(mock.toString()).to.eql(mock.href);
-      expect(mock.pathname).to.eql('/foobar');
+      const { location } = Route.mock();
+      location.pathname = 'foobar';
+      expect(location.href).to.eql('https://domain.com/foobar');
+      expect(location.toString()).to.eql(location.href);
+      expect(location.pathname).to.eql('/foobar');
 
-      mock.pathname = '';
-      expect(mock.href).to.eql('https://domain.com/');
-      expect(mock.pathname).to.eql('/');
+      location.pathname = '';
+      expect(location.href).to.eql('https://domain.com/');
+      expect(location.pathname).to.eql('/');
 
-      mock.pathname = 'foo.bar/baz/';
-      expect(mock.href).to.eql('https://domain.com/foo.bar/baz/');
-      expect(mock.pathname).to.eql('/foo.bar/baz/');
+      location.pathname = 'foo.bar/baz/';
+      expect(location.href).to.eql('https://domain.com/foo.bar/baz/');
+      expect(location.pathname).to.eql('/foo.bar/baz/');
 
-      mock.pathname = 'with space';
-      expect(mock.pathname).to.eql('/with%20space');
+      location.pathname = 'with space';
+      expect(location.pathname).to.eql('/with%20space');
     });
 
     e.it('change "hash" (fragment)', () => {
-      const mock = Route.LocationMock();
-      expect(mock.hash).to.eql('');
+      const { location } = Route.mock();
+      expect(location.hash).to.eql('');
 
-      mock.hash = 'foo';
-      expect(mock.hash).to.eql('#foo');
-      expect(mock.href).to.eql('https://domain.com/mock#foo');
+      location.hash = 'foo';
+      expect(location.hash).to.eql('#foo');
+      expect(location.href).to.eql('https://domain.com/mock#foo');
 
-      mock.hash = 'with space';
-      expect(mock.hash).to.eql('#with%20space');
-      expect(mock.href).to.eql('https://domain.com/mock#with%20space');
+      location.hash = 'with space';
+      expect(location.hash).to.eql('#with%20space');
+      expect(location.href).to.eql('https://domain.com/mock#with%20space');
 
-      mock.hash = '';
-      expect(mock.hash).to.eql('');
-      expect(mock.href).to.eql('https://domain.com/mock');
+      location.hash = '';
+      expect(location.hash).to.eql('');
+      expect(location.href).to.eql('https://domain.com/mock');
     });
 
     e.describe('searchParams', (e) => {
       e.it('get | keys', () => {
-        const mock1 = Route.LocationMock();
-        const mock2 = Route.LocationMock('https://domain.com/?foo=123');
+        const { location: mock1 } = Route.mock();
+        const { location: mock2 } = Route.mock('https://domain.com/?foo=123');
 
         expect(mock1.search).to.eql('');
         expect(mock2.search).to.eql('?foo=123');
@@ -269,53 +284,53 @@ export default Test.describe('Route', (e) => {
       });
 
       e.it('set', () => {
-        const mock = Route.LocationMock();
-        expect(mock.search).to.eql('');
-        expect(mock.searchParams.keys).to.eql([]);
+        const { location } = Route.mock();
+        expect(location.search).to.eql('');
+        expect(location.searchParams.keys).to.eql([]);
 
-        mock.searchParams.set('foo', '123');
-        expect(mock.search).to.eql('?foo=123');
-        expect(mock.searchParams.keys).to.eql(['foo']);
+        location.searchParams.set('foo', '123');
+        expect(location.search).to.eql('?foo=123');
+        expect(location.searchParams.keys).to.eql(['foo']);
 
-        mock.searchParams.set('bar', '');
-        expect(mock.search).to.eql('?foo=123&bar=');
-        expect(mock.searchParams.keys).to.eql(['foo', 'bar']);
+        location.searchParams.set('bar', '');
+        expect(location.search).to.eql('?foo=123&bar=');
+        expect(location.searchParams.keys).to.eql(['foo', 'bar']);
 
-        expect(mock.href).to.eql('https://domain.com/mock?foo=123&bar=');
+        expect(location.href).to.eql('https://domain.com/mock?foo=123&bar=');
       });
 
       e.it('set: with space ("+")', () => {
-        const mock = Route.LocationMock();
-        mock.searchParams.set('foo', 'with space');
-        expect(mock.href).to.eql('https://domain.com/mock?foo=with+space');
-        expect(mock.searchParams.get('foo')).to.eql('with space'); // NB: Decoded via "get" method.
+        const { location } = Route.mock();
+        location.searchParams.set('foo', 'with space');
+        expect(location.href).to.eql('https://domain.com/mock?foo=with+space');
+        expect(location.searchParams.get('foo')).to.eql('with space'); // NB: Decoded via "get" method.
       });
 
       e.it('set: URL encoding ("one/two")', () => {
-        const mock = Route.LocationMock();
-        mock.searchParams.set('foo', 'one/two');
-        expect(mock.href).to.eql('https://domain.com/mock?foo=one%2Ftwo');
-        expect(mock.searchParams.get('foo')).to.eql('one/two'); // NB: Decoded via "get" method.
+        const { location } = Route.mock();
+        location.searchParams.set('foo', 'one/two');
+        expect(location.href).to.eql('https://domain.com/mock?foo=one%2Ftwo');
+        expect(location.searchParams.get('foo')).to.eql('one/two'); // NB: Decoded via "get" method.
       });
 
       e.it('delete', () => {
-        const mock = Route.LocationMock();
-        mock.searchParams.set('foo', '123');
-        mock.searchParams.set('bar', '456');
-        expect(mock.searchParams.keys).to.eql(['foo', 'bar']);
-        expect(mock.href).to.eql('https://domain.com/mock?foo=123&bar=456');
+        const { location } = Route.mock();
+        location.searchParams.set('foo', '123');
+        location.searchParams.set('bar', '456');
+        expect(location.searchParams.keys).to.eql(['foo', 'bar']);
+        expect(location.href).to.eql('https://domain.com/mock?foo=123&bar=456');
 
-        mock.searchParams.delete('foo');
-        expect(mock.searchParams.keys).to.eql(['bar']);
-        expect(mock.href).to.eql('https://domain.com/mock?bar=456');
+        location.searchParams.delete('foo');
+        expect(location.searchParams.keys).to.eql(['bar']);
+        expect(location.href).to.eql('https://domain.com/mock?bar=456');
 
-        mock.searchParams.delete('NO_EXIST');
-        expect(mock.searchParams.keys).to.eql(['bar']);
-        expect(mock.href).to.eql('https://domain.com/mock?bar=456');
+        location.searchParams.delete('NO_EXIST');
+        expect(location.searchParams.keys).to.eql(['bar']);
+        expect(location.href).to.eql('https://domain.com/mock?bar=456');
 
-        mock.searchParams.delete('bar');
-        expect(mock.searchParams.keys).to.eql([]);
-        expect(mock.href).to.eql('https://domain.com/mock');
+        location.searchParams.delete('bar');
+        expect(location.searchParams.keys).to.eql([]);
+        expect(location.href).to.eql('https://domain.com/mock');
       });
     });
   });

@@ -1,10 +1,10 @@
 import { t } from './common';
-import { SearchParams } from './SearchParams';
+import { SearchParams } from './Location.SearchParams';
 
 /**
  * Mock for replacing the default [window.location] object.
  */
-export function LocationMock(href = 'https://domain.com/mock') {
+export function Location(href: string) {
   const url = new URL(href);
 
   const location: t.RouteLocation = {
