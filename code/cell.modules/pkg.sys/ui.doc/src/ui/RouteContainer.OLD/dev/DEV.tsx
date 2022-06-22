@@ -18,7 +18,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.RouteContainer')
+  .namespace('OLD.ui.RouteContainer')
   .context((e) => {
     if (e.prev) return e.prev;
     const change = e.change;

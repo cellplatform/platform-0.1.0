@@ -18,8 +18,8 @@ export type KeyboardHookArgs = {
 
 /**
  * Hook for working with the current/changing state of the keyboard.
- *
- * NOTE: Does NOT cause redraws.
+ * NOTE:
+ *    Does NOT cause redraw (as a feature).
  */
 export function useKeyboard(args: KeyboardHookArgs): t.KeyboardStateHook {
   const { instance = SINGLETON_INSTANCE } = args;
@@ -38,9 +38,15 @@ export function useKeyboard(args: KeyboardHookArgs): t.KeyboardStateHook {
   useEffect(() => {
     const state$ = stateRef$.current;
     const monitor = KeyboardStateMonitor({ bus, instance });
-    monitor.state$.subscribe((e) => state$.next(e));
+
+    const next = (e: t.KeyboardState) => {
+      stateRef.current = e;
+      state$.next(e);
+    };
+
+    monitor.state$.subscribe((e) => next(e));
     return () => monitor.dispose();
-  }, [bus, busid, instance]); // eslint-disable-line
+  }, [busid, instance]); // eslint-disable-line
 
   /**
    * API

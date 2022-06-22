@@ -17,7 +17,7 @@ export function RouteEvents(args: {
   const instance = args.instance.id ?? DEFAULT.INSTANCE;
   const is = RouteEvents.is;
 
-  let _current: t.RouteInfoUrl = DEFAULT.DUMMY_URL;
+  let _current: t.RouteUrl = DEFAULT.URL;
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
@@ -94,6 +94,10 @@ export function RouteEvents(args: {
   /**
    * Current
    */
+  const fireCurrent = (info: t.RouteInfo) => {
+    bus.fire({ type: 'sys.ui.route/current', payload: { instance, info } });
+  };
+
   const current: t.RouteEvents['current'] = {
     $: rx.payload<t.RouteCurrentEvent>($, 'sys.ui.route/current'),
     get url() {
@@ -103,10 +107,7 @@ export function RouteEvents(args: {
       const res = (await info.get()).info;
       if (res) {
         _current = res.url;
-        bus.fire({
-          type: 'sys.ui.route/current',
-          payload: { instance, info: res },
-        });
+        fireCurrent(res);
       }
     },
   };
@@ -120,6 +121,7 @@ export function RouteEvents(args: {
     const res = await info.get();
     const url = res.info?.url;
     if (url && _current.href === '') _current = url;
+    if (res.info) fireCurrent(res.info);
   };
 
   const ready = new Promise<t.RouteEvents>((resolve) => {

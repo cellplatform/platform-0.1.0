@@ -5,7 +5,7 @@ import { t, author, category } from './common';
  */
 export const FLOWS: t.DocDef = {
   id: 'flows',
-  path: 'dao/flows-not-things',
+  path: '/dao/doc:flows-not-things',
 
   banner: { url: 'https://tdb-koet0tvgo-tdb.vercel.app/river.png' },
   version: '1.0.1 (Apr 2022)',
