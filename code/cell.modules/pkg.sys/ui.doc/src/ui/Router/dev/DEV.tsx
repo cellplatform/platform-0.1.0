@@ -27,14 +27,14 @@ export const actions = DevActions<Ctx>()
     const { getUrl, pushState } = Route.Dev.mock('https://domain.com/');
     const route = Route.Controller({ instance: { bus }, getUrl, pushState });
 
-    route.changed$.subscribe((e) => {
+    route.current.$.subscribe((e) => {
       change.ctx((ctx) => (ctx.href = e.info.url.href));
     });
 
     const ctx: Ctx = {
       instance,
       route,
-      href: route.current.href,
+      href: route.current.url.href,
       props: { instance },
     };
     return ctx;
@@ -75,7 +75,7 @@ export const actions = DevActions<Ctx>()
       layout: {
         label: {
           topLeft: '<Router>',
-          topRight: e.ctx.route.current.href,
+          topRight: e.ctx.route.current.url.href,
         },
         position: [150, 80],
         border: -0.1,

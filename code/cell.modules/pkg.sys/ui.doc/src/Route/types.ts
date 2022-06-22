@@ -40,14 +40,17 @@ export type RouteEvents = {
   $: t.Observable<t.RouteEvent>;
   instance: { bus: Id; id: Id };
   is: { base(input: any): boolean };
-  current: RouteInfoUrl;
   ready(): Promise<RouteEvents>;
   info: {
     req$: t.Observable<t.RouteInfoReq>;
     res$: t.Observable<t.RouteInfoRes>;
     get(options?: { timeout?: Milliseconds }): Promise<RouteInfoRes>;
   };
-  changed$: t.Observable<t.RouteChanged>;
+  current: {
+    $: t.Observable<t.RouteCurrent>;
+    url: RouteInfoUrl;
+    refresh(): Promise<void>;
+  };
   change: {
     req$: t.Observable<t.RouteChangeReq>;
     res$: t.Observable<t.RouteChangeRes>;
@@ -74,7 +77,8 @@ export type RouteEvent =
   | RouteInfoResEvent
   | RouteChangeReqEvent
   | RouteChangeResEvent
-  | RouteChangedEvent;
+  | RouteCurrentEvent
+  | RouteRefreshEvent;
 
 /**
  * Module info.
@@ -125,11 +129,21 @@ export type RouteChangeRes = {
 /**
  * Changed
  */
-export type RouteChangedEvent = {
-  type: 'sys.ui.route/changed';
-  payload: RouteChanged;
+export type RouteCurrentEvent = {
+  type: 'sys.ui.route/current';
+  payload: RouteCurrent;
 };
-export type RouteChanged = {
+export type RouteCurrent = {
   instance: Id;
   info: RouteInfo;
 };
+
+/**
+ * Refresh
+ * (Alert listeners to current state (via forcing the "current" method to fire)
+ */
+export type RouteRefreshEvent = {
+  type: 'sys.ui.route/refresh';
+  payload: RouteRefresh;
+};
+export type RouteRefresh = { instance: Id };

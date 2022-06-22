@@ -61,16 +61,17 @@ export function RouteController(args: {
     // NB: delay to ensure the callers treat this as async.
     const { tx } = e;
     const url = getUrl();
+    const params = QueryParams(url);
 
     if (typeof e.path === 'string') url.pathname = e.path;
     if (typeof e.hash === 'string') url.hash = e.hash;
 
     if (Array.isArray(e.query)) {
-      e.query.forEach(({ key, value }) => url.searchParams.set(key, value));
+      e.query.forEach(({ key, value }) => params.set(key, value));
     } else if (typeof e.query === 'object') {
       const query = e.query as t.RouteQuery;
       QueryParams(url).clear();
-      Object.keys(query).forEach((key) => url.searchParams.set(key, query[key]));
+      Object.keys(query).forEach((key) => params.set(key, query[key]));
     }
 
     try {
@@ -96,7 +97,7 @@ export function RouteController(args: {
   events.change.res$.subscribe((e) => {
     const info = toInfo(getUrl());
     bus.fire({
-      type: 'sys.ui.route/changed',
+      type: 'sys.ui.route/current',
       payload: { instance, info },
     });
   });

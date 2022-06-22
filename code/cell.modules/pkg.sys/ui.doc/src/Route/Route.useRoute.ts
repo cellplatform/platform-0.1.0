@@ -11,8 +11,8 @@ export function useRoute(instance: t.RouteInstance) {
   useEffect(() => {
     const events = RouteEvents({ instance });
 
-    events.changed$.subscribe((e) => setUrl(e.info.url));
-    setUrl(events.current);
+    events.current.$.subscribe((e) => setUrl(e.info.url));
+    setUrl(events.current.url);
 
     return () => events.dispose();
   }, [busid, instance.id]); // eslint-disable-line

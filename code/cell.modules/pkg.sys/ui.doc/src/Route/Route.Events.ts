@@ -28,7 +28,7 @@ export function RouteEvents(args: {
   /**
    * Base information about the route.
    */
-  const info: t.RouteEventsDisposable['info'] = {
+  const info: t.RouteEvents['info'] = {
     req$: rx.payload<t.RouteInfoReqEvent>($, 'sys.ui.route/info:req'),
     res$: rx.payload<t.RouteInfoResEvent>($, 'sys.ui.route/info:res'),
     async get(options = {}) {
@@ -55,7 +55,7 @@ export function RouteEvents(args: {
   /**
    * Change operations on the route.
    */
-  const change: t.RouteEventsDisposable['change'] = {
+  const change: t.RouteEvents['change'] = {
     req$: rx.payload<t.RouteChangeReqEvent>($, 'sys.ui.route/change:req'),
     res$: rx.payload<t.RouteChangeResEvent>($, 'sys.ui.route/change:res'),
     async fire(options = {}) {
@@ -92,36 +92,46 @@ export function RouteEvents(args: {
   };
 
   /**
-   * Changed.
+   * Current
    */
-  const changed$ = rx.payload<t.RouteChangedEvent>($, 'sys.ui.route/changed');
-  changed$.subscribe((e) => (_current = e.info.url));
+  const current: t.RouteEvents['current'] = {
+    $: rx.payload<t.RouteCurrentEvent>($, 'sys.ui.route/current'),
+    get url() {
+      return _current;
+    },
+    async refresh() {
+      const res = (await info.get()).info;
+      if (res) {
+        _current = res.url;
+        bus.fire({
+          type: 'sys.ui.route/current',
+          payload: { instance, info: res },
+        });
+      }
+    },
+  };
 
-  // NB: Done this way (with "getters") to protect them from the [clone] method.
-  const current: t.RouteInfoUrl = {
-    get href() {
-      return _current.href;
-    },
-    get path() {
-      return _current.path;
-    },
-    get query() {
-      return _current.query;
-    },
-    get hash() {
-      return _current.hash;
-    },
+  current.$.subscribe((e) => (_current = e.info.url));
+
+  /**
+   * Initialize.
+   */
+  const init = async () => {
+    const res = await info.get();
+    const url = res.info?.url;
+    if (url && _current.href === '') _current = url;
   };
 
   const ready = new Promise<t.RouteEvents>((resolve) => {
     time.delay(0, async () => {
-      // Initialize.
-      const url = (await info.get()).info?.url;
-      if (url && _current.href === '') _current = url;
+      await init();
       resolve(api.clone());
     });
   });
 
+  /**
+   * API
+   */
   const api: t.RouteEventsDisposable = {
     instance: { bus: rx.bus.instance(bus), id: instance },
     $,
@@ -130,11 +140,9 @@ export function RouteEvents(args: {
     is,
     info,
     change,
-    changed$,
     current,
 
     ready: () => ready,
-
     clone() {
       const clone = { ...api };
       delete (clone as any).dispose;

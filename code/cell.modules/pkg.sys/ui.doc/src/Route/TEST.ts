@@ -81,16 +81,16 @@ export default Test.describe('Route', (e) => {
       expect(res.info?.localhost).to.eql(isLocalhost, 'info.localhost');
     });
 
-    e.it.only('current', async () => {
+    e.it('current', async () => {
       const { dispose, events, location } = Create.controller();
-      expect(events.current).to.eql(DEFAULT.DUMMY_URL); // NB: Initial before load it complete.
+      expect(events.current.url).to.eql(DEFAULT.DUMMY_URL); // NB: Initial before load it complete.
 
       const res = await events.ready();
       expect((res as any).dispose).to.eql(undefined); // NB: An undisposable clone is returned.
       dispose();
 
-      expect(events.current.href).to.eql(location.href);
-      expect(res.current.href).to.eql(location.href);
+      expect(events.current.url.href).to.eql(location.href);
+      expect(res.current.url.href).to.eql(location.href);
     });
 
     e.it('info.url: href / path / query / hash', async () => {
@@ -115,12 +115,12 @@ export default Test.describe('Route', (e) => {
       expect((clone as any).dispose).to.eql(undefined);
 
       await clone.change.path('/foo');
-      expect(clone.current.path).to.eql('/foo');
-      expect(parent.current.path).to.eql('/foo');
+      expect(clone.current.url.path).to.eql('/foo');
+      expect(parent.current.url.path).to.eql('/foo');
 
       await parent.change.path('/bar');
-      expect(clone.current.path).to.eql('/bar');
-      expect(parent.current.path).to.eql('/bar');
+      expect(clone.current.url.path).to.eql('/bar');
+      expect(parent.current.url.path).to.eql('/bar');
 
       dispose();
     });
@@ -192,8 +192,8 @@ export default Test.describe('Route', (e) => {
       e.it('changed$', async () => {
         const { dispose, events } = Create.controller();
 
-        const fired: t.RouteChanged[] = [];
-        events.changed$.subscribe((e) => fired.push(e));
+        const fired: t.RouteCurrent[] = [];
+        events.current.$.subscribe((e) => fired.push(e));
 
         await events.change.fire({ query: { foo: '456', bar: 'boo' } });
         await events.change.fire({ path: 'hello' });
@@ -232,7 +232,6 @@ export default Test.describe('Route', (e) => {
     e.it('set (mutate)', () => {
       const query = Route.QueryParams('https://domain.com/mock');
 
-      // const { location } = Route.Dev.mock();
       expect(query.toString()).to.eql('');
       expect(query.keys).to.eql([]);
 
@@ -245,6 +244,32 @@ export default Test.describe('Route', (e) => {
       expect(query.keys).to.eql(['foo', 'bar']);
 
       expect(query.url.href).to.eql('https://domain.com/mock?foo=123&bar=');
+    });
+
+    e.it('set: "" (empty string)', () => {
+      const query = Route.QueryParams('https://domain.com/mock');
+      query.set('foo', '');
+
+      console.log('query.url.href', query.url.href);
+    });
+
+    e.it('set (null, undefined)', () => {
+      const query = Route.QueryParams('https://domain.com/mock');
+
+      const test = (value: any) => {
+        query.set('foo', value);
+        expect(query.keys).to.eql([]);
+
+        query.set('foo', 'DUMMY');
+        query.set('foo', value);
+        expect(query.keys).to.eql([]); // NB: The empty value removes the key.
+      };
+
+      test(undefined);
+      test(null);
+      test({});
+      test([{}]);
+      test(123);
     });
 
     e.it('set: with space ("+")', () => {

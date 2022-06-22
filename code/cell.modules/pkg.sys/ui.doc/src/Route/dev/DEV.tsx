@@ -3,10 +3,13 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { Route } from '..';
 import { t, rx } from '../common';
 
+type RouteContext = 'Window' | 'Mock';
+
 type Ctx = {
   bus: t.EventBus<any>;
   route: t.RouteEventsDisposable;
   info?: t.RouteInfo;
+  context: RouteContext;
 };
 
 /**
@@ -19,14 +22,28 @@ export const actions = DevActions<Ctx>()
     const change = e.change;
 
     const bus = rx.bus();
-    const route = Route.Controller({ instance: { bus } });
+    const mock = Route.Dev.mock();
+    const isMock = () => e.current?.context === 'Mock';
+
+    const route = Route.Controller({
+      instance: { bus },
+      getUrl: () => (isMock() ? mock.getUrl() : location.href),
+      pushState(data, unused, url) {
+        if (isMock()) {
+          mock.pushState(data, unused, url);
+        } else {
+          history.pushState(data, unused, url);
+        }
+      },
+    });
 
     const ctx: Ctx = {
       bus,
       route,
+      context: 'Mock',
     };
 
-    route.changed$.subscribe((e) => {
+    route.current.$.subscribe((e) => {
       change.ctx((ctx) => (ctx.info = e.info));
     });
 
@@ -40,12 +57,27 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Dev');
 
-    let count = 0;
+    e.select((config) => {
+      const items: RouteContext[] = ['Window', 'Mock'];
+      config
+        .items(items.map((value) => ({ label: `context: ${value}`, value })))
+        .initial(config.ctx.context)
+        .view('buttons')
+        .pipe((e) => {
+          if (e.changing) {
+            e.ctx.context = e.changing?.next[0].value;
+            e.ctx.route.current.refresh();
+          }
+        });
+    });
 
+    e.hr();
+
+    let count = 0;
     e.button('reset', (e) => {
       count = 0;
       const route = e.ctx.route;
-      const dev = route.current.query.dev;
+      const dev = route.current.url.query.dev;
       route.change.fire({
         hash: '',
         path: '',
@@ -55,19 +87,25 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.1);
 
-    e.button('change: query.{foo}', (e) => {
+    e.button('⚡️ change: query.{foo}', (e) => {
       e.ctx.route.change.query([{ key: 'foo', value: `${count++}` }]);
     });
-    e.button('change: query.{bar}', (e) => {
+    e.button('⚡️ change: query.{bar}', (e) => {
       e.ctx.route.change.query([{ key: 'bar', value: `${count++}` }]);
     });
 
-    e.button('change: "path"', (e) => {
+    e.button('⚡️ change: "path"', (e) => {
       e.ctx.route.change.path(`path.${count++}`);
     });
 
-    e.button('change: "hash"', (e) => {
+    e.button('⚡️ change: "hash"', (e) => {
       e.ctx.route.change.hash(`hash.${count++}`);
+    });
+
+    e.hr(1, 0.1);
+
+    e.button('⚡️ current.refresh', async (e) => {
+      await e.ctx.route.current.refresh();
     });
 
     e.hr();
@@ -104,7 +142,7 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    e.render(<Route.Dev.UrlText href={route.current.href} fontSize={32} />);
+    e.render(<Route.Dev.UrlText href={route.current.url.href} fontSize={32} />);
   });
 
 export default actions;

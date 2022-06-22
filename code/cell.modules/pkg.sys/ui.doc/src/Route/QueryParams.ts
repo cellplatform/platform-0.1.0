@@ -12,7 +12,13 @@ export function QueryParams(input: URL | string) {
       return Array.from(new Set(url.searchParams.keys()));
     },
     get: (key: string) => url.searchParams.get(key),
-    set: (key: string, value: string) => url.searchParams.set(key, value),
+    set: (key: string, value: string) => {
+      if (typeof value === 'string') {
+        url.searchParams.set(key, value);
+      } else {
+        api.delete(key);
+      }
+    },
     delete: (key: string) => url.searchParams.delete(key),
     clear: () => api.keys.forEach((key) => url.searchParams.delete(key)),
     toString: () => url.search,
