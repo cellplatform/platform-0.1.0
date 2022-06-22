@@ -1,5 +1,5 @@
 import { Route } from '.';
-import { expect, rx, slug, t, Test, time } from '../test';
+import { expect, rx, slug, t, Test, time } from '../../test';
 import { DEFAULT } from './common';
 
 export default Test.describe('Route', (e) => {
@@ -83,7 +83,7 @@ export default Test.describe('Route', (e) => {
 
     e.it('current', async () => {
       const { dispose, events, location } = Create.controller();
-      expect(events.current.url).to.eql(DEFAULT.DUMMY_URL); // NB: Initial before load it complete.
+      expect(events.current.url).to.eql(DEFAULT.URL); // NB: Initial before load it complete.
 
       const res = await events.ready();
       expect((res as any).dispose).to.eql(undefined); // NB: An undisposable clone is returned.
@@ -244,13 +244,6 @@ export default Test.describe('Route', (e) => {
       expect(query.keys).to.eql(['foo', 'bar']);
 
       expect(query.url.href).to.eql('https://domain.com/mock?foo=123&bar=');
-    });
-
-    e.it('set: "" (empty string)', () => {
-      const query = Route.QueryParams('https://domain.com/mock');
-      query.set('foo', '');
-
-      console.log('query.url.href', query.url.href);
     });
 
     e.it('set (null, undefined)', () => {

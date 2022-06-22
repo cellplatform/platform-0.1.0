@@ -1,4 +1,4 @@
-import * as t from '../common/types';
+import * as t from '../../common/types';
 
 export type RouteInstance = { bus: t.EventBus<any>; id?: Id };
 
@@ -6,12 +6,12 @@ type Id = string;
 type Milliseconds = number;
 
 export type RouteInfo = {
-  url: RouteInfoUrl;
+  url: RouteUrl;
   localhost: boolean;
   secure: boolean; // TLS ("https:")
 };
 
-export type RouteInfoUrl = {
+export type RouteUrl = {
   href: string;
   path: string;
   query: RouteQuery;
@@ -48,7 +48,7 @@ export type RouteEvents = {
   };
   current: {
     $: t.Observable<t.RouteCurrent>;
-    url: RouteInfoUrl;
+    url: RouteUrl;
     refresh(): Promise<void>;
   };
   change: {
