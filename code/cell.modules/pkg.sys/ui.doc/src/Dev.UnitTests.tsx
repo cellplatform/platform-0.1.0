@@ -4,7 +4,7 @@ import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 import { COLORS } from './common';
 
 const Imports = {
-  Route: import('./ui/Route/TEST'),
+  RouteBus: import('./ui/Route.Bus/TEST'),
   RouteTable: import('./ui/Route.Table/TEST'),
 };
 

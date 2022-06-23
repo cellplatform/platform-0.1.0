@@ -1,9 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { DEFAULT, R, rx, t } from './common';
-import { RouteEvents } from './Route.Events';
+import { DEFAULT, R, rx, t, RouteBus } from './common';
 
 /**
  * Hook for working with the current URL route.
@@ -21,7 +20,7 @@ export function useRoute(args: { instance: t.RouteInstance; dispose$?: Observabl
    */
   useEffect(() => {
     const { instance, dispose$ } = args;
-    const route = RouteEvents({ instance, dispose$ });
+    const route = RouteBus.Events({ instance, dispose$ });
 
     const next = (e: t.RouteUrl) => {
       urlRef.current = e;

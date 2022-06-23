@@ -1,21 +1,30 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { takeUntil } from 'rxjs/operators';
 
-import { Color, COLORS, css, CssValue, Route, rx, t, useResizeObserver } from './common';
+import { useRoute } from './useRoute';
+import { useRouteState } from './useRouteState';
+
+import { FC, Color, COLORS, css, CssValue, RouteBus, rx, t, useResizeObserver } from './common';
 
 import { pathToRegexp } from 'path-to-regexp';
 
+let renderCount = 0;
+
+/**
+ * Types
+ */
 export type RouteViewProps = {
   instance: t.RouteInstance;
   routes?: t.RouteTableDefs;
   style?: CssValue;
 };
 
-let renderCount = 0;
-
-export const RouteView: React.FC<RouteViewProps> = (props) => {
+/**
+ * Component
+ */
+const View: React.FC<RouteViewProps> = (props) => {
   const { instance, routes = {} } = props;
-  const route = Route.useRoute({ instance });
+  const route = useRoute({ instance });
   const routeKeys = Object.keys(routes).join(',');
 
   const resize = useResizeObserver();
@@ -113,3 +122,16 @@ export const RouteView: React.FC<RouteViewProps> = (props) => {
     </div>
   );
 };
+
+/**
+ * Export
+ */
+type Fields = {
+  useRoute: typeof useRoute;
+  useRouteState: typeof useRouteState;
+};
+export const RouteView = FC.decorate<RouteViewProps, Fields>(
+  View,
+  { useRoute, useRouteState },
+  { displayName: 'Route.View' },
+);

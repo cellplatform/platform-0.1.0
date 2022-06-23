@@ -1,25 +1,25 @@
-import { Route } from '.';
+import { RouteBus } from '.';
 import { expect, rx, slug, t, Test } from '../../test';
 import { DEFAULT } from './common';
 
-export default Test.describe('Route', (e) => {
+export default Test.describe('Route.Bus', (e) => {
   const Create = {
     instance: (): t.RouteInstance => ({ bus: rx.bus(), id: `foo.${slug()}` }),
     controller(options: { href?: string } = {}) {
       const instance = Create.instance();
-      const { location, getUrl, pushState } = Route.Dev.mock(options.href);
-      const events = Route.Controller({ instance, getUrl, pushState });
+      const { location, getUrl, pushState } = RouteBus.Dev.mock(options.href);
+      const events = RouteBus.Controller({ instance, getUrl, pushState });
       const dispose = events.dispose;
       return { instance, location, events, dispose };
     },
   };
 
   e.describe('is', (e) => {
-    const is = Route.Events.is;
+    const is = RouteBus.Events.is;
 
     e.it('is (static/instance)', () => {
       const instance = Create.instance();
-      const events = Route.Events({ instance });
+      const events = RouteBus.Events({ instance });
       expect(events.is).to.equal(is);
     });
 
@@ -41,19 +41,19 @@ export default Test.describe('Route', (e) => {
 
   e.describe('Controller/Events', (e) => {
     e.it('singleton instance (default)', () => {
-      const events = Route.Events({ instance: { bus: rx.bus() } });
+      const events = RouteBus.Events({ instance: { bus: rx.bus() } });
       expect(events.instance.id).to.eql('singleton');
     });
 
     e.it('explicit instance', () => {
-      const events = Route.Events({ instance: { bus: rx.bus(), id: 'foo' } });
+      const events = RouteBus.Events({ instance: { bus: rx.bus(), id: 'foo' } });
       expect(events.instance.id).to.eql('foo');
     });
 
     e.it('info (with mock)', async () => {
       const instance = Create.instance();
-      const { location, getUrl } = Route.Dev.mock();
-      const events = Route.Controller({ instance, getUrl });
+      const { location, getUrl } = RouteBus.Dev.mock();
+      const events = RouteBus.Controller({ instance, getUrl });
       const res = await events.info.get();
       events.dispose();
 
@@ -68,7 +68,7 @@ export default Test.describe('Route', (e) => {
 
     e.it('info (with default [window.location])', async () => {
       const instance = Create.instance();
-      const events = Route.Controller({ instance });
+      const events = RouteBus.Controller({ instance });
       const res = await events.info.get();
       events.dispose();
 
@@ -214,13 +214,13 @@ export default Test.describe('Route', (e) => {
   e.describe('QueryParams', (e) => {
     e.it('url', () => {
       const url = new URL('https://domain.com');
-      const query = Route.QueryParams(url);
+      const query = RouteBus.QueryParams(url);
       expect(query.url).to.equal(url);
     });
 
     e.it('get | keys', () => {
-      const query1 = Route.QueryParams(new URL('https://domain.com'));
-      const query2 = Route.QueryParams('https://domain.com/?foo=123');
+      const query1 = RouteBus.QueryParams(new URL('https://domain.com'));
+      const query2 = RouteBus.QueryParams('https://domain.com/?foo=123');
 
       expect(query1.toString()).to.eql('');
       expect(query2.toString()).to.eql('?foo=123');
@@ -235,7 +235,7 @@ export default Test.describe('Route', (e) => {
     });
 
     e.it('set (mutate)', () => {
-      const query = Route.QueryParams('https://domain.com/mock');
+      const query = RouteBus.QueryParams('https://domain.com/mock');
 
       expect(query.toString()).to.eql('');
       expect(query.keys).to.eql([]);
@@ -252,7 +252,7 @@ export default Test.describe('Route', (e) => {
     });
 
     e.it('set (null, undefined)', () => {
-      const query = Route.QueryParams('https://domain.com/mock');
+      const query = RouteBus.QueryParams('https://domain.com/mock');
 
       const test = (value: any) => {
         query.set('foo', value);
@@ -271,21 +271,21 @@ export default Test.describe('Route', (e) => {
     });
 
     e.it('set: with space ("+")', () => {
-      const query = Route.QueryParams('https://domain.com/mock');
+      const query = RouteBus.QueryParams('https://domain.com/mock');
       query.set('foo', 'with space');
       expect(query.url.href).to.eql('https://domain.com/mock?foo=with+space');
       expect(query.get('foo')).to.eql('with space'); // NB: Decoded via "get" method.
     });
 
     e.it('set: URL encoding ("one/two")', () => {
-      const query = Route.QueryParams('https://domain.com/mock');
+      const query = RouteBus.QueryParams('https://domain.com/mock');
       query.set('foo', 'one/two');
       expect(query.url.href).to.eql('https://domain.com/mock?foo=one%2Ftwo');
       expect(query.get('foo')).to.eql('one/two'); // NB: Decoded via "get" method.
     });
 
     e.it('delete', () => {
-      const query = Route.QueryParams('https://domain.com/mock');
+      const query = RouteBus.QueryParams('https://domain.com/mock');
       query.set('foo', '123');
       query.set('bar', '456');
       expect(query.keys).to.eql(['foo', 'bar']);
@@ -305,7 +305,7 @@ export default Test.describe('Route', (e) => {
     });
 
     e.it('clear', () => {
-      const query = Route.QueryParams('https://domain.com/mock?foo=123&bar=456');
+      const query = RouteBus.QueryParams('https://domain.com/mock?foo=123&bar=456');
       expect(query.keys).to.eql(['foo', 'bar']);
       query.clear();
       expect(query.keys).to.eql([]);

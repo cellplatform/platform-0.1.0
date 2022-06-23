@@ -1,6 +1,6 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { Route } from '..';
+import { Route } from '../../Route';
 import { t, rx } from '../common';
 
 type RouteContext = 'Window' | 'Mock';
@@ -16,16 +16,16 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.Route')
+  .namespace('ui.Route.Bus')
   .context((e) => {
     if (e.prev) return e.prev;
     const change = e.change;
 
     const bus = rx.bus();
-    const mock = Route.Dev.mock();
+    const mock = Route.Bus.Dev.mock();
     const isMock = () => e.current?.context === 'Mock';
 
-    const route = Route.Controller({
+    const route = Route.Bus.Controller({
       instance: { bus },
       getUrl: () => (isMock() ? mock.getUrl() : location.href),
       pushState(data, unused, url) {
@@ -142,7 +142,7 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    e.render(<Route.Dev.UrlText href={route.current.url.href} fontSize={32} />);
+    e.render(<Route.Bus.Dev.UrlText href={route.current.url.href} fontSize={32} />);
   });
 
 export default actions;

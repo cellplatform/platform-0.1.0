@@ -1,26 +1,9 @@
-import { QueryParams } from './QueryParams';
-import { RouteController as Controller } from './Route.Controller';
-import { RouteEvents as Events } from './Route.Events';
-import { mock } from './Route.mock';
-import { useRoute } from './Route.useRoute';
-import { useRouteState } from './Route.useRouteState';
-import { Dev } from './view/Dev';
+import { RouteBus as Bus } from '../Route.Bus';
 import { RouteTable as Table } from '../Route.Table';
+import { RouteView as View } from '../Route.View';
 
 export const Route = {
-  Events,
-  Controller,
-  QueryParams,
+  Bus,
   Table,
-
-  /**
-   * Hooks
-   */
-  useRoute,
-  useRouteState,
-
-  /**
-   * Development
-   */
-  Dev: { ...Dev, mock },
+  View,
 };

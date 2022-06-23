@@ -1,7 +1,7 @@
 import { delay } from 'rxjs/operators';
 
 import { DEFAULT, rx, t } from './common';
-import { QueryParams } from './QueryParams';
+import { QueryParams } from './Url.QueryParams';
 import { RouteEvents } from './Route.Events';
 
 /**

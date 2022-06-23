@@ -1,10 +1,10 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { RouteView, RouteViewProps } from '..';
-import { t, rx, Route } from '../common';
-import { Doc } from '../../Doc';
 
+import { RouteViewProps } from '..';
 import { SAMPLE } from '../../DEV.Sample.data';
+import { Route } from '../../Route';
+import { RouteBus, rx, t } from '../common';
 import { DevRouteTable } from './DEV.RouteTable';
 
 type Ctx = {
@@ -26,8 +26,8 @@ export const actions = DevActions<Ctx>()
     const bus = rx.bus();
     const instance: t.RouteInstance = { bus };
 
-    const { getUrl, pushState } = Route.Dev.mock('https://domain.com/');
-    const route = Route.Controller({ instance: { bus }, getUrl, pushState });
+    const { getUrl, pushState } = RouteBus.Dev.mock('https://domain.com/');
+    const route = RouteBus.Controller({ instance: { bus }, getUrl, pushState });
     route.current.$.subscribe((e) => change.ctx((ctx) => (ctx.href = e.info.url.href)));
 
     const ctx: Ctx = {
@@ -103,7 +103,7 @@ export const actions = DevActions<Ctx>()
         background: 1,
       },
     });
-    e.render(<RouteView {...e.ctx.props} style={{ flex: 1 }} />);
+    e.render(<Route.View {...e.ctx.props} style={{ flex: 1 }} />);
   });
 
 export default actions;

@@ -17,7 +17,7 @@ const imports = {
 
   TalkingDiagram: import('./ui/Diagram.TalkingDiagram/dev/DEV'),
 
-  Route: import('./ui/Route/dev/DEV'),
+  RouteBus: import('./ui/Route.Bus/dev/DEV'),
   RouteView: import('./ui/Route.View/dev/DEV'),
 
   SampleDeploy: import('./ui/DEV.Sample.Deploy/DEV'),

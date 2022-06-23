@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { rx, t } from './common';
-import { useRoute } from './Route.useRoute';
+import { useRoute } from './useRoute';
 
 /**
  * Hook for working with the current URL route.
