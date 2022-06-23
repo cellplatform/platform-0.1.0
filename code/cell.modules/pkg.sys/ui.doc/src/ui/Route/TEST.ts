@@ -1,5 +1,5 @@
 import { Route } from '.';
-import { expect, rx, slug, t, Test, time } from '../../test';
+import { expect, rx, slug, t, Test } from '../../test';
 import { DEFAULT } from './common';
 
 export default Test.describe('Route', (e) => {
@@ -194,14 +194,19 @@ export default Test.describe('Route', (e) => {
 
         const fired: t.RouteCurrent[] = [];
         events.current.$.subscribe((e) => fired.push(e));
+        expect(fired.length).to.eql(0); // NB: not ready yet.
+
+        await events.ready();
+        expect(fired.length).to.eql(1);
+        expect(fired[0].info.url.href).to.eql('https://domain.com/mock'); // Initial firing of "current" url.
 
         await events.change.fire({ query: { foo: '456', bar: 'boo' } });
         await events.change.fire({ path: 'hello' });
         dispose();
 
-        expect(fired.length).to.eql(2);
-        expect(fired[0].info.url.href).to.eql('https://domain.com/mock?foo=456&bar=boo');
-        expect(fired[1].info.url.href).to.eql('https://domain.com/hello?foo=456&bar=boo');
+        expect(fired.length).to.eql(3);
+        expect(fired[1].info.url.href).to.eql('https://domain.com/mock?foo=456&bar=boo');
+        expect(fired[2].info.url.href).to.eql('https://domain.com/hello?foo=456&bar=boo');
       });
     });
   });
