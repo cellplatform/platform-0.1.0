@@ -136,9 +136,7 @@ export const actions = DevActions<Ctx>()
     const isDark = theme === 'DARK';
 
     e.settings({
-      host: {
-        background: isDark ? COLORS.DARK : 0.8,
-      },
+      host: { background: isDark ? COLORS.DARK : 0.8 },
       layout: {
         label: '<TreeView>',
         position: [150, isMultiColumn ? 120 : null],

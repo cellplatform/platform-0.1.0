@@ -65,13 +65,13 @@ export default Test.describe('Route.Table', (e) => {
       expect(res?.params.id).to.eql('123');
     });
 
-    e.it('match: "/path/(.*) - wildcard"', () => {
+    e.it('match: "/path/(.*) - wildcard', () => {
       const table = RouteTable({ '/path/(.*)': () => null });
       const res = table.match('/path/123/456');
       expect(res?.params).to.eql({ 0: '123/456' });
     });
 
-    e.it('match: "/path/:foo* - zero or more"', () => {
+    e.it('match: "/path/:foo* - zero or more', () => {
       const table = RouteTable({ '/path/:foo*': () => null });
       const res1 = table.match('/path/123/456');
       const res2 = table.match('/path');

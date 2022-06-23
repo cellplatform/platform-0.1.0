@@ -3,6 +3,9 @@ import { Harness } from 'sys.ui.dev';
 import { t } from './common';
 
 const imports = {
+  SampleApp: import('./ui/DEV.Sample.App/dev/DEV'),
+  SampleDeploy: import('./ui/DEV.Sample.Deploy/DEV'),
+
   Design: import('./ui/Design/DEV'),
   ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
   DocLayoutContainer: import('./ui/Doc.LayoutContainer/dev/DEV'),
@@ -19,8 +22,6 @@ const imports = {
 
   RouteBus: import('./ui/Route.Bus/dev/DEV'),
   RouteView: import('./ui/Route.View/dev/DEV'),
-
-  SampleDeploy: import('./ui/DEV.Sample.Deploy/DEV'),
 
   RouteContainer___: import('./ui/RouteContainer.OLD/dev/DEV'),
 

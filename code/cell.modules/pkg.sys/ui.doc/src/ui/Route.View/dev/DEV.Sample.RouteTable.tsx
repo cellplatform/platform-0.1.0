@@ -2,7 +2,7 @@ import React from 'react';
 
 import { SAMPLE } from '../../DEV.Sample.data';
 import { Doc } from '../../Doc';
-import { t } from '../common';
+import { t, time, css } from '../common';
 import { DevSample as DevSampleDiagram } from '../../Diagram.TalkingDiagram/dev/DEV.Sample';
 
 const routes: t.RouteTableDefs = {
@@ -11,7 +11,10 @@ const routes: t.RouteTableDefs = {
    */
   '/'(e) {
     console.log('render "HOME":', e);
-    return e.render(<div>{`TODO: Index 🐷`}</div>);
+    const styles = {
+      base: css({ Flex: 'center-center', flex: 1 }),
+    };
+    return e.render(<div {...styles.base}>{`TODO: Index 🐷`}</div>);
   },
 
   /**
@@ -30,15 +33,18 @@ const routes: t.RouteTableDefs = {
      *
      */
 
-    const blocks = Doc.toBlockElements({ def, width: e.size.width });
+    const width = 550; // TEMP 🐷
+    const blocks = Doc.toBlockElements({ def, width });
     e.render(<Doc.Layout blocks={blocks} style={{ flex: 1 }} />);
   },
 
   /**
    * DIAGRAM: "<path>/diagram:<name>"
    */
-  '/:path/diagram\\::name*'(e) {
+  async '/:path/diagram\\::name*'(e) {
     console.log('render "DIAGRAM":', e);
+
+    await time.wait(1500);
     return e.render(<DevSampleDiagram style={{ flex: 1 }} />);
   },
 };

@@ -4,14 +4,20 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { RouteViewProps } from '..';
 import { SAMPLE } from '../../DEV.Sample.data';
 import { Route } from '../../Route';
-import { RouteBus, rx, t } from '../common';
-import { DevRouteTable } from './DEV.RouteTable';
+import { RouteBus, rx, t, COLORS } from '../common';
+import { DevRouteTable } from './DEV.Sample.RouteTable';
 
 type Ctx = {
   instance: t.RouteInstance;
   href: string;
   route: t.RouteEvents;
   props: RouteViewProps;
+};
+
+const Util = {
+  debug(ctx: Ctx) {
+    return ctx.props.debug || (ctx.props.debug = {});
+  },
 };
 
 /**
@@ -37,6 +43,8 @@ export const actions = DevActions<Ctx>()
       props: {
         instance,
         routes: DevRouteTable.routes,
+        theme: Route.View.DEFAULT.THEME,
+        debug: { renderCount: true },
       },
     };
     return ctx;
@@ -68,7 +76,29 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
+    e.title('Props');
+
+    e.select((config) => {
+      config
+        .view('buttons')
+        .items(Route.View.DEFAULT.THEMES.map((value) => ({ label: `theme: ${value}`, value })))
+        .initial(config.ctx.props.theme)
+        .pipe((e) => {
+          if (e.changing) e.ctx.props.theme = e.changing?.next[0].value;
+        });
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
     e.title('Dev');
+
+    e.boolean('debug.renderCount', (e) => {
+      const debug = Util.debug(e.ctx);
+      if (e.changing) debug.renderCount = e.changing.next;
+      e.boolean.current = debug.renderCount;
+    });
 
     e.hr();
 
@@ -90,17 +120,21 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    const theme = e.ctx.props.theme ?? Route.View.DEFAULT.THEME;
+    const isDark = theme === 'Dark';
+
     e.settings({
-      host: { background: -0.04 },
+      host: { background: isDark ? COLORS.DARK : -0.04 },
       layout: {
         label: {
-          topLeft: '<Router>',
-          topRight: `route: ${e.ctx.route.current.url.href}`,
+          topLeft: '<Route.Vew> (Container)',
+          bottomLeft: `route: ${e.ctx.route.current.url.href}`,
         },
         position: [150, 80],
-        border: -0.1,
-        cropmarks: -0.2,
-        background: 1,
+        border: isDark ? 0.1 : -0.1,
+        cropmarks: isDark ? 0.3 : -0.2,
+        labelColor: isDark ? COLORS.WHITE : -0.5,
+        background: isDark ? -0.06 : 0.1,
       },
     });
     e.render(<Route.View {...e.ctx.props} style={{ flex: 1 }} />);

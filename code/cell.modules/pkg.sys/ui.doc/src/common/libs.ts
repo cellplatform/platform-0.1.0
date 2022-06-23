@@ -8,6 +8,7 @@ export { css, Color, CssValue, Style, formatColor } from '@platform/css';
 export { useResizeObserver, FC } from '@platform/react';
 export { rx, slug, time } from '@platform/util.value';
 export { Http } from '@platform/http';
+export { value as Value } from '@platform/util.value';
 
 /**
  * @system
@@ -22,3 +23,4 @@ export { Chip } from 'sys.ui.primitives/lib/ui/Chip';
 export { List } from 'sys.ui.primitives/lib/ui/List';
 export { Card } from 'sys.ui.primitives/lib/ui/Card';
 export { Text } from 'sys.ui.primitives/lib/ui/Text';
+export { Spinner } from 'sys.ui.primitives/lib/ui/Spinner';

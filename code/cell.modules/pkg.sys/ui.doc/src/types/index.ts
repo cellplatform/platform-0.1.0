@@ -6,3 +6,4 @@ export * from '../ui/Doc/types';
 
 export * from '../ui/Route.Bus/types';
 export * from '../ui/Route.Table/types';
+export * from '../ui/Route.View/types';

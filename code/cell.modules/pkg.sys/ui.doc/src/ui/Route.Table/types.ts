@@ -11,15 +11,14 @@ export type RouteTableHandler = (e: RouteTableHandlerArgs) => any;
 export type RouteTableHandlerArgs = {
   url: t.RouteUrl;
   route: string;
-  size: { width: number; height: number };
-  render: RouteTableRenderHandler;
+  render: RouteRenderHandler;
 };
 
 /**
  * Render Handler
  */
-export type RouteTableRenderHandler = (args: RouteTableRenderHandlerArgs) => void;
-export type RouteTableRenderHandlerArgs = JSX.Element;
+export type RouteRenderHandler = (args: RouteRenderHandlerArgs) => void;
+export type RouteRenderHandlerArgs = JSX.Element; // TODO - async (promise) response, for spinner
 
 /**
  * Route table.
@@ -41,5 +40,6 @@ export type RouteMatch<P extends RouteParams> = {
   pattern: string;
   index: number;
   params: P;
+  handler: RouteTableHandler;
 };
 export type RouteParams = { [key: string]: string };

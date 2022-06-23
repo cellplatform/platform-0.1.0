@@ -49,12 +49,12 @@ function toRouteTable(args: { defs?: t.RouteTableDefs; paths?: t.RouteTablePath[
      */
     match<P>(path: string) {
       for (const item of routes) {
-        const pattern = item.pattern;
+        const { pattern, handler } = item;
         const match = lazyMatcher(pattern)(path);
         if (match) {
           const index = match.index;
           const params = match.params as unknown as P;
-          return { path, pattern, index, params };
+          return { path, pattern, index, params, handler };
         }
       }
       return undefined; // Not found.
