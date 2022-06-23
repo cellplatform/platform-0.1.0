@@ -3,6 +3,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { useRoute } from './useRoute';
 import { useRouteState } from './useRouteState';
+import { Dev } from './view/Dev';
 
 import { FC, Color, COLORS, css, CssValue, RouteBus, rx, t, useResizeObserver } from './common';
 
@@ -129,9 +130,10 @@ const View: React.FC<RouteViewProps> = (props) => {
 type Fields = {
   useRoute: typeof useRoute;
   useRouteState: typeof useRouteState;
+  Dev: typeof Dev;
 };
 export const RouteView = FC.decorate<RouteViewProps, Fields>(
   View,
-  { useRoute, useRouteState },
+  { useRoute, useRouteState, Dev },
   { displayName: 'Route.View' },
 );

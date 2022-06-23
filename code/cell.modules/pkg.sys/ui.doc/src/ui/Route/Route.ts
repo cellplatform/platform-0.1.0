@@ -6,4 +6,9 @@ export const Route = {
   Bus,
   Table,
   View,
+
+  Dev: {
+    ...View.Dev,
+    ...Bus.Dev,
+  },
 };

@@ -142,7 +142,7 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    e.render(<Route.Bus.Dev.UrlText href={route.current.url.href} fontSize={32} />);
+    e.render(<Route.Dev.UrlText href={route.current.url.href} fontSize={32} />);
   });
 
 export default actions;
