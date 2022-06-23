@@ -5,11 +5,13 @@ import { mock } from './Route.mock';
 import { useRoute } from './Route.useRoute';
 import { useRouteState } from './Route.useRouteState';
 import { Dev } from './view/Dev';
+import { RouteTable as Table } from '../Route.Table';
 
 export const Route = {
   Events,
   Controller,
   QueryParams,
+  Table,
 
   /**
    * Hooks

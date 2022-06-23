@@ -5,6 +5,7 @@ import { COLORS } from './common';
 
 const Imports = {
   Route: import('./ui/Route/TEST'),
+  RouteTable: import('./ui/Route.Table/TEST'),
 };
 
 type Ctx = { results?: TestSuiteRunResponse };
@@ -18,6 +19,7 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     e.ctx.results = await Test.run(Object.values(Imports));
+    // e.ctx.results = await Test.run(Imports.RouteTable);
   })
 
   .items((e) => {

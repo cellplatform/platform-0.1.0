@@ -7,7 +7,7 @@ import { pathToRegexp } from 'path-to-regexp';
 
 export type RouteViewProps = {
   instance: t.RouteInstance;
-  routes?: t.RouteTable;
+  routes?: t.RouteTableDefs;
   style?: CssValue;
 };
 
@@ -19,7 +19,6 @@ export const RouteView: React.FC<RouteViewProps> = (props) => {
   const routeKeys = Object.keys(routes).join(',');
 
   const resize = useResizeObserver();
-
   const [element, setElement] = useState<JSX.Element | undefined>();
 
   /**
@@ -61,7 +60,7 @@ export const RouteView: React.FC<RouteViewProps> = (props) => {
 
       const { width, height } = resize.rect;
       const size = { width, height };
-      const route = { pattern: match.pattern, match: url.path };
+      const route = match.pattern;
       const args: t.RouteTableHandlerArgs = { url, size, route, render };
       match.handler(args);
     };

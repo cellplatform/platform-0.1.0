@@ -5,7 +5,7 @@ import { Doc } from '../../Doc';
 import { t } from '../common';
 import { DevSample as DevSampleDiagram } from '../../Diagram.TalkingDiagram/dev/DEV.Sample';
 
-const routes: t.RouteTable = {
+const routes: t.RouteTableDefs = {
   /**
    * HOME
    */
