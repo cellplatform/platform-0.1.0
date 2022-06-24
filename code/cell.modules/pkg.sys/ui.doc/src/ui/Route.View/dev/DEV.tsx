@@ -42,7 +42,7 @@ export const actions = DevActions<Ctx>()
       href: route.current.url.href,
       props: {
         instance,
-        routes: DevRouteTable.routes,
+        routes: DevRouteTable(() => ({ theme: e.current?.props.theme })),
         theme: Route.View.DEFAULT.THEME,
         debug: { renderCount: true },
       },
@@ -57,20 +57,30 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Routes');
 
-    const routeButton = (path: string) => {
+    const route = (path: string) => {
       const label = `url: ${path}`;
       e.button(label, (e) => e.ctx.route.change.fire({ path }));
     };
 
-    routeButton('/');
+    route('/');
 
     e.hr(1, 0.1);
-    e.markdown('Type "Document": `ns/doc:name`');
-    SAMPLE.defs.forEach((def) => routeButton(def.path));
+    e.markdown('type "Document": `ns/doc:name`');
+    SAMPLE.defs.forEach((def) => route(def.path));
 
     e.hr(1, 0.1);
-    e.markdown('Type "Diagram": `ns/diagram:name`');
-    routeButton('/foo/diagram:sample-1');
+    e.markdown('type "Diagram": `ns/diagram:name`');
+    route('/foo/diagram:sample-1');
+
+    e.hr(1, 0.1);
+    e.markdown('async/spinner samples');
+    route('/async/sample-1');
+    route('/async/sample-2');
+    route('/async/sample-3');
+
+    e.hr(1, 0.1);
+    e.markdown('component samples');
+    route('/component/Doc.LayoutContainer');
 
     e.hr();
   })
@@ -125,6 +135,7 @@ export const actions = DevActions<Ctx>()
 
     e.settings({
       host: { background: isDark ? COLORS.DARK : -0.04 },
+      actions: { width: 400 },
       layout: {
         label: {
           topLeft: '<Route.Vew> (Container)',

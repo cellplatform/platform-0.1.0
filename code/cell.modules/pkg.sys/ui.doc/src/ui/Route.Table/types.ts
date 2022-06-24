@@ -1,17 +1,18 @@
 import * as t from '../../common/types';
 
-export type RouteTableDefs = {
-  [pattern: string]: RouteTableHandler;
-};
+export type RouteTableDefs = { [pattern: string]: RouteTableHandler };
 
 /**
  * Handler
  */
 export type RouteTableHandler = (e: RouteTableHandlerArgs) => any;
 export type RouteTableHandlerArgs = {
-  url: t.RouteUrl;
-  route: string;
+  url: RouteTableHandlerUrl;
   render: RouteRenderHandler;
+};
+export type RouteTableHandlerUrl = t.RouteUrl & {
+  route: string; // URL path pattern.
+  params: RouteParams;
 };
 
 /**

@@ -1,5 +1,6 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
+
 import { DocLayoutContainer, DocLayoutContainerProps } from '..';
 import { COLORS, t } from '../common';
 import { DevChildSample } from './DEV.ChildSample';
@@ -8,6 +9,15 @@ type Ctx = {
   sizes?: t.DocLayoutSizes;
   props: DocLayoutContainerProps;
   debug: { render: boolean };
+};
+
+const Util = {
+  props: {
+    debug(ctx: Ctx): t.DocLayoutContainerDebug {
+      const debug = ctx.props.debug || (ctx.props.debug = {});
+      return DocLayoutContainer.toDebug(debug);
+    },
+  },
 };
 
 /**
@@ -21,7 +31,7 @@ export const actions = DevActions<Ctx>()
 
     const ctx: Ctx = {
       props: {
-        tracelines: true,
+        debug: { tracelines: true, bg: true },
         onResize: (e) => change.ctx((ctx) => (ctx.sizes = e.sizes)),
       },
       debug: { render: true },
@@ -46,9 +56,28 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Dev');
 
-    e.boolean('tracelines', (e) => {
-      if (e.changing) e.ctx.props.tracelines = e.changing.next;
-      e.boolean.current = e.ctx.props.tracelines;
+    e.boolean('debug.bg', (e) => {
+      const debug = Util.props.debug(e.ctx);
+      if (e.changing) debug.bg = e.changing.next;
+      e.boolean.current = debug.bg;
+    });
+
+    e.boolean('debug.tracelines', (e) => {
+      const debug = Util.props.debug(e.ctx);
+      if (e.changing) debug.tracelines = e.changing.next;
+      e.boolean.current = debug.tracelines;
+    });
+
+    e.boolean('debug.renderCount', (e) => {
+      const debug = Util.props.debug(e.ctx);
+      if (e.changing) debug.renderCount = e.changing.next;
+      e.boolean.current = debug.renderCount;
+    });
+
+    e.boolean('debug.columnSize', (e) => {
+      const debug = Util.props.debug(e.ctx);
+      if (e.changing) debug.columnSize = e.changing.next;
+      e.boolean.current = debug.columnSize;
     });
 
     e.hr();

@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
 import { FC, COLORS, css, CssValue, t, MinSize, DEFAULT } from './common';
 
-import { Guides } from './ui/Guides';
+import { Guides } from './view/Guides';
 import { DocTooSmall } from '../Doc.TooSmall';
 import { LayoutSize } from './LayoutSize';
 
 export type DocLayoutContainerProps = {
-  tracelines?: boolean;
+  debug?: true | t.DocLayoutContainerDebug;
   min?: { width?: number; height?: number };
   style?: CssValue;
   onResize?: t.DocResizeHandler;
 };
 
 const View: React.FC<DocLayoutContainerProps> = (props) => {
-  const { tracelines = false, min } = props;
+  const { min } = props;
+  const debug = toDebug(props.debug);
   const [sizes, setSizes] = useState<t.DocLayoutSizes>();
 
   /**
@@ -30,7 +31,7 @@ const View: React.FC<DocLayoutContainerProps> = (props) => {
 
   const elBase = sizes && (
     <div {...styles.base}>
-      {tracelines && sizes && <Guides sizes={sizes} />}
+      {props.debug && sizes && <Guides sizes={sizes} debug={debug} />}
       <div {...styles.body}>{elChildren}</div>
     </div>
   );
@@ -54,14 +55,23 @@ const View: React.FC<DocLayoutContainerProps> = (props) => {
 };
 
 /**
+ * Helpers
+ */
+const toDebug = (input: DocLayoutContainerProps['debug']): t.DocLayoutContainerDebug => {
+  if (input === true) return { tracelines: true, bg: true, renderCount: true, columnSize: true };
+  return input ?? {};
+};
+
+/**
  * Export
  */
 type Fields = {
   DEFAULT: typeof DEFAULT;
   LayoutSize: typeof LayoutSize;
+  toDebug: typeof toDebug;
 };
 export const DocLayoutContainer = FC.decorate<DocLayoutContainerProps, Fields>(
   View,
-  { DEFAULT, LayoutSize },
+  { DEFAULT, LayoutSize, toDebug },
   { displayName: 'Doc.LayoutContainer' },
 );

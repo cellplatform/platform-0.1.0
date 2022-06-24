@@ -1,11 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { takeUntil } from 'rxjs/operators';
 
+import {
+  Color,
+  COLORS,
+  css,
+  CssValue,
+  DEFAULT,
+  FC,
+  RouteTable,
+  rx,
+  slug,
+  t,
+  Value,
+} from './common';
 import { useRoute } from './useRoute';
 import { useRouteState } from './useRouteState';
 import { Dev } from './view/Dev';
-
-import { FC, Color, COLORS, css, CssValue, RouteTable, rx, t, DEFAULT, Value } from './common';
 import { Loading } from './view/Loading';
 
 let renderCount = 0;
@@ -38,24 +49,28 @@ const View: React.FC<RouteViewProps> = (props) => {
   useEffect(() => {
     const { dispose, dispose$ } = rx.disposable();
     const table = RouteTable(routes);
-    let executionId = 0;
+    let current = '';
 
-    const handle = async (url: t.RouteUrl) => {
+    const handleChange = async (url: t.RouteUrl) => {
       setLoading(false);
 
       const match = table.match(url.path);
       if (!match) return;
 
-      executionId++;
-      const id = executionId;
-      const isStale = () => executionId !== id;
+      current = slug();
+      const id = current;
+      const isCurrent = () => current === id;
 
       const render: t.RouteRenderHandler = (el) => {
-        if (!isStale()) setElement(el);
+        if (isCurrent()) {
+          setLoading(false);
+          setElement(el);
+        }
       };
 
       const route = match.pattern;
-      const args: t.RouteTableHandlerArgs = { url, route, render };
+      const params = match.params;
+      const args: t.RouteTableHandlerArgs = { url: { ...url, route, params }, render };
       const res = match.handler(args);
       if (Value.isPromise(res)) {
         setLoading(true);
@@ -64,11 +79,7 @@ const View: React.FC<RouteViewProps> = (props) => {
       }
     };
 
-    route.url$.pipe(takeUntil(dispose$)).subscribe((e) => {
-      console.group('🌳 ');
-      handle(e);
-      console.groupEnd();
-    });
+    route.url$.pipe(takeUntil(dispose$)).subscribe(handleChange);
 
     return dispose;
   }, [routeKeys, route.instance.id, route.instance.bus]); // eslint-disable-line
@@ -85,16 +96,17 @@ const View: React.FC<RouteViewProps> = (props) => {
     }),
     debug: {
       renderCount: css({
-        Absolute: [4, 5, null, null],
+        Absolute: [3, 5, null, null],
         color: Color.alpha(COLORS.MAGENTA, 0.3),
         fontSize: 10,
+        pointerEvents: 'none',
       }),
     },
   };
 
   renderCount = debug.renderCount ? renderCount + 1 : renderCount;
   const elRenderCount = debug.renderCount && (
-    <div {...styles.debug.renderCount}>render-{renderCount}</div>
+    <div {...styles.debug.renderCount}>{`render-${renderCount}`}</div>
   );
 
   const elBody = <div {...styles.body}>{element}</div>;
@@ -118,9 +130,10 @@ type Fields = {
   useRoute: typeof useRoute;
   useRouteState: typeof useRouteState;
   Dev: typeof Dev;
+  Loading: typeof Loading;
 };
 export const RouteView = FC.decorate<RouteViewProps, Fields>(
   View,
-  { DEFAULT, useRoute, useRouteState, Dev },
+  { DEFAULT, useRoute, useRouteState, Dev, Loading },
   { displayName: 'Route.View' },
 );
