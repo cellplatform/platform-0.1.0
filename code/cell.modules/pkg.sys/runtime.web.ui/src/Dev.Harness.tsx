@@ -4,7 +4,6 @@ import { t } from './common';
 
 const imports = {
   ModuleInfo: import('./ui/Module.Info/dev/DEV'),
-  ModuleCard: import('./ui/Module.Card/dev/DEV'),
   ManifestSelector: import('./ui/Manifest.Selector/dev/DEV'),
   ManifestSemver: import('./ui/Manifest.Semver/dev/DEV'),
   Module: import('./ui/Module/dev/DEV'),

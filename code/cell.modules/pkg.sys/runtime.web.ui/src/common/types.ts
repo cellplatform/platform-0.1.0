@@ -25,7 +25,6 @@ export {
   CmdCardInstance,
   CmdCardState,
   CmdCardEvent,
-  CmdCardRender,
   CmdCardControllerArgs,
   CmdCardEvents,
   CmdCardEventsDisposable,
