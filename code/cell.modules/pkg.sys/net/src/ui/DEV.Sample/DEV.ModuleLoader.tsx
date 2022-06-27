@@ -5,7 +5,7 @@ import { css, CssValue, t } from './common';
 
 export type DevModuleProps = {
   bus: t.EventBus<any>;
-  url?: string; // https://<DOMAIN>/index.json?entry=./App'
+  url?: string; //   https://<DOMAIN>/index.json?entry=./App'
   style?: CssValue;
 };
 

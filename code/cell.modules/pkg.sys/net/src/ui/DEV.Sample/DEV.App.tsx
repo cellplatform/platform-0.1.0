@@ -1,25 +1,11 @@
 import React, { useEffect, useState } from 'react';
-
-import { Observable, Subject, BehaviorSubject, firstValueFrom, timeout, of, interval } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-  tap,
-  catchError,
-} from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { TEST } from '../../test';
 import { DevNetworkCard } from '../Network.Card/dev/DEV.NetworkCard';
-import { DevBackground } from './DEV.Background';
-import { DevButtonFullscreen } from './DEV.Button.Fullscreen';
 import {
+  CmdBar,
   Color,
   css,
   CssValue,
@@ -31,14 +17,15 @@ import {
   rx,
   Spinner,
   t,
-  CmdBar,
 } from './common';
+import { DevBackground } from './DEV.Background';
+import { DevButtonFullscreen } from './DEV.Button.Fullscreen';
 import { DevEventLog } from './DEV.EventLog';
-import { DevModule } from './DEV.Module';
+import { DevModule } from './DEV.ModuleLoader';
 import { DevOverlay } from './DEV.Overlay';
+import { DevTray } from './DEV.Tray';
 import { DevVersion } from './DEV.Version';
 import { DevVideos } from './DEV.Videos';
-import { DevTray } from './DEV.Tray';
 
 export type DevSampleAppProps = {
   allowRubberband?: boolean;
