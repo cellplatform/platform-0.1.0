@@ -13,11 +13,11 @@ import {
   slug,
   t,
   Value,
+  LoadMask,
 } from './common';
 import { useRoute } from './useRoute';
 import { useRouteState } from './useRouteState';
 import { Dev } from './view/Dev';
-import { Loading } from './view/Loading';
 
 let renderCount = 0;
 
@@ -111,7 +111,7 @@ const View: React.FC<RouteViewProps> = (props) => {
 
   const elBody = <div {...styles.body}>{element}</div>;
 
-  const elLoading = isLoading && <Loading theme={theme} style={{ Absolute: 0 }} />;
+  const elLoading = isLoading && <LoadMask theme={theme} style={{ Absolute: 0 }} />;
 
   return (
     <div {...css(styles.base, props.style)}>
@@ -130,10 +130,10 @@ type Fields = {
   useRoute: typeof useRoute;
   useRouteState: typeof useRouteState;
   Dev: typeof Dev;
-  Loading: typeof Loading;
+  LoadMask: typeof LoadMask;
 };
 export const RouteView = FC.decorate<RouteViewProps, Fields>(
   View,
-  { DEFAULT, useRoute, useRouteState, Dev, Loading },
+  { DEFAULT, useRoute, useRouteState, Dev, LoadMask },
   { displayName: 'Route.View' },
 );

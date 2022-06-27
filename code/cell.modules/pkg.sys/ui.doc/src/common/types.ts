@@ -25,4 +25,5 @@ export {
   GetListItem,
   GetListItemSize,
   CardProps,
+  LoadMaskProps,
 } from 'sys.ui.primitives/lib/types';

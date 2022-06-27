@@ -24,3 +24,4 @@ export { PropList } from 'sys.ui.primitives/lib/ui/PropList';
 export { Spinner } from 'sys.ui.primitives/lib/ui.ref/spinner/Spinner';
 export { CmdCard } from 'sys.ui.primitives/lib/ui/Cmd.Card';
 export { Text } from 'sys.ui.primitives/lib/ui/Text';
+export { LoadMask } from 'sys.ui.primitives/lib/ui/LoadMask';

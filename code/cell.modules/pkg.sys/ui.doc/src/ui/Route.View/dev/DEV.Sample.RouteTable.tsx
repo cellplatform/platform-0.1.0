@@ -6,7 +6,9 @@ import { COLORS, t, time, css, DEFAULT } from '../common';
 import { DevSample as DevSampleDiagram } from '../../Diagram.TalkingDiagram/dev/DEV.Sample';
 import { RouteView } from '../RouteView';
 
-type Ctx = { theme?: t.RouteViewTheme };
+type Milliseconds = number;
+
+type Ctx = { theme?: t.RouteViewTheme; delay: Milliseconds };
 
 export function DevRouteTable(getCtx: () => Ctx) {
   const Center: React.FC = (props) => {
@@ -68,7 +70,7 @@ export function DevRouteTable(getCtx: () => Ctx) {
        *  - The existing route is blurred behind the loader.
        */
       if (params.name === 'strategy-1') {
-        await time.wait(1500);
+        await time.wait(ctx.delay);
         return e.render(<Center>{`Done 🌼`}</Center>);
       }
 
@@ -78,8 +80,8 @@ export function DevRouteTable(getCtx: () => Ctx) {
        *  - Re-render the final content.
        */
       if (params.name === 'strategy-2') {
-        e.render(<RouteView.Loading theme={ctx.theme} />);
-        time.wait(1500).then(() => e.render(<Center>{`Done 🌼`}</Center>));
+        e.render(<RouteView.LoadMask theme={ctx.theme} tile={false} style={{ Absolute: 0 }} />);
+        time.wait(ctx.delay).then(() => e.render(<Center>{`Done 🌼`}</Center>));
         return;
       }
 
@@ -88,7 +90,7 @@ export function DevRouteTable(getCtx: () => Ctx) {
        */
       if (params.name === 'strategy-3') {
         e.render(<Center>{`Customer loading view...🚀`}</Center>);
-        time.wait(1500).then(() => e.render(<Center>{`Done 🌼`}</Center>));
+        time.wait(ctx.delay).then(() => e.render(<Center>{`Done 🌼`}</Center>));
         return;
       }
 
@@ -128,8 +130,6 @@ export function DevRouteTable(getCtx: () => Ctx) {
           'https://images.unsplash.com/photo-1654263391025-4c4809a37f5c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2564&q=80',
         'unsplash-4':
           'https://images.unsplash.com/photo-1511798616182-aab3698ac53e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2176&q=80',
-        'unsplash-5':
-          'https://images.unsplash.com/photo-1541890289-4ce56a43d1fb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80',
       };
 
       const renderUnsplash = (ref: string) => {

@@ -1,23 +1,16 @@
 import React from 'react';
 
 import { Spinner } from '../Spinner';
-import { Color, COLORS, css, CssValue, DEFAULT, FC, t } from './common';
+import { Color, COLORS, css, DEFAULT, FC } from './common';
+import { LoadMaskProps } from './types';
 
-type Pixels = number;
-
-export type LoadMaskProps = {
-  theme?: t.LoadMaskTheme;
-  spinner?: boolean;
-  outerTile?: boolean;
-  blur?: Pixels;
-  style?: CssValue;
-};
+export { LoadMaskProps };
 
 /**
  * Component
  */
 const View: React.FC<LoadMaskProps> = (props) => {
-  const { theme = 'Light', outerTile = true, spinner = true } = props;
+  const { theme = 'Light', tile = true, spinner = true } = props;
   const isDark = theme === 'Dark';
   const borderRadius = 13;
 
@@ -38,7 +31,7 @@ const View: React.FC<LoadMaskProps> = (props) => {
       Flex: 'center-center',
     }),
     outerTile:
-      outerTile &&
+      tile &&
       css({
         backgroundColor: isDark ? Color.format(-0.2) : Color.format(0.3),
         padding: 50,
@@ -64,7 +57,6 @@ const View: React.FC<LoadMaskProps> = (props) => {
 /**
  * Export
  */
-
 type Fields = {
   DEFAULT: typeof DEFAULT;
 };

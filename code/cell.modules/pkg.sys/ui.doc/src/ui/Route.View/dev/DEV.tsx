@@ -7,11 +7,14 @@ import { Route } from '../../Route';
 import { RouteBus, rx, t, COLORS } from '../common';
 import { DevRouteTable } from './DEV.Sample.RouteTable';
 
+type Milliseconds = number;
+
 type Ctx = {
   instance: t.RouteInstance;
   href: string;
   route: t.RouteEvents;
   props: RouteViewProps;
+  debug: { delay: Milliseconds };
 };
 
 const Util = {
@@ -42,10 +45,14 @@ export const actions = DevActions<Ctx>()
       href: route.current.url.href,
       props: {
         instance,
-        routes: DevRouteTable(() => ({ theme: e.current?.props.theme })),
+        routes: DevRouteTable(() => ({
+          theme: e.current?.props.theme,
+          delay: e.current?.debug.delay ?? ctx.debug.delay,
+        })),
         theme: Route.View.DEFAULT.THEME,
         debug: { renderCount: true },
       },
+      debug: { delay: 1500 },
     };
     return ctx;
   })
@@ -88,7 +95,6 @@ export const actions = DevActions<Ctx>()
     route('/media/image:unsplash-2');
     route('/media/image:unsplash-3');
     route('/media/image:unsplash-4');
-    route('/media/image:unsplash-5');
 
     e.markdown(
       `route path/token pattern [reference](https://github.com/pillarjs/path-to-regexp#readme)`,
@@ -120,6 +126,18 @@ export const actions = DevActions<Ctx>()
       const debug = Util.debug(e.ctx);
       if (e.changing) debug.renderCount = e.changing.next;
       e.boolean.current = debug.renderCount;
+    });
+
+    e.select((config) => {
+      const items = [0, 300, 1500, 5000];
+      config
+        .title('load delay')
+        .items(items.map((value) => ({ label: `${value}ms`, value })))
+        .initial(config.ctx.debug.delay)
+        .view('buttons')
+        .pipe((e) => {
+          if (e.changing) e.ctx.debug.delay = e.changing?.next[0].value;
+        });
     });
 
     e.hr();

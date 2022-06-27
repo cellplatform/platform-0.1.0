@@ -19,7 +19,7 @@ export const actions = DevActions<Ctx>()
       props: {
         theme: 'Light',
         spinner: true,
-        outerTile: true,
+        tile: true,
         blur: DEFAULT.BLUR,
       },
       debug: { picture: true },
@@ -49,9 +49,9 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.props.spinner;
     });
 
-    e.boolean('outerTile', (e) => {
-      if (e.changing) e.ctx.props.outerTile = e.changing.next;
-      e.boolean.current = e.ctx.props.outerTile;
+    e.boolean('tile', (e) => {
+      if (e.changing) e.ctx.props.tile = e.changing.next;
+      e.boolean.current = e.ctx.props.tile;
     });
 
     e.boolean('blur', (e) => {

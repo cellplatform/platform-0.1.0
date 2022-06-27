@@ -23,4 +23,4 @@ export { Chip } from 'sys.ui.primitives/lib/ui/Chip';
 export { List } from 'sys.ui.primitives/lib/ui/List';
 export { Card } from 'sys.ui.primitives/lib/ui/Card';
 export { Text } from 'sys.ui.primitives/lib/ui/Text';
-export { Spinner } from 'sys.ui.primitives/lib/ui/Spinner';
+export { LoadMask } from 'sys.ui.primitives/lib/ui/LoadMask';
