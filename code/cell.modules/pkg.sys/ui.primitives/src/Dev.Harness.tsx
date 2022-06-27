@@ -20,6 +20,8 @@ const imports = {
   CmdBar: import('./ui/Cmd.Bar/dev/DEV'),
   CmdCard: import('./ui/Cmd.Card/dev/DEV'),
 
+  LoadMask: import('./ui/LoadMask/dev/DEV'),
+
   ErrorBoundary: import('./ui/Error.Boundary/dev/DEV'),
 
   MinSize: import('./ui/MinSize/dev/DEV'),
