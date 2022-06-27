@@ -15,7 +15,11 @@ export const Guides: React.FC<GuidesProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({ Absolute: 0, pointerEvents: 'none', Flex: 'x-stretch-stretch' }),
+    base: css({
+      Absolute: 0,
+      pointerEvents: 'none',
+      Flex: 'x-stretch-stretch',
+    }),
     edge: css({ flex: 1 }),
     center: css({
       position: 'relative',
@@ -28,6 +32,7 @@ export const Guides: React.FC<GuidesProps> = (props) => {
       Absolute: [3, 5, null, null],
       color: Color.alpha(COLORS.MAGENTA, 0.3),
       fontSize: 10,
+      fontFamily: 'monospace',
     }),
   };
 

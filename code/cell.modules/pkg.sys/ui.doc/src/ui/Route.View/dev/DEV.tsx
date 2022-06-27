@@ -73,14 +73,26 @@ export const actions = DevActions<Ctx>()
     route('/foo/diagram:sample-1');
 
     e.hr(1, 0.1);
-    e.markdown('async/spinner samples');
-    route('/async/sample-1');
-    route('/async/sample-2');
-    route('/async/sample-3');
+    e.markdown('async/spinner sample programming strategies');
+    route('/async/strategy-1');
+    route('/async/strategy-2');
+    route('/async/strategy-3');
 
     e.hr(1, 0.1);
     e.markdown('component samples');
     route('/component/Doc.LayoutContainer');
+
+    e.hr(1, 0.1);
+    e.markdown('media samnples');
+    route('/media/image:unsplash-1');
+    route('/media/image:unsplash-2');
+    route('/media/image:unsplash-3');
+    route('/media/image:unsplash-4');
+    route('/media/image:unsplash-5');
+
+    e.markdown(
+      `route path/token pattern [reference](https://github.com/pillarjs/path-to-regexp#readme)`,
+    );
 
     e.hr();
   })

@@ -31,7 +31,12 @@ export const actions = DevActions<Ctx>()
 
     const ctx: Ctx = {
       props: {
-        debug: { tracelines: true, bg: true },
+        debug: {
+          bg: true,
+          tracelines: true,
+          renderCount: true,
+          columnSize: true,
+        },
         onResize: (e) => change.ctx((ctx) => (ctx.sizes = e.sizes)),
       },
       debug: { render: true },

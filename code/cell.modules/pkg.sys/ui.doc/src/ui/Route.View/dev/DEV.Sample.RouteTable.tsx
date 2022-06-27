@@ -17,6 +17,10 @@ export function DevRouteTable(getCtx: () => Ctx) {
     return <div {...style}>{props.children}</div>;
   };
 
+  const NoMatch: React.FC<{ path: string }> = (props) => {
+    return <Center>{`No Match 🐷 ${props.path}`}</Center>;
+  };
+
   const routes: t.RouteTableDefs = {
     /**
      * HOME
@@ -63,9 +67,9 @@ export function DevRouteTable(getCtx: () => Ctx) {
        *  - The container auto inserts a <Loading> view
        *  - The existing route is blurred behind the loader.
        */
-      if (params.name === 'sample-1') {
+      if (params.name === 'strategy-1') {
         await time.wait(1500);
-        return e.render(<Center>{`Ready 🌳`}</Center>);
+        return e.render(<Center>{`Done 🌼`}</Center>);
       }
 
       /**
@@ -73,7 +77,7 @@ export function DevRouteTable(getCtx: () => Ctx) {
        *  - Manually insert the default loader.
        *  - Re-render the final content.
        */
-      if (params.name === 'sample-2') {
+      if (params.name === 'strategy-2') {
         e.render(<RouteView.Loading theme={ctx.theme} />);
         time.wait(1500).then(() => e.render(<Center>{`Done 🌼`}</Center>));
         return;
@@ -82,16 +86,14 @@ export function DevRouteTable(getCtx: () => Ctx) {
       /**
        * Sample 3
        */
-      if (params.name === 'sample-3') {
+      if (params.name === 'strategy-3') {
         e.render(<Center>{`Customer loading view...🚀`}</Center>);
-        time.wait(1500).then(() => e.render(<Center>{`Done 👋`}</Center>));
+        time.wait(1500).then(() => e.render(<Center>{`Done 🌼`}</Center>));
         return;
       }
 
-      /**
-       * No Match
-       */
-      e.render(<Center>{`No Match 🐷 ${e.url.path}`}</Center>);
+      // 404 - No Match.
+      e.render(<NoMatch path={e.url.path} />);
     },
 
     /**
@@ -106,10 +108,49 @@ export function DevRouteTable(getCtx: () => Ctx) {
         return;
       }
 
-      /**
-       * No Match
-       */
-      e.render(<Center>{`No Match 🐷 ${e.url.path}`}</Center>);
+      // 404 - No Match.
+      e.render(<NoMatch path={e.url.path} />);
+    },
+
+    /**
+     * Media
+     */
+    '/media/image\\::ref'(e) {
+      type T = { ref: string };
+      const params = e.url.params as T;
+
+      const href = {
+        'unsplash-1':
+          'https://images.unsplash.com/photo-1465056836041-7f43ac27dcb5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2971&q=80',
+        'unsplash-2':
+          'https://images.unsplash.com/photo-1583030225577-329fe6cc80d6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1530&q=80',
+        'unsplash-3':
+          'https://images.unsplash.com/photo-1654263391025-4c4809a37f5c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2564&q=80',
+        'unsplash-4':
+          'https://images.unsplash.com/photo-1511798616182-aab3698ac53e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2176&q=80',
+        'unsplash-5':
+          'https://images.unsplash.com/photo-1541890289-4ce56a43d1fb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80',
+      };
+
+      const renderUnsplash = (ref: string) => {
+        const styles = {
+          base: css({
+            flex: 1,
+            backgroundImage: `url(${href[ref]})`,
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center center',
+          }),
+        };
+        e.render(<div {...styles.base} />);
+      };
+
+      if (params.ref.startsWith('unsplash-')) {
+        return renderUnsplash(params.ref);
+      }
+
+      // 404 - No Match.
+      e.render(<NoMatch path={e.url.path} />);
     },
   };
 
