@@ -3,7 +3,6 @@ import React, { useRef } from 'react';
 import { CssValue, t, rx, slug, DEFAULT, FC } from './common';
 import { ManifestSelector, ManifestSelectorProps } from './ManifestSelector';
 import { useStateController, useHistoryController } from './hooks';
-import { ManifestSelectorConstants as constants } from './constants';
 
 /**
  * Types
@@ -90,11 +89,11 @@ const View: React.FC<ManifestSelectorStatefulProps> = (props) => {
  */
 
 type Fields = {
-  constants: typeof constants;
+  DEFAULT: typeof DEFAULT;
 };
 export const ManifestSelectorStateful = FC.decorate<ManifestSelectorStatefulProps, Fields>(
   View,
-  { constants },
+  { DEFAULT },
   { displayName: 'ManifestSelectorStateful' },
 );
 

@@ -4,7 +4,3 @@ export const DEFAULT = {
     PATH: 'history/ManifestSelector/global',
   },
 };
-
-export const ManifestSelectorConstants = {
-  DEFAULT,
-};

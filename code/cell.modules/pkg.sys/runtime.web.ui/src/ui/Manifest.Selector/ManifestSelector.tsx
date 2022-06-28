@@ -4,7 +4,7 @@ import { Color, css, CssValue, t, useDragTarget, COLORS, ManifestUrl, FC } from 
 import { UrlTextbox } from './components/UrlTextbox';
 import { ModuleInfo } from '../Module.Info';
 import { ModuleInfoFields } from '../Module.Info/types';
-import { ManifestSelectorConstants as constants } from './constants';
+import { DEFAULT } from './constants';
 
 type Pixels = number;
 
@@ -128,10 +128,10 @@ const View: React.FC<ManifestSelectorProps> = (props) => {
  * Export
  */
 type Fields = {
-  constants: typeof constants;
+  DEFAULT: typeof DEFAULT;
 };
 export const ManifestSelector = FC.decorate<ManifestSelectorProps, Fields>(
   View,
-  { constants },
+  { DEFAULT },
   { displayName: 'ManifestSelector' },
 );

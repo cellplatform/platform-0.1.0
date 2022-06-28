@@ -6,7 +6,7 @@ import { Filesystem, rx, t } from '../../common';
 import { ManifestSelectorStateful } from '../../Manifest.Selector';
 import * as k from '../types';
 
-const { DEFAULT } = ManifestSelectorStateful.constants;
+const DEFAULT = ManifestSelectorStateful.DEFAULT;
 
 type Id = string;
 type Ctx = {

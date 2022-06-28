@@ -5,7 +5,7 @@ import { ManifestSelectorStateful } from '../../Manifest.Selector';
 import { t, rx, WebRuntimeBus, Filesystem } from '../../common';
 
 const TARGET = 'foo';
-const { DEFAULT } = ManifestSelectorStateful.constants;
+const DEFAULT = ManifestSelectorStateful.DEFAULT;
 
 type Id = string;
 type Ctx = {

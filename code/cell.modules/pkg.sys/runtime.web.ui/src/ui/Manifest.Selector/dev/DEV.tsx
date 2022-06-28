@@ -8,7 +8,7 @@ import { ModuleInfoStateful, ModuleInfoConstants } from '../../Module.Info';
 import { ModuleInfoFields } from '../../Module.Info/types';
 
 const TARGET = 'foo';
-const { DEFAULT } = ManifestSelectorStateful.constants;
+const DEFAULT = ManifestSelectorStateful.DEFAULT;
 
 type Ctx = {
   bus: t.EventBus;
