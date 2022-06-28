@@ -2,7 +2,7 @@ import React from 'react';
 import { ObjectView } from 'sys.ui.dev';
 
 import { useManifest } from '..';
-import { color, COLORS, css, CssValue } from '../../common';
+import { Color, COLORS, css, CssValue } from '../../common';
 import { ModuleInfo } from '../../Module.Info';
 
 export type DevSampleProps = {
@@ -29,7 +29,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
       base: css({
         flex: 1,
         position: 'relative',
-        borderLeft: `solid 1px ${color.alpha(COLORS.MAGENTA, 0.3)}`,
+        borderLeft: `solid 1px ${Color.alpha(COLORS.MAGENTA, 0.3)}`,
         overflow: 'hidden',
       }),
       body: css({ Absolute: 0, Scroll: true, padding: 20 }),

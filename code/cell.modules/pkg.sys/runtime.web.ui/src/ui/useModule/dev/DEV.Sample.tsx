@@ -1,7 +1,7 @@
 import { ObjectView } from 'sys.ui.dev';
 
 import React from 'react';
-import { COLORS, color, css, CssValue, t, Spinner } from '../../common';
+import { COLORS, Color, css, CssValue, t, Spinner } from '../../common';
 import { useModule } from '..';
 
 type Id = string;
@@ -29,7 +29,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
       position: 'relative',
       width: 350,
       padding: 15,
-      borderLeft: `solid 1px ${color.alpha(COLORS.MAGENTA, 0.5)}`,
+      borderLeft: `solid 1px ${Color.alpha(COLORS.MAGENTA, 0.5)}`,
     }),
     empty: css({
       Absolute: 0,

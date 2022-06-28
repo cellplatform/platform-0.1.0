@@ -1,10 +1,12 @@
 import React from 'react';
 
-import { color, css, CssValue, t, useDragTarget, COLORS, ManifestUrl, FC } from './common';
+import { Color, css, CssValue, t, useDragTarget, COLORS, ManifestUrl, FC } from './common';
 import { UrlTextbox } from './components/UrlTextbox';
 import { ModuleInfo } from '../Module.Info';
 import { ModuleInfoFields } from '../Module.Info/types';
 import { ManifestSelectorConstants as constants } from './constants';
+
+type Pixels = number;
 
 /**
  * Types
@@ -12,6 +14,7 @@ import { ManifestSelectorConstants as constants } from './constants';
 export type ManifestSelectorProps = {
   manifestUrl?: t.ManifestUrl;
   manifest?: t.ModuleManifest;
+  spacing?: { infoTop?: Pixels };
   error?: string;
   canDrop?: boolean;
   showExports?: boolean;
@@ -30,7 +33,7 @@ export type ManifestSelectorProps = {
  * Component
  */
 const View: React.FC<ManifestSelectorProps> = (props) => {
-  const { manifest, showExports = true } = props;
+  const { manifest, showExports = true, spacing = {} } = props;
   const remote = manifest?.module?.remote;
   const manifestUrl = (props.manifestUrl ?? '').trim();
   const fields = props.fields ?? [
@@ -61,16 +64,16 @@ const View: React.FC<ManifestSelectorProps> = (props) => {
   const styles = {
     base: css({ flex: 1, position: 'relative', color: COLORS.DARK, boxSizing: 'border-box' }),
     body: {
-      base: css({ paddingTop: 8 }),
+      base: css({ paddingTop: spacing.infoTop ?? 8 }),
       info: css({ marginRight: 12 }),
       list: css({ flex: 1 }),
     },
     drag: {
       base: css({ Absolute: 0, Flex: 'center-center' }),
       body: css({
-        backgroundColor: color.format(0.7),
+        backgroundColor: Color.format(0.7),
         backdropFilter: `blur(8px)`,
-        border: `dashed 1px ${color.format(-0.3)}`,
+        border: `dashed 1px ${Color.format(-0.3)}`,
         borderRadius: 6,
         PaddingX: 20,
         PaddingY: 6,

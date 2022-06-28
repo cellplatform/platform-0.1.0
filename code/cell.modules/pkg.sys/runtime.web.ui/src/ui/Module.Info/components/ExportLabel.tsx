@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { color, COLORS, css, CssValue } from '../../common';
+import { Color, COLORS, css, CssValue } from '../../common';
 import { Icons } from '../../Icons';
 
 export type ExportLabelProps = {
@@ -24,8 +24,8 @@ export const ExportLabel: React.FC<ExportLabelProps> = (props) => {
       PaddingX: 4,
       paddingTop: 2,
       paddingBottom: 1,
-      backgroundColor: color.alpha(COLORS.DARK, 0.08),
-      border: `solid 1px ${color.format(-0.06)}`,
+      backgroundColor: Color.alpha(COLORS.DARK, 0.08),
+      border: `solid 1px ${Color.format(-0.06)}`,
       borderRadius: 2,
     }),
   };

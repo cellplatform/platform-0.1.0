@@ -2,7 +2,7 @@ import React from 'react';
 import { Textbox } from 'sys.ui.dev/lib/ui/Textbox';
 
 import { Icons } from '../../Icons';
-import { color, COLORS, css, CssValue, t } from '../common';
+import { Color, COLORS, css, CssValue, t } from '../common';
 import { ManifestSelectorLoadHandler, ManifestSelectorUrlChangeHandler } from '../types';
 
 type Url = string;
@@ -18,8 +18,6 @@ export type UrlTextboxProps = {
   onKeyUp?: t.ManifestSelectorKeyboardHandler;
 };
 
-import { TextInputKeyEvent } from '@platform/ui.text/lib/types';
-
 export const UrlTextbox: React.FC<UrlTextboxProps> = (props) => {
   const { url } = props;
 
@@ -33,7 +31,7 @@ export const UrlTextbox: React.FC<UrlTextboxProps> = (props) => {
 
   const onKey = (
     action: t.ManifestSelectorKeyboardArgs['action'],
-    e: TextInputKeyEvent,
+    e: t.TextInputKeyEvent,
     handler?: t.ManifestSelectorKeyboardHandler,
   ) => {
     const { key, ctrlKey, shiftKey, metaKey, altKey } = e;
@@ -66,7 +64,7 @@ export const UrlTextbox: React.FC<UrlTextboxProps> = (props) => {
           const el = (
             <div {...css({ Flex: 'horizontal-center-center' })}>
               {url && <Icons.Arrow.Forward size={18} opacity={0.5} style={{ marginRight: 4 }} />}
-              <Icons.Antenna size={18} color={url ? COLORS.BLUE : color.alpha(COLORS.DARK, 0.6)} />
+              <Icons.Antenna size={18} color={url ? COLORS.BLUE : Color.alpha(COLORS.DARK, 0.6)} />
             </div>
           );
           return el;

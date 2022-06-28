@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { color, css, CssValue, t, Chip, PropList } from '../../common';
+import { Color, css, CssValue, t, Chip, PropList } from '../../common';
 import { toPropsList } from './props/toList';
 import * as k from './types';
 import { DEFAULT } from './constants';
@@ -37,7 +37,7 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
   const styles = {
     base: css({ position: 'relative', width, minWidth, maxWidth }),
     empty: css({
-      color: color.format(-0.3),
+      color: Color.format(-0.3),
       fontStyle: 'italic',
       fontSize: 12,
       textAlign: 'center',

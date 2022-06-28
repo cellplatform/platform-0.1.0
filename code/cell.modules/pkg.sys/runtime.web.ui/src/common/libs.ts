@@ -2,7 +2,7 @@
  * @platform
  */
 export { log } from '@platform/log/lib/client';
-export { css, color, CssValue, Style, formatColor } from '@platform/css';
+export { css, Color, CssValue, Style, formatColor } from '@platform/css';
 export { useResizeObserver, FC } from '@platform/react';
 export { rx, slug, value, time } from '@platform/util.value';
 export { Http } from '@platform/http';

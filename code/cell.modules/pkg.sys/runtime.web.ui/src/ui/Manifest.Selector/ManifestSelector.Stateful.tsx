@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 
 import { CssValue, t, rx, slug, DEFAULT, FC } from './common';
-import { ManifestSelector } from './ManifestSelector';
+import { ManifestSelector, ManifestSelectorProps } from './ManifestSelector';
 import { useStateController, useHistoryController } from './hooks';
 import { ManifestSelectorConstants as constants } from './constants';
 
@@ -20,6 +20,7 @@ export type ManifestSelectorStatefulProps = {
   fields?: t.ModuleInfoFields[];
   history?: boolean | Partial<History>;
   focusOnLoad?: boolean;
+  spacing?: ManifestSelectorProps['spacing'];
   style?: CssValue;
   onExportClick?: t.ManifestSelectorExportClickHandler;
   onChanged?: t.ManifestSelectorChangedHandler;
@@ -46,6 +47,7 @@ const View: React.FC<ManifestSelectorStatefulProps> = (props) => {
       showExports={props.showExports}
       focusOnLoad={props.focusOnLoad}
       fields={props.fields}
+      spacing={props.spacing}
       style={props.style}
       /**
        * Input.

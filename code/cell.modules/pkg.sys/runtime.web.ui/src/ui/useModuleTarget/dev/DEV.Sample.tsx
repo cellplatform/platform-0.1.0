@@ -2,7 +2,7 @@ import React from 'react';
 import { ObjectView, Test } from 'sys.ui.dev';
 
 import { useModuleTarget } from '..';
-import { Button, color, COLORS, css, CssValue, ManifestUrl, t, WebRuntimeBus } from '../../common';
+import { Color, Button, COLORS, css, CssValue, ManifestUrl, t, WebRuntimeBus } from '../../common';
 import { ModuleInfo } from '../../Module.Info';
 import { useManifest } from '../../useManifest';
 
@@ -46,7 +46,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
     object: css({ marginTop: 30 }),
     empty: {
       base: css({ Flex: 'center-center', Absolute: 0 }),
-      body: css({ color: color.format(-0.3), fontStyle: 'italic', fontSize: 12 }),
+      body: css({ color: Color.format(-0.3), fontStyle: 'italic', fontSize: 12 }),
     },
     left: {
       base: css({ flex: 1, position: 'relative', Scroll: true, padding: 20 }),
@@ -56,7 +56,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
       base: css({
         flex: 1,
         position: 'relative',
-        borderLeft: `solid 1px ${color.alpha(COLORS.MAGENTA, 0.3)}`,
+        borderLeft: `solid 1px ${Color.alpha(COLORS.MAGENTA, 0.3)}`,
         Flex: 'vertical-stretch-stretch',
       }),
       top: css({
@@ -66,7 +66,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
         padding: 20,
       }),
       bottom: css({
-        borderTop: `solid 1px ${color.alpha(COLORS.MAGENTA, 0.3)}`,
+        borderTop: `solid 1px ${Color.alpha(COLORS.MAGENTA, 0.3)}`,
         flex: 1,
         display: 'flex',
       }),
