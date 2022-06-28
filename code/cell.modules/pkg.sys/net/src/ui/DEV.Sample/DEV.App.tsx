@@ -185,7 +185,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
           .replace(/^\/\//, '');
       };
 
-      const [domain, entry] = input.split(' ');
+      const [domain, entry = 'Dev'] = input.split(' ');
 
       const url = `https://${stripHttp(domain).trim()}/index.json?entry=./${entry}`;
       console.log('LOAD remote url:', url);
