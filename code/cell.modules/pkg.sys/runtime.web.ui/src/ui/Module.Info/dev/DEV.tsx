@@ -27,12 +27,20 @@ export const actions = DevActions<Ctx>()
 
     Filesystem.IndexedDb.create({ bus, fs: DEFAULT.HISTORY.FS });
 
-    const ctx: Ctx = { instance, props: { width: 300 } };
+    const ctx: Ctx = {
+      instance,
+      props: { width: 300 },
+    };
     return ctx;
   })
 
   .items((e) => {
     e.title('Props');
+
+    e.boolean('empty = null', (e) => {
+      if (e.changing) e.ctx.props.empty = e.changing.next ? null : undefined;
+      e.boolean.current = e.ctx.props.empty === null;
+    });
 
     e.boolean('width', (e) => {
       if (e.changing) e.ctx.props.width = e.changing.next ? 300 : undefined;
@@ -88,6 +96,13 @@ export const actions = DevActions<Ctx>()
           }}
         />
       );
+    });
+
+    e.hr();
+
+    e.button('clear (url, manifest)', (e) => {
+      e.ctx.props.url = undefined;
+      e.ctx.props.manifest = undefined;
     });
 
     e.hr();

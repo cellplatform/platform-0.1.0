@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Chip, Color, css, CssValue, DEFAULT, PropList, t } from './common';
 import { toPropsList } from './view.props/toList';
+import { Empty } from './view/Empty';
 
 export type ModuleInfoProps = {
   url?: t.ManifestUrl;
@@ -11,6 +12,7 @@ export type ModuleInfoProps = {
   width?: number;
   minWidth?: number;
   maxWidth?: number;
+  empty?: string | JSX.Element | null;
   style?: CssValue;
   onExportClick?: t.ModuleInfoExportClick;
 };
@@ -23,6 +25,7 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
     width,
     minWidth = 200,
     maxWidth,
+    empty,
     onExportClick,
   } = props;
 
@@ -34,13 +37,6 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
    */
   const styles = {
     base: css({ position: 'relative', width, minWidth, maxWidth }),
-    empty: css({
-      color: Color.format(-0.3),
-      fontStyle: 'italic',
-      fontSize: 12,
-      textAlign: 'center',
-      PaddingY: 6,
-    }),
     title: {
       base: css({ Flex: 'horizontal-center-spaceBetween' }),
       left: css({}),
@@ -65,8 +61,10 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
     fields,
     onExportClick,
   });
-  const elEmpty = !manifest && <div {...styles.empty}>Module not loaded.</div>;
-  const elProps = !elEmpty && (
+
+  const elEmpty = !manifest && empty !== null && <Empty message={empty} />;
+
+  const elProps = manifest && (
     <PropList title={elTitle} items={items} defaults={{ clipboard: false }} />
   );
 

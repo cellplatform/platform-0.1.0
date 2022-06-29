@@ -100,7 +100,6 @@ export const actions = DevActions<Ctx>()
           focusOnLoad={true}
           autoLoadLatest={true}
           onChanged={({ url }) => {
-            // console.log('e', e);
             e.ctx.setUrl(url ?? '');
           }}
           onExportClick={({ url }) => {
@@ -110,6 +109,8 @@ export const actions = DevActions<Ctx>()
         />
       );
     });
+
+    e.hr(1, 0.1);
 
     e.button('reset (unload)', (e) => (e.ctx.props.url = undefined));
 
