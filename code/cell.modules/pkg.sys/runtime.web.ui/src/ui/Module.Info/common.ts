@@ -1,11 +1,13 @@
+export * from '../common';
 import * as m from './types';
 
 /**
  * Complete list of fields.
  */
-const ALL_FIELDS: m.ModuleInfoFields[] = [
+export const FIELDS: m.ModuleInfoFields[] = [
   'source:url',
   'source:url:hash',
+  'source:url:entry',
   'namespace',
   'version',
   'compiled',
@@ -36,9 +38,4 @@ export const DEFAULT = {
   TITLE: 'Module',
   FIELDS: DEFAULT_FIELDS,
   HASH_CHIP_LENGTH: 5,
-};
-
-export const ModuleInfoConstants = {
-  DEFAULT,
-  FIELDS: ALL_FIELDS,
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { CssValue, t } from '../../common';
+import { CssValue, t } from './common';
 import { useManifest } from '../useManifest';
 import { ModuleInfo } from './ModuleInfo';
 import * as k from './types';
@@ -22,7 +22,7 @@ export const ModuleInfoStateful: React.FC<ModuleInfoStatefulProps> = (props) => 
   return (
     <ModuleInfo
       title={title}
-      manifestUrl={manifest.url.href}
+      url={manifest.url.href}
       manifest={manifest.json}
       fields={fields}
       minWidth={minWidth}

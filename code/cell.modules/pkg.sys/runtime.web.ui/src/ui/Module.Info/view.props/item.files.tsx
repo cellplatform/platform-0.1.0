@@ -1,6 +1,6 @@
 import Filesize from 'filesize';
 
-import { t, value } from '../../common';
+import { t, value } from '../common';
 import { trimHashPrefix } from './util';
 
 type P = t.PropListItem;

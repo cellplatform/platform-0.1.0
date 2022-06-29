@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Color, COLORS, css, CssValue } from '../../common';
+import { Color, COLORS, css, CssValue } from '../common';
 import { Icons } from '../../Icons';
 
 export type ExportLabelProps = {

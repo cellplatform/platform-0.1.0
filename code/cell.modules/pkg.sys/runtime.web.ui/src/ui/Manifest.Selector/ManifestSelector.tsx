@@ -97,7 +97,7 @@ const View: React.FC<ManifestSelectorProps> = (props) => {
     <div {...styles.body.base}>
       <ModuleInfo
         title={null}
-        manifestUrl={manifestUrl}
+        url={manifestUrl}
         manifest={manifest}
         fields={fields}
         onExportClick={(e) => {

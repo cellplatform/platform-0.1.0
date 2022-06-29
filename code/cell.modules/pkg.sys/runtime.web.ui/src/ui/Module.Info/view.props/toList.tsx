@@ -1,4 +1,4 @@
-import { ManifestUrl, t, time } from '../../common';
+import { ManifestUrl, t, time } from '../common';
 import * as k from '../types';
 import { toFiles } from './item.files';
 import { toHash } from './item.hash';
@@ -6,6 +6,7 @@ import { toRemote } from './item.remote';
 import { toSourceUrl } from './item.source';
 
 type P = t.PropListItem;
+
 export function toPropsList(args: {
   manifest?: t.ModuleManifest;
   url?: string;
@@ -35,6 +36,14 @@ export function toPropsList(args: {
     if (is('source:url:hash') && href) {
       const hash = manifest.hash.module;
       if (hash) list.push(toSourceUrl({ href, hash }));
+    }
+
+    if (is('source:url:entry') && href) {
+      const entry = (new URL(href).searchParams.get('entry') || '').replace(/^\.\//, '');
+      list.push({
+        label: 'entry',
+        value: entry || '-',
+      });
     }
 
     if (is('namespace')) {

@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { Button, ManifestUrl, t, value } from '../../common';
-import { ExportLabel } from '../components/ExportLabel';
+import { Button, ManifestUrl, t, value } from '../common';
+import { ExportLabel } from '../view/ExportLabel';
 import * as k from '../types';
 
 type P = t.PropListItem;

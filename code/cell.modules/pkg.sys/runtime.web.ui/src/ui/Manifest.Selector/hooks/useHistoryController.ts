@@ -26,6 +26,7 @@ export function useHistoryController(args: {
   const id = args.fs;
   const bus = rx.busAsType<t.ManifestSelectorEvent>(args.bus);
 
+  const [ready, setReady] = useState(false);
   const [list, setList] = useState<H[]>([]);
 
   /**
@@ -48,7 +49,7 @@ export function useHistoryController(args: {
     const cursorUp$ = key$.pipe(filter((e) => e.keypress.key === 'ArrowUp'));
     const cursorDown$ = key$.pipe(filter((e) => e.keypress.key === 'ArrowDown'));
 
-    const dispatchUrl = (url?: string) => {
+    const fireUrl = (url?: string) => {
       if (url) {
         bus.fire({
           type: 'sys.runtime.web/ManifestSelector/action',
@@ -97,7 +98,7 @@ export function useHistoryController(args: {
 
       // Retrieve URL at previous index and load.
       index = Math.max(0, index === -1 ? list.length - 1 : index - 1);
-      dispatchUrl(list[index]?.url);
+      fireUrl(list[index]?.url);
     });
 
     /**
@@ -110,15 +111,23 @@ export function useHistoryController(args: {
       // Retrieve URL at next index and load.
       const list = await getHistory();
       index = Math.min(list.length - 1, index === -1 ? 0 : index + 1);
-      dispatchUrl(list[index]?.url);
+      fireUrl(list[index]?.url);
     });
+
+    /**
+     * INIT: Start.
+     */
+    (async () => {
+      await store.ready();
+      await getHistory();
+      setReady(true);
+    })();
 
     return () => store.dispose();
   }, [component, id, enabled, path]); // eslint-disable-line
 
   /**
-   * Public Interface
+   * Public API
    */
-  const api = { enabled, list };
-  return api;
+  return { ready, enabled, list };
 }

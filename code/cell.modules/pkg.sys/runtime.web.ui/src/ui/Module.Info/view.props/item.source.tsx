@@ -1,8 +1,7 @@
 import React from 'react';
 
-import { t, Button, css, Chip } from '../../common';
+import { t, Button, css, Chip, DEFAULT } from '../common';
 import { Icons } from '../../Icons';
-import { DEFAULT } from '../constants';
 
 type P = t.PropListItem;
 
@@ -36,7 +35,7 @@ export function toSourceUrl(args: { href: string; hash?: string }): P {
   );
 
   const elChip = hash && (
-    <Chip.Hash text={hash} style={styles.hash} length={DEFAULT.HASH_CHIP_LENGTH} />
+    <Chip.Hash text={hash} icon={false} style={styles.hash} length={DEFAULT.HASH_CHIP_LENGTH} />
   );
 
   const data = (

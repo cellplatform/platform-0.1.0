@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { t, Chip } from '../../common';
-import { DEFAULT } from '../constants';
+import { Chip, DEFAULT, t } from '../common';
 import * as k from '../types';
 
 type P = t.PropListItem;
