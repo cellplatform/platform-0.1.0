@@ -1,5 +1,5 @@
 import { WebRuntimeBus } from '.';
-import { expect, rx, Test, slug, NetworkBusMock } from '../web.test';
+import { expect, rx, Test, slug, NetworkBusMock } from '../test';
 import { DEFAULT } from './common';
 
 export default Test.describe('WebRuntimeBus', (e) => {

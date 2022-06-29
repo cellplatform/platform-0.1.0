@@ -1,4 +1,4 @@
-import { expect, rx, Test } from '../web.test';
+import { expect, rx, Test } from '../test';
 import { WebRuntimeBus } from '.';
 
 export default Test.describe('WebRuntimeBus (Events)', (e) => {

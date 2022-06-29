@@ -1,4 +1,4 @@
-import { WebRuntimeBus } from './web.RuntimeBus';
+import { WebRuntimeBus } from './WebRuntimeBus';
 import { WebRuntime as Platform } from '@platform/cell.runtime.web';
 
 export { WebRuntimeBus };
