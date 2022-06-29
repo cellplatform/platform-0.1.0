@@ -1,14 +1,31 @@
 import { WebRuntimeBus } from '.';
-import { expect, rx, Test } from '../web.test';
+import { expect, rx, Test, slug } from '../web.test';
+import { DEFAULT } from './common';
 
-export default Test.describe('WebRuntimeBus (Controller)', (e) => {
-  e.describe('events', (e) => {
+export default Test.describe('WebRuntimeBus', (e) => {
+  e.describe('controller/events', (e) => {
+    e.it('instance', async () => {
+      const bus = rx.bus();
+      const id = `foo.${slug()}`;
+
+      const env1 = WebRuntimeBus.Controller({ instance: { bus } });
+      const env2 = WebRuntimeBus.Controller({ instance: { bus, id } });
+
+      expect(env1.instance.bus).to.eql(rx.bus.instance(bus));
+      expect(env2.instance.bus).to.eql(rx.bus.instance(bus));
+
+      expect(env1.instance.id).to.eql(DEFAULT.id);
+      expect(env2.instance.id).to.eql(id);
+    });
+
     e.it('info', async () => {
       const instance = { bus: rx.bus() };
-      const runtime = WebRuntimeBus.Controller({ instance });
+      const controller = WebRuntimeBus.Controller({ instance });
+      const events = WebRuntimeBus.Events({ instance });
 
-      const res = await runtime.events.info.get();
-      runtime.dispose();
+      const res = await events.info.get();
+      controller.dispose();
+      events.dispose();
 
       expect(res.exists).to.eql(true);
       expect(res.info?.module.name).to.eql('sys.runtime.web');
@@ -18,7 +35,7 @@ export default Test.describe('WebRuntimeBus (Controller)', (e) => {
       const instance = { bus: rx.bus() };
       const runtime = WebRuntimeBus.Controller({ instance });
 
-      const res = await runtime.events.netbus.get({ timeout: 10 });
+      const res = await runtime.netbus.get({ timeout: 10 });
       runtime.dispose();
 
       expect(res.exists).to.eql(false);

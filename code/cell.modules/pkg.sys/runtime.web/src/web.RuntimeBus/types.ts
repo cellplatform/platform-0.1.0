@@ -1,6 +1,6 @@
 import * as t from '../common/types';
 
-type InstanceId = string;
+type Id = string;
 type TargetId = string;
 type Milliseconds = number;
 type SemVer = string;
@@ -12,9 +12,14 @@ export type WebRuntimeInfo = {
 /**
  * Event API
  */
-export type WebRuntimeEvents = t.Disposable & {
+export type WebRuntimeEventsDisposable = WebRuntimeEvents &
+  t.Disposable & { clone(): WebRuntimeEvents };
+
+export type WebRuntimeEvents = {
+  instance: { bus: Id; id: Id };
   $: t.Observable<t.WebRuntimeEvent>;
-  id: InstanceId;
+  dispose$: t.Observable<any>;
+
   is: { base(input: any): boolean };
 
   info: {
@@ -71,7 +76,7 @@ export type WebRuntimeInfoReqEvent = {
   type: 'sys.runtime.web/info:req';
   payload: WebRuntimeInfoReq;
 };
-export type WebRuntimeInfoReq = { tx: string; id: InstanceId };
+export type WebRuntimeInfoReq = { tx: string; id: Id };
 
 export type WebRuntimeInfoResEvent = {
   type: 'sys.runtime.web/info:res';
@@ -79,7 +84,7 @@ export type WebRuntimeInfoResEvent = {
 };
 export type WebRuntimeInfoRes = {
   tx: string;
-  id: InstanceId;
+  id: Id;
   exists: boolean;
   info?: WebRuntimeInfo;
   error?: string;
@@ -93,7 +98,7 @@ export type WebRuntimeUseModuleEvent = {
   payload: WebRuntimeUseModule;
 };
 export type WebRuntimeUseModule = {
-  id: InstanceId;
+  id: Id;
   target: TargetId;
   module: t.ModuleManifestRemoteImport | null;
 };
@@ -103,7 +108,7 @@ export type WebRuntimeUseModule = {
  */
 export type WebRuntimeGroupEvent = {
   type: 'sys.runtime.web/group';
-  payload: { id: InstanceId; event: t.WebRuntimeEvent };
+  payload: { id: Id; event: t.WebRuntimeEvent };
 };
 
 /**
@@ -113,7 +118,7 @@ export type WebRuntimeNetbusReqEvent = {
   type: 'sys.runtime.web/netbus:req';
   payload: WebRuntimeNetbusReq;
 };
-export type WebRuntimeNetbusReq = { tx: string; id: InstanceId };
+export type WebRuntimeNetbusReq = { tx: string; id: Id };
 
 export type WebRuntimeNetbusResEvent = {
   type: 'sys.runtime.web/netbus:res';
@@ -121,7 +126,7 @@ export type WebRuntimeNetbusResEvent = {
 };
 export type WebRuntimeNetbusRes = {
   tx: string;
-  id: InstanceId;
+  id: Id;
   exists: boolean;
   netbus?: t.NetworkBus;
   error?: string;

@@ -10,7 +10,7 @@ type Id = string;
 export function BusEvents(args: {
   instance: { bus: t.EventBus<any>; id?: Id };
   filter?: (e: t.WebRuntimeEvent) => boolean;
-}): t.WebRuntimeEvents {
+}): t.WebRuntimeEventsDisposable {
   const { dispose, dispose$ } = rx.disposable();
   const id = args.instance.id ?? DEFAULT.id;
   const bus = rx.busAsType<t.WebRuntimeEvent>(args.instance.bus);
@@ -88,7 +88,26 @@ export function BusEvents(args: {
     },
   };
 
-  return { $, id, is, dispose, dispose$, info, useModule, netbus };
+  /**
+   * API
+   */
+  const api: t.WebRuntimeEventsDisposable = {
+    $,
+    instance: { bus: rx.bus.instance(bus), id },
+    is,
+    dispose,
+    dispose$,
+    info,
+    useModule,
+    netbus,
+    clone() {
+      const clone = { ...api };
+      delete (clone as any).dispose;
+      return clone;
+    },
+  };
+
+  return api;
 }
 
 /**

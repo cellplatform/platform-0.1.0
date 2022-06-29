@@ -19,7 +19,6 @@ export function BusController(args: {
 
   const bus = rx.busAsType<t.WebRuntimeEvent>(args.instance.bus);
   const events = BusEvents({ instance });
-  const { dispose, dispose$ } = events;
 
   /**
    * Initialize child controllers.
@@ -55,5 +54,5 @@ export function BusController(args: {
   /**
    * API
    */
-  return { dispose, dispose$, id, events };
+  return events;
 }
