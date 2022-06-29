@@ -12,7 +12,7 @@ export function GroupEvents(args: {
 }): t.WebRuntimeGroupEvents {
   const netbus = args.netbus as t.NetworkBus<t.WebRuntimeGroupEvent>;
   const { dispose, dispose$ } = rx.disposable();
-  const id = args.id ?? DEFAULT.id;
+  const instance = args.id ?? DEFAULT.instance;
 
   const $ = netbus.$.pipe(
     takeUntil(dispose$),
@@ -29,12 +29,12 @@ export function GroupEvents(args: {
 
       const event: t.WebRuntimeUseModuleEvent = {
         type: 'sys.runtime.web/useModule',
-        payload: { id, target, module },
+        payload: { instance, target, module },
       };
 
       netbus.target.remote({
         type: 'sys.runtime.web/group',
-        payload: { id, event },
+        payload: { instance, event },
       });
     },
   };

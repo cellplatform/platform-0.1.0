@@ -14,7 +14,7 @@ export default Test.describe('WebRuntimeBus', (e) => {
       expect(env1.instance.bus).to.eql(rx.bus.instance(bus));
       expect(env2.instance.bus).to.eql(rx.bus.instance(bus));
 
-      expect(env1.instance.id).to.eql(DEFAULT.id);
+      expect(env1.instance.id).to.eql(DEFAULT.instance);
       expect(env2.instance.id).to.eql(id);
     });
 

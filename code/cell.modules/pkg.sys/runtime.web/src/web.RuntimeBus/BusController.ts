@@ -10,20 +10,23 @@ type Id = string;
  * Event controller.
  */
 export function BusController(args: {
-  instance: { bus: t.EventBus<any>; id?: Id };
+  instance: t.WebRuntimeInstance;
   netbus?: t.NetworkBus<any>;
   filter?: (e: t.WebRuntimeEvent) => boolean;
 }) {
-  const { netbus, instance } = args;
-  const id = args.instance.id ?? DEFAULT.id;
+  const { netbus } = args;
+  const instance = args.instance.id ?? DEFAULT.instance;
 
   const bus = rx.busAsType<t.WebRuntimeEvent>(args.instance.bus);
-  const events = BusEvents({ instance });
+  const events = BusEvents({ instance: args.instance });
 
   /**
    * Initialize child controllers.
    */
-  if (netbus) GroupController({ netbus, events, id, fireLocal: bus.fire });
+  if (netbus) {
+    const id = instance;
+    GroupController({ netbus, events, id, fireLocal: bus.fire });
+  }
 
   /**
    * Info (Module)
@@ -35,7 +38,7 @@ export function BusController(args: {
     const exists = Boolean(info);
     bus.fire({
       type: 'sys.runtime.web/info:res',
-      payload: { tx, id, exists, info },
+      payload: { tx, instance, exists, info },
     });
   });
 
@@ -47,7 +50,7 @@ export function BusController(args: {
     const exists = Boolean(netbus);
     bus.fire({
       type: 'sys.runtime.web/netbus:res',
-      payload: { tx, id, exists, netbus },
+      payload: { tx, instance, exists, netbus },
     });
   });
 

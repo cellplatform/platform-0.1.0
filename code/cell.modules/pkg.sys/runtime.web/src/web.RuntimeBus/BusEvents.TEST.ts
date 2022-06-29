@@ -21,9 +21,9 @@ export default Test.describe('WebRuntimeBus (Events)', (e) => {
 
     e.it('is.instance', () => {
       const type = 'sys.runtime.web/';
-      expect(is.instance({ type, payload: { id: 'abc' } }, 'abc')).to.eql(true);
-      expect(is.instance({ type, payload: { id: 'abc' } }, '123')).to.eql(false);
-      expect(is.instance({ type: 'foo', payload: { id: 'abc' } }, 'abc')).to.eql(false);
+      expect(is.instance({ type, payload: { instance: 'abc' } }, 'abc')).to.eql(true);
+      expect(is.instance({ type, payload: { instance: 'abc' } }, '123')).to.eql(false);
+      expect(is.instance({ type: 'foo', payload: { instance: 'abc' } }, 'abc')).to.eql(false);
     });
   });
 

@@ -8,17 +8,17 @@ type Id = string;
  * Event API for the "WebRuntime"
  */
 export function BusEvents(args: {
-  instance: { bus: t.EventBus<any>; id?: Id };
+  instance: t.WebRuntimeInstance;
   filter?: (e: t.WebRuntimeEvent) => boolean;
 }): t.WebRuntimeEventsDisposable {
   const { dispose, dispose$ } = rx.disposable();
-  const id = args.instance.id ?? DEFAULT.id;
+  const instance = args.instance.id ?? DEFAULT.instance;
   const bus = rx.busAsType<t.WebRuntimeEvent>(args.instance.bus);
   const is = BusEvents.is;
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
-    filter((e) => is.instance(e, id)),
+    filter((e) => is.instance(e, instance)),
     filter((e) => args.filter?.(e) ?? true),
   );
 
@@ -37,14 +37,14 @@ export function BusEvents(args: {
 
       bus.fire({
         type: 'sys.runtime.web/info:req',
-        payload: { tx, id },
+        payload: { tx, instance },
       });
 
       const res = await first;
       if (res.payload) return res.payload;
 
       const error = res.error?.message ?? 'Failed';
-      return { tx, id, exists: false, error };
+      return { tx, instance, exists: false, error };
     },
   };
 
@@ -57,7 +57,7 @@ export function BusEvents(args: {
       const { target, module } = args;
       bus.fire({
         type: 'sys.runtime.web/useModule',
-        payload: { id, target, module },
+        payload: { instance, target, module },
       });
     },
   };
@@ -77,14 +77,14 @@ export function BusEvents(args: {
 
       bus.fire({
         type: 'sys.runtime.web/netbus:req',
-        payload: { tx, id },
+        payload: { tx, instance },
       });
 
       const res = await first;
       if (res.payload) return res.payload;
 
       const error = res.error?.message ?? 'Failed';
-      return { tx, id, exists: false, error };
+      return { tx, instance, exists: false, error };
     },
   };
 
@@ -93,7 +93,7 @@ export function BusEvents(args: {
    */
   const api: t.WebRuntimeEventsDisposable = {
     $,
-    instance: { bus: rx.bus.instance(bus), id },
+    instance: { bus: rx.bus.instance(bus), id: instance },
     is,
     dispose,
     dispose$,
@@ -116,5 +116,5 @@ export function BusEvents(args: {
 const matcher = (startsWith: string) => (input: any) => rx.isEvent(input, { startsWith });
 BusEvents.is = {
   base: matcher('sys.runtime.web/'),
-  instance: (e: t.Event, id: Id) => BusEvents.is.base(e) && e.payload?.id === id,
+  instance: (e: t.Event, id: Id) => BusEvents.is.base(e) && e.payload?.instance === id,
 };

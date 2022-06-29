@@ -5,6 +5,8 @@ type TargetId = string;
 type Milliseconds = number;
 type SemVer = string;
 
+export type WebRuntimeInstance = { bus: t.EventBus<any>; id?: Id };
+
 export type WebRuntimeInfo = {
   module: { name: string; version: SemVer };
 };
@@ -76,7 +78,7 @@ export type WebRuntimeInfoReqEvent = {
   type: 'sys.runtime.web/info:req';
   payload: WebRuntimeInfoReq;
 };
-export type WebRuntimeInfoReq = { tx: string; id: Id };
+export type WebRuntimeInfoReq = { tx: string; instance: Id };
 
 export type WebRuntimeInfoResEvent = {
   type: 'sys.runtime.web/info:res';
@@ -84,7 +86,7 @@ export type WebRuntimeInfoResEvent = {
 };
 export type WebRuntimeInfoRes = {
   tx: string;
-  id: Id;
+  instance: Id;
   exists: boolean;
   info?: WebRuntimeInfo;
   error?: string;
@@ -98,7 +100,7 @@ export type WebRuntimeUseModuleEvent = {
   payload: WebRuntimeUseModule;
 };
 export type WebRuntimeUseModule = {
-  id: Id;
+  instance: Id;
   target: TargetId;
   module: t.ModuleManifestRemoteImport | null;
 };
@@ -108,7 +110,7 @@ export type WebRuntimeUseModule = {
  */
 export type WebRuntimeGroupEvent = {
   type: 'sys.runtime.web/group';
-  payload: { id: Id; event: t.WebRuntimeEvent };
+  payload: { instance: Id; event: t.WebRuntimeEvent };
 };
 
 /**
@@ -118,7 +120,7 @@ export type WebRuntimeNetbusReqEvent = {
   type: 'sys.runtime.web/netbus:req';
   payload: WebRuntimeNetbusReq;
 };
-export type WebRuntimeNetbusReq = { tx: string; id: Id };
+export type WebRuntimeNetbusReq = { tx: string; instance: Id };
 
 export type WebRuntimeNetbusResEvent = {
   type: 'sys.runtime.web/netbus:res';
@@ -126,7 +128,7 @@ export type WebRuntimeNetbusResEvent = {
 };
 export type WebRuntimeNetbusRes = {
   tx: string;
-  id: Id;
+  instance: Id;
   exists: boolean;
   netbus?: t.NetworkBus;
   error?: string;

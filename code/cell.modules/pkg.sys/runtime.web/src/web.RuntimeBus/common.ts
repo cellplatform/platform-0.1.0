@@ -1,5 +1,5 @@
 export * from '../common';
 
 export const DEFAULT = {
-  id: 'default-instance',
+  instance: 'default-instance',
 };
