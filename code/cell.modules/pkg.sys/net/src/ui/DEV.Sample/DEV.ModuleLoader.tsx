@@ -1,5 +1,5 @@
 import React from 'react';
-import { Module } from 'sys.runtime.web.ui/lib/ui/Module';
+import { Module, ModuleProps } from 'sys.runtime.web.ui/lib/ui/Module';
 
 import { css, CssValue, t } from './common';
 
@@ -7,6 +7,7 @@ export type DevModuleProps = {
   bus: t.EventBus<any>;
   url?: string; //   https://<DOMAIN>/index.json?entry=./App'
   style?: CssValue;
+  onExportClick?: ModuleProps['onExportClick'];
 };
 
 export const DevModule: React.FC<DevModuleProps> = (props) => {
@@ -21,7 +22,12 @@ export const DevModule: React.FC<DevModuleProps> = (props) => {
   };
   return (
     <div {...css(styles.base, props.style)}>
-      <Module instance={{ bus }} url={url} style={styles.module} />
+      <Module
+        instance={{ bus }}
+        url={url}
+        style={styles.module}
+        onExportClick={props.onExportClick}
+      />
     </div>
   );
 };

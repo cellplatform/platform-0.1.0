@@ -185,11 +185,15 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
           .replace(/^\/\//, '');
       };
 
-      const [domain, entry = 'Dev'] = input.split(' ');
+      const [domain, entry] = input.split(' ');
+      const url = new URL(`https://${stripHttp(domain).trim()}/index.json`);
+      if (entry) {
+        const value = `./${entry.replace(/^\.\//, '')}`;
+        url.searchParams.set('entry', value);
+      }
 
-      const url = `https://${stripHttp(domain).trim()}/index.json?entry=./${entry}`;
-      console.log('LOAD remote url:', url);
-      setModuleUrl(url);
+      console.log('LOAD remote url:', url.href);
+      setModuleUrl(url.href);
     }
 
     if (cmd.startsWith('unload')) setModuleUrl('');
@@ -290,7 +294,15 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     render(e) {
       if (!bus) return null;
       if (!moduleUrl) return null;
-      return <DevModule bus={bus} url={moduleUrl} />;
+      return (
+        <DevModule
+          bus={bus}
+          url={moduleUrl}
+          onExportClick={(e) => {
+            setModuleUrl(e.url);
+          }}
+        />
+      );
     },
   };
 
