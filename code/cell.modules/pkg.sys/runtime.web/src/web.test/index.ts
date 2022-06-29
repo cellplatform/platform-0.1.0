@@ -1,3 +1,4 @@
-export { expect } from 'chai';
-export { Test } from 'sys.ui.dev';
+export { Test, expect } from 'sys.ui.dev';
+
 export * from '../common';
+export * from '../mocks';

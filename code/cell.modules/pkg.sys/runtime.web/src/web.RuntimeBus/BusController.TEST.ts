@@ -1,5 +1,5 @@
 import { WebRuntimeBus } from '.';
-import { expect, rx, Test, slug } from '../web.test';
+import { expect, rx, Test, slug, NetworkBusMock } from '../web.test';
 import { DEFAULT } from './common';
 
 export default Test.describe('WebRuntimeBus', (e) => {
@@ -31,16 +31,31 @@ export default Test.describe('WebRuntimeBus', (e) => {
       expect(res.info?.module.name).to.eql('sys.runtime.web');
     });
 
-    e.it('netbus (exists: false)', async () => {
-      const instance = { bus: rx.bus() };
-      const runtime = WebRuntimeBus.Controller({ instance });
+    e.describe('netbus', (e) => {
+      e.it('exists: false', async () => {
+        const instance = { bus: rx.bus() };
+        const runtime = WebRuntimeBus.Controller({ instance });
 
-      const res = await runtime.netbus.get({ timeout: 10 });
-      runtime.dispose();
+        const res = await runtime.netbus.get({ timeout: 10 });
+        runtime.dispose();
 
-      expect(res.exists).to.eql(false);
-      expect(res.netbus).to.eql(undefined);
-      expect(res.error).to.eql(undefined);
+        expect(res.exists).to.eql(false);
+        expect(res.netbus).to.eql(undefined);
+        expect(res.error).to.eql(undefined);
+      });
+
+      e.it('exists: true', async () => {
+        const instance = { bus: rx.bus() };
+        const netbus = NetworkBusMock();
+        const runtime = WebRuntimeBus.Controller({ instance, netbus });
+
+        const res = await runtime.netbus.get({ timeout: 10 });
+        runtime.dispose();
+
+        expect(res.exists).to.eql(true);
+        expect(res.netbus).to.equal(netbus);
+        expect(res.error).to.eql(undefined);
+      });
     });
   });
 });

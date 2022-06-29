@@ -4,8 +4,6 @@ import { GroupController } from './BusController.Group';
 import { BusEvents } from './BusEvents';
 import { DEFAULT, rx, t, WebRuntime } from './common';
 
-type Id = string;
-
 /**
  * Event controller.
  */
