@@ -9,8 +9,8 @@ type Ctx = {
 };
 
 export const SAMPLE = {
-  URL: `/static/dev.images/banner-image.png`,
-  CREDIT: 'Photo by Foobar of Magnum',
+  URL: `https://images.unsplash.com/photo-1511798616182-aab3698ac53e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2176&q=80`,
+  CREDIT: 'Photo by John Fowler on Unsplash',
 };
 
 /**

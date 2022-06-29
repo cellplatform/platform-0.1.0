@@ -4,9 +4,8 @@ import { t, rx, Filesystem } from '../../common';
 import { ManifestSelectorStateful } from '../../Manifest.Selector';
 import { DevSample, DevSampleProps } from './DEV.Sample';
 
-const { DEFAULT } = ManifestSelectorStateful.constants;
+const DEFAULT = ManifestSelectorStateful.DEFAULT;
 
-type Id = string;
 type Ctx = {
   bus: t.EventBus<any>;
   props: DevSampleProps;

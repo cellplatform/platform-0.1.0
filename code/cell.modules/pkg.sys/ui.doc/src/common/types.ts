@@ -5,6 +5,7 @@ export * from '../types';
  */
 export { Observable } from 'rxjs';
 export { Event, EventBus, Disposable, NpmPackageJson, DomRect } from '@platform/types';
+export { ResizeObserver, ResizeObserverHook } from '@platform/react/lib/types';
 
 /**
  * @system
@@ -24,4 +25,5 @@ export {
   GetListItem,
   GetListItemSize,
   CardProps,
+  LoadMaskProps,
 } from 'sys.ui.primitives/lib/types';

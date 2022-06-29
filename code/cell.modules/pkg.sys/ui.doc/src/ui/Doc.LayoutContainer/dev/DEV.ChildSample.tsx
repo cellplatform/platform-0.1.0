@@ -23,7 +23,6 @@ export const DevChildSample: React.FC<DevChildSampleProps> = (props) => {
     column: css({
       boxSizing: 'border-box',
       width: sizes.column.width,
-      backgroundColor: 'rgba(255, 0, 0, 0.03)' /* RED */,
       padding: 20,
     }),
   };

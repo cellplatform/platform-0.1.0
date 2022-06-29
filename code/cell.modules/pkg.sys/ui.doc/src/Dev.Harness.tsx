@@ -3,9 +3,11 @@ import { Harness } from 'sys.ui.dev';
 import { t } from './common';
 
 const imports = {
+  SampleApp: import('./ui/DEV.Sample.App/dev/DEV'),
+  SampleDeploy: import('./ui/DEV.Sample.Deploy/DEV'),
+
   Design: import('./ui/Design/DEV'),
   ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
-  RouteContainer: import('./ui/RouteContainer/dev/DEV'),
   DocLayoutContainer: import('./ui/Doc.LayoutContainer/dev/DEV'),
   DocLayout: import('./ui/Doc.Layout/dev/DEV'),
   DocList: import('./ui/Doc.List/dev/DEV'),
@@ -16,7 +18,12 @@ const imports = {
   DocImage: import('./ui/Doc.Image/dev/DEV'),
   DocQuote: import('./ui/Doc.Quote/dev/DEV'),
 
-  SampleDeploy: import('./ui/DEV.Sample.Deploy/DEV'),
+  TalkingDiagram: import('./ui/Diagram.TalkingDiagram/dev/DEV'),
+
+  RouteBus: import('./ui/Route.Bus/dev/DEV'),
+  RouteView: import('./ui/Route.View/dev/DEV'),
+
+  RouteContainer___: import('./ui/RouteContainer.OLD/dev/DEV'),
 
   UnitTests: import('./Dev.UnitTests'),
 };

@@ -17,13 +17,16 @@ export default () =>
         /**
          * EXPORTS: Development
          */
+        .expose('./DEV.sys.fs', './src/exports/sys/DEV.Fs')
+        .expose('./DEV.sys.data.crdt', './src/exports/sys/DEV.Data.Crdt')
+        .expose('./DEV.sys.data.json', './src/exports/sys/DEV.Data.Json')
+        .expose('./DEV.sys.runtime.web', './src/exports/sys/DEV.Runtime.Web')
+        .expose('./DEV.sys.runtime.web.ui', './src/exports/sys/DEV.Runtime.Web.UI')
+        .expose('./DEV.sys.ui.dev', './src/exports/sys/DEV.UI.Dev')
+        .expose('./DEV.sys.ui.doc', './src/exports/sys/DEV.UI.Doc')
+        .expose('./DEV.sys.ui.primitives', './src/exports/sys/DEV.UI.Primitives')
+        .expose('./DEV.sys.ui.video', './src/exports/sys/DEV.UI.Video')
 
-        .expose('./DEV.sys.fs', './src/exports/Dev.Fs')
-        .expose('./DEV.sys.data.crdt', './src/exports/Dev.Data.Crdt')
-        .expose('./DEV.sys.data.json', './src/exports/Dev.Data.Json')
-        .expose('./DEV.sys.ui.dev', './src/exports/Dev')
-        .expose('./DEV.sys.ui.video', './src/exports/Dev.Video')
-        .expose('./DEV.sys.ui.primitives', './src/exports/Dev.Primitives')
-        .expose('./DEV.sys.runtime.web', './src/exports/Dev.Runtime.Web')
-        .expose('./DEV.sys.runtime.web.ui', './src/exports/Dev.Runtime.Web.ui'),
+        .expose('./DEV.sample error (on module load)', './src/exports/sample/ERROR.OnModuleLoad')
+        .expose('./DEV.sample error (on render)', './src/exports/sample/ERROR.OnRender'),
     );

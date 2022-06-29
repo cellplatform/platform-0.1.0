@@ -149,7 +149,7 @@ export const actions = DevActions<Ctx>()
         <Doc.Fonts style={{ flex: 1 }}>
           <Doc.LayoutContainer
             onResize={debug.onResize}
-            tracelines={props.tracelines}
+            debug={{ tracelines: props.tracelines }}
             style={{ flex: 1 }}
           >
             <Doc.List {...e.ctx.props} style={{ flex: 1 }} />

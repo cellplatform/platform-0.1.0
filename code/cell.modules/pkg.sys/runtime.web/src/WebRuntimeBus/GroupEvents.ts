@@ -1,0 +1,43 @@
+import { filter, takeUntil } from 'rxjs/operators';
+import { DEFAULT, rx, t } from './common';
+
+type InstanceId = string;
+
+/**
+ * Network group event API for the "WebRuntime"
+ */
+export function GroupEvents(args: {
+  netbus: t.NetworkBus<any>;
+  id?: InstanceId;
+}): t.WebRuntimeGroupEvents {
+  const netbus = args.netbus as t.NetworkBus<t.WebRuntimeGroupEvent>;
+  const { dispose, dispose$ } = rx.disposable();
+  const instance = args.id ?? DEFAULT.instance;
+
+  const $ = netbus.$.pipe(
+    takeUntil(dispose$),
+    filter((e) => e.type === 'sys.runtime.web/group'),
+  );
+
+  /**
+   * Use remote module
+   */
+  const useModule: t.WebRuntimeEvents['useModule'] = {
+    $: rx.payload<t.WebRuntimeUseModuleEvent>($, 'sys.runtime.web/useModule'),
+    async fire(args) {
+      const { target, module } = args;
+
+      const event: t.WebRuntimeUseModuleEvent = {
+        type: 'sys.runtime.web/useModule',
+        payload: { instance, target, module },
+      };
+
+      netbus.target.remote({
+        type: 'sys.runtime.web/group',
+        payload: { instance, event },
+      });
+    },
+  };
+
+  return { $, dispose, dispose$, useModule };
+}

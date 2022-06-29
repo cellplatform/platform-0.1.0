@@ -1,14 +1,11 @@
 import React from 'react';
-import { DevActions } from 'sys.ui.dev';
+import { DevActions, ObjectView } from 'sys.ui.dev';
 import { Module, ModuleProps } from '..';
 import { ManifestSelectorStateful } from '../../Manifest.Selector';
-import { t, rx, Filesystem } from '../../common';
+import { COLORS, t, rx, Filesystem, DEFAULT } from '../common';
+import { DevSampleLoader } from './DEV.SampleLoader';
 
-const { DEFAULT } = ManifestSelectorStateful.constants;
-
-type Id = string;
 type Ctx = {
-  instance: { bus: t.EventBus; id?: Id };
   props: ModuleProps;
   setUrl(url: t.ManifestUrl): void;
 };
@@ -24,14 +21,71 @@ export const actions = DevActions<Ctx>()
     const bus = rx.bus();
     const instance = { bus };
 
-    Filesystem.IndexedDb.create({ bus, fs: DEFAULT.HISTORY.FS });
+    const fs = ManifestSelectorStateful.DEFAULT.HISTORY.FS;
+    Filesystem.IndexedDb.create({ bus, fs });
+
+    const setUrl = (url: string) => e.change.ctx((ctx) => (ctx.props.url = url));
 
     const ctx: Ctx = {
-      instance,
-      props: { instance },
-      setUrl: (url) => e.change.ctx((ctx) => (ctx.props.url = url)),
+      props: {
+        instance,
+        theme: 'Light',
+        onExportClick: ({ url }) => setUrl(url),
+      },
+      setUrl,
     };
     return ctx;
+  })
+
+  .items((e) => {
+    e.title('Props');
+
+    e.select((config) => {
+      config
+        .title('props.loader:')
+        .items([
+          { label: `<undefined> (default:${DEFAULT.THEME})`, value: undefined },
+          { label: `true`, value: true },
+          { label: `false`, value: false },
+          { label: `JSX.Element`, value: <DevSampleLoader /> },
+        ])
+        .initial(undefined)
+        .view('buttons')
+        .pipe((e) => {
+          if (e.changing) e.ctx.props.loader = e.changing?.next[0].value;
+        });
+    });
+
+    e.hr(1, 0.1);
+
+    e.select((config) => {
+      config
+        .title('props.theme:')
+        .view('buttons')
+        .items(Module.DEFAULT.THEMES.map((value) => ({ label: `theme: "${value}"`, value })))
+        .initial(config.ctx.props.theme)
+        .pipe((e) => {
+          if (e.changing) e.ctx.props.theme = e.changing?.next[0].value;
+        });
+    });
+
+    e.hr(1, 0.1);
+
+    e.select((config) => {
+      config
+        .items([
+          { label: `info: <undefined>`, value: undefined },
+          { label: `info: true`, value: true },
+          { label: `info: false`, value: false },
+        ])
+        .initial(config.ctx.props.info)
+        .view('buttons')
+        .pipe((e) => {
+          if (e.changing) e.ctx.props.info = e.changing?.next[0].value;
+        });
+    });
+
+    e.hr();
   })
 
   .items((e) => {
@@ -40,9 +94,14 @@ export const actions = DevActions<Ctx>()
     e.component((e) => {
       return (
         <ManifestSelectorStateful
-          instance={e.ctx.instance}
+          instance={e.ctx.props.instance}
           style={{ MarginX: 15, marginTop: 10, marginBottom: 30 }}
+          spacing={{ infoTop: 30 }}
           focusOnLoad={true}
+          autoLoadLatest={true}
+          onChanged={({ url }) => {
+            e.ctx.setUrl(url ?? '');
+          }}
           onExportClick={({ url }) => {
             console.log('⚡️ onExportClick | url:', url);
             e.ctx.setUrl(url);
@@ -51,19 +110,46 @@ export const actions = DevActions<Ctx>()
       );
     });
 
-    e.hr();
+    e.hr(1, 0.1);
+
     e.button('reset (unload)', (e) => (e.ctx.props.url = undefined));
+
+    e.hr();
+
+    e.component((e) => {
+      return (
+        <ObjectView
+          name={'props'}
+          data={e.ctx.props}
+          style={{ MarginX: 15 }}
+          fontSize={10}
+          expandPaths={['$']}
+        />
+      );
+    });
   })
 
   .subject((e) => {
+    const instance = e.ctx.props.instance;
+    const bus = rx.bus.instance(instance.bus);
+    const id = instance.id ?? `<undefined>`;
+
+    const theme = e.ctx.props.theme ?? Module.DEFAULT.THEME;
+    const isDark = theme === 'Dark';
+
     e.settings({
-      host: { background: -0.04 },
+      host: { background: isDark ? COLORS.DARK : -0.04 },
       layout: {
-        label: '<Module>',
+        label: {
+          topLeft: '<Module>',
+          bottomLeft: e.ctx.props.url,
+          bottomRight: `${bus}/id:${id}`,
+        },
         position: [150, 80],
-        border: -0.1,
-        cropmarks: -0.2,
-        background: 1,
+        border: isDark ? 0.1 : -0.1,
+        cropmarks: isDark ? 0.3 : -0.2,
+        labelColor: isDark ? COLORS.WHITE : -0.5,
+        background: isDark ? -0.06 : 0.1,
       },
     });
     e.render(<Module {...e.ctx.props} style={{ flex: 1 }} />);

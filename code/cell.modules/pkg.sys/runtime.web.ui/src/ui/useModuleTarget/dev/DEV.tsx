@@ -5,7 +5,7 @@ import { ManifestSelectorStateful } from '../../Manifest.Selector';
 import { t, rx, WebRuntimeBus, Filesystem } from '../../common';
 
 const TARGET = 'foo';
-const { DEFAULT } = ManifestSelectorStateful.constants;
+const DEFAULT = ManifestSelectorStateful.DEFAULT;
 
 type Id = string;
 type Ctx = {
@@ -25,10 +25,9 @@ export const actions = DevActions<Ctx>()
     const bus = rx.bus();
     const instance = { bus };
     const events = WebRuntimeBus.Events({ instance });
-    Filesystem.IndexedDb.create({
-      bus,
-      fs: DEFAULT.HISTORY.FS,
-    });
+
+    const fs = DEFAULT.HISTORY.FS;
+    Filesystem.IndexedDb.create({ bus, fs });
 
     const ctx: Ctx = {
       instance,

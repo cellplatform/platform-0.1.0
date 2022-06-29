@@ -74,7 +74,6 @@ const Util = {
 
   toDef(ctx: Ctx) {
     const key = ctx.debug.sampleId;
-
     if (key === 'Flows') return DEFS.FLOWS;
     if (key === 'Scale') return DEFS.SCALE;
     return undefined;

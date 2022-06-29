@@ -94,7 +94,7 @@ export const actions = DevActions<Ctx>()
       media: MediaStream.Events(bus),
       peer: PeerNetwork.PeerEvents(bus),
       group: PeerNetwork.GroupEvents(netbus),
-      runtime: runtime.events,
+      runtime,
     };
 
     const strategy = {

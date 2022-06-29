@@ -13,7 +13,7 @@ export type ModuleInfoFields =
   | ModuleInfoFieldHash
   | ModuleInfoFieldRemote;
 
-export type ModuleInfoFieldSource = 'source:url' | 'source:url:hash';
+export type ModuleInfoFieldSource = 'source:url' | 'source:url:hash' | 'source:url:entry';
 export type ModuleInfoFieldHash = 'hash.module:title' | 'hash.module' | 'hash.files';
 export type ModuleInfoFieldRemote = 'remote' | 'remote.exports';
 

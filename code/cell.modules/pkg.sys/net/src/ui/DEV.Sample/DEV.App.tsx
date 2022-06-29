@@ -1,25 +1,11 @@
 import React, { useEffect, useState } from 'react';
-
-import { Observable, Subject, BehaviorSubject, firstValueFrom, timeout, of, interval } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-  tap,
-  catchError,
-} from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { TEST } from '../../test';
 import { DevNetworkCard } from '../Network.Card/dev/DEV.NetworkCard';
-import { DevBackground } from './DEV.Background';
-import { DevButtonFullscreen } from './DEV.Button.Fullscreen';
 import {
+  CmdBar,
   Color,
   css,
   CssValue,
@@ -31,20 +17,22 @@ import {
   rx,
   Spinner,
   t,
-  CmdBar,
+  WebRuntimeBus,
 } from './common';
+import { DevBackground } from './DEV.Background';
+import { DevButtonFullscreen } from './DEV.Button.Fullscreen';
 import { DevEventLog } from './DEV.EventLog';
-import { DevModule } from './DEV.Module';
+import { DevModule } from './DEV.ModuleLoader';
 import { DevOverlay } from './DEV.Overlay';
+import { DevTray } from './DEV.Tray';
 import { DevVersion } from './DEV.Version';
 import { DevVideos } from './DEV.Videos';
-import { DevTray } from './DEV.Tray';
 
 export type DevSampleAppProps = {
   allowRubberband?: boolean;
   style?: CssValue;
-  onReady?: (e: { network: t.PeerNetwork }) => void;
   onSize?: (e: { size: t.DomRect }) => void;
+  onReady?: (e: { network: t.PeerNetwork }) => void;
 };
 
 export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
@@ -199,10 +187,14 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
       };
 
       const [domain, entry] = input.split(' ');
+      const url = new URL(`https://${stripHttp(domain).trim()}/index.json`);
+      if (entry) {
+        const value = `./${entry.replace(/^\.\//, '')}`;
+        url.searchParams.set('entry', value);
+      }
 
-      const url = `https://${stripHttp(domain).trim()}/index.json?entry=./${entry}`;
-      console.log('LOAD remote url:', url);
-      setModuleUrl(url);
+      console.log('LOAD remote url:', url.href);
+      setModuleUrl(url.href);
     }
 
     if (cmd.startsWith('unload')) setModuleUrl('');
@@ -230,6 +222,10 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
   useEffect(() => {
     TEST.createNetwork().then((network) => {
       setNetwork(network);
+
+      const { bus, netbus } = network;
+      WebRuntimeBus.Controller({ instance: { bus }, netbus });
+
       props.onReady?.({ network });
     });
   }, []); // eslint-disable-line
@@ -303,7 +299,15 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     render(e) {
       if (!bus) return null;
       if (!moduleUrl) return null;
-      return <DevModule bus={bus} url={moduleUrl} />;
+      return (
+        <DevModule
+          bus={bus}
+          url={moduleUrl}
+          onExportClick={(e) => {
+            setModuleUrl(e.url);
+          }}
+        />
+      );
     },
   };
 

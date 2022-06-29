@@ -31,6 +31,7 @@ export * from './ui/PositioningLayer/types';
 export * from './ui/PositioningLayout/types';
 
 export * from './ui/Photo/types';
+export * from './ui/LoadMask/types';
 
 export * from './ui/Event/types';
 export * from './ui/Error.Boundary/types';

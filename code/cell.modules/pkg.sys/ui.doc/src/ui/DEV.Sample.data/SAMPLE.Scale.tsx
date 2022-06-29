@@ -5,7 +5,7 @@ import { t, author, category } from './common';
  */
 export const SCALE: t.DocDef = {
   id: 'scale',
-  path: 'dao/scale-levers',
+  path: '/dao/doc:scale-levers',
 
   banner: { url: 'https://tdb-4hea4bo0w-tdb.vercel.app/banner-scale.png' },
   version: '1.0.3 (May 2022)',

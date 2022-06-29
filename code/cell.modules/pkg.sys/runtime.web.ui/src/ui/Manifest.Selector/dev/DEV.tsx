@@ -4,11 +4,10 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { ManifestSelectorStateful, ManifestSelectorStatefulProps } from '..';
 import { rx, t, Button, Filesystem, WebRuntimeBus } from '../common';
 import { DevSampleTarget } from './DEV.SampleTarget';
-import { ModuleInfoStateful, ModuleInfoConstants } from '../../Module.Info';
-import { ModuleInfoFields } from '../../Module.Info/types';
+import { ModuleInfo } from '../../Module.Info';
 
 const TARGET = 'foo';
-const { DEFAULT } = ManifestSelectorStateful.constants;
+const DEFAULT = ManifestSelectorStateful.DEFAULT;
 
 type Ctx = {
   bus: t.EventBus;
@@ -36,7 +35,7 @@ export const actions = DevActions<Ctx>()
 
     const bus = rx.bus();
     const instance = { bus };
-    const { events } = WebRuntimeBus.Controller({ instance });
+    const events = WebRuntimeBus.Controller({ instance });
 
     Filesystem.IndexedDb.create({ bus, fs: DEFAULT.HISTORY.FS });
 
@@ -49,6 +48,7 @@ export const actions = DevActions<Ctx>()
         showExports: true,
         history: true,
         focusOnLoad: true,
+        autoLoadLatest: true,
       },
       debug: {
         output: {
@@ -75,14 +75,14 @@ export const actions = DevActions<Ctx>()
     e.select((config) =>
       config
         .title('exports fields:')
-        .items(ModuleInfoConstants.FIELDS)
+        .items(ModuleInfo.FIELDS)
         .initial(undefined)
         .clearable(true)
         .view('buttons')
         .multi(true)
         .pipe((e) => {
           if (e.changing) {
-            const next = e.changing.next.map(({ value }) => value) as ModuleInfoFields[];
+            const next = e.changing.next.map(({ value }) => value) as t.ModuleInfoFields[];
             e.ctx.props.fields = next.length === 0 ? undefined : next;
           }
         }),
@@ -143,16 +143,32 @@ export const actions = DevActions<Ctx>()
         />
       );
     });
+
+    e.hr(1, 0.1);
+
+    e.component((e) => {
+      return (
+        <ObjectView
+          name={'props'}
+          data={e.ctx.props}
+          style={{ MarginX: 15 }}
+          fontSize={10}
+          expandPaths={['$']}
+        />
+      );
+    });
+
+    e.hr();
   })
 
   .items((e) => {
-    e.hr();
-
     e.component((e) => {
       const url = (e.ctx.url.value || '').trim();
       if (!url) return null;
-      return <ModuleInfoStateful url={url} style={{ MarginX: 25, MarginY: 15 }} />;
+      return <ModuleInfo.Stateful url={url} style={{ MarginX: 25, MarginY: 15 }} />;
     });
+
+    e.hr();
   })
 
   .subject((e) => {

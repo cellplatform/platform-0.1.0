@@ -27,7 +27,6 @@ async function deploy(team: string, project: string, dir: string, alias?: string
       target: alias ? 'production' : 'staging',
       regions: ['sfo1'],
       alias,
-      // routes: [{ src: '/foo', dest: '/' }],
     },
     { ensureProject: true },
   );
@@ -38,4 +37,4 @@ async function deploy(team: string, project: string, dir: string, alias?: string
 
 // DEV
 // deploy('tdb', 'tdb-tmp-deploy', 'dist/node');
-deploy('tdb', 'tdb-tmp', 'tmp/foo');
+deploy('tdb', 'tdb-tmp', 'tmp/foo', 'tmp.db.team');

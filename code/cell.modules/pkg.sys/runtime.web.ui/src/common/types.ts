@@ -6,6 +6,7 @@ export * from '../types';
 export { Observable } from 'rxjs';
 export { Event, EventBus, Disposable, NpmPackageJson } from '@platform/types';
 export { ManifestUrlParts } from '@platform/cell.schema/lib/Manifest/types';
+export { TextInputKeyEvent } from '@platform/ui.text/lib/types';
 export {
   Fs,
   ModuleManifest,
@@ -25,7 +26,6 @@ export {
   CmdCardInstance,
   CmdCardState,
   CmdCardEvent,
-  CmdCardRender,
   CmdCardControllerArgs,
   CmdCardEvents,
   CmdCardEventsDisposable,

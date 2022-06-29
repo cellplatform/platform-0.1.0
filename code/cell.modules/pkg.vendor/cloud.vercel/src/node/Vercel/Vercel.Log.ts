@@ -8,7 +8,9 @@ export const VercelLog = {
     log.info.gray('deploying:');
     log.info.gray(' • name:  ', log.white(info.name));
     log.info.gray(' • size:  ', info.files.toString());
-    log.info.gray(' • alias: ', alias ? alias : log.gray('<undefined>'));
+    if (alias) {
+      log.info.gray(' • alias: ', log.green(alias));
+    }
     log.info.gray();
 
     return { info };
@@ -19,8 +21,10 @@ export const VercelLog = {
     const { name, urls } = res.deployment;
 
     const logUrl = (url: string) => {
-      const text = url.includes('vercel') ? log.gray(url) : log.white(url);
+      const isVercel = url.includes('vercel');
+      const text = isVercel ? log.gray(url) : log.white(url);
       log.info.gray(` • ${text}`);
+      if (!isVercel) log.info.gray(` • ${text}?dev`);
     };
 
     log.info(ok ? log.green(status) : log.yellow(status));

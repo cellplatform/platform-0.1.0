@@ -2,7 +2,7 @@
  * @platform
  */
 export { log } from '@platform/log/lib/client';
-export { css, color, CssValue, Style, formatColor } from '@platform/css';
+export { css, Color, CssValue, Style, formatColor } from '@platform/css';
 export { useResizeObserver, FC } from '@platform/react';
 export { rx, slug, value, time } from '@platform/util.value';
 export { Http } from '@platform/http';
@@ -24,3 +24,5 @@ export { PropList } from 'sys.ui.primitives/lib/ui/PropList';
 export { Spinner } from 'sys.ui.primitives/lib/ui.ref/spinner/Spinner';
 export { CmdCard } from 'sys.ui.primitives/lib/ui/Cmd.Card';
 export { Text } from 'sys.ui.primitives/lib/ui/Text';
+export { LoadMask } from 'sys.ui.primitives/lib/ui/LoadMask';
+export { ErrorBoundary } from 'sys.ui.primitives/lib/ui/Error.Boundary';

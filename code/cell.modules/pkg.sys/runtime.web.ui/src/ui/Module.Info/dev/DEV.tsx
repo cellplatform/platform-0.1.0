@@ -1,12 +1,12 @@
 import React from 'react';
-import { DevActions } from 'sys.ui.dev';
+import { DevActions, ObjectView } from 'sys.ui.dev';
 
-import { ModuleInfo, ModuleInfoConstants, ModuleInfoProps, ModuleInfoStateful } from '..';
+import { ModuleInfo, ModuleInfoProps } from '..';
 import { Filesystem, rx, t } from '../../common';
 import { ManifestSelectorStateful } from '../../Manifest.Selector';
 import * as k from '../types';
 
-const { DEFAULT } = ManifestSelectorStateful.constants;
+const DEFAULT = ManifestSelectorStateful.DEFAULT;
 
 type Id = string;
 type Ctx = {
@@ -27,12 +27,20 @@ export const actions = DevActions<Ctx>()
 
     Filesystem.IndexedDb.create({ bus, fs: DEFAULT.HISTORY.FS });
 
-    const ctx: Ctx = { instance, props: { width: 300 } };
+    const ctx: Ctx = {
+      instance,
+      props: { width: 300 },
+    };
     return ctx;
   })
 
   .items((e) => {
     e.title('Props');
+
+    e.boolean('empty = null', (e) => {
+      if (e.changing) e.ctx.props.empty = e.changing.next ? null : undefined;
+      e.boolean.current = e.ctx.props.empty === null;
+    });
 
     e.boolean('width', (e) => {
       if (e.changing) e.ctx.props.width = e.changing.next ? 300 : undefined;
@@ -55,7 +63,7 @@ export const actions = DevActions<Ctx>()
     e.select((config) =>
       config
         .title('fields:')
-        .items(ModuleInfoConstants.FIELDS)
+        .items(ModuleInfo.FIELDS)
         .initial(undefined)
         .clearable(true)
         .view('buttons')
@@ -78,10 +86,11 @@ export const actions = DevActions<Ctx>()
           instance={e.ctx.instance}
           showExports={false}
           focusOnLoad={true}
+          autoLoadLatest={true}
           style={{ MarginX: 15, marginTop: 10, marginBottom: 40 }}
           onChanged={(event) => {
             e.change.ctx((ctx) => {
-              ctx.props.manifestUrl = event.url;
+              ctx.props.url = event.url;
               ctx.props.manifest = event.manifest;
             });
           }}
@@ -91,15 +100,21 @@ export const actions = DevActions<Ctx>()
 
     e.hr();
 
+    e.button('clear (url, manifest)', (e) => {
+      e.ctx.props.url = undefined;
+      e.ctx.props.manifest = undefined;
+    });
+
+    e.hr();
+
     e.component((e) => {
-      const url = e.ctx.props.manifestUrl;
-      if (!url) return null;
       return (
-        <ModuleInfoStateful
-          url={url}
-          title={e.ctx.props.title}
-          fields={e.ctx.props.fields}
-          style={{ MarginX: 15, marginTop: 40, marginBottom: 40 }}
+        <ObjectView
+          name={'props'}
+          data={e.ctx.props}
+          style={{ MarginX: 15 }}
+          fontSize={10}
+          expandPaths={['$']}
         />
       );
     });
@@ -107,6 +122,7 @@ export const actions = DevActions<Ctx>()
 
   .subject((e) => {
     e.settings({
+      actions: { width: 400 },
       host: { background: -0.04 },
       layout: { cropmarks: -0.2 },
     });

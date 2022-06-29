@@ -21,6 +21,7 @@ export function useModuleTarget<M = any>(args: {
   const [failed, setFailed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [module, setModule] = useState<M | undefined>();
+  const ok = !failed;
 
   useEffect(() => {
     const isTarget = Boolean(target);
@@ -62,8 +63,8 @@ export function useModuleTarget<M = any>(args: {
   }, [target, instance.id, busid]); // eslint-disable-line
 
   return {
-    ok: !failed,
-    loading,
+    ok,
+    loading: ok ? loading : false,
     target,
     address,
     module,
