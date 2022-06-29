@@ -116,14 +116,14 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
         </Button>
       </div>
       <div {...styles.toolbar.section}>
-        <Button style={styles.toolbar.button} tooltip={'Expand Window'}>
+        {/* <Button style={styles.toolbar.button} tooltip={'Expand Window'}>
           <Icons.Window.Expand
             size={18}
             color={iconColor}
             style={styles.toolbar.icon}
             onClick={handleExpandWindowClick}
           />
-        </Button>
+        </Button> */}
       </div>
     </div>
   );
