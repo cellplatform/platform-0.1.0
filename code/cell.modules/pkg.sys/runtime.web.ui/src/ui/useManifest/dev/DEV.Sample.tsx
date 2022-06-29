@@ -12,7 +12,12 @@ export type DevSampleProps = {
 
 export const DevSample: React.FC<DevSampleProps> = (props) => {
   const { url } = props;
-  const manifest = useManifest({ url });
+  const manifest = useManifest({
+    url,
+    onLoaded(e) {
+      console.log('⚡️ onLoaded', e);
+    },
+  });
 
   /**
    * [Render]
@@ -50,7 +55,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
     <div {...css(styles.base, props.style)}>
       <div {...styles.body}>
         <div {...styles.left.base}>
-          <ModuleInfo manifest={manifest.json} url={manifest.url.href} maxWidth={280} />
+          <ModuleInfo manifest={manifest.json} url={manifest.url} maxWidth={280} />
           <div {...styles.left.footer}>{elUrl}</div>
         </div>
         <div {...styles.right.base}>

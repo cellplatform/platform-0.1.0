@@ -30,7 +30,8 @@ const Util = {
     if (!debug.tile.rollup && debug.tile.custom) {
       props.tile = {
         el: Util.renderPropList(ctx),
-        padding: [30, 50],
+        size: { minWidth: 300 },
+        padding: [30, 45],
         backgroundColor: 'rgba(255, 0, 0, 0.15)',
       };
     }
@@ -52,7 +53,6 @@ const Util = {
       <PropList
         style={{ marginTop: ctx.props.spinner ? 18 : 0 }}
         theme={ctx.props.theme}
-        width={{ min: 120 }}
         items={[
           { label: 'hello', value: 'world!' },
           { label: 'foo', value: 123 },

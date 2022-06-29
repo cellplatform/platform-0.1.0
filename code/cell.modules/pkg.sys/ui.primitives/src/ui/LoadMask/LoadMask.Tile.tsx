@@ -18,6 +18,8 @@ export const LoadMaskTile: React.FC<LoadMaskTileProps> = (props) => {
    */
   const styles = {
     base: css({
+      Flex: 'y-center-center',
+      boxSizing: 'border-box',
       backgroundColor: toBackgroundColor(props),
       borderRadius: tile.borderRadius ?? TILE.borderRadius,
       backdropFilter: `blur(${tile.blur ?? TILE.blur}px)`,

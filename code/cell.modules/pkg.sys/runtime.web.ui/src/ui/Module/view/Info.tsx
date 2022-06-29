@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Color, COLORS, css, CssValue, t, LoadMask, ModuleInfo } from '../common';
 
 export type InfoProps = {
@@ -12,6 +12,8 @@ export type InfoProps = {
 export const Info: React.FC<InfoProps> = (props) => {
   const { url } = props;
   const entry = url.searchParams.get('entry');
+
+  const [loaded, setLoaded] = useState(false);
 
   const fields: t.ModuleInfoFields[] = [];
   const push = (field: t.ModuleInfoFields) => fields.push(field);
@@ -32,7 +34,10 @@ export const Info: React.FC<InfoProps> = (props) => {
       url={url.href}
       fields={fields}
       minWidth={250}
+      empty={null}
       onExportClick={props.onExportClick}
+      onLoaded={(e) => setLoaded(e.is.loaded)}
+      style={{ display: loaded ? 'block' : 'none' }}
     />
   );
 
@@ -40,9 +45,14 @@ export const Info: React.FC<InfoProps> = (props) => {
     <LoadMask
       style={css(styles.base, props.style)}
       theme={props.theme}
-      spinner={false}
+      spinner={!loaded}
       bg={{ blur: 8 }}
-      tile={{ el, padding: [30, 40], backgroundColor: Color.alpha(COLORS.DARK, 0.04) }}
+      tile={{
+        el,
+        padding: [30, 40],
+        size: { minWidth: 250 + 40 + 40 },
+        backgroundColor: Color.alpha(COLORS.DARK, 0.04),
+      }}
     />
   );
 };

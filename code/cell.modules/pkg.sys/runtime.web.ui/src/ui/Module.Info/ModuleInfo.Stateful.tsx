@@ -3,31 +3,33 @@ import React from 'react';
 import { CssValue, t } from './common';
 import { useManifest } from '../useManifest';
 import { ModuleInfo } from './ModuleInfo';
-import * as k from './types';
 
 export type ModuleInfoStatefulProps = {
   url?: t.ManifestUrl;
-  title?: k.ModuleInfoTitle;
-  fields?: k.ModuleInfoFields[];
+  title?: t.ModuleInfoTitle;
+  fields?: t.ModuleInfoFields[];
+  empty?: string | JSX.Element | null;
   minWidth?: number;
   maxWidth?: number;
   style?: CssValue;
-  onExportClick?: k.ModuleInfoExportClick;
+  onExportClick?: t.ModuleInfoExportClick;
+  onLoaded?: t.ManifestHookLoadedHandler;
 };
 
 export const ModuleInfoStateful: React.FC<ModuleInfoStatefulProps> = (props) => {
-  const { url, title, fields, minWidth, maxWidth, style, onExportClick } = props;
-  const manifest = useManifest({ url });
+  const { url, onExportClick, onLoaded } = props;
+  const manifest = useManifest({ url, onLoaded });
 
   return (
     <ModuleInfo
-      title={title}
-      url={manifest.url.href}
+      title={props.title}
+      url={manifest.url}
       manifest={manifest.json}
-      fields={fields}
-      minWidth={minWidth}
-      maxWidth={maxWidth}
-      style={style}
+      fields={props.fields}
+      minWidth={props.minWidth}
+      maxWidth={props.maxWidth}
+      empty={props.empty}
+      style={props.style}
       onExportClick={onExportClick}
     />
   );

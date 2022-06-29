@@ -20,7 +20,7 @@ const View: React.FC<LoadMaskProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({ position: 'relative', pointerEvents: 'none' }),
+    base: css({ position: 'relative', pointerEvents: 'none', boxSizing: 'border-box' }),
     mask: css({
       Absolute: 0,
       backdropFilter: mask ? `blur(${mask.blur}px)` : undefined,

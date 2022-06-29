@@ -35,7 +35,7 @@ export const actions = DevActions<Ctx>()
 
     const bus = rx.bus();
     const instance = { bus };
-    const { events } = WebRuntimeBus.Controller({ instance });
+    const events = WebRuntimeBus.Controller({ instance });
 
     Filesystem.IndexedDb.create({ bus, fs: DEFAULT.HISTORY.FS });
 
