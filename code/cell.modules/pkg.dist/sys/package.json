@@ -1,7 +1,7 @@
 {
   "name": "sys",
   "description": "Standard federated-function endpoing for 'system' modules",
-  "version": "0.0.128",
+  "version": "0.0.140",
   "main": "lib/index",
   "sideEffects": false,
   "scripts": {
@@ -16,7 +16,7 @@
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
-    "deploy": "ts-node -T script.ts/deploy.vercel.run",
+    "deploy": "ts-node -T script.ts/vercel.run",
     "bbd": "yarn build.all && yarn deploy"
   },
   "dependencies": {},
