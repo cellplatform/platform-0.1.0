@@ -1,15 +1,15 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { DevSampleApp, DevSampleAppProps } from '..';
-import { t } from '../common';
+import { t, WebRuntimeBus } from '../common';
 
 type Ctx = {
   self: string;
   network?: t.PeerNetwork;
   client?: t.PeerEvents;
   props: DevSampleAppProps;
-  output: { status?: any };
   size?: t.DomRect;
+  output: { networkStatus?: any; netbus?: any };
 };
 
 const Util = {
@@ -17,7 +17,7 @@ const Util = {
     const { self, client } = ctx;
     if (client) {
       const status = await client.status(self).get();
-      ctx.output.status = status.peer;
+      ctx.output.networkStatus = status.peer;
     }
   },
 };
@@ -58,7 +58,16 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Dev');
 
-    e.button('read: network.status', async (e) => await Util.updateStatus(e.ctx));
+    e.button('req: network.status', async (e) => await Util.updateStatus(e.ctx));
+
+    e.button('req: WebRuntime/netbus', async (e) => {
+      const bus = e.ctx.network?.bus;
+      if (bus) {
+        const instance = { bus };
+        const env = WebRuntimeBus.Events({ instance });
+        e.ctx.output.netbus = await env.netbus.get();
+      }
+    });
 
     e.hr();
 
@@ -77,11 +86,24 @@ export const actions = DevActions<Ctx>()
     e.hr(1, 0.1);
 
     e.component((e) => {
-      const data = e.ctx.output.status;
       return (
         <ObjectView
-          name={'status (network)'}
-          data={data ?? {}}
+          name={'network/status'}
+          data={e.ctx.output.networkStatus ?? {}}
+          style={{ MarginX: 15 }}
+          fontSize={10}
+          expandPaths={['$']}
+        />
+      );
+    });
+
+    e.hr(1, 0.1);
+
+    e.component((e) => {
+      return (
+        <ObjectView
+          name={'WebRuntime/netbus'}
+          data={e.ctx.output.netbus ?? {}}
           style={{ MarginX: 15 }}
           fontSize={10}
           expandPaths={['$']}

@@ -17,6 +17,7 @@ import {
   rx,
   Spinner,
   t,
+  WebRuntimeBus,
 } from './common';
 import { DevBackground } from './DEV.Background';
 import { DevButtonFullscreen } from './DEV.Button.Fullscreen';
@@ -30,8 +31,8 @@ import { DevVideos } from './DEV.Videos';
 export type DevSampleAppProps = {
   allowRubberband?: boolean;
   style?: CssValue;
-  onReady?: (e: { network: t.PeerNetwork }) => void;
   onSize?: (e: { size: t.DomRect }) => void;
+  onReady?: (e: { network: t.PeerNetwork }) => void;
 };
 
 export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
@@ -221,6 +222,10 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
   useEffect(() => {
     TEST.createNetwork().then((network) => {
       setNetwork(network);
+
+      const { bus, netbus } = network;
+      WebRuntimeBus.Controller({ instance: { bus }, netbus });
+
       props.onReady?.({ network });
     });
   }, []); // eslint-disable-line
