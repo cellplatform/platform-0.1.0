@@ -1,11 +1,66 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
+
 import { LoadMask, LoadMaskProps } from '..';
-import { COLORS, css, Color, DEFAULT } from '../common';
+import { COLORS, css, DEFAULT, t } from '../common';
+import { PropList } from '../../PropList';
 
 type Ctx = {
   props: LoadMaskProps;
-  debug: { picture: boolean };
+  debug: {
+    bg: { rollup: boolean };
+    tile: { rollup: boolean; custom: boolean };
+    picture?: string;
+  };
+};
+
+const IMAGE = {
+  'sample-1':
+    'https://images.unsplash.com/photo-1512998844734-cd2cca565822?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1621&q=80',
+  'sample-2':
+    'https://images.unsplash.com/photo-1511798616182-aab3698ac53e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2176&q=80',
+};
+
+const Util = {
+  toProps(ctx: Ctx) {
+    const { debug } = ctx;
+    const props = { ...ctx.props };
+    if (debug.bg.rollup) props.bg = true;
+    if (debug.tile.rollup) props.tile = true;
+    if (!debug.tile.rollup && debug.tile.custom) {
+      props.tile = {
+        el: Util.renderPropList(ctx),
+        padding: [30, 50],
+        backgroundColor: 'rgba(255, 0, 0, 0.15)',
+      };
+    }
+    return props;
+  },
+
+  toBgProp(ctx: Ctx) {
+    if (!ctx.props.bg) ctx.props.bg = LoadMask.toBgProp(ctx.props.bg);
+    return ctx.props.bg as t.LoadMaskBgProp;
+  },
+
+  toTileProp(ctx: Ctx) {
+    if (!ctx.props.tile) ctx.props.tile = LoadMask.toTileProp(ctx.props.tile);
+    return ctx.props.tile as t.LoadMaskTileProp;
+  },
+
+  renderPropList(ctx: Ctx) {
+    return (
+      <PropList
+        style={{ marginTop: ctx.props.spinner ? 18 : 0 }}
+        theme={ctx.props.theme}
+        width={{ min: 120 }}
+        items={[
+          { label: 'hello', value: 'world!' },
+          { label: 'foo', value: 123 },
+          { label: 'bar', value: 456 },
+        ]}
+      />
+    );
+  },
 };
 
 /**
@@ -17,12 +72,16 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
     const ctx: Ctx = {
       props: {
-        theme: 'Light',
+        theme: 'Dark',
         spinner: true,
         tile: true,
-        blur: DEFAULT.BLUR,
+        bg: DEFAULT.MASK,
       },
-      debug: { picture: true },
+      debug: {
+        picture: IMAGE['sample-2'],
+        bg: { rollup: false },
+        tile: { rollup: false, custom: false },
+      },
     };
     return ctx;
   })
@@ -34,29 +93,47 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Props');
 
-    e.select((config) => {
-      config
-        .view('buttons')
-        .items(LoadMask.DEFAULT.THEMES.map((value) => ({ label: `theme: ${value}`, value })))
-        .initial(config.ctx.props.theme)
-        .pipe((e) => {
-          if (e.changing) e.ctx.props.theme = e.changing?.next[0].value;
-        });
-    });
+    const theme = (theme: t.LoadMaskTheme) => {
+      e.button(`theme: "${theme}"`, (e) => (e.ctx.props.theme = theme));
+    };
+    theme('Light');
+    theme('Dark');
+    e.hr(1, 0.1);
 
     e.boolean('spinner', (e) => {
       if (e.changing) e.ctx.props.spinner = e.changing.next;
       e.boolean.current = e.ctx.props.spinner;
     });
 
-    e.boolean('tile', (e) => {
-      if (e.changing) e.ctx.props.tile = e.changing.next;
-      e.boolean.current = e.ctx.props.tile;
+    e.hr(1, 0.1);
+
+    e.boolean('tile: rollup (boolean)', (e) => {
+      if (e.changing) e.ctx.debug.tile.rollup = e.changing.next;
+      e.boolean.current = Boolean(e.ctx.debug.tile.rollup);
     });
 
-    e.boolean('blur', (e) => {
-      if (e.changing) e.ctx.props.blur = e.changing.next ? DEFAULT.BLUR : 0;
-      e.boolean.current = Boolean(e.ctx.props.blur);
+    e.boolean('tile: {custom}', (e) => {
+      if (e.changing) e.ctx.debug.tile.custom = e.changing.next;
+      e.boolean.current = Boolean(e.ctx.debug.tile.custom);
+    });
+
+    e.hr(1, 0.1);
+
+    e.boolean('bg: rollup (boolean)', (e) => {
+      if (e.changing) e.ctx.debug.bg.rollup = e.changing.next;
+      e.boolean.current = e.ctx.debug.bg.rollup;
+    });
+
+    e.boolean('bg.blur', (e) => {
+      const bg = Util.toBgProp(e.ctx);
+      if (e.changing) bg.blur = e.changing.next ? DEFAULT.MASK.blur : 0;
+      e.boolean.current = Boolean(bg.blur);
+    });
+
+    e.boolean('bg.color (sample)', (e) => {
+      const bg = Util.toBgProp(e.ctx);
+      if (e.changing) bg.color = e.changing.next ? 'rgba(255, 0, 0, 0.3)' : 0;
+      e.boolean.current = Boolean(bg.color);
     });
 
     e.hr();
@@ -65,10 +142,16 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Dev');
 
-    e.boolean('show picture', (e) => {
-      if (e.changing) e.ctx.debug.picture = e.changing.next;
-      e.boolean.current = e.ctx.debug.picture;
-    });
+    const picture = (key: keyof typeof IMAGE, theme: t.LoadMaskTheme) => {
+      e.button(`picture: ${key} (${theme})`.trim(), (e) => {
+        e.ctx.debug.picture = IMAGE[key];
+        e.ctx.props.theme = theme;
+      });
+    };
+
+    picture('sample-1', 'Light');
+    picture('sample-2', 'Dark');
+    e.button('picture: <none>', (e) => (e.ctx.debug.picture = undefined));
 
     e.hr();
 
@@ -86,7 +169,8 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const { props, debug } = e.ctx;
+    const { debug } = e.ctx;
+    const props = Util.toProps(e.ctx);
 
     const theme = props.theme ?? LoadMask.DEFAULT.THEME;
     const isDark = theme === 'Dark';
@@ -103,18 +187,17 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    const src =
-      'https://images.unsplash.com/photo-1511798616182-aab3698ac53e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2176&q=80';
-
     const styles = {
       base: css({ flex: 1, position: 'relative' }),
-      picture: css({
-        Absolute: 0,
-        backgroundImage: `url(${src})`,
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center center',
-      }),
+      picture:
+        debug.picture &&
+        css({
+          Absolute: 0,
+          backgroundImage: `url(${debug.picture})`,
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center center',
+        }),
     };
 
     e.render(
