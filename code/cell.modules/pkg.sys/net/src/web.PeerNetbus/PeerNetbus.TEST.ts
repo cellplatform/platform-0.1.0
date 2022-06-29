@@ -39,7 +39,7 @@ export default Test.describe('PeerNetbus', (e) => {
       const runtime = WebRuntime.Bus.Controller({ instance, netbus });
       const events = WebRuntime.Bus.Events({ instance });
 
-      const res1 = await runtime.events.netbus.get({});
+      const res1 = await runtime.netbus.get({});
       const res2 = await events.netbus.get();
 
       runtime.dispose();

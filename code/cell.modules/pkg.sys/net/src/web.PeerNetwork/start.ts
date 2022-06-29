@@ -35,7 +35,7 @@ export async function start(args: StartArgs): Promise<StartRes> {
   const events = {
     peer: PeerEvents(bus),
     group: GroupEvents(netbus),
-    runtime: runtime.events,
+    runtime,
   };
 
   const dispose = async () => {
