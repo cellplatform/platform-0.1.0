@@ -9,6 +9,7 @@ const TILE: Required<t.LoadMaskTileProp> = {
   padding: 50,
   borderRadius: 8,
   backgroundColor: -1,
+  size: {},
 };
 
 export const DEFAULT = {

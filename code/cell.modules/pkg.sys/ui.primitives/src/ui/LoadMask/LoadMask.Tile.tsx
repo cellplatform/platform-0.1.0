@@ -11,6 +11,7 @@ const TILE = DEFAULT.TILE;
 
 export const LoadMaskTile: React.FC<LoadMaskTileProps> = (props) => {
   const { tile } = props;
+  const size = tile.size ?? {};
 
   /**
    * [Render]
@@ -20,6 +21,11 @@ export const LoadMaskTile: React.FC<LoadMaskTileProps> = (props) => {
       backgroundColor: toBackgroundColor(props),
       borderRadius: tile.borderRadius ?? TILE.borderRadius,
       backdropFilter: `blur(${tile.blur ?? TILE.blur}px)`,
+      width: size.width,
+      minWidth: size.minWidth,
+      minHeight: size.minHeight,
+      maxWidth: size.maxWidth,
+      maxHeight: size.maxHeight,
       ...Style.toPadding(tile.padding ?? TILE.padding),
     }),
     children: css({ Flex: 'center-center' }),
