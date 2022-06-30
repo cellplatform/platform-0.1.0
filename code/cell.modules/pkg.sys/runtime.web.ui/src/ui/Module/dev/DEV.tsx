@@ -110,8 +110,6 @@ export const actions = DevActions<Ctx>()
       );
     });
 
-    e.hr(1, 0.1);
-
     e.button('url: remove "?entry=<path>"', (e) => {
       const href = e.ctx.props.url;
       const url = href ? new URL(href) : undefined;
@@ -120,8 +118,10 @@ export const actions = DevActions<Ctx>()
         e.ctx.props.url = url.href;
       }
     });
-    e.button('url: <undefined> (unload)', (e) => (e.ctx.props.url = undefined));
 
+    e.hr(1, 0.1);
+
+    e.button('url: unload', (e) => (e.ctx.props.url = undefined));
     e.hr();
 
     e.component((e) => {
@@ -153,7 +153,7 @@ export const actions = DevActions<Ctx>()
           bottomLeft: e.ctx.props.url,
           bottomRight: `${bus}/id:${id}`,
         },
-        position: [150, 80],
+        position: [80, 80, 110, 80],
         border: isDark ? 0.1 : -0.1,
         cropmarks: isDark ? 0.3 : -0.2,
         labelColor: isDark ? COLORS.WHITE : -0.5,
