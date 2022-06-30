@@ -18,8 +18,10 @@ export default Test.describe('Automerge (CRDT)', (e) => {
   const bus = rx.bus();
   let fs: t.Fs;
 
-  const getFilesystem = async (options?: { clear?: boolean }) => {
-    return fs ?? (fs = await TestFilesystem.create(bus, options));
+  const getFilesystem = async (options: { clear?: boolean } = {}) => {
+    if (!fs) fs = (await TestFilesystem.init({ bus }).ready()).fs;
+    if (options.clear) await TestFilesystem.clear(fs);
+    return fs;
   };
 
   function createTestDoc() {

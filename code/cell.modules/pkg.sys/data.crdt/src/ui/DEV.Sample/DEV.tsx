@@ -1,9 +1,11 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 
-import { rx, t, TestNetwork } from '../../test';
+import { TestNetwork, TestFilesystem } from '../../test';
 import { Sample, SampleProps } from './DEV.Sample';
 import { SimpleDoc } from './DEV.types';
+
+import { t, rx, COLORS, css, Color, Filesystem } from './common';
 
 const DEFAULT = {
   DOC: 'myDoc',
@@ -11,6 +13,12 @@ const DEFAULT = {
 
 type Ctx = {
   bus: t.EventBus;
+  filesystem: {
+    fs: t.Fs;
+    ready: () => Promise<any>;
+    instance: t.FsViewInstance;
+    events: t.SysFsEvents;
+  };
   props: SampleProps;
   total: number;
   debounce: number;
@@ -33,9 +41,12 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const bus = rx.bus();
+    const { fs, ready, instance, events } = TestFilesystem.init({ bus });
+
     const ctx: Ctx = {
       bus,
-      props: {},
+      filesystem: { fs, ready, instance, events },
+      props: { instance },
       total: 3,
       debounce: 300,
     };
@@ -44,18 +55,18 @@ export const actions = DevActions<Ctx>()
   })
 
   .init(async (e) => {
-    const { ctx, bus } = e;
-    ctx.bus = bus;
-
+    const { ctx } = e;
     const { total, debounce } = ctx;
     const mock = await startMockNetwork({ total, debounce });
     const docs = mock.docs;
     ctx.props.docs = docs;
 
     console.group('🌳 CRDT/INIT');
-    console.log('bus', bus);
+    console.log('bus', ctx.bus);
     console.log('docs', docs);
     console.groupEnd();
+
+    await ctx.filesystem.ready();
   })
 
   .items((e) => {
@@ -87,24 +98,57 @@ export const actions = DevActions<Ctx>()
       e.ctx.props.docs = network.docs;
     });
 
-    // e.button('start network: remote', async (e) => {
-    // const { bus, netbus } = e.ctx;
-    // e.ctx.props.docs = [];
-    // if (!netbus) {
-    //   e.button.description = 'WARNING: netbus not available in environment';
-    //   return;
-    // }
-    // // const bus = e.ctx.bus;
-    // const ctrl = CrdtBus.Controller({
-    //   bus: toObject(bus) as t.EventBus,
-    //   sync: {
-    //     // netbus,
-    //     netbus: toObject(netbus) as t.NetworkBus,
-    //   },
-    // });
-    // const doc = await ctrl.events.doc({ id: DEFAULT.DOC, initial: { count: 0 } });
-    // e.ctx.props.docs = [doc];
-    // });
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Filesystem');
+
+    e.component((e) => {
+      const instance = e.ctx.filesystem.instance;
+      const styles = {
+        base: css({
+          Margin: [5, 10, 20, 10],
+        }),
+        outer: css({
+          height: 150,
+          borderRadius: 4,
+          backgroundColor: Color.alpha(COLORS.DARK, 0.02),
+          border: `solid 1px ${Color.format(-0.06)}`,
+          display: 'flex',
+        }),
+        footer: css({
+          fontFamily: 'monospace',
+          color: Color.alpha(COLORS.DARK, 0.4),
+          fontSize: 10,
+          fontWeight: 500,
+          Flex: 'x-spaceBetween-center',
+          marginTop: 3,
+          PaddingX: 5,
+        }),
+      };
+      return (
+        <div {...styles.base}>
+          <div {...styles.outer}>
+            <Filesystem.PathList.Stateful
+              style={{ flex: 1 }}
+              instance={instance}
+              scrollable={true}
+              droppable={true}
+              selectable={true}
+            />
+          </div>
+          <div {...styles.footer}>
+            <div>{`${rx.bus.instance(instance.bus)}/id:${instance.id}`}</div>
+            <div>{`${instance.fs}`}</div>
+          </div>
+        </div>
+      );
+    });
+
+    e.button('delete all', async (e) => {
+      await TestFilesystem.clear(e.ctx.filesystem.fs, { all: true });
+    });
 
     e.hr();
   })
@@ -113,6 +157,7 @@ export const actions = DevActions<Ctx>()
     const docs = e.ctx.props.docs ?? [];
 
     e.settings({
+      actions: { width: 320 },
       host: { background: -0.04 },
       layout: {
         cropmarks: -0.1,
