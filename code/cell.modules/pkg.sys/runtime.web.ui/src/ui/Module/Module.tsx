@@ -34,7 +34,7 @@ const View: React.FC<ModuleProps> = (props) => {
    * Render
    */
   const styles = {
-    base: css({ position: 'relative' }),
+    base: css({ position: 'relative', overflow: 'hidden' }),
     errorBoundary: css({ Absolute: 0 }),
     loading: css({ Absolute: 0, pointerEvents: 'none', display: 'flex' }),
   };
@@ -47,7 +47,12 @@ const View: React.FC<ModuleProps> = (props) => {
   })();
 
   const elModule = url && (
-    <Loader instance={instance} url={url.href} onLoading={(e) => setLoading(e.loading)} />
+    <Loader
+      instance={instance}
+      url={url.href}
+      theme={theme}
+      onLoading={(e) => setLoading(e.loading)}
+    />
   );
 
   const elInfo = !elLoading && url && props.info !== false && (props.info || !entry) && (

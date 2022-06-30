@@ -112,7 +112,15 @@ export const actions = DevActions<Ctx>()
 
     e.hr(1, 0.1);
 
-    e.button('reset (unload)', (e) => (e.ctx.props.url = undefined));
+    e.button('url: remove "?entry=<path>"', (e) => {
+      const href = e.ctx.props.url;
+      const url = href ? new URL(href) : undefined;
+      if (url) {
+        url.searchParams.delete('entry');
+        e.ctx.props.url = url.href;
+      }
+    });
+    e.button('url: <undefined> (unload)', (e) => (e.ctx.props.url = undefined));
 
     e.hr();
 

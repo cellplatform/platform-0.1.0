@@ -15,9 +15,9 @@ type Ctx = {
   bus: t.EventBus;
   filesystem: {
     fs: t.Fs;
-    ready: () => Promise<any>;
     instance: t.FsViewInstance;
     events: t.SysFsEvents;
+    ready: () => Promise<any>;
   };
   props: SampleProps;
   total: number;
