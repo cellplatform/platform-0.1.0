@@ -19,7 +19,6 @@ export { Http } from '@platform/http';
 /**
  * @system
  */
-export { IpcBus } from 'sys.runtime.electron';
 export { Filesystem } from 'sys.fs/lib/web/ui';
 
 export { ObjectView } from 'sys.ui.primitives/lib/ui/ObjectView';
