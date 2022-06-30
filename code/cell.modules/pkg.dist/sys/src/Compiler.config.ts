@@ -17,16 +17,19 @@ export default () =>
         /**
          * EXPORTS: Development
          */
-        .expose('./DEV.sys.fs', './src/exports/sys/DEV.Fs')
-        .expose('./DEV.sys.data.crdt', './src/exports/sys/DEV.Data.Crdt')
-        .expose('./DEV.sys.data.json', './src/exports/sys/DEV.Data.Json')
-        .expose('./DEV.sys.runtime.web', './src/exports/sys/DEV.Runtime.Web')
-        .expose('./DEV.sys.runtime.web.ui', './src/exports/sys/DEV.Runtime.Web.UI')
-        .expose('./DEV.sys.ui.dev', './src/exports/sys/DEV.UI.Dev')
-        .expose('./DEV.sys.ui.doc', './src/exports/sys/DEV.UI.Doc')
-        .expose('./DEV.sys.ui.primitives', './src/exports/sys/DEV.UI.Primitives')
-        .expose('./DEV.sys.ui.video', './src/exports/sys/DEV.UI.Video')
+        .expose('./net.sys', './src/exports/sys/Sys.Net')
 
-        .expose('./DEV.sample error (on module load)', './src/exports/sample/ERROR.OnModuleLoad')
-        .expose('./DEV.sample error (on render)', './src/exports/sample/ERROR.OnRender'),
+        .expose('./DEV.net.sys', './src/exports/sys/DEV.Sys.Net')
+        .expose('./DEV.fs.sys', './src/exports/sys/DEV.Sys.Fs')
+        .expose('./DEV.crdt.data.sys', './src/exports/sys/DEV.Sys.Data.Crdt')
+        .expose('./DEV.json.data.sys', './src/exports/sys/DEV.Sys.Data.Json')
+        .expose('./DEV.web.runtime.sys', './src/exports/sys/DEV.Sys.Runtime.Web')
+        .expose('./DEV.ui.web.runtime.sys', './src/exports/sys/DEV.Sys.Runtime.Web.UI')
+        .expose('./DEV.dev.ui.sys', './src/exports/sys/DEV.Sys.UI.Dev')
+        .expose('./DEV.doc.ui.sys', './src/exports/sys/DEV.Sys.UI.Doc')
+        .expose('./DEV.primitives.ui.sys', './src/exports/sys/DEV.Sys.UI.Primitives')
+        .expose('./DEV.video.ui.sys', './src/exports/sys/DEV.Sys.UI.Video')
+
+        .expose('./DEV_SAMPLE.error (on module load)', './src/exports/sample/ERROR.OnModuleLoad')
+        .expose('./DEV_SAMPLE.error (on render)', './src/exports/sample/ERROR.OnRender'),
     );
