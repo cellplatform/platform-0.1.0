@@ -8,10 +8,8 @@ export const VercelLog = {
     log.info.gray('deploying:');
     log.info.gray(' • name:    ', log.white(info.name));
     log.info.gray(' • size:    ', info.files.toString());
-    log.info.gray(' • project: ', project);
-    if (alias) {
-      log.info.gray(' • alias:   ', log.green(alias));
-    }
+    if (project) log.info.gray(' • project: ', project);
+    if (alias) log.info.gray(' • alias:   ', log.green(alias));
     log.info.gray();
 
     return { info };
