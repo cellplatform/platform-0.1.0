@@ -57,7 +57,7 @@ function toBackgroundColor(props: LoadMaskTileProps) {
 }
 
 function toBorderColor(props: LoadMaskTileProps) {
-  const { theme, tile } = props;
+  const { tile } = props;
   if (tile.borderColor === undefined || tile.borderColor < 0) return;
   return Color.format(tile.borderColor);
 }
