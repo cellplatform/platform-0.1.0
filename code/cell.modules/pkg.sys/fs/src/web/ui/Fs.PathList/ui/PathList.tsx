@@ -76,7 +76,6 @@ export const PathList: React.FC<FsPathListProps> = (props) => {
     },
 
     render() {
-      console.log('render');
       return scroll ? listView.virtual(cursor) : listView.simple(cursor);
     },
   };
