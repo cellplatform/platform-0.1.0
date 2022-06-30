@@ -33,6 +33,7 @@ const Util = {
         size: { minWidth: 300 },
         padding: [30, 45],
         backgroundColor: 'rgba(255, 0, 0, 0.15)',
+        borderColor: 0.3,
       };
     }
     return props;

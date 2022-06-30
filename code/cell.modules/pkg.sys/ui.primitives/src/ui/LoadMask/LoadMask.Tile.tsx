@@ -22,6 +22,7 @@ export const LoadMaskTile: React.FC<LoadMaskTileProps> = (props) => {
       boxSizing: 'border-box',
       backgroundColor: toBackgroundColor(props),
       borderRadius: tile.borderRadius ?? TILE.borderRadius,
+      border: toBorder(props),
       backdropFilter: `blur(${tile.blur ?? TILE.blur}px)`,
       width: size.width,
       minWidth: size.minWidth,
@@ -53,4 +54,15 @@ function toBackgroundColor(props: LoadMaskTileProps) {
   return tile.backgroundColor === undefined || tile.backgroundColor < 0
     ? Color.format(isDark ? 0.1 : -0.05)
     : Color.format(tile.backgroundColor);
+}
+
+function toBorderColor(props: LoadMaskTileProps) {
+  const { theme, tile } = props;
+  if (tile.borderColor === undefined || tile.borderColor < 0) return;
+  return Color.format(tile.borderColor);
+}
+
+function toBorder(props: LoadMaskTileProps) {
+  const color = toBorderColor(props);
+  return color ? `solid 1px ${color}` : undefined;
 }
