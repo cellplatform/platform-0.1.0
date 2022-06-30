@@ -64,7 +64,7 @@ export const actions = DevActions<Ctx>()
       }),
     );
 
-    e.hr(1, 0.1);
+    e.hr();
 
     e.title('Filesystem');
 
@@ -93,6 +93,7 @@ export const actions = DevActions<Ctx>()
 
   .subject((e) => {
     e.settings({
+      actions: { width: 350 },
       host: { background: -0.04 },
       layout: {
         position: [100, null, null, null],
