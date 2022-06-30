@@ -1,15 +1,16 @@
 import { log, t } from './common';
 
 export const VercelLog = {
-  beforeDeploy(args: { info: t.VercelSourceBundleInfo; alias?: string }) {
-    const { info, alias } = args;
+  beforeDeploy(args: { info: t.VercelSourceBundleInfo; alias?: string; project?: string }) {
+    const { info, alias, project } = args;
 
     log.info();
     log.info.gray('deploying:');
-    log.info.gray(' • name:  ', log.white(info.name));
-    log.info.gray(' • size:  ', info.files.toString());
+    log.info.gray(' • name:    ', log.white(info.name));
+    log.info.gray(' • size:    ', info.files.toString());
+    log.info.gray(' • project: ', project);
     if (alias) {
-      log.info.gray(' • alias: ', log.green(alias));
+      log.info.gray(' • alias:   ', log.green(alias));
     }
     log.info.gray();
 
