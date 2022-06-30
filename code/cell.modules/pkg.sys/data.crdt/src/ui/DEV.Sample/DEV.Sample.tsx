@@ -1,16 +1,17 @@
 import React from 'react';
 
-import { List, css, CssValue, t } from '../../common';
+import { List, css, CssValue, t } from './common';
 import { DocCard } from './DEV.DocCard';
 import { SimpleDoc } from './DEV.types';
 
 export type SampleProps = {
+  instance: t.FsViewInstance;
   docs?: t.CrdtDocEvents<SimpleDoc>[];
   style?: CssValue;
 };
 
 export const Sample: React.FC<SampleProps> = (props) => {
-  const { docs = [] } = props;
+  const { instance, docs = [] } = props;
   if (docs.length === 0) return null;
 
   /**
@@ -28,7 +29,10 @@ export const Sample: React.FC<SampleProps> = (props) => {
       items={docs.map((doc) => ({ data: doc }))}
       renderers={{
         bullet: (e) => <List.Renderers.Bullet.ConnectorLines {...e} radius={25} />,
-        body: (e) => (e.kind === 'Default' ? <DocCard doc={e.data} /> : undefined),
+        body: (e) => {
+          if (e.kind !== 'Default') return;
+          return <DocCard instance={instance} index={e.index} doc={e.data} />;
+        },
       }}
     />
   );

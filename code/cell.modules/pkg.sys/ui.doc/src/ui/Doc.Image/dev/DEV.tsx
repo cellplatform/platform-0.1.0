@@ -41,7 +41,13 @@ export const actions = DevActions<Ctx>()
 
     e.select((config) => {
       config
-        .items([300, 720].map((value) => ({ label: `width: ${value}px`, value })))
+        .title('width')
+        .items(
+          [undefined, 300, 720].map((value) => {
+            const label = value === undefined ? `<undefined>` : `width: ${value}px`;
+            return { label, value };
+          }),
+        )
         .initial(720)
         .view('buttons')
         .pipe((e) => {
@@ -66,10 +72,17 @@ export const actions = DevActions<Ctx>()
     e.hr();
 
     e.component((e) => {
+      const props = e.ctx.props;
+
+      const MAX = 40;
+      let url = props.url;
+      if (url && url.length > MAX) url = `${url.substring(0, MAX)}...`;
+
+      const data = { ...props, url };
       return (
         <ObjectView
           name={'props'}
-          data={e.ctx.props}
+          data={data}
           style={{ MarginX: 15 }}
           fontSize={10}
           expandPaths={['$']}
@@ -82,6 +95,7 @@ export const actions = DevActions<Ctx>()
     const debug = e.ctx.debug;
 
     e.settings({
+      actions: { width: 380 },
       host: { background: COLORS.BG },
       layout: {
         width: debug.width,

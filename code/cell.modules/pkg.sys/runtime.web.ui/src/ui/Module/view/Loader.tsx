@@ -5,6 +5,7 @@ import { t, useModule } from '../common';
 export type LoaderProps = {
   instance: t.ModuleInstance;
   url?: t.ManifestUrl;
+  theme: t.ModuleInfoTheme;
   onLoading?: (e: { ok: boolean; loading: boolean }) => void;
 };
 

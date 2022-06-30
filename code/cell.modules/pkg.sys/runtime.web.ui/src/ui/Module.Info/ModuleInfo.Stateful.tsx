@@ -9,6 +9,7 @@ export type ModuleInfoStatefulProps = {
   title?: t.ModuleInfoTitle;
   fields?: t.ModuleInfoFields[];
   empty?: string | JSX.Element | null;
+  theme?: t.ModuleInfoTheme;
   minWidth?: number;
   maxWidth?: number;
   style?: CssValue;
@@ -29,6 +30,7 @@ export const ModuleInfoStateful: React.FC<ModuleInfoStatefulProps> = (props) => 
       minWidth={props.minWidth}
       maxWidth={props.maxWidth}
       empty={props.empty}
+      theme={props.theme}
       style={props.style}
       onExportClick={onExportClick}
     />

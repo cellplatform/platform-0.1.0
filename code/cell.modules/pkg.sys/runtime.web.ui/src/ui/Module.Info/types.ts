@@ -2,6 +2,7 @@ import { ManifestUrl, ModuleManifest } from '@platform/cell.types';
 
 type Path = string;
 
+export type ModuleInfoTheme = 'Light' | 'Dark';
 export type ModuleInfoTitle = string | React.ReactNode | null;
 export type ModuleInfoFields =
   | 'namespace'

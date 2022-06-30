@@ -1,5 +1,4 @@
 import { ManifestUrl, t, time } from '../common';
-import * as k from '../types';
 import { toFiles } from './item.files';
 import { toHash } from './item.hash';
 import { toRemote } from './item.remote';
@@ -10,10 +9,11 @@ type P = t.PropListItem;
 export function toPropsList(args: {
   manifest?: t.ModuleManifest;
   url?: string;
-  fields: k.ModuleInfoFields[];
-  onExportClick?: k.ModuleInfoExportClick;
+  fields: t.ModuleInfoFields[];
+  theme: t.ModuleInfoTheme;
+  onExportClick?: t.ModuleInfoExportClick;
 }): t.PropListItem[] {
-  const { manifest, onExportClick, fields } = args;
+  const { manifest, onExportClick, fields, theme } = args;
 
   if (!manifest) return [];
 
@@ -25,17 +25,17 @@ export function toPropsList(args: {
    * Base properties.
    */
   const list: P[] = [];
-  const add = (field: k.ModuleInfoFields) => {
-    const is = (...match: k.ModuleInfoFields[]) => match.includes(field);
+  const add = (field: t.ModuleInfoFields) => {
+    const is = (...match: t.ModuleInfoFields[]) => match.includes(field);
     const href = url.href;
 
     if (is('source:url') && href) {
-      list.push(toSourceUrl({ href }));
+      list.push(toSourceUrl({ href, theme }));
     }
 
     if (is('source:url:hash') && href) {
       const hash = manifest.hash.module;
-      if (hash) list.push(toSourceUrl({ href, hash }));
+      if (hash) list.push(toSourceUrl({ href, hash, theme }));
     }
 
     if (is('source:url:entry') && href) {
@@ -61,7 +61,7 @@ export function toPropsList(args: {
     }
 
     if (is('hash.module', 'hash.files')) {
-      list.push(toHash({ manifest, field }));
+      list.push(toHash({ manifest, field, theme }));
     }
 
     if (is('compiled')) {
@@ -85,7 +85,7 @@ export function toPropsList(args: {
     }
 
     if (is('remote', 'remote.exports')) {
-      const remote = toRemote({ manifest, url, onExportClick });
+      const remote = toRemote({ manifest, theme, url, onExportClick });
       if (remote.hasExports) {
         if (field === 'remote') list.push(remote.item);
         if (field === 'remote.exports') list.push(...remote.exports);

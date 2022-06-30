@@ -1,7 +1,7 @@
 {
   "name": "sys",
-  "description": "Standard federated-function endpoing for 'system' modules",
-  "version": "0.0.140",
+  "description": "Deployment of all main system libs",
+  "version": "0.1.1",
   "main": "lib/index",
   "sideEffects": false,
   "scripts": {
@@ -10,14 +10,14 @@
     "test": "ts test $@",
     "lint": "ts lint $@",
     "build": "ts build --no-esm $@",
-    "build.all": "sh script.sh/build.all.sh",
+    "build.all": "sh script.sh/build-all.sh",
+    "build.all.generate": "ts-node -T script.ts/generate.build-all.sh.ts",
     "bundle": "cell.compiler bundle --bump $@",
     "watch": "cell.compiler watch $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
-    "deploy": "ts-node -T script.ts/vercel.run",
-    "bbd": "yarn build.all && yarn deploy"
+    "deploy": "ts-node -T script.ts/vercel.run"
   },
   "dependencies": {},
   "devDependencies": {

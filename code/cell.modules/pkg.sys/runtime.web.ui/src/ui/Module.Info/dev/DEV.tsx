@@ -2,11 +2,9 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { ModuleInfo, ModuleInfoProps } from '..';
-import { Filesystem, rx, t } from '../../common';
+import { Filesystem, rx, t, COLORS } from '../common';
 import { ManifestSelectorStateful } from '../../Manifest.Selector';
 import * as k from '../types';
-
-const DEFAULT = ManifestSelectorStateful.DEFAULT;
 
 type Id = string;
 type Ctx = {
@@ -25,11 +23,17 @@ export const actions = DevActions<Ctx>()
     const bus = rx.bus();
     const instance = { bus };
 
-    Filesystem.IndexedDb.create({ bus, fs: DEFAULT.HISTORY.FS });
+    Filesystem.IndexedDb.create({
+      bus,
+      fs: ManifestSelectorStateful.DEFAULT.HISTORY.FS,
+    });
 
     const ctx: Ctx = {
       instance,
-      props: { width: 300 },
+      props: {
+        width: 300,
+        theme: ModuleInfo.DEFAULT.THEME,
+      },
     };
     return ctx;
   })
@@ -59,6 +63,17 @@ export const actions = DevActions<Ctx>()
           }
         }),
     );
+
+    e.select((config) => {
+      config
+        .title('props.theme:')
+        .view('buttons')
+        .items(ModuleInfo.DEFAULT.THEMES.map((value) => ({ label: `theme: "${value}"`, value })))
+        .initial(config.ctx.props.theme)
+        .pipe((e) => {
+          if (e.changing) e.ctx.props.theme = e.changing?.next[0].value;
+        });
+    });
 
     e.select((config) =>
       config
@@ -121,10 +136,20 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    const theme = e.ctx.props.theme ?? ModuleInfo.DEFAULT.THEME;
+    const isDark = theme === 'Dark';
+
+    console.log('theme', theme);
+    console.log('isDark', isDark);
+
     e.settings({
       actions: { width: 400 },
-      host: { background: -0.04 },
-      layout: { cropmarks: -0.2 },
+      host: { background: isDark ? COLORS.DARK : -0.04 },
+      layout: {
+        border: 0,
+        cropmarks: isDark ? 0.3 : -0.2,
+        labelColor: isDark ? COLORS.WHITE : -0.5,
+      },
     });
 
     const el = (

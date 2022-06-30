@@ -1,35 +1,55 @@
 import React, { useEffect, useState } from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil, debounceTime } from 'rxjs/operators';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { ObjectView } from 'sys.ui.dev';
 import { Button } from 'sys.ui.primitives/lib/ui.ref/button/Button';
 import { Card } from 'sys.ui.primitives/lib/ui/Card';
 
-import { color, css, CssValue, t, COLORS } from '../../common';
+import { Automerge, Color, COLORS, css, CssValue, Filesystem, rx, t } from './common';
 import { SimpleDoc } from './DEV.types';
 
 export type DocCardProps = {
+  instance: t.FsViewInstance;
+  index: number;
   doc: t.CrdtDocEvents<SimpleDoc>;
   width?: number;
   style?: CssValue;
 };
 
 export const DocCard: React.FC<DocCardProps> = (props) => {
-  const { doc, width = 180 } = props;
+  const { doc, width = 180, index } = props;
   const [current, setCurrent] = useState<SimpleDoc>(doc.current);
 
   /**
    * [Lifecycle]
    */
   useEffect(() => {
-    const dispose$ = new Subject<void>();
+    const { dispose, dispose$ } = rx.disposable();
+
+    const store = Filesystem.Events({
+      bus: props.instance.bus,
+      id: props.instance.fs,
+      dispose$,
+      timeout: 1200,
+    });
     const changed$ = props.doc.changed$.pipe(takeUntil(dispose$));
 
-    // Update local state when the document has been updated.
+    /**
+     * Update local state when the document has been updated.
+     */
     changed$.pipe(debounceTime(50)).subscribe((e) => setCurrent(e.doc.next as SimpleDoc));
 
-    return () => dispose$.next();
-  }, [props.doc]); // eslint-disable-line
+    /**
+     * Save
+     */
+    changed$.pipe(debounceTime(1000)).subscribe(async (e) => {
+      const doc = e.doc.next as SimpleDoc;
+      const path = `file-${index}.crdt`;
+      const file = Automerge.save(doc);
+      await store.fs('sample').write(path, file);
+    });
+
+    return dispose;
+  }, [props.doc, index]); // eslint-disable-line
 
   /**
    * [Render]
@@ -46,12 +66,12 @@ export const DocCard: React.FC<DocCardProps> = (props) => {
       marginTop: 15,
       padding: 5,
       Flex: 'horizontal-stretch-spaceBetween',
-      borderTop: `solid 1px ${color.format(-0.1)}`,
+      borderTop: `solid 1px ${Color.format(-0.1)}`,
     }),
     count: css({
       Absolute: [-33, 0, 0, 0],
       height: 20,
-      color: color.alpha(COLORS.DARK, 0.3),
+      color: Color.alpha(COLORS.DARK, 0.3),
       Flex: 'center-center',
       fontFamily: 'monospace',
       fontWeight: 'bold',

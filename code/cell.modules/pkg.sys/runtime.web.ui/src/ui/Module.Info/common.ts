@@ -1,10 +1,11 @@
+import * as t from '../../common/types';
 export * from '../common';
-import * as m from './types';
+export { Icons } from '../Icons';
 
 /**
  * Complete list of fields.
  */
-export const FIELDS: m.ModuleInfoFields[] = [
+export const FIELDS: t.ModuleInfoFields[] = [
   'source:url',
   'source:url:hash',
   'source:url:entry',
@@ -23,7 +24,7 @@ export const FIELDS: m.ModuleInfoFields[] = [
 /**
  * Default fields and order.
  */
-const DEFAULT_FIELDS: m.ModuleInfoFields[] = [
+const DEFAULT_FIELDS: t.ModuleInfoFields[] = [
   'source:url:hash',
   'version',
   'namespace',
@@ -34,8 +35,12 @@ const DEFAULT_FIELDS: m.ModuleInfoFields[] = [
   'remote.exports',
 ];
 
+export const THEMES: t.ModuleInfoTheme[] = ['Light', 'Dark'];
+
 export const DEFAULT = {
   TITLE: 'Module',
   FIELDS: DEFAULT_FIELDS,
   HASH_CHIP_LENGTH: 5,
+  THEMES,
+  THEME: THEMES[0],
 };

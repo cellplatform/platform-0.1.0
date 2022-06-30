@@ -9,6 +9,7 @@ export type ModuleInfoProps = {
   title?: t.ModuleInfoTitle;
   manifest?: t.ModuleManifest;
   fields?: t.ModuleInfoFields[];
+  theme?: t.ModuleInfoTheme;
   width?: number;
   minWidth?: number;
   maxWidth?: number;
@@ -22,6 +23,7 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
     url,
     manifest,
     fields = DEFAULT.FIELDS,
+    theme = DEFAULT.THEME,
     width,
     minWidth = 200,
     maxWidth,
@@ -45,7 +47,7 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
   };
 
   const elModuleHash = fields.includes('hash.module:title') && (
-    <Chip.Hash text={moduleHash} icon={true} length={DEFAULT.HASH_CHIP_LENGTH} />
+    <Chip.Hash text={moduleHash} icon={true} theme={theme} length={DEFAULT.HASH_CHIP_LENGTH} />
   );
 
   const elTitle = (
@@ -59,13 +61,14 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
     url,
     manifest,
     fields,
+    theme,
     onExportClick,
   });
 
   const elEmpty = !manifest && empty !== null && <Empty message={empty} />;
 
   const elProps = manifest && (
-    <PropList title={elTitle} items={items} defaults={{ clipboard: false }} />
+    <PropList title={elTitle} theme={theme} items={items} defaults={{ clipboard: false }} />
   );
 
   return (
