@@ -17,7 +17,7 @@ export async function deploy(team: string, project: string, alias: string) {
   const deployment = Vercel.Deploy({ token, dir, team, project });
   const info = await deployment.info();
 
-  Vercel.Log.beforeDeploy({ info, alias });
+  Vercel.Log.beforeDeploy({ info, alias, project });
 
   const res = await deployment.commit(
     {
