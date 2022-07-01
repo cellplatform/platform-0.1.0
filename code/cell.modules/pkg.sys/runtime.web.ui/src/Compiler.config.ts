@@ -7,12 +7,11 @@ export default () =>
 
     .variant('web', (config) =>
       config
+        .title('system')
         .target('web')
         .port(5051)
 
         .entry('main', './src/entry/main')
-
-        // .declarations('./src/**/*')
 
         .static('static')
         .files((e) => e.redirect(false, '*.worker.js').access('public', '**/*.{png,jpg,svg}'))
