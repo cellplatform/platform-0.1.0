@@ -6,6 +6,7 @@ import { t } from './common';
 const imports = {
   Sample: import('./ui/DEV.Sample/DEV'),
   ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
+  CrdtFile: import('./Crdt.File/dev/DEV'),
   UnitTests: import('./Dev.UnitTests'),
 };
 
