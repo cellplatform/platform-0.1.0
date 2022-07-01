@@ -11,7 +11,7 @@ type Refs = { [id: DocumentId]: Ref };
  */
 export function BusControllerRefs(args: { bus: t.EventBus<any>; events: t.CrdtEvents }) {
   const { events } = args;
-  const id = events.id;
+  const id = events.instance.id;
   const bus = rx.busAsType<t.CrdtEvent>(args.bus);
   const refs: Refs = {};
 

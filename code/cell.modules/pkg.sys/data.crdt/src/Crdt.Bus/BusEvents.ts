@@ -126,7 +126,7 @@ export function BusEvents(args: {
 
   const events: t.CrdtEvents = {
     $,
-    id,
+    instance: { bus: rx.bus.instance(bus), id },
     is,
     dispose,
     dispose$,
