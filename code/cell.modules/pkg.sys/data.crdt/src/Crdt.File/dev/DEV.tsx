@@ -1,9 +1,17 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { CrdtFile } from '..';
+import { TestFilesystem, Filesystem } from '../../test';
+import { rx, t } from '../common';
 
 type Ctx = {
-  tmp?: number;
+  bus: t.EventBus;
+  filesystem: {
+    fs: t.Fs;
+    instance: t.FsViewInstance;
+    events: t.SysFsEvents;
+    ready: () => Promise<any>;
+  };
 };
 
 /**
@@ -13,16 +21,30 @@ export const actions = DevActions<Ctx>()
   .namespace('Crdt.File')
   .context((e) => {
     if (e.prev) return e.prev;
-    const ctx: Ctx = {};
+
+    const bus = rx.bus();
+    const { fs, ready, instance, events } = TestFilesystem.init({ bus });
+
+    const ctx: Ctx = {
+      bus,
+      filesystem: { fs, ready, instance, events },
+    };
     return ctx;
   })
 
   .init(async (e) => {
     const { ctx, bus } = e;
+    await ctx.filesystem.ready();
   })
 
   .items((e) => {
     e.title('Dev');
+
+    e.component((e) => {
+      const instance = e.ctx.filesystem.instance;
+      const id = `${instance.id}.dev`;
+      return <Filesystem.PathList.Dev instance={{ ...instance, id }} />;
+    });
 
     e.hr();
 
@@ -41,6 +63,7 @@ export const actions = DevActions<Ctx>()
 
   .subject((e) => {
     e.settings({
+      actions: { width: 350 },
       host: { background: -0.04 },
       layout: {
         label: '<CrdtFile>',
