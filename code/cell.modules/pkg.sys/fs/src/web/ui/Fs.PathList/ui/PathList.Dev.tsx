@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { Style, Color, COLORS, css, CssValue, t, rx } from '../common';
 import { FsPathListStateful } from '../FsPathList.Stateful';
 
@@ -9,6 +9,9 @@ export type FsPathListDevProps = {
   style?: CssValue;
 };
 
+/**
+ * A stateful version of the <PathList> for use within the DevHarness actions panel.
+ */
 export const PathListDev: React.FC<FsPathListDevProps> = (props) => {
   const { instance, height = 150, margin = [5, 10, 20, 10] } = props;
 
