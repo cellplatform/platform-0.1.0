@@ -28,8 +28,8 @@ export const DocCard: React.FC<DocCardProps> = (props) => {
     const store = Filesystem.Events({
       bus: props.instance.bus,
       id: props.instance.fs,
-      dispose$,
       timeout: 1200,
+      dispose$,
     });
     const changed$ = props.doc.changed$.pipe(takeUntil(dispose$));
 

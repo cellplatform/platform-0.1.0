@@ -1,11 +1,10 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 
-import { TestNetwork, TestFilesystem } from '../../test';
+import { TestFilesystem, TestNetwork } from '../../test';
+import { Filesystem, rx, t } from './common';
 import { Sample, SampleProps } from './DEV.Sample';
 import { SimpleDoc } from './DEV.types';
-
-import { t, rx, COLORS, css, Color, Filesystem } from './common';
 
 const DEFAULT = {
   DOC: 'myDoc',
