@@ -9,9 +9,7 @@ export default () =>
       config
         .target('web')
         .port(5050)
-
         .entry('main', './src/entry/main')
-        // .declarations('./src/**/*')
 
         .static('static')
         .files((e) => e.redirect(false, '*.worker.js').access('public', '**/*.{png,jpg,svg}'))
