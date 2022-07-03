@@ -25,7 +25,7 @@ const query = () => {
 
 const isDev = query().has('dev');
 const entry = url.searchParams.get('entry') ?? 'net.sys';
-const href = Module.App.parseUrl('https://libs.db.team', { entry }).href;
+const href = Module.Url.parse('https://libs.db.team', { entry }).href;
 
 const styles = {
   app: css({

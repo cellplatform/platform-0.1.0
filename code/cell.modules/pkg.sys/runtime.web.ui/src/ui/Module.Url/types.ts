@@ -1,4 +1,4 @@
-export type ModuleAppUrl = {
+export type ModuleUrl = {
   href: string;
   manifest: string;
   entry?: string;
