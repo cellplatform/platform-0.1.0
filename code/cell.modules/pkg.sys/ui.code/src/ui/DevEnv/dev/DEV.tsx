@@ -196,7 +196,7 @@ export const actions = DevActions<Ctx>()
           scrollable={true}
           droppable={true}
           selectable={true}
-          onStateChange={(e) => {
+          onStateChanged={(e) => {
             if (e.kind === 'Selection') {
               change.ctx((ctx) => (ctx.debug.fs.selection = e.to.selection));
             }
