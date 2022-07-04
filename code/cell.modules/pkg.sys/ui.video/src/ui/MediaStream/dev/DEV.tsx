@@ -3,23 +3,12 @@ import { filter } from 'rxjs/operators';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { PositioningLayout } from 'sys.ui.primitives/lib/ui/PositioningLayout';
 
+import { DevFilesystem } from './DEV.Filesystem';
 import { MediaStream, VideoStreamProps } from '..';
 import { FileUtil } from '../util';
-import {
-  Button,
-  Color,
-  css,
-  cuid,
-  deleteUndefined,
-  Filesystem,
-  log,
-  MinSize,
-  rx,
-  t,
-} from './common';
+import { Button, css, cuid, deleteUndefined, Filesystem, log, MinSize, rx, t } from './common';
 import { DevAudioWaveform } from './DEV.AudioWaveform';
 import { DevLayoutMediaComponents } from './DEV.Layout.MediaComponents';
-import { DevOuter } from './DEV.Layout.Outer';
 import { DevRecordButton } from './DEV.RecordButton';
 import { Sample } from './DEV.Sample';
 
@@ -34,7 +23,7 @@ type Ctx = {
   props: VideoStreamProps;
   muted: { video: boolean; audio: boolean };
   filesystem: {
-    id: string;
+    instance: t.FsViewInstance;
     store(): Promise<t.Fs>;
   };
   debug: {
@@ -43,7 +32,6 @@ type Ctx = {
   action: {
     startVideoStream(): Promise<void>;
     saveVideo(path: string, data: Uint8Array): Promise<void>;
-    download(path: string): Promise<void>;
   };
 };
 
@@ -91,7 +79,10 @@ export const actions = DevActions<Ctx>()
       fsid,
       props: { isMuted: true },
       muted: { video: false, audio: false },
-      filesystem: { id: fsid, store },
+      filesystem: {
+        instance: { bus, id: ref, fs: fsid },
+        store,
+      },
 
       debug: {
         save: { target: 'Fs.IndexedDb' },
@@ -108,27 +99,13 @@ export const actions = DevActions<Ctx>()
           try {
             const fs = await store();
             await fs.write(path, data);
-            console.group('🌳 Saved Video to IndexedDb');
+            console.group('🌳 Saved Video to Filesystem (IndexedDb)');
             console.log(' - fs(id):', fsid);
             console.log(' - path:', path);
             console.log(' - data', data);
             console.groupEnd();
           } catch (error) {
             console.log('error', error);
-          }
-        },
-
-        async download() {
-          const fs = await store();
-          const path = 'my-video.webm';
-          const data = await fs.read(path);
-          console.group('🌳 Download from IndexedDB Filesystem');
-          console.log('path', path);
-          console.log('data', data);
-          console.groupEnd();
-          if (data) {
-            const file = new Blob([data], { type: 'video/webm' });
-            FileUtil.download(path, file);
           }
         },
       },
@@ -243,14 +220,8 @@ export const actions = DevActions<Ctx>()
     const { ref, bus } = e.ctx;
     const { width = 300 } = e.ctx.props;
     const styles = {
-      streamRef: css({ fontSize: 9 }),
+      streamRef: css({}),
       flowH: css({ Flex: 'horizontal-center-center' }),
-    };
-
-    const elStreamRef = <div {...styles.streamRef}>media/stream-ref:{ref}</div>;
-
-    const getPath = async () => {
-      return `${saveFilename ?? 'my-video'}.webm`;
     };
 
     const getNextPath = async () => {
@@ -259,10 +230,6 @@ export const actions = DevActions<Ctx>()
       const total = files.length;
       return `project/video-${total + 1}.webm`;
     };
-
-    const elDownload = (
-      <Button onClick={async () => e.ctx.action.download(await getPath())}>Download</Button>
-    );
 
     const elStartMediastreamButton = (
       <Button onClick={() => e.ctx.action.startVideoStream()}>⚡️ Start</Button>
@@ -282,9 +249,7 @@ export const actions = DevActions<Ctx>()
         position: [150, 80, 150, 80],
         label: {
           topLeft,
-          topRight: `filesystem: "${e.ctx.fsid}"`,
-          bottomLeft: elDownload,
-          bottomRight: elStreamRef,
+          topRight: `media/stream-ref:${ref}`,
         },
       },
       actions: { width: 350 },
@@ -305,14 +270,10 @@ export const actions = DevActions<Ctx>()
     /**
      * Record button.
      */
-    const saveTarget = e.ctx.debug.save.target;
-    const saveFilename = saveTarget === 'Download' ? 'my-video' : undefined;
-
     const elRecordButton = (
       <DevRecordButton
         bus={bus}
         streamRef={ref}
-        downloadFilename={saveFilename}
         onFileReady={async ({ data }) => {
           const path = await getNextPath();
           e.ctx.action.saveVideo(path, data);
@@ -338,19 +299,15 @@ export const actions = DevActions<Ctx>()
         const styles = {
           base: css({
             flex: 1,
+            display: 'flex',
+            position: 'relative',
             marginLeft: WIDTH + 30,
-            backgroundColor: Color.format(0.3),
           }),
         };
-
         return (
-          <DevOuter style={styles.base}>
-            <Filesystem.PathList.Stateful
-              instance={{ bus, id: e.ctx.ref, fs: e.ctx.fsid }}
-              selectable={true}
-              style={{ flex: 1 }}
-            />
-          </DevOuter>
+          <div {...styles.base}>
+            <DevFilesystem instance={e.ctx.filesystem.instance} style={{ flex: 1 }} />
+          </div>
         );
       },
     };

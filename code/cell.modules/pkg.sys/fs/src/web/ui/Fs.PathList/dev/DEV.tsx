@@ -51,7 +51,7 @@ export const actions = DevActions<Ctx>()
         selectable: List.SelectionConfig.default,
         theme: FsPathList.DEFAULT.THEME,
         droppable: true,
-        onStateChange: (e) => change.ctx((ctx) => (ctx.output.state = e.to)),
+        onStateChanged: (e) => change.ctx((ctx) => (ctx.output.state = e.to)),
       },
       debug: { render: true, dir: '' },
       output: {},
