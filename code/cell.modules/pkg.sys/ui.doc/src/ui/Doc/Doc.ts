@@ -1,17 +1,17 @@
 import { toBlockElements } from './Doc.toBlocks';
-import { Index, Layout, Headline, Byline, Block, Image, LayoutContainer, List } from './libs';
+import { Index, Blocks, Headline, Byline, Block, Image, LayoutContainer, List } from './libs';
 import { DocFonts as Fonts } from './Doc.Fonts';
 
 export const Doc = {
+  Fonts,
+  List,
   Index,
-  Layout,
   Headline,
   Byline,
-  Block,
   Image,
   LayoutContainer,
-  List,
-  Fonts,
+  Block,
+  Blocks,
 
   /**
    * Helpers

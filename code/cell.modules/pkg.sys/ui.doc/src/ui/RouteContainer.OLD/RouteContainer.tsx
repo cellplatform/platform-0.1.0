@@ -60,7 +60,7 @@ export const RouteContainer: React.FC<RouteContainerProps> = (props) => {
 
   const elDocument = selectedDef && (
     <div {...styles.document.outer}>
-      <Doc.Layout
+      <Doc.Blocks
         blocks={Doc.toBlockElements({ def: selectedDef, width: 720 })}
         style={styles.document.inner}
         padding={{ header: 80, footer: 150 }}

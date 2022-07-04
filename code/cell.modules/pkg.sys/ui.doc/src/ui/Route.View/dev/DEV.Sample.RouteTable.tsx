@@ -40,11 +40,11 @@ export function DevRouteTable(getCtx: () => Ctx) {
       if (!def) return;
 
       /**
-       * TODO 🐷 Size
+       * TODO 🐷 Size / Layout
        */
       const width = 550; // TEMP 🐷
       const blocks = Doc.toBlockElements({ def, width });
-      e.render(<Doc.Layout blocks={blocks} style={{ flex: 1 }} />);
+      e.render(<Doc.Blocks blocks={blocks} style={{ flex: 1 }} />);
     },
 
     /**

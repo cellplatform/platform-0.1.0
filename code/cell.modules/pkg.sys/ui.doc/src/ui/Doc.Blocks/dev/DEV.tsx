@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
-import { DocLayoutProps } from '..';
+import { DocBlocksProps } from '..';
 import { Doc } from '../../Doc';
 import { SAMPLE as BLOCK_SAMPLE } from '../../Doc.Block/dev/DEV.Sample';
 import { COLORS, DEFAULT, t } from '../common';
@@ -11,7 +11,7 @@ import { SAMPLE as DEFS } from '../../DEV.Sample.data';
 
 type Ctx = {
   size?: t.DomRect;
-  props: DocLayoutProps;
+  props: DocBlocksProps;
   debug: {
     sampleId: 'Sample' | 'Flows' | 'Scale';
     render: boolean;
@@ -93,7 +93,7 @@ const Util = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.Doc.Layout')
+  .namespace('ui.Doc.Blocks')
   .context((e) => {
     if (e.prev) return e.prev;
     const change = e.change;
@@ -208,7 +208,7 @@ export const actions = DevActions<Ctx>()
       host: { background: COLORS.BG },
       layout: {
         label: {
-          topLeft: '<Doc.Layout>',
+          topLeft: '<Doc.Blocks>',
           topRight: `${size?.width ?? '-'} x ${size?.height ?? '-'} px`,
           bottomLeft: def ? `path: ${def.path}` : undefined,
         },
@@ -220,7 +220,7 @@ export const actions = DevActions<Ctx>()
 
     if (debug.render) {
       const blocks = Util.toBlocks(e.ctx);
-      e.render(<Doc.Layout {...props} blocks={blocks} style={{ flex: 1 }} />);
+      e.render(<Doc.Blocks {...props} blocks={blocks} style={{ flex: 1 }} />);
     }
   });
 

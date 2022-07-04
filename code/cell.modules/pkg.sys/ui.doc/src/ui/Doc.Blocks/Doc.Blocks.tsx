@@ -2,7 +2,7 @@ import React from 'react';
 import { Color, COLORS, css, CssValue, DEFAULT, FC, MinSize, t } from './common';
 import { DocTooSmall } from '../Doc.TooSmall';
 
-export type DocLayoutProps = {
+export type DocBlocksProps = {
   scrollable?: boolean;
   tracelines?: boolean;
   blocks?: JSX.Element[];
@@ -19,7 +19,7 @@ export type DocLayoutProps = {
 /**
  * Component
  */
-const View: React.FC<DocLayoutProps> = (props) => {
+const View: React.FC<DocBlocksProps> = (props) => {
   const {
     scrollable = true,
     tracelines = false,
@@ -96,8 +96,8 @@ const View: React.FC<DocLayoutProps> = (props) => {
 type Fields = {
   DEFAULT: typeof DEFAULT;
 };
-export const DocLayout = FC.decorate<DocLayoutProps, Fields>(
+export const DocBlocks = FC.decorate<DocBlocksProps, Fields>(
   View,
   { DEFAULT },
-  { displayName: 'Doc.Layout' },
+  { displayName: 'Doc.Blocks' },
 );
