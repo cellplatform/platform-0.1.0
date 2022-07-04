@@ -1,5 +1,6 @@
 import { t, Test, expect } from '../../test';
 import { RouteTable } from '.';
+import { match } from 'path-to-regexp';
 
 export default Test.describe('Route.Table', (e) => {
   e.it('create: no initial defs', () => {
@@ -80,6 +81,38 @@ export default Test.describe('Route.Table', (e) => {
       expect(res1?.params).to.eql({ foo: ['123', '456'] });
       expect(res2?.params).to.eql({});
       expect(res3?.params).to.eql({});
+    });
+  });
+
+  e.describe.only('path-to-regexp (underlying library)', (e) => {
+    /**
+     * NOTE
+     *    These unit-tests are used for testing out [path-to-regexp]
+     *    patterns to determine what is usable on the "vercel.json" file's
+     *    redirects/rewrites configuration.
+     * SEE
+     *    https://github.com/pillarjs/path-to-regexp
+     *    https://vercel.com/docs/project-configuration#project-configuration/rewrites
+     */
+    e.it('match file (".extension") at any path level', () => {
+      const test = (pattern: string, path: string, expected: boolean) => {
+        const fn = match(pattern);
+        const res = fn(path);
+        expect(Boolean(res)).to.eql(expected, path);
+      };
+
+      test('/:any*/(.*).js', '/file.js', true);
+      test('/:any*/(.*).js', '/foo/file.js', true);
+      test('/:any*/(.*).js', '/foo/bar/file.js', true);
+
+      test('/:path*/:file*.js', '/foo/file.js', true);
+      test('/:path*/:file*.js', '/foo/bar/file.js', true);
+
+      test('/:any*/(.*).js', '/', false);
+      test('/:any*/(.*).js', '', false);
+      test('/:any*/(.*).js', '/foo', false);
+      test('/:any*/(.*).js', '/foo/', false);
+      test('/:any*/(.*).js', '/index.html', false);
     });
   });
 });

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { css, CssValue, t, FC, LoadMask, DEFAULT, ErrorBoundary } from './common';
 import { Loader } from './view/Loader';
 import { Info } from './view/Info';
+import { ModuleApp } from '../Module.App';
 
 export type ModuleProps = {
   instance: t.ModuleInstance;
@@ -17,7 +18,7 @@ export type ModuleProps = {
 /**
  * Component
  */
-const View: React.FC<ModuleProps> = (props) => {
+export const ModuleView: React.FC<ModuleProps> = (props) => {
   const { instance, loader = true, theme = DEFAULT.THEME } = props;
   const [loading, setLoading] = useState(false);
 
@@ -69,17 +70,3 @@ const View: React.FC<ModuleProps> = (props) => {
     </div>
   );
 };
-
-/**
- * Export
- */
-
-type Fields = {
-  LoadMask: typeof LoadMask;
-  DEFAULT: typeof DEFAULT;
-};
-export const Module = FC.decorate<ModuleProps, Fields>(
-  View,
-  { LoadMask, DEFAULT },
-  { displayName: 'Module' },
-);

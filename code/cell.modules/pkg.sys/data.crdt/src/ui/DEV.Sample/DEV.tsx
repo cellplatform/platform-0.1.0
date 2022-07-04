@@ -1,11 +1,10 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 
-import { TestNetwork, TestFilesystem } from '../../test';
+import { TestFilesystem, TestNetwork } from '../../test';
+import { Filesystem, rx, t } from './common';
 import { Sample, SampleProps } from './DEV.Sample';
 import { SimpleDoc } from './DEV.types';
-
-import { t, rx, COLORS, css, Color, Filesystem } from './common';
 
 const DEFAULT = {
   DOC: 'myDoc',
@@ -105,45 +104,9 @@ export const actions = DevActions<Ctx>()
     e.title('Filesystem');
 
     e.component((e) => {
-      const instance = e.ctx.filesystem.instance;
-      const styles = {
-        base: css({
-          Margin: [5, 10, 20, 10],
-        }),
-        outer: css({
-          height: 150,
-          borderRadius: 4,
-          backgroundColor: Color.alpha(COLORS.DARK, 0.02),
-          border: `solid 1px ${Color.format(-0.06)}`,
-          display: 'flex',
-        }),
-        footer: css({
-          fontFamily: 'monospace',
-          color: Color.alpha(COLORS.DARK, 0.4),
-          fontSize: 10,
-          fontWeight: 500,
-          Flex: 'x-spaceBetween-center',
-          marginTop: 3,
-          PaddingX: 5,
-        }),
-      };
-      return (
-        <div {...styles.base}>
-          <div {...styles.outer}>
-            <Filesystem.PathList.Stateful
-              style={{ flex: 1 }}
-              instance={instance}
-              scrollable={true}
-              droppable={true}
-              selectable={true}
-            />
-          </div>
-          <div {...styles.footer}>
-            <div>{`${rx.bus.instance(instance.bus)}/id:${instance.id}`}</div>
-            <div>{`${instance.fs}`}</div>
-          </div>
-        </div>
-      );
+      const instance = e.ctx.props.instance;
+      const id = `${instance.id}.dev`;
+      return <Filesystem.PathList.Dev instance={{ ...instance, id }} />;
     });
 
     e.button('delete all', async (e) => {

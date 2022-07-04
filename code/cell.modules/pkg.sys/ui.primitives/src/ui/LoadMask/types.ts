@@ -18,6 +18,7 @@ export type LoadMaskTileProp = {
   blur?: Pixels;
   padding?: number | [number, number] | [number, number, number, number];
   borderRadius?: number;
+  borderColor?: Color;
   backgroundColor?: Color;
   size?: LoadMaskTileSize;
 };

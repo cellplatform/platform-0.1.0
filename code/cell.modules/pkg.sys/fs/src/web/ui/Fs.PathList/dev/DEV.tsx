@@ -131,15 +131,9 @@ export const actions = DevActions<Ctx>()
     e.hr();
 
     e.component((e) => {
-      return (
-        <Filesystem.PathList.Stateful
-          style={{ Margin: [5, 10, 20, 10], height: 150 }}
-          instance={e.ctx.props.instance}
-          scrollable={true}
-          droppable={true}
-          selectable={true}
-        />
-      );
+      const instance = e.ctx.props.instance;
+      const id = `${instance.id}.dev`;
+      return <Filesystem.PathList.Dev instance={{ ...instance, id }} />;
     });
   })
 

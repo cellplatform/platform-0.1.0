@@ -1,8 +1,8 @@
 import * as t from '../common/types';
 
 type O = Record<string, unknown>;
+type Id = string;
 type DocumentId = string;
-type InstanceId = string;
 type Milliseconds = number;
 
 /**
@@ -10,7 +10,7 @@ type Milliseconds = number;
  */
 export type CrdtEvents = t.Disposable & {
   $: t.Observable<t.CrdtEvent>;
-  id: InstanceId;
+  instance: { bus: Id; id: Id };
   is: { base(input: any): boolean };
 
   info: {

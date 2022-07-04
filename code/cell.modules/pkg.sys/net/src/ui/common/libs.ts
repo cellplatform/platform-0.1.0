@@ -21,6 +21,7 @@ export { CmdTextbox } from 'sys.ui.primitives/lib/ui/Cmd.Textbox';
 export { CmdCard } from 'sys.ui.primitives/lib/ui/Cmd.Card';
 export { CmdBar } from 'sys.ui.primitives/lib/ui/Cmd.Bar';
 export { MinSize } from 'sys.ui.primitives/lib/ui/MinSize';
+export { LoadMask } from 'sys.ui.primitives/lib/ui/LoadMask';
 
 export { AudioWaveform } from 'sys.ui.video/lib/ui/AudioWaveform';
 export { MediaStream, MediaEvent, VideoStream } from 'sys.ui.video/lib/ui/MediaStream';

@@ -4,12 +4,14 @@ import { FsPathListStateful as Stateful } from './FsPathList.Stateful';
 import { FsPathListProps } from './types';
 import { PathList as View } from './ui/PathList';
 import { wrangle } from './ui/wrangle';
+import { PathListDev } from './ui/PathList.Dev';
 
 /**
  * Export
  */
 type Fields = {
   Stateful: typeof Stateful;
+  Dev: typeof PathListDev;
   useState: typeof usePathListState;
   wrangle: typeof wrangle;
   THEMES: typeof THEMES;
@@ -17,6 +19,13 @@ type Fields = {
 };
 export const FsPathList = FC.decorate<FsPathListProps, Fields>(
   View,
-  { Stateful, useState: usePathListState, wrangle, THEMES, DEFAULT },
+  {
+    Stateful,
+    Dev: PathListDev,
+    useState: usePathListState,
+    wrangle,
+    THEMES,
+    DEFAULT,
+  },
   { displayName: 'Fs.PathList' },
 );

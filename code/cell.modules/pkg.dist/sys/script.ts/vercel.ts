@@ -1,5 +1,4 @@
 import { Vercel } from 'vendor.cloud.vercel/lib/node';
-import { t } from '../src/common';
 
 const token = process.env.VERCEL_TEST_TOKEN;
 
@@ -17,11 +16,7 @@ export async function deploy(team: string, project: string, alias: string) {
   Vercel.Log.beforeDeploy({ info, alias, project });
 
   const res = await deployment.commit(
-    {
-      target: 'production',
-      regions: ['sfo1'],
-      alias,
-    },
+    { target: 'production', regions: ['sfo1'], alias },
     { ensureProject: true },
   );
 

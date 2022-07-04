@@ -18,6 +18,7 @@ import {
   Spinner,
   t,
   WebRuntimeBus,
+  LoadMask,
 } from './common';
 import { DevBackground } from './DEV.Background';
 import { DevButtonFullscreen } from './DEV.Button.Fullscreen';
@@ -318,7 +319,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
       y: minimized ? 'bottom' : 'center',
     },
     render(e) {
-      if (!network) return <Spinner />;
+      if (!network) return null;
       const styles = {
         base: css({
           pointerEvents: 'auto',
@@ -412,6 +413,15 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     },
   };
 
+  const LoadMaskLayer: t.PositioningLayer = {
+    id: 'layer.LoadMask',
+    position: { x: 'stretch', y: 'stretch' },
+    render(e) {
+      if (network) return null;
+      return <LoadMask style={{ Absolute: 0 }} />;
+    },
+  };
+
   return (
     <div ref={fullscreen.ref} {...css(styles.base, props.style)}>
       <MinSize
@@ -431,6 +441,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
             // VideosLayer,
             OverlayLayer,
             CardLayer,
+            LoadMaskLayer,
           ]}
           style={styles.layout}
           childPointerEvents={'none'}

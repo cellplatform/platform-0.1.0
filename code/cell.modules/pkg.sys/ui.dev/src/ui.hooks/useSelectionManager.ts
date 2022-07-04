@@ -16,8 +16,7 @@ export function useSelectionManager(args: { bus: t.EventBus<any>; actions: t.Act
   const Find = {
     fromNamespace: (value: string) => actions.find((a) => a.toObject().namespace === value),
     fromQuery(href: string) {
-      const url = new URL(href);
-      const value = url.searchParams.get(KEY);
+      const value = new URL(href).searchParams.get(KEY);
       return value ? Find.fromNamespace(value) : undefined;
     },
   };
@@ -40,10 +39,22 @@ export function useSelectionManager(args: { bus: t.EventBus<any>; actions: t.Act
       return current;
     });
 
+    /**
+     * Update URL query-string.
+     */
     const url = new URL(location.href);
-    const namespace = toNamespace(current);
-    if (namespace) url.searchParams.set(KEY, namespace);
-    window.history.pushState({}, '', url);
+    const entry = url.searchParams.get('entry');
+    if (!entry) {
+      // NOTE: If a manifest "entry" exists within the query it is assumed we are
+      //       inside a loaded module, and so should not directly muck around with
+      //       the the root URL state.
+      // TODO:
+      //       This may change in the future if we end up passing a [RouteBus] abstraction
+      //       into the environment, and therefore work against a simulation of the URL.
+      const namespace = toNamespace(current);
+      if (namespace) url.searchParams.set(KEY, namespace);
+      window.history.pushState({}, '', url);
+    }
   };
 
   /**

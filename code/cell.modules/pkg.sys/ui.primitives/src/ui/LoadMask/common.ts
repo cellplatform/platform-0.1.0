@@ -7,8 +7,9 @@ const TILE: Required<t.LoadMaskTileProp> = {
   el: null,
   blur: 15,
   padding: 50,
-  borderRadius: 8,
   backgroundColor: -1,
+  borderColor: -1,
+  borderRadius: 8,
   size: {},
 };
 

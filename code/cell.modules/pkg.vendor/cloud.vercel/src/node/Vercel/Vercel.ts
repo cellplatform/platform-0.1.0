@@ -4,6 +4,7 @@ import { VercelFs as Fs, VercelInfo as Info } from './common';
 import { VercelDeploy as Deploy } from './Vercel.Deploy';
 import { VercelNode as Node } from './Vercel.Node';
 import { VercelLog as Log } from './Vercel.Log';
+import { VercelConfigFile as ConfigFile } from './Vercel.ConfigFile';
 
 export const Vercel = {
   Fs,
@@ -14,4 +15,5 @@ export const Vercel = {
   Node,
   Info,
   Log,
+  ConfigFile,
 };

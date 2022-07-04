@@ -26,7 +26,7 @@ export function BusControllerSync(args: {
   debounce?: Milliseconds;
 }) {
   const { events, debounce = 100 } = args;
-  const local = events.id;
+  const local = events.instance.id;
   const netbus = args.netbus as t.NetworkBus<t.CrdtSyncEvent>;
   const incoming$ = rx
     .payload<t.CrdtSyncSendEvent>(netbus.$, 'sys.crdt/sync/send')
