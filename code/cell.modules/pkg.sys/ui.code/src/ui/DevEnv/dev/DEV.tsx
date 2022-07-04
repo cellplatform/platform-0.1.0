@@ -301,12 +301,9 @@ export const actions = DevActions<Ctx>()
       /**
        * COMMIT (DEPLOY)
        */
+      const target = alias ? 'production' : 'staging';
       const res = await deployment.commit(
-        {
-          target: alias ? 'production' : 'staging',
-          regions: ['sfo1'],
-          alias,
-        },
+        { target, regions: ['sfo1'], alias },
         { ensureProject: true },
       );
 
