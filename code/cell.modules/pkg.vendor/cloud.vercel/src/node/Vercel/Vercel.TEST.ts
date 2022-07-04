@@ -1,7 +1,7 @@
 import { Vercel } from '.';
 import { expect, ManifestFiles, t } from '../test';
 
-const token = process.env.VERCEL_TEST_TOKEN ?? '';
+const token = process.env.VERCEL_TEST_TOKEN || '';
 
 /**
  * TODO 🐷

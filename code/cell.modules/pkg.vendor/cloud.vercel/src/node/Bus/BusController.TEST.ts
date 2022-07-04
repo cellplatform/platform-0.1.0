@@ -1,11 +1,11 @@
-import { nodefs, t, expect, rx } from '../test';
 import { BusController, BusEvents } from '.';
+import { expect, nodefs, rx, t } from '../test';
 import { DEFAULT, Filesystem } from './common';
 
 describe('BusController', function () {
   this.timeout(5000);
 
-  const token = process.env.VERCEL_TEST_TOKEN ?? '';
+  const token = process.env.VERCEL_TEST_TOKEN || '';
   const bus = rx.bus<t.VercelEvent>();
   const busid = rx.bus.instance(bus);
   const instance = { bus };
