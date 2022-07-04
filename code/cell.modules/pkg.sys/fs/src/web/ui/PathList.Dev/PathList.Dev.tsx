@@ -60,7 +60,7 @@ export const PathListDev: React.FC<PathListDevProps> = (props) => {
       onMouseEnter={labelsOver(true)}
       onMouseLeave={labelsOver(false)}
     >
-      <div>{`filesystem: "${instance.fs}"`}</div>
+      <div>{`filesystem:"${instance.fs}"`}</div>
     </div>
   );
 
