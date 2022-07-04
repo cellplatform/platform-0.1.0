@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Style, Color, COLORS, css, CssValue, t, rx } from '../common';
-import { FsPathListStateful } from '../Fs.PathList/FsPathList.Stateful';
+import { FsPathListStateful } from '../PathList/FsPathList.Stateful';
 
 export type PathListDevLabel = 'FS.Instance' | 'FS.Name';
 

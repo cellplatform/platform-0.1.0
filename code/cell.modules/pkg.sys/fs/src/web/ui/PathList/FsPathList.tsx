@@ -4,7 +4,7 @@ import { FsPathListStateful as Stateful } from './FsPathList.Stateful';
 import { FsPathListProps } from './types';
 import { PathList as View } from './ui/PathList';
 import { wrangle } from './ui/wrangle';
-import { PathListDev } from '../Fs.PathList.Dev';
+import { PathListDev } from '../PathList.Dev';
 
 /**
  * Export

@@ -1,6 +1,6 @@
 import * as t from '../common/types';
 
-export * from './Fs.PathList/types';
+export * from './PathList/types';
 
 type InstanceId = string;
 type FilesystemId = string;
