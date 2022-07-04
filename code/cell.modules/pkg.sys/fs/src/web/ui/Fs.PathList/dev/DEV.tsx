@@ -47,7 +47,6 @@ export const actions = DevActions<Ctx>()
       props: {
         instance,
         scrollable: true, // Virtual list.
-        // scrollable: false,
         selectable: List.SelectionConfig.default,
         theme: FsPathList.DEFAULT.THEME,
         droppable: true,
@@ -133,7 +132,7 @@ export const actions = DevActions<Ctx>()
     e.component((e) => {
       const instance = e.ctx.props.instance;
       const id = `${instance.id}.dev`;
-      return <Filesystem.PathList.Dev instance={{ ...instance, id }} />;
+      return <Filesystem.PathList.Dev instance={{ ...instance, id }} margin={[12, 10, 20, 10]} />;
     });
   })
 
@@ -231,8 +230,8 @@ export const actions = DevActions<Ctx>()
       layout: {
         label: {
           topLeft: '<Fs.PathList.Stateful>',
-          bottomLeft: `${rx.bus.instance(instance.bus)}("${instance.id}")`,
-          bottomRight: `filesystem:"${instance.fs}"`,
+          topRight: `filesystem name: "${instance.fs}"`,
+          bottomLeft: `instance: ${rx.bus.instance(instance.bus)}/id:${instance.id})`,
         },
         cropmarks: isLight ? -0.2 : 0.2,
         labelColor: isLight ? -0.5 : 0.8,

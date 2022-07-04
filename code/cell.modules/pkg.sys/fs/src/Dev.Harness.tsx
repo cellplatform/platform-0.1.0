@@ -5,6 +5,7 @@ import { t } from './web/common';
 const imports = {
   ModuleInfo: import('./web/ui/ModuleInfo/dev/DEV'),
   FsPathList: import('./web/ui/Fs.PathList/dev/DEV'),
+  FsPathListDev: import('./web/ui/Fs.PathList.Dev/dev/DEV'),
   UnitTests: import('./Dev.UnitTests'),
 };
 
