@@ -43,7 +43,13 @@ export const actions = DevActions<Ctx>()
     e.component((e) => {
       const instance = e.ctx.filesystem.instance;
       const id = `${instance.id}.dev`;
-      return <Filesystem.PathList.Dev instance={{ ...instance, id }} />;
+      return (
+        <Filesystem.PathList.Dev
+          instance={{ ...instance, id }}
+          margin={[12, 10, 20, 10]}
+          height={100}
+        />
+      );
     });
 
     e.hr();

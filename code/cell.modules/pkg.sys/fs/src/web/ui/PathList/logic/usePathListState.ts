@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { debounceTime } from 'rxjs/operators';
 
 import { Filesystem, rx, t, List, time } from '../common';
@@ -17,7 +17,7 @@ export function usePathListState(args: {
   selectable?: t.ListSelectionConfig | boolean;
   scrollable?: boolean;
   debounce?: Milliseconds;
-  onStateChange?: t.FsPathListStateChangedHandler;
+  onStateChanged?: t.FsPathListStateChangedHandler;
 }) {
   const { dir, debounce = 50, droppable, instance, selectable } = args;
   const { bus } = instance;
@@ -46,7 +46,7 @@ export function usePathListState(args: {
      */
     listEvents.state.changed$.subscribe((e) => {
       const { kind, from, to } = e;
-      args.onStateChange?.({ kind, from, to });
+      args.onStateChanged?.({ kind, from, to });
     });
 
     /**

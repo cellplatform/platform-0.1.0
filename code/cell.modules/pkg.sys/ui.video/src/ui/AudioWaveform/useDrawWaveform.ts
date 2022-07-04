@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { color, defaultValue } from '../../common';
+import { Color, defaultValue } from '../../common';
 
 type Props = {
   lineColor?: string | number;
@@ -37,7 +37,7 @@ const draw = (args: { canvas: HTMLCanvasElement; audioData: Uint8Array } & Props
 
   if (ctx) {
     ctx.lineWidth = defaultValue(args.lineWidth, 1);
-    ctx.strokeStyle = color.format(lineColor) as string;
+    ctx.strokeStyle = Color.format(lineColor) as string;
     ctx.clearRect(0, 0, width, height);
 
     ctx.beginPath();

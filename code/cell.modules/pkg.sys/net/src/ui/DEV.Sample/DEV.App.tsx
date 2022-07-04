@@ -15,7 +15,6 @@ import {
   MinSize,
   PositioningLayout,
   rx,
-  Spinner,
   t,
   WebRuntimeBus,
   LoadMask,
@@ -201,6 +200,11 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     if (cmd.startsWith('unload')) setModuleUrl('');
     if (cmd === 'min') setMinimized(true);
     if (cmd === 'max') setMinimized(false);
+
+    if (cmd === 'copy peer') {
+      const peer = `peer:${network.self}`;
+      navigator.clipboard.writeText(peer);
+    }
   };
 
   /**

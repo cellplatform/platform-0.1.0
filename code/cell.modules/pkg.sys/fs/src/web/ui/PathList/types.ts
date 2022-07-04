@@ -33,7 +33,7 @@ export type FsPathListCursor = {
 
 export type FsPathListStatefulProps = FsPathListCommonProps & {
   dir?: DirectoryPath;
-  onStateChange?: t.FsPathListStateChangedHandler;
+  onStateChanged?: t.FsPathListStateChangedHandler;
 };
 
 /**

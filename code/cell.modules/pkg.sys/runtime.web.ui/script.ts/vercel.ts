@@ -1,7 +1,7 @@
 import { fs } from '@platform/fs';
 import { Vercel } from 'vendor.cloud.vercel/lib/node';
 
-const token = process.env.VERCEL_TEST_TOKEN;
+const token = process.env.VERCEL_TEST_TOKEN || '';
 
 /**
  * https://vercel.com/docs/cli#project-configuration/routes

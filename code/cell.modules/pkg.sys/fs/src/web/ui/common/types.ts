@@ -11,6 +11,7 @@ export {
   ListState,
   ListStateChange,
   ListStateLazy,
+  ListSelectionState,
   ListCursor,
   GetListItem,
   GetListItemSize,

@@ -101,12 +101,16 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('Filesystem');
-
     e.component((e) => {
       const instance = e.ctx.props.instance;
       const id = `${instance.id}.dev`;
-      return <Filesystem.PathList.Dev instance={{ ...instance, id }} />;
+      return (
+        <Filesystem.PathList.Dev
+          instance={{ ...instance, id }}
+          margin={[20, 10, 20, 10]}
+          height={100}
+        />
+      );
     });
 
     e.button('delete all', async (e) => {

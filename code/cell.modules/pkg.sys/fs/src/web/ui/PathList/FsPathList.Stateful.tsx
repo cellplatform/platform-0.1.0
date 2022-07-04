@@ -7,7 +7,7 @@ import { FsPathListStatefulProps } from './types';
  * <PathList> with state configured.
  */
 export const FsPathListStateful: React.FC<FsPathListStatefulProps> = (props) => {
-  const { instance, scrollable, dir, droppable, selectable, onStateChange } = props;
+  const { instance, scrollable, dir, droppable, selectable, onStateChanged } = props;
 
   const state = FsPathList.useState({
     instance,
@@ -15,7 +15,7 @@ export const FsPathListStateful: React.FC<FsPathListStatefulProps> = (props) => 
     scrollable,
     droppable,
     selectable,
-    onStateChange,
+    onStateChanged,
   });
 
   /**

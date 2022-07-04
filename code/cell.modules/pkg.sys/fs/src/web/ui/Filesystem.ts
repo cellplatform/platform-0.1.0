@@ -1,5 +1,5 @@
 import { ModuleInfo } from './ModuleInfo';
-import { FsPathList as PathList } from './Fs.PathList';
+import { FsPathList as PathList } from './PathList';
 import { Filesystem as IndexedDb } from '../FsBus.IndexedDb';
 import { Path, Filesize } from './common';
 

@@ -19,8 +19,7 @@
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
     "clean": "yarn reset && cell.compiler clean $@",
-    "reset": "rm -rf tmp",
-    "deploy": "ts-node -T script.ts/vercel.run"
+    "reset": "rm -rf tmp"
   },
   "dependencies": {
     "@platform/cell.fs.bus": "0.0.9",

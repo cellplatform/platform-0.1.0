@@ -2,7 +2,7 @@ import React from 'react';
 
 import { MediaStream, VideoStream, VideoStreamProps } from '..';
 import { Icons } from '../../Icons';
-import { color, css, t } from './common';
+import { Color, css, t } from './common';
 
 export type SampleProps = VideoStreamProps & { streamRef: string; bus: t.EventBus<any> };
 
@@ -14,8 +14,8 @@ export const Sample: React.FC<SampleProps> = (props) => {
   const styles = {
     base: css({
       position: 'relative',
-      backgroundColor: color.format(-0.02),
-      border: `solid 1px ${color.format(-0.03)}`,
+      backgroundColor: Color.format(-0.02),
+      border: `solid 1px ${Color.format(-0.03)}`,
       borderRadius,
     }),
     overlay: css({

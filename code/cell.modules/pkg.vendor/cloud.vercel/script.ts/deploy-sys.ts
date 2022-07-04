@@ -43,7 +43,7 @@ async function deploy(args: {
   alias?: string;
   rewriteHtmlPaths?: boolean;
 }) {
-  const token = process.env.VERCEL_TEST_TOKEN;
+  const token = process.env.VERCEL_TEST_TOKEN || '';
   const { team, project, dir, alias } = args;
 
   const beforeUpload: t.VercelHttpBeforeFileUpload = async (e) => {

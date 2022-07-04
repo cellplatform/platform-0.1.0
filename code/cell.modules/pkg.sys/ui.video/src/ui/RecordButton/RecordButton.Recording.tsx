@@ -3,7 +3,7 @@ import React from 'react';
 
 import { AudioWaveform } from '../AudioWaveform';
 import { Icons } from '../Icons';
-import { color, COLORS, css, CssValue, transition } from './common';
+import { Color, COLORS, css, CssValue, transition } from './common';
 import { RecordButtonState } from './types';
 
 export type RecordingProps = {
@@ -62,7 +62,7 @@ export const Recording: React.FC<RecordingProps> = (props) => {
             width={width}
             height={40}
             stream={stream}
-            lineColor={color.alpha(COLORS.RED, 0.3)}
+            lineColor={Color.alpha(COLORS.RED, 0.3)}
             lineWidth={2}
           />
         )}

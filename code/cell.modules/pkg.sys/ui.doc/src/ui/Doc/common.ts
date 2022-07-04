@@ -1,8 +1,8 @@
 import { t } from '../common';
 export * from '../common';
 
-const root = 'https://doc.sys.db.team';
-// const root = 'http://localhost:5052';
+const isLocal = location.hostname === 'localhost';
+const root = isLocal ? 'http://localhost:5052' : 'https://doc.db.team';
 
 /**
  * Typefaces.

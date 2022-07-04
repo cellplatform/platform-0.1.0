@@ -17,7 +17,7 @@ type A = ActionHandlerArgs<Ctx>;
  * https://github.com/vimeo/player.js
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.video/VimeoBackground')
+  .namespace('ui.video.VimeoBackground')
   .context((e) => {
     if (e.prev) return e.prev;
 

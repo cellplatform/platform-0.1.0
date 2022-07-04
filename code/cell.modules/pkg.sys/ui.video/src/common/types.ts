@@ -9,7 +9,7 @@ export { CssRadiusInput } from '@platform/css/lib/types';
 /**
  * @system
  */
-export { SysFsEvents, Fs } from 'sys.fs/lib/types';
-export { PositioningLayer } from 'sys.ui.primitives/lib/types';
+export { SysFsEvents, Fs, FsViewInstance } from 'sys.fs/lib/types';
+export { PositioningLayer, ListSelectionState } from 'sys.ui.primitives/lib/types';
 
 export * from '../types';

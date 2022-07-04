@@ -14,8 +14,7 @@
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cell.compiler serve $@",
-    "deploy": "ts-node -T script.ts/vercel.run"
+    "serve": "cell.compiler serve $@"
   },
   "dependencies": {
     "core-js": "3.16.4",

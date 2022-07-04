@@ -25,7 +25,7 @@ type Ctx = {
 type A = ActionHandlerArgs<Ctx>;
 
 export const actions = DevActions<Ctx>()
-  .namespace('ui.video/Vimeo')
+  .namespace('ui.video.Vimeo')
   .context((e) => {
     if (e.prev) return e.prev;
 

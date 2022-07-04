@@ -2,7 +2,7 @@ import { CssProps } from '@platform/css';
 import React from 'react';
 import { DevActions, LocalStorage, Hr } from 'sys.ui.dev';
 import { RecordButton, RecordButtonProps, RecordButtonStates } from '..';
-import { color, t, rx } from './common';
+import { t, rx } from './common';
 import { DevDialog } from './DEV.Dialog';
 import { PropList } from 'sys.ui.primitives/lib/ui/PropList';
 
@@ -26,7 +26,7 @@ type CtxStorage = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui/RecordButton')
+  .namespace('ui.RecordButton')
   .context((e) => {
     if (e.prev) return e.prev;
 
