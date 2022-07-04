@@ -42,11 +42,11 @@ export const PathListDev: React.FC<PathListDevProps> = (props) => {
       base: css({
         fontFamily: 'monospace',
         color: Color.alpha(COLORS.DARK, isLabelsOver ? 0.8 : 0.4),
-        transition: 'color 150ms',
         cursor: 'default',
         fontSize: 11,
-        fontWeight: 600,
+        fontWeight: isLabelsOver ? 600 : 400,
         PaddingX: 4,
+        transition: 'color 150ms, font-weight 150ms',
         Flex: 'x-spaceBetween-center',
       }),
       top: css({ marginBottom: 4 }),
