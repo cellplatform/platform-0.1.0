@@ -20,11 +20,7 @@ export async function deploy(team: string, project: string, alias: string) {
   Vercel.Log.beforeDeploy({ info, alias, project });
 
   const res = await deployment.commit(
-    {
-      target: 'production',
-      regions: ['sfo1'],
-      alias,
-    },
+    { target: 'production', regions: ['sfo1'], alias },
     { ensureProject: true },
   );
 
