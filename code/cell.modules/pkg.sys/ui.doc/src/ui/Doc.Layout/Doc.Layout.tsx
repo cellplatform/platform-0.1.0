@@ -1,7 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-
+import React from 'react';
 import { Color, COLORS, css, CssValue, DEFAULT, FC, MinSize, t } from './common';
-
 import { DocTooSmall } from '../Doc.TooSmall';
 
 export type DocLayoutProps = {
