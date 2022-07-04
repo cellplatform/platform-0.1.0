@@ -3,7 +3,7 @@ import '@platform/css/reset.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { DevHarness } from '../Dev.Harness';
-import { App } from '../ui/DEV.Sample.App';
+import { App } from '../ui/DEV.Sample-0.0.0';
 
 const query = () => {
   const url = new URL(location.href);

@@ -3,7 +3,7 @@ import { Harness } from 'sys.ui.dev';
 import { t } from './common';
 
 const imports = {
-  SampleApp: import('./ui/DEV.Sample.App/dev/DEV'),
+  Sample__0_0_0: import('./ui/DEV.Sample-0.0.0/dev/DEV'),
   SampleDeploy: import('./ui/DEV.Sample.Deploy/DEV'),
 
   Design: import('./ui/Design/DEV'),
