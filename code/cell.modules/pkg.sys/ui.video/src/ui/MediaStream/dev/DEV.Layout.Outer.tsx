@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { color, COLORS, css, CssValue } from '../common';
+import { Color, COLORS, css, CssValue } from './common';
 
 export type DevOuterProps = { style?: CssValue };
 
@@ -11,8 +11,8 @@ export const DevOuter: React.FC<DevOuterProps> = (props) => {
       position: 'relative',
       padding: 3,
       borderRadius: 5,
-      border: `dashed 1px ${color.alpha(COLORS.MAGENTA, 0.3)}`,
-      backgroundColor: color.format(0.4),
+      border: `dashed 1px ${Color.alpha(COLORS.MAGENTA, 0.3)}`,
+      backgroundColor: Color.format(0.4),
       pointerEvents: 'auto',
     }),
   };

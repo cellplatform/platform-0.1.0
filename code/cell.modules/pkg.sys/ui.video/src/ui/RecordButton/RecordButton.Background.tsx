@@ -1,7 +1,7 @@
-import { m, domAnimation, LazyMotion } from 'framer-motion';
+import { m } from 'framer-motion';
 import React from 'react';
 
-import { color, COLORS, css, CssValue, transition } from './common';
+import { Color, COLORS, css, CssValue, transition } from './common';
 import { RecordButtonState } from './types';
 
 export type BackgroundProps = {
@@ -18,16 +18,16 @@ export const Background: React.FC<BackgroundProps> = (props) => {
   const { isEnabled, borderRadius, width, height, state } = props;
   const blur = props.blur ?? 12;
 
-  let borderColor = color.format(-0.2);
+  let borderColor = Color.format(-0.2);
 
   const inner = {
-    bg: isEnabled ? COLORS.RED : color.format(-0.2),
+    bg: isEnabled ? COLORS.RED : Color.format(-0.2),
   };
 
   if (isEnabled) {
     if (['recording', 'paused'].includes(state)) borderColor = COLORS.RED;
-    if (['recording', 'paused'].includes(state)) inner.bg = color.alpha(COLORS.RED, 0.1);
-    if (['dialog'].includes(state)) inner.bg = color.format(0);
+    if (['recording', 'paused'].includes(state)) inner.bg = Color.alpha(COLORS.RED, 0.1);
+    if (['dialog'].includes(state)) inner.bg = Color.format(0);
   }
 
   const styles = {

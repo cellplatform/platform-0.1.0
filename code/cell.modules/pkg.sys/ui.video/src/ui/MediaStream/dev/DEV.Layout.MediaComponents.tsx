@@ -1,6 +1,5 @@
 import React from 'react';
-
-import { css, CssValue } from '../common';
+import { css, CssValue } from './common';
 
 export type DevLayoutMediaComponentsProps = {
   elements?: JSX.Element[];

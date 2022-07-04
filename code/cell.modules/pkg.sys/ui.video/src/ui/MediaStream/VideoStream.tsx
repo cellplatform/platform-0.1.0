@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { css, CssValue, t, Style, color } from './common';
+import { css, CssValue, t, Style, Color } from './common';
 
 type ClickHandler = React.MouseEventHandler<HTMLDivElement>;
 
@@ -31,7 +31,7 @@ export const VideoStream: React.FC<VideoStreamProps> = (props) => {
       position: 'relative',
       overflow: 'hidden',
       borderRadius: Style.toRadius(borderRadius),
-      backgroundColor: color.format(props.backgroundColor),
+      backgroundColor: Color.format(props.backgroundColor),
       width,
       height,
     }),

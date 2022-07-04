@@ -1,19 +1,27 @@
 import React from 'react';
 import { filter } from 'rxjs/operators';
-import { Filesystem } from 'sys.fs';
 import { DevActions, ObjectView } from 'sys.ui.dev';
+import { PositioningLayout } from 'sys.ui.primitives/lib/ui/PositioningLayout';
 
 import { MediaStream, VideoStreamProps } from '..';
 import { FileUtil } from '../util';
-import { color, Button, css, cuid, deleteUndefined, log, rx, t, MinSize } from './common';
+import {
+  Button,
+  Color,
+  css,
+  cuid,
+  deleteUndefined,
+  Filesystem,
+  log,
+  MinSize,
+  rx,
+  t,
+} from './common';
 import { DevAudioWaveform } from './DEV.AudioWaveform';
+import { DevLayoutMediaComponents } from './DEV.Layout.MediaComponents';
+import { DevOuter } from './DEV.Layout.Outer';
 import { DevRecordButton } from './DEV.RecordButton';
 import { Sample } from './DEV.Sample';
-import { DevLayoutMediaComponents } from './DEV.Layout.MediaComponents';
-import { PositioningLayout } from 'sys.ui.primitives/lib/ui/PositioningLayout';
-import { DevOuter } from './DEV.Layout.Outer';
-
-import { FsPathList } from 'sys.fs/lib/web/ui/Fs.PathList';
 
 type SaveTarget = 'Fs.IndexedDb' | 'Download';
 
@@ -51,7 +59,7 @@ async function updateMute(ctx: Ctx) {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.video/MediaStream')
+  .namespace('ui.video.MediaStream')
   .context((e) => {
     if (e.prev) return e.prev;
 
@@ -331,13 +339,15 @@ export const actions = DevActions<Ctx>()
           base: css({
             flex: 1,
             marginLeft: WIDTH + 30,
-            backgroundColor: color.format(0.3),
+            backgroundColor: Color.format(0.3),
           }),
         };
+
         return (
           <DevOuter style={styles.base}>
-            <FsPathList.Stateful
+            <Filesystem.PathList.Stateful
               instance={{ bus, id: e.ctx.ref, fs: e.ctx.fsid }}
+              selectable={true}
               style={{ flex: 1 }}
             />
           </DevOuter>

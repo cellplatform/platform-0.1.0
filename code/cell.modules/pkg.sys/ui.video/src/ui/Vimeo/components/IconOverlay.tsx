@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Icons } from '../../Icons';
 import { Spinner } from '../../primitives';
-import { color, COLORS, css, CssValue, t } from '../common';
+import { Color, COLORS, css, CssValue, t } from '../common';
 
 export type VimeoIconClickArgs = { icon: t.VimeoIconFlag };
 
@@ -28,7 +28,7 @@ export const IconOverlay: React.FC<IconOverlayProps> = (props) => {
       Flex: 'center-center',
       width: iconSize + 40,
       height: iconSize + 40,
-      backgroundColor: color.format(0.3),
+      backgroundColor: Color.format(0.3),
       backdropFilter: `blur(8px)`,
       borderRadius: 8,
       pointerEvents: 'auto',

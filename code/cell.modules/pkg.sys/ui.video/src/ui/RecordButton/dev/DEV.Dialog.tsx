@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { COLORS, color, css, CssValue, t } from './common';
+import React from 'react';
+import { COLORS, Color, css, CssValue } from './common';
 
 export type DevDialogProps = { style?: CssValue };
 
 export const DevDialog: React.FC<DevDialogProps> = (props) => {
-  const border = `solid 1px ${color.format(-0.15)}`;
+  const border = `solid 1px ${Color.format(-0.15)}`;
 
   const styles = {
     base: css({ flex: 1, Flex: 'vertical-stretch-stretch' }),
