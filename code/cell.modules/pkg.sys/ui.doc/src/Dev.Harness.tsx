@@ -9,6 +9,7 @@ const imports = {
 
   Design: import('./ui/Design/DEV'),
   ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
+  DocLayout: import('./ui/Doc.Layout/dev/DEV'),
   DocLayoutContainer: import('./ui/Doc.LayoutContainer/dev/DEV'),
   DocList: import('./ui/Doc.List/dev/DEV'),
   DocIndex: import('./ui/Doc.Index/dev/DEV'),

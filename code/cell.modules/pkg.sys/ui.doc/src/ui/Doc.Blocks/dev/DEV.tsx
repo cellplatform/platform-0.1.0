@@ -237,13 +237,12 @@ export const actions = DevActions<Ctx>()
       /**
        * NOTE: example usage, as visual backdrop only (in constrast to being the parent element itself).
        */
-      const el = (
-        <div {...styles.base}>
+      e.render(
+        <Doc.Fonts style={styles.base}>
           <Doc.LayoutContainer debug={false} style={styles.container} onResize={e.ctx.onResize} />
           <Doc.Blocks {...props} blocks={blocks} style={styles.blocks} />
-        </div>
+        </Doc.Fonts>,
       );
-      e.render(el);
     }
   });
 

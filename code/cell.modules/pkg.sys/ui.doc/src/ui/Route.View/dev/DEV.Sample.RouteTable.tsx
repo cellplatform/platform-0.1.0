@@ -39,12 +39,7 @@ export function DevRouteTable(getCtx: () => Ctx) {
       const def = SAMPLE.defs.find((def) => def.path === path);
       if (!def) return;
 
-      /**
-       * TODO 🐷 Size / Layout
-       */
-      const width = 550; // TEMP 🐷
-      const blocks = Doc.toBlockElements({ def, width });
-      e.render(<Doc.Blocks blocks={blocks} style={{ flex: 1 }} />);
+      e.render(<Doc.Layout def={def} style={{ flex: 1 }} />);
     },
 
     /**

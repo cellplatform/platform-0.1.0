@@ -6,13 +6,10 @@ export type DocBlocksProps = {
   sizes?: t.DocLayoutSizes;
   scrollable?: boolean;
   tracelines?: boolean;
-  padding?: {
-    header?: boolean | number;
-    footer?: boolean | number;
-  };
-  blockSpacing?: { y?: number };
+  padding?: t.DocBlocksPadding;
+  blockSpacing?: t.DocBlocksSpacing;
   style?: CssValue;
-  onBlockClick?: t.DocLayoutBlockClickHandler;
+  onBlockClick?: t.DocBlocksClickHandler;
 };
 
 /**
