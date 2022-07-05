@@ -9,17 +9,25 @@ export function AppRoutes(): t.RouteTableDefs {
       const styles = {
         base: css({
           Absolute: 0,
-          Flex: 'center-center',
           lineHeight: 1.8,
           color: COLORS.DARK,
+          Flex: 'center-center',
         }),
       };
 
       const elLinks = SAMPLE.defs.map((def, i) => {
         const path = def.path;
+
+        const handleClick = (mouse: React.MouseEvent) => {
+          mouse.preventDefault();
+          e.change({ path });
+        };
+
         return (
           <li key={`${i}.${path}`}>
-            <Button onClick={() => e.change({ path })}>{path}</Button>
+            <a href={path} onClick={handleClick}>
+              <Button>{path}</Button>
+            </a>
           </li>
         );
       });
