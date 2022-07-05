@@ -7,8 +7,9 @@ export default Test.describe('Route.Bus', (e) => {
     instance: (): t.RouteInstance => ({ bus: rx.bus(), id: `foo.${slug()}` }),
     controller(options: { href?: string } = {}) {
       const instance = Create.instance();
-      const { location, getUrl, pushState } = RouteBus.Dev.mock(options.href);
-      const events = RouteBus.Controller({ instance, getUrl, pushState });
+      const href = options.href ?? 'https://domain.com/mock';
+      const { location, getHref, pushState } = RouteBus.Dev.mock(href);
+      const events = RouteBus.Controller({ instance, getHref, pushState });
       const dispose = events.dispose;
       return { instance, location, events, dispose };
     },
@@ -52,8 +53,8 @@ export default Test.describe('Route.Bus', (e) => {
 
     e.it('info (with mock)', async () => {
       const instance = Create.instance();
-      const { location, getUrl } = RouteBus.Dev.mock();
-      const events = RouteBus.Controller({ instance, getUrl });
+      const { location, getHref } = RouteBus.Dev.mock('https://domain.com/mock');
+      const events = RouteBus.Controller({ instance, getHref });
       const res = await events.info.get();
       events.dispose();
 
@@ -190,7 +191,7 @@ export default Test.describe('Route.Bus', (e) => {
       });
 
       e.it('changed$', async () => {
-        const { dispose, events } = Create.controller();
+        const { dispose, events } = Create.controller({ href: 'https://domain.com/mock' });
 
         const fired: t.RouteCurrent[] = [];
         events.current.$.subscribe((e) => fired.push(e));

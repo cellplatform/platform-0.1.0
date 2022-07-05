@@ -1,10 +1,10 @@
 /**
  * Mock helpers testing routes.
  */
-export function mock(href?: string) {
-  const location = new URL(href ?? 'https://domain.com/mock');
+export function mock(href: string) {
+  const location = new URL(href);
 
-  const getUrl = () => location.href;
+  const getHref = () => location.href;
 
   // See: https://developer.mozilla.org/en-US/docs/Web/API/History/pushState
   const pushState = (data: any, _unused: string, url?: string) => {
@@ -13,7 +13,7 @@ export function mock(href?: string) {
 
   return {
     location,
-    getUrl,
+    getHref,
     pushState,
   };
 }

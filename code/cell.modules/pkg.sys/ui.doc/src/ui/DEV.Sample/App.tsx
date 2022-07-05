@@ -23,9 +23,9 @@ export const App: React.FC<AppProps> = (props) => {
     const { dispose, dispose$ } = rx.disposable();
 
     const mock = props.mock ? Route.Bus.Dev.mock('https://mock.com/') : undefined;
-    const getUrl = mock?.getUrl;
+    const getHref = mock?.getHref;
     const pushState = mock?.pushState;
-    const route = Route.Bus.Controller({ instance, getUrl, pushState, dispose$ });
+    const route = Route.Bus.Controller({ instance, getHref, pushState, dispose$ });
 
     // Finish up.
     props.onReady?.({ route });

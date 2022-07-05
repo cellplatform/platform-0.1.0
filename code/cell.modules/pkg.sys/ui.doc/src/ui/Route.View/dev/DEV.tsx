@@ -33,10 +33,14 @@ export const actions = DevActions<Ctx>()
     const change = e.change;
 
     const bus = rx.bus();
-    const instance: t.RouteInstance = { bus };
+    const instance: t.RouteInstance = { bus, id: 'Route.View.dev' };
 
-    const { getUrl, pushState } = RouteBus.Dev.mock('https://domain.com/');
-    const route = RouteBus.Controller({ instance: { bus }, getUrl, pushState });
+    const { getHref, pushState } = RouteBus.Dev.mock('https://domain.com/');
+    const route = RouteBus.Controller({
+      instance: { bus },
+      getHref,
+      pushState,
+    });
     route.current.$.subscribe((e) => change.ctx((ctx) => (ctx.href = e.info.url.href)));
 
     const ctx: Ctx = {
