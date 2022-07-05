@@ -1,6 +1,6 @@
 import * as t from '../../common/types';
 
-export type RouteInstance = { bus: t.EventBus<any>; id?: Id };
+export type RouteInstance = { bus: t.EventBus<any>; id: Id };
 
 type Id = string;
 type Milliseconds = number;

@@ -41,12 +41,7 @@ export default Test.describe('Route.Bus', (e) => {
   });
 
   e.describe('Controller/Events', (e) => {
-    e.it('singleton instance (default)', () => {
-      const events = RouteBus.Events({ instance: { bus: rx.bus() } });
-      expect(events.instance.id).to.eql('singleton');
-    });
-
-    e.it('explicit instance', () => {
+    e.it('instance (bus/id)', () => {
       const events = RouteBus.Events({ instance: { bus: rx.bus(), id: 'foo' } });
       expect(events.instance.id).to.eql('foo');
     });

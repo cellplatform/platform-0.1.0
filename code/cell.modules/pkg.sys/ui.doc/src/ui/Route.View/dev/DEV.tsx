@@ -4,7 +4,7 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { RouteViewProps } from '..';
 import { SAMPLE } from '../../DEV.Sample.data';
 import { Route } from '../../Route';
-import { RouteBus, rx, t, COLORS } from '../common';
+import { COLORS, RouteBus, rx, t } from '../common';
 import { DevRouteTable } from './DEV.Sample.RouteTable';
 
 type Milliseconds = number;
@@ -33,11 +33,11 @@ export const actions = DevActions<Ctx>()
     const change = e.change;
 
     const bus = rx.bus();
-    const instance: t.RouteInstance = { bus, id: 'Route.View.dev' };
+    const instance: t.RouteInstance = { bus, id: 'Route.View:dev' };
 
     const { getHref, pushState } = RouteBus.Dev.mock('https://domain.com/');
     const route = RouteBus.Controller({
-      instance: { bus },
+      instance,
       getHref,
       pushState,
     });

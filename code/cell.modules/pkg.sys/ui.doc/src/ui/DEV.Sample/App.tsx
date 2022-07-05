@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 
 import { Route } from '../Route';
 import { AppRoutes } from './App.Routes';
-import { css, CssValue, Doc, rx, t } from './common';
+import { css, CssValue, Doc, rx, t, slug } from './common';
 
 export type AppProps = {
   bus: t.EventBus<any>;
@@ -13,8 +13,12 @@ export type AppProps = {
 
 export const App: React.FC<AppProps> = (props) => {
   const { bus } = props;
-  const instance = { bus };
+
   const routes = useRef(AppRoutes());
+
+  const slugRef = useRef(slug());
+  const id = props.mock ? `app.mock.${slugRef.current}` : `app.${slugRef.current}`;
+  const instance = { bus, id };
 
   /**
    * [Lifecycle]
@@ -22,7 +26,7 @@ export const App: React.FC<AppProps> = (props) => {
   useEffect(() => {
     const { dispose, dispose$ } = rx.disposable();
 
-    const mock = props.mock ? Route.Bus.Dev.mock('https://mock.com/') : undefined;
+    const mock = props.mock ? Route.Bus.Dev.mock('https://mock.org/') : undefined;
     const getHref = mock?.getHref;
     const pushState = mock?.pushState;
     const route = Route.Bus.Controller({ instance, getHref, pushState, dispose$ });

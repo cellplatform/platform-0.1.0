@@ -26,7 +26,7 @@ export const actions = DevActions<Ctx>()
     const isMock = () => e.current?.context === 'Mock';
 
     const route = Route.Bus.Controller({
-      instance: { bus, id: 'Route.Bus.dev' },
+      instance: { bus, id: 'Route.Bus:dev' },
       getHref: () => (isMock() ? mock.getHref() : location.href),
       pushState(data, unused, url) {
         if (isMock()) {
