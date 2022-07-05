@@ -25,6 +25,5 @@ const ORIG_PUBLISHED_BLOCK: t.DocDefBlock = {
 };
 
 export const COMMONTEXT = {
-  // ORIG_PUBLISHED,
   ORIG_PUBLISHED_BLOCK,
 };
