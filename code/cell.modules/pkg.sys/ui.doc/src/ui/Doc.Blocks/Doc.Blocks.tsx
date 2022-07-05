@@ -4,7 +4,6 @@ import { Color, COLORS, css, CssValue, DEFAULT, FC, t } from './common';
 export type DocBlocksProps = {
   blocks?: JSX.Element[];
   sizes?: t.DocLayoutSizes;
-  scrollable?: boolean;
   tracelines?: boolean;
   padding?: t.DocBlocksPadding;
   blockSpacing?: t.DocBlocksSpacing;
@@ -16,14 +15,7 @@ export type DocBlocksProps = {
  * Component
  */
 const View: React.FC<DocBlocksProps> = (props) => {
-  const {
-    scrollable = true,
-    tracelines = false,
-    blocks = [],
-    blockSpacing = {},
-    padding = {},
-    sizes,
-  } = props;
+  const { tracelines = false, blocks = [], blockSpacing = {}, padding = {}, sizes } = props;
 
   const traceBorder = `solid 1px ${Color.alpha(COLORS.MAGENTA, tracelines ? 0.1 : 0)}`;
 
@@ -40,7 +32,6 @@ const View: React.FC<DocBlocksProps> = (props) => {
       Absolute: 0,
       color: COLORS.DARK,
       boxSizing: 'border-box',
-      Scroll: scrollable,
       paddingTop: PADDING.header,
       paddingBottom: PADDING.footer,
       Flex: 'y-stretch-center',

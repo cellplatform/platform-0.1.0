@@ -20,6 +20,7 @@ export const actions = DevActions<Ctx>()
       props: {
         def: SAMPLE.defs[2],
         tracelines: false,
+        scrollable: true,
       },
     };
     return ctx;
@@ -35,11 +36,15 @@ export const actions = DevActions<Ctx>()
     const defButton = (def: t.DocDef) => {
       e.button(`def: ${def.path}`, (e) => (e.ctx.props.def = def));
     };
-
     SAMPLE.defs.forEach((def) => defButton(def));
+    e.button('def: <undefined>', (e) => (e.ctx.props.def = undefined));
 
     e.hr(1, 0.1);
-    e.button('def: <undefined>', (e) => (e.ctx.props.def = undefined));
+
+    e.boolean('scrollable', (e) => {
+      if (e.changing) e.ctx.props.scrollable = e.changing.next;
+      e.boolean.current = e.ctx.props.scrollable;
+    });
 
     e.hr();
   })

@@ -44,6 +44,7 @@ export const actions = DevActions<Ctx>()
 
     const ctx: Ctx = {
       props: {
+        scrollable: true,
         debug: {
           bg: true,
           tracelines: true,
@@ -76,6 +77,13 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Props');
+
+    e.boolean('scrollable', (e) => {
+      if (e.changing) e.ctx.props.scrollable = e.changing.next;
+      e.boolean.current = e.ctx.props.scrollable;
+    });
+
+    e.hr(1, 0.1);
 
     e.boolean('debug.bg', (e) => {
       const debug = Util.props.debug(e.ctx);
@@ -150,7 +158,9 @@ export const actions = DevActions<Ctx>()
       e.render(
         <Doc.LayoutContainer {...e.ctx.props} style={{ flex: 1 }}>
           {!sampleBlocks && <DevChildSample />}
-          {sampleBlocks && <Doc.Blocks blocks={Util.toBlocks(e.ctx)} />}
+          {sampleBlocks && (
+            <Doc.Blocks blocks={Util.toBlocks(e.ctx)} padding={{ header: 40, footer: 80 }} />
+          )}
         </Doc.LayoutContainer>,
       );
     }

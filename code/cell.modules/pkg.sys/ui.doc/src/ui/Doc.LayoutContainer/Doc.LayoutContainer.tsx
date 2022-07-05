@@ -8,12 +8,13 @@ import { LayoutSize } from './LayoutSize';
 export type DocLayoutContainerProps = {
   debug?: boolean | t.DocLayoutContainerDebug;
   min?: { width?: number; height?: number };
+  scrollable?: boolean;
   style?: CssValue;
   onResize?: t.DocResizeHandler;
 };
 
 const View: React.FC<DocLayoutContainerProps> = (props) => {
-  const { min } = props;
+  const { min, scrollable = true } = props;
   const debug = toDebug(props.debug);
   const [sizes, setSizes] = useState<t.DocLayoutSizes>();
 
@@ -22,7 +23,7 @@ const View: React.FC<DocLayoutContainerProps> = (props) => {
    */
   const styles = {
     base: css({ Absolute: 0, color: COLORS.DARK, boxSizing: 'border-box' }),
-    body: css({ Absolute: 0, display: 'flex' }),
+    body: css({ Absolute: 0, display: 'flex', Scroll: scrollable, overflow: 'hidden' }),
   };
 
   const elChildren = React.Children.map(props.children, (child) => {

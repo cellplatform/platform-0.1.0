@@ -101,7 +101,6 @@ export const actions = DevActions<Ctx>()
 
     const ctx: Ctx = {
       props: {
-        scrollable: true,
         tracelines: true,
         // tracelines: false,
         padding: { header: undefined, footer: DEFAULT.padding.footer },
@@ -149,11 +148,6 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Props');
-
-    e.boolean('scrollable', (e) => {
-      if (e.changing) e.ctx.props.scrollable = e.changing.next;
-      e.boolean.current = e.ctx.props.scrollable;
-    });
 
     e.boolean('blockSpacing.y', (e) => {
       const blockSpacing = Util.blockSpacing(e.ctx);
@@ -229,9 +223,9 @@ export const actions = DevActions<Ctx>()
       const blocks = Util.toBlocks(e.ctx);
 
       const styles = {
-        base: css({ flex: 1, display: 'flex' }),
+        base: css({ flex: 1, position: 'relative' }),
         container: css({ Absolute: 0, pointerEvents: 'none' }),
-        blocks: css({ flex: 1 }),
+        blocks: css({ Absolute: 0, Scroll: true, display: 'flex' }),
       };
 
       /**
@@ -240,7 +234,9 @@ export const actions = DevActions<Ctx>()
       e.render(
         <Doc.Fonts style={styles.base}>
           <Doc.LayoutContainer debug={false} style={styles.container} onResize={e.ctx.onResize} />
-          <Doc.Blocks {...props} blocks={blocks} style={styles.blocks} />
+          <div {...styles.blocks}>
+            <Doc.Blocks {...props} blocks={blocks} style={{ flex: 1 }} />
+          </div>
         </Doc.Fonts>,
       );
     }

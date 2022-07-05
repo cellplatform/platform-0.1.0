@@ -8,6 +8,7 @@ import { css, CssValue, t } from './common';
 export type DocLayoutProps = {
   def?: t.DocDef;
 
+  scrollable?: boolean;
   tracelines?: boolean;
   padding?: t.DocBlocksPadding;
   blockSpacing?: t.DocBlocksSpacing;
@@ -40,13 +41,13 @@ export const DocLayout: React.FC<DocLayoutProps> = (props) => {
   };
 
   return (
-    <DocLayoutContainer style={props.style} onResize={handleResize}>
+    <DocLayoutContainer style={props.style} scrollable={props.scrollable} onResize={handleResize}>
       {blocks && (
         <DocBlocks
           style={styles.blocks}
           blocks={blocks}
-          tracelines={props.tracelines}
           padding={padding}
+          tracelines={props.tracelines}
           blockSpacing={props.blockSpacing}
           onBlockClick={props.onBlockClick}
         />
