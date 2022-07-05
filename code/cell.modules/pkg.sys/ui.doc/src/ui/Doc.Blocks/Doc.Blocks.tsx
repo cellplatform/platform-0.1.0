@@ -1,18 +1,17 @@
 import React from 'react';
-import { Color, COLORS, css, CssValue, DEFAULT, FC, MinSize, t } from './common';
-import { DocTooSmall } from '../Doc.TooSmall';
+import { Color, COLORS, css, CssValue, DEFAULT, FC, t } from './common';
 
 export type DocBlocksProps = {
+  blocks?: JSX.Element[];
+  sizes?: t.DocLayoutSizes;
   scrollable?: boolean;
   tracelines?: boolean;
-  blocks?: JSX.Element[];
   padding?: {
     header?: boolean | number;
     footer?: boolean | number;
   };
   blockSpacing?: { y?: number };
   style?: CssValue;
-  onResize?: t.MinSizeResizeEventHandler;
   onBlockClick?: t.DocLayoutBlockClickHandler;
 };
 
@@ -26,6 +25,7 @@ const View: React.FC<DocBlocksProps> = (props) => {
     blocks = [],
     blockSpacing = {},
     padding = {},
+    sizes,
   } = props;
 
   const traceBorder = `solid 1px ${Color.alpha(COLORS.MAGENTA, tracelines ? 0.1 : 0)}`;
@@ -43,14 +43,14 @@ const View: React.FC<DocBlocksProps> = (props) => {
       Absolute: 0,
       color: COLORS.DARK,
       boxSizing: 'border-box',
-      Flex: 'y-stretch-center',
       Scroll: scrollable,
       paddingTop: PADDING.header,
       paddingBottom: PADDING.footer,
+      Flex: 'y-stretch-center',
     }),
     block: {
       base: css({
-        width: 720,
+        width: sizes?.column.width ?? DEFAULT.columnWidth,
         PaddingY: blockSpacing.y ?? DEFAULT.blockspacing.y,
         ':first-child': { paddingTop: 0 },
 
@@ -66,8 +66,8 @@ const View: React.FC<DocBlocksProps> = (props) => {
   const elBlocks = blocks.map((el, index) => {
     return (
       <div
-        key={`block.${index}`}
         {...styles.block.base}
+        key={`block.${index}`}
         onClick={() => props.onBlockClick?.({ index })}
       >
         {el}
@@ -75,18 +75,7 @@ const View: React.FC<DocBlocksProps> = (props) => {
     );
   });
 
-  const elBase = <div {...styles.base}>{elBlocks}</div>;
-
-  return (
-    <MinSize
-      minWidth={300}
-      warningElement={(e) => <DocTooSmall is={e.is} size={e.size} />}
-      style={props.style}
-      onResize={props.onResize}
-    >
-      {elBase}
-    </MinSize>
-  );
+  return <div {...styles.base}>{elBlocks}</div>;
 };
 
 /**

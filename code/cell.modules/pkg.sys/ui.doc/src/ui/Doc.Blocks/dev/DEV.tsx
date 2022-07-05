@@ -4,19 +4,19 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { DocBlocksProps } from '..';
 import { Doc } from '../../Doc';
 import { SAMPLE as BLOCK_SAMPLE } from '../../Doc.Block/dev/DEV.Sample';
-import { COLORS, DEFAULT, t } from '../common';
+import { css, COLORS, DEFAULT, t } from '../common';
 import { SAMPLE as IMAGE_SAMPLE } from '../../Doc.Image/dev/DEV';
 import { SAMPLE as BYLINE_SAMPLE } from '../../Doc.Byline/dev/DEV';
 import { SAMPLE as DEFS } from '../../DEV.Sample.data';
 
 type Ctx = {
-  size?: t.DomRect;
   props: DocBlocksProps;
   debug: {
     sampleId: 'Sample' | 'Flows' | 'Scale';
     render: boolean;
     width: number;
   };
+  onResize?: t.DocResizeHandler;
 };
 
 const Util = {
@@ -29,7 +29,8 @@ const Util = {
   },
 
   sampleBlocks(ctx: Ctx) {
-    const width = ctx.debug.width;
+    const width = ctx.props.sizes?.column.width;
+    if (!width) return;
 
     const elBannerImage = <Doc.Image url={IMAGE_SAMPLE.URL} width={width} />;
 
@@ -101,11 +102,10 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       props: {
         scrollable: true,
-        // tracelines: true,
-        tracelines: false,
+        tracelines: true,
+        // tracelines: false,
         padding: { header: undefined, footer: DEFAULT.padding.footer },
         blockSpacing: { y: DEFAULT.blockspacing.y },
-        onResize: (e) => change.ctx((ctx) => (ctx.size = e.size)),
         onBlockClick: (e) => console.log('⚡️ onBlockClick:', e),
       },
       debug: {
@@ -115,6 +115,7 @@ export const actions = DevActions<Ctx>()
         // sampleId: 'Flows',
         sampleId: 'Scale',
       },
+      onResize: (e) => change.ctx((ctx) => (ctx.props.sizes = e.sizes)),
     };
     return ctx;
   })
@@ -201,15 +202,21 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const { props, debug, size } = e.ctx;
+    const { props, debug } = e.ctx;
+    const sizes = props.sizes;
     const def = Util.toDef(e.ctx);
+
+    const rootWidth = sizes?.root.width ?? '-';
+    const rootHeight = sizes?.root.height ?? '-';
+    const columnWidth = sizes?.column.width ?? '-';
+    const topRight = `${rootWidth} x ${rootHeight} px (column: ${columnWidth} px)`;
 
     e.settings({
       host: { background: COLORS.BG },
       layout: {
         label: {
           topLeft: '<Doc.Blocks>',
-          topRight: `${size?.width ?? '-'} x ${size?.height ?? '-'} px`,
+          topRight,
           bottomLeft: def ? `path: ${def.path}` : undefined,
         },
         position: [80, 80, 130, 80],
@@ -220,7 +227,23 @@ export const actions = DevActions<Ctx>()
 
     if (debug.render) {
       const blocks = Util.toBlocks(e.ctx);
-      e.render(<Doc.Blocks {...props} blocks={blocks} style={{ flex: 1 }} />);
+
+      const styles = {
+        base: css({ flex: 1, display: 'flex' }),
+        container: css({ Absolute: 0, pointerEvents: 'none' }),
+        blocks: css({ flex: 1 }),
+      };
+
+      /**
+       * NOTE: example usage, as visual backdrop only (in constrast to being the parent element itself).
+       */
+      const el = (
+        <div {...styles.base}>
+          <Doc.LayoutContainer debug={false} style={styles.container} onResize={e.ctx.onResize} />
+          <Doc.Blocks {...props} blocks={blocks} style={styles.blocks} />
+        </div>
+      );
+      e.render(el);
     }
   });
 

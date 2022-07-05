@@ -6,4 +6,5 @@ export * from '../common';
 export const DEFAULT = {
   padding: { header: 80, footer: 150 },
   blockspacing: { y: 15 },
+  columnWidth: 720,
 };
