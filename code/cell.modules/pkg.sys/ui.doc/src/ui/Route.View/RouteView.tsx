@@ -17,6 +17,7 @@ import {
 } from './common';
 import { useRoute } from './useRoute';
 import { useRouteState } from './useRouteState';
+import { useRouteController } from './useRouteController';
 import { Dev } from './view/Dev';
 import { RouteEvents } from '../Route.Bus/Route.Events';
 
@@ -136,11 +137,12 @@ type Fields = {
   DEFAULT: typeof DEFAULT;
   useRoute: typeof useRoute;
   useRouteState: typeof useRouteState;
+  useRouteController: typeof useRouteController;
   Dev: typeof Dev;
   LoadMask: typeof LoadMask;
 };
 export const RouteView = FC.decorate<RouteViewProps, Fields>(
   View,
-  { DEFAULT, useRoute, useRouteState, Dev, LoadMask },
+  { DEFAULT, useRoute, useRouteState, useRouteController, Dev, LoadMask },
   { displayName: 'Route.View' },
 );

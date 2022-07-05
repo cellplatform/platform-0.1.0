@@ -1,40 +1,21 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 
 import { Route } from '../Route';
 import { AppRoutes } from './App.Routes';
-import { css, CssValue, Doc, rx, t, slug } from './common';
+import { css, CssValue, Doc, t } from './common';
 
 export type AppProps = {
   bus: t.EventBus<any>;
   mock?: boolean;
   style?: CssValue;
-  onReady?: (e: { route: t.RouteEvents }) => void;
+  onReady?: t.RoutReadyHandler;
 };
 
 export const App: React.FC<AppProps> = (props) => {
-  const { bus } = props;
+  const { bus, mock, onReady } = props;
 
+  const { instance } = Route.View.useRouteController({ bus, mock, onReady });
   const routes = useRef(AppRoutes());
-
-  const slugRef = useRef(slug());
-  const id = props.mock ? `app.mock.${slugRef.current}` : `app.${slugRef.current}`;
-  const instance = { bus, id };
-
-  /**
-   * [Lifecycle]
-   */
-  useEffect(() => {
-    const { dispose, dispose$ } = rx.disposable();
-
-    const mock = props.mock ? Route.Bus.Dev.mock('https://mock.org/') : undefined;
-    const getHref = mock?.getHref;
-    const pushState = mock?.pushState;
-    const route = Route.Bus.Controller({ instance, getHref, pushState, dispose$ });
-
-    // Finish up.
-    props.onReady?.({ route });
-    return dispose;
-  }, [props.mock]); // eslint-disable-line
 
   /**
    * [Render]

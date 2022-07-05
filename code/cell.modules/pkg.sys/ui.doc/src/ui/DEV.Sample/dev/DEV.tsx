@@ -76,7 +76,7 @@ export const actions = DevActions<Ctx>()
       host: { background: -0.04 },
       layout: {
         label: {
-          topLeft: '<SampleApp>',
+          topLeft: '<Sample.App>',
           bottomLeft: e.ctx.href,
         },
         position: [150, 80],
