@@ -2,8 +2,11 @@ import '@platform/css/reset.css';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { DevHarness } from '../Dev.Harness';
-import { DevSampleApp } from '../ui/DEV.Sample';
+
+const Imports = {
+  DevHarness: () => import('../Dev.Harness'),
+  DevSampleApp: () => import('../ui/DEV.Sample'),
+};
 
 const query = () => {
   const url = new URL(location.href);
@@ -20,9 +23,15 @@ const query = () => {
 };
 
 const isDev = query().has('dev');
-const el = isDev ? <DevHarness /> : <DevSampleApp />;
-ReactDOM.render(el, document.getElementById('root'));
+if (isDev) document.title = `${document.title} (dev)`;
 
-if (isDev) {
-  document.title = `${document.title} (dev)`;
-}
+/**
+ * [Render]
+ */
+(async () => {
+  const Component = isDev
+    ? (await Imports.DevHarness()).DevHarness
+    : (await Imports.DevSampleApp()).DevSampleApp;
+
+  ReactDOM.render(<Component />, document.getElementById('root'));
+})();

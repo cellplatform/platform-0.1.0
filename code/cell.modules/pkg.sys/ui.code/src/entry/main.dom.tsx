@@ -20,9 +20,7 @@ const query = () => {
 };
 
 const isDev = query().has('dev');
+if (isDev) document.title = `${document.title} (dev)`;
+
 const el = isDev ? <DevHarness /> : <App fs={{ id: 'fs.sample', path: 'sample/markdown.md' }} />;
 ReactDOM.render(el, document.getElementById('root'));
-
-if (isDev) {
-  document.title = `${document.title} (dev)`;
-}
