@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Subject } from 'rxjs';
 
 import { DocBlocks } from '../Doc.Blocks';
-import { DocLayoutContainer } from '../Doc.LayoutContainer';
+import { DocLayoutContainer, DocLayoutScrollTop } from '../Doc.LayoutContainer';
 import { toBlockElements } from '../Doc/Doc.toBlocks';
 import { css, CssValue, t } from './common';
 
@@ -22,8 +23,19 @@ export const DocLayout: React.FC<DocLayoutProps> = (props) => {
   const { def, padding = { header: 60, footer: 80 } } = props;
   const [sizes, setSizes] = useState<t.DocLayoutSizes>();
 
+  const contentHash = def ? `${def.id}.${def.blocks?.length ?? 0}` : '';
   const width = sizes?.column.width;
   const blocks = def && width && toBlockElements({ def, width });
+
+  const scrollTopRef$ = useRef(new Subject<DocLayoutScrollTop>());
+
+  /**
+   * [Lifecycle]
+   */
+  useEffect(() => {
+    // When the content changes, ensure the document is scrolled to the top.
+    scrollTopRef$.current.next({ top: 0 });
+  }, [contentHash]);
 
   /**
    * [Handlers]
@@ -40,18 +52,25 @@ export const DocLayout: React.FC<DocLayoutProps> = (props) => {
     blocks: css({ flex: 1 }),
   };
 
+  const elBlocks = blocks && (
+    <DocBlocks
+      style={styles.blocks}
+      blocks={blocks}
+      padding={padding}
+      tracelines={props.tracelines}
+      blockSpacing={props.blockSpacing}
+      onBlockClick={props.onBlockClick}
+    />
+  );
+
   return (
-    <DocLayoutContainer style={props.style} scrollable={props.scrollable} onResize={handleResize}>
-      {blocks && (
-        <DocBlocks
-          style={styles.blocks}
-          blocks={blocks}
-          padding={padding}
-          tracelines={props.tracelines}
-          blockSpacing={props.blockSpacing}
-          onBlockClick={props.onBlockClick}
-        />
-      )}
+    <DocLayoutContainer
+      style={props.style}
+      scrollable={props.scrollable}
+      scrollTop$={scrollTopRef$.current}
+      onResize={handleResize}
+    >
+      {elBlocks}
     </DocLayoutContainer>
   );
 };

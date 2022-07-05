@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
-import { FC, COLORS, css, CssValue, t, MinSize, DEFAULT } from './common';
+import React, { useEffect, useRef, useState } from 'react';
+import { takeUntil } from 'rxjs/operators';
 
-import { Guides } from './view/Guides';
 import { DocTooSmall } from '../Doc.TooSmall';
+import { COLORS, css, CssValue, DEFAULT, FC, MinSize, rx, t } from './common';
 import { LayoutSize } from './LayoutSize';
+import { Guides } from './view/Guides';
+
+export type DocLayoutScrollTop = { top: number };
 
 export type DocLayoutContainerProps = {
   debug?: boolean | t.DocLayoutContainerDebug;
   min?: { width?: number; height?: number };
   scrollable?: boolean;
   style?: CssValue;
+  scrollTop$?: t.Observable<DocLayoutScrollTop>;
   onResize?: t.DocResizeHandler;
 };
 
@@ -17,6 +21,21 @@ const View: React.FC<DocLayoutContainerProps> = (props) => {
   const { min, scrollable = true } = props;
   const debug = toDebug(props.debug);
   const [sizes, setSizes] = useState<t.DocLayoutSizes>();
+
+  const bodyRef = useRef<HTMLDivElement>(null);
+
+  /**
+   * [Lifecycle]
+   */
+  useEffect(() => {
+    const { dispose, dispose$ } = rx.disposable();
+
+    props.scrollTop$?.pipe(takeUntil(dispose$)).subscribe((e) => {
+      if (bodyRef.current) bodyRef.current.scrollTop = e.top;
+    });
+
+    return dispose;
+  }, []); // eslint-disable-line
 
   /**
    * [Render]
@@ -33,7 +52,9 @@ const View: React.FC<DocLayoutContainerProps> = (props) => {
   const elBase = sizes && (
     <div {...styles.base}>
       {props.debug && sizes && <Guides sizes={sizes} debug={debug} />}
-      <div {...styles.body}>{elChildren}</div>
+      <div ref={bodyRef} {...styles.body}>
+        {elChildren}
+      </div>
     </div>
   );
 
