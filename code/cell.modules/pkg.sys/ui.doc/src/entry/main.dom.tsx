@@ -4,6 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { DevHarness } from '../Dev.Harness';
 import { App } from '../ui/DEV.Sample';
+import { rx } from '../common';
 
 const query = () => {
   const url = new URL(location.href);
@@ -19,8 +20,9 @@ const query = () => {
   return q;
 };
 
+const bus = rx.bus();
 const isDev = query().has('dev');
-const el = isDev ? <DevHarness /> : <App />;
+const el = isDev ? <DevHarness /> : <App bus={bus} />;
 ReactDOM.render(el, document.getElementById('root'));
 
 if (isDev) {

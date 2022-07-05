@@ -9,6 +9,11 @@ export type RouteTableHandler = (e: RouteTableHandlerArgs) => any;
 export type RouteTableHandlerArgs = {
   url: RouteTableHandlerUrl;
   render: RouteRenderHandler;
+  change(options: {
+    path?: string;
+    hash?: string;
+    query?: t.RouteQuery | t.RouteQueryKeyValue[];
+  }): Promise<t.RouteChangeRes>;
 };
 export type RouteTableHandlerUrl = t.RouteUrl & {
   route: string; // URL path pattern.

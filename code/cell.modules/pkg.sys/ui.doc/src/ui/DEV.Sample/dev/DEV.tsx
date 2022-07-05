@@ -1,8 +1,14 @@
 import React from 'react';
 import { DevActions, ObjectView } from '../../../test';
 import { App, AppProps } from '..';
+import { t, rx } from '../common';
+import { SAMPLE } from '../../DEV.Sample.data';
 
-type Ctx = { props: AppProps };
+type Ctx = {
+  href?: string;
+  route?: t.RouteEvents;
+  props: AppProps;
+};
 
 /**
  * Actions
@@ -11,12 +17,38 @@ export const actions = DevActions<Ctx>()
   .namespace('Sample.App')
   .context((e) => {
     if (e.prev) return e.prev;
-    const ctx: Ctx = { props: {} };
+    const change = e.change;
+
+    const ctx: Ctx = {
+      props: {
+        bus: rx.bus(),
+        onReady(e) {
+          change.ctx((ctx) => (ctx.route = e.route));
+          e.route.current.$.subscribe((e) => change.ctx((ctx) => (ctx.href = e.info.url.href)));
+        },
+      },
+    };
+
     return ctx;
   })
 
   .init(async (e) => {
     const { ctx, bus } = e;
+  })
+
+  .items((e) => {
+    e.title('Routes');
+
+    const route = (path: string) => {
+      const label = `url: ${path}`;
+      e.button(label, (e) => e.ctx.route?.change.fire({ path }));
+    };
+
+    route('/');
+    e.hr(1, 0.1);
+    SAMPLE.defs.forEach((def) => route(def.path));
+
+    e.hr();
   })
 
   .items((e) => {
@@ -38,17 +70,22 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    const route = e.ctx.route;
+
     e.settings({
       host: { background: -0.04 },
       layout: {
-        label: '<SampleApp>',
+        label: {
+          topLeft: '<SampleApp>',
+          bottomLeft: e.ctx.href,
+        },
         position: [150, 80],
         border: -0.1,
         cropmarks: -0.2,
         background: 1,
       },
     });
-    e.render(<App {...e.ctx.props} style={{ flex: 1 }} />);
+    e.render(<App {...e.ctx.props} mock={true} style={{ flex: 1 }} />);
   });
 
 export default actions;
