@@ -17,7 +17,9 @@ import {
 } from './common';
 import { useRoute } from './useRoute';
 import { useRouteState } from './useRouteState';
+import { useRouteController } from './useRouteController';
 import { Dev } from './view/Dev';
+import { RouteEvents } from '../Route.Bus/Route.Events';
 
 let renderCount = 0;
 
@@ -48,6 +50,7 @@ const View: React.FC<RouteViewProps> = (props) => {
    */
   useEffect(() => {
     const { dispose, dispose$ } = rx.disposable();
+    const events = RouteEvents({ instance, dispose$ });
     const table = RouteTable(routes);
     let current = '';
 
@@ -70,7 +73,12 @@ const View: React.FC<RouteViewProps> = (props) => {
 
       const route = match.pattern;
       const params = match.params;
-      const args: t.RouteTableHandlerArgs = { url: { ...url, route, params }, render };
+      const change = events.change.fire;
+      const args: t.RouteTableHandlerArgs = {
+        url: { ...url, route, params },
+        render,
+        change,
+      };
       const res = match.handler(args);
       if (Value.isPromise(res)) {
         setLoading(true);
@@ -129,11 +137,12 @@ type Fields = {
   DEFAULT: typeof DEFAULT;
   useRoute: typeof useRoute;
   useRouteState: typeof useRouteState;
+  useRouteController: typeof useRouteController;
   Dev: typeof Dev;
   LoadMask: typeof LoadMask;
 };
 export const RouteView = FC.decorate<RouteViewProps, Fields>(
   View,
-  { DEFAULT, useRoute, useRouteState, Dev, LoadMask },
+  { DEFAULT, useRoute, useRouteState, useRouteController, Dev, LoadMask },
   { displayName: 'Route.View' },
 );

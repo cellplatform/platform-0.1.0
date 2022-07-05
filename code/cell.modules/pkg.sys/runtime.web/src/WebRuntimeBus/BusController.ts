@@ -1,6 +1,5 @@
 import { delay } from 'rxjs/operators';
 
-import { GroupController } from './BusController.Group';
 import { BusEvents } from './BusEvents';
 import { DEFAULT, rx, t, WebRuntime } from './common';
 
@@ -17,14 +16,6 @@ export function BusController(args: {
 
   const bus = rx.busAsType<t.WebRuntimeEvent>(args.instance.bus);
   const events = BusEvents({ instance: args.instance });
-
-  /**
-   * Initialize child controllers.
-   */
-  if (netbus) {
-    const id = instance;
-    GroupController({ netbus, events, id, fireLocal: bus.fire });
-  }
 
   /**
    * Info (Module)

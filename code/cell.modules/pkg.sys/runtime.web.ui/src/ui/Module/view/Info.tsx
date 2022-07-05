@@ -71,7 +71,7 @@ export const Info: React.FC<InfoProps> = (props) => {
       bg={{ blur: 8 }}
       tile={{
         el: elBody,
-        padding: [30, 40],
+        padding: [30, 65],
         size: { minWidth: 250 + 40 + 40 },
         backgroundColor: isDark ? Color.format(0.03) : Color.alpha(COLORS.DARK, 0.04),
         borderColor: isDark ? Color.format(0.03) : Color.alpha(COLORS.DARK, 0.04),

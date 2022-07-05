@@ -26,12 +26,6 @@ export const ModuleView: React.FC<ModuleProps> = (props) => {
   const entry = url?.searchParams.get('entry');
 
   /**
-   * TODO 🐷
-   * - put an [React Event Boundary] around this here.
-   * - <Empty> (optional)
-   */
-
-  /**
    * Render
    */
   const styles = {
@@ -40,7 +34,7 @@ export const ModuleView: React.FC<ModuleProps> = (props) => {
     loading: css({ Absolute: 0, pointerEvents: 'none', display: 'flex' }),
   };
 
-  const elLoading = (() => {
+  const elLoadMask = (() => {
     if (!loading) return null;
     if (!loader) return null;
     if (loader === true) return <LoadMask style={styles.loading} theme={theme} />;
@@ -56,7 +50,7 @@ export const ModuleView: React.FC<ModuleProps> = (props) => {
     />
   );
 
-  const elInfo = !elLoading && url && props.info !== false && (props.info || !entry) && (
+  const elInfo = !elLoadMask && url && props.info !== false && (props.info || !entry) && (
     <Info instance={instance} url={url} theme={theme} onExportClick={props.onExportClick} />
   );
 
@@ -65,7 +59,7 @@ export const ModuleView: React.FC<ModuleProps> = (props) => {
       <ErrorBoundary style={styles.errorBoundary}>
         {elModule}
         {elInfo}
-        {elLoading}
+        {elLoadMask}
       </ErrorBoundary>
     </div>
   );

@@ -4,7 +4,7 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { RouteViewProps } from '..';
 import { SAMPLE } from '../../DEV.Sample.data';
 import { Route } from '../../Route';
-import { RouteBus, rx, t, COLORS } from '../common';
+import { COLORS, RouteBus, rx, t } from '../common';
 import { DevRouteTable } from './DEV.Sample.RouteTable';
 
 type Milliseconds = number;
@@ -33,10 +33,14 @@ export const actions = DevActions<Ctx>()
     const change = e.change;
 
     const bus = rx.bus();
-    const instance: t.RouteInstance = { bus };
+    const instance: t.RouteInstance = { bus, id: 'Route.View:dev' };
 
-    const { getUrl, pushState } = RouteBus.Dev.mock('https://domain.com/');
-    const route = RouteBus.Controller({ instance: { bus }, getUrl, pushState });
+    const { getHref, pushState } = RouteBus.Dev.mock('https://domain.com/');
+    const route = RouteBus.Controller({
+      instance,
+      getHref,
+      pushState,
+    });
     route.current.$.subscribe((e) => change.ctx((ctx) => (ctx.href = e.info.url.href)));
 
     const ctx: Ctx = {
@@ -86,15 +90,17 @@ export const actions = DevActions<Ctx>()
     route('/async/strategy-3');
 
     e.hr(1, 0.1);
-    e.markdown('component samples');
-    route('/component/Doc.LayoutContainer');
-
-    e.hr(1, 0.1);
-    e.markdown('media samnples');
+    e.markdown('media samples');
     route('/media/image:unsplash-1');
     route('/media/image:unsplash-2');
     route('/media/image:unsplash-3');
     route('/media/image:unsplash-4');
+
+    e.hr(1, 0.1);
+    e.markdown('component samples');
+    route('/component/Doc.LayoutContainer');
+
+    e.hr(1, 0.1);
 
     e.markdown(
       `route path/token pattern [reference](https://github.com/pillarjs/path-to-regexp#readme)`,

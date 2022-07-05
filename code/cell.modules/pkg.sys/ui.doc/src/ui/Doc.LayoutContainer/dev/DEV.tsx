@@ -4,11 +4,16 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { DocLayoutContainer, DocLayoutContainerProps } from '..';
 import { COLORS, t } from '../common';
 import { DevChildSample } from './DEV.ChildSample';
+import { SAMPLE as DEFS } from '../../DEV.Sample.data';
+import { Doc } from '../../Doc';
 
 type Ctx = {
   sizes?: t.DocLayoutSizes;
   props: DocLayoutContainerProps;
-  debug: { render: boolean };
+  debug: {
+    render: boolean;
+    sampleBlocks: boolean;
+  };
 };
 
 const Util = {
@@ -17,6 +22,14 @@ const Util = {
       const debug = ctx.props.debug || (ctx.props.debug = {});
       return DocLayoutContainer.toDebug(debug);
     },
+  },
+
+  toBlocks(ctx: Ctx) {
+    const width = ctx.sizes?.column.width;
+    if (!width) return [];
+
+    const def = DEFS.SCALE;
+    return Doc.toBlockElements({ def, width });
   },
 };
 
@@ -39,7 +52,10 @@ export const actions = DevActions<Ctx>()
         },
         onResize: (e) => change.ctx((ctx) => (ctx.sizes = e.sizes)),
       },
-      debug: { render: true },
+      debug: {
+        render: true,
+        sampleBlocks: false,
+      },
     };
 
     return ctx;
@@ -59,7 +75,7 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('Dev');
+    e.title('Props');
 
     e.boolean('debug.bg', (e) => {
       const debug = Util.props.debug(e.ctx);
@@ -83,6 +99,17 @@ export const actions = DevActions<Ctx>()
       const debug = Util.props.debug(e.ctx);
       if (e.changing) debug.columnSize = e.changing.next;
       e.boolean.current = debug.columnSize;
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.title('Dev');
+
+    e.boolean('render sample blocks', (e) => {
+      if (e.changing) e.ctx.debug.sampleBlocks = e.changing.next;
+      e.boolean.current = e.ctx.debug.sampleBlocks;
     });
 
     e.hr();
@@ -118,10 +145,13 @@ export const actions = DevActions<Ctx>()
     });
 
     if (debug.render) {
+      const sampleBlocks = debug.sampleBlocks;
+
       e.render(
-        <DocLayoutContainer {...e.ctx.props} style={{ flex: 1 }}>
-          <DevChildSample />
-        </DocLayoutContainer>,
+        <Doc.LayoutContainer {...e.ctx.props} style={{ flex: 1 }}>
+          {!sampleBlocks && <DevChildSample />}
+          {sampleBlocks && <Doc.Blocks blocks={Util.toBlocks(e.ctx)} />}
+        </Doc.LayoutContainer>,
       );
     }
   });

@@ -6,7 +6,7 @@ import { DocTooSmall } from '../Doc.TooSmall';
 import { LayoutSize } from './LayoutSize';
 
 export type DocLayoutContainerProps = {
-  debug?: true | t.DocLayoutContainerDebug;
+  debug?: boolean | t.DocLayoutContainerDebug;
   min?: { width?: number; height?: number };
   style?: CssValue;
   onResize?: t.DocResizeHandler;
@@ -58,6 +58,7 @@ const View: React.FC<DocLayoutContainerProps> = (props) => {
  * Helpers
  */
 const toDebug = (input: DocLayoutContainerProps['debug']): t.DocLayoutContainerDebug => {
+  if (input === false) return {};
   if (input === true) return { tracelines: true, bg: true, renderCount: true, columnSize: true };
   return input ?? {};
 };

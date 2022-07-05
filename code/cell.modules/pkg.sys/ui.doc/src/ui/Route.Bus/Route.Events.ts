@@ -14,7 +14,7 @@ export function RouteEvents(args: {
   const { dispose, dispose$ } = rx.disposable(args.dispose$);
 
   const bus = rx.busAsType<t.RouteEvent>(args.instance.bus);
-  const instance = args.instance.id ?? DEFAULT.INSTANCE;
+  const instance = args.instance.id;
   const is = RouteEvents.is;
 
   let _current: t.RouteUrl = DEFAULT.URL;

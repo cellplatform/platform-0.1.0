@@ -8,7 +8,7 @@ type Ctx = { props: AppProps };
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('Sample.App')
+  .namespace('Sample.App / 0.0.x')
   .context((e) => {
     if (e.prev) return e.prev;
     const ctx: Ctx = { props: {} };

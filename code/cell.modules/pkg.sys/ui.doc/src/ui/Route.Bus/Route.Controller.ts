@@ -1,6 +1,6 @@
 import { delay } from 'rxjs/operators';
 
-import { DEFAULT, rx, t } from './common';
+import { rx, t } from './common';
 import { QueryParams } from './Url.QueryParams';
 import { RouteEvents } from './Route.Events';
 
@@ -9,21 +9,19 @@ import { RouteEvents } from './Route.Events';
  */
 export function RouteController(args: {
   instance: t.RouteInstance;
-  filter?: (e: t.RouteEvent) => boolean;
   dispose$?: t.Observable<any>;
-  getUrl?: () => string; // Factory producing the current location URL.
+  getHref?: () => string; // Factory producing the current location URL.
   pushState?: (data: any, title: string, url?: string) => void;
 }) {
-  const { filter } = args;
-  const getUrl = () => new URL(args.getUrl ? args.getUrl() : location.href);
+  const isMock = Boolean(args.getHref);
+  const getHref = () => new URL(args.getHref ? args.getHref() : location.href);
 
   const bus = rx.busAsType<t.RouteEvent>(args.instance.bus);
-  const instance = args.instance.id ?? DEFAULT.INSTANCE;
+  const instance = args.instance.id;
 
   const events = RouteEvents({
     instance: args.instance,
     dispose$: args.dispose$,
-    filter,
   });
 
   const toInfo = (url: URL): t.RouteInfo => {
@@ -46,7 +44,7 @@ export function RouteController(args: {
   events.info.req$.pipe(delay(0)).subscribe((e) => {
     // NB: delay to ensure the callers treat this as async.
     const { tx } = e;
-    const url = getUrl();
+    const url = getHref();
     const info = toInfo(url);
     bus.fire({
       type: 'sys.ui.route/info:res',
@@ -60,7 +58,7 @@ export function RouteController(args: {
   events.change.req$.pipe(delay(0)).subscribe((e) => {
     // NB: delay to ensure the callers treat this as async.
     const { tx } = e;
-    const url = getUrl();
+    const url = getHref();
     const params = QueryParams(url);
 
     if (typeof e.path === 'string') url.pathname = e.path;
@@ -95,12 +93,31 @@ export function RouteController(args: {
    * Changed.
    */
   events.change.res$.subscribe((e) => {
-    const info = toInfo(getUrl());
+    const info = toInfo(getHref());
     bus.fire({
       type: 'sys.ui.route/current',
       payload: { instance, info },
     });
   });
+
+  /**
+   * Window "popstate" event.
+   * Fires when the back-button is clicked within the browser.
+   *
+   * Ref:
+   *    https://developer.mozilla.org/en-US/docs/Web/API/Window/popstate_event
+   *
+   */
+  if (!isMock) {
+    const onPopState = (e: PopStateEvent) => {
+      const path = location.pathname;
+      const hash = location.search;
+      const query = QueryParams(location.href).toObject();
+      events.change.fire({ path, hash, query });
+    };
+    window.addEventListener('popstate', onPopState);
+    events.dispose$.subscribe(() => window.removeEventListener('popstate', onPopState));
+  }
 
   /**
    * API

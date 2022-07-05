@@ -32,19 +32,14 @@ export function DevRouteTable(getCtx: () => Ctx) {
     },
 
     /**
-     * DOCUMENT: "/<path>/doc:<name>"
+     * DOCUMENT: "/<path>/<name>"
      */
-    '/:path/doc\\::name*'(e) {
+    '/docs/:path/:name*'(e) {
       const path = e.url.path;
       const def = SAMPLE.defs.find((def) => def.path === path);
       if (!def) return;
 
-      /**
-       * TODO 🐷 Size
-       */
-      const width = 550; // TEMP 🐷
-      const blocks = Doc.toBlockElements({ def, width });
-      e.render(<Doc.Layout blocks={blocks} style={{ flex: 1 }} />);
+      e.render(<Doc.Layout def={def} style={{ flex: 1 }} />);
     },
 
     /**

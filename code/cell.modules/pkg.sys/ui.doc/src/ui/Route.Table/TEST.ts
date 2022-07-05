@@ -84,7 +84,7 @@ export default Test.describe('Route.Table', (e) => {
     });
   });
 
-  e.describe.only('path-to-regexp (underlying library)', (e) => {
+  e.describe('path-to-regexp (underlying library)', (e) => {
     /**
      * NOTE
      *    These unit-tests are used for testing out [path-to-regexp]

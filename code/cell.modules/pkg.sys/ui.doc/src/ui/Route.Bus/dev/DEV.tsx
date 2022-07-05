@@ -22,12 +22,12 @@ export const actions = DevActions<Ctx>()
     const change = e.change;
 
     const bus = rx.bus();
-    const mock = Route.Bus.Dev.mock();
+    const mock = Route.Bus.Dev.mock('https://mock.com/');
     const isMock = () => e.current?.context === 'Mock';
 
     const route = Route.Bus.Controller({
-      instance: { bus },
-      getUrl: () => (isMock() ? mock.getUrl() : location.href),
+      instance: { bus, id: 'Route.Bus:dev' },
+      getHref: () => (isMock() ? mock.getHref() : location.href),
       pushState(data, unused, url) {
         if (isMock()) {
           mock.pushState(data, unused, url);

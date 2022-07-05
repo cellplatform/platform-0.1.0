@@ -1,27 +1,34 @@
 import React from 'react';
 import { DevActions, ObjectView } from '../../../test';
-import { DocLayout, DocLayoutProps } from '..';
-
+import { App, AppProps } from '..';
+import { t, rx } from '../common';
 import { SAMPLE } from '../../DEV.Sample.data';
-import { t } from '../common';
-import { Doc } from '../../Doc';
 
-type Ctx = { props: DocLayoutProps };
+type Ctx = {
+  href?: string;
+  route?: t.RouteEvents;
+  props: AppProps;
+};
 
 /**
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.Doc.Layout')
+  .namespace('Sample.App')
   .context((e) => {
     if (e.prev) return e.prev;
+    const change = e.change;
 
     const ctx: Ctx = {
       props: {
-        def: SAMPLE.defs[2],
-        tracelines: false,
+        bus: rx.bus(),
+        onReady(e) {
+          change.ctx((ctx) => (ctx.route = e.route));
+          e.route.current.$.subscribe((e) => change.ctx((ctx) => (ctx.href = e.info.url.href)));
+        },
       },
     };
+
     return ctx;
   })
 
@@ -30,27 +37,22 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('Props');
+    e.title('Routes');
 
-    const defButton = (def: t.DocDef) => {
-      e.button(`def: ${def.path}`, (e) => (e.ctx.props.def = def));
+    const route = (path: string) => {
+      const label = `url: ${path}`;
+      e.button(label, (e) => e.ctx.route?.change.fire({ path }));
     };
 
-    SAMPLE.defs.forEach((def) => defButton(def));
-
+    route('/');
     e.hr(1, 0.1);
-    e.button('def: <undefined>', (e) => (e.ctx.props.def = undefined));
+    SAMPLE.defs.forEach((def) => route(def.path));
 
     e.hr();
   })
 
   .items((e) => {
     e.title('Dev');
-
-    e.boolean('tracelines', (e) => {
-      if (e.changing) e.ctx.props.tracelines = e.changing.next;
-      e.boolean.current = e.ctx.props.tracelines;
-    });
 
     e.hr();
 
@@ -68,22 +70,22 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    const route = e.ctx.route;
+
     e.settings({
-      actions: { width: 360 },
       host: { background: -0.04 },
       layout: {
-        label: '<Doc.Layout>',
-        position: [80, 80, 130, 80],
+        label: {
+          topLeft: '<Sample.App>',
+          bottomLeft: e.ctx.href,
+        },
+        position: [150, 80],
         border: -0.1,
         cropmarks: -0.2,
         background: 1,
       },
     });
-    e.render(
-      <Doc.Fonts style={{ flex: 1 }}>
-        <DocLayout {...e.ctx.props} style={{ flex: 1 }} />
-      </Doc.Fonts>,
-    );
+    e.render(<App {...e.ctx.props} mock={true} style={{ flex: 1 }} />);
   });
 
 export default actions;

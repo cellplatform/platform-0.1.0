@@ -2,8 +2,11 @@ import '@platform/css/reset.css';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { DevHarness } from '../Dev.Harness';
-import { App } from './App';
+
+const Imports = {
+  DevHarness: () => import('../Dev.Harness'),
+  App: () => import('./App'),
+};
 
 const query = () => {
   const url = new URL(location.href);
@@ -20,9 +23,22 @@ const query = () => {
 };
 
 const isDev = query().has('dev');
-const el = isDev ? <DevHarness /> : <App fs={{ id: 'fs.sample', path: 'sample/markdown.md' }} />;
-ReactDOM.render(el, document.getElementById('root'));
+if (isDev) document.title = `${document.title} (dev)`;
 
-if (isDev) {
-  document.title = `${document.title} (dev)`;
-}
+/**
+ * [Render]
+ */
+(async () => {
+  const root = document.getElementById('root');
+
+  if (isDev) {
+    const DevHarness = (await Imports.DevHarness()).DevHarness;
+    ReactDOM.render(<DevHarness />, root);
+  }
+
+  if (!isDev) {
+    const App = (await Imports.App()).App;
+    const el = <App fs={{ id: 'fs.sample', path: 'sample/markdown.md' }} />;
+    ReactDOM.render(el, root);
+  }
+})();

@@ -3,20 +3,22 @@ import { Harness } from 'sys.ui.dev';
 import { t } from './common';
 
 const imports = {
-  SampleApp: import('./ui/DEV.Sample.App/dev/DEV'),
+  Sample: import('./ui/DEV.Sample/dev/DEV'),
+  Sample__0_0_0: import('./ui/DEV.Sample-0.0.0/dev/DEV'),
   SampleDeploy: import('./ui/DEV.Sample.Deploy/DEV'),
 
   Design: import('./ui/Design/DEV'),
   ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
-  DocLayoutContainer: import('./ui/Doc.LayoutContainer/dev/DEV'),
   DocLayout: import('./ui/Doc.Layout/dev/DEV'),
+  DocLayoutContainer: import('./ui/Doc.LayoutContainer/dev/DEV'),
   DocList: import('./ui/Doc.List/dev/DEV'),
   DocIndex: import('./ui/Doc.Index/dev/DEV'),
   DocHeadline: import('./ui/Doc.Headline/dev/DEV'),
   DocByline: import('./ui/Doc.Byline/dev/DEV'),
-  DocBlock: import('./ui/Doc.Block/dev/DEV'),
   DocImage: import('./ui/Doc.Image/dev/DEV'),
   DocQuote: import('./ui/Doc.Quote/dev/DEV'),
+  DocBlock: import('./ui/Doc.Block/dev/DEV'),
+  DocBlocks: import('./ui/Doc.Blocks/dev/DEV'),
 
   TalkingDiagram: import('./ui/Diagram.TalkingDiagram/dev/DEV'),
 
