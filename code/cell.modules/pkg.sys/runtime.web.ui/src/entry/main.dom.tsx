@@ -2,14 +2,14 @@ import '@platform/css/reset.css';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { DevHarness } from '../Dev.Harness';
-import { Module } from '../ui/Module';
-import { css, rx, Color, COLORS } from '../common';
+import { rx } from '@platform/util.value/lib/rx';
 
-const bus = rx.bus();
-const instance = { bus };
+const Imports = {
+  DevHarness: () => import('../Dev.Harness'),
+  Module: () => import('../ui/Module'),
+};
+
 const url = new URL(location.href);
-
 const query = () => {
   const q = url.searchParams;
   if (q.has('dev')) return q;
@@ -24,22 +24,27 @@ const query = () => {
 };
 
 const isDev = query().has('dev');
-const entry = url.searchParams.get('entry') ?? 'net.sys';
-const href = Module.Url.parse('https://libs.db.team', { entry }).href;
+if (isDev) document.title = `${document.title} (dev)`;
 
-const styles = {
-  app: css({
-    Absolute: 0,
-    backgroundColor: Color.format(-0.06),
-  }),
-};
+/**
+ * [Render]
+ */
+(async () => {
+  const root = document.getElementById('root');
 
-const elDev = isDev && <DevHarness />;
-const elApp = !isDev && <Module.App instance={instance} href={href} style={styles.app} />;
-const el = (isDev ? elDev : elApp) as JSX.Element;
+  if (isDev) {
+    const DevHarness = (await Imports.DevHarness()).DevHarness;
+    ReactDOM.render(<DevHarness />, root);
+  }
 
-ReactDOM.render(el, document.getElementById('root'));
+  if (!isDev) {
+    const Module = (await Imports.Module()).Module;
 
-if (isDev) {
-  document.title = `${document.title} (dev)`;
-}
+    const entry = url.searchParams.get('entry') ?? 'net.sys';
+    const href = Module.Url.parse('https://libs.db.team', { entry }).href;
+    const instance = { bus: rx.bus() };
+    const el = <Module.App instance={instance} href={href} style={{ Absolute: 0 }} />;
+
+    ReactDOM.render(el, root);
+  }
+})();
