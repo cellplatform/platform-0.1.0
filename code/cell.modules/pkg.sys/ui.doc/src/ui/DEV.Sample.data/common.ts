@@ -7,3 +7,24 @@ export const author: t.DocDef['author'] = {
 };
 
 export const category = 'Conceptual Framing Series';
+
+/**
+ * Inserts
+ */
+const REF = {
+  SB: `[@superbenefit](https://superbenefit.mirror.xyz)`,
+  RO_ETH: `[yeoro.eth](https://mirror.xyz/yeoro.eth)`,
+};
+
+// const ORIG_PUBLISHED = `This article was originally published on ${REF.RO_ETH} → ${REF.SB}.`;
+const ORIG_PUBLISHED_BLOCK: t.DocDefBlock = {
+  kind: 'Markdown',
+  text: `
+*This article was originally published on ${REF.RO_ETH} → ${REF.SB}.*
+`,
+};
+
+export const COMMONTEXT = {
+  // ORIG_PUBLISHED,
+  ORIG_PUBLISHED_BLOCK,
+};

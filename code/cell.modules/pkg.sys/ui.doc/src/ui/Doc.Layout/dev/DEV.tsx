@@ -18,7 +18,7 @@ export const actions = DevActions<Ctx>()
 
     const ctx: Ctx = {
       props: {
-        def: SAMPLE.defs[0],
+        def: SAMPLE.defs[2],
         tracelines: false,
       },
     };
@@ -69,6 +69,7 @@ export const actions = DevActions<Ctx>()
 
   .subject((e) => {
     e.settings({
+      actions: { width: 360 },
       host: { background: -0.04 },
       layout: {
         label: '<Doc.Layout>',

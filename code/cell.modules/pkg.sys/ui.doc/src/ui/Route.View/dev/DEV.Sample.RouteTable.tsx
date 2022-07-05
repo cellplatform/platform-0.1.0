@@ -32,9 +32,9 @@ export function DevRouteTable(getCtx: () => Ctx) {
     },
 
     /**
-     * DOCUMENT: "/<path>/doc:<name>"
+     * DOCUMENT: "/<path>/<name>"
      */
-    '/:path/doc\\::name*'(e) {
+    '/docs/:path/:name*'(e) {
       const path = e.url.path;
       const def = SAMPLE.defs.find((def) => def.path === path);
       if (!def) return;

@@ -11,6 +11,7 @@ export function AppRoutes(): t.RouteTableDefs {
           Absolute: 0,
           Flex: 'center-center',
           lineHeight: 1.8,
+          color: COLORS.DARK,
         }),
       };
 
@@ -31,9 +32,9 @@ export function AppRoutes(): t.RouteTableDefs {
     },
 
     /**
-     * DOCUMENT: "/<path>/doc:<name>"
+     * DOCUMENT: "/<path>/<name>"
      */
-    '/:path/doc\\::name*'(e) {
+    '/docs/:path/:name*'(e) {
       const path = e.url.path;
       const def = SAMPLE.defs.find((def) => def.path === path);
       if (!def) return;

@@ -23,7 +23,11 @@ export function toBlockElements(props: { def: t.DocDef; width: number }) {
   );
 
   const elByline = (
-    <Doc.Byline version={def.version} author={def.author} style={{ marginBottom: 60 }} />
+    <Doc.Byline
+      version={def.version}
+      author={def.author}
+      style={{ marginBottom: 60, marginRight: 8 }}
+    />
   );
 
   const blocks = (def.blocks || []).map((def, i) => {
