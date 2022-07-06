@@ -70,8 +70,6 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const route = e.ctx.route;
-
     e.settings({
       host: { background: -0.04 },
       layout: {
@@ -82,7 +80,6 @@ export const actions = DevActions<Ctx>()
         position: [150, 80],
         border: -0.1,
         cropmarks: -0.2,
-        background: 1,
       },
     });
     e.render(<App {...e.ctx.props} mock={true} style={{ flex: 1 }} />);
