@@ -25,7 +25,7 @@ export function useRouteController(args: {
   useEffect(() => {
     const { dispose, dispose$ } = rx.disposable();
 
-    const mock = args.mock ? RouteBus.Dev.mock('https://mock.org/') : undefined;
+    const mock = args.mock ? RouteBus.Dev.mock('https://domain.com/') : undefined;
     const getHref = mock?.getHref;
     const pushState = mock?.pushState;
     const route = RouteBus.Controller({ instance, getHref, pushState, dispose$ });

@@ -77,7 +77,7 @@ export const actions = DevActions<Ctx>()
           topLeft: '<Sample.App>',
           bottomLeft: e.ctx.href,
         },
-        position: [150, 80],
+        position: [80, 80, 110, 80],
         border: -0.1,
         cropmarks: -0.2,
       },
