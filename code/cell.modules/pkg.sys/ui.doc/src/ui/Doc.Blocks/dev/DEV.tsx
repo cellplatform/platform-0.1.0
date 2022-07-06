@@ -5,7 +5,7 @@ import { DocBlocksProps } from '..';
 import { Doc } from '../../Doc';
 import { SAMPLE as BLOCK_SAMPLE } from '../../Doc.Block.Markdown/dev/DEV.Sample';
 import { css, COLORS, DEFAULT, t } from '../common';
-import { SAMPLE as IMAGE_SAMPLE } from '../../Doc.Image/dev/DEV';
+import { SAMPLE as IMAGE_SAMPLE } from '../../Doc.Block.Image/dev/DEV';
 import { SAMPLE as BYLINE_SAMPLE } from '../../Doc.Byline/dev/DEV';
 import { SAMPLE as DEFS } from '../../DEV.Sample.DATA';
 
@@ -32,7 +32,7 @@ const Util = {
     const width = ctx.props.sizes?.column.width;
     if (!width) return;
 
-    const elBannerImage = <Doc.Image url={IMAGE_SAMPLE.URL} width={width} />;
+    const elBannerImage = <Doc.Block.Image url={IMAGE_SAMPLE.URL} width={width} />;
 
     const elByline = (
       <Doc.Byline
@@ -56,7 +56,7 @@ const Util = {
     const elBlock = <Doc.Block.Markdown markdown={BLOCK_SAMPLE.Doc} />;
 
     const elImage = (
-      <Doc.Image
+      <Doc.Block.Image
         url={'https://tdb-2cxz9824d-tdb.vercel.app/image.png'}
         credit={'Tyler Durden'}
         width={width}

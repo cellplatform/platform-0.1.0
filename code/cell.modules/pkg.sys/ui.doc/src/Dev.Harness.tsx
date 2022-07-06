@@ -15,12 +15,12 @@ const imports = {
   DocIndex: import('./ui/Doc.Index/dev/DEV'),
   DocHeadline: import('./ui/Doc.Headline/dev/DEV'),
   DocByline: import('./ui/Doc.Byline/dev/DEV'),
-  DocImage: import('./ui/Doc.Image/dev/DEV'),
   DocQuote: import('./ui/Doc.Quote/dev/DEV'),
 
   DocBlocks: import('./ui/Doc.Blocks/dev/DEV'),
   DocBlockMarkdown: import('./ui/Doc.Block.Markdown/dev/DEV'),
   DocBlockInsetPanel: import('./ui/Doc.Block.InsetPanel/dev/DEV'),
+  DocBlockImage: import('./ui/Doc.Block.Image/dev/DEV'),
 
   TalkingDiagram: import('./ui/Diagram.TalkingDiagram/dev/DEV'),
 

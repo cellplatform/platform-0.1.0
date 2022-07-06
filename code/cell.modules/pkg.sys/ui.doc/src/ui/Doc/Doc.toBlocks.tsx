@@ -10,7 +10,7 @@ export function toBlockElements(props: { def: t.DocDef; width: number }): JSX.El
   const { def, width } = props;
 
   const elBanner = def.banner && (
-    <Doc.Image url={def.banner.url} credit={def.banner.credit} width={width} />
+    <Doc.Block.Image url={def.banner.url} credit={def.banner.credit} width={width} />
   );
 
   const elHeadline = (
@@ -37,7 +37,9 @@ export function toBlockElements(props: { def: t.DocDef; width: number }): JSX.El
     }
 
     if (def.kind === 'Image') {
-      return <Doc.Image url={def.url} credit={def.credit} width={width} margin={def.margin} />;
+      return (
+        <Doc.Block.Image url={def.url} credit={def.credit} width={width} margin={def.margin} />
+      );
     }
 
     if (def.kind === 'InsetPanel') {

@@ -16,7 +16,6 @@ const REF = {
   RO_ETH: `[yeoro.eth](https://mirror.xyz/yeoro.eth)`,
 };
 
-// const ORIG_PUBLISHED = `This article was originally published on ${REF.RO_ETH} → ${REF.SB}.`;
 const ORIG_PUBLISHED_BLOCK: t.DocDefBlock = {
   kind: 'InsetPanel',
   markdown: `
