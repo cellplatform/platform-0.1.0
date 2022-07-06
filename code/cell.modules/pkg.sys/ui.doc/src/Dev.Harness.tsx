@@ -4,7 +4,6 @@ import { t } from './common';
 
 const imports = {
   Sample: import('./ui/DEV.Sample/dev/DEV'),
-  Sample__0_0_0: import('./ui/DEV.Sample-0.0.0/dev/DEV'),
   SampleDeploy: import('./ui/DEV.Sample.Deploy/DEV'),
 
   Design: import('./ui/Design/DEV'),
@@ -26,8 +25,6 @@ const imports = {
 
   RouteBus: import('./ui/Route.Bus/dev/DEV'),
   RouteView: import('./ui/Route.View/dev/DEV'),
-
-  RouteContainer___: import('./ui/RouteContainer.OLD/dev/DEV'),
 
   UnitTests: import('./Dev.UnitTests'),
 };
