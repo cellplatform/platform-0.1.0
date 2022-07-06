@@ -1,11 +1,8 @@
 import React from 'react';
-
-import { css, CssValue, pkg, PropList, DEFAULT, FIELDS, FC } from './common';
-
-import * as k from './types';
+import { css, CssValue, DEFAULT, FC, FIELDS, pkg, PropList, t } from './common';
 
 export type ModuleInfoProps = {
-  fields?: k.ModuleInfoFields[];
+  fields?: t.ModuleInfoFields[];
   width?: number;
   minWidth?: number;
   maxWidth?: number;
@@ -18,7 +15,7 @@ export type ModuleInfoProps = {
 const View: React.FC<ModuleInfoProps> = (props) => {
   const { width, minWidth = 250, maxWidth, fields = DEFAULT.FIELDS } = props;
 
-  const items = PropList.builder<k.ModuleInfoFields>()
+  const items = PropList.builder<t.ModuleInfoFields>()
     .field('Module', { label: 'Module', value: `${pkg.name}@${pkg.version}` })
     .field('Module.Name', { label: 'Name', value: pkg.name })
     .field('Module.Version', { label: 'Version', value: pkg.version })
