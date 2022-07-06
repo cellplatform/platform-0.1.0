@@ -15,7 +15,7 @@ export const FIELDS: t.ModuleInfoFields[] = [
 /**
  * Default fields and order.
  */
-const DEFAULT_FIELDS: t.ModuleInfoFields[] = ['Module', 'Module.Version'];
+const DEFAULT_FIELDS: t.ModuleInfoFields[] = ['Module.Name', 'Module.Version', 'DataStructure'];
 
 export const DEFAULT = {
   FIELDS: DEFAULT_FIELDS,
