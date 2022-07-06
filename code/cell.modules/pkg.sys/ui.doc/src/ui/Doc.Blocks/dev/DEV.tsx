@@ -53,7 +53,7 @@ const Util = {
       />
     );
 
-    const elBlock = <Doc.Block markdown={BLOCK_SAMPLE.MARKDOWN} />;
+    const elBlock = <Doc.Block.Markdown markdown={BLOCK_SAMPLE.Doc} />;
 
     const elImage = (
       <Doc.Image

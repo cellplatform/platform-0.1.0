@@ -12,7 +12,7 @@ export const PRIMITIVES: t.DocDef = {
   version: '1.0.1 (Jun, 2022)',
   author,
   category,
-  title: `DAOs. Fractal Primitives to Network Scale`,
+  title: `DAOs: Fractal Primitives to Network Scale`,
   // subtitle: `DAOs are extraordinary for their capacity to test experimental ideas. But, in order to have a transformational impact on the world, we need DAOs to scale beyond experiments.`,
 
   blocks: [

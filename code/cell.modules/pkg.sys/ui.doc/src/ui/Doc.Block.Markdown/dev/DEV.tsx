@@ -4,10 +4,30 @@ import { DocMarkdownBlock, DocMarkdownBlockProps } from '..';
 import { DevActions, ObjectView } from '../../../test';
 import { SAMPLE } from './DEV.Sample';
 import { COLORS, css } from '../common';
+import { Doc } from '../../Doc';
 
 type Ctx = {
   props: DocMarkdownBlockProps;
-  debug: { width: number };
+  debug: {
+    width: number;
+    sample: keyof typeof SAMPLE;
+  };
+};
+
+const Util = {
+  toProps(ctx: Ctx) {
+    const { props } = ctx;
+    const markdown = Util.toMarkdownSample(ctx);
+    return { ...props, markdown };
+  },
+
+  toMarkdownSample(ctx: Ctx, options: { maxLength?: number } = {}) {
+    let value = SAMPLE[ctx.debug.sample];
+    if (typeof options.maxLength === 'number' && value.length > options.maxLength) {
+      value = `${value.substring(0, options.maxLength).trim()}...`;
+    }
+    return value;
+  },
 };
 
 /**
@@ -19,8 +39,12 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const ctx: Ctx = {
-      props: { markdown: SAMPLE.MARKDOWN },
-      debug: { width: 720 },
+      props: {},
+      debug: {
+        width: 720,
+        // sample: 'Doc',
+        sample: 'Headings',
+      },
     };
 
     return ctx;
@@ -32,6 +56,20 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Dev');
+
+    e.select((config) => {
+      const items = Object.keys(SAMPLE).map((value) => ({ label: `${value}`, value }));
+      config
+        .title('sample')
+        .items(items)
+        .initial(config.ctx.debug.sample)
+        .view('buttons')
+        .pipe((e) => {
+          if (e.changing) e.ctx.debug.sample = e.changing?.next[0].value;
+        });
+    });
+
+    e.hr(1, 0.1);
 
     e.select((config) => {
       config
@@ -46,15 +84,15 @@ export const actions = DevActions<Ctx>()
     e.hr();
 
     e.component((e) => {
-      const markdown = e.ctx.props.markdown ?? '';
-      const props = {
+      const data = {
         ...e.ctx.props,
-        markdown: markdown ? `${markdown.substring(0, 50)}...` : undefined,
+        markdown: Util.toMarkdownSample(e.ctx, { maxLength: 35 }),
       };
+
       return (
         <ObjectView
           name={'props'}
-          data={props}
+          data={data}
           style={{ MarginX: 15 }}
           fontSize={10}
           expandPaths={['$']}
@@ -65,8 +103,10 @@ export const actions = DevActions<Ctx>()
 
   .subject((e) => {
     const debug = e.ctx.debug;
+    const props = Util.toProps(e.ctx);
 
     e.settings({
+      actions: { width: 350 },
       host: { background: COLORS.BG },
       layout: {
         width: debug.width,
@@ -76,12 +116,10 @@ export const actions = DevActions<Ctx>()
       },
     });
 
-    const styles = { base: css({ Scroll: true }) };
-
     e.render(
-      <div {...styles.base}>
-        <DocMarkdownBlock {...e.ctx.props} />
-      </div>,
+      <Doc.Fonts style={{ Scroll: true, flex: 1 }}>
+        <DocMarkdownBlock {...props} />
+      </Doc.Fonts>,
     );
   });
 

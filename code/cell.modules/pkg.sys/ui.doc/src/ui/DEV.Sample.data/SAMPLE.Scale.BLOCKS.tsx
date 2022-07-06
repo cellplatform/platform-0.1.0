@@ -1,10 +1,11 @@
 import { t, author, category, COMMONTEXT } from './common';
+import { FLOWS } from './SAMPLE.Flows';
 
 export const BLOCKS: t.DocDefBlock[] = [
   {
     kind: 'Markdown',
     text: `
-As described in **“DAOs aren’t things; They are flows”**, Web3 presents the 
+As described in “[DAOs aren’t things; They are flows](${FLOWS.path})”, Web3 presents the 
 possibility of a new paradigm to replace the company-centric paradigm that has been evolving 
 over the past 400 years.
 `,
@@ -92,7 +93,7 @@ gained across all the layers in the hierarchy. This causes the unit cost of the 
 produces to fall as its size increases. This is known as **sub-linear scaling**, where the use 
 of resources becomes more and more efficient as the system grows in size.
 
-## Fractal hierarchies are finite
+# Fractal hierarchies are finite
 
 Systems that rely on scaling via fractal hierarchies can become incredibly efficient as they 
 scale. But the downside of this dynamic is that these systems decay and die in very predictable 
@@ -110,7 +111,7 @@ as we should based on our size. But this has only happened in the past few hundr
 of breakthroughs in medicine, hygiene, nutrition etc. Up until the 19th century our lifespan 
 averaged somewhere between 20-40 years, which is about right for our body size.*
 
-## Companies are masters of fractal hierarchies
+# Companies are masters of fractal hierarchies
 
 This dynamic is what underpins 400 years of success for the “Company”. With the creation of the 
 limited liability company we gained a highly effective system to make this dynamic work – 
@@ -183,7 +184,7 @@ novel innovation. So most resign themselves to purchasing innovation that is pro
 As their hierarchies become more and more entrenched and inflexible, they do this more and more 
 in an effort to stay relevant and ultimately to try to ward off their inevitable decline.
 
-## But cities don’t die
+# But cities don’t die
 
 This is where West’s analysis gets really interesting. While animals, plants and companies 
 all predictably die, throughout history there have been almost no cases of cities dying.
@@ -209,7 +210,7 @@ virtuous cycle where the improvement in the lifestyles and prospects of the city
 attracts new residents, which then improves the **Dynamic One** efficiency of the infrastructure 
 and also improves the **Dynamic Two** ideas and innovation machine.
 
-## What about DAOs?
+# What about DAOs?
 You can probably see where this is going. DAOs as network economies have the potential to 
 leverage both **Dynamic One** and **Dynamic Two.** After all, cities are not things either… They are 
 networks!
