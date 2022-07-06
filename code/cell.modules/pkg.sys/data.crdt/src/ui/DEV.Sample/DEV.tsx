@@ -12,7 +12,7 @@ const DEFAULT = {
 
 type Ctx = {
   bus: t.EventBus;
-  filesystem: TestFilesystem;
+  filesystem: t.TestFilesystem;
   props: SampleProps;
   total: number;
   debounce: number;

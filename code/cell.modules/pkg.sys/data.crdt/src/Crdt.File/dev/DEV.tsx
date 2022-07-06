@@ -9,7 +9,7 @@ import { Deploy, DeployProps } from 'vendor.cloud.vercel/lib/web/ui/Deploy';
 type Ctx = {
   bus: t.EventBus;
   token: string;
-  filesystem: TestFilesystem;
+  filesystem: t.TestFilesystem;
   props: DevSampleProps;
 };
 

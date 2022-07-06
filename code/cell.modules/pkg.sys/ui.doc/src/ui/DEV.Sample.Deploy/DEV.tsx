@@ -2,11 +2,11 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { Deploy, DeployProps } from 'vendor.cloud.vercel/lib/web/ui/Deploy';
 
-import { TestFilesystem } from 'sys.fs/lib/web/test/Test.Filesystem';
 import { t } from '../common';
+import { TestFilesystem } from '../../test';
 
 type Ctx = {
-  fs: t.Fs;
+  filesystem: t.TestFilesystem;
   props: DeployProps;
 };
 
@@ -32,10 +32,11 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const { fs, instance } = TestFilesystem.init();
+    const filesystem = TestFilesystem.init();
+    const { instance } = filesystem;
 
     const ctx: Ctx = {
-      fs,
+      filesystem,
       props: {
         instance,
         token: Util.token.read(),
@@ -49,6 +50,7 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx, bus } = e;
+    await e.ctx.filesystem.ready();
   })
 
   .items((e) => {
@@ -69,7 +71,7 @@ export const actions = DevActions<Ctx>()
     e.title('Filesystem');
 
     e.button('filesystem: delete all', async (e) => {
-      const fs = e.ctx.fs;
+      const fs = e.ctx.filesystem.fs;
       const files = (await fs.manifest()).files;
       await Promise.all(files.map((file) => fs.delete(file.path)));
     });

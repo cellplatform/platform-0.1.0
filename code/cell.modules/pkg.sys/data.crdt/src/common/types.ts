@@ -9,7 +9,7 @@ export { NetworkBus } from '@platform/cell.types';
 /**
  * @system
  */
-export { Fs, FsViewInstance, SysFsEvents } from 'sys.fs/lib/types';
+export { Fs, FsViewInstance, SysFsEvents, TestFilesystem } from 'sys.fs/lib/types';
 
 /**
  * @local
