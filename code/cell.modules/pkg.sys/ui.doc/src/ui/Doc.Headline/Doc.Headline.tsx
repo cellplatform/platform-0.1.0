@@ -1,5 +1,5 @@
 import React from 'react';
-import { COLORS, css, CssValue, SanitizeHtml, Button } from './common';
+import { COLORS, css, CssValue, SanitizeHtml, Button, FONT } from './common';
 
 export type DocHeadlineProps = {
   id?: string;
@@ -11,9 +11,6 @@ export type DocHeadlineProps = {
   onClick?: (e: { id: string; title: string }) => void;
 };
 
-/**
- * REF: https://google-webfonts-helper.herokuapp.com/fonts/neuton?subsets=latin
- */
 export const DocHeadline: React.FC<DocHeadlineProps> = (props) => {
   const { id = '', category, onClick, hint = {} } = props;
   const widthHint = hint.width ?? -1;
@@ -40,25 +37,24 @@ export const DocHeadline: React.FC<DocHeadlineProps> = (props) => {
       textTransform: 'uppercase',
       fontSize: 13,
       fontWeight: 700,
-      marginBottom: title || subtitle ? 6 : 0,
+      marginBottom: title || subtitle ? 14 : 0,
       userSelect: 'none',
     }),
     displayFont: {
       color: COLORS.DARK,
-      fontFamily: 'Neuton',
+      fontFamily: FONT.MERRIWEATHER.regular.normal.family,
       fontStyle: 'normal',
       letterSpacing: '-0.006em',
     },
     headline: css({
       fontSize: widthHint !== -1 && widthHint > 500 ? 46 : 32,
-      marginBottom: subtitle ? 20 : 0,
-      lineHeight: 0.9,
+      marginBottom: subtitle ? 30 : 0,
+      lineHeight: 1.1,
     }),
     subtitle: css({
       fontSize: widthHint !== -1 && widthHint > 500 ? 36 : 26,
-      // fontSize: widthHint !== -1 && widthHint > 500 ? 46 : 32,
-      opacity: 0.6,
-      lineHeight: 1.15,
+      opacity: 0.4,
+      lineHeight: 1.25,
       letterSpacing: '-0.006em',
     }),
   };

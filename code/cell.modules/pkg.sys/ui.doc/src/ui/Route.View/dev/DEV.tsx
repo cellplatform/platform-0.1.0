@@ -2,7 +2,7 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { RouteViewProps } from '..';
-import { SAMPLE } from '../../DEV.Sample.data';
+import { SAMPLE } from '../../DEV.Sample.DATA';
 import { Route } from '../../Route';
 import { COLORS, RouteBus, rx, t } from '../common';
 import { DevRouteTable } from './DEV.Sample.RouteTable';
@@ -27,7 +27,7 @@ const Util = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.Route.View')
+  .namespace('sys.Route.View')
   .context((e) => {
     if (e.prev) return e.prev;
     const change = e.change;

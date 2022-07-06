@@ -2,7 +2,7 @@ import React from 'react';
 import { DevActions, ObjectView } from '../../../test';
 import { App, AppProps } from '..';
 import { t, rx } from '../common';
-import { SAMPLE } from '../../DEV.Sample.data';
+import { SAMPLE } from '../../DEV.Sample.DATA';
 
 type Ctx = {
   href?: string;

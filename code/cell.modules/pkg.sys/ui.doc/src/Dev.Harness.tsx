@@ -4,7 +4,6 @@ import { t } from './common';
 
 const imports = {
   Sample: import('./ui/DEV.Sample/dev/DEV'),
-  Sample__0_0_0: import('./ui/DEV.Sample-0.0.0/dev/DEV'),
   SampleDeploy: import('./ui/DEV.Sample.Deploy/DEV'),
 
   Design: import('./ui/Design/DEV'),
@@ -15,17 +14,18 @@ const imports = {
   DocIndex: import('./ui/Doc.Index/dev/DEV'),
   DocHeadline: import('./ui/Doc.Headline/dev/DEV'),
   DocByline: import('./ui/Doc.Byline/dev/DEV'),
-  DocImage: import('./ui/Doc.Image/dev/DEV'),
   DocQuote: import('./ui/Doc.Quote/dev/DEV'),
-  DocBlock: import('./ui/Doc.Block/dev/DEV'),
+
   DocBlocks: import('./ui/Doc.Blocks/dev/DEV'),
+  DocBlockMarkdown: import('./ui/Doc.Block.Markdown/dev/DEV'),
+  DocBlockInsetPanel: import('./ui/Doc.Block.InsetPanel/dev/DEV'),
+  DocBlockImage: import('./ui/Doc.Block.Image/dev/DEV'),
 
   TalkingDiagram: import('./ui/Diagram.TalkingDiagram/dev/DEV'),
 
-  RouteBus: import('./ui/Route.Bus/dev/DEV'),
-  RouteView: import('./ui/Route.View/dev/DEV'),
-
-  RouteContainer___: import('./ui/RouteContainer.OLD/dev/DEV'),
+  SysFont: import('./ui/Font/dev/DEV'),
+  SysRouteBus: import('./ui/Route.Bus/dev/DEV'),
+  SysRouteView: import('./ui/Route.View/dev/DEV'),
 
   UnitTests: import('./Dev.UnitTests'),
 };

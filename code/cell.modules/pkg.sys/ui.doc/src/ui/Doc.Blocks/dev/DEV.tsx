@@ -3,11 +3,11 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { DocBlocksProps } from '..';
 import { Doc } from '../../Doc';
-import { SAMPLE as BLOCK_SAMPLE } from '../../Doc.Block/dev/DEV.Sample';
+import { SAMPLE as BLOCK_SAMPLE } from '../../Doc.Block.Markdown/dev/DEV.SAMPLE';
 import { css, COLORS, DEFAULT, t } from '../common';
-import { SAMPLE as IMAGE_SAMPLE } from '../../Doc.Image/dev/DEV';
+import { SAMPLE as IMAGE_SAMPLE } from '../../Doc.Block.Image/dev/DEV';
 import { SAMPLE as BYLINE_SAMPLE } from '../../Doc.Byline/dev/DEV';
-import { SAMPLE as DEFS } from '../../DEV.Sample.data';
+import { SAMPLE as DEFS } from '../../DEV.Sample.DATA';
 
 type Ctx = {
   props: DocBlocksProps;
@@ -32,7 +32,7 @@ const Util = {
     const width = ctx.props.sizes?.column.width;
     if (!width) return;
 
-    const elBannerImage = <Doc.Image url={IMAGE_SAMPLE.URL} width={width} />;
+    const elBannerImage = <Doc.Block.Image url={IMAGE_SAMPLE.URL} width={width} />;
 
     const elByline = (
       <Doc.Byline
@@ -53,10 +53,10 @@ const Util = {
       />
     );
 
-    const elBlock = <Doc.Block markdown={BLOCK_SAMPLE.MARKDOWN} />;
+    const elBlock = <Doc.Block.Markdown markdown={BLOCK_SAMPLE.Doc} />;
 
     const elImage = (
-      <Doc.Image
+      <Doc.Block.Image
         url={'https://tdb-2cxz9824d-tdb.vercel.app/image.png'}
         credit={'Tyler Durden'}
         width={width}
@@ -101,7 +101,6 @@ export const actions = DevActions<Ctx>()
 
     const ctx: Ctx = {
       props: {
-        scrollable: true,
         tracelines: true,
         // tracelines: false,
         padding: { header: undefined, footer: DEFAULT.padding.footer },
@@ -149,11 +148,6 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Props');
-
-    e.boolean('scrollable', (e) => {
-      if (e.changing) e.ctx.props.scrollable = e.changing.next;
-      e.boolean.current = e.ctx.props.scrollable;
-    });
 
     e.boolean('blockSpacing.y', (e) => {
       const blockSpacing = Util.blockSpacing(e.ctx);
@@ -229,9 +223,9 @@ export const actions = DevActions<Ctx>()
       const blocks = Util.toBlocks(e.ctx);
 
       const styles = {
-        base: css({ flex: 1, display: 'flex' }),
+        base: css({ flex: 1, position: 'relative' }),
         container: css({ Absolute: 0, pointerEvents: 'none' }),
-        blocks: css({ flex: 1 }),
+        blocks: css({ Absolute: 0, Scroll: true, display: 'flex' }),
       };
 
       /**
@@ -240,7 +234,9 @@ export const actions = DevActions<Ctx>()
       e.render(
         <Doc.Fonts style={styles.base}>
           <Doc.LayoutContainer debug={false} style={styles.container} onResize={e.ctx.onResize} />
-          <Doc.Blocks {...props} blocks={blocks} style={styles.blocks} />
+          <div {...styles.blocks}>
+            <Doc.Blocks {...props} blocks={blocks} style={{ flex: 1 }} />
+          </div>
         </Doc.Fonts>,
       );
     }

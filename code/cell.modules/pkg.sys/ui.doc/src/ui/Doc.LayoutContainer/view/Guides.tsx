@@ -9,7 +9,7 @@ export type GuidesProps = {
 
 export const Guides: React.FC<GuidesProps> = (props) => {
   const { sizes, debug = {} } = props;
-  const border = debug.tracelines ? `solid 1px ${Color.alpha(COLORS.MAGENTA, 0.2)}` : undefined;
+  const border = debug.tracelines ? `solid 1px ${Color.alpha(COLORS.MAGENTA, 0.1)}` : undefined;
 
   /**
    * [Render]
@@ -31,8 +31,9 @@ export const Guides: React.FC<GuidesProps> = (props) => {
     elDebug: css({
       Absolute: [3, 5, null, null],
       color: Color.alpha(COLORS.MAGENTA, 0.3),
-      fontSize: 10,
       fontFamily: 'monospace',
+      fontSize: 10,
+      fontWeight: 600,
     }),
   };
 

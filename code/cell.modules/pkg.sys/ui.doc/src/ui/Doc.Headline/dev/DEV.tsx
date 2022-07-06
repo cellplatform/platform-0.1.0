@@ -12,7 +12,7 @@ type Ctx = {
 
 const SAMPLE = {
   CATEGORY: 'conceptual framework',
-  HELLO_WORLD: 'Hello World!',
+  HELLO_WORLD: 'Héllo Wōrld!',
   SUBTITLE: `Web3 is giving us the opportunity to rewrite how groups of people come together and do things in the world.\nBut will the next line break properly?`,
   OLD_POND: `Old pond. A frog jumps in.\nThe sound of water.`,
   LOREM: Lorem.toString(),
