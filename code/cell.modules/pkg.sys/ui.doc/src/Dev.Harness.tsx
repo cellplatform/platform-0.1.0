@@ -20,6 +20,7 @@ const imports = {
 
   DocBlocks: import('./ui/Doc.Blocks/dev/DEV'),
   DocBlockMarkdown: import('./ui/Doc.Block.Markdown/dev/DEV'),
+  DocBlockInsetPanel: import('./ui/Doc.Block.InsetPanel/dev/DEV'),
 
   TalkingDiagram: import('./ui/Diagram.TalkingDiagram/dev/DEV'),
 

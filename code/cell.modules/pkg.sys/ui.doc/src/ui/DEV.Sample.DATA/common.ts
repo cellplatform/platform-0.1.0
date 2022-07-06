@@ -18,8 +18,8 @@ const REF = {
 
 // const ORIG_PUBLISHED = `This article was originally published on ${REF.RO_ETH} → ${REF.SB}.`;
 const ORIG_PUBLISHED_BLOCK: t.DocDefBlock = {
-  kind: 'Markdown',
-  text: `
+  kind: 'InsetPanel',
+  markdown: `
 *This article was originally published on ${REF.RO_ETH} → ${REF.SB}.*
 `,
 };

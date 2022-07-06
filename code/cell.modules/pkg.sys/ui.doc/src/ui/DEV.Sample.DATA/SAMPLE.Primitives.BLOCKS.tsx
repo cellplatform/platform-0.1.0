@@ -102,7 +102,7 @@ with simple systems that work:
     kind: 'Markdown',
     text: `
 SuperBenefitDAO recently hosted a [conversation on metagovernance](https://superbenefit.mirror.xyz/yyY2khsoDSgCBaLSIJMeT6xNPJ0c9d2T83rYyt6UfX8)
-with Gabagool.eth, BPetes.eth and Justinehy.eth. As we explored the topic of metagovernance, 
+with \`Gabagool.eth\`, \`BPetes.eth\` and \`Justinehy.eth\`. As we explored the topic of metagovernance, 
 one theme that came through strongly was the idea that we need to keep coming back to the 
 magic that we all saw in DAOs in the first place. The magic of small groups of inspired 
 people working together on something that matters to them – and the simple primitives 

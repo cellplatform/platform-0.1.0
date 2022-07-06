@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Color, FC, COLORS, css, CssValue, t, Photo, DEFAULT } from './common';
+import React from 'react';
+import { COLORS, css, CssValue, DEFAULT, FC, t } from './common';
 
 /**
  * Type
@@ -9,7 +9,7 @@ export type DocImageProps = {
   width?: number;
   borderRadius?: number;
   credit?: React.ReactNode;
-  margin?: { top?: number; bottom?: number };
+  margin?: t.DocBlockMargin;
   style?: CssValue;
 };
 

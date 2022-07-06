@@ -1,1 +1,1 @@
-export * from './Doc.MarkdownBlock';
+export * from './MarkdownBlock';

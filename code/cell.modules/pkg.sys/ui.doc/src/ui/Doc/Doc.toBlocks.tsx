@@ -6,7 +6,7 @@ import * as Doc from './libs';
 /**
  * Convert a document definition to a list of BLOCK elements.
  */
-export function toBlockElements(props: { def: t.DocDef; width: number }) {
+export function toBlockElements(props: { def: t.DocDef; width: number }): JSX.Element[] {
   const { def, width } = props;
 
   const elBanner = def.banner && (
@@ -32,10 +32,16 @@ export function toBlockElements(props: { def: t.DocDef; width: number }) {
   );
 
   const blocks = (def.blocks || []).map((def, i) => {
-    if (def.kind === 'Markdown') return <Doc.Block.Markdown markdown={def.text} />;
+    if (def.kind === 'Markdown') {
+      return <Doc.Block.Markdown markdown={def.text} margin={def.margin} />;
+    }
 
     if (def.kind === 'Image') {
       return <Doc.Image url={def.url} credit={def.credit} width={width} margin={def.margin} />;
+    }
+
+    if (def.kind === 'InsetPanel') {
+      return <Doc.Block.InsetPanel markdown={def.markdown} margin={def.margin} />;
     }
 
     return;

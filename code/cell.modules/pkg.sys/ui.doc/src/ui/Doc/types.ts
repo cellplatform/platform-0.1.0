@@ -15,16 +15,29 @@ export type DocDef = {
   blocks?: DocDefBlock[];
 };
 
-export type DocDefBlock = DocDefMarkdownBlock | DocDefImageBlock;
+export type DocBlockMargin = { top?: number; bottom?: number };
+
+/**
+ * Blocks
+ */
+
+export type DocDefBlock = DocDefMarkdownBlock | DocDefImageBlock | DocDefInsetPanelBlock;
 
 export type DocDefMarkdownBlock = {
   kind: 'Markdown';
   text: string;
+  margin?: DocBlockMargin;
 };
 
 export type DocDefImageBlock = {
   kind: 'Image';
   url: string;
   credit?: string;
-  margin?: { top?: number; bottom?: number };
+  margin?: DocBlockMargin;
+};
+
+export type DocDefInsetPanelBlock = {
+  kind: 'InsetPanel';
+  markdown: string;
+  margin?: DocBlockMargin;
 };
