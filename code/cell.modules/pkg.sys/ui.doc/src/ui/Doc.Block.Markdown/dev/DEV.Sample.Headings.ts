@@ -1,4 +1,4 @@
-import { Lorem } from 'sys.ui.dev';
+import { Lorem } from './common';
 
 export const Headings = `
 

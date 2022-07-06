@@ -3,7 +3,7 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { DocBlocksProps } from '..';
 import { Doc } from '../../Doc';
-import { SAMPLE as BLOCK_SAMPLE } from '../../Doc.Block.Markdown/dev/DEV.Sample';
+import { SAMPLE as BLOCK_SAMPLE } from '../../Doc.Block.Markdown/dev/DEV.SAMPLE';
 import { css, COLORS, DEFAULT, t } from '../common';
 import { SAMPLE as IMAGE_SAMPLE } from '../../Doc.Block.Image/dev/DEV';
 import { SAMPLE as BYLINE_SAMPLE } from '../../Doc.Byline/dev/DEV';

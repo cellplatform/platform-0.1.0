@@ -1,4 +1,4 @@
-import { Lorem } from 'sys.ui.dev';
+import { Lorem } from './common';
 
 export const Doc = `
 **Amazing** as \`this is\`, what is more incredible is that this dynamic holds true for human-built 

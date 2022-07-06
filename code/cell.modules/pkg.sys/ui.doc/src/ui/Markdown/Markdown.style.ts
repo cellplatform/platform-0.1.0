@@ -39,11 +39,16 @@ Style.global(
     },
     a: { color: COLORS.BLUE },
     'ul, ol': {
-      lineHeight: '1.7em',
       marginTop: 40,
       marginBottom: 40,
+      paddingLeft: '2.0em',
+      lineHeight: '1.7em',
+      fontFamily: SERIF,
     },
-    li: { marginBottom: 16 },
+    li: {
+      paddingLeft: '0.7em',
+      marginBottom: 16,
+    },
     hr: {
       border: 'none',
       borderTop: `solid 3px ${Color.format(-0.1)}`,

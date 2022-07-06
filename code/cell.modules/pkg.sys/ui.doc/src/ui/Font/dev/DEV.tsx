@@ -42,7 +42,7 @@ export const actions = DevActions<Ctx>()
       config
         .title('font.family')
         .items([
-          { label: 'custom: Merriweather', value: 'Merriweather' },
+          { label: 'custom: "Merriweather"', value: 'Merriweather' },
           { label: 'system: sans-serif', value: 'sans-serif' },
           { label: 'system: sans', value: 'sans' },
           { label: 'system: monospace', value: 'monospace' },

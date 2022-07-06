@@ -13,21 +13,21 @@ export function toBlockElements(props: { def: t.DocDef; width: number }): JSX.El
     <Doc.Block.Image url={def.banner.url} credit={def.banner.credit} width={width} />
   );
 
-  const elHeadline = (
-    <Doc.Headline
-      style={{ marginBottom: 50 }}
-      category={def.category}
-      title={def.title}
-      subtitle={def.subtitle}
-      hint={{ width }}
-    />
-  );
-
   const elByline = (
     <Doc.Byline
       version={def.version}
       author={def.author}
-      style={{ marginBottom: 60, marginRight: 8 }}
+      style={{ marginBottom: 20, marginRight: 8 }}
+    />
+  );
+
+  const elHeadline = (
+    <Doc.Headline
+      style={{ marginBottom: 90 }}
+      category={def.category}
+      title={def.title}
+      subtitle={def.subtitle}
+      hint={{ width }}
     />
   );
 

@@ -6,7 +6,7 @@ export const BLOCKS: t.DocDefBlock[] = [
   {
     kind: 'Markdown',
     text: `
-# Scale Matters
+# Scale Matters.
 
 DAOs are extraordinary for their capacity to test experimental ideas. And the innovation DAOs are 
 unlocking because of this, all across Web3, is astounding! But, in order to have a transformational 
@@ -78,7 +78,7 @@ both of these dynamics.
   {
     kind: 'Markdown',
     text: `
-# From simple to massively complex
+# From simple to massively complex.
 
 DAO structures need to start simply but then be able to grow into massive complexity. As DAOs try 
 to scale, we cannot just apply arbitrary structure to them to solve the coordination issues that 
@@ -139,7 +139,7 @@ It is also the mechanism by which DAO networks collectively evolve.
 Here is how both of these mechanisms work.
 
 
-# Cells can become Scaling Hierarchies AND Creative Networks
+# Cells can become Scaling Hierarchies AND Creative Networks.
 
 When a new DAO cell is spun up in a DAO network, depending on the purpose it has, it needs to be 
 set up to be either part of a scaling hierarchy or a creative network. 
@@ -186,7 +186,7 @@ et al.
   {
     kind: 'Markdown',
     text: `
-# Example: DAO Prison Network
+# Example: DAO Prison Network.
 
 Let's make this more concrete by looking at a hypothetical example. Imagine a national prison 
 system run as a DAO network. I’m choosing a difficult real-world problem here as an example 
@@ -267,7 +267,7 @@ And then as creative cells evolve their ideas beyond experimentation, they can g
 with other parts of the larger DAO network to develop their discoveries into scaling hierarchies 
 that the whole network can benefit from. 
 
-# DAO networks evolve organically 
+# DAO networks evolve organically.
 
 With traditional organisations and companies we are used to thinking about power structures. 
 And so for an organisation to change, it requires the power structure to change at the highest 
@@ -297,7 +297,7 @@ private prison systems, where prison operators will often lobby governments for 
 enforcement of laws to increase prisoner numbers, in an attempt to maintain occupancy rates 
 and ensure their business models keep working.
 
-# Enough scale to pay for the innovation
+# Enough scale to pay for the innovation.
 
 These amazing network dynamics are great in theory but DAO networks need to generate enough 
 scale to make them work in practice. Searching for novel solutions is resource intensive. 
@@ -328,7 +328,7 @@ positive feedback mechanisms that DAOs can generate:
 For all of this to work the DAO network needs to be operating at the scale of the system 
 that it is trying to transform.
 
-# DAOs as many interconnected networks working across vast scale
+# DAOs as many interconnected networks working across vast scale.
 
 But all this talk of “enough scale”, must not collapse back into entity thinking. It is not 
 about any one particular DAO being any particular size. This is the exciting opportunity. 
@@ -360,7 +360,7 @@ we are collectively evolving to coordinate shared ownership, governance and acti
 interconnecting networks could not scale to coordinate a network of billions.
 
 
-# DAOs are “network intelligence” that flows
+# DAOs are “network intelligence” that flows.
 
 DAO networks will find equilibrium as they scale and fill the needs/opportunities they are 
 trying to fill. But they will constantly be evolving under the surface. Whether it is the 

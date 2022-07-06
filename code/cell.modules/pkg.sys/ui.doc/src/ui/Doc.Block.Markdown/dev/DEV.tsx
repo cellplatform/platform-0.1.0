@@ -1,9 +1,8 @@
 import React from 'react';
 
 import { DocMarkdownBlock, DocMarkdownBlockProps } from '..';
-import { DevActions, ObjectView } from '../../../test';
-import { SAMPLE } from './DEV.Sample';
-import { COLORS } from '../common';
+import { DevActions, ObjectView, COLORS } from './common';
+import { SAMPLE } from './DEV.SAMPLE';
 import { Doc } from '../../Doc';
 
 type Ctx = {
@@ -43,7 +42,8 @@ export const actions = DevActions<Ctx>()
       debug: {
         width: 720,
         // sample: 'Doc',
-        sample: 'Headings',
+        // sample: 'Headings',
+        sample: 'Lists',
       },
     };
 

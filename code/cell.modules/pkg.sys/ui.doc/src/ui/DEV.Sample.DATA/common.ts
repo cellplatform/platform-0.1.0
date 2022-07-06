@@ -18,9 +18,7 @@ const REF = {
 
 const ORIG_PUBLISHED_BLOCK: t.DocDefBlock = {
   kind: 'InsetPanel',
-  markdown: `
-*This article was originally published on ${REF.RO_ETH} → ${REF.SB}.*
-`,
+  markdown: `*This article was originally published on ${REF.RO_ETH} → ${REF.SB}.*`,
 };
 
 export const COMMONTEXT = {

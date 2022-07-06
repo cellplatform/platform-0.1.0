@@ -28,6 +28,7 @@ export const DocMarkdownBlock: React.FC<DocMarkdownBlockProps> = (props) => {
     markdown: css({
       color: COLORS.DARK,
       fontKerning: 'auto',
+      cursor: 'default',
     }),
   };
   return (
