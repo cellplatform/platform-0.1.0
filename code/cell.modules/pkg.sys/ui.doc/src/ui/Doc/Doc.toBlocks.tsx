@@ -19,6 +19,7 @@ export function toBlockElements(props: { def: t.DocDef; width: number }) {
       category={def.category}
       title={def.title}
       subtitle={def.subtitle}
+      hint={{ width }}
     />
   );
 
