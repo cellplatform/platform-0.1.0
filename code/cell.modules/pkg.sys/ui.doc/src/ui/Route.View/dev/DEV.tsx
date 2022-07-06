@@ -27,7 +27,7 @@ const Util = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.Route.View')
+  .namespace('sys.Route.View')
   .context((e) => {
     if (e.prev) return e.prev;
     const change = e.change;
