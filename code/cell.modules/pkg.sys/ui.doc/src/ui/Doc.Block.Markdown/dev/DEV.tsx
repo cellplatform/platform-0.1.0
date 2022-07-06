@@ -3,7 +3,7 @@ import React from 'react';
 import { DocMarkdownBlock, DocMarkdownBlockProps } from '..';
 import { DevActions, ObjectView } from '../../../test';
 import { SAMPLE } from './DEV.Sample';
-import { COLORS, css } from '../common';
+import { COLORS } from '../common';
 import { Doc } from '../../Doc';
 
 type Ctx = {

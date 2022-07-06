@@ -1,7 +1,7 @@
 import { Lorem } from 'sys.ui.dev';
 
 export const Doc = `
-**Amazing** as this is, what is more incredible is that this dynamic holds true for human-built 
+**Amazing** as \`this is\`, what is more incredible is that this dynamic holds true for human-built 
 systems too. This scaling effect is the fundamental dynamic that makes companies work. 
 As a business grows, it is essentially building a set of branching hierarchies that 
 generate economies of scale using the [same mathematics](https://arxiv.org/abs/2109.10379) that mammals, insects and trees 

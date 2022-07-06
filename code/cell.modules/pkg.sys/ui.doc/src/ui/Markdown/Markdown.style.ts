@@ -50,6 +50,17 @@ Style.global(
       marginTop: 50,
       marginBottom: 50,
     },
+    code: {
+      position: 'relative',
+      fontFamily: 'monospace',
+      fontWeight: 600,
+      color: COLORS.RED,
+      backgroundColor: Color.alpha(COLORS.DARK, 0.03),
+      border: `solid 1px ${Color.alpha(COLORS.DARK, 0.08)}`,
+      borderRadius: 4,
+      paddingLeft: 3,
+      paddingRight: 3,
+    },
   },
 
   { prefix: `.${Markdown.className}` },
