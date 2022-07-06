@@ -1,6 +1,6 @@
 {
   "name": "sys.data.crdt",
-  "version": "0.0.99",
+  "version": "0.0.100",
   "main": "lib/index",
   "sideEffects": false,
   "scripts": {
@@ -13,7 +13,8 @@
     "watch": "cell.compiler watch $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cell.compiler serve $@"
+    "serve": "cell.compiler serve $@",
+    "deploy": "ts-node -T script.ts/vercel.run"
   },
   "dependencies": {
     "automerge": "1.0.1-preview.7"

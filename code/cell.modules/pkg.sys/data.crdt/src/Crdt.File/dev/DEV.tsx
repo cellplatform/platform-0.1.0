@@ -1,8 +1,8 @@
 import React from 'react';
-import { DevActions, ObjectView } from 'sys.ui.dev';
 import { CrdtFile } from '..';
-import { TestFilesystem, Filesystem } from '../../test';
-import { rx, t } from '../common';
+import { TestFilesystem, DevActions, ObjectView } from '../../test';
+import { rx, t, Filesystem } from './common';
+import { DevSample, DevSampleProps } from './DEV.Sample';
 
 type Ctx = {
   bus: t.EventBus;
@@ -12,6 +12,7 @@ type Ctx = {
     events: t.SysFsEvents;
     ready: () => Promise<any>;
   };
+  props: DevSampleProps;
 };
 
 /**
@@ -28,6 +29,7 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       bus,
       filesystem: { fs, ready, instance, events },
+      props: {},
     };
     return ctx;
   })
@@ -71,15 +73,12 @@ export const actions = DevActions<Ctx>()
     e.settings({
       actions: { width: 350 },
       host: { background: -0.04 },
+
       layout: {
-        label: '<CrdtFile>',
-        position: [150, 80],
-        border: -0.1,
         cropmarks: -0.2,
-        background: 1,
       },
     });
-    // e.render(<CrdtFile {...e.ctx.props} style={{ flex: 1 }} />);
+    e.render(<DevSample {...e.ctx.props} style={{ flex: 1 }} />);
   });
 
 export default actions;

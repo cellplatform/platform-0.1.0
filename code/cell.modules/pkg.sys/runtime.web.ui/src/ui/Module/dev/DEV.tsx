@@ -140,18 +140,18 @@ export const actions = DevActions<Ctx>()
   .subject((e) => {
     const instance = e.ctx.props.instance;
     const bus = rx.bus.instance(instance.bus);
-    const id = instance.id ?? `<undefined>`;
 
     const theme = e.ctx.props.theme ?? Module.DEFAULT.THEME;
     const isDark = theme === 'Dark';
 
     e.settings({
+      actions: { width: 350 },
       host: { background: isDark ? COLORS.DARK : -0.04 },
       layout: {
         label: {
           topLeft: '<Module>',
           bottomLeft: e.ctx.props.url,
-          bottomRight: `${bus}/id:${id}`,
+          bottomRight: `${bus}/id:${instance.id ?? `<none>`}`,
         },
         position: [80, 80, 110, 80],
         border: isDark ? 0.1 : -0.1,

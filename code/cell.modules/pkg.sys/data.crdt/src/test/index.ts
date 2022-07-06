@@ -1,5 +1,4 @@
-export { Test, DevActions } from 'sys.ui.dev';
-export { expect } from 'chai';
+export { Test, DevActions, ObjectView, expect } from 'sys.ui.dev';
 
 export * from '../common';
 export * from './TestNetwork';

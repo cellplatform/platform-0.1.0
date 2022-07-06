@@ -21,8 +21,8 @@ export const Info: React.FC<InfoProps> = (props) => {
   const push = (field: t.ModuleInfoFields) => fields.push(field);
 
   push('source:url');
-  push('namespace');
   push('version');
+  push('namespace');
   push('files');
   if (entry) push('source:url:entry');
   if (!entry) fields.push('remote.exports');

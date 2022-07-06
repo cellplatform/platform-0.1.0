@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 
 import { Route } from '../Route';
 import { AppRoutes } from './App.Routes';
-import { css, CssValue, Doc, t } from './common';
+import { COLORS, css, CssValue, Doc, t } from './common';
 
 export type AppProps = {
   bus: t.EventBus<any>;
@@ -21,7 +21,7 @@ export const App: React.FC<AppProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({ Absolute: 0 }),
+    base: css({ Absolute: 0, backgroundColor: COLORS.WHITE }),
     router: css({ flex: 1 }),
   };
   return (
