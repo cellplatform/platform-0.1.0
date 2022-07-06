@@ -8,12 +8,10 @@ export default () =>
     .variant('web', (config) =>
       config
         .target('web')
-        .port(3038)
+        .port(3039)
 
         .entry('main', './src/entry/main')
         // .entry('web.worker', './src/workers/web.worker')
-
-        // .declarations('./src/**/*')
 
         .static('static')
         .files((e) => e.redirect(false, '*.worker.js').access('public', '**/*.{png,jpg,svg}'))

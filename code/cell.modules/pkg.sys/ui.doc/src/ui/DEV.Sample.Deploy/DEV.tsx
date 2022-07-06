@@ -41,7 +41,7 @@ export const actions = DevActions<Ctx>()
         token: Util.token.read(),
         team: 'tdb',
         project: 'tdb-ro',
-        // domain: 'tmp.db.team',
+        // domain: '',
       },
     };
     return ctx;
