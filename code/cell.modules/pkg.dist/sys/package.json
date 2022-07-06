@@ -1,7 +1,7 @@
 {
   "name": "sys",
   "description": "Deployment of all main system libs",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "main": "lib/index",
   "sideEffects": false,
   "scripts": {
@@ -17,7 +17,8 @@
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
-    "deploy": "ts-node -T script.ts/vercel.run"
+    "deploy": "ts-node -T script.ts/vercel.run",
+    "bbd": "yarn build.all && yarn bundle && yarn deploy"
   },
   "dependencies": {},
   "devDependencies": {
