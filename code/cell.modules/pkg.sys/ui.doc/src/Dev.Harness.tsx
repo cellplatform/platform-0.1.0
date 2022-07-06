@@ -17,8 +17,9 @@ const imports = {
   DocByline: import('./ui/Doc.Byline/dev/DEV'),
   DocImage: import('./ui/Doc.Image/dev/DEV'),
   DocQuote: import('./ui/Doc.Quote/dev/DEV'),
-  DocBlock: import('./ui/Doc.Block/dev/DEV'),
+
   DocBlocks: import('./ui/Doc.Blocks/dev/DEV'),
+  DocBlockMarkdown: import('./ui/Doc.Block.Markdown/dev/DEV'),
 
   TalkingDiagram: import('./ui/Diagram.TalkingDiagram/dev/DEV'),
 

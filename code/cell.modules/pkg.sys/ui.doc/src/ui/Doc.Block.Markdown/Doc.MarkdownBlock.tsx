@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Color, COLORS, css, CssValue, t, SanitizeHtml, Markdown, Style } from './common';
+import React from 'react';
+import { COLORS, css, CssValue, Markdown, SanitizeHtml } from './common';
 
-export type DocBlockProps = {
+export type DocMarkdownBlockProps = {
   markdown?: string;
   style?: CssValue;
 };
 
-export const DocBlock: React.FC<DocBlockProps> = (props) => {
+export const DocMarkdownBlock: React.FC<DocMarkdownBlockProps> = (props) => {
   const html = Markdown.toHtmlSync(props.markdown ?? '');
 
   /**
@@ -18,9 +18,7 @@ export const DocBlock: React.FC<DocBlockProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({
-      position: 'relative',
-    }),
+    base: css({ position: 'relative' }),
     markdown: css({
       color: COLORS.DARK,
       fontKerning: 'auto',

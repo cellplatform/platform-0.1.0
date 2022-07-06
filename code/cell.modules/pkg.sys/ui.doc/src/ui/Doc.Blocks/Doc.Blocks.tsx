@@ -23,8 +23,6 @@ const View: React.FC<DocBlocksProps> = (props) => {
     footer: padding.footer === true ? DEFAULT.padding.footer : padding.footer,
   };
 
-  console.log('PADDING', PADDING);
-
   /**
    * [Render]
    */

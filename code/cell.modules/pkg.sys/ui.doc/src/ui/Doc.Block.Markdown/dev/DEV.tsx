@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { DocBlock, DocBlockProps } from '..';
+import { DocMarkdownBlock, DocMarkdownBlockProps } from '..';
 import { DevActions, ObjectView } from '../../../test';
 import { SAMPLE } from './DEV.Sample';
 import { COLORS, css } from '../common';
 
 type Ctx = {
-  props: DocBlockProps;
+  props: DocMarkdownBlockProps;
   debug: { width: number };
 };
 
@@ -14,7 +14,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.Doc.Block')
+  .namespace('ui.Doc.Block.Markdown')
   .context((e) => {
     if (e.prev) return e.prev;
 
@@ -80,7 +80,7 @@ export const actions = DevActions<Ctx>()
 
     e.render(
       <div {...styles.base}>
-        <DocBlock {...e.ctx.props} />
+        <DocMarkdownBlock {...e.ctx.props} />
       </div>,
     );
   });
