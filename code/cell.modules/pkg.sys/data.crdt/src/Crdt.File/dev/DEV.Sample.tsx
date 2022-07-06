@@ -10,7 +10,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
   const styles = {
     base: css({ position: 'relative', color: COLORS.DARK }),
     card: {
-      base: css({ padding: 20, minWidth: 300 }),
+      base: css({ padding: 20, minWidth: 300, userSelect: 'auto' }),
       data: css({}),
       fs: css({}),
       selection: css({}),
