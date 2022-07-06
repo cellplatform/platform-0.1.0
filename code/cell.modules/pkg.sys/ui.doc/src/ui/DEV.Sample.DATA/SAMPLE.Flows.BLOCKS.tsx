@@ -4,7 +4,9 @@ export const BLOCKS: t.DocDefBlock[] = [
   {
     kind: 'Markdown',
     text: `
-
+Web3 is giving us the opportunity to rewrite how groups of people come together and do 
+things in the world. But are we importing a core concept from our existing paradigm 
+without realising it?
 
 A concept that if it does find its way into the fabric of Web3 might see us recreating 
 our traditional centralising structures - the very structures we are so fervently trying 

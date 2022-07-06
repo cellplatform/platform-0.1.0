@@ -1,4 +1,6 @@
 import { t, author, category, COMMONTEXT } from './common';
+import { FLOWS } from './SAMPLE.Flows';
+import { SCALE } from './SAMPLE.Scale';
 
 export const BLOCKS: t.DocDefBlock[] = [
   {
@@ -39,10 +41,10 @@ to be crucial.
 
 Scale needs to be a clear part of DAO thinking going forward and we need to make sure that we 
 aren’t ignoring it – consciously or unconsciously – just because it reminds us of traditional 
-business. 
+business.
 
-In the previous articles in this series – “[DAOs aren’t things… they are flows](https://superbenefit.mirror.xyz/3-ESNDLcf44dZ6VteaqZSpQuTL0oouSxlLJwuAlcQ_s)” 
-and “[Scale and the levers that provide DAOs their power](https://superbenefit.mirror.xyz/unisNGUtHyRF7Zcp9CBbC-VhICOvVm0uzTFJUPX-Icg)” – 
+In the previous articles in this series – “[DAOs aren’t things; they are flows](${FLOWS.path})” 
+and “[Scale and the levers that provide DAOs their power](${SCALE.path})” – 
 we looked at how a legacy mindset causes us to think of DAOs as ‘entities’, but they are much better understood as networks with coordinated flows of resources and value. We then unpacked how biological systems, companies and cities all function based on two fundamental scaling dynamics:
 `,
   },
@@ -128,7 +130,7 @@ is neither here nor there – the mental model is to understand them as their ow
 DAO cells that are defined by their relationships with other cells in the DAO network.
 
 This notion of DAO cells as the primitive starting point for DAO networks is the basis for 
-DAOs being able to leverage both of the scaling dynamics laid out in the [previous article](https://superbenefit.mirror.xyz/unisNGUtHyRF7Zcp9CBbC-VhICOvVm0uzTFJUPX-Icg).
+DAOs being able to leverage both of the scaling dynamics laid out in the [previous article](${SCALE.path}).
 
 It is also the mechanism by which DAO networks collectively evolve. 
 
@@ -247,16 +249,16 @@ A member of the community can have a novel idea, refine it, get a proposal appro
 spin up a cell to start exploring it. For our prison example, things these cells might 
 experiment on could look like:
 
-1. Ideas for better systems for staff.  
+1. **Ideas for better systems for staff.**  
    *Process Innovation/Horizon-1* (in traditional business speak)
 
-2. Novel ideas for working with prisoners, rehabilitation etc.  
+2. **Novel ideas for working with prisoners, rehabilitation etc.**  
    *Product Line Expansion/Horizon-2*
 
-3. Radical ideas that would make prisons as we know them obsolete.  
+3. **Radical ideas that would make prisons as we know them obsolete.**  
    *Disruptive Innovation/Horizon-3*
 
-4. Ideas that bridge and extend the DAO network beyond prisons, perhaps into mental health or 
+4. **Ideas that bridge and extend the DAO network beyond prisons**, perhaps into mental health or 
    early social crime prevention. Possibilities to connect and integrate the prison DAO into 
    larger aligned networks beyond prisons. 
 
@@ -289,7 +291,7 @@ decentralised intelligence. Rather than trying to define and implement strategy 
 strategy emerges **autonomously** from the DAO network itself.
 
 This is in stark contrast to traditional organisations who can’t produce this kind of flexibility 
-and collective intelligence due to rigid scaling infrastructure (see [previous article](https://superbenefit.mirror.xyz/unisNGUtHyRF7Zcp9CBbC-VhICOvVm0uzTFJUPX-Icg)). 
+and collective intelligence due to rigid scaling infrastructure (see [previous article](${SCALE.path})). 
 This legacy model leads to incredibly crappy externalities. This is easy to see in current 
 private prison systems, where prison operators will often lobby governments for stricter 
 enforcement of laws to increase prisoner numbers, in an attempt to maintain occupancy rates 
