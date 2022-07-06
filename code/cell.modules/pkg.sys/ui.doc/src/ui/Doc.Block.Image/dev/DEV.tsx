@@ -1,10 +1,10 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { DocImage, DocImageProps } from '..';
+import { DocImageBlock, DocImageBlockProps } from '..';
 import { COLORS } from '../common';
 
 type Ctx = {
-  props: DocImageProps;
+  props: DocImageBlockProps;
   debug: { width: number };
 };
 
@@ -24,7 +24,7 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       props: {
         url: SAMPLE.URL,
-        borderRadius: DocImage.DEFAULT.borderRadius,
+        borderRadius: DocImageBlock.DEFAULT.borderRadius,
         credit: SAMPLE.CREDIT,
       },
       debug: { width: 720 },
@@ -59,7 +59,7 @@ export const actions = DevActions<Ctx>()
 
     e.boolean('borderRadius', (e) => {
       if (e.changing) {
-        e.ctx.props.borderRadius = e.changing.next ? DocImage.DEFAULT.borderRadius : 0;
+        e.ctx.props.borderRadius = e.changing.next ? DocImageBlock.DEFAULT.borderRadius : 0;
       }
       e.boolean.current = Boolean(e.ctx.props.borderRadius);
     });
@@ -102,7 +102,7 @@ export const actions = DevActions<Ctx>()
         cropmarks: -0.2,
       },
     });
-    e.render(<DocImage {...e.ctx.props} width={debug.width} />);
+    e.render(<DocImageBlock {...e.ctx.props} width={debug.width} />);
   });
 
 export default actions;

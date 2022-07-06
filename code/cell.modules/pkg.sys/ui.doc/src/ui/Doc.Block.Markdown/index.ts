@@ -1,1 +1,1 @@
-export * from './MarkdownBlock';
+export * from './Block.Markdown';

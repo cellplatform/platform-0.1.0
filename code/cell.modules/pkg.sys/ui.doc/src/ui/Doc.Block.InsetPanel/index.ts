@@ -1,1 +1,1 @@
-export * from './InsetPanelBlock';
+export * from './Block.InsetPanel';

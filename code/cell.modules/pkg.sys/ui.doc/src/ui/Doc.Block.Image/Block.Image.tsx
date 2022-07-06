@@ -4,7 +4,7 @@ import { COLORS, css, CssValue, DEFAULT, FC, t } from './common';
 /**
  * Type
  */
-export type DocImageProps = {
+export type DocImageBlockProps = {
   url?: string;
   width?: number;
   borderRadius?: number;
@@ -16,7 +16,7 @@ export type DocImageProps = {
 /**
  * Component
  */
-const View: React.FC<DocImageProps> = (props) => {
+const View: React.FC<DocImageBlockProps> = (props) => {
   const { url, width, borderRadius = DEFAULT.borderRadius, credit, margin = {} } = props;
 
   /**
@@ -63,8 +63,8 @@ const View: React.FC<DocImageProps> = (props) => {
 type Fields = {
   DEFAULT: typeof DEFAULT;
 };
-export const DocImage = FC.decorate<DocImageProps, Fields>(
+export const DocImageBlock = FC.decorate<DocImageBlockProps, Fields>(
   View,
   { DEFAULT },
-  { displayName: 'DocImage' },
+  { displayName: 'Doc.ImageBlock' },
 );
