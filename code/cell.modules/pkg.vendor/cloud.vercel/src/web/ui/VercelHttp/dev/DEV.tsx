@@ -170,7 +170,7 @@ export const actions = DevActions<Ctx>()
           scrollable={true}
           droppable={true}
           selectable={true}
-          onStateChange={(e) => {
+          onStateChanged={(e) => {
             //
           }}
         />
