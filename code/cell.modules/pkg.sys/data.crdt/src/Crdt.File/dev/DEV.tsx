@@ -9,12 +9,7 @@ import { Deploy, DeployProps } from 'vendor.cloud.vercel/lib/web/ui/Deploy';
 type Ctx = {
   bus: t.EventBus;
   token: string;
-  filesystem: {
-    fs: t.Fs;
-    instance: t.FsViewInstance;
-    events: t.SysFsEvents;
-    ready: () => Promise<any>;
-  };
+  filesystem: TestFilesystem;
   props: DevSampleProps;
 };
 
@@ -41,12 +36,12 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const bus = rx.bus();
-    const { fs, ready, instance, events } = TestFilesystem.init({ bus });
+    const filesystem = TestFilesystem.init({ bus });
 
     const ctx: Ctx = {
       bus,
       token: Util.token.read(),
-      filesystem: { fs, ready, instance, events },
+      filesystem,
       props: {},
     };
     return ctx;

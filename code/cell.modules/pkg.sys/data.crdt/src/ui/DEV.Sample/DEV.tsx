@@ -12,12 +12,7 @@ const DEFAULT = {
 
 type Ctx = {
   bus: t.EventBus;
-  filesystem: {
-    fs: t.Fs;
-    instance: t.FsViewInstance;
-    events: t.SysFsEvents;
-    ready: () => Promise<any>;
-  };
+  filesystem: TestFilesystem;
   props: SampleProps;
   total: number;
   debounce: number;
@@ -40,11 +35,12 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const bus = rx.bus();
-    const { fs, ready, instance, events } = TestFilesystem.init({ bus });
+    const filesystem = TestFilesystem.init({ bus });
+    const { instance } = filesystem;
 
     const ctx: Ctx = {
       bus,
-      filesystem: { fs, ready, instance, events },
+      filesystem,
       props: { instance },
       total: 3,
       debounce: 300,

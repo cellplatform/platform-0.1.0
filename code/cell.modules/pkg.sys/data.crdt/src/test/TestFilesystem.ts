@@ -6,6 +6,14 @@ const PATH = {
   ROOT: 'tmp/test/Automerge',
 };
 
+export type TestFilesystem = {
+  bus: t.EventBus<any>;
+  instance: t.FsViewInstance;
+  events: t.SysFsEvents;
+  fs: t.Fs;
+  ready: () => Promise<TestFilesystem>;
+};
+
 export const TestFilesystem = {
   id: 'fs:dev.sys.crdt',
   PATH,
@@ -14,7 +22,7 @@ export const TestFilesystem = {
    * Initialize a new test filesystem instance.
    *
    */
-  init(options: { bus?: t.EventBus<any>; timeout?: Milliseconds } = {}) {
+  init(options: { bus?: t.EventBus<any>; timeout?: Milliseconds } = {}): TestFilesystem {
     const { timeout } = options;
     const bus = options.bus ?? rx.bus();
 
@@ -24,8 +32,15 @@ export const TestFilesystem = {
       fs: TestFilesystem.id,
     };
 
-    const { events, fs, ready } = Filesystem.IndexedDb.create({ bus, fs: instance.fs });
-    return { bus, instance, events, fs, ready };
+    const res = Filesystem.IndexedDb.create({ bus, fs: instance.fs });
+    const { events, fs } = res;
+    const ready = async () => {
+      await res.ready();
+      return api;
+    };
+
+    const api: TestFilesystem = { bus, instance, events, fs, ready };
+    return api;
   },
 
   /**
