@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { SAMPLE } from '../DEV.Sample.data';
+import { SAMPLE } from '../DEV.Sample.DATA';
 import { RouteContainer } from '../RouteContainer.OLD';
 import { css, CssValue } from './common';
 import { Doc } from '../Doc';

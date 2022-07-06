@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { SAMPLE } from '../../DEV.Sample.data';
+import { SAMPLE } from '../../DEV.Sample.DATA';
 import { Doc } from '../../Doc';
 import { COLORS, t, time, css, DEFAULT } from '../common';
 import { DevSample as DevSampleDiagram } from '../../Diagram.TalkingDiagram/dev/DEV.Sample';

@@ -11,9 +11,6 @@ export type DocHeadlineProps = {
   onClick?: (e: { id: string; title: string }) => void;
 };
 
-/**
- * REF: https://google-webfonts-helper.herokuapp.com/fonts/neuton?subsets=latin
- */
 export const DocHeadline: React.FC<DocHeadlineProps> = (props) => {
   const { id = '', category, onClick, hint = {} } = props;
   const widthHint = hint.width ?? -1;

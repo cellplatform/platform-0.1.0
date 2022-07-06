@@ -2,7 +2,7 @@ import React from 'react';
 import { DevActions, ObjectView } from '../../../test';
 import { DocLayout, DocLayoutProps } from '..';
 
-import { SAMPLE } from '../../DEV.Sample.data';
+import { SAMPLE } from '../../DEV.Sample.DATA';
 import { t } from '../common';
 import { Doc } from '../../Doc';
 

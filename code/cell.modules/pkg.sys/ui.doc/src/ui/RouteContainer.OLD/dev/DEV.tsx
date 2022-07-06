@@ -3,7 +3,7 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { RouteContainer, RouteContainerProps } from '..';
 import { COLORS, t } from '../common';
 
-import { SAMPLE } from '../../DEV.Sample.data';
+import { SAMPLE } from '../../DEV.Sample.DATA';
 
 type Ctx = {
   size?: t.DomRect;

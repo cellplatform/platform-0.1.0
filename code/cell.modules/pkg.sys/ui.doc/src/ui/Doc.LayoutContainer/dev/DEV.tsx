@@ -4,7 +4,7 @@ import { DevActions, ObjectView } from 'sys.ui.dev';
 import { DocLayoutContainer, DocLayoutContainerProps } from '..';
 import { COLORS, t } from '../common';
 import { DevChildSample } from './DEV.ChildSample';
-import { SAMPLE as DEFS } from '../../DEV.Sample.data';
+import { SAMPLE as DEFS } from '../../DEV.Sample.DATA';
 import { Doc } from '../../Doc';
 
 type Ctx = {

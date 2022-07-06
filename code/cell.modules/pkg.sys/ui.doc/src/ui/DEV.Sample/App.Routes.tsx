@@ -1,6 +1,6 @@
 import React from 'react';
 import { t, css, Color, COLORS, Button } from './common';
-import { SAMPLE } from '../DEV.Sample.data';
+import { SAMPLE } from '../DEV.Sample.DATA';
 import { Doc } from '../Doc';
 
 export function AppRoutes(): t.RouteTableDefs {

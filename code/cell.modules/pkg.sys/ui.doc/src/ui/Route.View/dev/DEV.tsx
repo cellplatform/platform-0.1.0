@@ -2,7 +2,7 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { RouteViewProps } from '..';
-import { SAMPLE } from '../../DEV.Sample.data';
+import { SAMPLE } from '../../DEV.Sample.DATA';
 import { Route } from '../../Route';
 import { COLORS, RouteBus, rx, t } from '../common';
 import { DevRouteTable } from './DEV.Sample.RouteTable';
