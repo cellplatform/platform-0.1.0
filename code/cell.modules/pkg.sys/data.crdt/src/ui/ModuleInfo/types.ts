@@ -1,1 +1,1 @@
-export type ModuleInfoFields = 'Module' | 'Module.Name' | 'Module.Version' | 'DataFormat';
+export type ModuleInfoFields = 'Module' | 'Module.Name' | 'Module.Version' | 'DataStructure';

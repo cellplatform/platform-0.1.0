@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { css, CssValue, pkg, PropList } from '../../common';
-import { ModuleInfoConstants } from './constants';
+import { css, CssValue, pkg, PropList, DEFAULT, FIELDS, FC } from './common';
+
 import * as k from './types';
 
 export type ModuleInfoProps = {
@@ -12,16 +12,19 @@ export type ModuleInfoProps = {
   style?: CssValue;
 };
 
-export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
-  const { width, minWidth = 250, maxWidth, fields = ModuleInfoConstants.DEFAULT.FIELDS } = props;
+/**
+ * Component
+ */
+const View: React.FC<ModuleInfoProps> = (props) => {
+  const { width, minWidth = 250, maxWidth, fields = DEFAULT.FIELDS } = props;
 
   const items = PropList.builder<k.ModuleInfoFields>()
     .field('Module', { label: 'Module', value: `${pkg.name}@${pkg.version}` })
     .field('Module.Name', { label: 'Name', value: pkg.name })
     .field('Module.Version', { label: 'Version', value: pkg.version })
-    .field('DataFormat', () => {
+    .field('DataStructure', () => {
       const version = pkg.dependencies?.automerge || 'ERROR';
-      return { label: 'Data Format', value: `automerge@${version}` };
+      return { label: 'Data Structure', value: `automerge@${version}` };
     })
     .items(fields);
 
@@ -33,3 +36,16 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
 
   return <div {...css(styles.base, props.style)}>{elProps}</div>;
 };
+
+/**
+ * Export
+ */
+type Fields = {
+  DEFAULT: typeof DEFAULT;
+  FIELDS: typeof FIELDS;
+};
+export const ModuleInfo = FC.decorate<ModuleInfoProps, Fields>(
+  View,
+  { DEFAULT, FIELDS },
+  { displayName: 'ModuleInfo' },
+);

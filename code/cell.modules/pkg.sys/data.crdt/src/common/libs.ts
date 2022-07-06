@@ -9,7 +9,7 @@ export { Automerge };
  */
 export { log } from '@platform/log/lib/client';
 export { css, Color, CssValue, formatColor } from '@platform/css';
-export { useResizeObserver } from '@platform/react';
+export { useResizeObserver, FC } from '@platform/react';
 export { rx, slug, cuid, time } from '@platform/util.value';
 
 /**

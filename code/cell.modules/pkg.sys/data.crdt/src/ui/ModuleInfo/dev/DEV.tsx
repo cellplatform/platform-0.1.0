@@ -1,8 +1,7 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 import { ModuleInfo, ModuleInfoProps } from '..';
-import { ModuleInfoConstants } from '../constants';
-import * as k from '../types';
+import { t } from '../common';
 
 type Ctx = { props: ModuleInfoProps };
 
@@ -23,14 +22,14 @@ export const actions = DevActions<Ctx>()
     e.select((config) =>
       config
         .title('fields:')
-        .items(ModuleInfoConstants.FIELDS)
+        .items(ModuleInfo.FIELDS)
         .initial(undefined)
         .clearable(true)
         .view('buttons')
         .multi(true)
         .pipe((e) => {
           if (e.changing) {
-            const next = e.changing.next.map(({ value }) => value) as k.ModuleInfoFields[];
+            const next = e.changing.next.map(({ value }) => value) as t.ModuleInfoFields[];
             e.ctx.props.fields = next.length === 0 ? undefined : next;
           }
         }),
