@@ -13,8 +13,8 @@ export type DocLayoutProps = {
   tracelines?: boolean;
   padding?: t.DocBlocksPadding;
   blockSpacing?: t.DocBlocksSpacing;
-
   style?: CssValue;
+
   onBlockClick?: t.DocBlocksClickHandler;
   onResize?: t.DocResizeHandler;
 };
@@ -26,7 +26,6 @@ export const DocLayout: React.FC<DocLayoutProps> = (props) => {
   const contentHash = def ? `${def.id}.${def.blocks?.length ?? 0}` : '';
   const width = sizes?.column.width;
   const blocks = def && width && toBlockElements({ def, width });
-
   const scrollTopRef$ = useRef(new Subject<DocLayoutScrollTop>());
 
   /**

@@ -16,13 +16,14 @@ export type DocBlocksProps = {
  */
 const View: React.FC<DocBlocksProps> = (props) => {
   const { tracelines = false, blocks = [], blockSpacing = {}, padding = {}, sizes } = props;
-
   const traceBorder = `solid 1px ${Color.alpha(COLORS.MAGENTA, tracelines ? 0.1 : 0)}`;
 
   const PADDING = {
     header: padding.header === true ? DEFAULT.padding.header : padding.header,
     footer: padding.footer === true ? DEFAULT.padding.footer : padding.footer,
   };
+
+  console.log('PADDING', PADDING);
 
   /**
    * [Render]
@@ -32,38 +33,43 @@ const View: React.FC<DocBlocksProps> = (props) => {
       Absolute: 0,
       color: COLORS.DARK,
       boxSizing: 'border-box',
-      paddingTop: PADDING.header,
-      paddingBottom: PADDING.footer,
       Flex: 'y-stretch-center',
     }),
-    block: {
-      base: css({
-        width: sizes?.column.width ?? DEFAULT.columnWidth,
-        PaddingY: blockSpacing.y ?? DEFAULT.blockspacing.y,
-        ':first-child': { paddingTop: 0 },
-
-        // Debug (tracelines).
-        borderRight: traceBorder,
-        borderLeft: traceBorder,
-        borderBottom: traceBorder,
-        ':last-child': { borderBottom: 'none' },
-      }),
-    },
+    inner: css({ position: 'relative' }),
+    header: css({ height: PADDING.header }),
+    footer: css({ height: PADDING.footer }),
+    block: css({
+      width: sizes?.column.width ?? DEFAULT.columnWidth,
+      PaddingY: blockSpacing.y ?? DEFAULT.blockspacing.y,
+      ':first-child': { paddingTop: 0 },
+    }),
+    tracelines: css({
+      borderRight: traceBorder,
+      borderLeft: traceBorder,
+      borderBottom: traceBorder,
+      ':last-child': { borderBottom: 'none' },
+    }),
   };
 
   const elBlocks = blocks.map((el, index) => {
+    const handleClick = () => props.onBlockClick?.({ index });
+    const key = `block.${index}`;
     return (
-      <div
-        {...styles.block.base}
-        key={`block.${index}`}
-        onClick={() => props.onBlockClick?.({ index })}
-      >
+      <div {...css(styles.block, styles.tracelines)} key={key} onClick={handleClick}>
         {el}
       </div>
     );
   });
 
-  return <div {...styles.base}>{elBlocks}</div>;
+  return (
+    <div {...styles.base}>
+      <div {...styles.inner}>
+        {PADDING.header && <div {...css(styles.header, styles.tracelines)} />}
+        {elBlocks}
+        {PADDING.footer && <div {...css(styles.footer, styles.tracelines)} />}
+      </div>
+    </div>
+  );
 };
 
 /**
