@@ -6,7 +6,12 @@ import { css, FC, CssValue, FONT } from './common';
 export type DocFontProps = { style?: CssValue };
 
 const View: React.FC<DocFontProps> = (props) => {
-  const fonts = [FONT.NEUTON.regular, FONT.NEUTON.italic];
+  const fonts = [
+    FONT.MERRIWEATHER.regular.normal,
+    FONT.MERRIWEATHER.regular.italic,
+    FONT.MERRIWEATHER.bold.normal,
+    FONT.MERRIWEATHER.bold.italic,
+  ];
 
   const styles = {
     base: css({ position: 'relative', display: 'flex' }),

@@ -5,27 +5,6 @@ const root = isLocal ? 'http://localhost:5052' : 'https://doc.db.team';
 const path = (name: string) => `${root}/static/fonts/${name}`;
 
 /**
- * Neuton
- * https://google-webfonts-helper.herokuapp.com/fonts/neuton?subsets=latin
- */
-const NEUTON_REGULAR: t.FontDefinition = {
-  family: 'Neuton',
-  source: path('neuton-v18-latin-regular.woff'),
-  descriptors: { style: 'normal', weight: '400' },
-};
-
-const NEUTON_ITALIC: t.FontDefinition = {
-  family: 'Neuton',
-  source: path('neuton-v18-latin-italic.woff'),
-  descriptors: { style: 'italic', weight: '400' },
-};
-
-const NEUTON = {
-  regular: NEUTON_REGULAR,
-  italic: NEUTON_ITALIC,
-};
-
-/**
  * Merriweather
  * https://google-webfonts-helper.herokuapp.com/fonts/merriweather?subsets=latin
  */
@@ -59,6 +38,5 @@ const MERRIWEATHER = {
  * Typefaces.
  */
 export const FONT = {
-  NEUTON,
   MERRIWEATHER,
 };
