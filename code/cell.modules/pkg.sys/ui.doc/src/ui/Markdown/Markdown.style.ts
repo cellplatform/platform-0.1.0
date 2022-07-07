@@ -58,6 +58,7 @@ Style.global(
     code: {
       position: 'relative',
       fontFamily: 'monospace',
+      fontStyle: 'normal',
       fontWeight: 600,
       color: COLORS.RED,
       backgroundColor: Color.alpha(COLORS.DARK, 0.03),
@@ -65,6 +66,8 @@ Style.global(
       borderRadius: 4,
       paddingLeft: 3,
       paddingRight: 3,
+      marginLeft: 2,
+      marginRight: 2,
     },
   },
 
