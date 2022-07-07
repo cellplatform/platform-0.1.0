@@ -12,16 +12,18 @@ export type DocLayoutContainerProps = {
   debug?: boolean | t.DocLayoutContainerDebug;
   min?: { width?: number; height?: number };
   scrollable?: boolean;
+  calculate?: t.CalculateDocLayoutSizes;
+  rootResize?: t.ResizeObserver | t.ResizeObserverHook;
+  scroll$?: t.Observable<DocLayoutScrollTop>;
   style?: CssValue;
-  scrollTop$?: t.Observable<DocLayoutScrollTop>;
   onResize?: t.DocResizeHandler;
 };
 
 const View: React.FC<DocLayoutContainerProps> = (props) => {
-  const { min, scrollable = true } = props;
+  const { min, scrollable = true, calculate } = props;
   const debug = toDebug(props.debug);
-  const [sizes, setSizes] = useState<t.DocLayoutSizes>();
 
+  const [sizes, setSizes] = useState<t.DocLayoutSizes>();
   const bodyRef = useRef<HTMLDivElement>(null);
 
   /**
@@ -30,12 +32,23 @@ const View: React.FC<DocLayoutContainerProps> = (props) => {
   useEffect(() => {
     const { dispose, dispose$ } = rx.disposable();
 
-    props.scrollTop$?.pipe(takeUntil(dispose$)).subscribe((e) => {
-      if (bodyRef.current) bodyRef.current.scrollTop = e.top;
+    props.scroll$?.pipe(takeUntil(dispose$)).subscribe((e) => {
+      if (!bodyRef.current) return;
+      bodyRef.current.scrollTop = e.top;
     });
 
     return dispose;
   }, []); // eslint-disable-line
+
+  /**
+   * Handlers
+   */
+  const handleResize: t.MinSizeResizeEventHandler = (e) => {
+    const { size, is } = e;
+    const sizes = calculate ? calculate(size) : LayoutSize.calculate(size);
+    setSizes(sizes);
+    props.onResize?.({ sizes, is });
+  };
 
   /**
    * [Render]
@@ -64,12 +77,8 @@ const View: React.FC<DocLayoutContainerProps> = (props) => {
       minHeight={min?.height ?? 150}
       warningElement={(e) => <DocTooSmall is={e.is} size={e.size} />}
       style={props.style}
-      onResize={(e) => {
-        const { size, is } = e;
-        const sizes = LayoutSize.toSizes(size);
-        setSizes(sizes);
-        props.onResize?.({ sizes, is });
-      }}
+      rootResize={props.rootResize}
+      onResize={handleResize}
     >
       {elBase}
     </MinSize>
@@ -95,6 +104,6 @@ type Fields = {
 };
 export const DocLayoutContainer = FC.decorate<DocLayoutContainerProps, Fields>(
   View,
-  { DEFAULT, LayoutSize, toDebug },
+  { DEFAULT, LayoutSize: LayoutSize, toDebug },
   { displayName: 'Doc.LayoutContainer' },
 );

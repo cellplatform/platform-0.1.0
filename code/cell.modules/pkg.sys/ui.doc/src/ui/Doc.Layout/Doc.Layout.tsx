@@ -66,7 +66,7 @@ export const DocLayout: React.FC<DocLayoutProps> = (props) => {
     <DocLayoutContainer
       style={props.style}
       scrollable={props.scrollable}
-      scrollTop$={scrollTopRef$.current}
+      scroll$={scrollTopRef$.current}
       onResize={handleResize}
     >
       {elBlocks}
