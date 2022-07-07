@@ -7,7 +7,7 @@ import { toBlockElements } from '../Doc/Doc.toBlocks';
 import { css, CssValue, t } from './common';
 
 export type DocLayoutProps = {
-  def?: t.DocDef;
+  doc?: t.DocDef;
 
   scrollable?: boolean;
   tracelines?: boolean;
@@ -20,12 +20,12 @@ export type DocLayoutProps = {
 };
 
 export const DocLayout: React.FC<DocLayoutProps> = (props) => {
-  const { def, padding = { header: 60, footer: 80 } } = props;
+  const { doc, padding = { header: 60, footer: 80 } } = props;
   const [sizes, setSizes] = useState<t.DocLayoutSizes>();
 
-  const contentHash = def ? `${def.id}.${def.blocks?.length ?? 0}` : '';
+  const contentHash = doc ? `${doc.id}.${doc.blocks?.length ?? 0}` : '';
   const width = sizes?.column.width;
-  const blocks = def && width && toBlockElements({ def, width });
+  const blocks = doc && width && toBlockElements({ def: doc, width });
   const scrollTopRef$ = useRef(new Subject<DocLayoutScrollTop>());
 
   /**

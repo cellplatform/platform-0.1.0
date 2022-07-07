@@ -53,7 +53,7 @@ export function AppRoutes(): t.RouteTableDefs {
       const def = SAMPLE.defs.find((def) => def.path === path);
       if (!def) return;
 
-      e.render(<Doc.Layout def={def} style={{ flex: 1 }} />);
+      e.render(<Doc.Layout doc={def} style={{ flex: 1 }} />);
     },
 
     /**

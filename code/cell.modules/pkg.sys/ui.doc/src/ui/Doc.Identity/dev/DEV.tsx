@@ -50,10 +50,7 @@ export const actions = DevActions<Ctx>()
     e.settings({
       actions: { width: 300 },
       host: { background: -0.04 },
-      layout: {
-        label: '<Doc.Identity>',
-        cropmarks: -0.2,
-      },
+      layout: { cropmarks: -0.2 },
     });
     e.render(<DocIdentity {...e.ctx.props} style={{ flex: 1 }} />);
   });
