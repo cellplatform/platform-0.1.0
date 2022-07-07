@@ -32,7 +32,7 @@ const Util = {
     const width = ctx.props.sizes?.column.width;
     if (!width) return;
 
-    const elBannerImage = <Doc.Block.Image url={IMAGE_SAMPLE.URL} width={width} />;
+    const elBannerImage = <Doc.Block.Image url={IMAGE_SAMPLE.sample_1.url} width={width} />;
 
     const elByline = (
       <Doc.Block.Byline

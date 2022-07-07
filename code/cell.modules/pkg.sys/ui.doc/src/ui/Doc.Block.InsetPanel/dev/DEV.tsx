@@ -35,10 +35,15 @@ export const actions = DevActions<Ctx>()
     e.hr();
 
     e.component((e) => {
+      const markdown = e.ctx.props.markdown;
+      const data = {
+        ...e.ctx.props,
+        markdown: markdown?.length || 0 > 25 ? `${markdown?.substring(0, 25)}...` : markdown,
+      };
       return (
         <ObjectView
           name={'props'}
-          data={e.ctx.props}
+          data={data}
           style={{ MarginX: 15 }}
           fontSize={10}
           expandPaths={['$']}
@@ -49,10 +54,9 @@ export const actions = DevActions<Ctx>()
 
   .subject((e) => {
     e.settings({
-      actions: { width: 300 },
+      actions: { width: 350 },
       host: { background: -0.04 },
       layout: {
-        // position: [150, 80],
         width: 720,
         cropmarks: -0.2,
       },
