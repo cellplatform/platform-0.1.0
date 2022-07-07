@@ -6,7 +6,7 @@ import { Doc } from '../../Doc';
 import { SAMPLE as BLOCK_SAMPLE } from '../../Doc.Block.Markdown/dev/DEV.SAMPLE';
 import { css, COLORS, DEFAULT, t } from '../common';
 import { SAMPLE as IMAGE_SAMPLE } from '../../Doc.Block.Image/dev/DEV';
-import { SAMPLE as BYLINE_SAMPLE } from '../../Doc.Byline/dev/DEV';
+import { SAMPLE as BYLINE_SAMPLE } from '../../Doc.Block.Byline/dev/DEV';
 import { SAMPLE as DEFS } from '../../DEV.Sample.DATA';
 
 type Ctx = {
@@ -35,9 +35,9 @@ const Util = {
     const elBannerImage = <Doc.Block.Image url={IMAGE_SAMPLE.URL} width={width} />;
 
     const elByline = (
-      <Doc.Byline
+      <Doc.Block.Byline
         version={'0.1.3 (Jun 2022)'}
-        author={{ name: 'Philious Fogg', avatar: BYLINE_SAMPLE.avatarUrl }}
+        author={{ name: 'Chesterton Fogg', avatar: BYLINE_SAMPLE.avatarUrl }}
         style={{ marginBottom: 60 }}
       />
     );

@@ -1,28 +1,24 @@
 import React from 'react';
 
 import { DocIdentity } from '../Doc.Identity';
-import { COLORS, css, CssValue } from './common';
+import { COLORS, css, CssValue, FC, t, DEFAULT, ALL } from './common';
 
 type SrcUrl = string;
-
-export type DocBylineDivider = {
-  thickness?: number;
-  color?: string | number;
-  opacity?: number;
-  spacing?: number;
-};
 
 export type DocBylineProps = {
   version: string;
   author: { name: string; avatar: SrcUrl };
-  divider?: DocBylineDivider;
-  align?: 'left' | 'right';
+  divider?: t.DocBylineDivider;
+  align?: t.DocBylineAlign;
   style?: CssValue;
 };
 
-export const DocByline: React.FC<DocBylineProps> = (props) => {
-  const { version, author, align = 'left', divider = {} } = props;
-  const isLeft = align === 'left';
+/**
+ * Component
+ */
+const View: React.FC<DocBylineProps> = (props) => {
+  const { version, author, align = 'Left', divider = {} } = props;
+  const isLeft = align === 'Left';
 
   /**
    * [Render]
@@ -52,3 +48,16 @@ export const DocByline: React.FC<DocBylineProps> = (props) => {
     </div>
   );
 };
+
+/**
+ * Export
+ */
+type Fields = {
+  DEFAULT: typeof DEFAULT;
+  ALL: typeof ALL;
+};
+export const DocBylineBlock = FC.decorate<DocBylineProps, Fields>(
+  View,
+  { DEFAULT, ALL },
+  { displayName: 'Doc.BylineBlock' },
+);

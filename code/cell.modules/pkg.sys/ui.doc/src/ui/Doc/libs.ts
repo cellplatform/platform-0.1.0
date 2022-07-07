@@ -7,7 +7,6 @@ export { DocLayout as Layout } from '../Doc.Layout';
 export { DocLayoutContainer as LayoutContainer } from '../Doc.LayoutContainer';
 
 export { DocHeadline as Headline } from '../Doc.Headline';
-export { DocByline as Byline } from '../Doc.Byline';
 export { DocIdentity as Identity } from '../Doc.Identity';
 
 export { DocBlocks as Blocks } from '../Doc.Blocks';

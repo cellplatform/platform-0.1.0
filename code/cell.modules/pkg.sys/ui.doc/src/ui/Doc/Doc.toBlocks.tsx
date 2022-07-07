@@ -14,19 +14,19 @@ export function toBlockElements(props: { def: t.DocDef; width: number }): JSX.El
   );
 
   const elBylineTop = (
-    <Doc.Byline
+    <Doc.Block.Byline
       version={def.version}
       author={def.author}
-      align={'right'}
+      align={'Right'}
       style={{ marginBottom: 20, marginRight: 8 }}
     />
   );
 
   const elBylineBottom = (
-    <Doc.Byline
+    <Doc.Block.Byline
       version={def.version}
       author={def.author}
-      align={'left'}
+      align={'Left'}
       divider={{ thickness: 3, opacity: 0.1 }}
     />
   );

@@ -93,7 +93,7 @@ gained across all the layers in the hierarchy. This causes the unit cost of the 
 produces to fall as its size increases. This is known as **sub-linear scaling**, where the use 
 of resources becomes more and more efficient as the system grows in size.
 
-# Fractal hierarchies are finite
+# Fractal hierarchies are finite.
 
 Systems that rely on scaling via fractal hierarchies can become incredibly efficient as they 
 scale. But the downside of this dynamic is that these systems decay and die in very predictable 
