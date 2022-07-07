@@ -8,6 +8,7 @@ const imports = {
 
   Design: import('./ui/Design/DEV'),
   ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
+
   DocLayout: import('./ui/Doc.Layout/dev/DEV'),
   DocLayoutContainer: import('./ui/Doc.LayoutContainer/dev/DEV'),
   DocList: import('./ui/Doc.List/dev/DEV'),
@@ -15,6 +16,7 @@ const imports = {
   DocHeadline: import('./ui/Doc.Headline/dev/DEV'),
   DocByline: import('./ui/Doc.Byline/dev/DEV'),
   DocQuote: import('./ui/Doc.Quote/dev/DEV'),
+  DocIdentity: import('./ui/Doc.Identity/dev/DEV'),
 
   DocBlocks: import('./ui/Doc.Blocks/dev/DEV'),
   DocBlockMarkdown: import('./ui/Doc.Block.Markdown/dev/DEV'),
