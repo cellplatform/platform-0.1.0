@@ -21,7 +21,7 @@ export type MinSizeProps = {
   minHeight?: number;
   hideStrategy?: t.MinSizeHideStrategy;
   warningElement?: React.ReactNode | t.MinSizeRenderWarning;
-  rootResize?: t.ResizeObserver;
+  rootResize?: t.ResizeObserver | t.ResizeObserverHook;
   showDebugSize?: boolean;
   style?: CssValue;
   onResize?: t.MinSizeResizeEventHandler;
