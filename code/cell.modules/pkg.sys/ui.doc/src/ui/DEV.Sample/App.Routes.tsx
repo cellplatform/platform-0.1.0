@@ -1,7 +1,8 @@
 import React from 'react';
-import { t, css, Color, COLORS, Button } from './common';
+import { time, t, css, Color, COLORS, Button } from './common';
 import { SAMPLE } from '../DEV.Sample.DATA';
 import { Doc } from '../Doc';
+import { Diagram } from '../Diagram';
 
 export function AppRoutes(): t.RouteTableDefs {
   return {
@@ -15,26 +16,31 @@ export function AppRoutes(): t.RouteTableDefs {
         }),
       };
 
-      const elLinks = SAMPLE.defs.map((def, i) => {
-        const path = def.path;
-
+      const toListItemElement = (path: string) => {
         const handleClick = (mouse: React.MouseEvent) => {
           mouse.preventDefault();
           e.change({ path });
         };
 
         return (
-          <li key={`${i}.${path}`}>
+          <li key={path}>
             <a href={path} onClick={handleClick}>
               <Button>{path}</Button>
             </a>
           </li>
         );
+      };
+
+      const elLinks = SAMPLE.defs.map((def, i) => {
+        return toListItemElement(def.path);
       });
 
       return e.render(
         <div {...styles.base}>
-          <ul>{elLinks}</ul>
+          <ul>
+            {elLinks}
+            {toListItemElement('/diagram')}
+          </ul>
         </div>,
       );
     },
@@ -48,6 +54,14 @@ export function AppRoutes(): t.RouteTableDefs {
       if (!def) return;
 
       e.render(<Doc.Layout def={def} style={{ flex: 1 }} />);
+    },
+
+    /**
+     * DIAGRAM
+     */
+    async '/diagram'(e) {
+      await time.wait(400); // Sample spinner.
+      e.render(<Diagram.TalkingDiagram style={{ flex: 1 }} />);
     },
   };
 }

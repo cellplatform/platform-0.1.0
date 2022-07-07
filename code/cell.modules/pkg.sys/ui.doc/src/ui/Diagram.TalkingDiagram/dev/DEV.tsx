@@ -6,6 +6,7 @@ import { TestFilesystem } from '../../../test';
 import { t, Filesystem } from '../common';
 
 type Ctx = {
+  size?: t.DiagramLayoutSize;
   filesystem: t.TestFilesystem;
   props: TalkingDiagramProps;
 };
@@ -17,13 +18,16 @@ export const actions = DevActions<Ctx>()
   .namespace('ui.Diagram.TalkingDiagram')
   .context((e) => {
     if (e.prev) return e.prev;
-
+    const change = e.change;
     const filesystem = TestFilesystem.init();
 
     const ctx: Ctx = {
       filesystem,
-      props: {},
+      props: {
+        onResize: (e) => change.ctx((ctx) => (ctx.size = e.size)),
+      },
     };
+
     return ctx;
   })
 
@@ -61,15 +65,21 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    const size = e.ctx.size?.root;
+    const width = size?.width ?? '-';
+    const height = size?.height ?? '-';
+
     e.settings({
       actions: { width: 350 },
       host: { background: -0.04 },
       layout: {
-        label: '<TalkingDiagram>',
-        position: [150, 80],
+        label: {
+          topLeft: '<TalkingDiagram>',
+          topRight: `${width}px x ${height}px`,
+        },
+        position: [80, 80, 110, 80],
         border: -0.1,
         cropmarks: -0.2,
-        background: 1,
       },
     });
     e.render(<TalkingDiagram {...e.ctx.props} style={{ flex: 1 }} />);

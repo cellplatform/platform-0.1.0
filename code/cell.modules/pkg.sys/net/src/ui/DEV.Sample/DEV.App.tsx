@@ -201,9 +201,11 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     if (cmd === 'min') setMinimized(true);
     if (cmd === 'max') setMinimized(false);
 
-    if (cmd === 'copy peer') {
+    if (cmd === 'copy' || cmd === 'copy peer') {
       const peer = `peer:${network.self}`;
-      navigator.clipboard.writeText(peer);
+      const domain = `${location.origin}/`;
+      const text = `${domain}\n${peer}`;
+      navigator.clipboard.writeText(text);
     }
   };
 

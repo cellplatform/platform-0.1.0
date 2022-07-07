@@ -41,10 +41,10 @@ const Util = {
 };
 
 const customCalculator: t.CalculateDocLayoutSizes = (root) => {
-  const res = Doc.LayoutContainer.LayoutSize.calculate(root);
-  if (root.width < 650) res.column.width = 220;
-  if (root.width >= 650) res.column.width = root.width - 30;
-  return res;
+  const sizes = Doc.LayoutContainer.LayoutSize.calculate(root);
+  if (root.width < 650) sizes.column.width = 220;
+  if (root.width >= 650) sizes.column.width = root.width - 30;
+  return sizes;
 };
 
 /**
