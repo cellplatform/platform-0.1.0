@@ -1,6 +1,6 @@
 import { Icon } from '@platform/ui.icon';
 import { GoOctoface } from 'react-icons/go';
-import { MdExtension, MdFace, MdClose, MdImportContacts } from 'react-icons/md';
+import { MdExtension, MdFace, MdClose, MdImportContacts, MdArrowUpward } from 'react-icons/md';
 
 import { FiCameraOff } from 'react-icons/fi';
 
@@ -13,4 +13,5 @@ export const Icons = {
   Close: icon(MdClose),
   Book: icon(MdImportContacts),
   Image: { Fail: icon(FiCameraOff) },
+  Arrow: { Up: icon(MdArrowUpward) },
 };

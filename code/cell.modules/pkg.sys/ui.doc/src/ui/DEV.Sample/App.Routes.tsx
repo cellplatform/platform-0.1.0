@@ -3,7 +3,8 @@ import React from 'react';
 import { SAMPLE } from '../DEV.Sample.DATA';
 import { Diagram } from '../Diagram';
 import { Doc } from '../Doc';
-import { Button, COLORS, css, t, time } from './common';
+import { css, t, time } from './common';
+import { UpNav } from './ui/DEV.UpNav';
 
 export function AppRoutes(): t.RouteTableDefs {
   return {
@@ -31,7 +32,18 @@ export function AppRoutes(): t.RouteTableDefs {
       const def = SAMPLE.defs.find((def) => def.path === path);
       if (!def) return;
 
-      e.render(<Doc.Layout doc={def} style={{ flex: 1 }} />);
+      const styles = {
+        base: css({ flex: 1 }),
+        layout: css({ Absolute: 0 }),
+        nav: css({ Absolute: 0 }),
+      };
+
+      e.render(
+        <div {...styles.base}>
+          <Doc.Layout doc={def} style={styles.layout} />
+          <UpNav style={styles.nav} onClick={() => e.change({ path: '/' })} />
+        </div>,
+      );
     },
 
     /**
