@@ -13,7 +13,6 @@ export const SCALE: t.DocDef = {
   author,
   category,
   title: `Scale and the levers that\nprovide DAOs their power.`,
-  // subtitle: `Web3 presents the possibility of a new paradigm to replace the company-centric paradigm that has been evolving over the past 400 years.`,
 
   blocks: [
     //

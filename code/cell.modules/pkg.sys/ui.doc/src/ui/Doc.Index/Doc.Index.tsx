@@ -14,7 +14,6 @@ export const DocIndex: React.FC<DocIndexProps> = (props) => {
   const { items = [] } = props;
 
   const resize = useResizeObserver({ onSize: (size) => props.onResize?.({ size }) });
-  const size = resize.rect;
 
   /**
    * [Render]
@@ -24,11 +23,12 @@ export const DocIndex: React.FC<DocIndexProps> = (props) => {
     body: {
       scrollOuter: css({
         Absolute: 0,
-        Flex: 'x-center-center',
+        Flex: 'x-start-center',
         Scroll: true,
         PaddingX: 20,
       }),
       inner: css({
+        paddingTop: 120,
         width: 720, // TODO 🐷 take from page resizer
       }),
     },
@@ -40,20 +40,29 @@ export const DocIndex: React.FC<DocIndexProps> = (props) => {
       borderBottom: `solid 5px ${Color.format(-0.1)}`,
       ':last-child': { borderBottom: 'none' },
     }),
+
+    a: css({
+      textDecoration: 'none',
+    }),
   };
 
   const elHeadlines = items.map((def, i) => {
+    const handleClick = (mouse: React.MouseEvent) => {
+      mouse.preventDefault();
+      props.onSelectItem?.({ def });
+    };
+
     return (
       <div {...styles.headline} key={`headline.${i}`}>
-        <DocHeadline
-          id={def.id}
-          category={def.category}
-          title={def.title}
-          subtitle={def.subtitle}
-          onClick={(e) => {
-            props.onSelectItem?.({ def });
-          }}
-        />
+        <a href={def.path} onClick={handleClick} {...styles.a}>
+          <DocHeadline
+            id={def.id}
+            category={def.category}
+            title={def.title}
+            subtitle={def.subtitle}
+            onClick={() => null} // NB: Dummy handler so that button performs "pressed" visual behavior.
+          />
+        </a>
       </div>
     );
   });
