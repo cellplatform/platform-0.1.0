@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.doc",
-  "version": "0.0.74",
+  "version": "0.0.75",
   "main": "lib/index",
   "sideEffects": false,
   "scripts": {

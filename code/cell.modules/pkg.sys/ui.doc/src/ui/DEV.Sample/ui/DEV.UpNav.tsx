@@ -15,7 +15,7 @@ export const UpNav: React.FC<UpNavProps> = (props) => {
   const styles = {
     base: css({ pointerEvents: 'none' }),
     button: css({
-      Absolute: [5, null, null, 5],
+      Absolute: [5, null, null, 10],
       pointerEvents: 'auto',
     }),
   };
