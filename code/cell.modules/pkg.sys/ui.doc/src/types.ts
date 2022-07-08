@@ -3,6 +3,7 @@ export * from './ui/Font/types';
 export * from './ui/Doc/types';
 export * from './ui/Doc.LayoutContainer/types';
 export * from './ui/Doc.List/types';
+export * from './ui/Doc.Index/types';
 
 export * from './ui/Doc.Blocks/types';
 export * from './ui/Doc.Block.Byline/types';

@@ -15,7 +15,7 @@ export function AppRoutes(): t.RouteTableDefs {
         <Doc.Index
           items={items}
           style={{ flex: 1 }}
-          onSelectItem={(e) => {
+          onSelect={(e) => {
             const path = e.def.path;
             change({ path });
           }}
