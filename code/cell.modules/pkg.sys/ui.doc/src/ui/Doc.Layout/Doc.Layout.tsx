@@ -3,8 +3,8 @@ import { Subject } from 'rxjs';
 
 import { DocBlocks } from '../Doc.Blocks';
 import { DocLayoutContainer, DocLayoutScrollTop } from '../Doc.LayoutContainer';
+import { css, CssValue, FC, t } from './common';
 import { toBlockElements } from '../Doc/Doc.toBlocks';
-import { css, CssValue, t } from './common';
 
 export type DocLayoutProps = {
   doc?: t.DocDef;
@@ -19,14 +19,17 @@ export type DocLayoutProps = {
   onResize?: t.DocResizeHandler;
 };
 
-export const DocLayout: React.FC<DocLayoutProps> = (props) => {
+/**
+ * Component
+ */
+const View: React.FC<DocLayoutProps> = (props) => {
   const { doc, padding = { header: 60, footer: 80 } } = props;
   const [sizes, setSizes] = useState<t.DocLayoutSizes>();
 
+  const scrollTopRef$ = useRef(new Subject<DocLayoutScrollTop>());
   const contentHash = doc ? `${doc.id}.${doc.blocks?.length ?? 0}` : '';
   const width = sizes?.column.width;
-  const blocks = doc && width && toBlockElements({ def: doc, width });
-  const scrollTopRef$ = useRef(new Subject<DocLayoutScrollTop>());
+  const blocks = doc && width && toBlockElements({ doc, width });
 
   /**
    * [Lifecycle]
@@ -73,3 +76,15 @@ export const DocLayout: React.FC<DocLayoutProps> = (props) => {
     </DocLayoutContainer>
   );
 };
+
+/**
+ * Export
+ */
+type Fields = {
+  //
+};
+export const DocLayout = FC.decorate<DocLayoutProps, Fields>(
+  View,
+  {},
+  { displayName: 'DocLayout' },
+);

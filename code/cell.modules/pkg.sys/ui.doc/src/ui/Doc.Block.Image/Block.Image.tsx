@@ -10,6 +10,7 @@ import { Util } from './Util';
 export type DocImageBlockProps = {
   url?: string;
   width?: number;
+  height?: number;
   borderRadius?: number;
   credit?: React.ReactNode;
   margin?: t.DocBlockMargin;
@@ -21,7 +22,7 @@ export type DocImageBlockProps = {
  * Component
  */
 const View: React.FC<DocImageBlockProps> = (props) => {
-  const { url, width, borderRadius = DEFAULT.borderRadius, credit, margin = {} } = props;
+  const { url, width, height, borderRadius = DEFAULT.borderRadius, credit, margin = {} } = props;
 
   const imgRef = useRef<HTMLImageElement>(null);
   const [ready, setReady] = useState<t.DocImageBlockReadyHandlerArgs | undefined>();
@@ -52,10 +53,12 @@ const View: React.FC<DocImageBlockProps> = (props) => {
       overflow: 'hidden',
       borderRadius,
       width,
+      height,
     }),
     image: css({
-      width,
       display: ready && !ready.error ? 'block' : 'none',
+      width,
+      height,
     }),
     credit: css({
       marginTop: 3,

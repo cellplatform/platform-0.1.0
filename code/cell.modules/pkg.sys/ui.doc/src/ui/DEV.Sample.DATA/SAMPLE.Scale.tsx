@@ -8,7 +8,7 @@ export const SCALE: t.DocDef = {
   id: 'scale',
   path: '/docs/dao/scale-levers',
 
-  banner: { url: 'https://tdb-4hea4bo0w-tdb.vercel.app/banner-scale.png' },
+  banner: { url: 'https://tdb-4hea4bo0w-tdb.vercel.app/banner-scale.png', height: 370 },
   version: '1.0.3 (May 2022)',
   author,
   category,
