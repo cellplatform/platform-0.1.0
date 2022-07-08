@@ -3,7 +3,7 @@ import { t, author, category, COMMONTEXT } from './common';
 export const BLOCKS: t.DocDefBlock[] = [
   {
     kind: 'Markdown',
-    text: `
+    markdown: `
 Web3 is giving us the opportunity to rewrite how groups of people come together and do 
 things in the world. But are we importing a core concept from our existing paradigm 
 without realising it?
@@ -99,7 +99,7 @@ treasury (as a centralised asset) not to have an outsized gravitational pull.
 
   {
     kind: 'Markdown',
-    text: `
+    markdown: `
 # The value exists in the DAO network, not in the DAO entity.
 
 If we can stop collapsing into this subtle trap of entity thinking, we can see decentralised 
@@ -177,7 +177,7 @@ interesting work to answer some of these questions. Some promising examples incl
 
   {
     kind: 'Markdown',
-    text: `    
+    markdown: `    
 # “DAO” as a verb, not a thing.
 
 It’s also true that thinking about DAOs as complex networks is probably what we all think we 

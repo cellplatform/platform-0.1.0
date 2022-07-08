@@ -35,8 +35,8 @@ const Util = {
     const width = ctx.sizes?.column.width;
     if (!width) return [];
 
-    const def = DEFS.SCALE;
-    return Doc.toBlockElements({ def, width });
+    const doc = DEFS.SCALE;
+    return Doc.toBlockElements({ doc, width });
   },
 };
 

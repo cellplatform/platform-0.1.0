@@ -85,8 +85,8 @@ const Util = {
     if (key === 'Sample') return Util.sampleBlocks(ctx);
 
     const width = ctx.debug.width;
-    const def = Util.toDef(ctx);
-    return def ? Doc.toBlockElements({ def, width }) : [];
+    const doc = Util.toDef(ctx);
+    return doc ? Doc.toBlockElements({ doc, width }) : [];
   },
 };
 
