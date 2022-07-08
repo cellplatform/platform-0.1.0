@@ -5,11 +5,12 @@ export type LoadFailProps = {
   url?: string;
   message?: string;
   borderRadius?: number;
+  height?: number;
   style?: CssValue;
 };
 
 export const LoadFail: React.FC<LoadFailProps> = (props) => {
-  const { borderRadius } = props;
+  const { borderRadius, height } = props;
   const message = props.message ?? 'Failed to load image.';
 
   /**
@@ -23,6 +24,7 @@ export const LoadFail: React.FC<LoadFailProps> = (props) => {
       borderRadius,
       padding: 20,
       userSelect: 'none',
+      height,
     }),
     body: css({ Flex: 'x-spaceBetween-center' }),
     message: css({

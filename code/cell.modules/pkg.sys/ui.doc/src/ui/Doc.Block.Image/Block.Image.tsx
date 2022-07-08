@@ -78,7 +78,9 @@ const View: React.FC<DocImageBlockProps> = (props) => {
     />
   );
 
-  const elLoadFail = Boolean(ready?.error) && <LoadFail url={url} borderRadius={borderRadius} />;
+  const elLoadFail = Boolean(ready?.error) && (
+    <LoadFail url={url} borderRadius={borderRadius} height={height} />
+  );
 
   return (
     <div {...css(styles.base, props.style)}>

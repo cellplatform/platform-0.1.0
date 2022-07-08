@@ -12,7 +12,7 @@ export const FLOWS: t.DocDef = {
   version: '1.0.1 (Apr 2022)',
   author,
   category,
-  title: `DAOs aren't things...\nthey are flows.`,
+  title: `DAOs aren’t things...\nthey are flows.`,
   // subtitle: `Web3 is giving us the opportunity to rewrite how groups of people come together and do things in the world. But are we importing a core concept from our existing paradigm without realising it?`,
 
   blocks: [

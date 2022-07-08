@@ -25,9 +25,10 @@ type SampleKey = keyof typeof SAMPLE;
 type Ctx = {
   props: DocImageBlockProps;
   debug: {
-    width: number;
     sample: SampleKey;
     credit: boolean;
+    width: number;
+    height?: number;
   };
   ready?: t.DocImageBlockReadyHandlerArgs;
 };
@@ -43,6 +44,7 @@ const Util = {
     return {
       ...props,
       width: debug.width,
+      height: debug.height,
       credit: debug.credit ? sample.credit : undefined,
     };
   },
@@ -57,7 +59,7 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
     const change = e.change;
 
-    const sample: SampleKey = 'sample_error';
+    const sample: SampleKey = 'sample_1';
     const { url, credit } = SAMPLE[sample];
 
     const ctx: Ctx = {
@@ -101,10 +103,26 @@ export const actions = DevActions<Ctx>()
             return { label, value };
           }),
         )
-        .initial(720)
+        .initial(config.ctx.debug.width)
         .view('buttons')
         .pipe((e) => {
           if (e.changing) e.ctx.debug.width = e.changing?.next[0].value;
+        });
+    });
+
+    e.select((config) => {
+      config
+        .title('height')
+        .items(
+          [undefined, 200, 360, 400].map((value) => {
+            const label = value === undefined ? `<undefined>` : `height: ${value}px`;
+            return { label, value };
+          }),
+        )
+        .initial(config.ctx.debug.height)
+        .view('buttons')
+        .pipe((e) => {
+          if (e.changing) e.ctx.debug.height = e.changing?.next[0].value;
         });
     });
 

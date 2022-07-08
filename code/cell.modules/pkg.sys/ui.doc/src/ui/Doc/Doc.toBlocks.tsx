@@ -18,7 +18,7 @@ export function toBlockElements(props: { doc: t.DocDef; width: number }): JSX.El
     />
   );
 
-  const elBylineTop = (
+  const elHeaderByline = (
     <Doc.Block.Byline
       version={doc.version}
       author={doc.author}
@@ -27,12 +27,13 @@ export function toBlockElements(props: { doc: t.DocDef; width: number }): JSX.El
     />
   );
 
-  const elBylineBottom = (
+  const elFooterByline = (
     <Doc.Block.Byline
       version={doc.version}
       author={doc.author}
       align={'Left'}
       divider={{ thickness: 3, opacity: 0.1 }}
+      style={{ marginTop: 120 }}
     />
   );
 
@@ -74,9 +75,9 @@ export function toBlockElements(props: { doc: t.DocDef; width: number }): JSX.El
   return [
     //
     elBanner,
-    elBylineTop,
+    elHeaderByline,
     elHeadline,
     ...blocks,
-    elBylineBottom,
+    elFooterByline,
   ].filter(Boolean) as JSX.Element[];
 }
