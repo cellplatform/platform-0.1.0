@@ -12,7 +12,7 @@ export const category = 'Conceptual Framing Series';
  */
 const REF = {
   SB: `[@superbenefit](https://superbenefit.mirror.xyz)`,
-  RO_ETH: `[yeoro.eth](https://mirror.xyz/yeoro.eth)`,
+  RO_ETH: `[yeoro](https://twitter.com/yeoro)`,
 };
 
 const ORIG_PUBLISHED_BLOCK: t.DocDefBlock = {

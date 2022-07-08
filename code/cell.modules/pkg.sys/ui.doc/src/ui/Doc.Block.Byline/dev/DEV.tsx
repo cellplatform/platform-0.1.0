@@ -9,7 +9,7 @@ type Ctx = {
 };
 
 export const SAMPLE = {
-  avatarUrl: '/static/.tmp.images/avatar.png',
+  avatarUrl: 'https://tdb-4wu2h9jfp-tdb.vercel.app/avatar.png',
 };
 
 /**

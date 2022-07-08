@@ -32,15 +32,14 @@ export const DocIndexList: React.FC<DocIndexListProps> = (props) => {
     },
     headline: {
       base: css({
-        paddingBottom: 50,
-        marginTop: 50,
+        paddingBottom: 40,
+        marginTop: 40,
         ':first-child': { marginTop: 0 },
 
         borderBottom: `solid 5px ${Color.alpha(COLORS.DARK, 0.08)}`,
         ':last-child': { borderBottom: 'none' },
-
-        Flex: 'x-spaceBetween-center',
       }),
+      inner: css({ Flex: 'x-spaceBetween-center' }),
       text: css({ flex: 1 }),
       image: css({ height: 120, borderRadius: 8 }),
     },
@@ -59,20 +58,38 @@ export const DocIndexList: React.FC<DocIndexListProps> = (props) => {
     );
 
     return (
-      <a key={`${def.path}.${i}`} href={def.path} onClick={handleClick} {...styles.a}>
-        <div {...styles.headline.base}>
-          <DocHeadline
-            id={def.id}
-            category={def.category}
-            title={def.title}
-            subtitle={def.subtitle}
-            hint={{ width: 300 }}
-            style={styles.headline.text}
-            onClick={() => null} // NB: Dummy handler so that button performs "pressed" visual behavior.
-          />
-          {elImage}
-        </div>
-      </a>
+      <div key={`${def.path}.${i}`} {...styles.headline.base}>
+        <a href={def.path} onClick={handleClick}>
+          <div {...styles.headline.inner}>
+            <DocHeadline
+              id={def.id}
+              category={def.category}
+              title={def.title}
+              subtitle={def.subtitle}
+              hint={{ width: 300 }}
+              style={styles.headline.text}
+              onClick={() => null} // NB: Dummy handler so that button performs "pressed" visual behavior.
+            />
+            {elImage}
+          </div>
+        </a>
+      </div>
+      // <div key={`${def.path}.${i}`} {...styles.headline.base}>
+      //   <a  href={def.path} onClick={handleClick} {...styles.a}>
+      //   <div >
+      // <DocHeadline
+      //   id={def.id}
+      //   category={def.category}
+      //   title={def.title}
+      //   subtitle={def.subtitle}
+      //   hint={{ width: 300 }}
+      //   style={styles.headline.text}
+      //   onClick={() => null} // NB: Dummy handler so that button performs "pressed" visual behavior.
+      // />
+      // {elImage}
+      //   </div>
+      //   </a>
+      // <div/>
     );
   });
 
