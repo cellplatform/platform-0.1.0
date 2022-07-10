@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 import { DocTooSmall } from '../Doc.TooSmall';
 import { COLORS, css, CssValue, DEFAULT, FC, MinSize, rx, t } from './common';
 import { LayoutSize } from './LayoutSize';
-import { Guides } from './view/Guides';
+import { Guides } from './ui/Guides';
 
 export type DocLayoutScrollTop = { top: number };
 

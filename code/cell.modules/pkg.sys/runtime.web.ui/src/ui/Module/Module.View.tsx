@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 
-import { css, CssValue, t, FC, LoadMask, DEFAULT, ErrorBoundary } from './common';
-import { Loader } from './view/Loader';
-import { Info } from './view/Info';
-import { ModuleApp } from '../Module.App';
+import { css, CssValue, DEFAULT, ErrorBoundary, FC, LoadMask, t } from './common';
+import { Info } from './ui/Info';
+import { Loader } from './ui/Loader';
 
 export type ModuleProps = {
   instance: t.ModuleInstance;

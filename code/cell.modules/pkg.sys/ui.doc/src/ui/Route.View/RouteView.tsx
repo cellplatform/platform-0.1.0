@@ -18,7 +18,7 @@ import {
 import { useRoute } from './useRoute';
 import { useRouteState } from './useRouteState';
 import { useRouteController } from './useRouteController';
-import { Dev } from './view/Dev';
+import { Dev } from './ui/Dev';
 import { RouteEvents } from '../Route.Bus/Route.Events';
 
 let renderCount = 0;
