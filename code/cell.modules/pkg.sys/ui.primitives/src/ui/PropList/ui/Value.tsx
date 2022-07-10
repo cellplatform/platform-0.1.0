@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 
-import { copyToClipboard, css, CssValue, t, time } from './common';
+import { copyToClipboard, css, CssValue, t, time } from '../common';
 
-import { SimpleValue } from './PropList.Value.Simple';
-import { SwitchValue } from './PropList.Value.Switch';
-import { Util } from './Util';
+import { SimpleValue } from './Value.Simple';
+import { SwitchValue } from './Value.Switch';
+import { Util } from './Value.common';
 
 export type PropListValueProps = {
   item: t.PropListItem;

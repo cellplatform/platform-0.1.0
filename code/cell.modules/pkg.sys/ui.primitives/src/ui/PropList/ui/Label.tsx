@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { css, CssValue, t } from './common';
-import { Util } from './Util';
+import { css, CssValue, t } from '../common';
+import { Util } from '../Util';
 
 export type PropListLabelProps = {
   data: t.PropListItem;

@@ -1,9 +1,7 @@
 import React, { CSSProperties } from 'react';
 
-import { color, COLORS, css, t } from './common';
-import { CopyIcon } from './PropList.Value.common';
-import { Text } from '../Text';
-import { Util } from './Util';
+import { color, COLORS, css, t } from '../common';
+import { CopyIcon, Util, Text } from './Value.common';
 
 export type SimpleValueProps = {
   defaults: t.PropListDefaults;

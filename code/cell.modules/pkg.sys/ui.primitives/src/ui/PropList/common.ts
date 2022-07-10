@@ -1,5 +1,7 @@
 import { t } from '../../common';
+
 export * from '../../common';
+export { Icons } from '../Icons';
 
 /**
  * Constants

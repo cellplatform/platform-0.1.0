@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { t } from './common';
-import { Switch } from '../../ui.ref/button/Switch';
+import { t } from '../common';
+import { Switch } from './Value.common';
 
 export type SwitchValueProps = {
   value: t.PropListValue;

@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { css, CssValue, t, DEFAULTS } from './common';
-import { PropListLabel } from './PropList.Label';
-import { PropListValue } from './PropList.Value';
-import { Util } from './Util';
+import { css, CssValue, t, DEFAULTS } from '../common';
+import { PropListLabel } from './Label';
+import { PropListValue } from './Value';
+import { Util } from '../Util';
 
 export type PropListItemProps = {
   data: t.PropListItem;

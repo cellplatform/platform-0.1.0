@@ -1,7 +1,10 @@
 import React from 'react';
 
-import { COLORS, css } from './common';
-import { Icons } from '../Icons';
+import { COLORS, css, Icons } from '../common';
+
+export { Util } from '../Util';
+export { Text } from '../../Text';
+export { Switch } from '../../Button.Switch';
 
 /**
  * Copy icon.

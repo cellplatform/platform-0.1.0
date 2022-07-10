@@ -1,6 +1,6 @@
 import React from 'react';
-import { css, CssValue, t, DEFAULTS } from './common';
-import { Util } from './Util';
+import { css, CssValue, t, DEFAULTS } from '../common';
+import { Util } from '../Util';
 
 export type PropListTitleProps = {
   children?: React.ReactNode;

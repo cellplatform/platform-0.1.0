@@ -2,8 +2,8 @@ import React from 'react';
 
 import { COLORS, css, FC, Style, t, DEFAULTS, THEMES } from './common';
 import { FieldBuilder } from './FieldBuilder';
-import { PropListItem } from './PropList.Item';
-import { PropListTitle } from './PropList.Title';
+import { PropListItem } from './ui/Item';
+import { PropListTitle } from './ui/Title';
 import { PropListProps } from './types';
 import { Util } from './Util';
 
