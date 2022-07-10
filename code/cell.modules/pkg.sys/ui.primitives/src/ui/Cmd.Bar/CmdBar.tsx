@@ -4,10 +4,10 @@ import { Event } from '../Event';
 import { color, css, FC, time } from './common';
 import { CmdBarController, CmdBarEvents, useCmdBarController } from './logic';
 import { CmdBarProps } from './types';
-import { CmdBarGrammerInfo } from './view/Info.Grammer';
-import { Textbox } from './view/Textbox';
-import { TrayIcons } from './view/Tray.Icons';
-import { TrayPlaceholder } from './view/Tray.Placeholder';
+import { CmdBarGrammerInfo } from './ui/Info.Grammer';
+import { Textbox } from './ui/Textbox';
+import { TrayIcons } from './ui/Tray.Icons';
+import { TrayPlaceholder } from './ui/Tray.Placeholder';
 
 export { CmdBarProps };
 
