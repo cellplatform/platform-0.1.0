@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { Icons } from '../../Icons';
-import { Button, COLORS, css, CssValue } from '../common';
+import { Icons } from '../Icons';
+import { Button, COLORS, css, CssValue } from './common';
 
 export type UpNavProps = {
   style?: CssValue;
@@ -15,7 +15,7 @@ export const UpNav: React.FC<UpNavProps> = (props) => {
   const styles = {
     base: css({ pointerEvents: 'none' }),
     button: css({
-      Absolute: [5, null, null, 10],
+      Absolute: [10, null, null, 10],
       pointerEvents: 'auto',
     }),
   };

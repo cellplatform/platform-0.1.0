@@ -4,7 +4,7 @@ import { SAMPLE } from '../DEV.Sample.DATA';
 import { Diagram } from '../Diagram';
 import { Doc } from '../Doc';
 import { css, t, time } from './common';
-import { UpNav } from './ui/DEV.UpNav';
+import { UpNav } from './DEV.UpNav';
 
 export function AppRoutes(): t.RouteTableDefs {
   return {

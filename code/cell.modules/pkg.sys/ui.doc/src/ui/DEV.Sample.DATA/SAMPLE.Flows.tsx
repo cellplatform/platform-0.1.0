@@ -8,7 +8,7 @@ export const FLOWS: t.DocDef = {
   id: 'flows',
   path: '/docs/dao/flows-not-things',
 
-  banner: { url: 'https://tdb-dz1qc4pzn-tdb.vercel.app/dao-1.png', height: 360 },
+  banner: { url: 'https://tdb-783u5fnr2-tdb.vercel.app/banner.jpg', height: 360 },
   version: '1.0.1 (Apr 2022)',
   author,
   category,

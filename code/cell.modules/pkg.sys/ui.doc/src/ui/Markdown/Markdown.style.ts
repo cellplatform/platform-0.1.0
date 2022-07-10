@@ -60,7 +60,7 @@ Style.global(
       fontFamily: 'monospace',
       fontStyle: 'normal',
       fontWeight: 600,
-      color: COLORS.RED,
+      color: Color.darken(COLORS.CYAN, 6),
       backgroundColor: Color.alpha(COLORS.DARK, 0.03),
       border: `solid 1px ${Color.alpha(COLORS.DARK, 0.08)}`,
       borderRadius: 4,
