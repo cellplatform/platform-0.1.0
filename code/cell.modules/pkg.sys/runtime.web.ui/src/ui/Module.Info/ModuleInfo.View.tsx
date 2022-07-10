@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Chip, css, CssValue, DEFAULT, PropList, t } from './common';
-import { toPropsList } from './view.props/toList';
+import { toPropsList } from './ui.props/toList';
 import { Empty } from './ui/Empty';
 
 export type ModuleInfoProps = {
