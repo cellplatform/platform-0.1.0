@@ -5,7 +5,7 @@ export * as Sha1 from 'js-sha1';
  */
 export { log } from '@platform/log/lib/client';
 export { css, color, Color, CssValue, formatColor } from '@platform/css';
-export { useResizeObserver } from '@platform/react';
+export { useResizeObserver, FC } from '@platform/react';
 export { rx, slug, cuid, value, deleteUndefined, time, asArray } from '@platform/util.value';
 export { Http } from '@platform/http';
 export { Mime } from '@platform/util.mimetype';

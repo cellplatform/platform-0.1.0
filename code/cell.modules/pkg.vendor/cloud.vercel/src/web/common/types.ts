@@ -9,7 +9,7 @@ export { Http, HttpMethod } from '@platform/http.types';
 /**
  * @system
  */
-export { Fs } from 'sys.fs/lib/types';
+export { Fs, FsViewInstance } from 'sys.fs/lib/types';
 export { PropListItem } from 'sys.ui.primitives/lib/types';
 
 /**

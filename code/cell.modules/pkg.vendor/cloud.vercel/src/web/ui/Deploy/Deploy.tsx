@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import {
   Button,
@@ -12,13 +12,11 @@ import {
   Spinner,
   t,
   Vercel,
+  FC,
 } from './common';
 
-type InstanceId = string;
-type FilesystemId = string;
-
 export type DeployProps = {
-  instance: { bus: t.EventBus<any>; id: InstanceId; fs: FilesystemId };
+  instance: t.FsViewInstance;
   dir?: string;
   token?: string;
   team?: string;
@@ -42,7 +40,10 @@ export type DeployProps = {
  *    - [etc]
  */
 
-export const Deploy: React.FC<DeployProps> = (props) => {
+/**
+ * Component
+ */
+const View: React.FC<DeployProps> = (props) => {
   const { instance, token, team, project, domain, dir } = props;
   const bus = instance.bus;
   const canDeploy = Boolean(token && project && team);
@@ -203,3 +204,11 @@ export const Deploy: React.FC<DeployProps> = (props) => {
     </div>
   );
 };
+
+/**
+ * Export
+ */
+type Fields = {
+  //
+};
+export const Deploy = FC.decorate<DeployProps, Fields>(View, {}, { displayName: 'Deploy' });

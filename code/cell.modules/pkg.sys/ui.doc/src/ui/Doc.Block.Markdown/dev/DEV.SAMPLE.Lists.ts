@@ -9,13 +9,13 @@ export const Lists = `
 ---
 
 1. **Foobar.**  
-   ${Lorem.words(10)}
+   ${Lorem.words(10)}.
 
 2. **The man and the sea.**  
-   *${Lorem.words(10)}*
+   *${Lorem.words(10)}.*
 
 3. **Freedom of strict constaints.**  
-   *${Lorem.words(10)}*
+   *Lorem ipsum dolor sit amet, consectetur \`adipiscing\` elit. Quisque nec*
 
 
 ---

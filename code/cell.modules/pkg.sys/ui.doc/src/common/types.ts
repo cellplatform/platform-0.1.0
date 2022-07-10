@@ -10,7 +10,7 @@ export { ResizeObserver, ResizeObserverHook } from '@platform/react/lib/types';
 /**
  * @system
  */
-export { Fs, FsViewInstance } from 'sys.fs/lib/types';
+export { Fs, FsViewInstance, TestFilesystem } from 'sys.fs/lib/types';
 export {
   PropListItem,
   MinSizeResizeEventHandler,

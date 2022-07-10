@@ -1,41 +1,26 @@
 import React from 'react';
-import { t, css, Color, COLORS, Button } from './common';
+
 import { SAMPLE } from '../DEV.Sample.DATA';
+import { Diagram } from '../Diagram';
 import { Doc } from '../Doc';
+import { css, t, time } from './common';
+import { UpNav } from './DEV.UpNav';
 
 export function AppRoutes(): t.RouteTableDefs {
   return {
     '/'(e) {
-      const styles = {
-        base: css({
-          Absolute: 0,
-          lineHeight: 1.8,
-          color: COLORS.DARK,
-          Flex: 'center-center',
-        }),
-      };
+      const items = SAMPLE.defs;
+      const change = e.change;
 
-      const elLinks = SAMPLE.defs.map((def, i) => {
-        const path = def.path;
-
-        const handleClick = (mouse: React.MouseEvent) => {
-          mouse.preventDefault();
-          e.change({ path });
-        };
-
-        return (
-          <li key={`${i}.${path}`}>
-            <a href={path} onClick={handleClick}>
-              <Button>{path}</Button>
-            </a>
-          </li>
-        );
-      });
-
-      return e.render(
-        <div {...styles.base}>
-          <ul>{elLinks}</ul>
-        </div>,
+      e.render(
+        <Doc.Index
+          items={items}
+          style={{ flex: 1 }}
+          onSelect={(e) => {
+            const path = e.def.path;
+            change({ path });
+          }}
+        />,
       );
     },
 
@@ -47,7 +32,26 @@ export function AppRoutes(): t.RouteTableDefs {
       const def = SAMPLE.defs.find((def) => def.path === path);
       if (!def) return;
 
-      e.render(<Doc.Layout def={def} style={{ flex: 1 }} />);
+      const styles = {
+        base: css({ flex: 1 }),
+        layout: css({ Absolute: 0 }),
+        nav: css({ Absolute: 0 }),
+      };
+
+      e.render(
+        <div {...styles.base}>
+          <Doc.Layout doc={def} style={styles.layout} />
+          <UpNav style={styles.nav} onClick={() => e.change({ path: '/' })} />
+        </div>,
+      );
+    },
+
+    /**
+     * DIAGRAM
+     */
+    async '/diagram'(e) {
+      await time.wait(400); // Sample spinner.
+      e.render(<Diagram.TalkingDiagram style={{ flex: 1 }} />);
     },
   };
 }

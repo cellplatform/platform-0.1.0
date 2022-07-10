@@ -7,30 +7,44 @@ import { DevChildSample } from './DEV.ChildSample';
 import { SAMPLE as DEFS } from '../../DEV.Sample.DATA';
 import { Doc } from '../../Doc';
 
+type ContentType = 'Debug' | 'SampleDoc';
+
 type Ctx = {
   sizes?: t.DocLayoutSizes;
   props: DocLayoutContainerProps;
   debug: {
     render: boolean;
-    sampleBlocks: boolean;
+    contentType: ContentType;
+    customCalculator: boolean;
   };
 };
 
 const Util = {
-  props: {
-    debug(ctx: Ctx): t.DocLayoutContainerDebug {
-      const debug = ctx.props.debug || (ctx.props.debug = {});
-      return DocLayoutContainer.toDebug(debug);
-    },
+  debugProp(ctx: Ctx): t.DocLayoutContainerDebug {
+    const debug = ctx.props.debug || (ctx.props.debug = {});
+    return DocLayoutContainer.toDebug(debug);
+  },
+
+  toProps(ctx: Ctx): DocLayoutContainerProps {
+    const { debug } = ctx;
+    const calculate = debug.customCalculator ? customCalculator : undefined;
+    return { ...ctx.props, calculate };
   },
 
   toBlocks(ctx: Ctx) {
     const width = ctx.sizes?.column.width;
     if (!width) return [];
 
-    const def = DEFS.SCALE;
-    return Doc.toBlockElements({ def, width });
+    const doc = DEFS.SCALE;
+    return Doc.toBlockElements({ doc, width });
   },
+};
+
+const customCalculator: t.CalculateDocLayoutSizes = (root) => {
+  const sizes = Doc.LayoutContainer.LayoutSize.calculate(root);
+  if (root.width < 650) sizes.column.width = 220;
+  if (root.width >= 650) sizes.column.width = root.width - 30;
+  return sizes;
 };
 
 /**
@@ -55,7 +69,8 @@ export const actions = DevActions<Ctx>()
       },
       debug: {
         render: true,
-        sampleBlocks: false,
+        contentType: 'Debug',
+        customCalculator: false,
       },
     };
 
@@ -86,25 +101,25 @@ export const actions = DevActions<Ctx>()
     e.hr(1, 0.1);
 
     e.boolean('debug.bg', (e) => {
-      const debug = Util.props.debug(e.ctx);
+      const debug = Util.debugProp(e.ctx);
       if (e.changing) debug.bg = e.changing.next;
       e.boolean.current = debug.bg;
     });
 
     e.boolean('debug.tracelines', (e) => {
-      const debug = Util.props.debug(e.ctx);
+      const debug = Util.debugProp(e.ctx);
       if (e.changing) debug.tracelines = e.changing.next;
       e.boolean.current = debug.tracelines;
     });
 
     e.boolean('debug.renderCount', (e) => {
-      const debug = Util.props.debug(e.ctx);
+      const debug = Util.debugProp(e.ctx);
       if (e.changing) debug.renderCount = e.changing.next;
       e.boolean.current = debug.renderCount;
     });
 
     e.boolean('debug.columnSize', (e) => {
-      const debug = Util.props.debug(e.ctx);
+      const debug = Util.debugProp(e.ctx);
       if (e.changing) debug.columnSize = e.changing.next;
       e.boolean.current = debug.columnSize;
     });
@@ -115,9 +130,16 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Dev');
 
-    e.boolean('render sample blocks', (e) => {
-      if (e.changing) e.ctx.debug.sampleBlocks = e.changing.next;
-      e.boolean.current = e.ctx.debug.sampleBlocks;
+    const contentTypes: ContentType[] = ['Debug', 'SampleDoc'];
+    contentTypes.forEach((type) => {
+      e.button(`render: ${type}`, (e) => (e.ctx.debug.contentType = type));
+    });
+
+    e.hr(1, 0.1);
+
+    e.boolean('ƒ: custom size calculator', (e) => {
+      if (e.changing) e.ctx.debug.customCalculator = e.changing.next;
+      e.boolean.current = e.ctx.debug.customCalculator;
     });
 
     e.hr();
@@ -153,12 +175,13 @@ export const actions = DevActions<Ctx>()
     });
 
     if (debug.render) {
-      const sampleBlocks = debug.sampleBlocks;
+      const props = Util.toProps(e.ctx);
+      const contentType = debug.contentType;
 
       e.render(
-        <Doc.LayoutContainer {...e.ctx.props} style={{ flex: 1 }}>
-          {!sampleBlocks && <DevChildSample />}
-          {sampleBlocks && (
+        <Doc.LayoutContainer {...props} style={{ flex: 1 }}>
+          {contentType === 'Debug' && <DevChildSample />}
+          {contentType === 'SampleDoc' && (
             <Doc.Blocks blocks={Util.toBlocks(e.ctx)} padding={{ header: 40, footer: 80 }} />
           )}
         </Doc.LayoutContainer>,

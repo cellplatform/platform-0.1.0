@@ -1,32 +1,13 @@
-import { slug, rx, Filesystem, t } from '../common';
-
-type Milliseconds = number;
+import Factory from 'sys.fs/lib/web/TestFilesystem';
+import { t } from '../common';
 
 const PATH = {
   ROOT: 'tmp/test/Automerge',
 };
 
 export const TestFilesystem = {
-  id: 'fs:dev.sys.crdt',
+  ...Factory('fs:dev.crdt'),
   PATH,
-
-  /**
-   * Initialize a new test filesystem instance.
-   *
-   */
-  init(options: { bus?: t.EventBus<any>; timeout?: Milliseconds } = {}) {
-    const { timeout } = options;
-    const bus = options.bus ?? rx.bus();
-
-    const instance: t.FsViewInstance = {
-      bus,
-      id: `foo.${slug()}`,
-      fs: TestFilesystem.id,
-    };
-
-    const { events, fs, ready } = Filesystem.IndexedDb.create({ bus, fs: instance.fs });
-    return { bus, instance, events, fs, ready };
-  },
 
   /**
    * Clear test filees.

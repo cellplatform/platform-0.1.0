@@ -5,18 +5,20 @@ import { t } from './common';
 const imports = {
   Sample: import('./ui/DEV.Sample/dev/DEV'),
   SampleDeploy: import('./ui/DEV.Sample.Deploy/DEV'),
+  SampleDesign: import('./ui/DEV.Sample.Design/DEV'),
 
-  Design: import('./ui/Design/DEV'),
   ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
+
   DocLayout: import('./ui/Doc.Layout/dev/DEV'),
   DocLayoutContainer: import('./ui/Doc.LayoutContainer/dev/DEV'),
   DocList: import('./ui/Doc.List/dev/DEV'),
   DocIndex: import('./ui/Doc.Index/dev/DEV'),
   DocHeadline: import('./ui/Doc.Headline/dev/DEV'),
-  DocByline: import('./ui/Doc.Byline/dev/DEV'),
   DocQuote: import('./ui/Doc.Quote/dev/DEV'),
+  DocIdentity: import('./ui/Doc.Identity/dev/DEV'),
 
   DocBlocks: import('./ui/Doc.Blocks/dev/DEV'),
+  DocBlockByline: import('./ui/Doc.Block.Byline/dev/DEV'),
   DocBlockMarkdown: import('./ui/Doc.Block.Markdown/dev/DEV'),
   DocBlockInsetPanel: import('./ui/Doc.Block.InsetPanel/dev/DEV'),
   DocBlockImage: import('./ui/Doc.Block.Image/dev/DEV'),

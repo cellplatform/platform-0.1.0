@@ -1,6 +1,7 @@
 import { FLOWS } from './SAMPLE.Flows';
 import { SCALE } from './SAMPLE.Scale';
 import { PRIMITIVES } from './SAMPLE.Primitives';
+import * as common from './SAMPLE.common';
 
 /**
  * Export
@@ -11,4 +12,6 @@ export const SAMPLE = {
   FLOWS,
   SCALE,
   PRIMITIVES,
+
+  common,
 };

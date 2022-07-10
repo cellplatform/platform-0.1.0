@@ -1,6 +1,6 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { DocByline, DocBylineProps } from '..';
+import { DocBylineBlock, DocBylineProps } from '..';
 import { COLORS } from '../common';
 
 type Ctx = {
@@ -9,7 +9,7 @@ type Ctx = {
 };
 
 export const SAMPLE = {
-  avatarUrl: '/static/.tmp.images/avatar.png',
+  avatarUrl: 'https://tdb-4wu2h9jfp-tdb.vercel.app/avatar.png',
 };
 
 /**
@@ -21,8 +21,9 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
     const ctx: Ctx = {
       props: {
-        version: '0.1.3 (Jun 2022)',
-        author: { name: 'Rowan Yeoman', avatar: SAMPLE.avatarUrl },
+        align: 'Left',
+        version: '0.1.6 (Jan 2050)',
+        author: { name: 'Display Name', avatar: SAMPLE.avatarUrl },
       },
       debug: { width: 720, whiteBg: false },
     };
@@ -34,9 +35,39 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
+    e.title('Props');
+
+    e.select((config) => {
+      config
+        .title('align')
+        .items(DocBylineBlock.ALL.align.map((value) => ({ label: `align: ${value}`, value })))
+        .initial(config.ctx.props.align)
+        .view('buttons')
+        .pipe((e) => {
+          if (e.changing) e.ctx.props.align = e.changing?.next[0].value;
+        });
+    });
+
+    e.hr(1, 0.1);
+
+    e.markdown(`Divider:`);
+    e.button('<none>', (e) => (e.ctx.props.divider = undefined));
+
+    e.button('5px grey, spacing: 30', (e) => {
+      e.ctx.props.divider = { thickness: 5, opacity: 0.1, spacing: 30 };
+    });
+
+    e.button('1px magenta, spacing: 15', (e) => {
+      e.ctx.props.divider = { thickness: 1, opacity: 0.4, color: COLORS.MAGENTA, spacing: 15 };
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
     e.title('Dev');
 
-    e.boolean('white background', (e) => {
+    e.boolean('white backdrop', (e) => {
       if (e.changing) e.ctx.debug.whiteBg = e.changing.next;
       e.boolean.current = e.ctx.debug.whiteBg;
     });
@@ -63,6 +94,7 @@ export const actions = DevActions<Ctx>()
           style={{ MarginX: 15 }}
           fontSize={10}
           expandPaths={['$']}
+          expandLevel={3}
         />
       );
     });
@@ -72,15 +104,15 @@ export const actions = DevActions<Ctx>()
     const debug = e.ctx.debug;
 
     e.settings({
+      actions: { width: 350 },
       host: { background: debug.whiteBg ? 1 : COLORS.BG },
       layout: {
         width: debug.width,
         cropmarks: -0.2,
-        border: -0.04,
       },
     });
 
-    e.render(<DocByline {...e.ctx.props} style={{ flex: 1 }} />);
+    e.render(<DocBylineBlock {...e.ctx.props} style={{ flex: 1 }} />);
   });
 
 export default actions;

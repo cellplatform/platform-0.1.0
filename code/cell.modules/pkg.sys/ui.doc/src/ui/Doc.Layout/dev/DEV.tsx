@@ -1,12 +1,16 @@
 import React from 'react';
-import { DevActions, ObjectView } from '../../../test';
+
 import { DocLayout, DocLayoutProps } from '..';
-
+import { DevActions, ObjectView, TestFilesystem } from '../../../test';
 import { SAMPLE } from '../../DEV.Sample.DATA';
-import { t } from '../common';
 import { Doc } from '../../Doc';
+import { t, rx, Filesystem } from '../common';
 
-type Ctx = { props: DocLayoutProps };
+type Ctx = {
+  bus: t.EventBus;
+  filesystem: t.TestFilesystem;
+  props: DocLayoutProps;
+};
 
 /**
  * Actions
@@ -16,9 +20,14 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
+    const bus = rx.bus();
+    const filesystem = TestFilesystem.init({ bus });
+
     const ctx: Ctx = {
+      bus,
+      filesystem,
       props: {
-        def: SAMPLE.defs[2],
+        doc: SAMPLE.defs[2],
         tracelines: false,
         scrollable: true,
       },
@@ -28,16 +37,17 @@ export const actions = DevActions<Ctx>()
 
   .init(async (e) => {
     const { ctx, bus } = e;
+    await ctx.filesystem.ready();
   })
 
   .items((e) => {
     e.title('Props');
 
     const defButton = (def: t.DocDef) => {
-      e.button(`def: ${def.path}`, (e) => (e.ctx.props.def = def));
+      e.button(`def: ${def.path}`, (e) => (e.ctx.props.doc = def));
     };
     SAMPLE.defs.forEach((def) => defButton(def));
-    e.button('def: <undefined>', (e) => (e.ctx.props.def = undefined));
+    e.button('def: <undefined>', (e) => (e.ctx.props.doc = undefined));
 
     e.hr(1, 0.1);
 
@@ -51,6 +61,22 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Dev');
+
+    e.component((e) => {
+      const instance = e.ctx.filesystem.instance;
+      const id = `${instance.id}.dev`;
+      return (
+        <Filesystem.PathList.Dev
+          instance={e.ctx.filesystem.instance}
+          margin={[20, 10, 20, 10]}
+          height={100}
+        />
+      );
+    });
+
+    e.button('[TODO] save to local fs', (e) => null);
+
+    e.hr(1, 0.1);
 
     e.boolean('tracelines', (e) => {
       if (e.changing) e.ctx.props.tracelines = e.changing.next;

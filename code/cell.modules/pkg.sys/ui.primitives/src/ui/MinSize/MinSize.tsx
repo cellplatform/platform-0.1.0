@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { takeUntil } from 'rxjs/operators';
 import { MinSizeProperties as Properties } from './MinSize.Properties';
 
@@ -21,7 +21,7 @@ export type MinSizeProps = {
   minHeight?: number;
   hideStrategy?: t.MinSizeHideStrategy;
   warningElement?: React.ReactNode | t.MinSizeRenderWarning;
-  rootResize?: t.ResizeObserver;
+  rootResize?: t.ResizeObserver | t.ResizeObserverHook;
   showDebugSize?: boolean;
   style?: CssValue;
   onResize?: t.MinSizeResizeEventHandler;
@@ -34,6 +34,7 @@ export type MinSizeProps = {
 const View: React.FC<MinSizeProps> = (props) => {
   const { minWidth, minHeight, hideStrategy = MinSizeDefaults.hideStrategy } = props;
 
+  const onResizeRef = useRef(props.onResize);
   const size = useResizeObserver({ root: props.rootResize });
   const [isRendered, setIsRendered] = useState<boolean>(false);
   const [is, setIs] = useState<t.MinSizeFlags>();
@@ -52,11 +53,15 @@ const View: React.FC<MinSizeProps> = (props) => {
     resize$.subscribe((size) => {
       const is = toMinSizeFlags({ size, minWidth, minHeight });
       setIs(is);
-      if (props.onResize) props.onResize({ size, is });
+      onResizeRef.current?.({ size, is });
     });
 
     return () => dispose();
   }, [minWidth, minHeight]); // eslint-disable-line
+
+  useEffect(() => {
+    onResizeRef.current = props.onResize;
+  }, [props.onResize]);
 
   /**
    * Render

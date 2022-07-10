@@ -5,7 +5,7 @@ import { COLORS, t } from '../common';
 import { SAMPLE } from '../../DEV.Sample.DATA';
 
 type Ctx = {
-  size?: t.DomRect;
+  sizes?: t.DocLayoutSizes;
   props: DocIndexProps;
 };
 
@@ -21,7 +21,8 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       props: {
         items: SAMPLE.defs,
-        onResize: (e) => change.ctx((ctx) => (ctx.size = e.size)),
+        debug: true,
+        onResize: (e) => change.ctx((ctx) => (ctx.sizes = e.sizes)),
       },
     };
 
@@ -34,6 +35,11 @@ export const actions = DevActions<Ctx>()
 
   .items((e) => {
     e.title('Dev');
+
+    e.boolean('debug (tracelines)', (e) => {
+      if (e.changing) e.ctx.props.debug = e.changing.next;
+      e.boolean.current = e.ctx.props.debug;
+    });
 
     e.hr();
 
@@ -51,14 +57,15 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
-    const { props, size } = e.ctx;
+    const { props, sizes } = e.ctx;
 
     e.settings({
       host: { background: COLORS.BG },
       layout: {
         label: {
           topLeft: '<Doc.Index>',
-          topRight: `${size?.width ?? '-'} x ${size?.height ?? '-'} px`,
+          topRight: sizes ? `${sizes.root.width} x ${sizes.root.height} px` : undefined,
+          bottomRight: sizes ? `center column: ${sizes.column.width}px` : undefined,
         },
         position: [80, 80, 120, 80],
         cropmarks: -0.2,

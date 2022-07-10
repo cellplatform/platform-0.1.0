@@ -3,11 +3,11 @@ import { Subject } from 'rxjs';
 
 import { DocBlocks } from '../Doc.Blocks';
 import { DocLayoutContainer, DocLayoutScrollTop } from '../Doc.LayoutContainer';
+import { css, CssValue, FC, t } from './common';
 import { toBlockElements } from '../Doc/Doc.toBlocks';
-import { css, CssValue, t } from './common';
 
 export type DocLayoutProps = {
-  def?: t.DocDef;
+  doc?: t.DocDef;
 
   scrollable?: boolean;
   tracelines?: boolean;
@@ -19,14 +19,17 @@ export type DocLayoutProps = {
   onResize?: t.DocResizeHandler;
 };
 
-export const DocLayout: React.FC<DocLayoutProps> = (props) => {
-  const { def, padding = { header: 60, footer: 80 } } = props;
+/**
+ * Component
+ */
+const View: React.FC<DocLayoutProps> = (props) => {
+  const { doc, padding = { header: 60, footer: 80 } } = props;
   const [sizes, setSizes] = useState<t.DocLayoutSizes>();
 
-  const contentHash = def ? `${def.id}.${def.blocks?.length ?? 0}` : '';
-  const width = sizes?.column.width;
-  const blocks = def && width && toBlockElements({ def, width });
   const scrollTopRef$ = useRef(new Subject<DocLayoutScrollTop>());
+  const contentHash = doc ? `${doc.id}.${doc.blocks?.length ?? 0}` : '';
+  const width = sizes?.column.width;
+  const blocks = doc && width && toBlockElements({ doc, width });
 
   /**
    * [Lifecycle]
@@ -66,10 +69,22 @@ export const DocLayout: React.FC<DocLayoutProps> = (props) => {
     <DocLayoutContainer
       style={props.style}
       scrollable={props.scrollable}
-      scrollTop$={scrollTopRef$.current}
+      scroll$={scrollTopRef$.current}
       onResize={handleResize}
     >
       {elBlocks}
     </DocLayoutContainer>
   );
 };
+
+/**
+ * Export
+ */
+type Fields = {
+  //
+};
+export const DocLayout = FC.decorate<DocLayoutProps, Fields>(
+  View,
+  {},
+  { displayName: 'DocLayout' },
+);

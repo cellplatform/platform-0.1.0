@@ -4,7 +4,7 @@ import { FLOWS } from './SAMPLE.Flows';
 export const BLOCKS: t.DocDefBlock[] = [
   {
     kind: 'Markdown',
-    text: `
+    markdown: `
 As described in “[DAOs aren’t things; They are flows](${FLOWS.path})”, Web3 presents the 
 possibility of a new paradigm to replace the company-centric paradigm that has been evolving 
 over the past 400 years.
@@ -19,7 +19,7 @@ over the past 400 years.
 
   {
     kind: 'Markdown',
-    text: `
+    markdown: `
 If we can shed this ‘company as centralising entity’ paradigm and instead see DAOs not as 
 entities but as centerless networks with coordinated flows of resources, then a whole new 
 way of looking at business and economics becomes possible.
@@ -46,7 +46,7 @@ but at a high level there are two fundamental dynamics to understand:
 
   {
     kind: 'Markdown',
-    text: `    
+    markdown: `    
 I will start by outlining both of these dynamics and, if I do this well, hopefully it will 
 become obvious that these two systems are the keys to unlocking the power that DAOs can embody 
 in the world.    
@@ -61,7 +61,7 @@ in the world.
 
   {
     kind: 'Markdown',
-    text: `
+    markdown: `
 West’s work starts with understanding that biological systems scale in a **sub-linear** way, 
 meaning that as biological systems (mammals, insects, trees, etc) increase in size they 
 become more efficient in a uniform and predictable way. For example, if you double the 
@@ -93,7 +93,7 @@ gained across all the layers in the hierarchy. This causes the unit cost of the 
 produces to fall as its size increases. This is known as **sub-linear scaling**, where the use 
 of resources becomes more and more efficient as the system grows in size.
 
-# Fractal hierarchies are finite
+# Fractal hierarchies are finite.
 
 Systems that rely on scaling via fractal hierarchies can become incredibly efficient as they 
 scale. But the downside of this dynamic is that these systems decay and die in very predictable 
@@ -137,7 +137,7 @@ cheat death, a broad analysis shows that almost all companies do predictably dec
 
   {
     kind: 'Markdown',
-    text: `
+    markdown: `
 The other powerful dynamic that West identifies is that of **social networks** and the way they 
 produce social outputs in a **super-linear** way. The social networks we are referring to here 
 are simply networks of humans interacting; this might be friend groups, business relationships, 
@@ -156,7 +156,7 @@ including [Metcalfe’s law](https://en.wikipedia.org/wiki/Metcalfe%27s_law)
 
   {
     kind: 'Markdown',
-    text: `
+    markdown: `
 This is how things like markets work. The greater the number of participants in a market
 network, the greater the possibility that valuable exchanges of goods and services will occur 
 (trade as a social output) and therefore the greater the value of the network.
@@ -229,7 +229,7 @@ differentiates between a startup and a business (company) in the following way:
 
   {
     kind: 'Markdown',
-    text: `
+    markdown: `
 In this framing, we can see that a startup is meant to operate like a social network – a group 
 of founders, who are hopefully well connected, being highly creative and innovative as they 
 connect, experiment, iterate, pivot... in the hope that they can discover a repeatable and 
@@ -256,7 +256,7 @@ scale making them useful to the world.
 
   {
     kind: 'Markdown',
-    text: `
+    markdown: `
 This is possible because network economies can be coordinated in much more complex and useful 
 ways than can companies. A DAO network can contain multitudes. Rather than being a single 
 centralising, controlling entity, it can contain many autonomous self-organising groups – 

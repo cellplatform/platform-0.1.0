@@ -14,6 +14,11 @@ export type DocLayoutSizes = {
   column: Size;
 };
 
+export type CalculateDocLayoutSizes = (root: Size) => DocLayoutSizes;
+
+/**
+ * Handler: Document resize.
+ */
 export type DocResizeHandler = (e: DocResizeHandlerArgs) => void;
 export type DocResizeHandlerArgs = {
   is: t.MinSizeFlags;

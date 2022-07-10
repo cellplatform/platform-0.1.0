@@ -9,6 +9,7 @@ import { SampleChild } from './DEV.Sample.Child';
 type Ctx = {
   size?: t.DomRect;
   props: MinSizeProps;
+  onResize: t.MinSizeResizeEventHandler;
 };
 
 /**
@@ -18,15 +19,18 @@ export const actions = DevActions<Ctx>()
   .namespace('ui.MinSize')
   .context((e) => {
     if (e.prev) return e.prev;
+
+    const change = e.change;
+
     return {
       props: {
         minWidth: 600,
         minHeight: 450,
         hideStrategy: 'css:opacity',
         showDebugSize: false,
-        onResize: ({ size }) => {
-          e.change.ctx((ctx) => (ctx.size = size));
-        },
+      },
+      onResize(e) {
+        change.ctx((ctx) => (ctx.size = e.size));
       },
     };
   })
@@ -77,6 +81,8 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    const ctx = e.ctx;
+
     e.settings({
       host: { background: -0.04 },
       layout: {
@@ -118,7 +124,16 @@ export const actions = DevActions<Ctx>()
 
     const { minWidth, minHeight } = e.ctx.props;
     const el = (
-      <MinSize {...e.ctx.props} style={{ flex: 1 }} warningElement={lazyWarning}>
+      <MinSize
+        {...e.ctx.props}
+        style={{ flex: 1 }}
+        warningElement={lazyWarning}
+        onResize={(e) => {
+          // NB: Ensure the latest callback function is used within the lifecycle effect.
+          console.log('⚡️ onResize:', e);
+          ctx.onResize(e);
+        }}
+      >
         <SampleChild size={e.ctx.size} minWidth={minWidth} minHeight={minHeight} />
       </MinSize>
     );

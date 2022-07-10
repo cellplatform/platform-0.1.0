@@ -6,7 +6,7 @@ import { Doc } from '../../Doc';
 import { SAMPLE as BLOCK_SAMPLE } from '../../Doc.Block.Markdown/dev/DEV.SAMPLE';
 import { css, COLORS, DEFAULT, t } from '../common';
 import { SAMPLE as IMAGE_SAMPLE } from '../../Doc.Block.Image/dev/DEV';
-import { SAMPLE as BYLINE_SAMPLE } from '../../Doc.Byline/dev/DEV';
+import { SAMPLE as BYLINE_SAMPLE } from '../../Doc.Block.Byline/dev/DEV';
 import { SAMPLE as DEFS } from '../../DEV.Sample.DATA';
 
 type Ctx = {
@@ -32,12 +32,12 @@ const Util = {
     const width = ctx.props.sizes?.column.width;
     if (!width) return;
 
-    const elBannerImage = <Doc.Block.Image url={IMAGE_SAMPLE.URL} width={width} />;
+    const elBannerImage = <Doc.Block.Image url={IMAGE_SAMPLE.sample_1.url} width={width} />;
 
     const elByline = (
-      <Doc.Byline
+      <Doc.Block.Byline
         version={'0.1.3 (Jun 2022)'}
-        author={{ name: 'Philious Fogg', avatar: BYLINE_SAMPLE.avatarUrl }}
+        author={{ name: 'Chesterton Fogg', avatar: BYLINE_SAMPLE.avatarUrl }}
         style={{ marginBottom: 60 }}
       />
     );
@@ -85,8 +85,8 @@ const Util = {
     if (key === 'Sample') return Util.sampleBlocks(ctx);
 
     const width = ctx.debug.width;
-    const def = Util.toDef(ctx);
-    return def ? Doc.toBlockElements({ def, width }) : [];
+    const doc = Util.toDef(ctx);
+    return doc ? Doc.toBlockElements({ doc, width }) : [];
   },
 };
 

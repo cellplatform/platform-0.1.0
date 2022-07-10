@@ -12,7 +12,7 @@ type Ctx = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.Design')
+  .namespace('Sample.Design')
   .context((e) => {
     if (e.prev) return e.prev;
 
@@ -69,14 +69,15 @@ export const actions = DevActions<Ctx>()
         position: [80, 80],
         cropmarks: -0.2,
         border: -0.06,
-        background: 0.3,
+        // background: 0.3,
+        background: 1,
       },
     });
 
     const styles = {
       base: css({
         flex: 1,
-        backgroundImage: `url(/static/.tmp.images/design.png)`,
+        backgroundImage: `url(https://tdb-4xnugeivt-tdb.vercel.app/design.png)`,
         backgroundSize: 'contain',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center center',

@@ -4,15 +4,27 @@ import { TestFilesystem, DevActions, ObjectView } from '../../test';
 import { rx, t, Filesystem } from './common';
 import { DevSample, DevSampleProps } from './DEV.Sample';
 
+import { Deploy, DeployProps } from 'vendor.cloud.vercel/lib/web/ui/Deploy';
+
 type Ctx = {
   bus: t.EventBus;
-  filesystem: {
-    fs: t.Fs;
-    instance: t.FsViewInstance;
-    events: t.SysFsEvents;
-    ready: () => Promise<any>;
-  };
+  token: string;
+  filesystem: t.TestFilesystem;
   props: DevSampleProps;
+};
+
+const Util = {
+  token: {
+    key: 'tmp.dev.token.vercel', // TEMP 🐷 HACK: this is not high enough security long-term to store private-keys.
+    read() {
+      return localStorage.getItem(Util.token.key) ?? '';
+    },
+    write(ctx: Ctx, token: string) {
+      localStorage.setItem(Util.token.key, token);
+      ctx.token = token;
+      return token;
+    },
+  },
 };
 
 /**
@@ -24,11 +36,12 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const bus = rx.bus();
-    const { fs, ready, instance, events } = TestFilesystem.init({ bus });
+    const filesystem = TestFilesystem.init({ bus });
 
     const ctx: Ctx = {
       bus,
-      filesystem: { fs, ready, instance, events },
+      token: Util.token.read(),
+      filesystem,
       props: {},
     };
     return ctx;
@@ -54,6 +67,14 @@ export const actions = DevActions<Ctx>()
       );
     });
 
+    e.component((e) => {
+      const props: DeployProps = {
+        instance: e.ctx.filesystem.instance,
+        token: e.ctx.token,
+      };
+      return <Deploy {...props} style={{ Margin: [12, 10, 20, 10] }} />;
+    });
+
     e.hr();
 
     e.component((e) => {
@@ -71,7 +92,7 @@ export const actions = DevActions<Ctx>()
 
   .subject((e) => {
     e.settings({
-      actions: { width: 350 },
+      actions: { width: 400 },
       host: { background: -0.04 },
 
       layout: {

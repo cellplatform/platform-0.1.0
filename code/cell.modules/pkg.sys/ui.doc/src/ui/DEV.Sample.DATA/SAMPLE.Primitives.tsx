@@ -8,12 +8,11 @@ export const PRIMITIVES: t.DocDef = {
   id: 'primitives',
   path: '/docs/dao/primitives-scale',
 
-  banner: { url: 'https://tdb-hum31enzb-tdb.vercel.app/banner.jpg' },
+  banner: { url: 'https://tdb-hum31enzb-tdb.vercel.app/banner.jpg', height: 360 },
   version: '1.0.1 (Jun, 2022)',
   author,
   category,
-  title: `DAOs: Fractal Primitives to Network Scale`,
-  // subtitle: `DAOs are extraordinary for their capacity to test experimental ideas. But, in order to have a transformational impact on the world, we need DAOs to scale beyond experiments.`,
+  title: `DAOs: Fractal Primitives\nto Network Scale`,
 
   blocks: [
     //

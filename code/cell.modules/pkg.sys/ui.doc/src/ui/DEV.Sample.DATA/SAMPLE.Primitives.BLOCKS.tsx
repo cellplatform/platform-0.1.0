@@ -5,7 +5,7 @@ import { SCALE } from './SAMPLE.Scale';
 export const BLOCKS: t.DocDefBlock[] = [
   {
     kind: 'Markdown',
-    text: `
+    markdown: `
 # Scale Matters.
 
 DAOs are extraordinary for their capacity to test experimental ideas. And the innovation DAOs are 
@@ -58,7 +58,7 @@ we looked at how a legacy mindset causes us to think of DAOs as ‘entities’, 
 
   {
     kind: 'Markdown',
-    text: `
+    markdown: `
 We saw that unlike companies that operate business models, DAOs are network economies. 
 This makes them more like cities, giving them the remarkable ability to leverage 
 both **Dynamic One** and **Dynamic Two** scaling systems.
@@ -77,7 +77,7 @@ both of these dynamics.
 
   {
     kind: 'Markdown',
-    text: `
+    markdown: `
 # From simple to massively complex.
 
 DAO structures need to start simply but then be able to grow into massive complexity. As DAOs try 
@@ -102,7 +102,7 @@ with simple systems that work:
 
   {
     kind: 'Markdown',
-    text: `
+    markdown: `
 SuperBenefitDAO recently hosted a [conversation on metagovernance](https://superbenefit.mirror.xyz/yyY2khsoDSgCBaLSIJMeT6xNPJ0c9d2T83rYyt6UfX8)
 with \`Gabagool.eth\`, \`BPetes.eth\` and \`Justinehy.eth\`. As we explored the topic of metagovernance, 
 one theme that came through strongly was the idea that we need to keep coming back to the 
@@ -185,7 +185,7 @@ et al.
 
   {
     kind: 'Markdown',
-    text: `
+    markdown: `
 # Example: DAO Prison Network.
 
 Let's make this more concrete by looking at a hypothetical example. Imagine a national prison 
@@ -205,7 +205,7 @@ social issue by searching for better solutions to these complex problems.
 
   {
     kind: 'Markdown',
-    text: `
+    markdown: `
 Because it is running existing infrastructure in an existing system, the DAO network would be 
 made up in large part by **scaling hierarchies** consisting of networks of DAO cells that combine 
 to deliver the well understood operational needs of the prison system. Things like buildings 
@@ -238,7 +238,7 @@ ability to innovate with a genuine ability to scale.*
 
   {
     kind: 'Markdown',
-    text: `
+    markdown: `
 But interspersed with these scaling hierarchies would be numerous loosely coupled **creative 
 network** cells that are experimenting across the system in search of better solutions. 
 Unlike the more highly coordinated scaling hierarchies which function with a well defined 
@@ -324,7 +324,7 @@ positive feedback mechanisms that DAOs can generate:
 
   {
     kind: 'Markdown',
-    text: `
+    markdown: `
 For all of this to work the DAO network needs to be operating at the scale of the system 
 that it is trying to transform.
 
@@ -395,6 +395,6 @@ we have today. Now we need DAO primitives that can similarly evolve into our nex
 
   {
     kind: 'Markdown',
-    text: ``,
+    markdown: ``,
   },
 ];
