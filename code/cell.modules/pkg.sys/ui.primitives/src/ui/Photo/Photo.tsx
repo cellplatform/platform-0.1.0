@@ -1,12 +1,11 @@
 import React from 'react';
 
-import { css, FC } from '../../common';
-import { DEFAULT } from './common';
+import { css, DEFAULT, FC } from './common';
 import { PhotoProps } from './types';
-import { DefsSelector } from './view/Debug.DefsSelector';
-import { Image } from './view/Image';
-import { Util } from './Util';
+import { DefsSelector } from './ui/Debug.DefsSelector';
+import { Image } from './ui/Image';
 import { useIndexSequence } from './useIndexSequence';
+import { Util } from './Util';
 
 export { PhotoProps };
 

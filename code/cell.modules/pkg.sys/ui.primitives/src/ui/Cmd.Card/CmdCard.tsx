@@ -4,8 +4,8 @@ import { Card } from '../Card';
 import { CmdBar, css, DEFAULT, FC, Util } from './common';
 import { CmdCardController, CmdCardEvents, useCmdCardController } from './logic';
 import { CmdCardProps } from './types';
-import { CmdStateInfo } from './view/Info';
-import { CmdCardLayout, CmdCardLayoutProps } from './view/Layout';
+import { CmdStateInfo } from './ui/Info';
+import { CmdCardLayout, CmdCardLayoutProps } from './ui/Layout';
 
 /**
  * Types
