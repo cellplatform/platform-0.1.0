@@ -1,1 +1,1 @@
-export * from './Block.Image';
+export * from './Doc.Image';

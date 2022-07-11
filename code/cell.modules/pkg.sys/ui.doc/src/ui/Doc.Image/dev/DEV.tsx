@@ -7,11 +7,12 @@ const DEFAULT = DocImage.DEFAULT;
 
 export const SAMPLE = {
   sample_1: {
-    url: 'https://images.unsplash.com/photo-1511798616182-aab3698ac53e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2176&q=80',
+    url: 'https://tdb-k1dc8u97y-tdb.vercel.app/photo-1.avif',
     credit: 'Photo by John Fowler on Unsplash',
   },
   sample_2: {
-    url: 'https://images.unsplash.com/photo-1465056836041-7f43ac27dcb5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2942&q=80',
+    url: 'https://tdb-k1dc8u97y-tdb.vercel.app/photo-2.avif',
+
     credit: 'Photo by Tobias Keller on Unsplash',
   },
   sample_error: {
@@ -67,6 +68,7 @@ export const actions = DevActions<Ctx>()
         url,
         credit,
         borderRadius: DocImage.DEFAULT.borderRadius,
+        draggable: DocImage.DEFAULT.draggable,
         onReady(e) {
           console.group('⚡️ onReady');
           console.log('e', e);

@@ -22,9 +22,9 @@ export const DocIndex: React.FC<DocIndexProps> = (props) => {
 
   return (
     <DocLayoutContainer
-      style={css(styles.base, props.style)}
       debug={props.debug}
       onResize={props.onResize}
+      style={css(styles.base, props.style)}
     >
       <IndexList items={items} onSelect={props.onSelect} style={styles.list} />
     </DocLayoutContainer>

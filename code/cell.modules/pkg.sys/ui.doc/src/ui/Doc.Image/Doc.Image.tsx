@@ -13,6 +13,7 @@ export type DocImageProps = {
   height?: number;
   borderRadius?: number;
   credit?: React.ReactNode;
+  draggable?: boolean;
   margin?: t.DocBlockMargin;
   style?: CssValue;
   onReady?: t.DocImageReadyHandler;
@@ -22,7 +23,15 @@ export type DocImageProps = {
  * Component
  */
 const View: React.FC<DocImageProps> = (props) => {
-  const { url, width, height, borderRadius = DEFAULT.borderRadius, credit, margin = {} } = props;
+  const {
+    url,
+    width,
+    height,
+    credit,
+    borderRadius = DEFAULT.borderRadius,
+    draggable = DEFAULT.draggable,
+    margin = {},
+  } = props;
 
   const imgRef = useRef<HTMLImageElement>(null);
   const [ready, setReady] = useState<t.DocImageReadyHandlerArgs | undefined>();
@@ -75,6 +84,9 @@ const View: React.FC<DocImageProps> = (props) => {
       src={url}
       onLoad={(e) => fireReady()}
       onError={(e) => fireReady({ error: `Failed to load image.` })}
+      onDragStart={(e) => {
+        if (!draggable) e.preventDefault();
+      }}
     />
   );
 
