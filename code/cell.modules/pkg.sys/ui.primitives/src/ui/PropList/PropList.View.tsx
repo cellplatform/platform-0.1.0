@@ -1,10 +1,8 @@
 import React from 'react';
 
-import { COLORS, css, FC, Style, t, DEFAULTS, THEMES } from './common';
-import { FieldBuilder } from './FieldBuilder';
-import { PropListItem } from './ui/Item';
-import { PropListTitle } from './ui/Title';
+import { COLORS, css, DEFAULTS, FC, Style, t } from './common';
 import { PropListProps } from './types';
+import { PropListItem, PropListTitle } from './ui.item';
 import { Util } from './Util';
 
 export { PropListProps };
@@ -12,7 +10,7 @@ export { PropListProps };
 /**
  * Component
  */
-const View: React.FC<PropListProps> = (props) => {
+export const PropList: React.FC<PropListProps> = (props) => {
   const { title, theme = DEFAULTS.theme } = props;
   const items = Util.asItems(props.items);
   const width = typeof props.width === 'number' ? { fixed: props.width } : props.width;
@@ -76,23 +74,3 @@ const View: React.FC<PropListProps> = (props) => {
     </div>
   );
 };
-
-/**
- * Export (API)
- */
-type Fields = {
-  THEMES: typeof THEMES;
-  DEFAULTS: typeof DEFAULTS;
-  builder<F extends string>(): t.PropListFieldBuilder<F>;
-};
-export const PropList = FC.decorate<PropListProps, Fields>(
-  View,
-  {
-    THEMES,
-    DEFAULTS,
-    builder<F extends string>() {
-      return FieldBuilder<F>();
-    },
-  },
-  { displayName: 'PropList' },
-);

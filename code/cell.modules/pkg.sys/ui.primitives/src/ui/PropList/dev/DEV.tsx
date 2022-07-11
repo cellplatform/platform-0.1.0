@@ -15,13 +15,10 @@ type Ctx = {
 
 const Util = {
   toItems(ctx: Ctx) {
-    const debug = ctx.debug;
-    if (debug.source === 'Samples') return sampleItems;
+    const { source, fields } = ctx.debug;
 
-    if (debug.source === 'Builder') {
-      const fields = debug.fields;
-      return BuilderSample.toItems({ fields });
-    }
+    if (source === 'Samples') return sampleItems;
+    if (source === 'Builder') return BuilderSample.toItems({ fields });
 
     return [];
   },
@@ -34,9 +31,9 @@ export const actions = DevActions<Ctx>()
   .namespace('ui.PropList')
   .context((e) => {
     if (e.prev) return e.prev;
+
     return {
       props: {
-        // items,
         title: 'MyTitle',
         titleEllipsis: true,
         defaults: { clipboard: false },
@@ -146,6 +143,12 @@ export const actions = DevActions<Ctx>()
           }
         }),
     );
+
+    e.hr();
+
+    e.component((e) => {
+      return <PropList.FieldSelector style={{ Margin: [0, 10, 0, 10] }} />;
+    });
 
     e.hr();
   })
