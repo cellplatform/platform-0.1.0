@@ -12,7 +12,7 @@ export const PRIMITIVES: t.DocDef = {
   version: '1.0.1 (Jun, 2022)',
   author,
   category,
-  title: `DAOs: Fractal Primitives\nto Network Scale`,
+  title: `DAOs: Fractal Primitives\nto Network Scale.`,
 
   blocks: [
     //
