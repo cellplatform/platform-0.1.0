@@ -32,7 +32,7 @@ const Util = {
     const width = ctx.props.sizes?.column.width;
     if (!width) return;
 
-    const elBannerImage = <Doc.Block.Image url={IMAGE_SAMPLE.sample_1.url} width={width} />;
+    const elBannerImage = <Doc.Image url={IMAGE_SAMPLE.sample_1.url} width={width} />;
 
     const elByline = (
       <Doc.Block.Byline
@@ -56,7 +56,7 @@ const Util = {
     const elBlock = <Doc.Block.Markdown markdown={BLOCK_SAMPLE.Doc} />;
 
     const elImage = (
-      <Doc.Block.Image
+      <Doc.Image
         url={'https://tdb-2cxz9824d-tdb.vercel.app/image.png'}
         credit={'Tyler Durden'}
         width={width}

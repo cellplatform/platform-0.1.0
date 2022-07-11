@@ -10,7 +10,7 @@ export function toBlockElements(props: { doc: t.DocDef; width: number }): JSX.El
   const { doc, width } = props;
 
   const elBanner = doc.banner && (
-    <Doc.Block.Image
+    <Doc.Image
       url={doc.banner.url}
       credit={doc.banner.credit}
       width={width}
@@ -54,7 +54,7 @@ export function toBlockElements(props: { doc: t.DocDef; width: number }): JSX.El
 
     if (def.kind === 'Image' && def.url) {
       return (
-        <Doc.Block.Image
+        <Doc.Image
           url={def.url}
           credit={def.credit}
           width={width}

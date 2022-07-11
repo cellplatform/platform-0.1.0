@@ -54,7 +54,7 @@ const Util = {
  * Actions
  */
 export const actions = DevActions<Ctx>()
-  .namespace('ui.Doc.Block.Image')
+  .namespace('ui.Doc.Image')
   .context((e) => {
     if (e.prev) return e.prev;
     const change = e.change;
