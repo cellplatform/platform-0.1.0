@@ -3,6 +3,7 @@ import React, { useRef, useState } from 'react';
 import { COLORS, css, CssValue, DEFAULT, FC, t } from './common';
 import { LoadFail } from './ui/LoadFail';
 import { Util } from './Util';
+import { AspectRatio } from './Util.AspectRatio';
 
 /**
  * Type
@@ -111,9 +112,10 @@ const View: React.FC<DocImageProps> = (props) => {
 type Fields = {
   DEFAULT: typeof DEFAULT;
   Util: typeof Util;
+  AspectRatio: typeof AspectRatio;
 };
 export const DocImage = FC.decorate<DocImageProps, Fields>(
   View,
-  { DEFAULT, Util },
+  { DEFAULT, Util, AspectRatio },
   { displayName: 'Doc.Image' },
 );

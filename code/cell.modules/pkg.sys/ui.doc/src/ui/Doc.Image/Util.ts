@@ -1,6 +1,9 @@
 import { t } from './common';
+import { AspectRatio } from './Util.AspectRatio';
 
 export const Util = {
+  AspectRatio,
+
   /**
    * Calculate the size of an image.
    */
