@@ -22,7 +22,7 @@ export function toBlockElements(props: { doc: t.DocDef; width: number }): JSX.El
     <Doc.Block.Byline
       version={doc.version}
       author={doc.author}
-      align={'Right'}
+      parts={['Space', 'Doc.Identity']}
       style={{ marginBottom: 20, marginRight: 8 }}
     />
   );
@@ -31,9 +31,9 @@ export function toBlockElements(props: { doc: t.DocDef; width: number }): JSX.El
     <Doc.Block.Byline
       version={doc.version}
       author={doc.author}
-      align={'Left'}
+      parts={['Doc.Identity', 'Doc.Author.Signature']}
       divider={{ thickness: 3, opacity: 0.1 }}
-      style={{ marginTop: 120 }}
+      style={{ marginTop: 140 }}
     />
   );
 

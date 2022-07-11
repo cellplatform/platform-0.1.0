@@ -15,7 +15,7 @@ export type DocDef = {
   id: string;
   path: UrlPath;
   version: string;
-  author: { name: string; avatar: string };
+  author: { name: string; avatar: string; signature?: string };
   title: string;
   category?: string;
   subtitle?: string;

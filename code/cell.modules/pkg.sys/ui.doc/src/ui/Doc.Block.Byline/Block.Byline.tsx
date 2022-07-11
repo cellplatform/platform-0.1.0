@@ -2,14 +2,15 @@ import React from 'react';
 
 import { DocIdentity } from '../Doc.Identity';
 import { COLORS, css, CssValue, FC, t, DEFAULT, ALL } from './common';
+import { DocImageBlock } from '../Doc.Block.Image';
 
 type SrcUrl = string;
 
 export type DocBylineProps = {
   version: string;
-  author: { name: string; avatar: SrcUrl };
+  author: { name: string; avatar: SrcUrl; signature?: string };
+  parts?: t.DocBylinePart[];
   divider?: t.DocBylineDivider;
-  align?: t.DocBylineAlign;
   style?: CssValue;
 };
 
@@ -17,15 +18,14 @@ export type DocBylineProps = {
  * Component
  */
 const View: React.FC<DocBylineProps> = (props) => {
-  const { version, author, align = 'Left', divider = {} } = props;
-  const isLeft = align === 'Left';
+  const { version, author, divider = {}, parts = DEFAULT.parts } = props;
 
   /**
    * [Render]
    */
   const styles = {
     base: css({ position: 'relative' }),
-    body: css({ Flex: `x-center-${isLeft ? 'start' : 'end'}` }),
+    body: css({ Flex: `x-spaceBetween-center` }),
     identity: {
       base: css({ Flex: `x-start-start` }),
       avatar: css({ marginRight: 12 }),
@@ -39,12 +39,27 @@ const View: React.FC<DocBylineProps> = (props) => {
   };
 
   const elDivider = <div {...styles.divider} />;
-  const elIdentity = <DocIdentity author={author} version={version} />;
+
+  const elParts: JSX.Element[] = [];
+
+  parts.forEach((field, i) => {
+    if (field === 'Space') {
+      elParts.push(<div key={`empty.${i}`} />);
+    }
+
+    if (field === 'Doc.Author.Signature' && author.signature) {
+      elParts.push(<DocImageBlock key={`signature.${i}`} url={author.signature} height={64} />);
+    }
+
+    if (field === 'Doc.Identity') {
+      elParts.push(<DocIdentity key={`doc.id.${i}`} author={author} version={version} />);
+    }
+  });
 
   return (
     <div {...css(styles.base, props.style)}>
       {props.divider && elDivider}
-      <div {...styles.body}>{elIdentity}</div>
+      <div {...styles.body}>{elParts}</div>
     </div>
   );
 };
