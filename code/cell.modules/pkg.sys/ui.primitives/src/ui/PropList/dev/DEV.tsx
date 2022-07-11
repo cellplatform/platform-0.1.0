@@ -170,7 +170,7 @@ export const actions = DevActions<Ctx>()
         },
       };
 
-      return <PropList.FieldSelector {...props} style={{ Margin: [25, 20, 0, 38] }} />;
+      return <PropList.FieldSelector {...props} style={{ Margin: [25, 25, 25, 38] }} />;
     });
 
     e.hr();
