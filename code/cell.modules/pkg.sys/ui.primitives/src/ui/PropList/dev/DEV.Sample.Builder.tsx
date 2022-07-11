@@ -1,32 +1,11 @@
-import { PropList } from '..';
+import { PropList, MyFields, SampleFields as Fields } from './common';
 const pkg = { name: 'foobar', version: '1.2.3' };
 
-export type MyFields =
-  | 'Module'
-  | 'Module.Name'
-  | 'Module.Version'
-  | 'Factory'
-  | 'Factory.None'
-  | 'Factory.Many'
-  | 'Factory.EmptyArray';
-
-const allFields: MyFields[] = [
-  'Module',
-  'Module.Name',
-  'Module.Version',
-  'Factory',
-  'Factory.None',
-  'Factory.Many',
-  'Factory.EmptyArray',
-];
-const defaultFields: MyFields[] = ['Module.Name', 'Module.Version'];
-
 export const BuilderSample = {
-  allFields,
-  defaultFields,
+  Fields,
 
   toItems(args: { fields?: MyFields[] }) {
-    const { fields = defaultFields } = args;
+    const { fields = Fields.default } = args;
     return PropList.builder<MyFields>()
       .field('Module', { label: 'Module', value: `${pkg.name}@${pkg.version}` })
       .field('Module.Name', { label: 'Name', value: pkg.name })

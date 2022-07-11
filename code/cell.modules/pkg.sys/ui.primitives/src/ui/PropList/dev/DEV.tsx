@@ -1,16 +1,20 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 
-import { PropList, PropListProps } from '..';
-import { COLORS, css, Icons } from './DEV.common';
+import { PropList } from '..';
+import { t, COLORS, css, MyFields, Icons, SampleFields } from './common';
 import { sampleItems, LOREM } from './DEV.Samples';
-import { BuilderSample, MyFields } from './DEV.Sample.Builder';
+import { BuilderSample } from './DEV.Sample.Builder';
 
 type SampleKind = 'Samples' | 'Builder';
 
 type Ctx = {
-  props: PropListProps;
-  debug: { source: SampleKind; fields?: MyFields[] };
+  props: t.PropListProps;
+  debug: {
+    source: SampleKind;
+    fields?: MyFields[];
+    fieldSelectorTitle: boolean;
+  };
 };
 
 const Util = {
@@ -43,6 +47,7 @@ export const actions = DevActions<Ctx>()
       debug: {
         source: 'Samples',
         // source: 'Builder',
+        fieldSelectorTitle: true,
       },
     };
   })
@@ -131,7 +136,7 @@ export const actions = DevActions<Ctx>()
     e.select((config) =>
       config
         .title('builder fields:')
-        .items(BuilderSample.allFields)
+        .items(SampleFields.all)
         .initial(undefined)
         .clearable(true)
         .view('buttons')
@@ -146,8 +151,21 @@ export const actions = DevActions<Ctx>()
 
     e.hr();
 
+    e.boolean('FieldSelector.title', (e) => {
+      if (e.changing) e.ctx.debug.fieldSelectorTitle = e.changing.next;
+      e.boolean.current = e.ctx.debug.fieldSelectorTitle;
+    });
+
     e.component((e) => {
-      return <PropList.FieldSelector style={{ Margin: [0, 10, 0, 10] }} />;
+      const { debug } = e.ctx;
+
+      const props: t.PropListFieldSelectorProps<MyFields> = {
+        title: debug.fieldSelectorTitle ? 'Field Selector' : undefined,
+        all: SampleFields.all,
+        selected: debug.fields,
+      };
+
+      return <PropList.FieldSelector {...props} style={{ Margin: [25, 20, 0, 38] }} />;
     });
 
     e.hr();
@@ -161,6 +179,7 @@ export const actions = DevActions<Ctx>()
     const items = Util.toItems(e.ctx);
 
     e.settings({
+      actions: { width: 300 },
       host: { background: isLight ? -0.04 : COLORS.DARK },
       layout: {
         cropmarks: isLight ? -0.2 : 0.6,

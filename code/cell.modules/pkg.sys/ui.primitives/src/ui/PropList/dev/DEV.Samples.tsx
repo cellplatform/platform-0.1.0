@@ -1,5 +1,5 @@
 import React from 'react';
-import { COLORS, css, t, DEFAULTS } from './DEV.common';
+import { COLORS, css, t, DEFAULTS } from './common';
 import { Text } from '../../Text';
 
 export const LOREM =

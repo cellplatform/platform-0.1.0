@@ -26,13 +26,14 @@ export const PropList: React.FC<PropListProps> = (props) => {
       position: 'relative',
       color: COLORS.DARK,
 
-      width: width?.fixed === undefined ? '100%' : width?.fixed,
+      width: width?.fixed,
       height: height?.fixed,
       minWidth: width?.min ?? 10,
       minHeight: height?.min ?? 10,
       maxWidth: width?.max,
       maxHeight: height?.max,
 
+      boxSizing: 'border-box',
       ...Style.toMargins(props.margin),
       ...Style.toPadding(props.padding),
     }),

@@ -1,12 +1,16 @@
 import * as t from '../../common/types';
 
 /**
- * Component
+ * Component: <PropList>
  */
 export type PropListTheme = 'Dark' | 'Light';
-export type PropListProps = {
-  title?: string | React.ReactNode | null;
+
+export type PropListTitleProps = {
+  title?: string | JSX.Element | null;
   titleEllipsis?: boolean;
+};
+
+export type PropListProps = PropListTitleProps & {
   items?: (PropListItem | undefined)[] | Record<string, unknown>;
   defaults?: t.PropListDefaults;
   padding?: t.CssEdgesInput;
@@ -14,6 +18,15 @@ export type PropListProps = {
   width?: number | { fixed?: number; min?: number; max?: number };
   height?: number | { fixed?: number; min?: number; max?: number };
   theme?: t.PropListTheme;
+  style?: t.CssValue;
+};
+
+/**
+ * Component: <PropsList.FieldSelector>
+ */
+export type PropListFieldSelectorProps<F extends string = string> = t.PropListTitleProps & {
+  all?: F[];
+  selected?: F[];
   style?: t.CssValue;
 };
 
