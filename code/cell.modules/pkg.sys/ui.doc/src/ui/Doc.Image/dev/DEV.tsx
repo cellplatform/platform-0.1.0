@@ -140,6 +140,11 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = Boolean(e.ctx.debug.credit);
     });
 
+    e.boolean('draggable', (e) => {
+      if (e.changing) e.ctx.props.draggable = e.changing.next;
+      e.boolean.current = e.ctx.props.draggable;
+    });
+
     e.hr(1, 0.1);
 
     e.markdown(`url:`);

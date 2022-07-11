@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Color, COLORS, css, CssValue, t, rx, FC, DocHeadline, Button } from '../common';
+import { Color, COLORS, css, CssValue, DocHeadline, FC, t, DocImage } from '../common';
 
 export type IndexListItemProps = {
   doc: t.DocDef;
@@ -37,12 +37,11 @@ export const IndexListItem: React.FC<IndexListItemProps> = (props) => {
     }),
     inner: css({
       Flex: 'x-spaceBetween-center',
-      cursor,
       userSelect: 'none',
       transform: `translateY(${pressed ? 2 : 0}px)`,
+      cursor,
     }),
     text: css({ flex: 1, cursor }),
-    image: css({ height: 120, borderRadius: 8 }),
     a: css({ textDecoration: 'none' }),
   };
 
@@ -58,7 +57,9 @@ export const IndexListItem: React.FC<IndexListItemProps> = (props) => {
     />
   );
 
-  const elImage = width > 500 && doc.banner && <img {...styles.image} src={doc.banner.url} />;
+  const elImage = width > 500 && doc.banner && (
+    <DocImage url={doc.banner.url} borderRadius={8} height={120} draggable={false} />
+  );
 
   return (
     <div {...css(styles.base, props.style)}>
