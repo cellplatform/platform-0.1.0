@@ -1,3 +1,5 @@
+export * from './ui/ModuleInfo/types';
+
 export * from './ui/Font/types';
 
 export * from './ui/Doc/types';
