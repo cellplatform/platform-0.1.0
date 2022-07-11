@@ -9,12 +9,16 @@ export const Util = {
    */
   toSize(image?: HTMLImageElement | null): t.DocImageSize {
     if (!image || image === null) {
-      const NULL = { width: -1, height: -1 };
+      const NULL = { width: -1, height: -1, ratio: '' };
       return { rendered: NULL, natural: NULL };
     } else {
+      const toSize = (width: number, height: number) => {
+        const ratio = AspectRatio.toString(width, height);
+        return { width, height, ratio };
+      };
       return {
-        rendered: { width: image.width, height: image.height },
-        natural: { width: image.naturalWidth, height: image.naturalHeight },
+        rendered: toSize(image.width, image.height),
+        natural: toSize(image.naturalWidth, image.naturalHeight),
       };
     }
   },

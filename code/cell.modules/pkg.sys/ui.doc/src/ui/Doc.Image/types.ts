@@ -1,4 +1,5 @@
-type Size = { width: number; height: number };
+type AspectRatio = string;
+type Size = { width: number; height: number; ratio: AspectRatio };
 
 /**
  * Fires when an image has completed it's load sequence (with or without an error).

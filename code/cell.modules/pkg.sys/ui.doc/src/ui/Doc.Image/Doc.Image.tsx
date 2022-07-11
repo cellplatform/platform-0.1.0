@@ -12,6 +12,7 @@ export type DocImageProps = {
   url?: string;
   width?: number;
   height?: number;
+  aspectRatio?: string;
   borderRadius?: number;
   credit?: React.ReactNode;
   draggable?: boolean;

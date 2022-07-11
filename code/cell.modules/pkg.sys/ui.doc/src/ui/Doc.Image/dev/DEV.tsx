@@ -187,17 +187,19 @@ export const actions = DevActions<Ctx>()
 
     let topLeft = '';
     let topRight = '';
+    let bottomLeft = '';
     if (ready) {
       const { rendered, natural } = ready.size;
       topLeft = `rendered size: ${rendered.width}px x ${rendered.height}px`;
       topRight = `natural size: ${natural.width}px x ${natural.height}px`;
+      bottomLeft = `aspect ratio: "${natural.ratio}"`;
     }
 
     e.settings({
       actions: { width: 380 },
       host: { background: COLORS.BG },
       layout: {
-        label: width > 500 ? { topLeft, topRight } : undefined,
+        label: width > 500 ? { topLeft, topRight, bottomLeft } : undefined,
         cropmarks: -0.2,
       },
     });

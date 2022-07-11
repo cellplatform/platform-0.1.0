@@ -28,7 +28,6 @@ export type DocBlockMargin = { top?: number; bottom?: number };
 /**
  * Blocks
  */
-
 export type DocDefBlock = DocDefMarkdownBlock | DocDefImageBlock | DocDefInsetPanelBlock;
 
 export type DocDefMarkdownBlock = {
