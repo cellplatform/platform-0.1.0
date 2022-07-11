@@ -10,6 +10,7 @@ export const BuilderSample = {
       .field('Module', { label: 'Module', value: `${pkg.name}@${pkg.version}` })
       .field('Module.Name', { label: 'Name', value: pkg.name })
       .field('Module.Version', { label: 'Version', value: pkg.version })
+      .field('Module.Version.Diff', { label: 'Version', value: 'diff' })
       .field('Factory', () => ({ label: 'Factory', value: 123 }))
       .field('Factory.None', () => undefined)
       .field('Factory.Many', () => [
@@ -17,6 +18,7 @@ export const BuilderSample = {
         { label: 'Two', value: 456 },
         { label: 'Three', value: 789 },
       ])
+      .field('Factory.EmptyArray', () => [])
       .items(fields);
   },
 };

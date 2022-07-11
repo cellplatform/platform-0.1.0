@@ -28,6 +28,15 @@ export type PropListFieldSelectorProps<F extends string = string> = t.PropListTi
   all?: F[];
   selected?: F[];
   style?: t.CssValue;
+  onClick?: PropListFieldSelectorClickHandler;
+};
+
+export type PropListFieldSelectorClickHandler = (e: PropListFieldSelectorClickHandlerArgs) => void;
+export type PropListFieldSelectorClickHandlerArgs<F extends string = string> = {
+  action: 'Select' | 'Deselect';
+  field: F;
+  previous: F[];
+  next: F[];
 };
 
 /**
@@ -65,7 +74,7 @@ export type PropListValue = PropListValueGeneric | PropListValueKinds;
 export type PropListValueGeneric = ValueBase & { data?: React.ReactNode };
 
 export type PropListValueKinds = PropListValueSwitch;
-export type PropListValueSwitch = ValueBase & { data?: boolean; kind: 'Switch' };
+export type PropListValueSwitch = ValueBase & { data?: boolean; kind: 'Switch'; enabled?: boolean };
 
 type ValueBase = {
   monospace?: boolean;

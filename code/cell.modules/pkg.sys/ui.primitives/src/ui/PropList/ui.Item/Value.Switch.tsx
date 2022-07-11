@@ -9,8 +9,10 @@ export type SwitchValueProps = {
 };
 
 export const SwitchValue: React.FC<SwitchValueProps> = (props) => {
-  const value = props.value.data as boolean | undefined;
-  return (
-    <Switch height={12} value={value} isEnabled={value !== undefined} onClick={props.onClick} />
-  );
+  const item = props.value as t.PropListValueSwitch;
+  if (item.kind !== 'Switch') return null;
+
+  const value = item.data;
+  const isEnabled = typeof item.enabled === 'boolean' ? item.enabled : value !== undefined;
+  return <Switch height={12} value={value} isEnabled={isEnabled} onMouseDown={props.onClick} />;
 };

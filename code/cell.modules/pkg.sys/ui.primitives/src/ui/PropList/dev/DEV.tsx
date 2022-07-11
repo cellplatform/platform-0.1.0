@@ -158,11 +158,16 @@ export const actions = DevActions<Ctx>()
 
     e.component((e) => {
       const { debug } = e.ctx;
+      const change = e.change;
 
       const props: t.PropListFieldSelectorProps<MyFields> = {
         title: debug.fieldSelectorTitle ? 'Field Selector' : undefined,
         all: SampleFields.all,
         selected: debug.fields,
+        onClick(e) {
+          console.log('⚡️ FieldSelector.onClick:', e);
+          change.ctx((ctx) => (ctx.debug.fields = e.next as MyFields[]));
+        },
       };
 
       return <PropList.FieldSelector {...props} style={{ Margin: [25, 20, 0, 38] }} />;

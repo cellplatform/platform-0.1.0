@@ -2,7 +2,7 @@ import { DEFAULTS, FC, t, THEMES } from './common';
 import { FieldBuilder } from './FieldBuilder';
 import { PropList as View } from './PropList.View';
 import { PropListProps } from './types';
-import { FieldSelector } from './ui/FieldSelector';
+import { FieldSelector } from './ui.FieldSelector';
 
 export { PropListProps };
 

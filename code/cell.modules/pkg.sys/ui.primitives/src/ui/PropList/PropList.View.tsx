@@ -2,7 +2,7 @@ import React from 'react';
 
 import { COLORS, css, DEFAULTS, FC, Style, t } from './common';
 import { PropListProps } from './types';
-import { PropListItem, PropListTitle } from './ui.item';
+import { PropListItem, PropListTitle } from './ui.Item';
 import { Util } from './Util';
 
 export { PropListProps };
