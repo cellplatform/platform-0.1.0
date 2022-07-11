@@ -1,5 +1,6 @@
 import React from 'react';
-import { css, CssValue, DEFAULT, FC, FIELDS, pkg, PropList, t } from './common';
+
+import { css, CssValue, pkg, PropList, t, DEFAULT, FIELDS, FC } from './common';
 
 export type ModuleInfoProps = {
   fields?: t.ModuleInfoFields[];
@@ -13,7 +14,7 @@ export type ModuleInfoProps = {
  * Component
  */
 const View: React.FC<ModuleInfoProps> = (props) => {
-  const { width, minWidth = 230, maxWidth, fields = DEFAULT.FIELDS } = props;
+  const { width, minWidth = 230, maxWidth, fields = DEFAULT.fields } = props;
 
   const items = PropList.builder<t.ModuleInfoFields>()
     .field('Module', { label: 'Module', value: `${pkg.name}@${pkg.version}` })
@@ -34,7 +35,7 @@ const View: React.FC<ModuleInfoProps> = (props) => {
 };
 
 /**
- * Export
+ * [Export]
  */
 type Fields = {
   DEFAULT: typeof DEFAULT;
