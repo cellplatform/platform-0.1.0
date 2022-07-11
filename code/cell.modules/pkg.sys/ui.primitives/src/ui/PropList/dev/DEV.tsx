@@ -1,5 +1,5 @@
 import React from 'react';
-import { DevActions } from 'sys.ui.dev';
+import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { PropList } from '..';
 import { t, COLORS, css, MyFields, Icons, SampleFields } from './common';
@@ -13,7 +13,10 @@ type Ctx = {
   debug: {
     source: SampleKind;
     fields?: MyFields[];
-    fieldSelectorTitle: boolean;
+    fieldSelector: {
+      title: boolean;
+      resettable: boolean;
+    };
   };
 };
 
@@ -47,7 +50,7 @@ export const actions = DevActions<Ctx>()
       debug: {
         source: 'Samples',
         // source: 'Builder',
-        fieldSelectorTitle: true,
+        fieldSelector: { title: true, resettable: PropList.FieldSelector.DEFAULT.resettable },
       },
     };
   })
@@ -152,16 +155,24 @@ export const actions = DevActions<Ctx>()
     e.hr();
 
     e.boolean('FieldSelector.title', (e) => {
-      if (e.changing) e.ctx.debug.fieldSelectorTitle = e.changing.next;
-      e.boolean.current = e.ctx.debug.fieldSelectorTitle;
+      if (e.changing) e.ctx.debug.fieldSelector.title = e.changing.next;
+      e.boolean.current = e.ctx.debug.fieldSelector.title;
     });
+
+    e.boolean('FieldSelector.resettable', (e) => {
+      if (e.changing) e.ctx.debug.fieldSelector.resettable = e.changing.next;
+      e.boolean.current = e.ctx.debug.fieldSelector.resettable;
+    });
+
+    e.hr(1, 0.1);
 
     e.component((e) => {
       const { debug } = e.ctx;
       const change = e.change;
 
       const props: t.PropListFieldSelectorProps<MyFields> = {
-        title: debug.fieldSelectorTitle ? 'Field Selector' : undefined,
+        title: debug.fieldSelector.title ? 'Field Selector' : undefined,
+        resettable: debug.fieldSelector.resettable,
         all: SampleFields.all,
         selected: debug.fields,
         onClick(e) {
@@ -174,6 +185,20 @@ export const actions = DevActions<Ctx>()
     });
 
     e.hr();
+
+    e.component((e) => {
+      const name = 'props';
+      const data = { ...e.ctx.props };
+      return (
+        <ObjectView
+          name={name}
+          data={data}
+          style={{ MarginX: 15 }}
+          fontSize={10}
+          expandPaths={['$']}
+        />
+      );
+    });
   })
 
   .subject((e) => {

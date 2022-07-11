@@ -27,14 +27,15 @@ export type PropListProps = PropListTitleProps & {
 export type PropListFieldSelectorProps<F extends string = string> = t.PropListTitleProps & {
   all?: F[];
   selected?: F[];
+  resettable?: boolean;
   style?: t.CssValue;
   onClick?: PropListFieldSelectorClickHandler;
 };
 
 export type PropListFieldSelectorClickHandler = (e: PropListFieldSelectorClickHandlerArgs) => void;
 export type PropListFieldSelectorClickHandlerArgs<F extends string = string> = {
-  action: 'Select' | 'Deselect';
-  field: F;
+  action: 'Select' | 'Deselect' | 'Reset';
+  field?: F;
   previous: F[];
   next: F[];
 };

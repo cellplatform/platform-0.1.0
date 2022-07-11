@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { css, FC, t } from '../common';
+import { css, FC, t, Button } from './common';
 import { FieldBuilder } from '../FieldBuilder';
 import { PropList } from '../PropList.View';
 import { PropListFieldSelectorProps } from '../types';
@@ -8,8 +8,12 @@ import { FieldSelectorLabel } from './FieldSelector.Label';
 
 export { PropListFieldSelectorProps };
 
+const DEFAULT = {
+  resettable: true,
+};
+
 const View: React.FC<PropListFieldSelectorProps> = (props) => {
-  const { selected = [] } = props;
+  const { selected = [], resettable = DEFAULT.resettable } = props;
   const all = [...(props.all ?? [])];
 
   const isSelected = (field: string) => selected.includes(field);
@@ -21,9 +25,15 @@ const View: React.FC<PropListFieldSelectorProps> = (props) => {
     const previous = [...selected];
     const action = selected.includes(field) ? 'Deselect' : 'Select';
     const next = action === 'Select' ? [...selected, field] : selected.filter((f) => f !== field);
-
     props.onClick?.({ field, action, previous, next });
-    // const next
+  };
+
+  const handleReset = () => {
+    props.onClick?.({
+      action: 'Reset',
+      previous: [...selected],
+      next: [],
+    });
   };
 
   /**
@@ -44,12 +54,18 @@ const View: React.FC<PropListFieldSelectorProps> = (props) => {
     return { label, value };
   });
 
+  if (resettable) {
+    const el = <Button onClick={handleReset}>Reset</Button>;
+    items.push({ label: ``, value: { data: el } });
+  }
+
   return (
     <PropList
-      style={css(styles.base, props.style)}
       title={props.title}
       titleEllipsis={props.titleEllipsis}
       items={items}
+      defaults={{ clipboard: false }}
+      style={css(styles.base, props.style)}
     />
   );
 };
@@ -58,10 +74,11 @@ const View: React.FC<PropListFieldSelectorProps> = (props) => {
  * Export
  */
 type Fields = {
+  DEFAULT: typeof DEFAULT;
   FieldBuilder: typeof FieldBuilder;
 };
 export const FieldSelector = FC.decorate<PropListFieldSelectorProps, Fields>(
   View,
-  { FieldBuilder },
+  { DEFAULT, FieldBuilder },
   { displayName: 'PropList.FieldSelector' },
 );
