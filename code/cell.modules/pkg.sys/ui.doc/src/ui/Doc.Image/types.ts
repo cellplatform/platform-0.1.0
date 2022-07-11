@@ -3,8 +3,8 @@ type Size = { width: number; height: number };
 /**
  * Fires when an image has completed it's load sequence (with or without an error).
  */
-export type DocImageBlockReadyHandler = (e: DocImageBlockReadyHandlerArgs) => void;
-export type DocImageBlockReadyHandlerArgs = {
+export type DocImageReadyHandler = (e: DocImageReadyHandlerArgs) => void;
+export type DocImageReadyHandlerArgs = {
   url: string;
   size: DocImageSize;
   error?: string;

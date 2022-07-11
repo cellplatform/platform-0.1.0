@@ -7,7 +7,7 @@ import { Util } from './Util';
 /**
  * Type
  */
-export type DocImageBlockProps = {
+export type DocImageProps = {
   url?: string;
   width?: number;
   height?: number;
@@ -15,17 +15,17 @@ export type DocImageBlockProps = {
   credit?: React.ReactNode;
   margin?: t.DocBlockMargin;
   style?: CssValue;
-  onReady?: t.DocImageBlockReadyHandler;
+  onReady?: t.DocImageReadyHandler;
 };
 
 /**
  * Component
  */
-const View: React.FC<DocImageBlockProps> = (props) => {
+const View: React.FC<DocImageProps> = (props) => {
   const { url, width, height, borderRadius = DEFAULT.borderRadius, credit, margin = {} } = props;
 
   const imgRef = useRef<HTMLImageElement>(null);
-  const [ready, setReady] = useState<t.DocImageBlockReadyHandlerArgs | undefined>();
+  const [ready, setReady] = useState<t.DocImageReadyHandlerArgs | undefined>();
 
   /**
    * [Handlers]
@@ -34,7 +34,7 @@ const View: React.FC<DocImageBlockProps> = (props) => {
     const { error } = args;
     const url = props.url ?? '';
     const size = Util.toSize(imgRef.current);
-    const ready: t.DocImageBlockReadyHandlerArgs = { url, size, error };
+    const ready: t.DocImageReadyHandlerArgs = { url, size, error };
     setReady(ready);
     props.onReady?.(ready);
   };
@@ -100,8 +100,8 @@ type Fields = {
   DEFAULT: typeof DEFAULT;
   Util: typeof Util;
 };
-export const DocImageBlock = FC.decorate<DocImageBlockProps, Fields>(
+export const DocImage = FC.decorate<DocImageProps, Fields>(
   View,
   { DEFAULT, Util },
-  { displayName: 'Doc.ImageBlock' },
+  { displayName: 'Doc.Image' },
 );

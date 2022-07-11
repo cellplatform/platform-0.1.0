@@ -2,7 +2,7 @@ import React from 'react';
 
 import { DocIdentity } from '../Doc.Identity';
 import { COLORS, css, CssValue, FC, t, DEFAULT, ALL } from './common';
-import { DocImageBlock } from '../Doc.Block.Image';
+import { DocImage } from '../Doc.Image';
 
 type SrcUrl = string;
 
@@ -48,7 +48,7 @@ const View: React.FC<DocBylineProps> = (props) => {
     }
 
     if (field === 'Doc.Author.Signature' && author.signature) {
-      elParts.push(<DocImageBlock key={`signature.${i}`} url={author.signature} height={64} />);
+      elParts.push(<DocImage key={`signature.${i}`} url={author.signature} height={64} />);
     }
 
     if (field === 'Doc.Identity') {

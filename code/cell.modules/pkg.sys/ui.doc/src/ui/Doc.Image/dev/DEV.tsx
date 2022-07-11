@@ -1,9 +1,9 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
-import { DocImageBlock, DocImageBlockProps } from '..';
+import { DocImage, DocImageProps } from '..';
 import { COLORS, t } from '../common';
 
-const DEFAULT = DocImageBlock.DEFAULT;
+const DEFAULT = DocImage.DEFAULT;
 
 export const SAMPLE = {
   sample_1: {
@@ -23,14 +23,14 @@ export const SAMPLE = {
 type SampleKey = keyof typeof SAMPLE;
 
 type Ctx = {
-  props: DocImageBlockProps;
+  props: DocImageProps;
   debug: {
     sample: SampleKey;
     credit: boolean;
     width: number;
     height?: number;
   };
-  ready?: t.DocImageBlockReadyHandlerArgs;
+  ready?: t.DocImageReadyHandlerArgs;
 };
 
 const Util = {
@@ -66,7 +66,7 @@ export const actions = DevActions<Ctx>()
       props: {
         url,
         credit,
-        borderRadius: DocImageBlock.DEFAULT.borderRadius,
+        borderRadius: DocImage.DEFAULT.borderRadius,
         onReady(e) {
           console.group('⚡️ onReady');
           console.log('e', e);
@@ -194,7 +194,7 @@ export const actions = DevActions<Ctx>()
         cropmarks: -0.2,
       },
     });
-    e.render(<DocImageBlock {...Util.toProps(e.ctx)} />);
+    e.render(<DocImage {...Util.toProps(e.ctx)} />);
   });
 
 export default actions;
