@@ -32,6 +32,7 @@ export const LoadFail: React.FC<LoadFailProps> = (props) => {
       fontSize: 14,
       fontStyle: 'italic',
       opacity: 0.4,
+      PaddingX: 15,
     }),
   };
 

@@ -12,7 +12,6 @@ export const SAMPLE = {
   },
   sample_2: {
     url: 'https://tdb-k1dc8u97y-tdb.vercel.app/photo-2.avif',
-
     credit: 'Photo by Tobias Keller on Unsplash',
   },
   sample_error: {
@@ -37,6 +36,10 @@ type Ctx = {
 const Util = {
   sample(ctx: Ctx) {
     return SAMPLE[ctx.debug.sample];
+  },
+
+  debugProp(ctx: Ctx) {
+    return ctx.props.debug || (ctx.props.debug = {});
   },
 
   toProps(ctx: Ctx) {
@@ -69,13 +72,13 @@ export const actions = DevActions<Ctx>()
         credit,
         borderRadius: DocImage.DEFAULT.borderRadius,
         draggable: DocImage.DEFAULT.draggable,
+        debug: { info: false },
         onReady(e) {
           console.group('⚡️ onReady');
           console.log('e', e);
           console.log('size.rendered', e.size.rendered);
           console.log('size.natural', e.size.natural);
           console.groupEnd();
-
           change.ctx((ctx) => (ctx.ready = e));
         },
       },
@@ -159,6 +162,12 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Dev');
 
+    e.boolean('debug.info', (e) => {
+      const debug = Util.debugProp(e.ctx);
+      if (e.changing) debug.info = e.changing.next;
+      e.boolean.current = debug.info;
+    });
+
     e.hr();
 
     e.component((e) => {
@@ -187,19 +196,18 @@ export const actions = DevActions<Ctx>()
 
     let topLeft = '';
     let topRight = '';
-    let bottomLeft = '';
     if (ready) {
       const { rendered, natural } = ready.size;
-      topLeft = `rendered size: ${rendered.width}px x ${rendered.height}px`;
+      const ratio = `aspect ratio: "${rendered.ratio}"`;
+      topLeft = `rendered size: ${rendered.width}px x ${rendered.height}px, ${ratio}`;
       topRight = `natural size: ${natural.width}px x ${natural.height}px`;
-      bottomLeft = `aspect ratio: "${natural.ratio}"`;
     }
 
     e.settings({
       actions: { width: 380 },
       host: { background: COLORS.BG },
       layout: {
-        label: width > 500 ? { topLeft, topRight, bottomLeft } : undefined,
+        label: width > 500 ? { topLeft, topRight } : undefined,
         cropmarks: -0.2,
       },
     });

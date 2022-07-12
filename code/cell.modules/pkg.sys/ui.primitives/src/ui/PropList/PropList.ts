@@ -13,6 +13,7 @@ type Fields = {
   FieldBuilder: typeof FieldBuilder;
   builder<F extends string>(): t.PropListFieldBuilder<F>;
 };
+
 export const PropList = FC.decorate<PropListProps, Fields>(
   View,
   {

@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 
 import { COLORS, css, CssValue, DEFAULT, FC, t } from './common';
+import { DevImageInfo } from './ui/Dev.ImageInfo';
 import { LoadFail } from './ui/LoadFail';
 import { Util } from './Util';
 import { AspectRatio } from './Util.AspectRatio';
@@ -16,6 +17,7 @@ export type DocImageProps = {
   borderRadius?: number;
   credit?: React.ReactNode;
   draggable?: boolean;
+  debug?: { info?: boolean };
   margin?: t.DocBlockMargin;
   style?: CssValue;
   onReady?: t.DocImageReadyHandler;
@@ -33,10 +35,12 @@ const View: React.FC<DocImageProps> = (props) => {
     borderRadius = DEFAULT.borderRadius,
     draggable = DEFAULT.draggable,
     margin = {},
+    debug = {},
   } = props;
 
   const imgRef = useRef<HTMLImageElement>(null);
   const [ready, setReady] = useState<t.DocImageReadyHandlerArgs | undefined>();
+  const hasError = Boolean(ready?.error);
 
   /**
    * [Handlers]
@@ -61,13 +65,15 @@ const View: React.FC<DocImageProps> = (props) => {
       marginBottom: margin.bottom,
     }),
     body: css({
+      position: 'relative',
       overflow: 'hidden',
       borderRadius,
       width,
       height,
     }),
     image: css({
-      display: ready && !ready.error ? 'block' : 'none',
+      display: 'block',
+      visibility: ready && !hasError ? 'visible' : 'hidden',
       width,
       height,
     }),
@@ -77,6 +83,7 @@ const View: React.FC<DocImageProps> = (props) => {
       textAlign: 'right',
       opacity: 0.3,
     }),
+    info: css({ Absolute: [null, null, 20, 20] }),
   };
 
   const elImg = url && (
@@ -96,11 +103,16 @@ const View: React.FC<DocImageProps> = (props) => {
     <LoadFail url={url} borderRadius={borderRadius} height={height} />
   );
 
+  const elInfo = debug.info && ready && !hasError && (
+    <DevImageInfo size={ready.size} style={styles.info} />
+  );
+
   return (
     <div {...css(styles.base, props.style)}>
       <div {...styles.body}>
         {elImg}
         {elLoadFail}
+        {elInfo}
       </div>
       {credit && <div {...styles.credit}>{credit}</div>}
     </div>

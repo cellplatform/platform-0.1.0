@@ -1,7 +1,7 @@
 import React, { CSSProperties } from 'react';
 
 import { color, COLORS, css, t } from '../common';
-import { CopyIcon, Util, Text } from './Value.common';
+import { CopyIcon, Util } from './Value.common';
 
 export type SimpleValueProps = {
   defaults: t.PropListDefaults;
@@ -40,20 +40,14 @@ export const SimpleValue: React.FC<SimpleValueProps> = (props) => {
       fontWeight: is.monospace ? 'bolder' : undefined,
       fontSize: value.fontSize !== undefined ? value.fontSize : undefined,
     }),
-    syntax: css({
-      width: '100%', // NB: used to enable ellipsis support.
-    }),
   };
 
   const text = message ? message : value.data?.toString();
-  const isString = typeof text === 'string';
-  const asSyntax = isString && !value.color;
 
   return (
     <div {...css(styles.base)}>
       <div {...styles.text} onClick={props.onClick}>
-        {asSyntax && <Text.Syntax text={text} theme={props.theme} style={styles.syntax} />}
-        {!asSyntax && text}
+        {text}
       </div>
       {is.copyActive && !message && <CopyIcon />}
     </div>
