@@ -18,3 +18,12 @@ export type DocImageSize = {
   rendered: Size;
   natural: Size;
 };
+
+/**
+ * Image credit.
+ */
+export type DocImageCreditAlign = 'Left' | 'Center' | 'Right';
+export type DocImageCredit = {
+  markdown?: string;
+  align?: DocImageCreditAlign;
+};

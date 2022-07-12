@@ -58,7 +58,7 @@ const Util = {
     const elImage = (
       <Doc.Image
         url={'https://tdb-2cxz9824d-tdb.vercel.app/image.png'}
-        credit={'Tyler Durden'}
+        credit={{ markdown: 'Tyler Durden' }}
         width={width}
       />
     );

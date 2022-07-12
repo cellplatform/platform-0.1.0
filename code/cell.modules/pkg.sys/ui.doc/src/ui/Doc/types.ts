@@ -1,3 +1,5 @@
+import * as t from '../../common/types';
+
 type UrlPath = string;
 type Milliseconds = number;
 type AspectRatio = string;
@@ -19,7 +21,7 @@ export type DocDef = {
   title: string;
   category?: string;
   subtitle?: string;
-  banner?: { url: string; credit?: string; ratio?: AspectRatio };
+  banner?: { url: string; credit?: t.DocImageCredit; ratio?: AspectRatio };
   blocks?: DocDefBlock[];
 };
 
@@ -39,7 +41,7 @@ export type DocDefMarkdownBlock = {
 export type DocDefImageBlock = {
   kind: 'Image';
   url: string;
-  credit?: string;
+  credit?: t.DocImageCredit;
   margin?: DocBlockMargin;
   ratio?: AspectRatio;
 };

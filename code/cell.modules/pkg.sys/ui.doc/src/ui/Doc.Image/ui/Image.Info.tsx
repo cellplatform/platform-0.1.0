@@ -1,12 +1,12 @@
 import React from 'react';
 import { Color, css, CssValue, PropList, t, COLORS } from '../common';
 
-export type DevImageInfoProps = {
+export type ImageInfoProps = {
   size: t.DocImageSize;
   style?: CssValue;
 };
 
-export const DevImageInfo: React.FC<DevImageInfoProps> = (props) => {
+export const ImageInfo: React.FC<ImageInfoProps> = (props) => {
   const { size } = props;
   const { rendered, natural } = size;
 
@@ -27,7 +27,7 @@ export const DevImageInfo: React.FC<DevImageInfoProps> = (props) => {
       borderRadius: 4,
       backgroundColor: Color.format(0.9),
       border: `solid 1px ${Color.alpha(COLORS.DARK, 0.08)}`,
-      Padding: 15,
+      Padding: [10, 15],
       boxSizing: 'border-box',
     }),
   };

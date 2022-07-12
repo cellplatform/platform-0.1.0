@@ -51,7 +51,6 @@ we looked at how a legacy mindset causes us to think of DAOs as ‘entities’, 
 
   {
     kind: 'Image',
-    credit: '',
     url: 'https://tdb-txfs4hhl5-tdb.vercel.app/scale-dymamics-list.png',
     ratio: '180:47',
     margin: { top: 30, bottom: 30 },
@@ -71,7 +70,6 @@ both of these dynamics.
 
   {
     kind: 'Image',
-    credit: '',
     url: 'https://tdb-8hvslng1x-tdb.vercel.app/img.png',
     margin: { top: 30, bottom: 30 },
     ratio: '240:233',
@@ -95,7 +93,6 @@ with simple systems that work:
 
   {
     kind: 'Image',
-    credit: '',
     url: 'https://tdb-m2g48a43s-tdb.vercel.app/quote.png',
     margin: { top: 70, bottom: 70 },
     ratio: '48:29',
@@ -180,7 +177,7 @@ et al.
   {
     kind: 'Image',
     url: 'https://tdb-rnl1t9syw-tdb.vercel.app/prison.png',
-    credit: 'Photo: Matthew Ansley - Unsplash',
+    credit: { markdown: 'Photo: Matthew Ansley - Unsplash' },
     margin: { top: 60, bottom: 10 },
     ratio: '72:43',
   },

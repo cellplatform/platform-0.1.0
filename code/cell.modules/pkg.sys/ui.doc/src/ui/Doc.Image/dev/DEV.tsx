@@ -8,7 +8,7 @@ const DEFAULT = DocImage.DEFAULT;
 export const SAMPLE = {
   sample_1: {
     url: 'https://tdb-k1dc8u97y-tdb.vercel.app/photo-1.avif',
-    credit: 'Photo by John Fowler on Unsplash',
+    credit: 'Photo by John Fowler on [Unsplash](https://unsplash.com/photos/d2YMQ-hZ3og)',
   },
   sample_2: {
     url: 'https://tdb-k1dc8u97y-tdb.vercel.app/photo-2.avif',
@@ -27,6 +27,7 @@ type Ctx = {
   debug: {
     sample: SampleKey;
     credit: boolean;
+    creditAlign: t.DocImageCreditAlign;
     width: number;
     height?: number;
   };
@@ -49,7 +50,7 @@ const Util = {
       ...props,
       width: debug.width,
       height: debug.height,
-      credit: debug.credit ? sample.credit : undefined,
+      credit: debug.credit ? { markdown: sample.credit, align: debug.creditAlign } : undefined,
     };
   },
 };
@@ -66,12 +67,14 @@ export const actions = DevActions<Ctx>()
     const sample: SampleKey = 'sample_1';
     const { url, credit } = SAMPLE[sample];
 
+    const DEFAULT = DocImage.DEFAULT;
+
     const ctx: Ctx = {
       props: {
         url,
-        credit,
-        borderRadius: DocImage.DEFAULT.borderRadius,
-        draggable: DocImage.DEFAULT.draggable,
+        credit: { markdown: credit },
+        borderRadius: DEFAULT.borderRadius,
+        draggable: DEFAULT.draggable,
         debug: { info: false },
         onReady(e) {
           console.group('⚡️ onReady');
@@ -86,6 +89,7 @@ export const actions = DevActions<Ctx>()
         sample,
         width: 720,
         credit: true,
+        creditAlign: DEFAULT.credit.align,
       },
     };
 
@@ -138,21 +142,32 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = Boolean(e.ctx.props.borderRadius);
     });
 
-    e.boolean('credit', (e) => {
-      if (e.changing) e.ctx.debug.credit = e.changing.next;
-      e.boolean.current = Boolean(e.ctx.debug.credit);
-    });
-
     e.boolean('draggable', (e) => {
       if (e.changing) e.ctx.props.draggable = e.changing.next;
       e.boolean.current = e.ctx.props.draggable;
     });
 
+    e.boolean('credit', (e) => {
+      if (e.changing) e.ctx.debug.credit = e.changing.next;
+      e.boolean.current = Boolean(e.ctx.debug.credit);
+    });
+
+    e.select((config) => {
+      config
+        .title('credit.align')
+        .items(DocImage.ALL.align)
+        .initial(config.ctx.debug.creditAlign)
+        .view('buttons')
+        .pipe((e) => {
+          if (e.changing) e.ctx.debug.creditAlign = e.changing?.next[0].value;
+        });
+    });
+
     e.hr(1, 0.1);
 
-    e.markdown(`url:`);
+    e.markdown(`image url:`);
     Object.keys(SAMPLE).map((key) => {
-      const label = `image: ${key.replace(/_/g, '-')}`;
+      const label = `${key.replace(/_/g, '-')}`;
       e.button(label, (e) => (e.ctx.props.url = SAMPLE[key].url));
     });
 
@@ -173,11 +188,17 @@ export const actions = DevActions<Ctx>()
     e.component((e) => {
       const props = e.ctx.props;
 
-      const MAX = 40;
-      let url = props.url;
-      if (url && url.length > MAX) url = `${url.substring(0, MAX)}...`;
+      const shorten = (max: number, text?: string) => {
+        if (text && text.length > max) text = `${text.substring(0, max)}...`;
+        return text;
+      };
 
-      const data = { ...props, url };
+      const data = {
+        ...props,
+        url: shorten(43, props.url),
+        // credit: shorten(40, props.credit),
+      };
+
       return (
         <ObjectView
           name={'props'}

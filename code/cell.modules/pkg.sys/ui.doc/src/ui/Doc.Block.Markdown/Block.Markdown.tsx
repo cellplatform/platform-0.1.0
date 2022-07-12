@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { COLORS, css, CssValue, Markdown, t } from './common';
+import { FC, COLORS, css, CssValue, Markdown, t } from './common';
+import { markdownStyles, className } from './styles';
 
 export type DocMarkdownBlockProps = {
   markdown?: string;
@@ -7,8 +8,12 @@ export type DocMarkdownBlockProps = {
   style?: CssValue;
 };
 
-export const DocMarkdownBlock: React.FC<DocMarkdownBlockProps> = (props) => {
+/**
+ * Component
+ */
+const View: React.FC<DocMarkdownBlockProps> = (props) => {
   const { margin = {}, markdown } = props;
+  ensureStyles();
 
   /**
    * TODO 🐷
@@ -24,20 +29,36 @@ export const DocMarkdownBlock: React.FC<DocMarkdownBlockProps> = (props) => {
       marginTop: margin.top,
       marginBottom: margin.bottom,
     }),
-    markdown: css({
-      color: COLORS.DARK,
-      fontKerning: 'auto',
-      cursor: 'default',
-    }),
   };
 
   const html = useMemo(() => {
-    return Markdown.toElement({ markdown, style: styles.markdown });
+    const style = css({
+      color: COLORS.DARK,
+      fontKerning: 'auto',
+      cursor: 'default',
+    });
+    return Markdown.toElement(markdown, { style, className });
   }, [markdown]); // eslint-disable-line
 
-  return (
-    <div {...css(styles.base, props.style)} className={Markdown.className}>
-      {html}
-    </div>
-  );
+  return <div {...css(styles.base, props.style)}>{html}</div>;
 };
+
+/**
+ * Helpers
+ */
+function ensureStyles() {
+  return Markdown.ensureStyles(className, markdownStyles);
+}
+
+/**
+ * Export
+ */
+type Fields = {
+  className: string;
+  ensureStyles: typeof ensureStyles;
+};
+export const DocMarkdownBlock = FC.decorate<DocMarkdownBlockProps, Fields>(
+  View,
+  { className, ensureStyles },
+  { displayName: 'Doc.MarkdownBlock' },
+);

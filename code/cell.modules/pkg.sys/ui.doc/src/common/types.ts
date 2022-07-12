@@ -6,6 +6,7 @@ export * from '../types';
 export { Observable } from 'rxjs';
 export { Event, EventBus, Disposable, NpmPackageJson, DomRect } from '@platform/types';
 export { ResizeObserver, ResizeObserverHook } from '@platform/react/lib/types';
+export { CssPropsMap } from '@platform/css/lib/types';
 
 /**
  * @system
