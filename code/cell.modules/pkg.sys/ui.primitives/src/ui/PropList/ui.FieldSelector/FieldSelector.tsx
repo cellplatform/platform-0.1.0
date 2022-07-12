@@ -32,7 +32,7 @@ const View: React.FC<PropListFieldSelectorProps> = (props) => {
     props.onClick?.({
       action: 'Reset',
       previous: [...selected],
-      next: [],
+      next: undefined,
     });
   };
 
@@ -45,7 +45,9 @@ const View: React.FC<PropListFieldSelectorProps> = (props) => {
 
   const items: t.PropListItem[] = all.map((field) => {
     const onClick = () => handleClick(field);
-    const label = <FieldSelectorLabel field={field} all={all} onClick={onClick} />;
+    const label = (
+      <FieldSelectorLabel field={field} all={all} selected={selected} onClick={onClick} />
+    );
     const value: t.PropListValueSwitch = {
       kind: 'Switch',
       data: isSelected(field),

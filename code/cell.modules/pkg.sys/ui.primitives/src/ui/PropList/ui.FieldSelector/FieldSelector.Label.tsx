@@ -1,24 +1,36 @@
 import React from 'react';
 
-import { css, CssValue } from '../common';
+import { css, CssValue, Color, COLORS } from '../common';
 import { Util } from './Util';
 
 export type FieldSelectorLabelProps = {
   all: string[];
+  selected: string[];
   field: string;
   style?: CssValue;
   onClick?: () => void;
 };
 
 export const FieldSelectorLabel: React.FC<FieldSelectorLabelProps> = (props) => {
-  const { field, all } = props;
+  const { field, all, selected } = props;
   const isSubField = Util.isSubField(all, field);
+  const index = selected.indexOf(field);
 
   /**
    * [Render]
    */
   const styles = {
     subpart: css({ opacity: 0.4 }),
+    index: css({
+      marginLeft: 6,
+      fontFamily: 'monospace',
+      fontWeight: 600,
+      borderRadius: 3,
+      border: `solid 1px ${Color.alpha(COLORS.DARK, 0.1)}`,
+      backgroundColor: Color.alpha(COLORS.DARK, 0.1),
+      boxSizing: 'border-box',
+      PaddingX: 2,
+    }),
   };
 
   const parts = field.split('.');
@@ -33,9 +45,12 @@ export const FieldSelectorLabel: React.FC<FieldSelectorLabelProps> = (props) => 
     );
   });
 
+  const elIndex = index > -1 && <span {...styles.index}>{index}</span>;
+
   return (
     <div {...css(props.style)} onMouseDown={props.onClick}>
       {elParts}
+      {elIndex}
     </div>
   );
 };
