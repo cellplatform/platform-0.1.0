@@ -16,6 +16,7 @@ type Ctx = {
     fieldSelector: {
       title: boolean;
       resettable: boolean;
+      showIndexes: boolean;
     };
   };
 };
@@ -39,7 +40,9 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    return {
+    const FieldSelector = PropList.FieldSelector;
+
+    const ctx: Ctx = {
       props: {
         title: 'MyTitle',
         titleEllipsis: true,
@@ -50,9 +53,15 @@ export const actions = DevActions<Ctx>()
       debug: {
         source: 'Samples',
         // source: 'Builder',
-        fieldSelector: { title: true, resettable: PropList.FieldSelector.DEFAULT.resettable },
+        fieldSelector: {
+          title: true,
+          resettable: FieldSelector.DEFAULT.resettable,
+          showIndexes: FieldSelector.DEFAULT.showIndexes,
+        },
       },
     };
+
+    return ctx;
   })
 
   .items((e) => {
@@ -164,17 +173,24 @@ export const actions = DevActions<Ctx>()
       e.boolean.current = e.ctx.debug.fieldSelector.resettable;
     });
 
+    e.boolean('FieldSelector.showIndexes', (e) => {
+      if (e.changing) e.ctx.debug.fieldSelector.showIndexes = e.changing.next;
+      e.boolean.current = e.ctx.debug.fieldSelector.showIndexes;
+    });
+
     e.hr(1, 0.1);
 
     e.component((e) => {
       const { debug } = e.ctx;
       const change = e.change;
+      const fieldSelector = debug.fieldSelector;
 
       const props: t.PropListFieldSelectorProps<MyFields> = {
-        title: debug.fieldSelector.title ? 'Field Selector' : undefined,
-        resettable: debug.fieldSelector.resettable,
         all: SampleFields.all,
         selected: debug.fields,
+        title: fieldSelector.title ? 'Field Selector' : undefined,
+        resettable: fieldSelector.resettable,
+        showIndexes: fieldSelector.showIndexes,
         onClick(e) {
           console.log('⚡️ FieldSelector.onClick:', e);
           change.ctx((ctx) => (ctx.debug.fields = e.next as MyFields[]));

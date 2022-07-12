@@ -1,18 +1,19 @@
 import React from 'react';
 
-import { css, CssValue, Color, COLORS } from '../common';
+import { css, CssValue, Color, COLORS } from './common';
 import { Util } from './Util';
 
 export type FieldSelectorLabelProps = {
   all: string[];
   selected: string[];
   field: string;
+  showIndexes: boolean;
   style?: CssValue;
   onClick?: () => void;
 };
 
 export const FieldSelectorLabel: React.FC<FieldSelectorLabelProps> = (props) => {
-  const { field, all, selected } = props;
+  const { field, all, selected, showIndexes } = props;
   const isSubField = Util.isSubField(all, field);
   const index = selected.indexOf(field);
 
@@ -25,6 +26,8 @@ export const FieldSelectorLabel: React.FC<FieldSelectorLabelProps> = (props) => 
       marginLeft: 6,
       fontFamily: 'monospace',
       fontWeight: 600,
+      fontSize: 10,
+      color: Color.alpha(COLORS.DARK, 0.8),
       borderRadius: 3,
       border: `solid 1px ${Color.alpha(COLORS.DARK, 0.1)}`,
       backgroundColor: Color.alpha(COLORS.DARK, 0.1),
@@ -45,7 +48,7 @@ export const FieldSelectorLabel: React.FC<FieldSelectorLabelProps> = (props) => 
     );
   });
 
-  const elIndex = index > -1 && <span {...styles.index}>{index}</span>;
+  const elIndex = showIndexes && index > -1 && <span {...styles.index}>{index}</span>;
 
   return (
     <div {...css(props.style)} onMouseDown={props.onClick}>

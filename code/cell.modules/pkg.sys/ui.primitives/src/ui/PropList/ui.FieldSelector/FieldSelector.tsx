@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { css, FC, t, Button } from './common';
+import { css, FC, t, Button, DEFAULT } from './common';
 import { FieldBuilder } from '../FieldBuilder';
 import { PropList } from '../PropList.View';
 import { PropListFieldSelectorProps } from '../types';
@@ -8,14 +8,13 @@ import { FieldSelectorLabel } from './FieldSelector.Label';
 
 export { PropListFieldSelectorProps };
 
-const DEFAULT = {
-  resettable: true,
-};
-
 const View: React.FC<PropListFieldSelectorProps> = (props) => {
-  const { selected = [], resettable = DEFAULT.resettable } = props;
+  const {
+    selected = [],
+    resettable = DEFAULT.resettable,
+    showIndexes = DEFAULT.showIndexes,
+  } = props;
   const all = [...(props.all ?? [])];
-
   const isSelected = (field: string) => selected.includes(field);
 
   /**
@@ -46,7 +45,13 @@ const View: React.FC<PropListFieldSelectorProps> = (props) => {
   const items: t.PropListItem[] = all.map((field) => {
     const onClick = () => handleClick(field);
     const label = (
-      <FieldSelectorLabel field={field} all={all} selected={selected} onClick={onClick} />
+      <FieldSelectorLabel
+        field={field}
+        all={all}
+        selected={selected}
+        showIndexes={showIndexes}
+        onClick={onClick}
+      />
     );
     const value: t.PropListValueSwitch = {
       kind: 'Switch',

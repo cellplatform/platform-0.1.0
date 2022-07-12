@@ -28,6 +28,7 @@ export type PropListFieldSelectorProps<F extends string = string> = t.PropListTi
   all?: F[];
   selected?: F[];
   resettable?: boolean;
+  showIndexes?: boolean;
   style?: t.CssValue;
   onClick?: PropListFieldSelectorClickHandler;
 };

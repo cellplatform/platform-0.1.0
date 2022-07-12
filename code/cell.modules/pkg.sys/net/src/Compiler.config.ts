@@ -26,7 +26,7 @@ export default () =>
     .variant('web', (config) => {
       // NB: worker entries not included for development builds as
       //     they prevent effective hot-reloading.
-      web(config)
-        .entry('service.worker', './src/workers/service.worker')
-        .entry('web.worker', './src/workers/web.worker');
+      web(config);
+      // .entry('service.worker', './src/workers/service.worker')
+      // .entry('web.worker', './src/workers/web.worker');
     });
