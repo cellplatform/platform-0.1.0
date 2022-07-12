@@ -27,7 +27,7 @@ export const actions = DevActions<Ctx>()
       bus,
       filesystem,
       props: {
-        doc: SAMPLE.defs[2],
+        doc: SAMPLE.defs[0],
         tracelines: false,
         scrollable: true,
       },

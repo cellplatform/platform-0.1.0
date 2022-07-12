@@ -27,7 +27,7 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       props: {
         instance,
-        href: Module.Url.parse('https://libs.db.team').href,
+        href: Module.Url.parse('https://lib.db.team').href,
         stateful: true,
       },
     };
@@ -51,7 +51,7 @@ export const actions = DevActions<Ctx>()
       e.button(label, (e) => (e.ctx.props.href = href));
     };
 
-    const base = 'https://libs.db.team/index.json';
+    const base = 'https://lib.db.team/index.json';
     hrefButton(base, `./net.sys`);
     hrefButton(base, `./DEV.crdt.data.sys`);
     e.hr(1, 0.1);

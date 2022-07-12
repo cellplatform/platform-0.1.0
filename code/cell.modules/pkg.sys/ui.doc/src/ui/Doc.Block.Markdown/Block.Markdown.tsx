@@ -1,5 +1,6 @@
-import React from 'react';
-import { COLORS, css, CssValue, Markdown, SanitizeHtml, t } from './common';
+import React, { useMemo } from 'react';
+import { FC, COLORS, css, CssValue, Markdown, t } from './common';
+import { markdownStyles, className } from './styles';
 
 export type DocMarkdownBlockProps = {
   markdown?: string;
@@ -7,9 +8,12 @@ export type DocMarkdownBlockProps = {
   style?: CssValue;
 };
 
-export const DocMarkdownBlock: React.FC<DocMarkdownBlockProps> = (props) => {
-  const { margin = {} } = props;
-  const html = Markdown.toHtmlSync(props.markdown ?? '');
+/**
+ * Component
+ */
+const View: React.FC<DocMarkdownBlockProps> = (props) => {
+  const { margin = {}, markdown } = props;
+  ensureStyles();
 
   /**
    * TODO 🐷
@@ -25,15 +29,36 @@ export const DocMarkdownBlock: React.FC<DocMarkdownBlockProps> = (props) => {
       marginTop: margin.top,
       marginBottom: margin.bottom,
     }),
-    markdown: css({
+  };
+
+  const html = useMemo(() => {
+    const style = css({
       color: COLORS.DARK,
       fontKerning: 'auto',
       cursor: 'default',
-    }),
-  };
-  return (
-    <div {...css(styles.base, props.style)} className={Markdown.className}>
-      <SanitizeHtml style={styles.markdown} html={html} />
-    </div>
-  );
+    });
+    return Markdown.toElement(markdown, { style, className });
+  }, [markdown]); // eslint-disable-line
+
+  return <div {...css(styles.base, props.style)}>{html}</div>;
 };
+
+/**
+ * Helpers
+ */
+function ensureStyles() {
+  return Markdown.ensureStyles(className, markdownStyles);
+}
+
+/**
+ * Export
+ */
+type Fields = {
+  className: string;
+  ensureStyles: typeof ensureStyles;
+};
+export const DocMarkdownBlock = FC.decorate<DocMarkdownBlockProps, Fields>(
+  View,
+  { className, ensureStyles },
+  { displayName: 'Doc.MarkdownBlock' },
+);

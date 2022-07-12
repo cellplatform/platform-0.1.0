@@ -17,7 +17,7 @@ export function AppRoutes(): t.RouteTableDefs {
           items={items}
           style={{ flex: 1 }}
           onSelect={(e) => {
-            const path = e.def.path;
+            const path = e.doc.path;
             change({ path });
           }}
         />,

@@ -10,11 +10,11 @@ export function toBlockElements(props: { doc: t.DocDef; width: number }): JSX.El
   const { doc, width } = props;
 
   const elBanner = doc.banner && (
-    <Doc.Block.Image
+    <Doc.Image
       url={doc.banner.url}
       credit={doc.banner.credit}
       width={width}
-      height={doc.banner.height}
+      ratio={doc.banner.ratio}
     />
   );
 
@@ -22,7 +22,7 @@ export function toBlockElements(props: { doc: t.DocDef; width: number }): JSX.El
     <Doc.Block.Byline
       version={doc.version}
       author={doc.author}
-      align={'Right'}
+      parts={['Space', 'Doc.Identity']}
       style={{ marginBottom: 20, marginRight: 8 }}
     />
   );
@@ -31,9 +31,9 @@ export function toBlockElements(props: { doc: t.DocDef; width: number }): JSX.El
     <Doc.Block.Byline
       version={doc.version}
       author={doc.author}
-      align={'Left'}
+      parts={['Doc.Identity', 'Doc.Author.Signature']}
       divider={{ thickness: 3, opacity: 0.1 }}
-      style={{ marginTop: 120 }}
+      style={{ marginTop: 140 }}
     />
   );
 
@@ -54,11 +54,11 @@ export function toBlockElements(props: { doc: t.DocDef; width: number }): JSX.El
 
     if (def.kind === 'Image' && def.url) {
       return (
-        <Doc.Block.Image
+        <Doc.Image
           url={def.url}
           credit={def.credit}
           width={width}
-          height={def.height}
+          ratio={def.ratio}
           margin={def.margin}
         />
       );

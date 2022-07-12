@@ -2,7 +2,7 @@ import React from 'react';
 
 import { DocLayoutContainer } from '../Doc.LayoutContainer';
 import { css, CssValue, t } from './common';
-import { DocIndexList } from './Doc.Index.List';
+import { IndexList } from './ui/List';
 
 export type DocIndexProps = {
   items?: t.DocDef[];
@@ -22,11 +22,11 @@ export const DocIndex: React.FC<DocIndexProps> = (props) => {
 
   return (
     <DocLayoutContainer
-      style={css(styles.base, props.style)}
       debug={props.debug}
       onResize={props.onResize}
+      style={css(styles.base, props.style)}
     >
-      <DocIndexList items={items} onSelect={props.onSelect} style={styles.list} />
+      <IndexList items={items} onSelect={props.onSelect} style={styles.list} />
     </DocLayoutContainer>
   );
 };

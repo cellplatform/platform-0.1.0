@@ -41,7 +41,7 @@ if (isDev) document.title = `${document.title} (dev)`;
     const Module = (await Imports.Module()).Module;
 
     const entry = url.searchParams.get('entry') ?? 'net.sys';
-    const href = Module.Url.parse('https://libs.db.team', { entry }).href;
+    const href = Module.Url.parse('https://lib.db.team', { entry }).href;
     const instance = { bus: rx.bus() };
     const el = <Module.App instance={instance} href={href} style={{ Absolute: 0 }} />;
 

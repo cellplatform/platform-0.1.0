@@ -92,9 +92,10 @@ treasury (as a centralised asset) not to have an outsized gravitational pull.
 
   {
     kind: 'Image',
-    credit: 'Photo by Martin Sanchez on Unsplash',
+    credit: { markdown: 'Photo by Martin Sanchez on Unsplash' },
     url: 'https://tdb-4wu2h9jfp-tdb.vercel.app/river-flow-resource.png',
     margin: { top: 30, bottom: 30 },
+    ratio: '120:79',
   },
 
   {
@@ -171,8 +172,9 @@ interesting work to answer some of these questions. Some promising examples incl
   {
     kind: 'Image',
     url: 'https://tdb-4wu2h9jfp-tdb.vercel.app/net-gravity.png',
-    credit: 'Image Credit: BenRG, public domain',
+    credit: { markdown: 'Image Credit: BenRG, public domain' },
     margin: { bottom: 10, top: 40 },
+    ratio: '240:143',
   },
 
   {

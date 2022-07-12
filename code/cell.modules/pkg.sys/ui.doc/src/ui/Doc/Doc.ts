@@ -1,5 +1,5 @@
 import { toBlockElements } from './Doc.toBlocks';
-import { Index, Blocks, Headline, Block, Layout, LayoutContainer, List } from './libs';
+import { Image, Index, Blocks, Headline, Block, Layout, LayoutContainer, List } from './libs';
 import { DocFonts as Fonts } from './Doc.Fonts';
 
 export const Doc = {
@@ -11,6 +11,7 @@ export const Doc = {
   LayoutContainer,
   Block,
   Blocks,
+  Image,
 
   /**
    * Helpers

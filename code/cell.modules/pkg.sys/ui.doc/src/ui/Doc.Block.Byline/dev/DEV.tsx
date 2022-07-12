@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 import { DocBylineBlock, DocBylineProps } from '..';
-import { COLORS } from '../common';
+import { COLORS, t, PropList } from '../common';
 
 type Ctx = {
   props: DocBylineProps;
@@ -10,6 +10,7 @@ type Ctx = {
 
 export const SAMPLE = {
   avatarUrl: 'https://tdb-4wu2h9jfp-tdb.vercel.app/avatar.png',
+  signatureUrl: 'https://tdb-boie1kfi2-tdb.vercel.app/signature.png',
 };
 
 /**
@@ -21,9 +22,13 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
     const ctx: Ctx = {
       props: {
-        align: 'Left',
         version: '0.1.6 (Jan 2050)',
-        author: { name: 'Display Name', avatar: SAMPLE.avatarUrl },
+        author: {
+          name: 'Display Name',
+          avatar: SAMPLE.avatarUrl,
+          signature: SAMPLE.signatureUrl,
+        },
+        parts: DocBylineBlock.DEFAULT.parts,
       },
       debug: { width: 720, whiteBg: false },
     };
@@ -35,18 +40,35 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('Props');
-
-    e.select((config) => {
-      config
-        .title('align')
-        .items(DocBylineBlock.ALL.align.map((value) => ({ label: `align: ${value}`, value })))
-        .initial(config.ctx.props.align)
-        .view('buttons')
-        .pipe((e) => {
-          if (e.changing) e.ctx.props.align = e.changing?.next[0].value;
-        });
+    e.component((e) => {
+      type F = t.DocBylinePart;
+      return (
+        <PropList.FieldSelector
+          title={'Parts'}
+          all={DocBylineBlock.ALL.parts}
+          selected={e.ctx.props.parts}
+          onClick={({ next }) => e.change.ctx((ctx) => (ctx.props.parts = next as F[]))}
+          style={{ Margin: [15, 15, 10, 15] }}
+        />
+      );
     });
+
+    e.button(
+      'sample: identity and signature',
+      (e) => (e.ctx.props.parts = ['Doc.Identity', 'Doc.Author.Signature']),
+    );
+
+    e.button(
+      'sample: signature and identity',
+      (e) => (e.ctx.props.parts = ['Doc.Author.Signature', 'Doc.Identity']),
+    );
+
+    e.button('sample: identity (on right)', (e) => (e.ctx.props.parts = ['Space', 'Doc.Identity']));
+
+    e.button(
+      'sample: signature (on right)',
+      (e) => (e.ctx.props.parts = ['Space', 'Doc.Author.Signature']),
+    );
 
     e.hr(1, 0.1);
 

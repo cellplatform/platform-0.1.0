@@ -5,9 +5,9 @@ export * from '../common';
  * Constants
  */
 export const ALL = {
-  align: <t.DocBylineAlign[]>['Left', 'Right'],
+  parts: <t.DocBylinePart[]>['Doc.Identity', 'Doc.Author.Signature', 'Space'],
 };
 
 export const DEFAULT = {
-  align: <t.DocBylineAlign>'Left',
+  parts: <t.DocBylinePart[]>['Doc.Identity', 'Doc.Author.Signature'],
 };

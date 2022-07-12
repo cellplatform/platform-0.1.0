@@ -6,6 +6,7 @@ import { COLORS } from './common';
 const Imports = {
   RouteBus: import('./ui/Route.Bus/TEST'),
   RouteTable: import('./ui/Route.Table/TEST'),
+  Image: import('./ui/Doc.Image/TEST'),
 };
 
 type Ctx = { results?: TestSuiteRunResponse };

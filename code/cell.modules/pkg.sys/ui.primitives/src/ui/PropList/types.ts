@@ -1,12 +1,16 @@
 import * as t from '../../common/types';
 
 /**
- * Component
+ * Component: <PropList>
  */
 export type PropListTheme = 'Dark' | 'Light';
-export type PropListProps = {
-  title?: string | React.ReactNode | null;
+
+export type PropListTitleProps = {
+  title?: string | JSX.Element | null;
   titleEllipsis?: boolean;
+};
+
+export type PropListProps = PropListTitleProps & {
   items?: (PropListItem | undefined)[] | Record<string, unknown>;
   defaults?: t.PropListDefaults;
   padding?: t.CssEdgesInput;
@@ -15,6 +19,26 @@ export type PropListProps = {
   height?: number | { fixed?: number; min?: number; max?: number };
   theme?: t.PropListTheme;
   style?: t.CssValue;
+};
+
+/**
+ * Component: <PropsList.FieldSelector>
+ */
+export type PropListFieldSelectorProps<F extends string = string> = t.PropListTitleProps & {
+  all?: F[];
+  selected?: F[];
+  resettable?: boolean;
+  showIndexes?: boolean;
+  style?: t.CssValue;
+  onClick?: PropListFieldSelectorClickHandler;
+};
+
+export type PropListFieldSelectorClickHandler = (e: PropListFieldSelectorClickHandlerArgs) => void;
+export type PropListFieldSelectorClickHandlerArgs<F extends string = string> = {
+  action: 'Select' | 'Deselect' | 'Reset';
+  field?: F;
+  previous?: F[];
+  next?: F[];
 };
 
 /**
@@ -52,7 +76,7 @@ export type PropListValue = PropListValueGeneric | PropListValueKinds;
 export type PropListValueGeneric = ValueBase & { data?: React.ReactNode };
 
 export type PropListValueKinds = PropListValueSwitch;
-export type PropListValueSwitch = ValueBase & { data?: boolean; kind: 'Switch' };
+export type PropListValueSwitch = ValueBase & { data?: boolean; kind: 'Switch'; enabled?: boolean };
 
 type ValueBase = {
   monospace?: boolean;

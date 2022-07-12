@@ -27,6 +27,9 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
+    e.button(`[TODO]`);
+    e.hr();
+
     e.title('Dev');
 
     e.select((config) => {

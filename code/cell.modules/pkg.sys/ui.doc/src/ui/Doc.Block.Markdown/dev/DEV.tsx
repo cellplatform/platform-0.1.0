@@ -118,7 +118,7 @@ export const actions = DevActions<Ctx>()
 
     e.render(
       <Doc.Fonts style={{ Scroll: true, flex: 1 }}>
-        <DocMarkdownBlock {...props} />
+        <DocMarkdownBlock {...props} style={{ flex: 1 }} />
       </Doc.Fonts>,
     );
   });
