@@ -15,6 +15,7 @@ over the past 400 years.
     kind: 'Image',
     url: 'https://tdb-l67ov2q2s-tdb.vercel.app/scale-company-quote.png',
     margin: { top: 20, bottom: 20 },
+    ratio: '144:47',
   },
 
   {
@@ -42,6 +43,7 @@ but at a high level there are two fundamental dynamics to understand:
     kind: 'Image',
     url: 'https://tdb-txfs4hhl5-tdb.vercel.app/scale-dymamics-list.png',
     margin: { top: 10, bottom: 20 },
+    ratio: '180:47',
   },
 
   {
@@ -57,6 +59,7 @@ in the world.
     kind: 'Image',
     url: 'https://tdb-l67ov2q2s-tdb.vercel.app/scale-div-d1.png',
     margin: { top: 80, bottom: 0 },
+    ratio: '720:197',
   },
 
   {
@@ -133,6 +136,7 @@ cheat death, a broad analysis shows that almost all companies do predictably dec
     kind: 'Image',
     url: 'https://tdb-l67ov2q2s-tdb.vercel.app/scale-div-d2.png',
     margin: { top: 80, bottom: 0 },
+    ratio: '720:197',
   },
 
   {
@@ -152,6 +156,7 @@ including [Metcalfe’s law](https://en.wikipedia.org/wiki/Metcalfe%27s_law)
     kind: 'Image',
     url: 'https://tdb-txfs4hhl5-tdb.vercel.app/scale-metcalfs-law.png',
     margin: { top: 50, bottom: 50 },
+    ratio: '120:29',
   },
 
   {
@@ -225,6 +230,7 @@ differentiates between a startup and a business (company) in the following way:
     kind: 'Image',
     url: 'https://tdb-l67ov2q2s-tdb.vercel.app/scale-blank.png',
     margin: { top: 30, bottom: 30 },
+    ratio: '16:5',
   },
 
   {
@@ -252,6 +258,7 @@ scale making them useful to the world.
     kind: 'Image',
     url: 'https://tdb-l67ov2q2s-tdb.vercel.app/scale-diagram.png',
     margin: { top: 30, bottom: 30 },
+    ratio: '36:47',
   },
 
   {
@@ -281,5 +288,6 @@ And to do this DAOs have to be able to leverage **both** Dynamic-One **and** Dyn
     kind: 'Image',
     url: 'https://tdb-l67ov2q2s-tdb.vercel.app/scale-end.png',
     margin: { top: 0, bottom: 0 },
+    ratio: '240:83',
   },
 ];

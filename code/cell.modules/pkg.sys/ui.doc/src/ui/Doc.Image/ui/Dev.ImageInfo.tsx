@@ -1,5 +1,5 @@
 import React from 'react';
-import { Color, css, CssValue, PropList, t } from '../common';
+import { Color, css, CssValue, PropList, t, COLORS } from '../common';
 
 export type DevImageInfoProps = {
   size: t.DocImageSize;
@@ -17,6 +17,7 @@ export const DevImageInfo: React.FC<DevImageInfoProps> = (props) => {
     base: css({
       position: 'relative',
       backgroundColor: Color.format(0.2),
+      border: `solid 1px ${Color.alpha(COLORS.DARK, 0.06)}`,
       backdropFilter: `blur(6px)`,
       padding: 10,
       borderRadius: 8,
@@ -25,6 +26,7 @@ export const DevImageInfo: React.FC<DevImageInfoProps> = (props) => {
     inner: css({
       borderRadius: 4,
       backgroundColor: Color.format(0.9),
+      border: `solid 1px ${Color.alpha(COLORS.DARK, 0.08)}`,
       Padding: 15,
       boxSizing: 'border-box',
     }),

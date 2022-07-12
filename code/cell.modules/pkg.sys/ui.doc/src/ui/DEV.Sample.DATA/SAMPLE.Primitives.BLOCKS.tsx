@@ -53,6 +53,7 @@ we looked at how a legacy mindset causes us to think of DAOs as ‘entities’, 
     kind: 'Image',
     credit: '',
     url: 'https://tdb-txfs4hhl5-tdb.vercel.app/scale-dymamics-list.png',
+    ratio: '180:47',
     margin: { top: 30, bottom: 30 },
   },
 
@@ -73,6 +74,7 @@ both of these dynamics.
     credit: '',
     url: 'https://tdb-8hvslng1x-tdb.vercel.app/img.png',
     margin: { top: 30, bottom: 30 },
+    ratio: '240:233',
   },
 
   {
@@ -91,13 +93,12 @@ with simple systems that work:
     `,
   },
 
-  // https://tdb-m2g48a43s-tdb.vercel.app/
-
   {
     kind: 'Image',
     credit: '',
     url: 'https://tdb-m2g48a43s-tdb.vercel.app/quote.png',
     margin: { top: 70, bottom: 70 },
+    ratio: '48:29',
   },
 
   {
@@ -181,6 +182,7 @@ et al.
     url: 'https://tdb-rnl1t9syw-tdb.vercel.app/prison.png',
     credit: 'Photo: Matthew Ansley - Unsplash',
     margin: { top: 60, bottom: 10 },
+    ratio: '72:43',
   },
 
   {
@@ -201,6 +203,7 @@ social issue by searching for better solutions to these complex problems.
     kind: 'Image',
     url: 'https://tdb-mzttif76s-tdb.vercel.app/d1.png',
     margin: { top: 80, bottom: 0 },
+    ratio: '360:83',
   },
 
   {
@@ -234,6 +237,7 @@ ability to innovate with a genuine ability to scale.*
     kind: 'Image',
     url: 'https://tdb-mzttif76s-tdb.vercel.app/d2.png',
     margin: { top: 80, bottom: 0 },
+    ratio: '30:7',
   },
 
   {
@@ -320,6 +324,7 @@ positive feedback mechanisms that DAOs can generate:
     kind: 'Image',
     url: 'https://tdb-kxd2g4vvd-tdb.vercel.app/quote.png',
     margin: { top: 60, bottom: 60 },
+    ratio: '720:269',
   },
 
   {
@@ -382,19 +387,5 @@ The limited liability company primitive was able to produce the vastly complex g
 we have today. Now we need DAO primitives that can similarly evolve into our next emerging paradigm.
 
     `,
-  },
-
-  // 🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷🐷
-
-  {
-    kind: 'Image',
-    url: '',
-    credit: '',
-    margin: { top: 30, bottom: 30 },
-  },
-
-  {
-    kind: 'Markdown',
-    markdown: ``,
   },
 ];

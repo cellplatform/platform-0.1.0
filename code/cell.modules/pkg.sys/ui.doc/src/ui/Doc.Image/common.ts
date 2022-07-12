@@ -6,5 +6,5 @@ export { Icons } from '../Icons';
  */
 export const DEFAULT = {
   borderRadius: 6,
-  draggable: true,
+  draggable: false,
 };
