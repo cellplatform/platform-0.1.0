@@ -1,7 +1,7 @@
 import { Test, expect } from '../../test';
 import { DocImage } from '.';
 
-export default Test.describe.only('Doc.Image', (e) => {
+export default Test.describe('Doc.Image', (e) => {
   e.describe('aspect ratio', (e) => {
     const { AspectRatio } = DocImage;
 

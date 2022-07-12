@@ -1,7 +1,9 @@
 import React, { useRef, useState } from 'react';
 
-import { COLORS, css, CssValue, DEFAULT, FC, t } from './common';
-import { DevImageInfo } from './ui/Dev.ImageInfo';
+import { ALL, COLORS, css, CssValue, DEFAULT, FC, Markdown, t } from './common';
+import { className, markdownStyles } from './styles';
+import { ImageCredit } from './ui/Image.Credit';
+import { ImageInfo } from './ui/Image.Info';
 import { LoadFail } from './ui/LoadFail';
 import { Util } from './Util';
 import { AspectRatio } from './Util.AspectRatio';
@@ -15,7 +17,7 @@ export type DocImageProps = {
   height?: number;
   ratio?: string;
   borderRadius?: number;
-  credit?: React.ReactNode;
+  credit?: t.DocImageCredit;
   draggable?: boolean;
   debug?: { info?: boolean };
   margin?: t.DocBlockMargin;
@@ -35,6 +37,8 @@ const View: React.FC<DocImageProps> = (props) => {
     margin = {},
     debug = { info: false },
   } = props;
+
+  ensureStyles();
 
   const imgRef = useRef<HTMLImageElement>(null);
   const [ready, setReady] = useState<t.DocImageReadyHandlerArgs | undefined>();
@@ -76,12 +80,7 @@ const View: React.FC<DocImageProps> = (props) => {
       width,
       height,
     }),
-    credit: css({
-      marginTop: 3,
-      fontSize: 11,
-      textAlign: 'right',
-      opacity: 0.3,
-    }),
+    credit: css({ marginTop: 3 }),
     info: css({ Absolute: [null, null, 20, 20] }),
   };
 
@@ -103,7 +102,11 @@ const View: React.FC<DocImageProps> = (props) => {
   );
 
   const elInfo = debug.info && ready && !hasError && (
-    <DevImageInfo size={ready.size} style={styles.info} />
+    <ImageInfo size={ready.size} style={styles.info} />
+  );
+
+  const elCredit = credit && ready && (
+    <ImageCredit markdown={credit.markdown} align={credit.align} style={styles.credit} />
   );
 
   return (
@@ -113,21 +116,31 @@ const View: React.FC<DocImageProps> = (props) => {
         {elLoadFail}
         {elInfo}
       </div>
-      {credit && <div {...styles.credit}>{credit}</div>}
+      {elCredit}
     </div>
   );
 };
+
+/**
+ * Helpers
+ */
+function ensureStyles() {
+  return Markdown.ensureStyles(className, markdownStyles);
+}
 
 /**
  * Export
  */
 type Fields = {
   DEFAULT: typeof DEFAULT;
+  ALL: typeof ALL;
   Util: typeof Util;
   AspectRatio: typeof AspectRatio;
+  className: string;
+  ensureStyles: typeof ensureStyles;
 };
 export const DocImage = FC.decorate<DocImageProps, Fields>(
   View,
-  { DEFAULT, Util, AspectRatio },
+  { DEFAULT, ALL, Util, AspectRatio, className, ensureStyles },
   { displayName: 'Doc.Image' },
 );

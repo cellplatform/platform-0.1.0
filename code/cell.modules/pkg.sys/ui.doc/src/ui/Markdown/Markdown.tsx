@@ -2,21 +2,36 @@ import React from 'react';
 
 import { Markdown as MD } from '@platform/util.markdown';
 import { SanitizeHtml } from '../SanitizeHtml';
-import { CssValue } from '../common';
+import { CssValue, t, Style } from '../common';
+
+const globalStyles: { [className: string]: boolean } = {};
 
 /**
  * Tools for working with Markdown.
  */
 export const Markdown = {
-  className: 'sys-doc-md',
-
-  toHtml(input?: string) {
-    return MD.toHtmlSync(input ?? '');
+  /**
+   * Transform markdown text into HTML elements.
+   */
+  toHtml(markdown?: string) {
+    return MD.toHtmlSync(markdown ?? '');
   },
 
-  toElement(props: { markdown?: string; style?: CssValue }) {
-    console.log('toElement');
-    const html = Markdown.toHtml(props.markdown ?? '');
-    return <SanitizeHtml style={props.markdown} html={html} />;
+  /**
+   * Transform markdown into a sanitized (safe) DOM element.
+   */
+  toElement(markdown: string | undefined, options: { style?: CssValue; className?: string } = {}) {
+    const html = Markdown.toHtml(markdown ?? '');
+    return <SanitizeHtml html={html} style={options.style} className={options.className} />;
+  },
+
+  /**
+   * Register styles
+   */
+  ensureStyles(className: string, styles: t.CssPropsMap, options: { force?: boolean } = {}) {
+    const exists = Boolean(globalStyles[className]);
+    if (!exists || options.force) Style.global(styles, { prefix: `.${className}` });
+    globalStyles[className] = true;
+    return { exists, className };
   },
 };
