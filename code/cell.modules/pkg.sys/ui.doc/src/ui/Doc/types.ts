@@ -1,6 +1,6 @@
 type UrlPath = string;
 type Milliseconds = number;
-type Pixels = number;
+type AspectRatio = string;
 
 /**
  * Fired when all blocks are rendered and ready to be displayed.
@@ -19,7 +19,7 @@ export type DocDef = {
   title: string;
   category?: string;
   subtitle?: string;
-  banner?: { url: string; credit?: string; height?: Pixels };
+  banner?: { url: string; credit?: string; ratio?: AspectRatio };
   blocks?: DocDefBlock[];
 };
 
@@ -41,7 +41,7 @@ export type DocDefImageBlock = {
   url: string;
   credit?: string;
   margin?: DocBlockMargin;
-  height?: Pixels;
+  ratio?: AspectRatio;
 };
 
 export type DocDefInsetPanelBlock = {

@@ -13,7 +13,7 @@ export type DocImageProps = {
   url?: string;
   width?: number;
   height?: number;
-  aspectRatio?: string;
+  ratio?: string;
   borderRadius?: number;
   credit?: React.ReactNode;
   draggable?: boolean;
@@ -29,18 +29,17 @@ export type DocImageProps = {
 const View: React.FC<DocImageProps> = (props) => {
   const {
     url,
-    width,
-    height,
     credit,
     borderRadius = DEFAULT.borderRadius,
     draggable = DEFAULT.draggable,
     margin = {},
-    debug = {},
+    debug = { info: false },
   } = props;
 
   const imgRef = useRef<HTMLImageElement>(null);
   const [ready, setReady] = useState<t.DocImageReadyHandlerArgs | undefined>();
   const hasError = Boolean(ready?.error);
+  const { width, height } = AspectRatio.wrangle(props);
 
   /**
    * [Handlers]

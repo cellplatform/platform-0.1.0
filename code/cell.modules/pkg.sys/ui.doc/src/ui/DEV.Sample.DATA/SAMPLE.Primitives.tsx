@@ -8,7 +8,7 @@ export const PRIMITIVES: t.DocDef = {
   id: 'primitives',
   path: '/docs/dao/primitives-scale',
 
-  banner: { url: 'https://tdb-hum31enzb-tdb.vercel.app/banner.jpg', height: 360 },
+  banner: { url: 'https://tdb-hum31enzb-tdb.vercel.app/banner.jpg', ratio: '2:1' },
   version: '1.0.1 (Jun, 2022)',
   author,
   category,

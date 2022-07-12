@@ -91,4 +91,35 @@ export const AspectRatio = {
     }
     return a;
   },
+
+  /**
+   * Wrangle input values into a clean set of width/height values.
+   */
+  wrangle(props: { width?: number; height?: number; ratio?: string }) {
+    type T = number | undefined;
+    let width: T = undefined;
+    let height: T = undefined;
+
+    if (typeof props.width === 'number') width = props.width;
+    if (typeof props.height === 'number') height = props.height;
+
+    if (props.ratio) {
+      const ratio = AspectRatio.parse(props.ratio);
+      if (ratio.error) return { width, height };
+
+      if (typeof props.width !== 'number' && typeof props.height === 'number') {
+        width = ratio.width(props.height);
+      }
+
+      if (typeof props.height !== 'number' && typeof props.width === 'number') {
+        height = ratio.height(props.width);
+      }
+    }
+
+    return {
+      width,
+      height,
+      ratio: props.ratio,
+    };
+  },
 };
