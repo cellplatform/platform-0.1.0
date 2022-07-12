@@ -1,5 +1,5 @@
-import React from 'react';
-import { COLORS, css, CssValue, Markdown, SanitizeHtml, t } from './common';
+import React, { useMemo } from 'react';
+import { COLORS, css, CssValue, Markdown, t } from './common';
 
 export type DocMarkdownBlockProps = {
   markdown?: string;
@@ -8,8 +8,7 @@ export type DocMarkdownBlockProps = {
 };
 
 export const DocMarkdownBlock: React.FC<DocMarkdownBlockProps> = (props) => {
-  const { margin = {} } = props;
-  const html = Markdown.toHtmlSync(props.markdown ?? '');
+  const { margin = {}, markdown } = props;
 
   /**
    * TODO 🐷
@@ -31,9 +30,14 @@ export const DocMarkdownBlock: React.FC<DocMarkdownBlockProps> = (props) => {
       cursor: 'default',
     }),
   };
+
+  const html = useMemo(() => {
+    return Markdown.toElement({ markdown, style: styles.markdown });
+  }, [markdown]); // eslint-disable-line
+
   return (
     <div {...css(styles.base, props.style)} className={Markdown.className}>
-      <SanitizeHtml style={styles.markdown} html={html} />
+      {html}
     </div>
   );
 };
