@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Color, COLORS, css, CssValue, t, rx, Card, ObjectView } from './common';
+import { Color, COLORS, css, CssValue, t, rx, Card, ObjectView, Filesystem } from './common';
 
 type InstanceId = string;
 type FilesystemId = string;
@@ -10,16 +10,26 @@ export type DevSampleProps = {
 };
 
 export const DevSample: React.FC<DevSampleProps> = (props) => {
+  const { instance } = props;
+
   /**
    * [Render]
    */
   const styles = {
     base: css({ position: 'relative', color: COLORS.DARK }),
     card: {
-      base: css({ padding: 20, minWidth: 350, userSelect: 'auto' }),
-      data: css({}),
-      fs: css({}),
-      selection: css({}),
+      base: css({ minWidth: 350, userSelect: 'auto' }),
+      data: css({ padding: 20 }),
+      fs: {
+        base: css({
+          Padding: [15, 0],
+        }),
+        list: css({
+          backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+          minHeight: 120,
+        }),
+      },
+      selection: css({ padding: 20 }),
     },
     connector: {
       base: css({ Flex: 'x-spaceBetween-stretch' }),
@@ -46,8 +56,13 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
   );
 
   const elFilesystemCard = (
-    <Card style={css(styles.card.base, styles.card.fs)}>
-      <div>filesystem</div>
+    <Card style={css(styles.card.base, styles.card.fs.base)}>
+      <Filesystem.PathList.Stateful
+        // instance={{ ...instance, id: `${instance.id}.card` }}
+        instance={{ ...instance }}
+        style={styles.card.fs.list}
+        // height={120}
+      />
     </Card>
   );
 
