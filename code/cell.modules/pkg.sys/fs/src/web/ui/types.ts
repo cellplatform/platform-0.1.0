@@ -1,5 +1,6 @@
 import * as t from '../common/types';
 
+export * from './ModuleInfo/types';
 export * from './PathList/types';
 
 type InstanceId = string;
