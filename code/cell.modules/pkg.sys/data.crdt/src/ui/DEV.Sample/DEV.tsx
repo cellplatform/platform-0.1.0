@@ -36,7 +36,7 @@ export const actions = DevActions<Ctx>()
 
     const bus = rx.bus();
     const filesystem = TestFilesystem.init({ bus });
-    const { instance } = filesystem;
+    const instance = filesystem.instance();
 
     const ctx: Ctx = {
       bus,

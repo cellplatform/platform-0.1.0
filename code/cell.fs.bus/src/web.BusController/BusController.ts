@@ -18,7 +18,7 @@ export function BusController(args: {
   filter?: (e: t.SysFsEvent) => boolean;
   httpFactory?: (host: string | number) => t.IHttpClient;
   timeout?: Milliseconds;
-}) {
+}): t.SysFsController {
   const { driver, index, timeout } = args;
   const fs = driver;
   const id = (args.id || '').trim() || DEFAULT.FILESYSTEM_ID;

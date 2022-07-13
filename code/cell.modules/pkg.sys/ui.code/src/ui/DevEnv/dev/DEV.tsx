@@ -70,7 +70,10 @@ export const actions = DevActions<Ctx>()
     let editor: t.CodeEditorInstanceEvents | undefined;
 
     const path = 'index.json';
-    const { fs, instance } = TestFilesystem.init();
+    const filesystem = TestFilesystem.init();
+    const instance = filesystem.instance();
+    const fs = filesystem.fs;
+    const token = Util.token.read();
 
     const getEditorCode = () => ctx.editor?.text.get.fire();
     const getSavedCode = async () => new TextDecoder().decode(await fs.read(path));
@@ -86,7 +89,7 @@ export const actions = DevActions<Ctx>()
       instance,
       bus,
       fs,
-      token: Util.token.read(),
+      token,
       props: {
         instance: { bus, id: `foo.${slug()}` },
         focusOnLoad: true,

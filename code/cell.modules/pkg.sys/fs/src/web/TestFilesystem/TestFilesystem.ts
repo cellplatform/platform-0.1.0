@@ -19,21 +19,24 @@ export function TestFilesystemFactory(id: FilesystemId = 'fs:dev') {
       const { timeout } = options;
       const bus = options.bus ?? rx.bus();
 
-      const instance: t.FsViewInstance = {
-        bus,
-        id: `foo.${slug()}`,
-        fs: id,
-      };
-
-      const res = Filesystem.create({ bus, fs: instance.fs });
+      const res = Filesystem.create({ bus, fs: id });
       const { events, fs } = res;
+
       const ready = async () => {
         await res.ready();
-        return api;
+        return filesystem;
       };
 
-      const api: TestFilesystem = { bus, instance, events, fs, ready };
-      return api;
+      const instance = (id?: string): t.FsViewInstance => {
+        return {
+          bus,
+          fs: filesystem.id,
+          id: id ?? `foo.${slug()}`,
+        };
+      };
+
+      const filesystem: TestFilesystem = { id, bus, events, fs, ready, instance };
+      return filesystem;
     },
   };
 }

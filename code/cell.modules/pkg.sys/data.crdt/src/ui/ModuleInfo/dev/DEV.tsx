@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 import { ModuleInfo, ModuleInfoProps } from '..';
-import { t } from '../common';
+import { t, PropList } from '../common';
 
 type Ctx = { props: ModuleInfoProps };
 
@@ -17,24 +17,18 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('ModuleInfo');
-
-    e.select((config) =>
-      config
-        .title('fields:')
-        .items(ModuleInfo.FIELDS)
-        .initial(undefined)
-        .clearable(true)
-        .view('buttons')
-        .multi(true)
-        .pipe((e) => {
-          if (e.changing) {
-            const next = e.changing.next.map(({ value }) => value) as t.ModuleInfoFields[];
-            e.ctx.props.fields = next.length === 0 ? undefined : next;
-          }
-        }),
-    );
-
+    e.component((e) => {
+      type F = t.ModuleInfoFields;
+      return (
+        <PropList.FieldSelector
+          title={'ModuleInfo'}
+          all={ModuleInfo.FIELDS}
+          selected={e.ctx.props.fields}
+          onClick={({ next }) => e.change.ctx((ctx) => (ctx.props.fields = next as F[]))}
+          style={{ Margin: [25, 20, 25, 20] }}
+        />
+      );
+    });
     e.hr();
 
     e.component((e) => {

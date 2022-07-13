@@ -1,9 +1,12 @@
 import * as t from '../common/types';
 
+type FilesystemId = string;
+
 export type TestFilesystem = {
+  id: FilesystemId;
   bus: t.EventBus<any>;
-  instance: t.FsViewInstance;
   events: t.SysFsEvents;
   fs: t.Fs;
-  ready: () => Promise<TestFilesystem>;
+  ready(): Promise<TestFilesystem>;
+  instance(id?: string): t.FsViewInstance;
 };

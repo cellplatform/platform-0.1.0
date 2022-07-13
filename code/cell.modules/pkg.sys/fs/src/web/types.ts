@@ -8,6 +8,7 @@ export { Fs } from '@platform/cell.types/lib/types.Fs';
  * @local
  */
 export * from './FsDriver.IndexedDb/types';
+export * from './FsBus.IndexedDb/types';
 export * from './Filesize/types';
 export * from './TestFilesystem/types';
 export * from './ui/types';

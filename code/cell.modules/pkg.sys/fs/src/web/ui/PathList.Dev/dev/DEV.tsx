@@ -15,12 +15,12 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const { fs, instance } = TestFilesystem.init();
+    const filesystem = TestFilesystem.init();
 
     const ctx: Ctx = {
-      fs,
+      fs: filesystem.fs,
       props: {
-        instance,
+        instance: filesystem.instance(),
         height: 150,
         width: 280,
         labels: true,

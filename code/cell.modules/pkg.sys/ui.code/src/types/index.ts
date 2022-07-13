@@ -8,6 +8,7 @@ export * from './types.monaco';
  * User Interface
  */
 export * from '../ui/DevEnv/types';
+export * from '../ui/ModuleInfo/types';
 
 /**
  * Environment

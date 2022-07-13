@@ -9,6 +9,7 @@ import { t, rx, Filesystem } from '../common';
 type Ctx = {
   bus: t.EventBus;
   filesystem: t.TestFilesystem;
+  instance: t.FsViewInstance;
   props: DocLayoutProps;
 };
 
@@ -22,10 +23,12 @@ export const actions = DevActions<Ctx>()
 
     const bus = rx.bus();
     const filesystem = TestFilesystem.init({ bus });
+    const instance = filesystem.instance();
 
     const ctx: Ctx = {
       bus,
       filesystem,
+      instance,
       props: {
         doc: SAMPLE.defs[0],
         tracelines: false,
@@ -63,15 +66,8 @@ export const actions = DevActions<Ctx>()
     e.title('Dev');
 
     e.component((e) => {
-      const instance = e.ctx.filesystem.instance;
-      const id = `${instance.id}.dev`;
-      return (
-        <Filesystem.PathList.Dev
-          instance={e.ctx.filesystem.instance}
-          margin={[20, 10, 20, 10]}
-          height={100}
-        />
-      );
+      const instance = e.ctx.instance;
+      return <Filesystem.PathList.Dev instance={instance} margin={[20, 10, 20, 10]} height={100} />;
     });
 
     e.button('[TODO] save to local fs', (e) => null);

@@ -8,6 +8,7 @@ import { t, Filesystem } from '../common';
 type Ctx = {
   size?: t.DiagramLayoutSize;
   filesystem: t.TestFilesystem;
+  instance: t.FsViewInstance;
   props: TalkingDiagramProps;
 };
 
@@ -19,10 +20,13 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
     const change = e.change;
+
     const filesystem = TestFilesystem.init();
+    const instance = filesystem.instance();
 
     const ctx: Ctx = {
       filesystem,
+      instance,
       props: {
         onResize: (e) => change.ctx((ctx) => (ctx.size = e.size)),
       },
@@ -41,11 +45,7 @@ export const actions = DevActions<Ctx>()
 
     e.component((e) => {
       return (
-        <Filesystem.PathList.Dev
-          instance={e.ctx.filesystem.instance}
-          margin={[20, 10, 20, 10]}
-          height={100}
-        />
+        <Filesystem.PathList.Dev instance={e.ctx.instance} margin={[20, 10, 20, 10]} height={100} />
       );
     });
 

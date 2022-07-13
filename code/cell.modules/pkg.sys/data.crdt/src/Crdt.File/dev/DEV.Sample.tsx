@@ -1,19 +1,35 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Color, COLORS, css, CssValue, t, rx, Card, ObjectView } from './common';
+import { Color, COLORS, css, CssValue, t, rx, Card, ObjectView, Filesystem } from './common';
 
-export type DevSampleProps = { style?: CssValue };
+type InstanceId = string;
+type FilesystemId = string;
+
+export type DevSampleProps = {
+  instance: { bus: t.EventBus<any>; id: InstanceId; fs: FilesystemId };
+  style?: CssValue;
+};
 
 export const DevSample: React.FC<DevSampleProps> = (props) => {
+  const { instance } = props;
+
   /**
    * [Render]
    */
   const styles = {
     base: css({ position: 'relative', color: COLORS.DARK }),
     card: {
-      base: css({ padding: 20, minWidth: 300, userSelect: 'auto' }),
-      data: css({}),
-      fs: css({}),
-      selection: css({}),
+      base: css({ minWidth: 350, userSelect: 'auto' }),
+      data: css({ padding: 20 }),
+      fs: {
+        base: css({
+          Padding: [15, 0],
+        }),
+        list: css({
+          backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+          minHeight: 120,
+        }),
+      },
+      selection: css({ padding: 20 }),
     },
     connector: {
       base: css({ Flex: 'x-spaceBetween-stretch' }),
@@ -40,24 +56,29 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
   );
 
   const elFilesystemCard = (
-    <Card style={css(styles.card.base, styles.card.fs)}>
-      <div>Filesystem</div>
+    <Card style={css(styles.card.base, styles.card.fs.base)}>
+      <Filesystem.PathList.Stateful
+        // instance={{ ...instance, id: `${instance.id}.card` }}
+        instance={{ ...instance }}
+        style={styles.card.fs.list}
+        // height={120}
+      />
     </Card>
   );
 
-  const elSelectionCard = (
+  const elToolsCard = (
     <Card style={css(styles.card.base, styles.card.selection)}>
-      <div>Selection</div>
+      <div>toolbar</div>
     </Card>
   );
 
   return (
     <div {...css(styles.base, props.style)}>
-      {elDataCard}
-      {elConnector}
       {elFilesystemCard}
       {elConnector}
-      {elSelectionCard}
+      {elDataCard}
+      {elConnector}
+      {elToolsCard}
     </div>
   );
 };
