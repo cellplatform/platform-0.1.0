@@ -1,21 +1,19 @@
 import React from 'react';
 
-import { t, css, CssValue, pkg, PropList, Text } from '../common';
-import { DEFAULT } from './constants';
-import * as k from './types';
+import { css, CssValue, DEFAULT, FC, FIELDS, pkg, PropList, Text, t } from './common';
 import { toDeploymentResponse } from './ModuleInfo.deployment';
 
 export type ModuleInfoProps = {
-  fields?: k.ModuleInfoFields[];
-  data?: k.ModuleInfoData;
+  fields?: t.ModuleInfoFields[];
+  data?: t.ModuleInfoData;
   width?: number;
   minWidth?: number;
   maxWidth?: number;
   style?: CssValue;
 };
 
-export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
-  const { width, minWidth = 230, maxWidth, fields = DEFAULT.FIELDS, data = DEFAULT.DATA } = props;
+const View: React.FC<ModuleInfoProps> = (props) => {
+  const { width, minWidth = 230, maxWidth, fields = FIELDS, data = DEFAULT.data } = props;
 
   const secret = (hidden: boolean) => {
     const fontSize = PropList.DEFAULTS.fontSize;
@@ -26,7 +24,7 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
     };
   };
 
-  const items = PropList.builder<k.ModuleInfoFields>()
+  const items = PropList.builder<t.ModuleInfoFields>()
     .field('Module', { label: 'Module', value: `${pkg.name}@${pkg.version}` })
     .field('Module.Name', { label: 'Name', value: pkg.name })
     .field('Module.Version', { label: 'Version', value: pkg.version })
@@ -49,3 +47,16 @@ export const ModuleInfo: React.FC<ModuleInfoProps> = (props) => {
     </div>
   );
 };
+
+/**
+ * Export
+ */
+type Fields = {
+  DEFAULT: typeof DEFAULT;
+  FIELDS: typeof FIELDS;
+};
+export const ModuleInfo = FC.decorate<ModuleInfoProps, Fields>(
+  View,
+  { DEFAULT, FIELDS },
+  { displayName: 'ModuleInfo' },
+);
