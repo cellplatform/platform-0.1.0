@@ -32,13 +32,15 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const { fs, instance } = TestFilesystem.init();
+    const filesystem = TestFilesystem.init();
+    const instance = filesystem.instance();
+    const token = Util.token.read();
 
     const ctx: Ctx = {
-      fs,
+      fs: filesystem.fs,
       props: {
         instance,
-        token: Util.token.read(),
+        token,
         team: 'tdb',
         project: 'tdb-tmp',
         domain: 'tmp.db.team',

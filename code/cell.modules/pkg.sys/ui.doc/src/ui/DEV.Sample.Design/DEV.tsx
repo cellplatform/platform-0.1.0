@@ -16,7 +16,10 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const { fs, instance } = TestFilesystem.init();
+    const filesystem = TestFilesystem.init();
+    const instance = filesystem.instance();
+    const fs = filesystem.fs;
+
     const ctx: Ctx = { instance, fs };
 
     return ctx;

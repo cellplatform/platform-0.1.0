@@ -33,13 +33,14 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const filesystem = TestFilesystem.init();
-    const { instance } = filesystem;
+    const instance = filesystem.instance();
+    const token = Util.token.read();
 
     const ctx: Ctx = {
       filesystem,
       props: {
         instance,
-        token: Util.token.read(),
+        token,
         team: 'tdb',
         project: 'tdb-ro',
         // domain: '',
