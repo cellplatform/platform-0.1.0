@@ -1,7 +1,7 @@
 import React from 'react';
 import { CrdtFile } from '..';
 import { TestFilesystem, DevActions, ObjectView } from '../../test';
-import { rx, t, Filesystem } from './common';
+import { rx, t, Filesystem, slug } from './common';
 import { DevSample, DevSampleProps } from './DEV.Sample';
 
 import { Deploy, DeployProps } from 'vendor.cloud.vercel/lib/web/ui/Deploy';
@@ -37,12 +37,14 @@ export const actions = DevActions<Ctx>()
 
     const bus = rx.bus();
     const filesystem = TestFilesystem.init({ bus });
+    const instance = filesystem.instance();
+    const token = Util.token.read();
 
     const ctx: Ctx = {
       bus,
-      token: Util.token.read(),
       filesystem,
-      props: {},
+      token,
+      props: { instance },
     };
     return ctx;
   })
@@ -56,7 +58,7 @@ export const actions = DevActions<Ctx>()
     e.title('Dev');
 
     e.component((e) => {
-      const instance = e.ctx.filesystem.instance;
+      const instance = e.ctx.props.instance;
       const id = `${instance.id}.dev`;
       return (
         <Filesystem.PathList.Dev
@@ -67,9 +69,17 @@ export const actions = DevActions<Ctx>()
       );
     });
 
+    e.button('delete all', async (e) => {
+      await TestFilesystem.clear(e.ctx.filesystem.fs, { all: true });
+    });
+
+    e.hr();
+
+    e.title('Deployment');
+
     e.component((e) => {
       const props: DeployProps = {
-        instance: e.ctx.filesystem.instance,
+        instance: e.ctx.props.instance,
         token: e.ctx.token,
       };
       return <Deploy {...props} style={{ Margin: [12, 10, 20, 10] }} />;
@@ -92,12 +102,9 @@ export const actions = DevActions<Ctx>()
 
   .subject((e) => {
     e.settings({
-      actions: { width: 400 },
+      actions: { width: 380 },
       host: { background: -0.04 },
-
-      layout: {
-        cropmarks: -0.2,
-      },
+      layout: { cropmarks: -0.2 },
     });
     e.render(<DevSample {...e.ctx.props} style={{ flex: 1 }} />);
   });

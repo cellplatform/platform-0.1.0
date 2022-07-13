@@ -1,7 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Color, COLORS, css, CssValue, t, rx, Card, ObjectView } from './common';
 
-export type DevSampleProps = { style?: CssValue };
+type InstanceId = string;
+type FilesystemId = string;
+
+export type DevSampleProps = {
+  instance: { bus: t.EventBus<any>; id: InstanceId; fs: FilesystemId };
+  style?: CssValue;
+};
 
 export const DevSample: React.FC<DevSampleProps> = (props) => {
   /**
@@ -10,7 +16,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
   const styles = {
     base: css({ position: 'relative', color: COLORS.DARK }),
     card: {
-      base: css({ padding: 20, minWidth: 300, userSelect: 'auto' }),
+      base: css({ padding: 20, minWidth: 350, userSelect: 'auto' }),
       data: css({}),
       fs: css({}),
       selection: css({}),
@@ -41,23 +47,23 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
 
   const elFilesystemCard = (
     <Card style={css(styles.card.base, styles.card.fs)}>
-      <div>Filesystem</div>
+      <div>filesystem</div>
     </Card>
   );
 
-  const elSelectionCard = (
+  const elToolsCard = (
     <Card style={css(styles.card.base, styles.card.selection)}>
-      <div>Selection</div>
+      <div>toolbar</div>
     </Card>
   );
 
   return (
     <div {...css(styles.base, props.style)}>
-      {elDataCard}
-      {elConnector}
       {elFilesystemCard}
       {elConnector}
-      {elSelectionCard}
+      {elDataCard}
+      {elConnector}
+      {elToolsCard}
     </div>
   );
 };
