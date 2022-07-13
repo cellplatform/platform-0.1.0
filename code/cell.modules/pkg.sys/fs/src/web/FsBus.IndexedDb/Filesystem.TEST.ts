@@ -5,10 +5,7 @@ import { rx, DEFAULT, Hash, t } from './common';
 export default Test.describe('FsBus (IndexedDB)', (e) => {
   const testPrep = async (options: { clear?: boolean } = {}) => {
     const bus = rx.bus();
-    const { store } = await Filesystem.create({ bus, fs: TestFilesystem.id }).ready();
-    const fs = store.fs();
-
-    const dispose = store.dispose;
+    const { fs, dispose, store } = await Filesystem.create({ bus, fs: TestFilesystem.id }).ready();
 
     const deleteAll = async () => {
       const manifest = await fs.manifest();
@@ -16,7 +13,7 @@ export default Test.describe('FsBus (IndexedDB)', (e) => {
     };
 
     if (options.clear) await deleteAll();
-    return { store, fs, dispose, deleteAll };
+    return { fs, dispose, deleteAll, store };
   };
 
   const testFile = (path: string, text?: string) => {

@@ -67,7 +67,7 @@ export default Test.describe('FsIndexer (IndexedDB)', (e) => {
       const files = manifest.files;
 
       expect(manifest.kind).to.eql('dir');
-      expect(manifest.dir.indexedAt).to.within(now - 10, now + 10);
+      expect(manifest.dir.indexedAt).to.within(now - 30, now + 30);
 
       expect(files.length).to.eql(3);
 

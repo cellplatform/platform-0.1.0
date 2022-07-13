@@ -40,12 +40,12 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const change = e.change;
-    const { fs, instance } = TestFilesystem.init();
+    const filesystem = TestFilesystem.init();
 
     const ctx: Ctx = {
-      fs,
+      fs: filesystem.fs,
       props: {
-        instance,
+        instance: filesystem.instance(),
         scrollable: true, // Virtual list.
         selectable: List.SelectionConfig.default,
         theme: FsPathList.DEFAULT.THEME,
