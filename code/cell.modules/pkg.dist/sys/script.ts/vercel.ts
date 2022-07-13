@@ -37,7 +37,7 @@ async function copyStatic(args: { dir: string }) {
   // Read in meta-data from the manifest.
   const manifest = (await fs.readJson(fs.resolve(fs.join(args.dir, 'index.json')))) as M;
   const version = manifest.module.version;
-  const hash = `${manifest.hash.module}(module)`.replace(/^sha256-/, '');
+  const hash = `module(${manifest.hash.module})`.replace(/^sha256-/, '');
 
   // Copy files.
   const sourceDir = fs.resolve('static');

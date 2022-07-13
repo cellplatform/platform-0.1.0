@@ -6,35 +6,15 @@ body {
   user-select: none;
 }
 
-#root {
-  position: absolute;
-  
-  top: 0px;
-  right: 0px;
-  bottom: 0px;
-  left: 0px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-}
-
 a { text-decoration: none; }
-a:hover { text-decoration: underline; }
 
 .title {
-  user-select: none;
   letter-spacing: -0.03em;
-  font-size: 80px;
+  font-size: 46px;
 }
-.brace {  opacity: 0.1; }
-.curly {  opacity: 0.2; color: #00B2FF }
-.open { margin-right: 20px; }
-.close { margin-left: 20px; }
 
 .footer-left { position: absolute; bottom: 20px; left: 20px }
-.footer-right { position: absolute; bottom: 20px; right: 20px }
+.footer-right { position: absolute; bottom: 20px; right: 20px; text-align: right; }
 
 .mono { font-family: monospace; font-weight: 'bold'; font-weight: 900; }
 .hash { font-size: 9px; margin-top: 2px; }
