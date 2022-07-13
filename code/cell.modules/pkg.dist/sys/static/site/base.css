@@ -14,7 +14,7 @@ a { text-decoration: none; }
 }
 
 .footer-left { position: absolute; bottom: 20px; left: 20px }
-.footer-right { position: absolute; bottom: 20px; right: 20px; text-align: right; }
+.footer-right { position: absolute; bottom: 20px; right: 25px; }
 
 .mono { font-family: monospace; font-weight: 'bold'; font-weight: 900; }
 .hash { font-size: 9px; margin-top: 2px; }
