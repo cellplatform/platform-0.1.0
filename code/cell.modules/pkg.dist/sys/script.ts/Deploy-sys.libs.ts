@@ -6,7 +6,7 @@ const dir = 'dist/web';
 /**
  * PRE-DEPLOY
  */
-export async function copyStatic() {
+async function copyStatic() {
   type M = t.ModuleManifest;
 
   // Read in meta-data from the manifest.

@@ -15,7 +15,7 @@
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
-    "deploy": "ts-node -T script.ts/Deploy"
+    "deploy": "ts-node -T script.ts/Deploy.run"
   },
   "dependencies": {},
   "devDependencies": {

@@ -1,10 +1,10 @@
 import { prompt } from '@platform/cli.prompt';
 import { exec } from '@platform/exec';
-import { BuildAll } from './BuildAll';
+import { Cmds } from './Cmds';
 
 const Imports = {
-  'sys.libs': import('./sys.libs'),
-  'sys.runtime': import('./sys.runtime'),
+  'sys.libs': import('./Deploy-sys.libs'),
+  'sys.runtime': import('./Deploy-sys.runtime'),
 };
 
 /**
@@ -32,7 +32,7 @@ const Imports = {
    * Compile module typescript.
    */
   if (isSelected('build.all', 'all')) {
-    const res = await BuildAll.run({ parentDir: '../../pkg.sys' });
+    const res = await Cmds.buildAll({ within: '../../pkg.sys' });
     exitOnError(res.code);
   }
 

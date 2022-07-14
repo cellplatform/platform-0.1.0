@@ -8,8 +8,8 @@ export const Util = {
    *    https://vercel.com/docs/project-configuration
    *
    */
-  toVercelFile(config: t.DeployConfig): t.VercelJson {
-    const json: t.VercelJson = {
+  toVercelFile(config: t.DeployConfig): t.VercelConfigFile {
+    const json: t.VercelConfigFile = {
       trailingSlash: true,
       redirects: [],
       rewrites: [],
@@ -49,7 +49,7 @@ export const Util = {
   /**
    * Save a vercel config file.
    */
-  async saveConfig(dir: string, config: t.VercelJson) {
+  async saveConfig(dir: string, config: t.VercelConfigFile) {
     const filepath = fs.join(dir, 'vercel.json');
     const json = JSON.stringify(config, null, '  ');
     dir = fs.resolve(dir);
