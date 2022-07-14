@@ -44,5 +44,5 @@ function isJavascript(url: string) {
 }
 
 function isStaticAsset(url: string) {
-  return url.includes('/static/vs/') || url.includes('/static/types/');
+  return url.includes('static/vs/') || url.includes('static/types/');
 }
