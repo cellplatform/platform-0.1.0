@@ -13,6 +13,25 @@ a { text-decoration: none; }
   font-size: 46px;
 }
 
+.hash-root {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hash-inner {
+  position: relative;
+  width: 105px;
+  height: 120px;
+  overflow-wrap: anywhere;
+}
+
 .footer-left { position: absolute; bottom: 20px; left: 20px }
 .footer-right { position: absolute; bottom: 20px; right: 25px; }
 

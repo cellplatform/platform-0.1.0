@@ -3,36 +3,45 @@ import { fs, t } from './common';
 export const Util = {
   /**
    * Convert a set of rewrite configurations to a [vercel.json] file.
+   *
+   * REF Schema:
+   *    https://vercel.com/docs/project-configuration
+   *
    */
-  toRewrites(input?: t.DeployRewriteMap[]): t.VercelJson {
-    if (!input) return {};
-    const json: t.VercelJson = { redirects: [], rewrites: [] };
-
-    const format = (path: string) => {
-      if (path.startsWith('/')) path = `/${path.replace(/^\/*/, '')}`;
-      return path;
+  toVercelFile(config: t.DeployConfig): t.VercelJson {
+    const json: t.VercelJson = {
+      trailingSlash: true,
+      redirects: [],
+      rewrites: [],
     };
 
-    input.forEach((def) => {
-      const source = def.source.replace(/^\/*/, '').replace(/\/*$/, '');
-      const domain = new URL(def.domain).origin;
+    const format = (path?: string) => {
+      if (path?.startsWith('/')) path = `/${path.replace(/^\/*/, '')}`;
+      return path ?? '';
+    };
 
-      if (source) {
-        json.redirects?.push({
-          source: format(`/${source}`),
-          destination: format(`/${source}/`),
+    if (config.rewrites) {
+      config.rewrites.forEach((def) => {
+        const source = def.match.replace(/^\/*/, '').replace(/\/*$/, '');
+        const domain = new URL(def.use).origin;
+
+        if (def.redirect) {
+          json.redirects?.push({
+            source: format(`/${source}`),
+            destination: format(format(def.redirect)),
+          });
+        }
+
+        json.rewrites?.push({
+          source: format(`/${source}/`),
+          destination: domain,
         });
-      }
-
-      json.rewrites?.push({
-        source: format(`/${source}/`),
-        destination: domain,
+        json.rewrites?.push({
+          source: format(`/${source}/:match*`),
+          destination: `${domain}/:match*`,
+        });
       });
-      json.rewrites?.push({
-        source: format(`/${source}/:match*`),
-        destination: `${domain}/:match*`,
-      });
-    });
+    }
 
     return json;
   },
