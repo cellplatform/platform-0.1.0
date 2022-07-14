@@ -14,7 +14,7 @@ export default async () => {
     await fs.ensureDir(dir);
 
     // Copy static assets to root directory.
-    if (config.copy) await Util.copyDir(config.copy, dir);
+    if (config.copyStatic) await Util.mergeDirectory(config.copyStatic, dir);
 
     // Prepare redirects JSON.
     await Util.saveConfig(dir, Util.toVercelFile(config));

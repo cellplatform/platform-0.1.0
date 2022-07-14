@@ -1,5 +1,7 @@
 import { fs, t } from './common';
 
+type DirPath = string;
+
 export const Util = {
   /**
    * Convert a set of rewrite configurations to a [vercel.json] file.
@@ -61,23 +63,24 @@ export const Util = {
   /**
    * Copy a directory of files.
    */
-  async copyDir(sourceDir: string, targetDir: string) {
-    sourceDir = fs.resolve(sourceDir);
-    targetDir = fs.resolve(targetDir);
+  async mergeDirectory(source: DirPath, target: DirPath) {
+    source = fs.resolve(source);
+    target = fs.resolve(target);
 
-    if (!(await fs.is.dir(sourceDir))) {
-      throw new Error(`Directory does not exist. Path: "${sourceDir}"`);
+    if (!(await fs.is.dir(source))) {
+      throw new Error(`Directory does not exist. Path: "${source}"`);
     }
 
-    const pattern = fs.join(sourceDir, `**`);
+    const pattern = fs.join(source, `**`);
     const paths = (await fs.glob.find(pattern)).map((source) => {
-      const path = source.substring(sourceDir.length);
-      const target = fs.join(targetDir, path);
-      return { source, target };
+      const path = source.substring(source.length);
+      return { source, target: fs.join(target, path) };
     });
 
     for (const item of paths) {
       await fs.copy(item.source, item.target);
     }
+
+    return paths;
   },
 };

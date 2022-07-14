@@ -11,7 +11,7 @@ export type DeployConfig = {
   project: string;
   alias: string;
   rewrites?: DeployRewriteMap[];
-  copy?: DirPath;
+  copyStatic?: DirPath;
 };
 
 export type DeployRewriteMap = {
