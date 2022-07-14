@@ -1,7 +1,7 @@
 {
   "name": "sys",
   "description": "Deployment of all main system libs",
-  "version": "0.1.22",
+  "version": "0.1.32",
   "main": "lib/index",
   "sideEffects": false,
   "scripts": {
@@ -10,12 +10,12 @@
     "test": "ts test $@",
     "lint": "ts lint $@",
     "build": "ts build --no-esm $@",
-    "bundle": "cell.compiler bundle --bump $@",
+    "bundle": "yarn cell.compiler bundle --bump $@",
     "watch": "cell.compiler watch $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
     "serve": "cell.compiler serve $@",
-    "deploy": "ts-node -T script.ts/Deploy"
+    "deploy": "ts-node -T script.ts/Deploy.run"
   },
   "dependencies": {},
   "devDependencies": {

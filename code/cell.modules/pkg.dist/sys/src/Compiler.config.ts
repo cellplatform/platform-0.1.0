@@ -2,7 +2,7 @@ import { Compiler, Package } from '@platform/cell.compiler';
 
 export default () =>
   Compiler.config()
-    .namespace('sys')
+    .namespace('sys.libs')
     .version(Package.version)
 
     .variant('web', (config) =>
@@ -28,8 +28,5 @@ export default () =>
         .expose('./DEV.dev.ui.sys', './src/exports/sys/DEV.Sys.UI.Dev')
         .expose('./DEV.doc.ui.sys', './src/exports/sys/DEV.Sys.UI.Doc')
         .expose('./DEV.primitives.ui.sys', './src/exports/sys/DEV.Sys.UI.Primitives')
-        .expose('./DEV.video.ui.sys', './src/exports/sys/DEV.Sys.UI.Video')
-
-        .expose('./DEV_SAMPLE.error (on module load)', './src/exports/sample/ERROR.OnModuleLoad')
-        .expose('./DEV_SAMPLE.error (on render)', './src/exports/sample/ERROR.OnRender'),
+        .expose('./DEV.video.ui.sys', './src/exports/sys/DEV.Sys.UI.Video'),
     );

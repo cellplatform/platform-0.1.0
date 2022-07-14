@@ -19,5 +19,10 @@ export default () =>
         .files((e) => e.redirect(false, '*.worker.js').access('public', '**/*.{png,jpg,svg}'))
         .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
 
-        .expose('./Dev', './src/Dev.Harness'),
+        /**
+         * EXPORTS: Development
+         */
+        .expose('./Dev', './src/Dev.Harness')
+        .expose('./DEV_SAMPLE.error (on module load)', './src/exports.sample/ERROR.OnModuleLoad')
+        .expose('./DEV_SAMPLE.error (on render)', './src/exports.sample/ERROR.OnRender'),
     );

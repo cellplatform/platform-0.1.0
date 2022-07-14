@@ -1,4 +1,7 @@
+type Path = string;
 type DirPath = string;
+type DomainUrl = string;
+type RedirectPath = string;
 
 /**
  * Deployment configuration.
@@ -8,18 +11,11 @@ export type DeployConfig = {
   project: string;
   alias: string;
   rewrites?: DeployRewriteMap[];
-  copy?: DirPath;
+  copyStatic?: DirPath;
 };
 
-export type DeployRewriteMap = { source: string; domain: string };
-
-/**
- * [vercel.json] file.
- * https://vercel.com/docs/project-configuration
- */
-export type VercelJson = {
-  redirects?: VercelJsonRedirect[];
-  rewrites?: VercelJsonRewrite[];
+export type DeployRewriteMap = {
+  match: Path;
+  redirect?: RedirectPath; // Redirect before proxying to the "use" target.
+  use: DomainUrl; // Proxy target endpoint.
 };
-export type VercelJsonRedirect = { source: string; destination: string };
-export type VercelJsonRewrite = { source: string; destination: string };

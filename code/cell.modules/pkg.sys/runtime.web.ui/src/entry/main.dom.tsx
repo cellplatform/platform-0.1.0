@@ -23,7 +23,7 @@ const query = () => {
   return q;
 };
 
-const isDev = query().has('dev');
+const isDev = query().has('dev') || url.pathname.startsWith('/sys/');
 if (isDev) document.title = `${document.title} (dev)`;
 
 /**

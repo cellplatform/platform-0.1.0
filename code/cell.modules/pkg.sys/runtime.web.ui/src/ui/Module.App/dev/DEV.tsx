@@ -39,7 +39,12 @@ export const actions = DevActions<Ctx>()
   })
 
   .items((e) => {
-    e.title('URL: manifest, entry');
+    e.title('URL');
+    e.markdown(`
+The input URL specifies the HTTP endpoint of the \`module\` bundle 
+and optionally the \`entry\` function (ƒ).
+`);
+    e.hr(1, 0.1);
 
     const hrefButton = (manifest: string, entry?: string, suffix?: string) => {
       const { href } = Module.Url.parse(manifest, { entry });
@@ -51,12 +56,16 @@ export const actions = DevActions<Ctx>()
       e.button(label, (e) => (e.ctx.props.href = href));
     };
 
-    const base = 'https://lib.db.team/index.json';
-    hrefButton(base, `./net.sys`);
-    hrefButton(base, `./DEV.crdt.data.sys`);
+    hrefButton('https://lib.db.team', './net.sys');
+    hrefButton('https://lib.db.team', './DEV.fs.sys');
+    hrefButton('https://lib.db.team', './DEV.crdt.data.sys');
+    hrefButton('https://lib.db.team');
     e.hr(1, 0.1);
-    hrefButton(base, undefined, '(no entry)');
+
+    hrefButton('https://runtime.db.team');
+    hrefButton('https://runtime.db.team', `./Dev`);
     e.hr(1, 0.1);
+
     e.button('unload', (e) => (e.ctx.props.href = ''));
 
     e.hr();

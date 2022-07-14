@@ -32,6 +32,7 @@ export const Info: React.FC<InfoProps> = (props) => {
    */
   const styles = {
     base: css({ Absolute: 0, pointerEvents: 'auto' }),
+    body: css({ marginTop: 25 }),
     hashChip: css({ Absolute: [8, 8, null, null] }),
   };
 
@@ -46,7 +47,7 @@ export const Info: React.FC<InfoProps> = (props) => {
   );
 
   const elBody = (
-    <div style={{ display: loaded ? 'block' : 'none' }}>
+    <div {...styles.body} style={{ display: loaded ? 'block' : 'none' }}>
       <ModuleInfo.Stateful
         url={url.href}
         fields={fields}
@@ -71,7 +72,8 @@ export const Info: React.FC<InfoProps> = (props) => {
       bg={{ blur: 8 }}
       tile={{
         el: elBody,
-        padding: [30, 65],
+        // padding: [65, 65, 30, 64],
+        padding: [30, 50],
         size: { minWidth: 250 + 40 + 40 },
         backgroundColor: isDark ? Color.format(0.03) : Color.alpha(COLORS.DARK, 0.04),
         borderColor: isDark ? Color.format(0.03) : Color.alpha(COLORS.DARK, 0.04),
