@@ -13,6 +13,7 @@ type Args = {
   team: Name;
   project: Name;
   timeout?: Milliseconds;
+  name?: Name; // Deployment name (when not derivable from manifest).
   beforeUpload?: t.VercelHttpBeforeFileUpload;
 };
 
@@ -22,7 +23,7 @@ type Args = {
  *                          - Geo-cached.
  */
 export const VercelDeploy = (args: Args) => {
-  const { token, team, project, timeout, beforeUpload } = args;
+  const { token, team, project, timeout, beforeUpload, name } = args;
   const { fs, dispose$, http } = VercelNode(args);
   return VercelDeployWeb({
     token,
@@ -30,6 +31,7 @@ export const VercelDeploy = (args: Args) => {
     http,
     team,
     project,
+    name,
     timeout,
     beforeUpload,
     dispose$,

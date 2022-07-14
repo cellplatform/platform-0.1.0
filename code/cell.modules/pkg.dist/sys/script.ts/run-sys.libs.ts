@@ -1,31 +1,16 @@
-import { fs } from '@platform/fs';
-import { Vercel, t } from 'vendor.cloud.vercel/lib/node';
-
-const token = process.env.VERCEL_TEST_TOKEN || '';
+import { fs, t, DeployConfig } from './common';
+import { deploy } from './Deploy.Vercel';
 
 /**
- * https://vercel.com/docs/cli#project-configuration/routes
- *
- * Route regex:
- *    https://www.npmjs.com/package/path-to-regexp
- *
+ * DEPLOY
  */
-export async function deploy(team: string, project: string, alias: string) {
+(async () => {
   const dir = 'dist/web';
-  const deployment = Vercel.Deploy({ token, dir, team, project });
-  const info = (await deployment.info()) as t.VercelSourceBundleInfo;
-
   await copyStatic({ dir });
-  Vercel.Log.beforeDeploy({ info, alias, project });
-
-  const res = await deployment.commit(
-    { target: 'production', regions: ['sfo1'], alias },
-    { ensureProject: true },
-  );
-
-  // Finish up.
-  Vercel.Log.afterDeploy(res);
-}
+  for (const { team, project, alias } of DeployConfig.Libs) {
+    await deploy({ dir, team, project, alias });
+  }
+})();
 
 /**
  * Helpers
@@ -46,7 +31,7 @@ async function copyStatic(args: { dir: string }) {
   await fs.copy(sourceDir, targetDir);
 
   // Rewrite template values within HTML and insert into root.
-  const sourcePath = fs.join(targetDir, 'site/index.html');
+  const sourcePath = fs.join(targetDir, 'site.libs/index.html');
   const targetPath = fs.join(fs.resolve(fs.join(args.dir, 'index.html')));
   const html = (await fs.readFile(sourcePath))
     .toString()

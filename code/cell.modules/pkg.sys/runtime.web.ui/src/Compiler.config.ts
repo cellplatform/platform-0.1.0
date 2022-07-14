@@ -7,7 +7,7 @@ export default () =>
 
     .variant('web', (config) =>
       config
-        .title('system')
+        .title('cell')
         .target('web')
         .port(5051)
 
