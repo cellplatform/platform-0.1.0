@@ -13,6 +13,7 @@ type VercelDeployArgs = {
   token: ApiToken;
   team: Name;
   project: Name;
+  name?: Name; // Deployment name (when not derivable from manifest).
   timeout?: Milliseconds;
   beforeUpload?: t.VercelHttpBeforeFileUpload;
   dispose$?: t.Observable<any>;
@@ -66,7 +67,8 @@ export const VercelDeploy = (args: VercelDeployArgs) => {
      */
     async info() {
       const source = await VercelFs.readdir(fs);
-      return VercelInfo.bundle({ fs, source });
+      const name = args.name;
+      return VercelInfo.bundle({ fs, source, name });
     },
 
     /**
@@ -104,8 +106,9 @@ export const VercelDeploy = (args: VercelDeployArgs) => {
         if (!exists) throw new Error(`Project '${args.project}' does not exist.`);
       }
 
+      const name = config.name || args.name;
       const source = await VercelFs.readdir(fs);
-      const res = await project.deploy({ ...config, source, beforeUpload });
+      const res = await project.deploy({ ...config, name, source, beforeUpload });
       return res;
     },
 
