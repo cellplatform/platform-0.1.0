@@ -1,4 +1,4 @@
-import { t } from './common';
+import * as t from './common/types';
 
 type Id = string;
 type Name = string;
