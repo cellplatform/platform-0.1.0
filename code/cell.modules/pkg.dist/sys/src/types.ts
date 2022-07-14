@@ -14,4 +14,8 @@ export type DeployConfig = {
   copy?: DirPath;
 };
 
-export type DeployRewriteMap = { redirect?: RedirectPath; match: Path; use: DomainUrl };
+export type DeployRewriteMap = {
+  match: Path;
+  redirect?: RedirectPath; // Redirect before proxying to the "use" target.
+  use: DomainUrl; // Proxy target endpoint.
+};
