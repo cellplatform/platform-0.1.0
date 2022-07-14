@@ -9,8 +9,8 @@ const Imports = {
   App: () => import('../ui/DEV.Sample'),
 };
 
+const url = new URL(location.href);
 const query = () => {
-  const url = new URL(location.href);
   const q = url.searchParams;
   if (q.has('dev')) return q;
 
@@ -23,7 +23,7 @@ const query = () => {
   return q;
 };
 
-const isDev = query().has('dev');
+const isDev = query().has('dev') || url.pathname.startsWith('/sys/');
 if (isDev) document.title = `${document.title} (dev)`;
 
 /**
