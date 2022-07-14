@@ -1,17 +1,14 @@
-import { fs } from '@platform/fs';
-import { t } from 'vendor.cloud.vercel/lib/node';
-
-import { deploy } from './vercel.deploy';
-import { DeployConfig } from '../../Config';
+import { fs, t, DeployConfig } from './common';
+import { deploy } from './Deploy.Vercel';
 
 /**
- * DEVELOPMENT
+ * DEPLOY
  */
 (async () => {
   const dir = 'dist/web';
   await copyStatic({ dir });
   for (const { team, project, alias } of DeployConfig.Libs) {
-    await deploy(dir, team, project, alias);
+    await deploy({ dir, team, project, alias });
   }
 })();
 
@@ -34,7 +31,7 @@ async function copyStatic(args: { dir: string }) {
   await fs.copy(sourceDir, targetDir);
 
   // Rewrite template values within HTML and insert into root.
-  const sourcePath = fs.join(targetDir, 'site/index.html');
+  const sourcePath = fs.join(targetDir, 'site.libs/index.html');
   const targetPath = fs.join(fs.resolve(fs.join(args.dir, 'index.html')));
   const html = (await fs.readFile(sourcePath))
     .toString()

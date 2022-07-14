@@ -3,19 +3,19 @@ import { exec } from '@platform/exec';
 import { BuildAll } from './BuildAll';
 
 const Imports = {
-  'sys.libs': () => import('./vercel/run-sys.libs'),
-  'sys.runtime.ui': () => import('./vercel/run-sys.runtime.ui'),
+  'sys.libs': () => import('./run-sys.libs'),
+  'sys.runtime': () => import('./run-sys.runtime'),
 };
 
+/**
+ * Prompt user for actions to perform.
+ */
 (async () => {
   const deployKeys = Object.keys(Imports);
   const exitOnError = (code: number) => {
     if (code !== 0) process.exit(code);
   };
 
-  /**
-   * Prompt user for actions to perform.
-   */
   const selection = await prompt.checkbox({
     message: 'run',
     items: [
@@ -41,8 +41,6 @@ const Imports = {
     exitOnError(res.code);
   }
 
-  console.log('selection', selection);
-
   /**
    * Run deployments.
    */
@@ -52,13 +50,7 @@ const Imports = {
     .filter((key) => deployKeys.includes(key))
     .map((key) => Imports[key]);
 
-  // console.log('deployScripts', deployScripts);
-
   for (const script of deployScripts) {
     await script();
   }
-
-  // const res1 = exec.cmd.runList(['yarn build.all']);
-
-  // res1.
 })();
