@@ -15,7 +15,7 @@ setTimeout(() => worker.postMessage({ msg: 'Hello from sys.runtime(🌼) [worker
  */
 export async function startDom() {
   const init = import('./main.dom');
-  init.catch((err) => console.log('INIT ERROR 🐷', err));
+  init.catch((err) => console.log('INIT sys.runtime.web.ui // 🐷 ERROR:', err));
 }
 
 /**
