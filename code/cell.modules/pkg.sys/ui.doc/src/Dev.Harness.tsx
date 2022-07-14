@@ -7,8 +7,6 @@ const imports = {
   SampleDeploy: import('./ui/DEV.Sample.Deploy/DEV'),
   SampleDesign: import('./ui/DEV.Sample.Design/DEV'),
 
-  ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
-
   DocLayout: import('./ui/Doc.Layout/dev/DEV'),
   DocLayoutContainer: import('./ui/Doc.LayoutContainer/dev/DEV'),
   DocList: import('./ui/Doc.List/dev/DEV'),
@@ -29,6 +27,7 @@ const imports = {
   SysRouteBus: import('./ui/Route.Bus/dev/DEV'),
   SysRouteView: import('./ui/Route.View/dev/DEV'),
 
+  ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
   UnitTests: import('./Dev.UnitTests'),
 };
 
