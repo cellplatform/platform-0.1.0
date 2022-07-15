@@ -15,6 +15,7 @@ export function toWebpackConfig(
   const toConfig = (input: t.CompilerModel): t.WpConfig => {
     const model = Model(input);
     const data = model.toObject();
+    const version = model.version('0.0.0');
 
     /**
      * Values (with defaults).
@@ -50,6 +51,7 @@ export function toWebpackConfig(
       mode,
       output: {
         path,
+        filename: `${version}-[name].[contenthash].js`,
         publicPath: 'auto',
         crossOriginLoading: 'anonymous', // NB: Prevents cross-origin loading problems of code-split JS when doing "federated function" imports.
       },
