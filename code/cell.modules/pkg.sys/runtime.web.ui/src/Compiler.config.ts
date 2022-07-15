@@ -12,8 +12,8 @@ export default () =>
         .port(5051)
 
         .entry('main', './src/entry/main')
-        .entry('service.worker', './src/workers/service.worker')
-        .entry('web.worker', './src/workers/web.worker')
+        .entry('worker.service', './src/workers/worker.service')
+        .entry('worker.web', './src/workers/worker.web')
 
         .static('static')
         .files((e) => e.redirect(false, '*.worker.js').access('public', '**/*.{png,jpg,svg}'))
