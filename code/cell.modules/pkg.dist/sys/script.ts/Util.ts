@@ -71,8 +71,7 @@ export const Util = {
       throw new Error(`Directory does not exist. Path: "${source}"`);
     }
 
-    const pattern = fs.join(source, `**`);
-    const paths = (await fs.glob.find(pattern)).map((source) => {
+    const paths = (await fs.glob.find(fs.join(source, `**`))).map((source) => {
       const path = source.substring(source.length);
       return { source, target: fs.join(target, path) };
     });
