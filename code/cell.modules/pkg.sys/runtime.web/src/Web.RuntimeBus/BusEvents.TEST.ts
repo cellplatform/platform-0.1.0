@@ -1,7 +1,7 @@
 import { expect, rx, Test } from '../test';
 import { WebRuntimeBus } from '.';
 
-export default Test.describe('WebRuntimeBus (Events)', (e) => {
+export default Test.describe('Web.RuntimeBus (Events)', (e) => {
   e.describe('is', (e) => {
     const is = WebRuntimeBus.Events.is;
 

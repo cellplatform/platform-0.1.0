@@ -2,7 +2,7 @@ import { WebRuntimeBus } from '.';
 import { expect, rx, Test, slug, NetworkBusMock } from '../test';
 import { DEFAULT } from './common';
 
-export default Test.describe('WebRuntimeBus', (e) => {
+export default Test.describe('Web.RuntimeBus', (e) => {
   e.describe('controller/events', (e) => {
     e.it('instance', async () => {
       const bus = rx.bus();
