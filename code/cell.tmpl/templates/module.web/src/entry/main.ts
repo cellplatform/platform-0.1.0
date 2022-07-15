@@ -1,5 +1,5 @@
-import Worker from 'worker-loader?inline=no-fallback!../workers/web.worker';
-import { ServiceWorker } from '@platform/cell.runtime.web/lib/ServiceWorker';
+import Worker from 'worker-loader?inline=no-fallback!../workers/worker.web';
+import { WebRuntime } from 'sys.runtime.web';
 
 /**
  * Web-worker.
@@ -20,6 +20,6 @@ export async function startDom() {
  * Startup
  */
 (async () => {
-  await ServiceWorker.start('./service.worker.js', { localhost: false });
+  await WebRuntime.ServiceWorker.start('./worker.service.js', { runOnLocalhost: false });
   await startDom();
 })();
