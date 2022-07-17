@@ -51,7 +51,8 @@ export function toWebpackConfig(
       mode,
       output: {
         path,
-        filename: `${version}-[name].[contenthash].js`,
+        filename: '[name].js',
+        chunkFilename: `cell.[name]-hx.[contenthash].js`,
         publicPath: 'auto',
         crossOriginLoading: 'anonymous', // NB: Prevents cross-origin loading problems of code-split JS when doing "federated function" imports.
       },

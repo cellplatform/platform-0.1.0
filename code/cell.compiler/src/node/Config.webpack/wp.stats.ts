@@ -45,11 +45,28 @@ export const stats = (input?: t.WpStats | t.WpCompilation): t.WebpackStats => {
           const elapsed = time.duration(res.elapsed).toString();
           const table = log.table({ border: false });
           const indent = options.indent ? ' '.repeat(options.indent) : '';
+
+          const toSizeColor = (bytes: number) => {
+            const size = filesize(bytes);
+            const KB = 1000;
+            if (bytes > 1000 * KB) return log.red(size);
+            if (bytes > 500 * KB) return log.yellow(size);
+            if (bytes < 100 * KB) return log.green(size);
+            return log.gray(size);
+          };
+
           list.forEach((item) => {
-            const filename = log.gray(`${indent}• ${log.white(item.filename)}`);
-            table.add([filename, '    ', log.green(item.size)]);
+            const extIndex = item.filename.lastIndexOf('.');
+            const ext = item.filename.substring(extIndex);
+            const name = item.filename.substring(0, extIndex);
+            const filename = log.gray(`${indent}• ${log.white(name)}${ext}`);
+            table.add([filename, '    ', toSizeColor(item.bytes)]);
           });
-          table.add(['', '', log.cyan(filesize(assets.bytes))]);
+
+          const totalSize = filesize(assets.bytes);
+
+          table.add(['', '', log.white('-'.repeat(totalSize.length))]);
+          table.add(['', '', log.white(totalSize)]);
 
           log.info();
           log.info.gray('Files');
