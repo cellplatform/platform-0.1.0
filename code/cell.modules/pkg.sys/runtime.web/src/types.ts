@@ -1,1 +1,1 @@
-export * from './WebRuntimeBus/types';
+export * from './Web.RuntimeBus/types';
