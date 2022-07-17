@@ -1,6 +1,8 @@
 const ctx: Worker = self as any;
 export default ctx;
 
+console.log('(🌼) worker.web.ts');
+
 // Post data to parent thread.
 ctx.postMessage({ msg: 'Hello from sys.runtime.ui(🌼) [worker.web.ts]' });
 
