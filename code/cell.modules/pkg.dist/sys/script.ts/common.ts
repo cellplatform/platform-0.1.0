@@ -5,6 +5,7 @@ import * as t from '../src/common/types';
  */
 export { fs } from '@platform/fs';
 export { exec } from '@platform/exec';
+export { log } from '@platform/log/lib/server';
 
 /**
  * @local

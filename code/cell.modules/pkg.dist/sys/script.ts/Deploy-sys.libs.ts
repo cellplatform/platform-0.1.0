@@ -1,7 +1,7 @@
-import { fs, t, DeployConfig } from './common';
+import { fs, t, DeployConfig, log } from './common';
 import { deploy } from './Deploy.Vercel';
 
-const dir = 'dist/web';
+const dir = 'dist/sys.libs/web';
 
 /**
  * PRE-DEPLOY
@@ -18,6 +18,10 @@ async function copyStatic() {
   const sourceDir = fs.resolve('static');
   const targetDir = fs.resolve(fs.join(dir, 'static'));
   await fs.remove(targetDir);
+
+  log.info.gray(`  ${log.cyan('copy')} "static assets" into deployment`);
+  log.info.gray(`  • from: ${sourceDir}`);
+  log.info.gray(`  • to:   ${targetDir}`);
   await fs.copy(sourceDir, targetDir);
 
   // Rewrite template values within HTML and insert into root.
@@ -35,7 +39,12 @@ async function copyStatic() {
  * DEPLOY
  */
 export default async () => {
+  log.info();
+  log.info.gray(`Deploy: ${log.white('sys.libs')}`);
+  log.info.gray(`  dist: ${dir}`);
   await copyStatic();
+  log.info();
+
   for (const { team, project, alias } of DeployConfig.Libs) {
     await deploy({ dir, team, project, alias });
   }

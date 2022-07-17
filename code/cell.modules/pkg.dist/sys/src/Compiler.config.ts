@@ -7,6 +7,7 @@ export default () =>
 
     .variant('web', (config) =>
       config
+        .outdir('dist/sys.libs')
         .target('web')
         .port(5050)
 
