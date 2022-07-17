@@ -9,28 +9,14 @@ import { t, R } from './common';
  *
  */
 export const VercelConfigFile = {
-  paths(dir: string) {
-    dir = fs.resolve(dir);
-    const filename = 'vercel.json';
-    const configPath = fs.join(dir, filename);
-    const manifestPath = fs.join(dir, 'index.json');
-    return { dir, filename, configPath, manifestPath };
-  },
-
   async loadOrCreate(dir: string, defaultConfig: t.VercelConfigFile = {}) {
-    const path = VercelConfigFile.paths(dir).configPath;
+    const path = formatPaths(dir).configPath;
     if (!(await fs.pathExists(path))) await fs.writeJson(path, defaultConfig);
     return (await fs.readJson(path)) as t.VercelConfigFile;
   },
 
-  async save(dir: string, config: t.VercelConfigFile) {
-    const path = VercelConfigFile.paths(dir).configPath;
-    const json = JSON.stringify(config, null, '  ');
-    await fs.writeFile(path, json);
-  },
-
   async loadManifest(dir: string) {
-    const path = VercelConfigFile.paths(dir).manifestPath;
+    const path = formatPaths(dir).manifestPath;
     if (!(await fs.pathExists(path))) return undefined;
     return (await fs.readJson(path)) as t.Manifest;
   },
@@ -39,6 +25,12 @@ export const VercelConfigFile = {
     const manifest = await VercelConfigFile.loadManifest(dir);
     const kind = (manifest as any)?.kind;
     return kind === 'module' ? (manifest as t.ModuleManifest) : undefined;
+  },
+
+  async save(dir: string, config: t.VercelConfigFile) {
+    const path = formatPaths(dir).configPath;
+    const json = JSON.stringify(config, null, '  ');
+    await fs.writeFile(path, json);
   },
 
   /**
@@ -54,7 +46,7 @@ export const VercelConfigFile = {
     }) => Promise<t.VercelConfigFile | undefined | void>;
   }) {
     const { moduleRewrites = true, moduleHeaders = true, modifyBeforeSave } = args;
-    const { dir } = VercelConfigFile.paths(args.dir);
+    const { dir } = formatPaths(args.dir);
 
     let config = await VercelConfigFile.loadOrCreate(dir);
 
@@ -88,7 +80,7 @@ export const VercelConfigFile = {
    *
    */
   async prepareModuleRewrites(args: { dir: string; config?: t.VercelConfigFile }) {
-    const { dir } = VercelConfigFile.paths(args.dir);
+    const { dir } = formatPaths(args.dir);
     const config = { ...(args.config ?? (await VercelConfigFile.loadOrCreate(dir))) };
     if (!config.rewrites) config.rewrites = [];
 
@@ -110,19 +102,19 @@ export const VercelConfigFile = {
    * Add "module:version" details as headers to the module files.
    */
   async prepareModuleHeaders(args: { dir: string; config?: t.VercelConfigFile }) {
-    const { dir } = VercelConfigFile.paths(args.dir);
+    const { dir } = formatPaths(args.dir);
     const config = { ...(args.config ?? (await VercelConfigFile.loadOrCreate(dir))) };
     const manifest = await VercelConfigFile.loadModuleManifest(dir);
     if (!manifest) return config;
 
     const { namespace, version } = manifest.module;
-    const hash = manifest.hash.module;
+    const moduleHash = manifest.hash.module;
     const header: t.VercelConfigHeader = {
       source: '/(.*)',
       headers: [
         {
           key: 'x-module',
-          value: `${namespace}@${version}#${hash}`,
+          value: `${namespace}@${version}#${moduleHash}`,
         },
       ],
     };
@@ -131,3 +123,15 @@ export const VercelConfigFile = {
     return { ...config, headers };
   },
 };
+
+/**
+ * [Helpers]
+ */
+
+function formatPaths(dir: string) {
+  dir = fs.resolve(dir);
+  const filename = 'vercel.json';
+  const configPath = fs.join(dir, filename);
+  const manifestPath = fs.join(dir, 'index.json');
+  return { dir, filename, configPath, manifestPath };
+}
