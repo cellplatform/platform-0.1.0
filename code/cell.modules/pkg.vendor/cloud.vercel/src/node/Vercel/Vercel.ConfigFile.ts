@@ -1,5 +1,5 @@
 import { fs } from '@platform/fs';
-import { t } from './common';
+import { t, R } from './common';
 
 /**
  * Helpers for working with the [vercel.json] file.
@@ -44,8 +44,16 @@ export const VercelConfigFile = {
   /**
    * Run preparation on a "vercel.json" configuration file.
    */
-  async prepare(args: { dir: string; moduleRewrites?: boolean; moduleHeaders?: boolean }) {
-    const { moduleRewrites = true, moduleHeaders = true } = args;
+  async prepare(args: {
+    dir: string;
+    moduleRewrites?: boolean;
+    moduleHeaders?: boolean;
+    modifyBeforeSave?: (e: {
+      dir: string;
+      config: t.VercelConfigFile;
+    }) => Promise<t.VercelConfigFile | undefined | void>;
+  }) {
+    const { moduleRewrites = true, moduleHeaders = true, modifyBeforeSave } = args;
     const { dir } = VercelConfigFile.paths(args.dir);
 
     let config = await VercelConfigFile.loadOrCreate(dir);
@@ -56,6 +64,11 @@ export const VercelConfigFile = {
 
     if (moduleRewrites) {
       config = await VercelConfigFile.prepareModuleRewrites({ dir, config });
+    }
+
+    if (modifyBeforeSave) {
+      const res = await modifyBeforeSave({ dir, config: R.clone(config) });
+      if (res) config = res;
     }
 
     // Write file.
