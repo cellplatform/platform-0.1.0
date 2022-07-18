@@ -1,12 +1,15 @@
 import { HttpCache } from '../Web.HttpCache';
 import { WebRuntime } from 'sys.runtime.web';
 import { log } from '@platform/log/lib/client';
+import { isCacheable } from './worker.service.cache';
 
-console.log('(🌸) worker.service.ts ');
+log.info('(🌸) worker.service.ts ');
 
 const ctx: ServiceWorker = self as any;
 const location = new URL((self as Window).location.href);
 const isLocalhost = location.hostname === 'localhost';
+
+const KEY = { RESET: 'reset' };
 
 /**
  * Startup.
@@ -17,36 +20,22 @@ const isLocalhost = location.hostname === 'localhost';
   /**
    * Reset.
    */
-  const RESET_KEY = 'reset';
-  if (location.searchParams.has(RESET_KEY)) {
+  if (location.searchParams.has(KEY.RESET)) {
     const msg = `(🌸) RESET: unregistering servivce worker, clearing cache, force reloading window...`;
     log.info(msg);
     (await HttpCache.Store(name).open()).clear();
-    await WebRuntime.ServiceWorker.forceReload({ removeQueryKey: RESET_KEY });
+    return await WebRuntime.ServiceWorker.forceReload({ removeQueryKey: KEY.RESET });
   }
 
+  /**
+   * Install the service.
+   */
+  await WebRuntime.ServiceWorker.start('./worker.service.js');
 
   /**
-   * HTTP cache.
+   * Start the HTTP cache.
    */
   if (!isLocalhost) {
-    HttpCache.ServiceWorker({
-      self,
-      name,
-      log: 'verbose',
-
-      isCacheable(url) {
-        /**
-         * Cache matching for a compiled module bundle.
-         */
-        if (!url.pathname.endsWith('/favicon.ico')) return true;
-
-        if (url.pathname.startsWith('/sockjs-node')) return false;
-        if (!url.pathname.endsWith('.js')) return false;
-        if (url.pathname.endsWith('/index.json')) return false;
-
-        return true;
-      },
-    });
+    HttpCache.ServiceWorker({ self, name, log: 'verbose', isCacheable });
   }
 })();

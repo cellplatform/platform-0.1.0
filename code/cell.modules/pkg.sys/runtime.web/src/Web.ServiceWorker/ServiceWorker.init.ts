@@ -7,9 +7,9 @@ type StartResponse = {
 };
 
 /**
- * Starts a service worker.
+ * Ensure the service worker is installed and started.
  */
-export function start(path: string) {
+export function init(path: string) {
   return new Promise<StartResponse>(async (resolve, reject) => {
     const done = (started: boolean, error?: string) => {
       if (error) log.warn(error);

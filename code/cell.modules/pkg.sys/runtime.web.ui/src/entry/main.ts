@@ -3,7 +3,7 @@ import Worker from 'worker-loader?inline=no-fallback!../workers/worker.web';
 /**
  * Web-worker.
  */
-export async function startWorker() {
+export async function startWorkerClient() {
   const worker = new Worker();
   worker.onmessage = (e: MessageEvent) => {
     console.log('sys.runtime.ui(🌼): event (from worker thread)', e.data);
@@ -27,6 +27,6 @@ export async function startDom() {
  * Startup
  */
 (async () => {
-  await startWorker();
+  await startWorkerClient();
   await startDom();
 })();

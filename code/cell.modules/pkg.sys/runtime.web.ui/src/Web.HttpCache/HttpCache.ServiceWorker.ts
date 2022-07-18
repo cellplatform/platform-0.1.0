@@ -25,15 +25,14 @@ export async function HttpCacheServiceWorker(args: {
    */
   const module = `${WebRuntime.module.name}@${WebRuntime.module.version}`;
   log.group('💦🌳');
-  log.info(`💦 service worker | cache`);
+  log.info(`💦 service worker`);
+  log.info(`💦 cache name: "${cache.name}"`);
   log.info(`💦 module: ${module}`);
   log.info(`💦 browser location: ${location.href}`);
-  log.info(`💦 cache name: "${cache.name}"`);
   log.groupEnd();
 
   // Clear cache if requested on query-string.
   const clearCacheKey = QUERY.clearCache.keys.find((key) => location.searchParams.has(key));
-
   if (clearCacheKey) {
     const store = await cache.open();
     await store.clear();

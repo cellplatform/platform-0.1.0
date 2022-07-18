@@ -13,7 +13,6 @@ export default () =>
 
         .entry('main', './src/entry/main')
         .entry('worker.service', './src/workers/worker.service')
-        .entry('worker.web', './src/workers/worker.web')
 
         .static('static')
         .files((e) => e.redirect(false, '*.worker.js').access('public', '**/*.{png,jpg,svg}'))

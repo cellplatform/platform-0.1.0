@@ -1,4 +1,4 @@
-import { start } from './ServiceWorker.start';
+import { init } from './ServiceWorker.init';
 
 /**
  * TODO 🐷 move to [sys.runtime.web]
@@ -9,9 +9,9 @@ import { start } from './ServiceWorker.start';
  */
 export const WebServiceWorker = {
   /**
-   * Starts a service worker.
+   * Ensure the service worker is installed and started.
    */
-  start,
+  init,
 
   /**
    * Unregister and reload the "service-worker" thread.
