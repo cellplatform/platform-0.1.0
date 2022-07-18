@@ -25,12 +25,6 @@ const isLocalhost = location.hostname === 'localhost';
     await WebRuntime.ServiceWorker.forceReload({ removeQueryKey: RESET_KEY });
   }
 
-  /**
-   * TODO 🐷 clear away '@platform/cell.runtime.web/lib/BundleCache'
-   */
-
-  // import { BundleCache } from '@platform/cell.runtime.web/lib/BundleCache';
-  // BundleCache.serviceWorker(self, { log: 'verbose', localhost: false });
 
   /**
    * HTTP cache.
