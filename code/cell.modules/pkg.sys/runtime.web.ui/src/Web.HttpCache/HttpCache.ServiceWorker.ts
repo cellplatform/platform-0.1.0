@@ -1,11 +1,14 @@
 import { t, log, WebRuntime, QUERY, Is } from './common';
 import { HttpCacheStore } from './HttpCache.Store';
 
+type CacheName = string;
+
 /**
  * Initialize a cache on the service-worker thread.
  */
 export async function HttpCacheServiceWorker(args: {
   self: Window;
+  name: CacheName;
   log?: boolean | 'verbose';
   isCacheable?(url: URL): boolean | Promise<boolean>;
 }) {
@@ -15,18 +18,17 @@ export async function HttpCacheServiceWorker(args: {
 
   const ctx = args.self as unknown as ServiceWorker;
   const location = new URL(self.location.href);
-
-  const name = 'cache:sys.runtime.web/modules';
-  const cache = HttpCacheStore(name);
+  const cache = HttpCacheStore(args.name);
 
   /**
    * Output info
    */
   const module = `${WebRuntime.module.name}@${WebRuntime.module.version}`;
   log.group('💦🌳');
-  log.info(`💦 service | worker cache | module: ${module}`);
+  log.info(`💦 service worker | cache`);
+  log.info(`💦 module: ${module}`);
   log.info(`💦 browser location: ${location.href}`);
-  log.info(`💦 cache name: "${name}"`);
+  log.info(`💦 cache name: "${cache.name}"`);
   log.groupEnd();
 
   // Clear cache if requested on query-string.
@@ -67,8 +69,7 @@ export async function HttpCacheServiceWorker(args: {
 
     if (typeof args.isCacheable === 'function') {
       const res = args.isCacheable(url);
-      if (Is.promise(res)) await res;
-      return res;
+      return Is.promise(res) ? await res : res;
     }
 
     return true;

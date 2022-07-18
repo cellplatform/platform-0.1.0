@@ -12,14 +12,17 @@ const isLocalhost = location.hostname === 'localhost';
  * Startup.
  */
 (async () => {
+  const name = 'cache:sys.runtime.web/modules';
+
   /**
-   * Reload the worker if required.
+   * Reset.
    */
   const RESET_KEY = 'reset';
   if (location.searchParams.has(RESET_KEY)) {
-    log.info(`(🌸) unregistering and force reloading servivce worker...`);
-    console.log('-------------------------------------------');
-    return WebRuntime.ServiceWorker.forceReload({ removeQueryKey: RESET_KEY });
+    const msg = `(🌸) RESET: unregistering servivce worker, clearing cache, force reloading window...`;
+    log.info(msg);
+    (await HttpCache.Store(name).open()).clear();
+    await WebRuntime.ServiceWorker.forceReload({ removeQueryKey: RESET_KEY });
   }
 
   /**
@@ -35,14 +38,13 @@ const isLocalhost = location.hostname === 'localhost';
   if (!isLocalhost) {
     HttpCache.ServiceWorker({
       self,
+      name,
       log: 'verbose',
 
       isCacheable(url) {
         /**
          * Cache matching for a compiled module bundle.
          */
-        console.log('match', url);
-
         if (!url.pathname.endsWith('/favicon.ico')) return true;
 
         if (url.pathname.startsWith('/sockjs-node')) return false;

@@ -6,5 +6,5 @@
 export type WebCache = {
   match(url: string | URL): Promise<Response | undefined>;
   put(req: RequestInfo | URL, res: Response): Promise<void>;
-  clear(): Promise<void>;
+  clear(options?: { log?: boolean }): Promise<void>;
 };

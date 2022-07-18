@@ -1,5 +1,7 @@
 import { t, log } from './common';
 
+type CacheName = string;
+
 /**
  * Wrapper API to the underlying HTML5 browser cache.
  *
@@ -8,8 +10,8 @@ import { t, log } from './common';
  *    https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage
  *
  */
-export function HttpCacheStore(name: string) {
-  return {
+export function HttpCacheStore(name: CacheName) {
+  const store = {
     name,
     async open(): Promise<t.WebCache> {
       const cache = await caches.open(name);
@@ -30,7 +32,7 @@ export function HttpCacheStore(name: string) {
         /**
          * Delete all keys.
          */
-        async clear(options: { log?: boolean } = {}) {
+        async clear(options = {}) {
           const keys = await cache.keys();
           const wait = keys.map((key) => {
             cache.delete(key);
@@ -41,4 +43,6 @@ export function HttpCacheStore(name: string) {
       };
     },
   };
+
+  return store;
 }
