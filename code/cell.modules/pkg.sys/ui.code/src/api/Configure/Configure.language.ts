@@ -1,4 +1,4 @@
-import { t, constants } from '../../common';
+import { t, constants } from '../common';
 
 /**
  * Configure language (typescript) settings of the IDE.

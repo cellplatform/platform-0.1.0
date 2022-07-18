@@ -1,6 +1,7 @@
+export * from './Configure';
+
 export * from './instance';
 export * from './singleton';
-export * from './config';
 export * from './event';
 
 export * from './CodeEditor';

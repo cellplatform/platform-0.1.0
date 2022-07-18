@@ -1,8 +1,8 @@
 import { loader } from '@monaco-editor/react';
 
-import { registerLanguage } from './configure.language';
-import { registerPrettier } from './configure.prettier';
-import { defineThemes } from './configure.theme';
+import { registerLanguage } from './Configure.language';
+import { registerPrettier } from './Configure.prettier';
+import { defineThemes } from './Configure.theme';
 import { PATH, log } from '../common';
 
 type StaticPathString = string;
@@ -31,10 +31,9 @@ export const Configure = {
      *    https://microsoft.github.io/monaco-editor/api
      */
     const vs = args.vs ?? PATH.STATIC.VS;
+    loader.config({ paths: { vs } });
 
     log.info(`configuring code-editor environment:`);
-    log.info(`  static "vs" worker process path:`, vs);
-
-    loader.config({ paths: { vs } });
+    log.info(`  static "vs" worker-process and assets path:`, vs);
   },
 };

@@ -1,4 +1,4 @@
-import { t, DEFAULT } from '../../common';
+import { t, DEFAULT } from '../common';
 
 /**
  * 🏷 REFS (how to):

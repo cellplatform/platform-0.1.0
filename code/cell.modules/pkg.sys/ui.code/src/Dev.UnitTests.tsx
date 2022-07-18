@@ -3,7 +3,7 @@ import { DevActions, Test } from 'sys.ui.dev';
 import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
 const Imports = {
-  ConfigureTheme: import('./api/config/configure.theme.TEST'),
+  ConfigureTheme: import('./api/Configure/Configure.theme.TEST'),
   Events: import('./api/event/Events.TEST'),
   InstanceEvents: import('./api/event/Instance.Events.TEST'),
   Is: import('./common/Is.TEST'),
