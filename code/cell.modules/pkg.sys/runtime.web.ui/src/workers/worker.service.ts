@@ -9,7 +9,9 @@ const ctx: ServiceWorker = self as any;
 const location = new URL((self as Window).location.href);
 const isLocalhost = location.hostname === 'localhost';
 
-const KEY = { RESET: 'reset' };
+const QUERYSTRING_KEY = {
+  RESET: 'reset',
+};
 
 /**
  * Startup.
@@ -20,17 +22,17 @@ const KEY = { RESET: 'reset' };
   /**
    * Reset.
    */
-  if (location.searchParams.has(KEY.RESET)) {
+  if (location.searchParams.has(QUERYSTRING_KEY.RESET)) {
     const msg = `(🌸) RESET: unregistering servivce worker, clearing cache, force reloading window...`;
     log.info(msg);
     (await HttpCache.Store(name).open()).clear();
-    return await WebRuntime.ServiceWorker.forceReload({ removeQueryKey: KEY.RESET });
+    return await WebRuntime.ServiceWorker.forceReload({ removeQueryKey: QUERYSTRING_KEY.RESET });
   }
 
   /**
    * Install the service.
    */
-  await WebRuntime.ServiceWorker.start('./worker.service.js');
+  await WebRuntime.ServiceWorker.init('./worker.service.js');
 
   /**
    * Start the HTTP cache.

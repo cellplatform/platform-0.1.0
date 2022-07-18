@@ -1,4 +1,4 @@
-import { t, log, WebRuntime, QUERY, Is } from './common';
+import { t, log, WebRuntime, Is } from './common';
 import { HttpCacheStore } from './HttpCache.Store';
 
 type CacheName = string;
@@ -31,24 +31,6 @@ export async function HttpCacheServiceWorker(args: {
   log.info(`💦 browser location: ${location.href}`);
   log.groupEnd();
 
-  // Clear cache if requested on query-string.
-  const clearCacheKey = QUERY.clearCache.keys.find((key) => location.searchParams.has(key));
-  if (clearCacheKey) {
-    const store = await cache.open();
-    await store.clear();
-
-    // Remove the query-string flag.
-    location.searchParams.delete(clearCacheKey);
-    self.history.pushState({}, '', location.href);
-  }
-
-  let isDisabled = false;
-
-  if (location.searchParams.get(QUERY.cache.key) === QUERY.cache.disabled) {
-    isDisabled = true;
-    verbose(`🐷 ServiceWorkerCache DISABLED via query-string ("cache=false").`);
-  }
-
   /**
    * Ensure the module can immediately start using the cache.
    * https://developer.mozilla.org/en-US/docs/Web/API/Clients/claim
@@ -80,11 +62,6 @@ export async function HttpCacheServiceWorker(args: {
   const handleFetch = async (event: Event) => {
     const e = event as t.FetchEvent;
     const url = new URL(e.request.url);
-
-    if (isDisabled) {
-      verbose(`Cache disabled, fetching directly: ${url}`);
-      return e.respondWith(fetch(e.request));
-    }
 
     if (!(await isCacheable(url))) {
       verbose(`Explicilty not caching (excluded): ${url}`);
