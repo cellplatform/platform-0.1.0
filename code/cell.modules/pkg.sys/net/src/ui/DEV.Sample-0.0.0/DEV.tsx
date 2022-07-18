@@ -184,7 +184,7 @@ export const actions = DevActions<Ctx>()
       const instance = { bus };
 
       return (
-        <WebRuntime.ui.ManifestSelectorStateful
+        <WebRuntime.UI.ManifestSelectorStateful
           instance={instance}
           style={{ MarginX: 30, MarginY: 20 }}
           history={{ fs: DEFAULT.fs }}

@@ -1,6 +1,6 @@
 {
   "name": "sys.runtime.web.ui",
-  "version": "0.0.67",
+  "version": "0.0.71",
   "main": "lib/index",
   "sideEffects": false,
   "scripts": {
