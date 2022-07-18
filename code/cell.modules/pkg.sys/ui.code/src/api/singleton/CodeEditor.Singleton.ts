@@ -1,4 +1,4 @@
-import { t } from '../../common';
+import { t } from '../common';
 import { CodeEditorLibs } from './CodeEditor.Libs';
 import { CodeEditorLibsEventHandlers } from './CodeEditor.Libs.rx.handlers';
 

@@ -1,7 +1,7 @@
 import { firstValueFrom, of, timeout } from 'rxjs';
 import { catchError, filter, share, takeUntil } from 'rxjs/operators';
 
-import { Is, rx, slug, t, WaitForResponse } from '../../common';
+import { Is, rx, slug, t, WaitForResponse } from '../common';
 
 /**
  * Editor API

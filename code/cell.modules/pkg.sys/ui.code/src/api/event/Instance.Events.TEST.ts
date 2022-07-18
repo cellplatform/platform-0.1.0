@@ -1,4 +1,4 @@
-import { rx, t } from '../../common';
+import { rx, t } from '../common';
 import { expect, is, Test } from '../../test';
 import { InstanceEvents } from './Instance.Events';
 

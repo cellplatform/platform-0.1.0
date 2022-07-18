@@ -1,4 +1,4 @@
-import { t, Translate } from '../../common';
+import { t, Translate } from '../common';
 
 export function select(args: {
   instance: t.IMonacoStandaloneCodeEditor;
