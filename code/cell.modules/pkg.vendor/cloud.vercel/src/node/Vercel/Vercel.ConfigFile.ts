@@ -113,7 +113,7 @@ export const VercelConfigFile = {
       source: '/(.*)',
       headers: [
         {
-          key: 'x-module',
+          key: 'x-cell-module',
           value: `${namespace}@${version}#${moduleHash}`,
         },
       ],
