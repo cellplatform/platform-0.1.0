@@ -16,12 +16,12 @@ export default () =>
       config
         .target('web')
         .entry('main', './src/test/entry.web/dom')
-        // .entry('service.worker', './src/test/entry.web/workers/service.worker')
+        .entry('worker.service', './src/test/entry.web/workers/worker.service')
+
         .static('./static')
+        .shared((e) => e.singleton(['react', 'react-dom']))
 
         .expose('./Sample', './src/test/entry.web/components/App')
-
-        .shared((e) => e.singleton(['react', 'react-dom']))
 
         .html((config) => {
           // config;
