@@ -54,7 +54,8 @@ export function toWebpackConfig(
         filename(fileData) {
           const name = fileData.chunk.name;
           const std = ['worker.service', 'remoteEntry'];
-          return std.includes(name) ? '[name].js' : `[name]-${version}.js`;
+          if (std.includes(name)) return '[name].js';
+          return `[name]-${version}.js`;
         },
         chunkFilename: `cell-${version}-[name].js`,
         publicPath: 'auto',

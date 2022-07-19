@@ -38,9 +38,8 @@ export const stats = (input?: t.WpStats | t.WpCompilation): t.WebpackStats => {
         sortBySize: () => R.sortBy(R.prop('bytes'), list),
         sortByName: () => R.sortBy(R.prop('filename'), list),
         log(options: { indent?: number } = {}) {
-          if (list.length === 0) {
-            return;
-          }
+          if (list.length === 0) return;
+
           const bundleDir = Path.trimBase(res.output.path);
           const elapsed = time.duration(res.elapsed).toString();
           const table = log.table({ border: false });
