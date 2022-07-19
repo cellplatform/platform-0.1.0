@@ -57,7 +57,7 @@ export function toWebpackConfig(
           if (std.includes(name)) return '[name].js';
           return `[name]-${version}.js`;
         },
-        chunkFilename: `cell-${version}-[name].js`,
+        chunkFilename: `cell-${version}-[contenthash].js`,
         publicPath: 'auto',
         crossOriginLoading: 'anonymous', // NB: Prevents cross-origin loading problems of code-split JS when doing "federated function" imports.
       },
