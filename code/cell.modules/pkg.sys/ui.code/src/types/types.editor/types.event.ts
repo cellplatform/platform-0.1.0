@@ -28,8 +28,8 @@ export type CodeEditorInstanceEvent =
 export type CodeEditorSingletonEvent = CodeEditorLibsEvent;
 export type CodeEditorLibsEvent =
   | CodeEditorLibsClearEvent
-  | CodeEditorLibsLoadEvent
-  | CodeEditorLibsLoadedEvent;
+  | CodeEditorLibsLoadReqEvent
+  | CodeEditorLibsLoadResEvent;
 
 /**
  * Fired to assign focus to an editor.
@@ -159,17 +159,17 @@ export type CodeEditorLibsClear = {
   // todo: exclude pattern (minimatch)
 };
 
-export type CodeEditorLibsLoadEvent = {
-  type: 'CodeEditor/libs:load';
-  payload: CodeEditorLibsLoad;
+export type CodeEditorLibsLoadReqEvent = {
+  type: 'CodeEditor/libs/load:req';
+  payload: CodeEditorLibsLoadReq;
 };
-export type CodeEditorLibsLoad = { tx: string; url: string };
+export type CodeEditorLibsLoadReq = { tx: string; url: string };
 
-export type CodeEditorLibsLoadedEvent = {
-  type: 'CodeEditor/libs:loaded';
-  payload: CodeEditorLibsLoaded;
+export type CodeEditorLibsLoadResEvent = {
+  type: 'CodeEditor/libs/load:res';
+  payload: CodeEditorLibsLoadRes;
 };
-export type CodeEditorLibsLoaded = { tx: string; url: string; files: string[] };
+export type CodeEditorLibsLoadRes = { tx: string; url: string; files: string[]; error?: string };
 
 /**
  * Code Editor Model

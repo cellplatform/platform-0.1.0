@@ -1,6 +1,6 @@
 import { t } from '../common';
 import { CodeEditorLibs } from './CodeEditor.Libs';
-import { CodeEditorLibsEventHandlers } from './CodeEditor.Libs.rx.handlers';
+import { CodeEditorLibsController } from './CodeEditor.Libs.Controller';
 
 /**
  * Singleton instance of an initialized Monaco Editor.
@@ -15,6 +15,6 @@ export function CodeEditorSingleton(args: { bus: t.EventBus<any>; monaco: t.IMon
   const { bus, monaco } = args;
   const libs = CodeEditorLibs(monaco);
   const singleton = { monaco, libs };
-  CodeEditorLibsEventHandlers(bus, singleton);
+  CodeEditorLibsController(bus, singleton);
   return singleton;
 }

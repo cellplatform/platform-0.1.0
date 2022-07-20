@@ -3,7 +3,7 @@ import { Is, rx, t } from '../common';
 /**
  * Handles global events
  */
-export function CodeEditorLibsEventHandlers(
+export function CodeEditorLibsController(
   bus: t.CodeEditorEventBus,
   singleton: t.ICodeEditorSingleton,
 ) {
@@ -18,12 +18,15 @@ export function CodeEditorLibsEventHandlers(
     .pipe()
     .subscribe((e) => libs.clear());
 
-  rx.payload<t.CodeEditorLibsLoadEvent>($, 'CodeEditor/libs:load')
+  rx.payload<t.CodeEditorLibsLoadReqEvent>($, 'CodeEditor/libs/load:req')
     .pipe()
     .subscribe(async (e) => {
       const { tx, url } = e;
       const res = await libs.fromNetwork(url);
       const files = res.map((item) => item.filename);
-      fire({ type: 'CodeEditor/libs:loaded', payload: { tx, url, files } });
+      fire({
+        type: 'CodeEditor/libs/load:res',
+        payload: { tx, url, files },
+      });
     });
 }

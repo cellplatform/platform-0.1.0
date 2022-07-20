@@ -1,6 +1,6 @@
-import { filter, share, takeUntil, map } from 'rxjs/operators';
+import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { rx, t, Is, WaitForResponse, slug } from '../common';
+import { Is, rx, slug, t } from '../common';
 import { InstanceEvents } from './Events.Instance';
 
 export const CodeEditorEvents: t.CodeEditorEventsFactory = (input, options = {}) => {
@@ -12,10 +12,6 @@ export const CodeEditorEvents: t.CodeEditorEventsFactory = (input, options = {})
     filter((e) => Is.editorEvent(e)),
     share(),
   );
-
-  const WaitFor = {
-    Load: WaitForResponse<t.CodeEditorLibsLoadedEvent>($, 'CodeEditor/libs:loaded'),
-  };
 
   const singleton$ = $.pipe(
     filter((e) => Is.singletonEvent(e)),
@@ -36,13 +32,30 @@ export const CodeEditorEvents: t.CodeEditorEventsFactory = (input, options = {})
     },
 
     /**
-     * Load type libraries at the given URL.
+     * Load type-libraries from the network.
      */
-    async load(url) {
-      const tx = slug();
-      const wait = WaitFor.Load.response(tx);
-      bus.fire({ type: 'CodeEditor/libs:load', payload: { url, tx } });
-      return (await wait).payload;
+    load: {
+      req$: rx.payload<t.CodeEditorLibsLoadReqEvent>($, 'CodeEditor/libs/load:req'),
+      res$: rx.payload<t.CodeEditorLibsLoadResEvent>($, 'CodeEditor/libs/load:res'),
+      async fire(url, options = {}) {
+        const { timeout = 3000 } = options;
+        const tx = slug();
+
+        const op = 'libs.load';
+        const res$ = libs.load.res$.pipe(filter((e) => e.tx === tx));
+        const first = rx.asPromise.first<t.CodeEditorLibsLoadResEvent>(res$, { op, timeout });
+
+        bus.fire({
+          type: 'CodeEditor/libs/load:req',
+          payload: { url, tx },
+        });
+
+        const res = await first;
+        if (res.payload) return res.payload;
+
+        const error = res.error?.message ?? 'Failed';
+        return { tx, url, files: [], error };
+      },
     },
   };
 

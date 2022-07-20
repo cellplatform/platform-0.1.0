@@ -224,9 +224,10 @@ export const actions = DevActions<Ctx>()
 
     e.title('Type Libraries');
     e.button('clear', (e) => e.ctx.global.libs.clear());
+    e.hr(1, 0.1);
     e.button('load: lib.es', async (e) => {
       const url = resolvePath(PATH.STATIC.TYPES.ES);
-      const res = await e.ctx.global.libs.load(url);
+      const res = await e.ctx.global.libs.load.fire(url);
       console.log('res', res);
     });
     e.button('load: env', async (e) => {
@@ -235,7 +236,7 @@ export const actions = DevActions<Ctx>()
 
       console.log('url', url);
 
-      const res = await e.ctx.global.libs.load(url);
+      const res = await e.ctx.global.libs.load.fire(url);
       console.log('res', res);
     });
     e.button('load: rxjs', async (e) => {
@@ -244,7 +245,7 @@ export const actions = DevActions<Ctx>()
 
       console.log('url', url);
 
-      const res = await e.ctx.global.libs.load(url);
+      const res = await e.ctx.global.libs.load.fire(url);
       console.log('res', res);
     });
 
