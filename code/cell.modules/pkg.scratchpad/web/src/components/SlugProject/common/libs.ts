@@ -15,8 +15,3 @@ export { useDragTarget } from 'sys.ui.primitives/lib/hooks/useDragTarget';
  * @system : sys.ui.video
  */
 export { Vimeo } from 'sys.ui.video/lib/ui/Vimeo';
-
-/**
- * @system : sys.runtime
- */
-export { IpcBus } from 'sys.runtime.electron';

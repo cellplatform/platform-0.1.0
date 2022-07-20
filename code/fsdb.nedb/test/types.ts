@@ -2,7 +2,6 @@ import { Subject } from 'rxjs';
 import { NedbStore } from '../src/store';
 import { NeDb } from '../src';
 
-export * from '@platform/cli.ui/lib/types';
 export * from '@platform/fsdb.types';
 export * from '../src/types';
 
