@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@platform/ts": "4.1.23",
-    "electron": "14.0.0"
+    "electron": "15.5.5"
   },
   "files": [
     "lib",

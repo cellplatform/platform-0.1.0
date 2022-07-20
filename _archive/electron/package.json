@@ -33,7 +33,7 @@
     "@platform/test": "0.1.16",
     "@platform/ts": "4.0.2",
     "@types/minimist": "1.2.0",
-    "electron": "10.1.5"
+    "electron": "15.5.5"
   },
   "files": [
     "reset.css",

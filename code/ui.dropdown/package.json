@@ -22,7 +22,7 @@
   "devDependencies": {
     "@platform/polyfill": "0.0.7",
     "@types/react-select": "4.0.17",
-    "electron": "14.0.0",
+    "electron": "15.5.5",
     "@platform/ts": "4.1.23"
   },
   "files": [

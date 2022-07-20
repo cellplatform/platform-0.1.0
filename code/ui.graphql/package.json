@@ -31,7 +31,7 @@
     "@platform/test": "0.2.10",
     "@platform/ts": "4.1.23",
     "@types/hjson": "2.4.3",
-    "electron": "14.0.0"
+    "electron": "15.5.5"
   },
   "files": [
     "lib",
