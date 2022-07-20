@@ -27,7 +27,8 @@
     "@platform/exec": "0.3.12",
     "@platform/fs": "0.7.5",
     "@platform/libs": "0.2.14",
-    "@platform/ts.libs": "4.3.3"
+    "@platform/ts.libs": "4.3.3",
+    "yargs": "17.5.1"
   },
   "devDependencies": {
     "@platform/test": "0.2.10"
