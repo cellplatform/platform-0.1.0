@@ -620,14 +620,14 @@ describe('Compiler (Config)', () => {
 
     it('add', () => {
       const { builder, model } = create();
-      const path = 'nav@http://localhost:3001/remoteEntry.js';
+      const path = 'nav@http://localhost:3001/entry.remote.js';
       builder.remote(' my-nav ', ` ${path} `);
       expect((model.state.remotes || {})['my-nav']).to.eql(path);
     });
 
     it('escapes key', () => {
       const { builder, model } = create();
-      builder.remote('foo/bar', 'nav@http://localhost:3001/remoteEntry.js');
+      builder.remote('foo/bar', 'nav@http://localhost:3001/entry.remote.js');
       expect(Object.keys(model.state.remotes || {})).to.include('foo\\bar');
     });
 

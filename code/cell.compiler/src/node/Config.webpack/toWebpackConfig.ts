@@ -1,4 +1,4 @@
-import { Model, t, toModel, fs } from '../common';
+import { Model, t, toModel, fs, DEFAULT } from '../common';
 import { Plugins } from './wp.plugins';
 import { Rules } from './wp.rules';
 import { beforeCompile } from './hooks';
@@ -52,10 +52,11 @@ export function toWebpackConfig(
       output: {
         path,
         filename(fileData) {
+          const FILE = DEFAULT.FILE;
           const name = fileData.chunk.name;
-          const std = ['worker.service', 'remoteEntry'];
-          if (std.includes(name)) return '[name].js';
-          return `[name]-${version}.js`;
+          const stripExtension = (name: string) => name.replace(/\.js$/, '');
+          const plain = [FILE.SERVICE_WORKER, ...Object.values(FILE.ENTRY)].map(stripExtension);
+          return plain.includes(name) ? '[name].js' : `[name]-${version}.js`;
         },
         chunkFilename: `cell-${version}-[contenthash].js`,
         publicPath: 'auto',

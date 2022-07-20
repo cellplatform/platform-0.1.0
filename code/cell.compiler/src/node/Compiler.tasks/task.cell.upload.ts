@@ -63,11 +63,13 @@ export const upload: t.CompilerRunUpload = async (args) => {
     const cell = Schema.urls(args.host).cell(target.cell);
     const filter = target.dir ? `${target.dir}/**` : undefined;
 
+    const FILE = DEFAULT.FILE;
+
     return {
       cell: cell.info.toString(),
       files: cell.files.list.query({ filter }).toString(),
-      remote: urlByFilename(DEFAULT.FILE.JS.REMOTE_ENTRY),
-      manifest: urlByFilename(DEFAULT.FILE.JSON.MANIFEST),
+      remote: urlByFilename(FILE.ENTRY.REMOTE),
+      manifest: urlByFilename(FILE.JSON.MANIFEST),
       entry: urlByFilename(model.entryFile),
     };
   };

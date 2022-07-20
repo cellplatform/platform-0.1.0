@@ -79,7 +79,7 @@ describe('ModuleManifest', function () {
     const manifest = await ModuleManifest.create({ model, dir: sample.paths.out.dist });
     const remote = manifest.module.remote;
 
-    expect(remote?.entry).to.eql('remoteEntry.js');
+    expect(remote?.entry).to.eql('remote.js');
 
     expect(remote?.exports.length).to.eql(2);
     expect(remote?.exports[0].path).to.eql('./App');

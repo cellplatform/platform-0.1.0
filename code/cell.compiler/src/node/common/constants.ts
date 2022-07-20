@@ -40,12 +40,11 @@ export const PATH = {
 
 export const FILE = {
   JSON: { MANIFEST: BUNDLE.MANIFEST.FILENAME },
-  JS: {
-    REMOTE_ENTRY: 'remoteEntry.js',
-    ENTRY: {
-      WEB: 'index.html',
-      NODE: 'main.js',
-    },
+  SERVICE_WORKER: 'service.js',
+  ENTRY: {
+    HTML: 'index.html',
+    NODE: 'main.js',
+    REMOTE: 'remote.js',
   },
 };
 

@@ -162,6 +162,7 @@ describe('Manifest', function () {
     it('error: filehash changed', async () => {
       await prepare();
       const manifest = await Manifest.create({ dir: tmp });
+
       const filename = 'main.js';
       const file = manifest.files.find((file) => file.path === filename);
       const path = fs.resolve(fs.join(tmp, filename));

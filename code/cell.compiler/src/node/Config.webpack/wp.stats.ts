@@ -24,13 +24,19 @@ export const stats = (input?: t.WpStats | t.WpCompilation): t.WebpackStats => {
     },
 
     get assets() {
-      const list: Asset[] = [];
+      let list: Asset[] = [];
+
       stats?.assetsInfo.forEach((value, key) => {
         const bytes = value.size;
         if (typeof bytes === 'number') {
           list.push({ filename: key, bytes, size: filesize(bytes) });
         }
       });
+
+      list = [
+        ...list.filter((item) => item.filename.endsWith('.html')),
+        ...list.filter((item) => !item.filename.endsWith('.html')),
+      ];
 
       const assets = {
         list,

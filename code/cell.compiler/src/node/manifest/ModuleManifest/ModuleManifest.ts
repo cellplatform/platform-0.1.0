@@ -65,7 +65,7 @@ export const ModuleManifest = {
 
     if (model.exposes) {
       module.remote = {
-        entry: DEFAULT.FILE.JS.REMOTE_ENTRY,
+        entry: DEFAULT.FILE.ENTRY.REMOTE,
         exports: Object.keys(model.exposes).map((key) => ({ path: Encoding.unescapePath(key) })),
       };
     }
