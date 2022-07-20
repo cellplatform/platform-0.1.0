@@ -50,6 +50,7 @@ export const devserver: t.CompilerRunDevserver = async (input, options = {}) => 
   compiler.hooks.afterCompile.tap('DevServer', async (compilation) => {
     afterCompile({ model: obj, webpack, compilation });
 
+    const info = wp.stats(compilation);
     count++;
 
     Logger.clear().newline();
@@ -68,7 +69,8 @@ export const devserver: t.CompilerRunDevserver = async (input, options = {}) => 
     }
 
     Logger.hr();
-    await Logger.stats(compilation);
+    log.info();
+    if (info.errors.length > 0) Logger.errors(info.errors);
   });
 
   const config: DevServer.Configuration = {

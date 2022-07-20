@@ -13,8 +13,9 @@ export const CacheFilter: T = {
     if (path.startsWith('/sockjs-node')) return false;
 
     // Known (stable) entry points.
-    if (path.endsWith('remoteEntry.js')) return false;
-    if (path.endsWith('worker.service.js')) return false;
+    if (path.endsWith('/remoteEntry.js')) return false;
+    if (path.endsWith('/service.js')) return false;
+    if (path.endsWith('/main.js')) return false;
 
     // Cacheable file-extensions.
     const extensions = ['.js', '.ttf', '.woff', '.woff2', '.ico'];

@@ -31,14 +31,14 @@ export const Logger = {
     Logger.errors(info.errors);
   },
 
-  async bundle(args: { dir: string; elapsed: number }) {
+  async bundle(args: { dir: string; elapsed?: number }) {
     const bundleDir = args.dir;
     const stripRoot = (path: string) => {
       const root = fs.resolve('.');
       return path.startsWith(root) ? path.substring(root.length) : path;
     };
 
-    const elapsed = time.duration(args.elapsed).toString();
+    const elapsed = args.elapsed ? time.duration(args.elapsed).toString() : '-';
     const table = log.table({ border: false });
     const indent = ' '.repeat(2);
 
