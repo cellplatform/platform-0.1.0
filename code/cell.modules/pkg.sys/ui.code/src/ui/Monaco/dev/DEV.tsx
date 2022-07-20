@@ -1,7 +1,7 @@
 import React from 'react';
 import { DevActions } from 'sys.ui.dev';
 import { MonacoEditor, MonacoEditorProps } from '..';
-import { rx, t } from '../../../common';
+import { rx, t } from '../../../test';
 
 type Ctx = { props: MonacoEditorProps };
 
@@ -18,8 +18,11 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const bus = rx.bus<t.CodeEditorEvent>();
+    const ctx: Ctx = {
+      props: { bus },
+    };
 
-    return { props: { bus } };
+    return ctx;
   })
 
   .items((e) => {

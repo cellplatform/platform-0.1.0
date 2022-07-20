@@ -6,12 +6,14 @@ import { css, CssValue, DEFAULT, t } from '../../common';
 
 type E = t.IMonacoStandaloneCodeEditor;
 type S = t.ICodeEditorSingleton;
+type PathString = string;
 
 export type MonacoEditorReady = { instance: E; singleton: S };
 export type MonacoEditorReadyHandler = (e: MonacoEditorReady) => void;
 
 export type MonacoEditorProps = {
   bus: t.EventBus<any>;
+  staticRoot?: string;
   language?: t.CodeEditorLanguage;
   theme?: t.CodeEditorTheme;
   loading?: React.ReactNode;
@@ -28,14 +30,14 @@ export type MonacoEditorProps = {
  *
  */
 export const MonacoEditor: React.FC<MonacoEditorProps> = (props) => {
-  const { language = DEFAULT.LANGUAGE.TS, theme } = props;
+  const { bus, language = DEFAULT.LANGUAGE.TS, theme, staticRoot } = props;
 
   const beforeMount: BeforeMount = (monaco) => {
     monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
   };
 
   const afterMount: OnMount = async (editor, monaco) => {
-    const singleton = await CodeEditor.singleton(props.bus);
+    const singleton = await CodeEditor.singleton({ bus, staticRoot });
     const instance = editor as any;
     props.onReady?.({ instance, singleton });
   };

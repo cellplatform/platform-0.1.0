@@ -5,7 +5,6 @@ export const R = { equals };
  * @platform
  */
 export { css, CssValue, CssProps, color, Color } from '@platform/css';
-export { WebRuntime } from '@platform/cell.runtime.web/lib/WebRuntime';
 export { http } from '@platform/http';
 export { log } from '@platform/log/lib/client';
 export { Uri, Schema } from '@platform/cell.schema';
