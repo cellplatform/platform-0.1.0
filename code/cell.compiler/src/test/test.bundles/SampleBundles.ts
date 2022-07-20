@@ -17,7 +17,7 @@ export const SampleBundles = {
       })
       .declarations(`${ENTRY.NODE}/**/*`, 'main')
       .static('./static')
-      .files((config) => config.redirect(false, '**/*.js').access('public', '**/*.png')),
+      .files((config) => config.access('public', '**/*.png')),
   ),
 
   simpleWeb: TestCompile.make(

@@ -75,6 +75,5 @@ export type CompilerModelMethodsHtml = {
 
 type F = CompilerModelMethodsFiles;
 export type CompilerModelMethodsFiles = {
-  redirect(grant: t.CompilerModelRedirectAction | boolean | undefined, grep?: string): F;
   access(permission: t.CompilerModelFileAccessPermission, grep: string): F;
 };

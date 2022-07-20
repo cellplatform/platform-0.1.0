@@ -59,7 +59,6 @@ describe('ModuleManifest', function () {
     expectEvery((file) => file.bytes > 0);
     expectEvery((file) => file.path.length > 0);
     expectSome((file) => file.public !== undefined);
-    expectSome((file) => file.allowRedirect !== undefined);
   });
 
   it('create (with custom timestamp)', async () => {

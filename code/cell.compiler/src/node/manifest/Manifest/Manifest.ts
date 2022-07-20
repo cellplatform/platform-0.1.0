@@ -1,5 +1,5 @@
 import { deleteUndefined, fs, t, DEFAULT, ManifestFile, ManifestHash } from '../../common';
-import { FileAccess, FileRedirects } from '../../config';
+import { FileAccess } from '../../config';
 
 type M = t.Manifest;
 
@@ -183,7 +183,6 @@ export const Manifest = {
     const path = args.path.substring(baseDir.length + 1);
     return deleteUndefined({
       ...(await ManifestFile.parse({ fs, baseDir, path: args.path })),
-      allowRedirect: model ? toRedirect({ model, path }).flag : undefined,
       public: model ? toPublic({ model, path }) : undefined,
       image: await Manifest.toImage(path),
     });
@@ -200,11 +199,6 @@ export const Manifest = {
 /**
  * Helpers
  */
-
-function toRedirect(args: { model: t.CompilerModel; path: string }) {
-  const redirects = FileRedirects(args.model.files?.redirects);
-  return redirects.path(args.path);
-}
 
 function toAccess(args: { model: t.CompilerModel; path: string }) {
   const access = FileAccess(args.model.files?.access);

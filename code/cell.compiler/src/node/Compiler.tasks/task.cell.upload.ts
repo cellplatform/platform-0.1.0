@@ -2,6 +2,7 @@ import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 
 import {
+  appendFileSync,
   DEFAULT,
   fs,
   HttpClient,
@@ -16,9 +17,8 @@ import {
   t,
   time,
   value,
-  appendFileSync,
 } from '../common';
-import { FileAccess, FileRedirects } from '../config';
+import { FileAccess } from '../config';
 import { ModuleManifest } from '../manifest';
 
 type FileUri = t.IUriData<t.IFileData>;
@@ -36,7 +36,6 @@ export const upload: t.CompilerRunUpload = async (args) => {
   const model = Model(args.config);
   const paths = model.paths.out;
   const sourceDir = fs.resolve(args.source === 'dist' ? paths.dist : paths.bundle);
-  const redirects = config.files?.redirects;
   const files = await getFiles({ sourceDir, targetDir: target.dir, config });
 
   const done$ = new Subject<void>();
@@ -101,7 +100,6 @@ export const upload: t.CompilerRunUpload = async (args) => {
     const manifest = await updateManifest({
       distDir: sourceDir,
       uploadedFiles: fileUpload.body.files,
-      redirects,
     });
 
     const manifestFile = await getManifestFile({ sourceDir, targetDir: target.dir });
@@ -175,7 +173,6 @@ export async function getFiles(args: {
           const file = value.deleteUndefined<File>({
             filename,
             data,
-            allowRedirect: toRedirect({ config, path, dir: sourceDir }).flag,
             's3:permission': access.public ? 'public-read' : undefined,
           });
           return file;
@@ -280,23 +277,13 @@ function trimDir(dir: string | undefined, path: string) {
   return dir ? path.substring(dir.length + 1) : path;
 }
 
-function toRedirect(args: { config?: t.CompilerModel; dir?: string; path: string }) {
-  const path = trimDir(args.dir, args.path);
-  const redirects = FileRedirects(args.config?.files?.redirects);
-  return redirects.path(path);
-}
-
 function toAccess(args: { config?: t.CompilerModel; dir?: string; path: string }) {
   const path = trimDir(args.dir, args.path);
   const access = FileAccess(args.config?.files?.access);
   return access.path(path);
 }
 
-async function updateManifest(args: {
-  distDir: string;
-  uploadedFiles: FileUri[];
-  redirects?: t.CompilerModelRedirect[];
-}) {
+async function updateManifest(args: { distDir: string; uploadedFiles: FileUri[] }) {
   try {
     const { uploadedFiles, distDir } = args;
     const { manifest, path } = await ModuleManifest.read({ dir: distDir });

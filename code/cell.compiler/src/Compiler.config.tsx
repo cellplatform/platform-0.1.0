@@ -10,7 +10,7 @@ export default () =>
     .title('Compiler Sample')
     .env({ foo: 1234 })
 
-    .files((files) => files.redirect(false, 'service.js').access('public', '**/*.png'))
+    .files((files) => files.access('public', '**/*.png'))
 
     .variant('web', (config) =>
       config
