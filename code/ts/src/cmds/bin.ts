@@ -254,7 +254,9 @@ const program = yargs
 /**
  * Show full list of commands if none was provided.
  */
-const command = program.argv._[0];
+
+const command = (program.argv as any)._[0];
+
 if (!CMDS.includes(command)) {
   program.showHelp('log');
   log.info();
