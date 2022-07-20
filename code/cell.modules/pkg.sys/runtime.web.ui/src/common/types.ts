@@ -19,7 +19,14 @@ export {
 /**
  * @system
  */
-export { WebRuntimeEvents, ActivateEvent, FetchEvent } from 'sys.runtime.web/lib/types';
+export {
+  WebRuntimeEvents,
+  ActivateEvent,
+  FetchEvent,
+  ModuleDefaultEntry,
+  ModuleDefaultEntryContext,
+} from 'sys.runtime.web/lib/types';
+
 export {
   PropListItem,
   PropListValue,

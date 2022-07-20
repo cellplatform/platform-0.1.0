@@ -28,3 +28,5 @@ export {
   CardProps,
   LoadMaskProps,
 } from 'sys.ui.primitives/lib/types';
+
+export { ModuleDefaultEntry } from 'sys.runtime.web/lib/types';
