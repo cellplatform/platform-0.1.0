@@ -4,7 +4,6 @@ import { fs, log, Logger, Model, ModelPaths, ProgressSpinner, t } from '../commo
 import { ModuleManifest } from '../manifest';
 import { bundleDeclarations } from './task.bundle.declarations';
 import { afterCompile, wp } from './util';
-import { ZippedBundle } from '../compiler';
 
 /**
  * Bundle the project.
@@ -68,7 +67,6 @@ export async function onCompiled(args: {
 
   await copyStatic({ model, bundleDir: paths.out.dist });
   await ModuleManifest.createAndSave({ model, dir: paths.out.dist });
-  await ZippedBundle(model).save();
 
   afterCompile({ model, compilation, webpack });
 }

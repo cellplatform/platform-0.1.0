@@ -54,7 +54,6 @@ export type CompilerModelPaths = {
   out: {
     base: string; //    NB: root webpack 'outdir'.
     dist: string; //    NB: <base>/<target>
-    bundle: string; //  NB: zipped version of the 'dist' folder.
   };
 };
 

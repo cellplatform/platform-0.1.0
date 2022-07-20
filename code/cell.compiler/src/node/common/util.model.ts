@@ -103,8 +103,7 @@ export function Model(input: M) {
 export function ModelPaths(model: t.CompilerModel): t.CompilerModelPaths {
   const base = model.outdir ?? DEFAULT.CONFIG.outdir;
   const dist = fs.join(base, model.target || '');
-  const bundle = `${dist}.bundle`;
   return {
-    out: { base, dist, bundle },
+    out: { base, dist },
   };
 }
