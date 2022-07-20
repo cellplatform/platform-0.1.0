@@ -10,10 +10,6 @@
       "code/*",
       "code/cell.modules/pkg.*/*",
       "code/cell.service/pkg.*"
-    ],
-    "nohoist": [
-      "**/electron",
-      "**/electron/**"
     ]
   },
   "dependencies": {

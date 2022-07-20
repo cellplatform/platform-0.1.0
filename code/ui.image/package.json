@@ -22,8 +22,7 @@
     "react-icons": "4.3.1"
   },
   "devDependencies": {
-    "@platform/ts": "4.1.23",
-    "electron": "14.0.0"
+    "@platform/ts": "4.1.23"
   },
   "files": [
     "lib",

@@ -2,7 +2,7 @@
 [![NPM](https://img.shields.io/npm/v/@platform/ui.editor.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/ui.editor)
 ![banner](https://user-images.githubusercontent.com/185555/55036691-45e23780-5080-11e9-94a3-d25f211e5cf3.png)
 
-[WYSIWYG](https://en.wikipedia.org/wiki/WYSIWYG) text/markdown editor for [web](https://developer.mozilla.org) and [electron](https://electronjs.org), with rich [observable](https://www.learnrxjs.io) event stream.
+[WYSIWYG](https://en.wikipedia.org/wiki/WYSIWYG) text/markdown editor for [web](https://developer.mozilla.org), with rich [observable](https://www.learnrxjs.io) event stream.
 
 ## Setup
 

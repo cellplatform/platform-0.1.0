@@ -11,7 +11,7 @@
     "test:integration": "ts test --suffix INTEGRATION",
     "tddi": "ts test --suffix INTEGRATION --watch",
     "lint": "ts lint",
-    "build": "ts build $@",
+    "build": "ts build --no-esm",
     "build-test": "ts build --tsconfig=tsconfig.test $@",
     "prepare": "ts prepare",
     "tmp": "ts-node -T scripts/tmp $@"

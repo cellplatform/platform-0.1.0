@@ -10,7 +10,7 @@
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
-    "build": "ts build $@",
+    "build": "ts build --no-esm",
     "build-test": "ts build --tsconfig=tsconfig.test $@",
     "prepare": "ts prepare"
   },
@@ -22,7 +22,6 @@
     "@platform/ui.codemirror": "0.1.114",
     "@platform/util.value": "0.9.10",
     "@types/codemirror": "5.60.2",
-    "@uiharness/electron": "0.7.5",
     "graphiql": "1.4.2",
     "hjson": "3.2.2"
   },
@@ -30,8 +29,7 @@
     "@platform/polyfill": "0.0.7",
     "@platform/test": "0.2.10",
     "@platform/ts": "4.1.23",
-    "@types/hjson": "2.4.3",
-    "electron": "14.0.0"
+    "@types/hjson": "2.4.3"
   },
   "files": [
     "lib",

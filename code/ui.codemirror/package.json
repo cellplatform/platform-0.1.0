@@ -8,7 +8,7 @@
     "start": "parcel src/test.parcel/index.html",
     "test": "ts test",
     "lint": "ts lint",
-    "build": "ts build $@",
+    "build": "ts build --no-esm",
     "bundle": "sh script.sh/bundle.sh",
     "clean": "sh script.sh/clean.sh",
     "serve": "cd dist && serve",
