@@ -9,8 +9,7 @@
     "packages": [
       "code/*",
       "code/cell.modules/pkg.*/*",
-      "code/cell.service/pkg.*",
-      "code/cell.runtime.electron/A1"
+      "code/cell.service/pkg.*"
     ],
     "nohoist": [
       "**/electron",
