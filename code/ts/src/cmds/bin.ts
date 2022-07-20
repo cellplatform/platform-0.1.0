@@ -254,12 +254,17 @@ const program = yargs
 /**
  * Show full list of commands if none was provided.
  */
-const command = program.argv._[0];
-if (!CMDS.includes(command)) {
-  program.showHelp('log');
-  log.info();
-  process.exit(0);
-}
+
+(async () => {
+  const argv = await program.argv;
+  const command = argv._[0];
+
+  if (!CMDS.includes(command)) {
+    program.showHelp('log');
+    log.info();
+    process.exit(0);
+  }
+})();
 
 function fail(code: number, error: string | Error) {
   const message = typeof error === 'string' ? error : error.message;

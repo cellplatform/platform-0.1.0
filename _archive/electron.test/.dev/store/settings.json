@@ -1,9 +1,0 @@
-{
-  "version": 44,
-  "body": {
-    "count": 10,
-    "foo": {
-      "bar": false
-    }
-  }
-}

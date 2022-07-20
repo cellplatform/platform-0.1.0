@@ -48,7 +48,6 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - [@platform/ts](/code/ts) 
 - [@platform/log](/code/log)
 - [@platform/exec](/code/exec)
-- [@platform/electron](/code/electron)
 - [@platform/tmpl](/code/tmpl)
 - util
   - [@platform/util.animate](/code/util.animate)
@@ -70,7 +69,6 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/fsdb.nedb](/code/fsdb.nedb)
   - [@platform/fsdb.mongo](/code/fsdb.mongo)
   - [@platform/fsdb.pg](/code/fsdb.pg)
-  - [@platform/fsdb.electron](/code/fsdb.electron)
 - network
   - [@platform/http](/code/http)
   - [@platform/http](/code/http.types)
@@ -90,7 +88,6 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/cell.fs.sync](/code/cell.fs.sync)
   - [@platform/cell.compile](/code/cell.compile)
   - [@platform/cell.compile.web](/code/cell.compile.web)
-  - [@platform/cell.electron](/code/cell.electron)
   - [@platform/cell.cli](/code/cell.cli)
   - [@platform/cell.tmpl](/code/cell.tmpl)
   - [@platform/cell.ui](/code/cell.ui)
@@ -129,7 +126,6 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - cli
   - [@platform/cli](/code/cli)
   - [@platform/cli.spec](/code/cli.spec)
-  - [@platform/cli.ui](/code/cli.ui)
 - npm
   - [@platform/npm](/code/npm)
   - [@platform/npm.express](/code/npm.express)

@@ -1,7 +1,7 @@
 {
   "name": "sys",
   "description": "Deployment of all main system libs",
-  "version": "0.1.46",
+  "version": "0.1.47",
   "main": "lib/index",
   "sideEffects": false,
   "scripts": {

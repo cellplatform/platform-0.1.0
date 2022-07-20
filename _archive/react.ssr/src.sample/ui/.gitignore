@@ -1,8 +1,0 @@
-node_modules
-.uiharness
-.cache
-.dev
-.build
-lib
-lib.test
-dist

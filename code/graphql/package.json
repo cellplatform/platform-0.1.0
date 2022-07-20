@@ -34,8 +34,7 @@
     "@platform/test": "0.2.10",
     "@platform/ts": "^4.1.23",
     "@types/isomorphic-fetch": "0.0.35",
-    "apollo-server-micro": "3.3.0",
-    "electron": "14.0.0"
+    "apollo-server-micro": "3.3.0"
   },
   "files": [
     "lib",

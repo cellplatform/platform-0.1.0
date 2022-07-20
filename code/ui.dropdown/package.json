@@ -10,7 +10,7 @@
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
-    "build": "ts build $@",
+    "build": "ts build --no-esm",
     "build-test": "ts build --tsconfig=tsconfig.test $@",
     "prepare": "ts prepare"
   },
@@ -22,7 +22,6 @@
   "devDependencies": {
     "@platform/polyfill": "0.0.7",
     "@types/react-select": "4.0.17",
-    "electron": "14.0.0",
     "@platform/ts": "4.1.23"
   },
   "files": [

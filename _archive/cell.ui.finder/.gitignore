@@ -1,6 +1,0 @@
-.env
-node_modules
-/dist
-/.cache
-
-/src/_SAMPLE
