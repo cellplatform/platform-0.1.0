@@ -1,7 +1,8 @@
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { Is, rx, slug, t } from '../common';
+import { Is, rx, t } from '../common';
 import { InstanceEvents } from './Events.Instance';
+import { CodeEditorLibEvents } from './Events.Libs';
 
 export const CodeEditorEvents: t.CodeEditorEventsFactory = (input, options = {}) => {
   const bus = rx.bus<t.CodeEditorEvent>(input);
@@ -23,41 +24,7 @@ export const CodeEditorEvents: t.CodeEditorEventsFactory = (input, options = {})
     map((e) => e as t.CodeEditorInstanceEvent),
   );
 
-  const libs: t.CodeEditorEvents['libs'] = {
-    /**
-     * Remove all type libraries.
-     */
-    clear() {
-      bus.fire({ type: 'CodeEditor/libs:clear', payload: {} });
-    },
-
-    /**
-     * Load type-libraries from the network.
-     */
-    load: {
-      req$: rx.payload<t.CodeEditorLibsLoadReqEvent>($, 'CodeEditor/libs/load:req'),
-      res$: rx.payload<t.CodeEditorLibsLoadResEvent>($, 'CodeEditor/libs/load:res'),
-      async fire(url, options = {}) {
-        const { timeout = 3000 } = options;
-        const tx = slug();
-
-        const op = 'libs.load';
-        const res$ = libs.load.res$.pipe(filter((e) => e.tx === tx));
-        const first = rx.asPromise.first<t.CodeEditorLibsLoadResEvent>(res$, { op, timeout });
-
-        bus.fire({
-          type: 'CodeEditor/libs/load:req',
-          payload: { url, tx },
-        });
-
-        const res = await first;
-        if (res.payload) return res.payload;
-
-        const error = res.error?.message ?? 'Failed';
-        return { tx, url, files: [], error };
-      },
-    },
-  };
+  const libs = CodeEditorLibEvents({ bus, $ });
 
   const api: t.CodeEditorEvents = {
     $,
@@ -74,5 +41,3 @@ export const CodeEditorEvents: t.CodeEditorEventsFactory = (input, options = {})
 
   return api;
 };
-
-// export const Events = { create };
