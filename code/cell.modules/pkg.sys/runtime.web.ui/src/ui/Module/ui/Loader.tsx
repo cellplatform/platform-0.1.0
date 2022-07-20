@@ -11,8 +11,8 @@ export type LoaderProps = {
 
 export const Loader: React.FC<LoaderProps> = (props) => {
   const { instance, url } = props;
+  const bus = instance.bus;
   const remote = useModule({ instance, url });
-  const Component = remote.module?.default;
 
   useEffect(() => {
     const { ok } = remote;
@@ -20,5 +20,16 @@ export const Loader: React.FC<LoaderProps> = (props) => {
     props.onLoading?.({ ok, loading });
   }, [remote.loading, remote.ok]); // eslint-disable-line
 
-  return Component ? <Component bus={instance.bus} /> : null;
+  const module = remote.module;
+  const address = remote.address;
+
+  if (address && typeof module === 'object' && typeof module.default === 'function') {
+    const { namespace, entry } = address;
+    const url = props.url ?? address.url;
+    const ctx: t.ModuleDefaultEntryContext = { bus, source: { url, namespace, entry } };
+    const res = remote.module.default(bus, ctx);
+    if (React.isValidElement(res)) return res;
+  }
+
+  return null;
 };

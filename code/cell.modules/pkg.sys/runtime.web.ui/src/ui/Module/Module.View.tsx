@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-import { css, CssValue, DEFAULT, ErrorBoundary, FC, LoadMask, t } from './common';
-import { Info } from './ui/Info';
+import { css, CssValue, DEFAULT, ErrorBoundary, LoadMask, t } from './common';
+import { ManifestInfo } from './ui/ManifestInfo';
 import { Loader } from './ui/Loader';
 
 export type ModuleProps = {
@@ -50,7 +50,7 @@ export const ModuleView: React.FC<ModuleProps> = (props) => {
   );
 
   const elInfo = !elLoadMask && url && props.info !== false && (props.info || !entry) && (
-    <Info instance={instance} url={url} theme={theme} onExportClick={props.onExportClick} />
+    <ManifestInfo instance={instance} url={url} theme={theme} onExportClick={props.onExportClick} />
   );
 
   return (

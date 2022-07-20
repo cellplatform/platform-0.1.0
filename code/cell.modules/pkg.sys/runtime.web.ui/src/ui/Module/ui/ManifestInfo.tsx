@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Color, COLORS, css, CssValue, t, LoadMask, ModuleInfo, Chip } from '../common';
 
-export type InfoProps = {
+export type ManifestInfoProps = {
   instance: t.ModuleInstance;
   theme: t.ModuleTheme;
   url: URL;
@@ -9,7 +9,7 @@ export type InfoProps = {
   onExportClick?: t.ModuleInfoExportClick;
 };
 
-export const Info: React.FC<InfoProps> = (props) => {
+export const ManifestInfo: React.FC<ManifestInfoProps> = (props) => {
   const { url, theme } = props;
   const entry = url.searchParams.get('entry');
   const isDark = theme == 'Dark';
@@ -72,7 +72,6 @@ export const Info: React.FC<InfoProps> = (props) => {
       bg={{ blur: 8 }}
       tile={{
         el: elBody,
-        // padding: [65, 65, 30, 64],
         padding: [30, 50],
         size: { minWidth: 250 + 40 + 40 },
         backgroundColor: isDark ? Color.format(0.03) : Color.alpha(COLORS.DARK, 0.04),
