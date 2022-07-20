@@ -4,6 +4,8 @@ import { fs, log, Logger, Model, ModelPaths, ProgressSpinner, t } from '../commo
 import { ModuleManifest } from '../manifest';
 import { bundleDeclarations } from './task.bundle.declarations';
 import { afterCompile, wp } from './util';
+import { copyStatic } from './task.bundle.copyStatic';
+import { mergeLicences } from './task.bundle.licences';
 
 /**
  * Bundle the project.
@@ -42,7 +44,8 @@ export const bundle: t.CompilerRunBundle = (input, options = {}) => {
           }
 
           if (!silent) {
-            Logger.newline().stats(stats);
+            Logger.newline();
+            await Logger.stats(stats);
           }
 
           resolve(res);
@@ -64,9 +67,11 @@ export async function onCompiled(args: {
 }) {
   const { model, compilation, webpack } = args;
   const paths = ModelPaths(model);
+  const dir = paths.out.dist;
 
-  await copyStatic({ model, bundleDir: paths.out.dist });
-  await ModuleManifest.createAndSave({ model, dir: paths.out.dist });
+  await copyStatic({ model, dir });
+  await mergeLicences({ dir });
+  await ModuleManifest.createAndSave({ model, dir });
 
   afterCompile({ model, compilation, webpack });
 }
@@ -91,23 +96,6 @@ function toBundledResponse(args: {
     webpack,
     toString: () => args.stats.toString({ colors: true }),
   };
-}
-
-async function copyStatic(args: { model: t.CompilerModel; bundleDir: string }) {
-  const model = Model(args.model);
-  const staticDirs = model
-    .static()
-    .map(({ dir }) => dir as string)
-    .filter(Boolean);
-
-  await Promise.all(
-    staticDirs.map(async (from) => {
-      const to = fs.join(args.bundleDir, fs.basename(from));
-      await fs.copy(from, to);
-    }),
-  );
-
-  return staticDirs;
 }
 
 async function ensureEntriesExist(args: { model: t.CompilerModel }) {

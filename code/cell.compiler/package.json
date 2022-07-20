@@ -23,7 +23,8 @@
     "info": "yarn cmd info $@",
     "clean": "rm -rf tmp && yarn cmd clean $@",
     "node": "ts-node -T script.ts/tmp.node.runtime $@",
-    "cmd": "node lib/api.cli $@"
+    "cmd": "node lib/api.cli $@",
+    "tmp": "ts-node -T script.ts/tmp"
   },
   "dependencies": {
     "@babel/core": "7.15.0",

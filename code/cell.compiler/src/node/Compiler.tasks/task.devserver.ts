@@ -47,10 +47,11 @@ export const devserver: t.CompilerRunDevserver = async (input, options = {}) => 
 
   let count = 0;
 
-  compiler.hooks.afterCompile.tap('DevServer', (compilation) => {
+  compiler.hooks.afterCompile.tap('DevServer', async (compilation) => {
     afterCompile({ model: obj, webpack, compilation });
 
     count++;
+
     Logger.clear().newline();
     log.info.gray(`DevServer (${count})`);
     Logger.model(obj, { indent: 2, url: true, port }).newline();
@@ -66,7 +67,8 @@ export const devserver: t.CompilerRunDevserver = async (input, options = {}) => 
     } else {
     }
 
-    Logger.hr().stats(compilation);
+    Logger.hr();
+    await Logger.stats(compilation);
   });
 
   const config: DevServer.Configuration = {

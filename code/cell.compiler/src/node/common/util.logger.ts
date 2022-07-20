@@ -1,4 +1,4 @@
-import { log, Model, t, Encoding, defaultValue } from '../common';
+import { log, Model, t, Encoding, defaultValue, time, fs, DEFAULT, R } from '../common';
 import { stats } from '../config.webpack';
 import { Format } from './util.format';
 
@@ -23,9 +23,84 @@ export const Logger = {
     return Logger;
   },
 
-  stats(input?: t.WpStats | t.WpCompilation) {
-    stats(input).log();
-    return Logger;
+  async stats(input?: t.WpStats | t.WpCompilation) {
+    const info = stats(input);
+    const dir = info.output.path;
+    const elapsed = info.elapsed;
+    await Logger.bundle({ dir, elapsed });
+    Logger.errors(info.errors);
+  },
+
+  async bundle(args: { dir: string; elapsed: number }) {
+    const bundleDir = args.dir;
+    const stripRoot = (path: string) => {
+      const root = fs.resolve('.');
+      return path.startsWith(root) ? path.substring(root.length) : path;
+    };
+
+    const elapsed = time.duration(args.elapsed).toString();
+    const table = log.table({ border: false });
+    const indent = ' '.repeat(2);
+
+    type T = { path: string; bytes: number };
+    const wait = (await fs.glob.find(fs.join(bundleDir, '**'))).map(async (path) => {
+      const bytes = (await fs.size.file(path)).bytes;
+      path = path.substring(bundleDir.length + 1);
+      return { path, bytes };
+    });
+
+    const items = (await Promise.all(wait)) as T[];
+    const totalBytes = items.reduce((acc, next) => acc + next.bytes, 0);
+    const totalSize = fs.size.toString(totalBytes);
+
+    const toSizeColor = (bytes: number) => {
+      const size = fs.size.toString(bytes);
+      const KB = 1000;
+      if (bytes > 1000 * KB) return log.red(size);
+      if (bytes > 500 * KB) return log.yellow(size);
+      if (bytes < 100 * KB) return log.green(size);
+      return log.gray(size);
+    };
+
+    const addFile = (item: T) => {
+      const extIndex = item.path.lastIndexOf('.');
+      const ext = item.path.substring(extIndex);
+      const path = item.path.substring(0, extIndex);
+      const filename = log.gray(`${indent}• ${log.white(path)}${ext}`);
+      table.add([filename, '    ', toSizeColor(item.bytes)]);
+    };
+
+    const cells = items.filter((item) => item.path.startsWith('cell-'));
+    const dirs = items.filter((item) => item.path.includes('/'));
+    const files = items.filter(
+      (item) =>
+        !cells.some((cell) => cell.path === item.path) &&
+        !dirs.some((dir) => dir.path === item.path),
+    );
+
+    files.forEach(addFile);
+    cells.forEach(addFile);
+
+    const toRootDir = (path: string) => path.substring(0, path.indexOf('/'));
+    const dirGroups = R.groupBy((dir) => toRootDir(dir.path), dirs);
+
+    Object.keys(dirGroups).forEach((key) => {
+      const items = dirGroups[key];
+      const bytes = items.reduce((acc, next) => acc + next.bytes, 0);
+      const dirname = log.gray(`${indent}• ${key}/... (${items.length} files)`);
+      table.add([dirname, '    ', toSizeColor(bytes)]);
+    });
+
+    table.add(['', '', log.white('-'.repeat(totalSize.length))]);
+    table.add(['', '', log.white(totalSize)]);
+
+    log.info();
+    log.info.gray('Files');
+    log.info.gray(`  ${stripRoot(bundleDir)}`);
+    table.log();
+    log.info.gray(`Bundled in ${log.yellow(elapsed)}`);
+    log.info.gray(`Manifest:  ${fs.join(stripRoot(bundleDir), DEFAULT.FILE.JSON.MANIFEST)}`);
+    log.info();
   },
 
   model(
