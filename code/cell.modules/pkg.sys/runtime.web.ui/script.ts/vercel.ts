@@ -6,7 +6,7 @@ const token = process.env.VERCEL_TEST_TOKEN || '';
 export async function deploy(team: string, project: string, alias: string) {
   const dir = 'dist/web';
   await fs.copy('vercel.json', fs.join(dir, 'vercel.json'));
-  await Vercel.ConfigFile.prepareRewrites({ dir });
+  await Vercel.ConfigFile.prepare({ dir });
 
   const deployment = Vercel.Deploy({ token, dir, team, project });
   const info = await deployment.info();

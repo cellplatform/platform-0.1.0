@@ -18,6 +18,8 @@ export const watch: t.CompilerRunWatch = async (input) => {
     count++;
     Logger.clear().newline();
     log.info.gray(`Watching (${count})`);
-    Logger.model(model, { indent: 2, url: false }).newline().hr().stats(stats);
+    Logger.model(model, { indent: 2, url: false });
+    Logger.newline().hr();
+    await Logger.stats(stats);
   });
 };

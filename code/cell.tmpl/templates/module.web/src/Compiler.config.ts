@@ -11,13 +11,12 @@ export default () =>
         .port(3000)
 
         .entry('main', './src/entry/main')
-        .entry('service.worker', './src/workers/service.worker')
-        .entry('web.worker', './src/workers/web.worker')
+        .entry('service', './src/workers/worker.service')
 
-        .declarations('./src/**/*')
+        // .declarations('./src/**/*')
 
         .static('static')
-        .files((e) => e.redirect(false, '*.worker.js').access('public', '**/*.{png,jpg,svg}'))
+        .files((e) => e.access('public', '**/*.{png,jpg,svg}'))
         .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
 
         .expose('./Dev', './src/Dev.Harness'),

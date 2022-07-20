@@ -28,7 +28,7 @@ export const DevVersion: React.FC<DevVersionProps> = (props) => {
 
   const elSemver = (
     <Button>
-      <WebRuntime.ui.ManifestSemver style={styles.semver} fontSize={11} />
+      <WebRuntime.UI.ManifestSemver style={styles.semver} fontSize={11} />
     </Button>
   );
 

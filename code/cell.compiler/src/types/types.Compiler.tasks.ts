@@ -2,7 +2,6 @@ import { t } from './common';
 
 type B = t.CompilerModelBuilder;
 type M = t.CompilerModel | t.CompilerModelBuilder;
-type File = t.IHttpClientCellFileUpload;
 
 /**
  * Compiler methods.
@@ -12,7 +11,6 @@ export type CompilerTasks = {
   bundleDeclarations: CompilerRunBundleDeclarations;
   watch: CompilerRunWatch;
   devserver: CompilerRunDevserver;
-  cell: CompilerCreateCell;
 };
 
 /**
@@ -58,46 +56,8 @@ export type CompilerRunDevserver = (
 ) => Promise<void>;
 export type CompilerRunDevserverOptions = { exports?: boolean; port?: number };
 
-/**
- * Uploads a bundled distribution to a target cell.
- */
-export type CompilerRunUpload = (args: CompilerRunUploadArgs) => Promise<CompilerUploadResponse>;
-export type CompilerRunUploadArgs = {
-  host: string;
-  config: t.CompilerModel;
-  source: 'dist' | 'bundle';
-  target: { cell: string | t.ICellUri; dir?: string };
-  silent?: boolean;
-};
-export type CompilerUploadResponse = {
-  ok: boolean;
-  urls: { cell: string; files: string; entry: string; remote: string; manifest: string };
-  files: File[];
-};
-
-/**
- * Cell compilation target.
- */
-export type CompilerCreateCell = (host: string, uri: string | t.ICellUri) => CompilerCell;
-export type CompilerCell = {
-  host: string;
-  uri: t.ICellUri;
-  upload: CompilerCellRunUpload;
-};
-
 export type CompilerCellRunBundle = (
   config: B,
   options?: CompilerCellRunBundleOptions,
 ) => Promise<CompilerRunBundleResponse>;
 export type CompilerCellRunBundleOptions = { targetDir?: string; silent?: boolean };
-
-export type CompilerCellRunUpload = (
-  config: B,
-  options?: CompilerCellRunUploadOptions,
-) => Promise<CompilerUploadResponse>;
-export type CompilerCellRunUploadOptions = {
-  source?: 'dist' | 'bundle';
-  targetDir?: string;
-  silent?: boolean;
-  runBundle?: boolean;
-};

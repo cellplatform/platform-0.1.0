@@ -8,5 +8,4 @@ export const Compiler: t.Compiler = {
   watch: Tasks.watch,
   bundle: Tasks.bundle,
   bundleDeclarations: Tasks.bundleDeclarations,
-  cell: Tasks.cell,
 };

@@ -139,9 +139,6 @@ export const actions = DevActions<Ctx>()
     const theme = e.ctx.props.theme ?? ModuleInfo.DEFAULT.THEME;
     const isDark = theme === 'Dark';
 
-    console.log('theme', theme);
-    console.log('isDark', isDark);
-
     e.settings({
       actions: { width: 400 },
       host: { background: isDark ? COLORS.DARK : -0.04 },

@@ -40,8 +40,8 @@ export function Model(input: M) {
 
     get entryFile() {
       const target = res.target();
-      const ENTRY = DEFAULT.FILE.JS.ENTRY;
-      return target === 'node' ? ENTRY.NODE : ENTRY.WEB;
+      const ENTRY = DEFAULT.FILE.ENTRY;
+      return target === 'node' ? ENTRY.NODE : ENTRY.HTML;
     },
 
     get env() {
@@ -103,8 +103,7 @@ export function Model(input: M) {
 export function ModelPaths(model: t.CompilerModel): t.CompilerModelPaths {
   const base = model.outdir ?? DEFAULT.CONFIG.outdir;
   const dist = fs.join(base, model.target || '');
-  const bundle = `${dist}.bundle`;
   return {
-    out: { base, dist, bundle },
+    out: { base, dist },
   };
 }

@@ -34,7 +34,6 @@ describe('Manifest', function () {
       expectEvery((file) => file.bytes > 0);
       expectEvery((file) => file.path.length > 0);
       expectEvery((file) => file.public === undefined);
-      expectEvery((file) => file.allowRedirect === undefined);
     };
 
     await test(sourceDir);
@@ -55,17 +54,6 @@ describe('Manifest', function () {
   });
 
   describe('write', () => {
-    it('write flag: allowRedirects', async () => {
-      const model = config.toObject();
-      const manifest = await Manifest.create({ model, dir: sourceDir });
-
-      const js = manifest.files.find((file) => file.path.endsWith('main.js'));
-      const png = manifest.files.find((file) => file.path.endsWith('.png'));
-
-      expect(js?.allowRedirect).to.eql(false);
-      expect(png?.allowRedirect).to.eql(undefined);
-    });
-
     it('write flag: public', async () => {
       const model = config.toObject();
       const manifest = await Manifest.create({ model, dir: sourceDir });
@@ -162,6 +150,7 @@ describe('Manifest', function () {
     it('error: filehash changed', async () => {
       await prepare();
       const manifest = await Manifest.create({ dir: tmp });
+
       const filename = 'main.js';
       const file = manifest.files.find((file) => file.path === filename);
       const path = fs.resolve(fs.join(tmp, filename));

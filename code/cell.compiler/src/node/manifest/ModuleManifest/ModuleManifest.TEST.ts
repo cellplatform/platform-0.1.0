@@ -24,12 +24,11 @@ describe('ModuleManifest', function () {
     const dir = sample.paths.out.dist;
     const now = time.now.timestamp;
     const manifest = await ModuleManifest.create({ model, dir });
-    const files = manifest.files;
 
-    expect(files.length).to.greaterThan(0);
+    expect(manifest.files.length).to.greaterThan(0);
     expect(manifest.kind).to.eql('module');
 
-    expect(manifest.hash.files).to.eql(ModuleManifest.hash.files(files));
+    expect(manifest.hash.files).to.eql(ModuleManifest.hash.files(manifest.files));
     expect(manifest.hash.files).to.eql(ModuleManifest.hash.files(manifest));
 
     expect(manifest.hash).to.eql(ManifestHash.module(manifest.module, manifest.files));
@@ -40,7 +39,7 @@ describe('ModuleManifest', function () {
     expect(manifest.module.namespace).to.eql('ns.test.node');
     expect(manifest.module.version).to.eql('0.0.0');
     expect(manifest.module.compiler.startsWith('@platform/cell.compiler@')).to.eql(true);
-    expect(manifest.module.compiledAt).to.within(now - 10, now + 10);
+    expect(manifest.module.compiledAt).to.within(now - 10, now + 100);
 
     expect(manifest.module.mode).to.eql('production');
     expect(manifest.module.target).to.eql('node');
@@ -48,18 +47,17 @@ describe('ModuleManifest', function () {
     expect(manifest.files.length).to.greaterThan(2);
 
     const expectEvery = (fn: (file: t.ManifestFile) => boolean) => {
-      expect(files.every((file) => fn(file))).to.eql(true);
+      expect(manifest.files.every((file) => fn(file))).to.eql(true);
     };
 
     const expectSome = (fn: (file: t.ManifestFile) => boolean) => {
-      expect(files.some((file) => fn(file))).to.eql(true);
+      expect(manifest.files.some((file) => fn(file))).to.eql(true);
     };
 
     expectEvery((file) => file.filehash.startsWith('sha256-'));
     expectEvery((file) => file.bytes > 0);
     expectEvery((file) => file.path.length > 0);
     expectSome((file) => file.public !== undefined);
-    expectSome((file) => file.allowRedirect !== undefined);
   });
 
   it('create (with custom timestamp)', async () => {
@@ -79,7 +77,7 @@ describe('ModuleManifest', function () {
     const manifest = await ModuleManifest.create({ model, dir: sample.paths.out.dist });
     const remote = manifest.module.remote;
 
-    expect(remote?.entry).to.eql('remoteEntry.js');
+    expect(remote?.entry).to.eql('remote.js');
 
     expect(remote?.exports.length).to.eql(2);
     expect(remote?.exports[0].path).to.eql('./App');

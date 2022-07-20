@@ -8,7 +8,7 @@ export const DevNetworkRemote: React.FC<DevNetworkRemoteProps> = (props) => {
   const instance = { bus };
 
   const target = TARGET_NAME;
-  const remote = WebRuntime.ui.useModuleTarget({ instance, target });
+  const remote = WebRuntime.UI.useModuleTarget({ instance, target });
 
   const Main = remote.module?.default;
   const isActive = Boolean(Main);

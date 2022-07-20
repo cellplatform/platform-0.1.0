@@ -10,18 +10,18 @@ export default () =>
     .title('Compiler Sample')
     .env({ foo: 1234 })
 
-    .files((files) => files.redirect(false, '*.worker.js').access('public', '**/*.png'))
+    .files((files) => files.access('public', '**/*.png'))
 
     .variant('web', (config) =>
       config
         .target('web')
         .entry('main', './src/test/entry.web/dom')
-        // .entry('service.worker', './src/test/entry.web/workers/service.worker')
+        .entry('service', './src/test/entry.web/workers/worker.service')
+
         .static('./static')
+        .shared((e) => e.singleton(['react', 'react-dom']))
 
         .expose('./Sample', './src/test/entry.web/components/App')
-
-        .shared((e) => e.singleton(['react', 'react-dom']))
 
         .html((config) => {
           // config;

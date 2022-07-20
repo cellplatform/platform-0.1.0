@@ -1,4 +1,4 @@
-import { Model, t, toModel, fs } from '../common';
+import { Model, t, toModel, fs, DEFAULT } from '../common';
 import { Plugins } from './wp.plugins';
 import { Rules } from './wp.rules';
 import { beforeCompile } from './hooks';
@@ -15,6 +15,7 @@ export function toWebpackConfig(
   const toConfig = (input: t.CompilerModel): t.WpConfig => {
     const model = Model(input);
     const data = model.toObject();
+    const version = model.version('0.0.0');
 
     /**
      * Values (with defaults).
@@ -50,6 +51,14 @@ export function toWebpackConfig(
       mode,
       output: {
         path,
+        filename(fileData) {
+          const FILE = DEFAULT.FILE;
+          const name = fileData.chunk.name;
+          const stripExtension = (name: string) => name.replace(/\.js$/, '');
+          const plain = [FILE.SERVICE_WORKER, ...Object.values(FILE.ENTRY)].map(stripExtension);
+          return plain.includes(name) ? '[name].js' : `[name]-${version}.js`;
+        },
+        chunkFilename: `cell-${version}-[contenthash].js`,
         publicPath: 'auto',
         crossOriginLoading: 'anonymous', // NB: Prevents cross-origin loading problems of code-split JS when doing "federated function" imports.
       },

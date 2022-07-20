@@ -25,7 +25,7 @@ export const actions = DevActions<Ctx>()
       props: {
         size: 220,
         font: { family: 'Merriweather' },
-        char: Font.Ui.FontCard.DEFAULT.char,
+        char: Font.UI.FontCard.DEFAULT.char,
       },
     };
     return ctx;
@@ -102,7 +102,7 @@ export const actions = DevActions<Ctx>()
 
     e.render(
       <Doc.Fonts style={{ flex: 1 }}>
-        <Font.Ui.FontCard {...e.ctx.props} style={{ flex: 1 }} />
+        <Font.UI.FontCard {...e.ctx.props} style={{ flex: 1 }} />
       </Doc.Fonts>,
     );
   });

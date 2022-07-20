@@ -7,11 +7,12 @@ export default () =>
 
     .variant('web', (config) =>
       config
+        .outdir('dist/sys.libs')
         .target('web')
         .port(5050)
 
         .static('static')
-        .files((e) => e.redirect(false, '*.worker.js').access('public', '**/*.{png,jpg,svg}'))
+        .files((e) => e.access('public', '**/*.{png,jpg,svg}'))
         .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
 
         /**

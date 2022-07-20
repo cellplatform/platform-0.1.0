@@ -17,7 +17,7 @@ export function init(args: t.IArgs) {
 
   return new ModuleFederationPlugin({
     name,
-    filename: DEFAULT.FILE.JS.REMOTE_ENTRY,
+    filename: DEFAULT.FILE.ENTRY.REMOTE,
     remotes: unescape(model.remotes),
     exposes: unescape(model.exposes),
     shared: unescape(model.shared),

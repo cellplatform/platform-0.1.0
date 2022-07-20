@@ -1,6 +1,7 @@
 import { prompt } from '@platform/cli.prompt';
 import { exec } from '@platform/exec';
 import { Cmds } from './Cmds';
+import { log } from './common';
 
 const Imports = {
   'sys.libs': import('./Deploy-sys.libs'),
@@ -20,8 +21,8 @@ const Imports = {
     message: 'run',
     items: [
       { name: 'compile all typescript modules (in "pkg.sys")', value: 'build.all' },
-      { name: 'bundle: local webpack', value: 'bundle' },
-      ...deployKeys.map((value) => ({ name: `deploy: "${value}"`, value: `deploy.${value}` })),
+      { name: '🌳 bundle: "sys.libs"', value: 'bundle.sys.libs' },
+      ...deployKeys.map((value) => ({ name: `🚀 deploy: "${value}"`, value: `deploy.${value}` })),
       { name: 'all', value: 'all' },
     ],
   });
@@ -32,15 +33,17 @@ const Imports = {
    * Compile module typescript.
    */
   if (isSelected('build.all', 'all')) {
+    log.info.gray(`compiling ${log.white('typescript')}:`);
     const res = await Cmds.buildAll({ within: '../../pkg.sys' });
     exitOnError(res.code);
   }
 
   /**
-   * Local Bundle
+   * Webpack bundling.
    */
-  if (isSelected('bundle', 'all')) {
-    const res = await exec.command('yarn bundle').run();
+  if (isSelected('bundle.sys.libs', 'all')) {
+    const cmd = `yarn bundle`;
+    const res = await exec.command(cmd).run();
     exitOnError(res.code);
   }
 
@@ -55,9 +58,8 @@ const Imports = {
 
   if (isSelected('all')) deployScripts = Object.keys(Imports).map((key) => Imports[key]);
 
-  const running = deployScripts.map(async (dynamicImport) => {
+  for (const dynamicImport of deployScripts) {
     const script = (await dynamicImport).default;
     await script();
-  });
-  await Promise.all(running);
+  }
 })();

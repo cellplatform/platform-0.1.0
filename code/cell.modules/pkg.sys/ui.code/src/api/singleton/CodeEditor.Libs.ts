@@ -1,4 +1,4 @@
-import { t, http, Is } from '../../common';
+import { t, http, Is } from '../common';
 
 type M = t.ICodeEditorLibs;
 

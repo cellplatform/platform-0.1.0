@@ -10,7 +10,7 @@ export type VercelConfigFile = {
   trailingSlash?: boolean;
   redirects?: VercelConfigRedirect[];
   rewrites?: VercelConfigRewrite[];
-  headers?: VercelConfigHeader;
+  headers?: VercelConfigHeader[];
 };
 export type VercelConfigRedirect = { source: string; destination: string };
 export type VercelConfigRewrite = { source: string; destination: string };

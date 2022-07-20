@@ -15,7 +15,7 @@ export default () =>
 
         .entry('main', './src/entry/dom')
         .static('static')
-        .files((e) => e.redirect(false, '*.worker.js').access('public', '**/*.{png,jpg,svg}'))
+        .files((e) => e.access('public', '**/*.{png,jpg,svg}'))
 
         .expose('./Dev', './src/Dev.Harness')
         .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom'])),

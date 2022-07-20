@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { filter, share, takeUntil, map } from 'rxjs/operators';
 
-import { rx, t, Is, WaitForResponse, slug } from '../../common';
+import { rx, t, Is, WaitForResponse, slug } from '../common';
 import { InstanceEvents } from './Instance.Events';
 
 const create: t.CodeEditorEventsFactory = (input) => {

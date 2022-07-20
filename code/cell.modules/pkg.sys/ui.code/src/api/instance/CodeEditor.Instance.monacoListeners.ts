@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 
 import { Monaco } from '../../api';
-import { R, t, Translate } from '../../common';
+import { R, t, Translate } from '../common';
 
 /**
  * Event handlers for the Monaco code-editor instance.

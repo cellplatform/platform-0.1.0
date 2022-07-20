@@ -54,7 +54,6 @@ export type CompilerModelPaths = {
   out: {
     base: string; //    NB: root webpack 'outdir'.
     dist: string; //    NB: <base>/<target>
-    bundle: string; //  NB: zipped version of the 'dist' folder.
   };
 };
 
@@ -62,7 +61,6 @@ export type CompilerModelPaths = {
  * Output File.
  */
 export type CompilerModelFiles = {
-  redirects?: t.CompilerModelRedirect[];
   access?: t.CompilerModelFileAccess[];
 };
 
@@ -71,12 +69,6 @@ export type CompilerModelFileAccess = {
   permission: CompilerModelFileAccessPermission;
   grep?: string;
 };
-
-/**
- * File Redirection Rules
- */
-export type CompilerModelRedirectAction = 'ALLOW' | 'DENY';
-export type CompilerModelRedirect = { action?: CompilerModelRedirectAction; grep?: string };
 
 /**
  * HTML

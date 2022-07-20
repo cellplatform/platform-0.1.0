@@ -1,4 +1,4 @@
-import { fs, t } from './common';
+import { log, fs, t } from './common';
 
 type DirPath = string;
 
@@ -30,7 +30,7 @@ export const Util = {
         if (def.redirect) {
           json.redirects?.push({
             source: format(`/${source}`),
-            destination: format(format(def.redirect)),
+            destination: format(def.redirect),
           });
         }
 
@@ -44,6 +44,11 @@ export const Util = {
         });
       });
     }
+
+    json.redirects?.push({
+      source: `/favicon.ico`,
+      destination: `/static/favicon.ico`,
+    });
 
     return json;
   },
@@ -63,21 +68,26 @@ export const Util = {
   /**
    * Copy a directory of files.
    */
-  async mergeDirectory(source: DirPath, target: DirPath) {
-    source = fs.resolve(source);
-    target = fs.resolve(target);
+  async mergeDirectory(source: DirPath, target: DirPath, options: { log?: boolean } = {}) {
+    const sourceDir = fs.resolve(source);
+    const targetDir = fs.resolve(target);
 
-    if (!(await fs.is.dir(source))) {
-      throw new Error(`Directory does not exist. Path: "${source}"`);
+    if (options.log) {
+      log.info.gray(`  • from: ${sourceDir}`);
+      log.info.gray(`  • to:   ${targetDir}`);
     }
 
-    const pattern = fs.join(source, `**`);
-    const paths = (await fs.glob.find(pattern)).map((source) => {
-      const path = source.substring(source.length);
-      return { source, target: fs.join(target, path) };
+    if (!(await fs.is.dir(sourceDir))) {
+      throw new Error(`Directory does not exist. Path: "${sourceDir}"`);
+    }
+
+    const paths = (await fs.glob.find(fs.join(sourceDir, `**`))).map((source) => {
+      const path = source.substring(sourceDir.length);
+      return { source, target: fs.join(targetDir, path) };
     });
 
     for (const item of paths) {
+      log.info.gray(`          • ${fs.basename(item.target.substring(targetDir.length))}`);
       await fs.copy(item.source, item.target);
     }
 

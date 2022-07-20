@@ -1,4 +1,4 @@
-import { t } from '../../common';
+import { t } from '../common';
 
 export const CodeEditorAction = (
   editor: t.IMonacoStandaloneCodeEditor,

@@ -1,4 +1,4 @@
-import { Is, rx, t } from '../../common';
+import { Is, rx, t } from '../common';
 
 /**
  * Handles events issued to the editor.

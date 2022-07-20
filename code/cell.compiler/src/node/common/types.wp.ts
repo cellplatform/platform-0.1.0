@@ -58,10 +58,11 @@ export type WpTarget = string | string[] | false;
  * https://webpack.js.org/configuration/output
  */
 export type WpOutput = {
-  filename?: string;
   path?: string;
   publicPath?: string;
   crossOriginLoading?: false | 'anonymous' | 'use-credentials';
+  filename?: string | ((data: WpPathData) => string);
+  chunkFilename?: string | ((data: WpPathData) => string);
 };
 
 /**
@@ -141,6 +142,12 @@ export type WpPluginFactory = (compiler: Compiler) => WpPlugin;
  * https://webpack.js.org/configuration/mode
  */
 export type WpMode = 'production' | 'development';
+
+/**
+ * https://webpack.js.org/configuration/output/#outputfilename
+ */
+export type WpPathData = { hash: string; runtime: string; chunk: WpChunkPathData };
+export type WpChunkPathData = { id: number; name: string; hash: string };
 
 /**
  * https://webpack.js.org/configuration/devtool

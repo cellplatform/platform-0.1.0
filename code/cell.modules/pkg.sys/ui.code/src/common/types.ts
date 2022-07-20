@@ -19,6 +19,7 @@ export { Http } from '@platform/http.types';
 /**
  * @system
  */
+export { ModuleDefaultEntry, ModuleDefaultEntryContext } from 'sys.runtime.web/lib/types';
 export { Fs, SysFsEvents, FsViewInstance } from 'sys.fs/lib/types';
 export { ListSelectionState } from 'sys.ui.primitives/lib/types';
 

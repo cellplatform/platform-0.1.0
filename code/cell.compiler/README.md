@@ -24,7 +24,6 @@ To use the compiler from commands within `package.json` include the following sc
   "bundle": "cell.compiler bundle $@",
   "watch": "cell.compiler watch $@",
   "info": "cell.compiler info $@",
-  "upload": "cell.compiler upload $@",
   "clean": "cell.compiler clean $@",
   "serve": "cell.compiler serve $@",
 },

@@ -11,7 +11,5 @@ export const Font = {
   useFont,
   load,
 
-  Ui: {
-    FontCard: FontCard,
-  },
+  UI: { FontCard },
 };
