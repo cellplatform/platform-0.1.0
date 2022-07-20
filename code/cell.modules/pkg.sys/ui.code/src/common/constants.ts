@@ -2,22 +2,6 @@ import * as t from './types';
 
 export const LANGUAGES: t.CodeEditorLanguage[] = ['typescript', 'javascript', 'json', 'markdown'];
 
-const MODEL: t.CodeEditorModel = {
-  text: '',
-  language: 'typescript',
-  selection: {
-    cursor: { line: 1, column: 1 },
-    primary: { end: { line: 1, column: 1 }, start: { line: 1, column: 1 } },
-    secondary: [],
-  },
-};
-
-export const DEFAULT = {
-  THEME: 'dark' as t.CodeEditorTheme,
-  LANGUAGE: { TS: 'typescript' as t.CodeEditorLanguage },
-  MODEL,
-};
-
 export const COLORS = {
   WHITE: '#fff',
   DARK: '#293042', // Inky blue/black.
@@ -38,8 +22,23 @@ export const PATH = {
   STATIC: {
     VS: 'static/vs',
     TYPES: {
-      CELL: 'static/types.d/lib.cell',
       ES: 'static/types.d/lib.es',
+      SYS: 'static/types.d/lib.sys',
+    },
+  },
+};
+
+export const DEFAULT = {
+  THEME: <t.CodeEditorTheme>'dark',
+  LANGUAGE: { TS: <t.CodeEditorLanguage>'typescript' },
+  PATH,
+  MODEL: <t.CodeEditorModel>{
+    text: '',
+    language: 'typescript',
+    selection: {
+      cursor: { line: 1, column: 1 },
+      primary: { end: { line: 1, column: 1 }, start: { line: 1, column: 1 } },
+      secondary: [],
     },
   },
 };

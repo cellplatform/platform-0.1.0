@@ -1,5 +1,6 @@
 import { fs } from '@platform/fs';
 import { Vercel, t, log } from 'vendor.cloud.vercel/lib/node';
+import { PATH } from '../src/common/constants';
 
 const token = process.env.VERCEL_TEST_TOKEN || '';
 
@@ -14,7 +15,7 @@ export async function deploy(team: string, project: string, alias: string) {
       const rewrites = await getVsProxyRewrites(e.dir);
 
       if (!silent) {
-        const match = `${log.white('**/static/vs/**')}`;
+        const match = `${log.white(`**/${PATH.STATIC.VS}/**`)}`;
         const action = `add proxy rewrites "${match}" for ${rewrites.length} files.`;
         log.info.gray(`(vercel.json) ${action}`);
       }
@@ -44,7 +45,7 @@ export async function deploy(team: string, project: string, alias: string) {
  * [Helpers]
  */
 async function getVsProxyRewrites(dir: string) {
-  const pattern = fs.join(dir, '/static/vs/**');
+  const pattern = fs.join(dir, PATH.STATIC.VS, '**');
   const paths = await fs.glob.find(pattern);
 
   return paths

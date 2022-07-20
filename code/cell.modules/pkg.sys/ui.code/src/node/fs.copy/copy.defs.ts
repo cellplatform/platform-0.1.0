@@ -12,7 +12,7 @@ export async function copyDefs() {
   log.info.gray(`Type definitions\n`);
 
   await copyEcmaScript();
-  await copyCellTypes();
+  await copySysTypes();
 }
 
 /**
@@ -56,9 +56,9 @@ async function copyEcmaScript() {
 }
 
 /**
- * Copy the [cell.types] declarations.
+ * Copy the [sys.types] declarations.
  */
-async function copyCellTypes() {
+async function copySysTypes() {
   /**
    * TODO 🐷
    * NOTE: These are no longer the set of libs to copy.
@@ -71,7 +71,7 @@ async function copyCellTypes() {
    */
 
   const sourceDir = fs.join(PATH.NODE_MODULES, '@platform/cell.types/lib/types');
-  const targetDir = fs.resolve(PATH.STATIC.TYPES.CELL);
+  const targetDir = fs.resolve(PATH.STATIC.TYPES.SYS);
   const filenames = (await fs.readdir(sourceDir)).filter((name) => name.endsWith('.d.ts'));
 
   await copy({
@@ -82,9 +82,7 @@ async function copyCellTypes() {
       const lines = text.split('\n').map((line) => {
         // NB: All the import refs are to be ignored as the Monaco editor
         //     is loading all of the declarations directly.
-        if (line === `import { t } from '../common';`) {
-          return '';
-        }
+        if (line === `import { t } from '../common';`) return '';
         line = line.replace(/t\./g, '');
         line = line.includes('export') && line.includes('from') ? '' : line;
         return line;
