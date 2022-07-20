@@ -13,7 +13,9 @@ import { t, DEFAULT } from '../common';
 /**
  * Configure the "prettier" code formatter.
  */
-export async function registerPrettier(api: t.ICodeEditorSingleton) {
+export async function registerPrettier(args: { api: t.ICodeEditorSingleton }) {
+  const { api } = args;
+
   api.monaco.languages.registerDocumentFormattingEditProvider(DEFAULT.LANGUAGE.TS, {
     async provideDocumentFormattingEdits(model, options, token) {
       try {

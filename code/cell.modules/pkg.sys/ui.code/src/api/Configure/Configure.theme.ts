@@ -5,9 +5,9 @@ type T = { name: t.CodeEditorTheme; data: t.IMonacoStandaloneThemeData };
 /**
  * Configure the editor themes.
  */
-export function defineThemes(api: t.ICodeEditorSingleton) {
+export function defineThemes(args: { api: t.ICodeEditorSingleton }) {
   const define = (theme: T) => {
-    api.monaco.editor.defineTheme(theme.name, theme.data);
+    args.api.monaco.editor.defineTheme(theme.name, theme.data);
   };
   define(Themes.light());
   define(Themes.dark());
@@ -18,7 +18,8 @@ export function defineThemes(api: t.ICodeEditorSingleton) {
  */
 export const Themes = {
   light(): T {
-    const data = require('monaco-themes/themes/Chrome DevTools.json') as t.IMonacoStandaloneThemeData; // eslint-disable-line
+    const data =
+      require('monaco-themes/themes/Chrome DevTools.json') as t.IMonacoStandaloneThemeData; // eslint-disable-line
     return { name: 'light', data };
   },
 

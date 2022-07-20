@@ -1,10 +1,10 @@
-import { t, constants } from '../common';
+import { t } from '../common';
 
 /**
  * Configure language (typescript) settings of the IDE.
  */
-export async function registerLanguage(api: t.ICodeEditorSingleton) {
-  const ts = api.monaco.languages.typescript;
+export async function registerLanguage(args: { api: t.ICodeEditorSingleton }) {
+  const ts = args.api.monaco.languages.typescript;
   const defaults = ts.typescriptDefaults;
 
   /**
@@ -33,10 +33,4 @@ export async function registerLanguage(api: t.ICodeEditorSingleton) {
   defaults.setDiagnosticsOptions({
     diagnosticCodesToIgnore: Object.values(CODES),
   });
-
-  await Promise.all([
-    api.libs.fromNetwork(constants.PATH.STATIC.TYPES.ES),
-    // api.libs.loadDefs('lib.cell.d.ts'), // TODO 🐷 - this needs updating to: [Runtime/types.inner.env].
-    //
-  ]);
 }
