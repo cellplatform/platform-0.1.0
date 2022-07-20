@@ -27,7 +27,6 @@
     "@platform/polyfill": "0.0.7",
     "@platform/test": "0.2.10",
     "@platform/ts": "4.1.23",
-    "parcel-bundler": "1.12.5",
     "react": "17.0.2"
   },
   "files": [
@@ -35,7 +34,6 @@
     "css",
     "reset.css",
     "!lib/test",
-    "!lib/test.parcel",
     "!*.TEST.{js, mjs, d.ts}"
   ],
   "license": "MIT"
