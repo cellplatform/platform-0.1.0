@@ -7,7 +7,6 @@ export type Compiler = {
   watch: t.CompilerRunWatch;
   bundle: t.CompilerRunBundle;
   bundleDeclarations: t.CompilerRunBundleDeclarations;
-  cell: t.CompilerCreateCell;
 };
 
 export type CompilerPackageJson = t.NpmPackageJson & { compiler: { port: number } };

@@ -1,7 +1,6 @@
 import { t } from '../common';
 import { bundle } from './task.bundle';
 import { bundleDeclarations } from './task.bundle.declarations';
-import { cell } from './task.cell';
 import { devserver } from './task.devserver';
 import { watch } from './task.watch';
 
@@ -13,5 +12,4 @@ export const Tasks: t.CompilerTasks = {
   bundleDeclarations,
   watch,
   devserver,
-  cell,
 };

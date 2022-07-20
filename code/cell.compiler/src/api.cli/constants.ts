@@ -42,20 +42,6 @@ export const COMMANDS: t.Commands = {
       '--port': `(optional) Override the configured port`,
     },
   },
-  upload: {
-    description: 'Bundle and upload to a cell',
-    params: {
-      '--dir': `The target directory within the cell`,
-      '--host': `The target host domain`,
-      '--uri': `The target cell URI (eg "cell:<ns>:A1")`,
-      '--config': PARAMS.COMMON.config,
-      '--name': PARAMS.COMMON.name,
-      '--no-bundle': `(optional) Skip bundling the project`,
-      '--no-clean': `(optional) Do not clean the cache before bundling`,
-      '--no-dist': `(optional) Only upload the zipped bundle (not the unzipped /dist folder)`,
-      '--mode': PARAMS.COMMON.mode,
-    },
-  },
   info: {
     description: 'Information about a build configuration',
     params: {

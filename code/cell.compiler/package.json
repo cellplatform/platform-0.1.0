@@ -19,7 +19,6 @@
     "watch": "yarn cmd watch $@",
     "start": "yarn cmd dev $@",
     "dev": "yarn cmd dev --no-exports $@",
-    "upload": "yarn cmd upload $@",
     "serve": "yarn cmd serve $@",
     "info": "yarn cmd info $@",
     "clean": "rm -rf tmp && yarn cmd clean $@",
