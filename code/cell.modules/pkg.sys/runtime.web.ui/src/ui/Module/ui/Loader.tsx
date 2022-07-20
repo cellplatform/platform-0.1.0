@@ -26,7 +26,7 @@ export const Loader: React.FC<LoaderProps> = (props) => {
   if (address && typeof module === 'object' && typeof module.default === 'function') {
     const { namespace, entry } = address;
     const url = props.url ?? address.url;
-    const ctx: t.ModuleDefaultEntryContext = { bus, source: { url, namespace, entry } };
+    const ctx: t.ModuleDefaultEntryContext = { source: { url, namespace, entry } };
     const res = remote.module.default(bus, ctx);
     if (React.isValidElement(res)) return res;
   }
