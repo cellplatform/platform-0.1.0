@@ -1,21 +1,22 @@
 import React, { useEffect } from 'react';
 
 import { css, CssValue, rx, t } from '../common';
-import { DevEnv } from '../ui/DevEnv';
 import { CodeEditor } from '../ui/CodeEditor';
+import { DevEnv } from '../ui/DevEnv';
+import { CommonEntry } from './Export.util';
 
 type Id = string;
 
 export type AppProps = {
+  bus: t.EventBus<any>;
+  staticRoot?: string;
   fs?: { id: Id; path: string };
   allowRubberband?: boolean; // Page rubber-band effect in Chrome (default: false).
   style?: CssValue;
 };
 
-const bus = rx.bus();
-
 export const App: React.FC<AppProps> = (props) => {
-  const { fs } = props;
+  const { fs, bus } = props;
 
   const language: t.CodeEditorLanguage = 'markdown';
   const state = CodeEditor.useState({ bus, fs });
@@ -32,13 +33,18 @@ export const App: React.FC<AppProps> = (props) => {
    * [Render]
    */
   const styles = {
-    base: css({ Absolute: 0, display: 'flex', overflow: 'hidden' }),
+    base: css({
+      Absolute: 0,
+      display: 'flex',
+      overflow: 'hidden',
+    }),
   };
   return (
     <div {...css(styles.base, props.style)}>
       <DevEnv
+        staticRoot={props.staticRoot}
         style={{ flex: 1 }}
-        instance={{ bus }}
+        instance={{ bus: props.bus ?? bus }}
         text={state.text}
         language={language}
         onReady={state.onReady}
@@ -46,3 +52,13 @@ export const App: React.FC<AppProps> = (props) => {
     </div>
   );
 };
+
+/**
+ * Default entry function.
+ */
+const entry: t.ModuleDefaultEntry = (bus, ctx) => {
+  CommonEntry.init(bus, ctx);
+  return <App bus={bus} fs={{ id: 'fs.sample', path: 'sample/markdown.md' }} />;
+};
+
+export default entry;

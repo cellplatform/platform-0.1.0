@@ -2,10 +2,11 @@ import '@platform/css/reset.css';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { t, rx } from '../common';
 
 const Imports = {
-  DevHarness: () => import('../Dev.Harness'),
-  App: () => import('./App'),
+  DevHarness: () => import('./Export.Dev.Harness'),
+  App: () => import('./Export.Sample.App'),
 };
 
 const query = () => {
@@ -30,15 +31,25 @@ if (isDev) document.title = `${document.title} (dev)`;
  */
 (async () => {
   const root = document.getElementById('root');
+  const bus = rx.bus();
+
+  const ctx: t.ModuleDefaultEntryContext = {
+    source: {
+      url: location.href,
+      entry: '',
+      namespace: isDev ? 'sys.ui.code:dev' : 'sys.ui.code',
+    },
+  };
 
   if (isDev) {
-    const DevHarness = (await Imports.DevHarness()).DevHarness;
-    ReactDOM.render(<DevHarness />, root);
+    const Module = await Imports.DevHarness();
+    const el = Module.default(bus, ctx);
+    ReactDOM.render(el, root);
   }
 
   if (!isDev) {
-    const App = (await Imports.App()).App;
-    const el = <App fs={{ id: 'fs.sample', path: 'sample/markdown.md' }} />;
+    const Module = await Imports.App();
+    const el = Module.default(bus, ctx);
     ReactDOM.render(el, root);
   }
 })();
