@@ -16,6 +16,7 @@ export type CodeEditorEvents = {
   dispose(): void;
 
   editor(id: string): t.CodeEditorInstanceEvents;
+
   readonly libs: {
     clear(): void;
     load(url: string): Promise<t.CodeEditorLibsLoaded>;

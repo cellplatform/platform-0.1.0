@@ -17,8 +17,8 @@ export type CodeEditorInstanceEvent =
   | CodeEditorSelectionChangedEvent
   | CodeEditorFocusChangedEvent
   | CodeEditorTextChangedEvent
-  | CodeEditorRunActionEvent
-  | CodeEditorActionCompleteEvent
+  | CodeEditorRunActionReqEvent
+  | CodeEditorRunActionResEvent
   | CodeEditorModelReqEvent
   | CodeEditorModelResEvent;
 
@@ -127,24 +127,24 @@ export type CodeEditorTextChange = {
 /**
  * Fires to invoke the given action upon the editor.
  */
-export type CodeEditorRunActionEvent = {
-  type: 'CodeEditor/action:run';
-  payload: CodeEditorRunAction;
+export type CodeEditorRunActionReqEvent = {
+  type: 'CodeEditor/action:req';
+  payload: CodeEditorRunActionReq;
 };
-export type CodeEditorRunAction = {
-  instance: Id;
-  action: t.MonacoAction;
-  tx?: string;
-};
-
-export type CodeEditorActionCompleteEvent = {
-  type: 'CodeEditor/action:complete';
-  payload: CodeEditorActionComplete;
-};
-export type CodeEditorActionComplete = {
+export type CodeEditorRunActionReq = {
   tx: string;
   instance: Id;
   action: t.MonacoAction;
+};
+
+export type CodeEditorRunActionResEvent = {
+  type: 'CodeEditor/action:res';
+  payload: CodeEditorRunActionRes;
+};
+export type CodeEditorRunActionRes = {
+  tx: string;
+  instance: Id;
+  action?: t.MonacoAction;
   error?: string;
 };
 

@@ -11,15 +11,16 @@ export function InstanceController(bus: t.CodeEditorEventBus, editor: t.CodeEdit
   /**
    * Run action.
    */
-  rx.payload<t.CodeEditorRunActionEvent>($, 'CodeEditor/action:run')
+  rx.payload<t.CodeEditorRunActionReqEvent>($, 'CodeEditor/action:req')
     .pipe()
     .subscribe(async (e) => {
-      const tx = e.tx || '';
-      const complete = (error?: string) =>
+      const complete = (error?: string) => {
+        const { tx, action } = e;
         bus.fire({
-          type: 'CodeEditor/action:complete',
-          payload: { instance, action: e.action, error, tx },
+          type: 'CodeEditor/action:res',
+          payload: { tx, instance, action, error },
         });
+      };
       try {
         const action = editor.action(e.action);
         await action.run();

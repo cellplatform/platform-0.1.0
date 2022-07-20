@@ -1,7 +1,5 @@
-import { firstValueFrom, of, timeout } from 'rxjs';
-import { catchError, filter, share, takeUntil } from 'rxjs/operators';
-
-import { Is, rx, slug, t, WaitForResponse } from '../common';
+import { filter, share, takeUntil } from 'rxjs/operators';
+import { Is, rx, slug, t } from '../common';
 
 /**
  * Editor API
@@ -17,11 +15,6 @@ export const InstanceEvents: t.CodeEditorInstanceEventsFactory = (args) => {
     filter((e) => (instance ? e.payload.instance === instance : true)),
     share(),
   );
-
-  const WaitFor = {
-    Action: WaitForResponse<t.CodeEditorActionCompleteEvent>($, 'CodeEditor/action:complete'),
-    // GetText: WaitForResponse<t.CodeEditorTextResEvent>($, 'CodeEditor/text:res'),
-  };
 
   /**
    * Focus
@@ -68,15 +61,12 @@ export const InstanceEvents: t.CodeEditorInstanceEventsFactory = (args) => {
       res$: rx.payload<t.CodeEditorTextResEvent>($, 'CodeEditor/text:res'),
 
       async fire(options = {}) {
+        const { timeout = 1000 } = options;
         const tx = slug();
-        const msecs = options.timeout ?? 1000;
-        const first = firstValueFrom(
-          text.get.res$.pipe(
-            filter((e) => e.tx === tx),
-            timeout(msecs),
-            catchError(() => of(`[Text] request timed out after ${msecs} msecs`)),
-          ),
-        );
+
+        const op = 'text.get';
+        const res$ = text.get.res$.pipe(filter((e) => e.tx === tx));
+        const first = rx.asPromise.first<t.CodeEditorTextResEvent>(res$, { op, timeout });
 
         bus.fire({
           type: 'CodeEditor/text:req',
@@ -84,8 +74,8 @@ export const InstanceEvents: t.CodeEditorInstanceEventsFactory = (args) => {
         });
 
         const res = await first;
-        if (typeof res === 'string') throw new Error(res);
-        return res.text;
+        if (res.error) throw new Error(res.error.message);
+        return res.payload?.text ?? '';
       },
     },
   };
@@ -94,12 +84,26 @@ export const InstanceEvents: t.CodeEditorInstanceEventsFactory = (args) => {
    * Action (commands)
    */
   const action: t.CodeEditorInstanceEvents['action'] = {
-    run$: rx.payload<t.CodeEditorRunActionEvent>($, 'CodeEditor/action:run'),
-    async fire(action: t.MonacoAction) {
+    req$: rx.payload<t.CodeEditorRunActionReqEvent>($, 'CodeEditor/action:req'),
+    res$: rx.payload<t.CodeEditorRunActionResEvent>($, 'CodeEditor/action:res'),
+    async fire(cmd: t.MonacoAction, options = {}) {
+      const { timeout = 3000 } = options;
       const tx = slug();
-      const wait = WaitFor.Action.response(tx);
-      bus.fire({ type: 'CodeEditor/action:run', payload: { tx, instance, action } });
-      return (await wait).payload;
+
+      const op = 'action';
+      const res$ = action.res$.pipe(filter((e) => e.tx === tx));
+      const first = rx.asPromise.first<t.CodeEditorRunActionResEvent>(res$, { op, timeout });
+
+      bus.fire({
+        type: 'CodeEditor/action:req',
+        payload: { tx, instance, action: cmd },
+      });
+
+      const res = await first;
+      if (res.payload) return res.payload;
+
+      const error = res.error?.message ?? 'Failed';
+      return { tx, instance, error };
     },
   };
 
