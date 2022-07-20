@@ -1,9 +1,0 @@
-{
-  "name": "Hypersheet BI",
-  "entry": "bundle/index.html",
-  "devPort": 3001,
-  "window": {
-    "width": 1000,
-    "height": 650
-  }
-}

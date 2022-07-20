@@ -1,7 +1,0 @@
-**/*.js.map
-**/*.css.map
-**/src/**
-**/lib/**
-**/css/**
-**/test/**
-**/static/build/**
