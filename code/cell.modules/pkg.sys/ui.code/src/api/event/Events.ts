@@ -1,12 +1,11 @@
-import { Subject } from 'rxjs';
 import { filter, share, takeUntil, map } from 'rxjs/operators';
 
 import { rx, t, Is, WaitForResponse, slug } from '../common';
-import { InstanceEvents } from './Instance.Events';
+import { InstanceEvents } from './Events.Instance';
 
-const create: t.CodeEditorEventsFactory = (input) => {
+export const CodeEditorEvents: t.CodeEditorEventsFactory = (input, options = {}) => {
   const bus = rx.bus<t.CodeEditorEvent>(input);
-  const dispose$ = new Subject<void>();
+  const { dispose$, dispose } = rx.disposable(options.dispose);
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
@@ -49,7 +48,8 @@ const create: t.CodeEditorEventsFactory = (input) => {
 
   const api: t.CodeEditorEvents = {
     $,
-    dispose$: dispose$.asObservable(),
+    dispose$,
+    dispose,
     singleton$,
     instance$,
     libs,
@@ -57,14 +57,9 @@ const create: t.CodeEditorEventsFactory = (input) => {
     editor(id) {
       return InstanceEvents({ bus, id });
     },
-
-    dispose() {
-      dispose$.next();
-      dispose$.complete();
-    },
   };
 
   return api;
 };
 
-export const Events = { create, WaitForEvent: WaitForResponse };
+// export const Events = { create };

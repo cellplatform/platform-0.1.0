@@ -1,6 +1,6 @@
 import { rx, t } from '../common';
 import { expect, is, Test } from '../../test';
-import { InstanceEvents } from './Instance.Events';
+import { InstanceEvents } from './Events.Instance';
 
 type E = t.CodeEditorEvent;
 const bus = rx.bus<E>();

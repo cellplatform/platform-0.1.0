@@ -1,2 +1,2 @@
 export * from './Events';
-export * from './Instance.Events';
+export * from './Events.Instance';

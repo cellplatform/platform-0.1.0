@@ -3,7 +3,7 @@ import { loader } from '@monaco-editor/react';
 import { Configure } from './Configure';
 import { t, LANGUAGES } from './common';
 import { CodeEditorSingleton } from './singleton';
-import { Events } from './event';
+import { CodeEditorEvents } from './event';
 import { staticPaths } from './Configure/Configure.paths';
 
 let singleton: Promise<t.ICodeEditorSingleton>;
@@ -63,7 +63,7 @@ export const CodeEditor = {
   /**
    * Create a generic event API.
    */
-  events(bus: t.EventBus<any>) {
-    return Events.create(bus);
+  events(bus: t.EventBus<any>, options?: { dispose?: t.Observable<any> }) {
+    return CodeEditorEvents(bus, options);
   },
 };

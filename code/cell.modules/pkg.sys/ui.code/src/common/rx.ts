@@ -4,8 +4,6 @@ import { catchError, filter, take } from 'rxjs/operators';
 import { rx } from './libs';
 import * as t from './types';
 
-type Milliseconds = number;
-
 /**
  * Helper for waiting for an event response.
  */
