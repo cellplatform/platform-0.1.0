@@ -1,9 +1,9 @@
-import { PATH } from '../common';
+import { PATH, t } from '../common';
 
 /**
  * Calculate static paths.
  */
-export function staticPaths(root?: string) {
+export function staticPaths(root?: string): t.CodeEditorStaticPaths {
   const trim = (path: string) => (path || '').replace(/^\/*/, '').replace(/\/*$/, '');
   const format = (path: string) => {
     path = trim(path);
@@ -14,7 +14,7 @@ export function staticPaths(root?: string) {
     vs: format(PATH.STATIC.VS),
     types: {
       es: format(PATH.STATIC.TYPES.ES),
-      cell: format(PATH.STATIC.TYPES.SYS),
+      sys: format(PATH.STATIC.TYPES.SYS),
     },
   };
 }

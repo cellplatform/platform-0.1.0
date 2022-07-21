@@ -10,7 +10,6 @@ import { CodeEditorLibsController } from './CodeEditor.Libs.Controller';
  *    - https://microsoft.github.io/monaco-editor/api/index.html
  *
  */
-
 export function CodeEditorSingleton(args: { bus: t.EventBus<any>; monaco: t.IMonaco }) {
   const { bus, monaco } = args;
   const libs = CodeEditorLibs(monaco);

@@ -3,6 +3,7 @@ import { DevActions, Test } from 'sys.ui.dev';
 import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
 const Imports = {
+  CodeEditorSingleton: import('./api/CodeEditor.Singleton/TEST'),
   ConfigureTheme: import('./api/Configure/Configure.theme.TEST'),
   Events: import('./api/Events/TEST'),
   Is: import('./common/Is.TEST'),

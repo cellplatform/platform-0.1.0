@@ -1,5 +1,5 @@
-import { equals } from 'ramda';
-export const R = { equals };
+import { equals, clone } from 'ramda';
+export const R = { equals, clone };
 
 /**
  * @platform

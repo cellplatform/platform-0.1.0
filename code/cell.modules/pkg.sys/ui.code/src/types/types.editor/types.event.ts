@@ -25,12 +25,48 @@ export type CodeEditorInstanceEvent =
 /**
  * Global (Singleton) Events.
  */
-export type CodeEditorSingletonEvent = CodeEditorLibsEvent;
+export type CodeEditorSingletonEvent =
+  | CodeEditorInitReqEvent
+  | CodeEditorInitResEvent
+  | CodeEditorStatusReqEvent
+  | CodeEditorStatusResEvent
+  | CodeEditorLibsEvent;
+
 export type CodeEditorLibsEvent =
   | CodeEditorLibsClearReqEvent
   | CodeEditorLibsClearResEvent
   | CodeEditorLibsLoadReqEvent
   | CodeEditorLibsLoadResEvent;
+
+/**
+ * Initialize the CodeEditor environment.
+ */
+export type CodeEditorInitReqEvent = {
+  type: 'sys.ui.code/init:req';
+  payload: CodeEditorInitReq;
+};
+export type CodeEditorInitReq = { tx: string; staticRoot?: string };
+
+export type CodeEditorInitResEvent = {
+  type: 'sys.ui.code/init:res';
+  payload: CodeEditorInitRes;
+};
+export type CodeEditorInitRes = { tx: string; info?: t.CodeEditorStatus; error?: string };
+
+/**
+ * Status information about the CodeEditor (and the environment).
+ */
+export type CodeEditorStatusReqEvent = {
+  type: 'sys.ui.code/status:req';
+  payload: CodeEditorStatusReq;
+};
+export type CodeEditorStatusReq = { tx: string };
+
+export type CodeEditorStatusResEvent = {
+  type: 'sys.ui.code/status:res';
+  payload: CodeEditorStatusRes;
+};
+export type CodeEditorStatusRes = { tx: string; info?: t.CodeEditorStatus; error?: string };
 
 /**
  * Fired to assign focus to an editor.

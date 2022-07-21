@@ -13,10 +13,24 @@ export type CodeEditorEventsFactory = (
  * API wrapper for event observables.
  */
 export type CodeEditorEvents = t.Disposable & {
+  readonly id: Id;
   readonly $: t.Observable<t.CodeEditorEvent>;
   readonly singleton$: t.Observable<t.CodeEditorSingletonEvent>;
   readonly instance$: t.Observable<t.CodeEditorInstanceEvent>;
   readonly libs: CodeEditorLibEvents;
+
+  readonly status: {
+    req$: t.Observable<t.CodeEditorStatusReq>;
+    res$: t.Observable<t.CodeEditorStatusRes>;
+    get(options?: Options): Promise<t.CodeEditorStatusRes>;
+  };
+
+  readonly init: {
+    req$: t.Observable<t.CodeEditorInitReq>;
+    res$: t.Observable<t.CodeEditorInitRes>;
+    fire(args: { staticRoot?: string } & Options): Promise<t.CodeEditorInitRes>;
+  };
+
   editor(id: string): t.CodeEditorInstanceEvents;
 };
 
