@@ -37,19 +37,11 @@ if (isDev) document.title = `${document.title} (dev)`;
     source: {
       url: location.href,
       entry: '',
-      namespace: isDev ? 'sys.ui.code:dev' : 'sys.ui.code',
+      namespace: isDev ? 'sys.ui.code:DEV' : 'sys.ui.code',
     },
   };
 
-  if (isDev) {
-    const Module = await Imports.DevHarness();
-    const el = Module.default(bus, ctx);
-    ReactDOM.render(el, root);
-  }
-
-  if (!isDev) {
-    const Module = await Imports.App();
-    const el = Module.default(bus, ctx);
-    ReactDOM.render(el, root);
-  }
+  const Module = await (isDev ? Imports.DevHarness() : Imports.App());
+  const el = Module.default(bus, ctx);
+  ReactDOM.render(el, root);
 })();
