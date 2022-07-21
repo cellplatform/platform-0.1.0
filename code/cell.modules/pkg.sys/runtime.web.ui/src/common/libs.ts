@@ -6,6 +6,7 @@ export { css, Color, CssValue, Style, formatColor } from '@platform/css';
 export { useResizeObserver, FC } from '@platform/react';
 export { rx, slug, value, time } from '@platform/util.value';
 export { Http } from '@platform/http';
+export { Is } from '@platform/util.is';
 
 export { WebRuntime } from '@platform/cell.runtime.web';
 export { ManifestUrl } from '@platform/cell.schema';

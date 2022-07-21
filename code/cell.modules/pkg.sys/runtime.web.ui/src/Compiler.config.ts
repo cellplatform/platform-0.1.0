@@ -23,6 +23,7 @@ export default () =>
          */
         .expose('./Dev', './src/Dev.Harness')
         .expose('./DEV_SAMPLE.Foo', './src/exports.sample/Foo')
+        .expose('./DEV_SAMPLE.Async.Foo', './src/exports.sample/Foo.Async')
         .expose('./DEV_SAMPLE.error (on module load)', './src/exports.sample/ERROR.OnModuleLoad')
         .expose('./DEV_SAMPLE.error (on render)', './src/exports.sample/ERROR.OnRender'),
     );

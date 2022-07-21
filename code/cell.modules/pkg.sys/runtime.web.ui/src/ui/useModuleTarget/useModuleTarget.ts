@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { filter } from 'rxjs/operators';
 
-import { t, WebRuntime, WebRuntimeBus, rx } from '../common';
+import { Is, rx, t, WebRuntime, WebRuntimeBus } from '../common';
 
 type Id = string;
 type TargetName = string;
@@ -17,11 +17,10 @@ export function useModuleTarget<M = any>(args: {
   const { instance, target } = args;
   const busid = rx.bus.instance(instance.bus);
 
-  const [address, setAddress] = useState<Address | undefined>();
-  const [failed, setFailed] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [address, setAddress] = useState<Address | undefined>();
   const [module, setModule] = useState<M | undefined>();
-  const ok = !failed;
 
   useEffect(() => {
     const isTarget = Boolean(target);
@@ -62,11 +61,40 @@ export function useModuleTarget<M = any>(args: {
     return () => events.dispose();
   }, [target, instance.id, busid]); // eslint-disable-line
 
+  /**
+   * Runs a [DefaultModuleEntry] function if one has been loaded.
+   */
+  const renderDefaultEntry = async (bus: t.EventBus<any>) => {
+    const fn = (module as any)?.default as t.ModuleDefaultEntry;
+
+    if (ok && address && typeof fn === 'function') {
+      const { namespace, entry } = address;
+
+      const url = address.url;
+      const ctx: t.ModuleDefaultEntryContext = { source: { url, namespace, entry } };
+      const res = fn(bus, ctx);
+
+      const el = Is.promise(res) ? await res : res;
+      if (React.isValidElement(el)) return el;
+    }
+
+    return null;
+  };
+
+  /**
+   * API
+   */
+  const ok = !failed;
   return {
     ok,
     loading: ok ? loading : false,
+
     target,
-    address,
     module,
+
+    address,
+    addressKey: address ? `${address.url}:${address.namespace}:${address.entry}` : '',
+
+    renderDefaultEntry,
   };
 }
