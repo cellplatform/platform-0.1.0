@@ -14,9 +14,11 @@ export function CodeEditorLibsController(
   /**
    * Libs
    */
-  rx.payload<t.CodeEditorLibsClearEvent>($, 'CodeEditor/libs:clear')
+  rx.payload<t.CodeEditorLibsClearReqEvent>($, 'CodeEditor/libs/clear:req')
     .pipe()
-    .subscribe((e) => libs.clear());
+    .subscribe((e) => {
+      libs.clear();
+    });
 
   rx.payload<t.CodeEditorLibsLoadReqEvent>($, 'CodeEditor/libs/load:req')
     .pipe()

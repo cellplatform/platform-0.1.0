@@ -223,7 +223,7 @@ export const actions = DevActions<Ctx>()
     };
 
     e.title('Type Libraries');
-    e.button('clear', (e) => e.ctx.global.libs.clear());
+    e.button('clear', (e) => e.ctx.global.libs.clear.fire());
     e.hr(1, 0.1);
     e.button('load: lib.es', async (e) => {
       const url = resolvePath(PATH.STATIC.TYPES.ES);

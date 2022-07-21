@@ -27,5 +27,9 @@ export type CodeEditorLibEvents = {
     fire(url: string, options?: Options): Promise<t.CodeEditorLibsLoadRes>;
   };
 
-  clear(): void;
+  clear: {
+    req$: t.Observable<t.CodeEditorLibsClearReq>;
+    res$: t.Observable<t.CodeEditorLibsClearRes>;
+    fire(options?: Options): Promise<t.CodeEditorLibsClearRes>;
+  };
 };

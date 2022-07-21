@@ -14,8 +14,28 @@ export function CodeEditorLibEvents(args: {
     /**
      * Remove all type libraries.
      */
-    clear() {
-      bus.fire({ type: 'CodeEditor/libs:clear', payload: {} });
+    clear: {
+      req$: rx.payload<t.CodeEditorLibsClearReqEvent>($, 'CodeEditor/libs/clear:req'),
+      res$: rx.payload<t.CodeEditorLibsClearResEvent>($, 'CodeEditor/libs/clear:res'),
+      async fire(options = {}) {
+        const { timeout = 1000 } = options;
+        const tx = slug();
+
+        const op = 'libs.clear';
+        const res$ = libs.clear.res$.pipe(filter((e) => e.tx === tx));
+        const first = rx.asPromise.first<t.CodeEditorLibsClearResEvent>(res$, { op, timeout });
+
+        bus.fire({
+          type: 'CodeEditor/libs/clear:req',
+          payload: { tx },
+        });
+
+        const res = await first;
+        if (res.payload) return res.payload;
+
+        const error = res.error?.message ?? 'Failed';
+        return { tx, error };
+      },
     },
 
     /**

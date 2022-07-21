@@ -27,7 +27,8 @@ export type CodeEditorInstanceEvent =
  */
 export type CodeEditorSingletonEvent = CodeEditorLibsEvent;
 export type CodeEditorLibsEvent =
-  | CodeEditorLibsClearEvent
+  | CodeEditorLibsClearReqEvent
+  | CodeEditorLibsClearResEvent
   | CodeEditorLibsLoadReqEvent
   | CodeEditorLibsLoadResEvent;
 
@@ -151,13 +152,20 @@ export type CodeEditorRunActionRes = {
 /**
  * Type Definition Libraries
  */
-export type CodeEditorLibsClearEvent = {
-  type: 'CodeEditor/libs:clear';
-  payload: CodeEditorLibsClear;
+export type CodeEditorLibsClearReqEvent = {
+  type: 'CodeEditor/libs/clear:req';
+  payload: CodeEditorLibsClearReq;
 };
-export type CodeEditorLibsClear = {
+export type CodeEditorLibsClearReq = {
+  tx: string;
   // todo: exclude pattern (minimatch)
 };
+
+export type CodeEditorLibsClearResEvent = {
+  type: 'CodeEditor/libs/clear:res';
+  payload: CodeEditorLibsClearRes;
+};
+export type CodeEditorLibsClearRes = { tx: string; error?: string };
 
 export type CodeEditorLibsLoadReqEvent = {
   type: 'CodeEditor/libs/load:req';
