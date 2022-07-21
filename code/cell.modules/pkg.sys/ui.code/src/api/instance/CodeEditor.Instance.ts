@@ -1,7 +1,7 @@
 import { Monaco } from '../../api';
 import { slug, t, DEFAULT, rx } from '../common';
 import { CodeEditorAction } from './CodeEditor.Action';
-import { InstanceEvents } from '../event';
+import { InstanceEvents } from '../Events';
 import { InstanceController } from './CodeEditor.Instance.Controller';
 import { MonacoListeners } from './CodeEditor.Instance.monacoListeners';
 import { select } from './CodeEditor.Instance.select';

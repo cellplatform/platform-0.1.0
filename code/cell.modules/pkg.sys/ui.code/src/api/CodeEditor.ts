@@ -3,7 +3,7 @@ import { loader } from '@monaco-editor/react';
 import { Configure } from './Configure';
 import { t, LANGUAGES } from './common';
 import { CodeEditorSingleton } from './singleton';
-import { CodeEditorEvents } from './event';
+import { CodeEditorEvents } from './Events';
 import { staticPaths } from './Configure/Configure.paths';
 
 let singleton: Promise<t.ICodeEditorSingleton>;
