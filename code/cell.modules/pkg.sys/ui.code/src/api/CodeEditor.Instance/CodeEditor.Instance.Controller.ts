@@ -1,4 +1,4 @@
-import { Is, rx, t } from '../common';
+import { Is, rx, t, time } from '../common';
 
 /**
  * Handles events issued to the editor.
@@ -14,11 +14,14 @@ export function InstanceController(bus: t.CodeEditorEventBus, editor: t.CodeEdit
   rx.payload<t.CodeEditorRunActionReqEvent>($, 'sys.ui.code/action:req')
     .pipe()
     .subscribe(async (e) => {
+      const timer = time.timer();
+
       const complete = (error?: string) => {
         const { tx, action } = e;
+        const elapsed = timer.elapsed.msec;
         bus.fire({
           type: 'sys.ui.code/action:res',
-          payload: { tx, instance, action, error },
+          payload: { tx, instance, elapsed, action, error },
         });
       };
       try {

@@ -1,5 +1,5 @@
 import { filter, share, takeUntil } from 'rxjs/operators';
-import { Is, rx, slug, t } from '../common';
+import { Is, rx, slug, t, time } from '../common';
 
 /**
  * Editor API
@@ -97,6 +97,7 @@ export const CodeEditorInstanceEvents: t.CodeEditorInstanceEventsFactory = (args
       const res$ = action.res$.pipe(filter((e) => e.tx === tx));
       const first = rx.asPromise.first<t.CodeEditorRunActionResEvent>(res$, { op, timeout });
 
+      const timer = time.timer();
       bus.fire({
         type: 'sys.ui.code/action:req',
         payload: { tx, instance, action: cmd },
@@ -106,7 +107,8 @@ export const CodeEditorInstanceEvents: t.CodeEditorInstanceEventsFactory = (args
       if (res.payload) return res.payload;
 
       const error = res.error?.message ?? 'Failed';
-      return { tx, instance, error };
+      const elapsed = timer.elapsed.msec;
+      return { tx, instance, elapsed, error };
     },
   };
 
