@@ -13,7 +13,6 @@ export type MonacoEditorReadyHandler = (e: MonacoEditorReady) => void;
 
 export type MonacoEditorProps = {
   bus: t.EventBus<any>;
-  staticRoot?: string;
   language?: t.CodeEditorLanguage;
   theme?: t.CodeEditorTheme;
   loading?: React.ReactNode;
@@ -30,14 +29,14 @@ export type MonacoEditorProps = {
  *
  */
 export const MonacoEditor: React.FC<MonacoEditorProps> = (props) => {
-  const { bus, language = DEFAULT.LANGUAGE.TS, theme, staticRoot } = props;
+  const { bus, language = DEFAULT.LANGUAGE.TS, theme } = props;
 
   const beforeMount: BeforeMount = (monaco) => {
     monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
   };
 
   const afterMount: OnMount = async (editor, monaco) => {
-    const singleton = await CodeEditor.singleton({ bus, staticRoot });
+    const singleton = await CodeEditor.singleton({ bus });
     const instance = editor as any;
     props.onReady?.({ instance, singleton });
   };
