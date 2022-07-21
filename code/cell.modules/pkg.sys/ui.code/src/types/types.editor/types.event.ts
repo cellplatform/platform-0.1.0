@@ -1,6 +1,8 @@
 import { t } from './common';
 
 type Id = string;
+type Milliseconds = number;
+
 export type CodeEditorEventBus = t.EventBus<t.CodeEditorEvent>;
 export type CodeEditorEvent = CodeEditorInstanceEvent | CodeEditorSingletonEvent;
 
@@ -181,6 +183,7 @@ export type CodeEditorRunActionResEvent = {
 export type CodeEditorRunActionRes = {
   tx: string;
   instance: Id;
+  elapsed: Milliseconds;
   action?: t.MonacoAction;
   error?: string;
 };

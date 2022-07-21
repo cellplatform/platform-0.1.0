@@ -22,7 +22,8 @@ export type CodeEditorEvents = t.Disposable & {
   readonly status: {
     req$: t.Observable<t.CodeEditorStatusReq>;
     res$: t.Observable<t.CodeEditorStatusRes>;
-    get(options?: Options): Promise<t.CodeEditorStatusRes>;
+    fire(options?: Options): Promise<t.CodeEditorStatusRes>;
+    get(options?: Options): Promise<t.CodeEditorStatus | undefined>;
   };
 
   readonly init: {

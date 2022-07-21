@@ -51,7 +51,10 @@ export const CodeEditorEvents: t.CodeEditorEventsFactory = (input, options = {})
   const status: t.CodeEditorEvents['status'] = {
     req$: rx.payload<t.CodeEditorStatusReqEvent>($, 'sys.ui.code/status:req'),
     res$: rx.payload<t.CodeEditorStatusResEvent>($, 'sys.ui.code/status:res'),
-    async get(options = {}) {
+    async get(options) {
+      return (await status.fire(options))?.info;
+    },
+    async fire(options = {}) {
       const { timeout = 3000 } = options;
       const tx = slug();
 

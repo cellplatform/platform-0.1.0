@@ -1,4 +1,4 @@
-import { expect, is, Test } from '../../test';
+import { expect, Is, Test } from '../../test';
 import { rx, t } from '../common';
 import { CodeEditorEvents } from './Events';
 import { CodeEditorInstanceEvents } from './Events.Instance';
@@ -10,7 +10,7 @@ export default Test.describe('Events', (e) => {
   e.describe('Singleton (root)', (e) => {
     e.it('create', () => {
       const events = CodeEditorEvents(bus);
-      expect(is.observable(events.$)).to.eql(true);
+      expect(Is.observable(events.$)).to.eql(true);
 
       let count = 0;
       events.$.subscribe(() => count++);
@@ -76,7 +76,7 @@ export default Test.describe('Events', (e) => {
 
     e.it('create', () => {
       const events = CodeEditorInstanceEvents({ bus, id });
-      expect(is.observable(events.$)).to.eql(true);
+      expect(Is.observable(events.$)).to.eql(true);
 
       let count = 0;
       events.$.subscribe(() => count++);
