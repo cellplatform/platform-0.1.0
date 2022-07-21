@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 
 import { Monaco } from '../../api';
-import { R, t, Translate } from '../common';
+import { R, t, Translate, rx } from '../common';
 
 /**
  * Event handlers for the Monaco code-editor instance.
@@ -12,8 +12,8 @@ export function MonacoListeners(args: {
   editor: t.IMonacoStandaloneCodeEditor;
 }) {
   const { editor } = args;
-  const { bus, id } = args.instance;
-  const instance = id;
+  const instance = args.instance.id;
+  const bus = rx.busAsType<t.CodeEditorEvent>(args.instance.bus);
 
   const selection$ = new Subject<t.CodeEditorSelectionChangedEvent>();
   selection$
@@ -22,7 +22,10 @@ export function MonacoListeners(args: {
 
   const fireFocus = (isFocused: boolean, source: 'text' | 'widget') => {
     if (source === 'text') {
-      bus.fire({ type: 'sys.ui.code/changed:focus', payload: { instance, isFocused } });
+      bus.fire({
+        type: 'sys.ui.code/focused',
+        payload: { instance, isFocused },
+      });
     }
   };
 

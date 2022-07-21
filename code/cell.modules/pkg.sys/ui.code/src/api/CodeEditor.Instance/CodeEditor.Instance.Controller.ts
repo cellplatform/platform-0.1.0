@@ -22,8 +22,7 @@ export function InstanceController(bus: t.CodeEditorEventBus, editor: t.CodeEdit
         });
       };
       try {
-        const action = editor.action(e.action);
-        await action.run();
+        await editor.action(e.action).run();
         complete();
       } catch (error: any) {
         complete(error);
@@ -43,9 +42,7 @@ export function InstanceController(bus: t.CodeEditorEventBus, editor: t.CodeEdit
   rx.payload<t.CodeEditorChangeSelectionEvent>($, 'sys.ui.code/change:selection')
     .pipe()
     .subscribe((e) => {
-      if (e.selection === null) {
-        editor.select(null);
-      }
+      if (e.selection === null) editor.select(null);
 
       if (Is.position(e.selection)) {
         // Simple cursor position provided.
@@ -79,9 +76,7 @@ export function InstanceController(bus: t.CodeEditorEventBus, editor: t.CodeEdit
         }
       }
 
-      if (e.focus) {
-        editor.focus();
-      }
+      if (e.focus) editor.focus();
     });
 
   /**
@@ -109,6 +104,7 @@ export function InstanceController(bus: t.CodeEditorEventBus, editor: t.CodeEdit
     .pipe()
     .subscribe((e) => {
       const { tx, change } = e;
+      const action = change ? 'update' : 'read';
 
       if (change) {
         if (change.language !== undefined) editor.language = change.language;
@@ -124,12 +120,7 @@ export function InstanceController(bus: t.CodeEditorEventBus, editor: t.CodeEdit
 
       bus.fire({
         type: 'sys.ui.code/model:res',
-        payload: {
-          tx,
-          instance,
-          action: change ? 'update' : 'read',
-          model,
-        },
+        payload: { tx, instance, action, model },
       });
     });
 }
