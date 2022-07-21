@@ -1,7 +1,7 @@
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { Is, rx, t } from '../common';
-import { InstanceEvents } from './Events.Instance';
+import { CodeEditorInstanceEvents } from './Events.Instance';
 import { CodeEditorLibEvents } from './Events.Libs';
 
 export const CodeEditorEvents: t.CodeEditorEventsFactory = (input, options = {}) => {
@@ -35,7 +35,7 @@ export const CodeEditorEvents: t.CodeEditorEventsFactory = (input, options = {})
     libs,
 
     editor(id) {
-      return InstanceEvents({ bus, id });
+      return CodeEditorInstanceEvents({ bus, id });
     },
   };
 

@@ -4,8 +4,7 @@ import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
 const Imports = {
   ConfigureTheme: import('./api/Configure/Configure.theme.TEST'),
-  Events: import('./api/Events/Events.TEST'),
-  EventsInstance: import('./api/Events/Events.Instance.TEST'),
+  Events: import('./api/Events/TEST'),
   Is: import('./common/Is.TEST'),
 };
 

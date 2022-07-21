@@ -4,7 +4,7 @@ import { Is, rx, slug, t } from '../common';
 /**
  * Editor API
  */
-export const InstanceEvents: t.CodeEditorInstanceEventsFactory = (args) => {
+export const CodeEditorInstanceEvents: t.CodeEditorInstanceEventsFactory = (args) => {
   const instance = args.id;
   const bus = rx.bus<t.CodeEditorInstanceEvent>(args.bus);
   const { dispose, dispose$ } = rx.disposable(args.dispose$);

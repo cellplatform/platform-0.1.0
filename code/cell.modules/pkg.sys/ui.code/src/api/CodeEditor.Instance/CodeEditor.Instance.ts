@@ -1,7 +1,7 @@
 import { Monaco } from '../../api';
 import { slug, t, DEFAULT, rx } from '../common';
 import { CodeEditorAction } from './CodeEditor.Action';
-import { InstanceEvents } from '../Events';
+import { CodeEditorInstanceEvents } from '../Events';
 import { InstanceController } from './CodeEditor.Instance.Controller';
 import { MonacoListeners } from './CodeEditor.Instance.monacoListeners';
 import { select } from './CodeEditor.Instance.select';
@@ -28,7 +28,7 @@ export function CodeEditorInstance(args: {
   const id = args.instance?.id || `editor-${slug()}`;
 
   const listeners = MonacoListeners({ instance: { bus, id }, editor: monaco.instance });
-  const events = InstanceEvents({ bus, id });
+  const events = CodeEditorInstanceEvents({ bus, id });
 
   const filename = args.filename ? args.filename?.replace(/^\/*/, '') : 'default.ts';
   const uri = singleton.monaco.Uri.parse(`file:///${args.filename?.replace(/^\/*/, '')}`);
