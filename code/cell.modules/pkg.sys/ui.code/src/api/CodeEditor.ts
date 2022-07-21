@@ -1,10 +1,10 @@
 import { loader } from '@monaco-editor/react';
 
+import { CodeEditorSingleton } from './CodeEditor.Singleton';
+import { LANGUAGES, t } from './common';
 import { Configure } from './Configure';
-import { t, LANGUAGES } from './common';
-import { CodeEditorSingleton } from './singleton';
-import { CodeEditorEvents } from './Events';
 import { staticPaths } from './Configure/Configure.paths';
+import { CodeEditorEvents } from './Events';
 
 let singleton: Promise<t.ICodeEditorSingleton>;
 
