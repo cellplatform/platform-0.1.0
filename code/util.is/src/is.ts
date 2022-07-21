@@ -3,7 +3,7 @@ import * as t from './types';
 /**
  * Environment flags.
  */
-export const is: t.Is = {
+export const Is: t.Is = {
   get nodeEnv() {
     return this.browser ? 'browser' : process.env.NODE_ENV || 'development';
   },
@@ -48,7 +48,7 @@ export const is: t.Is = {
    * Determine if the given input is an observable Subject.
    */
   subject(input?: any) {
-    return is.observable(input) && typeof input?.next === 'function';
+    return Is.observable(input) && typeof input?.next === 'function';
   },
 
   /**
