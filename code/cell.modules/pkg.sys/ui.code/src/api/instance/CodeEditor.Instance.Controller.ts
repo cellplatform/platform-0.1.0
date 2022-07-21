@@ -33,7 +33,7 @@ export function InstanceController(bus: t.CodeEditorEventBus, editor: t.CodeEdit
   /**
    * Focus
    */
-  rx.payload<t.CodeEditorChangeFocusEvent>($, 'CodeEditor/change:focus')
+  rx.payload<t.CodeEditorFocusEvent>($, 'CodeEditor/focus')
     .pipe()
     .subscribe((e) => editor.focus());
 

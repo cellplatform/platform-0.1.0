@@ -20,12 +20,12 @@ export type CodeEditorInstanceEvents = {
   dispose(): void;
 
   focus: {
-    changed$: t.Observable<t.CodeEditorFocusChanged>;
+    changed$: t.Observable<t.CodeEditorFocused>;
     fire(): void;
   };
 
   blur: {
-    changed$: t.Observable<t.CodeEditorFocusChanged>;
+    changed$: t.Observable<t.CodeEditorFocused>;
   };
 
   selection: {

@@ -9,13 +9,13 @@ export type CodeEditorEvent = CodeEditorInstanceEvent | CodeEditorSingletonEvent
  */
 
 export type CodeEditorInstanceEvent =
-  | CodeEditorChangeFocusEvent
+  | CodeEditorFocusEvent
   | CodeEditorChangeSelectionEvent
   | CodeEditorChangeTextEvent
   | CodeEditorTextReqEvent
   | CodeEditorTextResEvent
   | CodeEditorSelectionChangedEvent
-  | CodeEditorFocusChangedEvent
+  | CodeEditorFocusedEvent
   | CodeEditorTextChangedEvent
   | CodeEditorRunActionReqEvent
   | CodeEditorRunActionResEvent
@@ -35,20 +35,20 @@ export type CodeEditorLibsEvent =
 /**
  * Fired to assign focus to an editor.
  */
-export type CodeEditorChangeFocusEvent = {
-  type: 'CodeEditor/change:focus';
-  payload: CodeEditorChangeFocus;
+export type CodeEditorFocusEvent = {
+  type: 'CodeEditor/focus';
+  payload: CodeEditorFocus;
 };
-export type CodeEditorChangeFocus = { instance: Id };
+export type CodeEditorFocus = { instance: Id };
 
 /**
  * Fired when editor recieves or loses focus.
  */
-export type CodeEditorFocusChangedEvent = {
-  type: 'CodeEditor/changed:focus';
-  payload: CodeEditorFocusChanged;
+export type CodeEditorFocusedEvent = {
+  type: 'CodeEditor/focused';
+  payload: CodeEditorFocused;
 };
-export type CodeEditorFocusChanged = {
+export type CodeEditorFocused = {
   instance: Id;
   isFocused: boolean;
 };
@@ -158,7 +158,9 @@ export type CodeEditorLibsClearReqEvent = {
 };
 export type CodeEditorLibsClearReq = {
   tx: string;
-  // todo: exclude pattern (minimatch)
+  /**
+   * TODO 🐷 - exclude pattern (minimatch)
+   */
 };
 
 export type CodeEditorLibsClearResEvent = {

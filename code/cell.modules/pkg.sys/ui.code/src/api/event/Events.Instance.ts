@@ -19,11 +19,14 @@ export const InstanceEvents: t.CodeEditorInstanceEventsFactory = (args) => {
   /**
    * Focus
    */
-  const focus$ = rx.payload<t.CodeEditorFocusChangedEvent>($, 'CodeEditor/changed:focus');
+  const focused$ = rx.payload<t.CodeEditorFocusedEvent>($, 'CodeEditor/focused');
   const focus: t.CodeEditorInstanceEvents['focus'] = {
-    changed$: focus$.pipe(filter((e) => e.isFocused)),
+    changed$: focused$.pipe(filter((e) => e.isFocused)),
     fire() {
-      bus.fire({ type: 'CodeEditor/change:focus', payload: { instance } });
+      bus.fire({
+        type: 'CodeEditor/focus',
+        payload: { instance },
+      });
     },
   };
 
@@ -31,7 +34,7 @@ export const InstanceEvents: t.CodeEditorInstanceEventsFactory = (args) => {
    * Blur (lost focus)
    */
   const blur: t.CodeEditorInstanceEvents['blur'] = {
-    changed$: focus$.pipe(filter((e) => !e.isFocused)),
+    changed$: focused$.pipe(filter((e) => !e.isFocused)),
   };
 
   /**

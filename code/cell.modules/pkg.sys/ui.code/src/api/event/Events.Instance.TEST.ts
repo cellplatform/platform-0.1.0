@@ -14,7 +14,7 @@ export default Test.describe('Events: Instance', (e) => {
     let count = 0;
     events.$.subscribe(() => count++);
     bus.fire({
-      type: 'CodeEditor/change:focus',
+      type: 'CodeEditor/focus',
       payload: { instance: 'foo' },
     });
 
