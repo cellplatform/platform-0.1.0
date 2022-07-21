@@ -14,20 +14,20 @@ export function CodeEditorLibsController(
   /**
    * Libs
    */
-  rx.payload<t.CodeEditorLibsClearReqEvent>($, 'CodeEditor/libs/clear:req')
+  rx.payload<t.CodeEditorLibsClearReqEvent>($, 'sys.ui.code/libs/clear:req')
     .pipe()
     .subscribe((e) => {
       libs.clear();
     });
 
-  rx.payload<t.CodeEditorLibsLoadReqEvent>($, 'CodeEditor/libs/load:req')
+  rx.payload<t.CodeEditorLibsLoadReqEvent>($, 'sys.ui.code/libs/load:req')
     .pipe()
     .subscribe(async (e) => {
       const { tx, url } = e;
       const res = await libs.fromNetwork(url);
       const files = res.map((item) => item.filename);
       fire({
-        type: 'CodeEditor/libs/load:res',
+        type: 'sys.ui.code/libs/load:res',
         payload: { tx, url, files },
       });
     });

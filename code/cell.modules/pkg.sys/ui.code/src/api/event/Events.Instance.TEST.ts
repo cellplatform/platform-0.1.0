@@ -14,7 +14,7 @@ export default Test.describe('Events: Instance', (e) => {
     let count = 0;
     events.$.subscribe(() => count++);
     bus.fire({
-      type: 'CodeEditor/focus',
+      type: 'sys.ui.code/focus',
       payload: { instance: 'foo' },
     });
 
@@ -37,10 +37,10 @@ export default Test.describe('Events: Instance', (e) => {
     notFired({});
     notFired({ type: 'foo' });
     notFired({ type: 'foo', payload: {} });
-    notFired({ type: 'CodeEditor/foo', payload: {} }); // NB: Global code-editor event.
+    notFired({ type: 'sys.ui.code/foo', payload: {} }); // NB: Global code-editor event.
 
     bus.fire({
-      type: 'CodeEditor/change:focus',
+      type: 'sys.ui.code/change:focus',
       payload: { instance: 'foo' },
     });
     expect(count).to.eql(1);

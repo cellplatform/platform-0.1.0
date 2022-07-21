@@ -19,12 +19,12 @@ export const InstanceEvents: t.CodeEditorInstanceEventsFactory = (args) => {
   /**
    * Focus
    */
-  const focused$ = rx.payload<t.CodeEditorFocusedEvent>($, 'CodeEditor/focused');
+  const focused$ = rx.payload<t.CodeEditorFocusedEvent>($, 'sys.ui.code/focused');
   const focus: t.CodeEditorInstanceEvents['focus'] = {
     changed$: focused$.pipe(filter((e) => e.isFocused)),
     fire() {
       bus.fire({
-        type: 'CodeEditor/focus',
+        type: 'sys.ui.code/focus',
         payload: { instance },
       });
     },
@@ -41,11 +41,11 @@ export const InstanceEvents: t.CodeEditorInstanceEventsFactory = (args) => {
    * Selection
    */
   const selection: t.CodeEditorInstanceEvents['selection'] = {
-    changed$: rx.payload<t.CodeEditorSelectionChangedEvent>($, 'CodeEditor/changed:selection'),
+    changed$: rx.payload<t.CodeEditorSelectionChangedEvent>($, 'sys.ui.code/changed:selection'),
     select(selection, options = {}) {
       const { focus } = options;
       bus.fire({
-        type: 'CodeEditor/change:selection',
+        type: 'sys.ui.code/change:selection',
         payload: { instance, selection, focus },
       });
     },
@@ -55,13 +55,13 @@ export const InstanceEvents: t.CodeEditorInstanceEventsFactory = (args) => {
    * Text
    */
   const text: t.CodeEditorInstanceEvents['text'] = {
-    changed$: rx.payload<t.CodeEditorTextChangedEvent>($, 'CodeEditor/changed:text'),
+    changed$: rx.payload<t.CodeEditorTextChangedEvent>($, 'sys.ui.code/changed:text'),
     set(text) {
-      bus.fire({ type: 'CodeEditor/change:text', payload: { instance, text } });
+      bus.fire({ type: 'sys.ui.code/change:text', payload: { instance, text } });
     },
     get: {
-      req$: rx.payload<t.CodeEditorTextReqEvent>($, 'CodeEditor/text:req'),
-      res$: rx.payload<t.CodeEditorTextResEvent>($, 'CodeEditor/text:res'),
+      req$: rx.payload<t.CodeEditorTextReqEvent>($, 'sys.ui.code/text:req'),
+      res$: rx.payload<t.CodeEditorTextResEvent>($, 'sys.ui.code/text:res'),
 
       async fire(options = {}) {
         const { timeout = 1000 } = options;
@@ -72,7 +72,7 @@ export const InstanceEvents: t.CodeEditorInstanceEventsFactory = (args) => {
         const first = rx.asPromise.first<t.CodeEditorTextResEvent>(res$, { op, timeout });
 
         bus.fire({
-          type: 'CodeEditor/text:req',
+          type: 'sys.ui.code/text:req',
           payload: { tx, instance },
         });
 
@@ -87,8 +87,8 @@ export const InstanceEvents: t.CodeEditorInstanceEventsFactory = (args) => {
    * Action (commands)
    */
   const action: t.CodeEditorInstanceEvents['action'] = {
-    req$: rx.payload<t.CodeEditorRunActionReqEvent>($, 'CodeEditor/action:req'),
-    res$: rx.payload<t.CodeEditorRunActionResEvent>($, 'CodeEditor/action:res'),
+    req$: rx.payload<t.CodeEditorRunActionReqEvent>($, 'sys.ui.code/action:req'),
+    res$: rx.payload<t.CodeEditorRunActionResEvent>($, 'sys.ui.code/action:res'),
     async fire(cmd: t.MonacoAction, options = {}) {
       const { timeout = 3000 } = options;
       const tx = slug();
@@ -98,7 +98,7 @@ export const InstanceEvents: t.CodeEditorInstanceEventsFactory = (args) => {
       const first = rx.asPromise.first<t.CodeEditorRunActionResEvent>(res$, { op, timeout });
 
       bus.fire({
-        type: 'CodeEditor/action:req',
+        type: 'sys.ui.code/action:req',
         payload: { tx, instance, action: cmd },
       });
 
@@ -114,8 +114,8 @@ export const InstanceEvents: t.CodeEditorInstanceEventsFactory = (args) => {
    * Model
    */
   const model: t.CodeEditorInstanceEvents['model'] = {
-    req$: rx.payload<t.CodeEditorModelReqEvent>($, 'CodeEditor/model:req'),
-    res$: rx.payload<t.CodeEditorModelResEvent>($, 'CodeEditor/model:res'),
+    req$: rx.payload<t.CodeEditorModelReqEvent>($, 'sys.ui.code/model:req'),
+    res$: rx.payload<t.CodeEditorModelResEvent>($, 'sys.ui.code/model:res'),
 
     async get(options = {}) {
       return model.set.fire(undefined, options);
@@ -132,7 +132,7 @@ export const InstanceEvents: t.CodeEditorInstanceEventsFactory = (args) => {
         const first = rx.asPromise.first<t.CodeEditorModelResEvent>(res$, { op, timeout });
 
         bus.fire({
-          type: 'CodeEditor/model:req',
+          type: 'sys.ui.code/model:req',
           payload: { tx, instance, change },
         });
 

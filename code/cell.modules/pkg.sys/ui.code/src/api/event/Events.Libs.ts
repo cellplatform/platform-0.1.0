@@ -15,8 +15,8 @@ export function CodeEditorLibEvents(args: {
      * Remove all type libraries.
      */
     clear: {
-      req$: rx.payload<t.CodeEditorLibsClearReqEvent>($, 'CodeEditor/libs/clear:req'),
-      res$: rx.payload<t.CodeEditorLibsClearResEvent>($, 'CodeEditor/libs/clear:res'),
+      req$: rx.payload<t.CodeEditorLibsClearReqEvent>($, 'sys.ui.code/libs/clear:req'),
+      res$: rx.payload<t.CodeEditorLibsClearResEvent>($, 'sys.ui.code/libs/clear:res'),
       async fire(options = {}) {
         const { timeout = 1000 } = options;
         const tx = slug();
@@ -26,7 +26,7 @@ export function CodeEditorLibEvents(args: {
         const first = rx.asPromise.first<t.CodeEditorLibsClearResEvent>(res$, { op, timeout });
 
         bus.fire({
-          type: 'CodeEditor/libs/clear:req',
+          type: 'sys.ui.code/libs/clear:req',
           payload: { tx },
         });
 
@@ -42,8 +42,8 @@ export function CodeEditorLibEvents(args: {
      * Load type-libraries from the network.
      */
     load: {
-      req$: rx.payload<t.CodeEditorLibsLoadReqEvent>($, 'CodeEditor/libs/load:req'),
-      res$: rx.payload<t.CodeEditorLibsLoadResEvent>($, 'CodeEditor/libs/load:res'),
+      req$: rx.payload<t.CodeEditorLibsLoadReqEvent>($, 'sys.ui.code/libs/load:req'),
+      res$: rx.payload<t.CodeEditorLibsLoadResEvent>($, 'sys.ui.code/libs/load:res'),
       async fire(url, options = {}) {
         const { timeout = 3000 } = options;
         const tx = slug();
@@ -53,7 +53,7 @@ export function CodeEditorLibEvents(args: {
         const first = rx.asPromise.first<t.CodeEditorLibsLoadResEvent>(res$, { op, timeout });
 
         bus.fire({
-          type: 'CodeEditor/libs/load:req',
+          type: 'sys.ui.code/libs/load:req',
           payload: { url, tx },
         });
 

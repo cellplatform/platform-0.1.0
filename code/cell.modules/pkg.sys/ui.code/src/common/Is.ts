@@ -33,7 +33,7 @@ export const Is = {
   },
 
   editorEvent(e: t.Event) {
-    return e.type.startsWith('CodeEditor/');
+    return e.type.startsWith('sys.ui.code/');
   },
 
   instanceEvent(e: t.Event) {

@@ -11,13 +11,13 @@ export function InstanceController(bus: t.CodeEditorEventBus, editor: t.CodeEdit
   /**
    * Run action.
    */
-  rx.payload<t.CodeEditorRunActionReqEvent>($, 'CodeEditor/action:req')
+  rx.payload<t.CodeEditorRunActionReqEvent>($, 'sys.ui.code/action:req')
     .pipe()
     .subscribe(async (e) => {
       const complete = (error?: string) => {
         const { tx, action } = e;
         bus.fire({
-          type: 'CodeEditor/action:res',
+          type: 'sys.ui.code/action:res',
           payload: { tx, instance, action, error },
         });
       };
@@ -33,14 +33,14 @@ export function InstanceController(bus: t.CodeEditorEventBus, editor: t.CodeEdit
   /**
    * Focus
    */
-  rx.payload<t.CodeEditorFocusEvent>($, 'CodeEditor/focus')
+  rx.payload<t.CodeEditorFocusEvent>($, 'sys.ui.code/focus')
     .pipe()
     .subscribe((e) => editor.focus());
 
   /**
    * Selection
    */
-  rx.payload<t.CodeEditorChangeSelectionEvent>($, 'CodeEditor/change:selection')
+  rx.payload<t.CodeEditorChangeSelectionEvent>($, 'sys.ui.code/change:selection')
     .pipe()
     .subscribe((e) => {
       if (e.selection === null) {
@@ -87,17 +87,17 @@ export function InstanceController(bus: t.CodeEditorEventBus, editor: t.CodeEdit
   /**
    * Text
    */
-  rx.payload<t.CodeEditorChangeTextEvent>($, 'CodeEditor/change:text')
+  rx.payload<t.CodeEditorChangeTextEvent>($, 'sys.ui.code/change:text')
     .pipe()
     .subscribe((e) => (editor.text = e.text || ''));
 
-  rx.payload<t.CodeEditorTextReqEvent>($, 'CodeEditor/text:req')
+  rx.payload<t.CodeEditorTextReqEvent>($, 'sys.ui.code/text:req')
     .pipe()
     .subscribe((e) => {
       const { tx } = e;
       const text = editor.text;
       bus.fire({
-        type: 'CodeEditor/text:res',
+        type: 'sys.ui.code/text:res',
         payload: { tx, instance, text },
       });
     });
@@ -105,7 +105,7 @@ export function InstanceController(bus: t.CodeEditorEventBus, editor: t.CodeEdit
   /**
    * Model
    */
-  rx.payload<t.CodeEditorModelReqEvent>($, 'CodeEditor/model:req')
+  rx.payload<t.CodeEditorModelReqEvent>($, 'sys.ui.code/model:req')
     .pipe()
     .subscribe((e) => {
       const { tx, change } = e;
@@ -123,7 +123,7 @@ export function InstanceController(bus: t.CodeEditorEventBus, editor: t.CodeEdit
       };
 
       bus.fire({
-        type: 'CodeEditor/model:res',
+        type: 'sys.ui.code/model:res',
         payload: {
           tx,
           instance,

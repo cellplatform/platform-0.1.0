@@ -22,13 +22,13 @@ export function MonacoListeners(args: {
 
   const fireFocus = (isFocused: boolean, source: 'text' | 'widget') => {
     if (source === 'text') {
-      bus.fire({ type: 'CodeEditor/changed:focus', payload: { instance, isFocused } });
+      bus.fire({ type: 'sys.ui.code/changed:focus', payload: { instance, isFocused } });
     }
   };
 
   const fireSelection = (source: string) => {
     selection$.next({
-      type: 'CodeEditor/changed:selection',
+      type: 'sys.ui.code/changed:selection',
       payload: {
         instance,
         via: source as t.CodeEditorSelectionChanged['via'],
@@ -47,7 +47,7 @@ export function MonacoListeners(args: {
         };
       });
       bus.fire({
-        type: 'CodeEditor/changed:text',
+        type: 'sys.ui.code/changed:text',
         payload: { instance, changes, isFlush, isRedoing, isUndoing },
       });
     }),

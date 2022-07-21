@@ -13,7 +13,7 @@ export default Test.describe('Events', (e) => {
     let count = 0;
     events.$.subscribe(() => count++);
     bus.fire({
-      type: 'CodeEditor/focus',
+      type: 'sys.ui.code/focus',
       payload: { instance: 'foo' },
     });
 
@@ -37,7 +37,7 @@ export default Test.describe('Events', (e) => {
     notFired({ type: 'foo' });
     notFired({ type: 'foo', payload: {} });
 
-    bus.fire({ type: 'CodeEditor/change:focus', payload: { instance: 'foo' } });
+    bus.fire({ type: 'sys.ui.code/change:focus', payload: { instance: 'foo' } });
     expect(count).to.eql(1);
   });
 
@@ -48,8 +48,8 @@ export default Test.describe('Events', (e) => {
     let count = 0;
     events.singleton$.subscribe(() => count++);
 
-    bus.fire({ type: 'CodeEditor/foo', payload: {} }); // Global
-    bus.fire({ type: 'CodeEditor/foo', payload: { instance: 'foo' } });
+    bus.fire({ type: 'sys.ui.code/foo', payload: {} }); // Global
+    bus.fire({ type: 'sys.ui.code/foo', payload: { instance: 'foo' } });
 
     expect(count).to.eql(1);
   });
@@ -61,8 +61,8 @@ export default Test.describe('Events', (e) => {
     let count = 0;
     events.instance$.subscribe(() => count++);
 
-    bus.fire({ type: 'CodeEditor/foo', payload: {} }); // Global
-    bus.fire({ type: 'CodeEditor/foo', payload: { instance: 'foo' } });
+    bus.fire({ type: 'sys.ui.code/foo', payload: {} }); // Global
+    bus.fire({ type: 'sys.ui.code/foo', payload: { instance: 'foo' } });
 
     expect(count).to.eql(1);
   });
