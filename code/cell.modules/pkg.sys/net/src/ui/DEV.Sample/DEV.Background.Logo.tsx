@@ -30,7 +30,8 @@ export const DevLogo: React.FC<DevLogoProps> = (props) => {
     <div {...css(styles.base, props.style)} onMouseEnter={over(true)} onMouseLeave={over(false)}>
       {/* <div {...styles.label}>{'SELF'}</div>
       <div {...styles.label}>{'SOVEREIGN'}</div> */}
-      <div {...styles.label}>{'SYSTEM CELL'}</div>
+      {/* <div {...styles.label}>{'SYSTEM CELL'}</div> */}
+      <div {...styles.label}>{'SYS RUNTIME'}</div>
     </div>
   );
 };
