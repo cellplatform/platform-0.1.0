@@ -1,13 +1,13 @@
 {
   "name": "sys.ui.code",
-  "version": "0.0.156",
+  "version": "0.0.187",
   "scripts": {
     "test": "echo no-op",
     "build": "ts build --no-esm $@",
     "start": "cell.compiler dev $@",
     "dev": "cell.compiler dev --no-exports $@",
     "lint": "ts lint $@",
-    "bundle": "cell.compiler bundle --bump $@",
+    "bundle": "yarn lint && cell.compiler bundle --bump $@",
     "watch": "cell.compiler watch $@",
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",

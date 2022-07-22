@@ -16,7 +16,7 @@
     "ts-node": "10.2.1"
   },
   "resolutions": {
-    "rxjs": "7.3.0",
+    "rxjs": "7.5.6",
     "core-js": "3.16.4",
     "browserslist": "^4.21.2"
   },
