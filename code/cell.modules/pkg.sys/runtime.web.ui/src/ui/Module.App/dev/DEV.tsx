@@ -27,7 +27,7 @@ export const actions = DevActions<Ctx>()
     const ctx: Ctx = {
       props: {
         instance,
-        href: Module.Url.parse('https://lib.db.team').href,
+        href: Module.Url.parseUrl('https://lib.db.team').href,
         stateful: true,
       },
     };
@@ -47,7 +47,7 @@ and optionally the \`entry\` function (ƒ).
     e.hr(1, 0.1);
 
     const hrefButton = (manifest: string, entry?: string, suffix?: string) => {
-      const { href } = Module.Url.parse(manifest, { entry });
+      const { href } = Module.Url.parseUrl(manifest, { entry });
 
       const url = new URL(href);
       let label = `${url.host}`;
@@ -92,7 +92,7 @@ and optionally the \`entry\` function (ƒ).
         <ObjectView
           name={'context'}
           data={{
-            'location.url': Module.Url.parse(location.href),
+            'location.url': Module.Url.parseUrl(location.href),
             props: e.ctx.props,
           }}
           style={{ MarginX: 15 }}
@@ -104,7 +104,7 @@ and optionally the \`entry\` function (ƒ).
   })
 
   .subject((e) => {
-    const url = Module.Url.parse(e.ctx.props.href ?? location.href);
+    const url = Module.Url.parseUrl(e.ctx.props.href ?? location.href);
 
     e.settings({
       actions: { width: 400 },

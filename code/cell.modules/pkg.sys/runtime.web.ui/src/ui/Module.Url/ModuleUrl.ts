@@ -1,12 +1,16 @@
 import { t } from '../common';
 
+/**
+ * TODO 🐷
+ * Remove "entry=none" querystring
+ */
 const NONE = 'none';
 
 export const ModuleUrl = {
   /**
    * Parse the given URL into a useful structure for interpreting a module.
    */
-  parse(href: string, options: { entry?: string } = {}): t.ModuleUrl {
+  parseUrl(href: string, options: { entry?: string } = {}): t.ModuleUrl {
     try {
       const url = new URL(href);
 
@@ -16,13 +20,17 @@ export const ModuleUrl = {
 
       let entry: string | undefined = options.entry ?? (url.searchParams.get('entry') || NONE);
       if (entry) {
+        const set = (value?: string) => {
+          if (value) url.searchParams.set('entry', value);
+          if (!value) url.searchParams.delete('entry');
+          return value;
+        };
+
         if (entry !== NONE) {
-          entry = ModuleUrl.formatEntryPath(entry);
-          url.searchParams.set('entry', entry);
+          entry = set(ModuleUrl.formatEntryPath(entry));
         }
         if (entry === NONE) {
-          url.searchParams.delete('entry');
-          entry = undefined;
+          entry = set(undefined);
         }
       }
 
@@ -40,48 +48,20 @@ export const ModuleUrl = {
     }
   },
 
-  /**
-   * Takes any incoming HREF and ensures the final filename on the path
-   * is the "index.json" manifest URL.
-   */
-  toManifestUrl(href: string) {
-    const url = new URL(href);
-    url.pathname = `${ModuleUrl.parsePath(url.pathname).path}index.json`;
-    return url;
-  },
-
-  removeFilename(input: string | URL) {
-    const url = typeof input === 'string' ? new URL(input) : input;
-    url.pathname = `${ModuleUrl.parsePath(url.pathname).path}`;
-    return url;
-  },
-
-  /**
-   * Ensure an "entry=<path>" is correctly formatted.
-   */
-  formatEntryPath(path: string) {
-    return `./${path.replace(/^\.\//, '')}`;
-  },
-
-  /**
-   * Trim entry path
-   */
-  trimEntryPath(path?: string | null) {
-    return (path || '').replace(/^\.\//, '');
-  },
+  fileExtensions: ['js', 'json', 'css', 'svg', 'png', 'jpg', 'jpeg', 'pdf', 'html', 'html'],
 
   /**
    * Interpret a URL path.
    */
-  parsePath(input: string) {
+  path(input: string) {
     input = (input || '').trim();
     input = `/${input.replace(/^\/*/, '')}`;
 
     const parts = (input || '').trim().split('/');
     const last = parts[parts.length - 1];
 
-    const extensions = ['.js', '.json', '.css', '.svg', '.png', '.jpg', '.pdf', '.html', '.html'];
-    const isFile = !last.endsWith('/') && extensions.some((ext) => last.endsWith(ext));
+    const exts = ModuleUrl.fileExtensions;
+    const isFile = !last.endsWith('/') && exts.some((ext) => last.endsWith(`.${ext}`));
 
     const filename = isFile ? last : '';
     const file = !isFile
@@ -100,5 +80,36 @@ export const ModuleUrl = {
       file,
       toString: () => `${path}${filename}`,
     };
+  },
+
+  /**
+   * Takes any incoming HREF and ensures the final filename on the path
+   * is the "index.json" manifest URL.
+   */
+  ensureManifest(href: string) {
+    const url = new URL(href);
+    url.pathname = `${ModuleUrl.path(url.pathname).path}index.json`;
+    return url;
+  },
+
+  removeFilename(href: string) {
+    const url = new URL(href);
+    url.pathname = `${ModuleUrl.path(url.pathname).path}`;
+    return url;
+  },
+
+  /**
+   * Ensure an "entry=<path>" is correctly formatted.
+   */
+  formatEntryPath(path: string) {
+    path = (path || '').trim().replace(/^\.\//, '');
+    return path ? `./${path}` : '';
+  },
+
+  /**
+   * Trim entry path
+   */
+  trimEntryPath(path?: string | null) {
+    return (path || '').trim().replace(/^\.\//, '');
   },
 };
