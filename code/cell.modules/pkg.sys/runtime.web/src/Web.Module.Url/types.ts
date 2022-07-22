@@ -1,4 +1,4 @@
-export type ModuleUrl = {
+export type ModuleUrlParts = {
   href: string;
   manifest: string;
   entry?: string;

@@ -1,7 +1,6 @@
 import { ModuleApp as App } from '../Module.App';
-import { DEFAULT, FC, LoadMask } from './common';
+import { DEFAULT, FC, LoadMask, ModuleUrl as Url } from './common';
 import { ModuleProps, ModuleView as View } from './Module.View';
-import { ModuleUrl as Url } from '../Module.Url';
 
 export { ModuleProps };
 

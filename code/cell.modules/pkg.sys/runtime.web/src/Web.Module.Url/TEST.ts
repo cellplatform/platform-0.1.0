@@ -1,4 +1,4 @@
-import { Test, expect } from '../../test';
+import { Test, expect } from '../test';
 import { ModuleUrl } from '.';
 
 export default Test.describe('Module.Url', (e) => {

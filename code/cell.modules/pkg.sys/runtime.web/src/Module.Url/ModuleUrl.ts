@@ -10,7 +10,7 @@ export const ModuleUrl = {
   /**
    * Parse the given URL into a useful structure for interpreting a module.
    */
-  parseUrl(href: string, options: { entry?: string } = {}): t.ModuleUrl {
+  parseUrl(href: string, options: { entry?: string } = {}): t.ModuleUrlParts {
     try {
       const url = new URL(href);
 

@@ -16,7 +16,7 @@ export { ManifestUrl } from '@platform/cell.schema';
  */
 export { Filesystem } from 'sys.fs';
 export { Json } from 'sys.data.json';
-export { WebRuntimeBus } from 'sys.runtime.web';
+export { WebRuntimeBus, ModuleUrl } from 'sys.runtime.web';
 
 export { useDragTarget } from 'sys.ui.primitives/lib/hooks/DragTarget';
 export { Button } from 'sys.ui.primitives/lib/ui.ref/button/Button';
