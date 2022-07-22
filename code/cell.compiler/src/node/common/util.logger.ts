@@ -136,7 +136,7 @@ export const Logger = {
       let url = typeof options.url === 'string' ? options.url : 'http://localhost';
       url = port === 80 ? url : `${url}:${log.white(port)}`;
       add('url', cyan(url));
-      add('', cyan(`${url}?dev`));
+      add('', `${cyan(url)}${gray('?dev')}`);
     }
 
     table.log();
