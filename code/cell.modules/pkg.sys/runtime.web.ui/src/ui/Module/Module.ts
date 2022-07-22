@@ -1,7 +1,7 @@
-import { ModuleApp } from '../Module.App';
+import { ModuleApp as App } from '../Module.App';
 import { DEFAULT, FC, LoadMask } from './common';
 import { ModuleProps, ModuleView as View } from './Module.View';
-import { ModuleUrl } from '../Module.Url';
+import { ModuleUrl as Url } from '../Module.Url';
 
 export { ModuleProps };
 
@@ -11,12 +11,12 @@ export { ModuleProps };
 type Fields = {
   LoadMask: typeof LoadMask;
   DEFAULT: typeof DEFAULT;
-  App: typeof ModuleApp;
-  Url: typeof ModuleUrl;
+  App: typeof App;
+  Url: typeof Url;
 };
 
 export const Module = FC.decorate<ModuleProps, Fields>(
   View,
-  { DEFAULT, LoadMask, App: ModuleApp, Url: ModuleUrl },
+  { DEFAULT, LoadMask, App, Url },
   { displayName: 'Module' },
 );

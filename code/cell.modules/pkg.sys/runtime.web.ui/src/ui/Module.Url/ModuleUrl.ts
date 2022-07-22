@@ -41,6 +41,22 @@ export const ModuleUrl = {
   },
 
   /**
+   * Takes any incoming HREF and ensures the final filename on the path
+   * is the "index.json" manifest URL.
+   */
+  toManifestUrl(href: string) {
+    const url = new URL(href);
+    url.pathname = `${ModuleUrl.parsePath(url.pathname).path}index.json`;
+    return url;
+  },
+
+  removeFilename(input: string | URL) {
+    const url = typeof input === 'string' ? new URL(input) : input;
+    url.pathname = `${ModuleUrl.parsePath(url.pathname).path}`;
+    return url;
+  },
+
+  /**
    * Ensure an "entry=<path>" is correctly formatted.
    */
   formatEntryPath(path: string) {
@@ -52,5 +68,37 @@ export const ModuleUrl = {
    */
   trimEntryPath(path?: string | null) {
     return (path || '').replace(/^\.\//, '');
+  },
+
+  /**
+   * Interpret a URL path.
+   */
+  parsePath(input: string) {
+    input = (input || '').trim();
+    input = `/${input.replace(/^\/*/, '')}`;
+
+    const parts = (input || '').trim().split('/');
+    const last = parts[parts.length - 1];
+
+    const extensions = ['.js', '.json', '.css', '.svg', '.png', '.jpg', '.pdf', '.html', '.html'];
+    const isFile = !last.endsWith('/') && extensions.some((ext) => last.endsWith(ext));
+
+    const filename = isFile ? last : '';
+    const file = !isFile
+      ? undefined
+      : {
+          name: filename.substring(0, filename.lastIndexOf('.')),
+          ext: filename.substring(filename.lastIndexOf('.') + 1),
+        };
+
+    let path = isFile ? input.substring(0, input.length - filename.length) : input;
+    path = `${path.replace(/\/*$/, '/')}`;
+
+    return {
+      path,
+      filename,
+      file,
+      toString: () => `${path}${filename}`,
+    };
   },
 };

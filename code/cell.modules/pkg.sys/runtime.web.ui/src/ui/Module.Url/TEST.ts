@@ -69,4 +69,63 @@ export default Test.describe('Module.Url', (e) => {
       expect(url.entry).to.eql(undefined);
     });
   });
+
+  e.it('parsePath', () => {
+    const test = (input: string, path: string, filename: string, name?: string, ext?: string) => {
+      const res = ModuleUrl.parsePath(input);
+
+      expect(res.path).to.eql(path);
+      expect(res.filename).to.eql(filename);
+
+      expect(res.file?.name).to.eql(name);
+      expect(res.file?.ext).to.eql(ext);
+    };
+
+    test('', '/', '');
+    test('   ', '/', '');
+
+    test('/', '/', '');
+    test('   /  ', '/', '');
+    test('/dir', '/dir/', '');
+    test('dir', '/dir/', '');
+    test('foo/bar', '/foo/bar/', '');
+    test('  foo/bar  ', '/foo/bar/', '');
+
+    test('/file.js', '/', 'file.js', 'file', 'js');
+    test('file.js', '/', 'file.js', 'file', 'js');
+    test('   file.js   ', '/', 'file.js', 'file', 'js');
+
+    test('foo/file.js', '/foo/', 'file.js', 'file', 'js');
+    test(' ///foo/bar/file.js ', '/foo/bar/', 'file.js', 'file', 'js');
+
+    test('foo/file.js/', '/foo/file.js/', ''); // NB: The end "/" indicates this is not a file-path.
+  });
+
+  e.it('toManifestUrl', () => {
+    const test = (href: string, expected: string) => {
+      const res = ModuleUrl.toManifestUrl(href);
+      expect(res.href).to.eql(expected);
+    };
+
+    test('https://domain.com/', 'https://domain.com/index.json');
+    test('  https://domain.com  ', 'https://domain.com/index.json');
+    test('https://domain.com/path', 'https://domain.com/path/index.json');
+
+    test('https://domain.com/remote.js', 'https://domain.com/index.json');
+    test('https://domain.com/path/remote.js', 'https://domain.com/path/index.json');
+    test('https://domain.com/path/remote.js?qs', 'https://domain.com/path/index.json?qs');
+  });
+
+  e.it('removeFilename', () => {
+    //
+    const test = (href: string, expected: string) => {
+      const res = ModuleUrl.removeFilename(href);
+      expect(res.href).to.eql(expected);
+    };
+
+    test('https://domain.com/', 'https://domain.com/');
+    test('  https://domain.com  ', 'https://domain.com/');
+    test('  https://domain.com/foo/bar.png  ', 'https://domain.com/foo/');
+    test('https://domain.com/bar.png  ', 'https://domain.com/');
+  });
 });
