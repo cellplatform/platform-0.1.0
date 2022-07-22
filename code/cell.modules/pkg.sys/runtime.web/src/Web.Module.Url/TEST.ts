@@ -166,4 +166,18 @@ export default Test.describe('Module.Url', (e) => {
     test('./Dev', 'Dev');
     test('  ./Dev  ', 'Dev');
   });
+
+  e.it('stripHttp', () => {
+    const test = (input: string, expected: string) => {
+      const res = ModuleUrl.stripHttp(input);
+      expect(res).to.eql(expected);
+    };
+
+    test(undefined as any, '');
+    test('', '');
+    test('foo.com', 'foo.com');
+    test('http://localhost:1234', 'localhost:1234');
+    test('https://foo.com', 'foo.com');
+    test('  https://foo.com  ', 'foo.com');
+  });
 });

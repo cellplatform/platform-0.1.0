@@ -1,7 +1,12 @@
-import { t, value } from '../../common';
+import { t, value, ModuleUrl } from '../../common';
 
 export * from '../../common';
 export * from './constants';
+
+/**
+ * TODO 🐷
+ * Move more of this into the base [ModuleUrl] canonical URL helper.
+ */
 
 export const Parse = {
   manifestUrl(input: string) {
@@ -22,7 +27,7 @@ export const Parse = {
   remoteEntryUrl(manifestUrl: string, manifest?: t.ModuleManifest) {
     try {
       if (!manifestUrl || !manifest || !manifest.module.remote) return '';
-      if (!Parse.stripHttp(manifestUrl)) return manifestUrl; // NB: "http:" prefix only.
+      if (!ModuleUrl.stripHttp(manifestUrl)) return manifestUrl; // NB: "http:" prefix only.
       if (['http', 'https'].includes(manifestUrl)) return manifestUrl;
 
       const url = new URL(manifestUrl);
@@ -38,9 +43,5 @@ export const Parse = {
     } catch (error) {
       return manifestUrl;
     }
-  },
-
-  stripHttp(input: string) {
-    return input.replace(/^http:\/*/, '').replace(/^https:\/*/, '');
   },
 };

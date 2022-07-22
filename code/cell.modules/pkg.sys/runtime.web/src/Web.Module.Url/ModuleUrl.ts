@@ -112,4 +112,14 @@ export const ModuleUrl = {
   trimEntryPath(path?: string | null) {
     return (path || '').trim().replace(/^\.\//, '');
   },
+
+  /**
+   * Remove the HTTP protocol from the string
+   */
+  stripHttp(input: string) {
+    return (input || '')
+      .trim()
+      .replace(/^http:\/*/, '')
+      .replace(/^https:\/*/, '');
+  },
 };
