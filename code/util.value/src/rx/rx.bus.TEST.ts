@@ -1,7 +1,6 @@
 import * as t from '@platform/types';
 import { expect } from 'chai';
 import { Observable, Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
 
 import { rx } from '.';
 
@@ -132,8 +131,8 @@ describe('rx.bus', () => {
       expect(rx.bus.asType).to.equal(rx.busAsType);
     });
 
-    // it('bus.clone', () => {
-    //   expect(typeof rx.bus.clone).to.equal('function');
-    // });
+    it('bus.pump', () => {
+      expect(rx.bus.pump).to.equal(rx.pump);
+    });
   });
 });

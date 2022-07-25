@@ -1,10 +1,11 @@
 import * as t from '@platform/types';
-import { is } from '@platform/util.is';
 import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 import { id } from '../id';
 import { isEvent } from './rx.event';
+import { instance, busAsType, isBus } from './rx.bus.util';
+import { Pump } from './rx.pump';
 
 type E = t.Event;
 
@@ -13,22 +14,8 @@ type Bus = BusFactory & {
   isBus(input: any): boolean;
   asType<T extends E>(bus: t.EventBus<any>): t.EventBus<T>;
   instance(bus: t.EventBus<any>): string;
+  pump: typeof Pump;
 };
-
-/**
- * Determine if the given object in an EventBus.
- */
-export function isBus(input: any) {
-  if (typeof input !== 'object' || input === null) return false;
-  return is.observable(input.$) && typeof input.fire === 'function';
-}
-
-/**
- * Convert a bus of one type into another type.
- */
-export function busAsType<T extends E>(bus: t.EventBus<any>) {
-  return bus as t.EventBus<T>;
-}
 
 /**
  * Factory for creating an event-bus.
@@ -49,16 +36,12 @@ const factory: BusFactory = <T extends E = E>(input?: Subject<any> | t.EventBus<
 };
 
 /**
- * Read the "_instance" hidden ID from the bus.
- */
-function instance(bus: t.EventBus<any>) {
-  return ((bus ?? {}) as any)._instance ?? '';
-}
-
-/**
  * Export extended [bus] function.
  */
+
 (factory as any).isBus = isBus;
 (factory as any).asType = busAsType;
 (factory as any).instance = instance;
+(factory as any).pump = Pump;
+
 export const bus = factory as Bus;

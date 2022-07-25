@@ -5,7 +5,14 @@ import { rx } from '.';
 import { time } from '../time';
 
 describe('rx', () => {
-  describe('debounceBuffer', () => {
+  describe('exports', () => {
+    it('rx.pump', () => {
+      expect(typeof rx.pump.create === 'function').to.equal(true);
+      expect(typeof rx.pump.connect === 'function').to.equal(true);
+    });
+  });
+
+  describe('rx.debounceBuffer', () => {
     it('buffers several values', async () => {
       type T = { value: number };
       const source$ = new Subject<T>();
@@ -51,7 +58,7 @@ describe('rx', () => {
     });
   });
 
-  describe('event: payload', () => {
+  describe('rx.event | rx.payload', () => {
     type FooEvent = { type: 'TYPE/foo'; payload: Foo };
     type Foo = { count: number };
 
@@ -88,7 +95,7 @@ describe('rx', () => {
     });
   });
 
-  describe('isEvent', () => {
+  describe('rx.isEvent', () => {
     const test = (input: any, expected: boolean) => {
       expect(rx.isEvent(input)).to.eql(expected);
     };
@@ -134,7 +141,7 @@ describe('rx', () => {
     });
   });
 
-  describe('disposable', () => {
+  describe('rx.disposable', () => {
     it('method: dispose', () => {
       const { dispose$, dispose } = rx.disposable();
 
@@ -176,7 +183,7 @@ describe('rx', () => {
     });
   });
 
-  describe('asPromise', () => {
+  describe('rx.asPromise', () => {
     type E = { type: 'foo'; payload: { count: number } };
 
     describe('first', () => {
