@@ -6,7 +6,7 @@ import { Dispose } from '../dispose';
 /**
  * Generates the base mechanism of an disposable observable.
  */
-export function disposable(until$?: Observable<any>): Disposable {
+export function disposable(until$?: Observable<any> | Observable<any>[]): Disposable {
   return Dispose.create(until$);
 }
 
