@@ -4,6 +4,8 @@ export { Observable, Subject } from 'rxjs';
 /**
  * @platform
  */
+export { Event, EventBus, EventPump, Disposable, Json, NpmPackageJson } from '@platform/types';
+
 export {
   Manifest,
   ManifestFile,
@@ -13,7 +15,6 @@ export {
 } from '@platform/cell.types/lib/types.Manifest';
 export { NetworkBus } from '@platform/cell.types';
 export { IStateObject, IStateObjectWritable } from '@platform/state.types';
-export { EventBus, Event, Disposable, Json, NpmPackageJson } from '@platform/types';
 export { Http } from '@platform/http.types';
 
 /**

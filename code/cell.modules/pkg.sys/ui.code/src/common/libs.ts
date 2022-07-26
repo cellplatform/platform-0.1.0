@@ -19,6 +19,7 @@ export { Http } from '@platform/http';
  * @system
  */
 export { Filesystem } from 'sys.fs/lib/web/ui';
+export { WebRuntime } from 'sys.runtime.web.ui/lib';
 
 export { ObjectView } from 'sys.ui.primitives/lib/ui/ObjectView';
 export { PropList } from 'sys.ui.primitives/lib/ui/PropList';

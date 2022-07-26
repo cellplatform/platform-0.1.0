@@ -16,7 +16,7 @@ export async function env(args: { staticRoot?: string }) {
    */
   const isDefault = !Boolean(args.staticRoot);
   const paths = staticPaths(args.staticRoot);
-  const vs = staticPaths(args.staticRoot).vs;
+  const vs = paths.vs;
 
   loader.config({
     paths: { vs },

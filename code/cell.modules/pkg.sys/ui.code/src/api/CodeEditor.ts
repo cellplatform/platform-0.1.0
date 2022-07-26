@@ -21,7 +21,6 @@ export const CodeEditor = {
   start(bus: t.EventBus<any>) {
     const key = rx.bus.instance(bus);
     const controller = _singleton[key] || (_singleton[key] = CodeEditorSingletonController(bus));
-
     return controller;
   },
 };
