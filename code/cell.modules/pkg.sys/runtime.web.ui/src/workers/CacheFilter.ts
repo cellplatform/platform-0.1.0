@@ -1,6 +1,6 @@
-import * as t from '../Web.HttpCache/types';
+import { HttpCacheFilter } from 'sys.runtime.web/lib/types';
 
-type T = { module: t.HttpCacheFilter };
+type T = { module: HttpCacheFilter };
 
 export const CacheFilter: T = {
   /**
@@ -40,7 +40,7 @@ function isCacheableModuleArtefact(path: string) {
 }
 
 function isVersionedChunkFile(path: string) {
-  if (!path.startsWith('cell-')) return false;
+  if (!path.includes('/cell-')) return false;
   if (!path.endsWith('.js')) return false;
   return true;
 }

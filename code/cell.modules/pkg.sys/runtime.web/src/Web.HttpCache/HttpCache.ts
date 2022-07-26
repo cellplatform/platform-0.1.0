@@ -2,10 +2,6 @@ import { HttpCacheServiceWorker as ServiceWorker } from './HttpCache.ServiceWork
 import { HttpCacheStore as Store } from './HttpCache.Store';
 
 /**
- * TODO 🐷 move to [sys.runtime.web]
- */
-
-/**
  * Browser Cache
  */
 export const HttpCache = {

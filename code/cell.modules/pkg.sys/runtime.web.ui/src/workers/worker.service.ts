@@ -1,9 +1,9 @@
-import { HttpCache } from '../Web.HttpCache';
-import { WebRuntime } from 'sys.runtime.web';
 import { log } from '@platform/log/lib/client';
-import { CacheFilter } from './worker.service.CacheFilter';
 
-log.info('(🌸) worker.service.ts ');
+import { WebRuntime } from 'sys.runtime.web';
+import { CacheFilter } from './CacheFilter';
+
+log.info('(🌸) service.ts (ServiceWorker process)');
 
 const ctx: ServiceWorker = self as any;
 const location = new URL((self as Window).location.href);
@@ -17,6 +17,7 @@ const QUERYSTRING_KEY = {
  * Startup.
  */
 (async () => {
+  const { HttpCache, ServiceWorker } = WebRuntime;
   const name = 'cache:sys.runtime/module';
 
   /**
@@ -27,13 +28,13 @@ const QUERYSTRING_KEY = {
     log.info(msg);
 
     await HttpCache.Store(name).clear();
-    return await WebRuntime.ServiceWorker.forceReload({ removeQueryKey: QUERYSTRING_KEY.reset });
+    return await ServiceWorker.forceReload({ removeQueryKey: QUERYSTRING_KEY.reset });
   }
 
   /**
    * Install the service.
    */
-  await WebRuntime.ServiceWorker.init('./worker.service.js');
+  await ServiceWorker.init('./service.js');
 
   /**
    * Start the HTTP cache.

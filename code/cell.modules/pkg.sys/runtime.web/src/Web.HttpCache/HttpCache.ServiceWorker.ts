@@ -1,5 +1,6 @@
-import { t, log, WebRuntime, Is } from './common';
+import { t, log, Is } from './common';
 import { HttpCacheStore } from './HttpCache.Store';
+import { Module } from '../Web.Module';
 
 type CacheName = string;
 
@@ -24,11 +25,11 @@ export async function HttpCacheServiceWorker(args: {
   /**
    * Output info
    */
-  const module = `${WebRuntime.module.name}@${WebRuntime.module.version}`;
+  const info = Module.info;
   log.group('💦🌳');
   log.info(`💦 service worker`);
   log.info(`💦 cache name: "${name}"`);
-  log.info(`💦 module: ${module}`);
+  log.info(`💦 module: ${info.name}@${info.version}`);
   log.info(`💦 browser location: ${location.href}`);
   log.groupEnd();
 
