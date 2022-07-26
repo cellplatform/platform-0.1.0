@@ -1,31 +1,31 @@
 import { loader } from '@monaco-editor/react';
 
 import { CodeEditorSingleton } from './CodeEditor.Singleton';
-import { t } from '../common';
+import { t, rx } from '../common';
 import { Configure } from '../Configure';
 import { staticPaths } from '../Configure/Configure.paths';
+import { CodeEditorEvents } from '../Events';
 
 let _singleton: Promise<t.ICodeEditorSingleton>;
 
 /**
  * The singleton instance of monaco-editor logical controller (API).
  */
-export function singleton(args: { bus: t.EventBus<any>; staticRoot?: string }) {
+export function singleton(args: { bus: t.EventBus<any> }) {
   if (_singleton) return _singleton;
 
   return (_singleton = new Promise<t.ICodeEditorSingleton>(async (resolve, reject) => {
     try {
-      const { bus, staticRoot } = args;
-      const paths = staticPaths(args.staticRoot);
+      const { bus } = args;
+      const events = CodeEditorEvents(bus);
+      const status = await events.status.get();
+      const paths = status?.paths ?? staticPaths();
 
-      /**
-       * Ensure the environment is configured.
-       *
-       * NOTE:     If any custom configuration parameters need to be expressed
-       *           call this function seperately BEFORE the first instantiation of the
-       *           of the [CodeEditor.singleton()] method.
-       */
-      Configure.env({ staticRoot });
+      if (!status || !status.initialized) {
+        const busid = rx.bus.instance(bus);
+        const msg = `CodeEditor controller for event-bus "${busid}" not ready. Ensure [CodeEditor.start()] has been called.`;
+        throw new Error(msg);
+      }
 
       // Initialize editor.
       const editor = await loader.init();
