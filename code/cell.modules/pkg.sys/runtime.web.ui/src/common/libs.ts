@@ -7,8 +7,6 @@ export { useResizeObserver, FC } from '@platform/react';
 export { rx, slug, value, time } from '@platform/util.value';
 export { Http } from '@platform/http';
 export { Is } from '@platform/util.is';
-
-export { WebRuntime } from '@platform/cell.runtime.web';
 export { ManifestUrl } from '@platform/cell.schema';
 
 /**
@@ -16,7 +14,7 @@ export { ManifestUrl } from '@platform/cell.schema';
  */
 export { Filesystem } from 'sys.fs';
 export { Json } from 'sys.data.json';
-export { WebRuntimeBus, ModuleUrl } from 'sys.runtime.web';
+export { WebRuntime, WebRuntimeBus, ModuleUrl, HttpCache } from 'sys.runtime.web';
 
 export { useDragTarget } from 'sys.ui.primitives/lib/hooks/DragTarget';
 export { Button } from 'sys.ui.primitives/lib/ui.ref/button/Button';
