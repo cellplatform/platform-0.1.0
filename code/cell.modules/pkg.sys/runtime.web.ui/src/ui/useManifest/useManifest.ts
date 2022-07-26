@@ -1,17 +1,16 @@
 import { useEffect, useState } from 'react';
 
-import { t, Http } from '../common';
+import { t, Http, ModuleUrl } from '../common';
 import { MOCK } from './MOCK';
 
 /**
  * Load the local manifest JSON file.
  */
-
 export const useManifest: t.UseManifestHook = (options = {}) => {
   const isLocalhost = location.hostname === 'localhost';
 
   const [json, setJson] = useState<t.ModuleManifest | undefined>();
-  const url = options.url || `//${location.host}/index.json`;
+  const url = options.url || ModuleUrl.ensureManifest(location.href).href;
 
   const is: t.ManifestHookFlags = {
     loaded: Boolean(json),
