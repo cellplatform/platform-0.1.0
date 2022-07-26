@@ -1,13 +1,21 @@
 import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
+
 import { Module, ModuleProps } from '..';
 import { ManifestSelectorStateful } from '../../Manifest.Selector';
-import { COLORS, t, rx, Filesystem, DEFAULT } from '../common';
+import { COLORS, DEFAULT, Filesystem, rx, t } from '../common';
 import { DevSampleLoader } from './DEV.SampleLoader';
 
 type Ctx = {
   props: ModuleProps;
   setUrl(url: t.ManifestUrl): void;
+};
+
+const Util = {
+  debugProp(ctx: Ctx) {
+    const { props } = ctx;
+    return props.debug || (props.debug = {});
+  },
 };
 
 /**
@@ -30,6 +38,7 @@ export const actions = DevActions<Ctx>()
       props: {
         instance,
         theme: 'Light',
+        debug: Module.DEFAULT.DEBUG,
         onExportClick: ({ url }) => setUrl(url),
       },
       setUrl,
@@ -73,6 +82,7 @@ export const actions = DevActions<Ctx>()
 
     e.select((config) => {
       config
+        .title('props.info:')
         .items([
           { label: `info: <undefined>`, value: undefined },
           { label: `info: true`, value: true },
@@ -83,6 +93,14 @@ export const actions = DevActions<Ctx>()
         .pipe((e) => {
           if (e.changing) e.ctx.props.info = e.changing?.next[0].value;
         });
+    });
+
+    e.hr(1, 0.1);
+
+    e.boolean('debug.logLoader', (e) => {
+      const debug = Util.debugProp(e.ctx);
+      if (e.changing) debug.logLoader = e.changing.next;
+      e.boolean.current = debug.logLoader;
     });
 
     e.hr();

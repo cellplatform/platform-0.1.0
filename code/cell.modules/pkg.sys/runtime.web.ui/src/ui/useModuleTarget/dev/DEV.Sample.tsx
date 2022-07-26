@@ -20,7 +20,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
   const { instance, url, target } = props;
 
   const manifest = useManifest({ url });
-  const remote = useModuleTarget({ instance, target });
+  const remote = useModuleTarget({ instance, target, log: true });
 
   const fireLoad = (manifest: t.ModuleManifest, entry: Path) => {
     if (url) {

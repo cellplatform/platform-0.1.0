@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { filter } from 'rxjs/operators';
 
-import { Is, rx, t, WebRuntime, WebRuntimeBus } from '../common';
+import { Is, log, ModuleUrl, rx, t, WebRuntime, WebRuntimeBus } from '../common';
 
-type Id = string;
 type TargetName = string;
 type Address = t.ModuleManifestRemoteImport;
 
@@ -11,8 +10,9 @@ type Address = t.ModuleManifestRemoteImport;
  * Hook that handles loading remote modules via the [EventBus] for a specific "target".
  */
 export function useModuleTarget<M = any>(args: {
-  instance: { bus: t.EventBus<any>; id?: Id };
+  instance: t.ModuleInstance;
   target: TargetName;
+  log?: boolean;
 }) {
   const { instance, target } = args;
   const busid = rx.bus.instance(instance.bus);
@@ -35,7 +35,7 @@ export function useModuleTarget<M = any>(args: {
       setAddress(address);
 
       const { url, namespace, entry } = address;
-      const remote = WebRuntime.remote({ url, namespace, entry });
+      const remote = WebRuntime.Module.remote({ url, namespace, entry });
       const script = remote.script();
 
       script.$.subscribe(async (e) => {
@@ -64,18 +64,32 @@ export function useModuleTarget<M = any>(args: {
   /**
    * Runs a [DefaultModuleEntry] function if one has been loaded.
    */
-  const renderDefaultEntry = async (bus: t.EventBus<any>) => {
+  const renderDefaultEntry = async (bus: t.EventBus<any>): Promise<JSX.Element | null> => {
     const fn = (module as any)?.default as t.ModuleDefaultEntry;
 
     if (ok && address && typeof fn === 'function') {
       const { namespace, entry } = address;
-
-      const url = address.url;
+      const url = ModuleUrl.ensureManifest(address.url).href;
+      const pump = rx.pump.create(bus);
       const ctx: t.ModuleDefaultEntryContext = { source: { url, namespace, entry } };
-      const res = fn(bus, ctx);
 
-      const el = Is.promise(res) ? await res : res;
-      if (React.isValidElement(el)) return el;
+      const res = fn(pump, ctx);
+      const isPromise = Is.promise(res);
+      const el = isPromise ? await res : res;
+      const isElement = React.isValidElement(el);
+
+      if (args.log) {
+        log.group('💦 (useModuleTarget).renderDefaultEntry');
+        log.info('url (manifest):', url);
+        log.info('ctx:', ctx);
+        log.info('response:', res);
+        log.info('response (is promise):', isPromise);
+        log.info('response (is element):', isElement);
+        log.info('element:', el);
+        log.groupEnd();
+      }
+
+      return isElement ? el : null;
     }
 
     return null;

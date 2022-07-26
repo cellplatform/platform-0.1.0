@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
 
-import { rx, t, useModule, Is } from '../common';
+import { DEFAULT, rx, t, useModule } from '../common';
 
 export type LoaderProps = {
   instance: t.ModuleInstance;
   url?: t.ManifestUrl;
   theme: t.ModuleInfoTheme;
+  debug?: t.ModuleDebug;
   onLoading?: (e: { ok: boolean; loading: boolean }) => void;
 };
 
 export const Loader: React.FC<LoaderProps> = (props) => {
-  const { instance, url } = props;
+  const { instance, url, debug = DEFAULT.DEBUG } = props;
   const bus = instance.bus;
   const busid = rx.bus.instance(bus);
 
-  const remote = useModule({ instance, url });
+  const remote = useModule({ instance, url, log: debug.logLoader });
   const [element, setElement] = useState<JSX.Element | null>(null);
 
   /**

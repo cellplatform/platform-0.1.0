@@ -3,7 +3,7 @@ import { log } from '@platform/log/lib/client';
 import { WebRuntime } from 'sys.runtime.web';
 import { CacheFilter } from './CacheFilter';
 
-log.info('(🌸) service.ts (ServiceWorker process)');
+log.info('(🌸) service.ts (sys.runtime/ServiceWorker)');
 
 const ctx: ServiceWorker = self as any;
 const location = new URL((self as Window).location.href);

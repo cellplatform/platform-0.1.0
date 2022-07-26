@@ -18,13 +18,7 @@ export const Foo: React.FC<FooProps> = (props) => {
 /**
  * Default entry function (sample).
  */
-const entry: t.ModuleDefaultEntry = (bus, ctx) => {
-  console.group('💦🌳🌼 ModuleDefaultEntry: Foo');
-  console.log('bus', bus);
-  console.log('ctx', ctx);
-  console.log('source', ctx.source);
-  console.groupEnd();
-
+const entry: t.ModuleDefaultEntry = (pump, ctx) => {
   return <Foo title={'Foo 🐷'} />;
 };
 
