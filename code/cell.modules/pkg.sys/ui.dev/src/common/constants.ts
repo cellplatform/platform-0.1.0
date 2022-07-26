@@ -1,6 +1,11 @@
 import { Subject } from 'rxjs';
+import { Runtime } from '@platform/cell.runtime';
 
 import * as t from './types';
+
+export const MODULE = {
+  info: Runtime.module(), // the compiled __CELL__ constant used within this method.
+};
 
 export const FONT = {
   MONO: 'Menlo, monospace',
