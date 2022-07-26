@@ -32,18 +32,6 @@ describe.only('Pump', () => {
       expect(fired[0]).to.eql(event);
     });
 
-    it('throw: input not a bus', () => {
-      const test = (input: any) => {
-        const fn = () => Pump.create(input);
-        expect(fn).to.throw(/Not a valid event-bus/);
-      };
-
-      test(undefined);
-      test(null);
-      test(123);
-      test({});
-    });
-
     it('{ dispose$ } option', () => {
       const { dispose, dispose$ } = rx.disposable();
       const bus = rx.bus<E>();
@@ -79,10 +67,22 @@ describe.only('Pump', () => {
       expect(fired.length).to.eql(1);
       expect(fired[0]).to.eql(event);
     });
+
+    it('throw: input not an event-bus', () => {
+      const test = (input: any) => {
+        const fn = () => Pump.create(input);
+        expect(fn).to.throw(/Not a valid event-bus/);
+      };
+
+      test(undefined);
+      test(null);
+      test(123);
+      test({});
+    });
   });
 
   describe('connect', () => {
-    it('fire events two-way', () => {
+    it('fire events (two-way, duplex)', () => {
       const bus1 = rx.bus<E>();
       const bus2 = rx.bus<E>();
       const pump = Pump.create<E>(bus1);
@@ -209,7 +209,7 @@ describe.only('Pump', () => {
     });
 
     describe('filter (connection)', () => {
-      it('clone the connection', () => {
+      it('clone and filter the connection', () => {
         const bus1 = rx.bus<E>();
         const bus2 = rx.bus<E>();
         const pump = Pump.create<E>(bus2);
@@ -220,7 +220,7 @@ describe.only('Pump', () => {
         expect(conn1).to.not.equal(conn2);
       });
 
-      it('dispose filtered connection does not dispose root connection', () => {
+      it('dispose child (filter/cloned) connection does not dispose the parent connection', () => {
         const bus1 = rx.bus<E>();
         const bus2 = rx.bus<E>();
         const pump = Pump.create<E>(bus2);
@@ -236,7 +236,7 @@ describe.only('Pump', () => {
         expect(conn2.alive).to.eql(false);
       });
 
-      it('dispose root connection disposes of filtered connections', () => {
+      it('dispose root/parent connection disposes child filter/cloned connections', () => {
         const bus1 = rx.bus<E>();
         const bus2 = rx.bus<E>();
         const pump = Pump.create<E>(bus2);
@@ -255,7 +255,7 @@ describe.only('Pump', () => {
         expect(conn3.alive).to.eql(false);
       });
 
-      it('filters events via { filter } parameter', () => {
+      it('filter events via { filter } input parameter', () => {
         const bus1 = rx.bus<E>();
         const bus2 = rx.bus<E>();
         const pump = Pump.create<E>(bus2);
@@ -292,7 +292,7 @@ describe.only('Pump', () => {
         fired.reset();
       });
 
-      it('filters events via [connection.filter(fn)] clone', () => {
+      it('filter events via [connection.filter(fn)] clone', () => {
         const bus1 = rx.bus<E>();
         const bus2 = rx.bus<E>();
         const pump = Pump.create<E>(bus2);
