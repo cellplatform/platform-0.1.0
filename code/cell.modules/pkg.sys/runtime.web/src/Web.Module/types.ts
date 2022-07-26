@@ -1,7 +1,7 @@
 import * as t from '../common/types';
 
 /**
- * Common definition of a "default" entry
+ * Common definition of a exported "default" entry.
  */
 export type ModuleDefaultEntry = (
   pump: t.EventPump,
