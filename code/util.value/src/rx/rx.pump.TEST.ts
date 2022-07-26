@@ -1,3 +1,5 @@
+import * as t from '@platform/types';
+
 import { expect } from 'chai';
 import { rx } from '.';
 
@@ -33,7 +35,7 @@ describe.only('Pump', () => {
     it('throw: input not a bus', () => {
       const test = (input: any) => {
         const fn = () => Pump.create(input);
-        expect(fn).to.throw(/Input not a valid event-bus/);
+        expect(fn).to.throw(/Not a valid event-bus/);
       };
 
       test(undefined);
@@ -42,7 +44,7 @@ describe.only('Pump', () => {
       test({});
     });
 
-    it.skip('filter', () => {
+    describe('filter (pump)', () => {
       //
     });
   });
@@ -93,7 +95,7 @@ describe.only('Pump', () => {
     });
 
     describe('dispose', () => {
-      it('method', () => {
+      it('connection.dispose() method', () => {
         const bus1 = rx.bus<E>();
         const bus2 = rx.bus<E>();
         const pump = Pump.create<E>(bus2);
@@ -136,7 +138,7 @@ describe.only('Pump', () => {
         expect(fired.bus2.length).to.eql(1, 'bus2');
       });
 
-      it('option: connect({ dispose$ }) - root connection', () => {
+      it('connection({ dispose$ }) parameter option', () => {
         const { dispose, dispose$ } = rx.disposable();
 
         const bus1 = rx.bus<E>();
@@ -171,6 +173,132 @@ describe.only('Pump', () => {
         bus2.fire({ type: 'foo', payload: {} });
         expect(fired.bus1.length).to.eql(0, 'bus1');
         expect(fired.bus2.length).to.eql(1, 'bus2');
+      });
+    });
+
+    describe('filter', () => {
+      it('clone connection', () => {
+        const bus1 = rx.bus<E>();
+        const bus2 = rx.bus<E>();
+        const pump = Pump.create<E>(bus2);
+
+        const conn1 = Pump.connect(pump).to(bus1);
+        const conn2 = conn1.filter(() => true);
+
+        expect(conn1).to.not.equal(conn2);
+      });
+
+      it('dispose filtered connection does not dispose root connection', () => {
+        const bus1 = rx.bus<E>();
+        const bus2 = rx.bus<E>();
+        const pump = Pump.create<E>(bus2);
+
+        const conn1 = Pump.connect(pump).to(bus1);
+        const conn2 = conn1.filter(() => true);
+
+        expect(conn1.alive).to.eql(true);
+        expect(conn2.alive).to.eql(true);
+
+        conn2.dispose();
+        expect(conn1.alive).to.eql(true); // NB: not disposed.
+        expect(conn2.alive).to.eql(false);
+      });
+
+      it('dispose root connection disposes of filtered connections', () => {
+        const bus1 = rx.bus<E>();
+        const bus2 = rx.bus<E>();
+        const pump = Pump.create<E>(bus2);
+
+        const conn1 = Pump.connect(pump).to(bus1);
+        const conn2 = conn1.filter(() => true);
+        const conn3 = conn1.filter(() => false);
+
+        expect(conn1.alive).to.eql(true);
+        expect(conn2.alive).to.eql(true);
+        expect(conn3.alive).to.eql(true);
+
+        conn1.dispose();
+        expect(conn1.alive).to.eql(false);
+        expect(conn2.alive).to.eql(false);
+        expect(conn3.alive).to.eql(false);
+      });
+
+      it('filters events via { filter } parameter', () => {
+        const bus1 = rx.bus<E>();
+        const bus2 = rx.bus<E>();
+        const pump = Pump.create<E>(bus2);
+
+        const filter: t.EventPumpFilter = (e) => e.event.payload.msg !== 'filter-me';
+
+        Pump.connect(pump, { filter }).to(bus1);
+
+        const fired = {
+          bus1: <E[]>[],
+          bus2: <E[]>[],
+          reset() {
+            fired.bus1 = [];
+            fired.bus2 = [];
+          },
+        };
+
+        bus1.$.subscribe((e) => fired.bus1.push(e));
+        bus2.$.subscribe((e) => fired.bus2.push(e));
+
+        bus1.fire({ type: 'foo', payload: {} });
+        bus2.fire({ type: 'foo', payload: {} });
+        expect(fired.bus1.length).to.eql(2);
+        expect(fired.bus2.length).to.eql(2);
+        fired.reset();
+
+        bus1.fire({ type: 'foo', payload: { msg: 'filter-me' } });
+        expect(fired.bus1.length).to.eql(1);
+        expect(fired.bus2.length).to.eql(0);
+        fired.reset();
+
+        bus2.fire({ type: 'foo', payload: { msg: 'filter-me' } });
+        expect(fired.bus1.length).to.eql(0);
+        expect(fired.bus2.length).to.eql(1);
+        fired.reset();
+      });
+
+      it('filters events via [connection.filter(fn)] clone', () => {
+        const bus1 = rx.bus<E>();
+        const bus2 = rx.bus<E>();
+        const pump = Pump.create<E>(bus2);
+
+        // const filter: t.EventPumpFilter = (e) => e.event.payload.msg !== 'filter-root';
+
+        Pump.connect(pump)
+          .filter((e) => e.event.payload.msg !== 'filter-me')
+          .to(bus1);
+
+        const fired = {
+          bus1: <E[]>[],
+          bus2: <E[]>[],
+          reset() {
+            fired.bus1 = [];
+            fired.bus2 = [];
+          },
+        };
+
+        bus1.$.subscribe((e) => fired.bus1.push(e));
+        bus2.$.subscribe((e) => fired.bus2.push(e));
+
+        bus1.fire({ type: 'foo', payload: {} });
+        bus2.fire({ type: 'foo', payload: {} });
+        expect(fired.bus1.length).to.eql(2);
+        expect(fired.bus2.length).to.eql(2);
+        fired.reset();
+
+        bus1.fire({ type: 'foo', payload: { msg: 'filter-me' } });
+        expect(fired.bus1.length).to.eql(1);
+        expect(fired.bus2.length).to.eql(0);
+        fired.reset();
+
+        bus2.fire({ type: 'foo', payload: { msg: 'filter-me' } });
+        expect(fired.bus1.length).to.eql(0);
+        expect(fired.bus2.length).to.eql(1);
+        fired.reset();
       });
     });
   });

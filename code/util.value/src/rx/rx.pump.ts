@@ -6,18 +6,18 @@ import { instance, isBus } from './rx.bus.util';
 import { disposable } from './rx.disposable';
 
 /**
- * TODO 🐷
- * - filter
- * - Ctx
+ * An [EventPump] implementation.
+ * Note:
+ *    Event pumps allow a way of collapsing a rxjs (Observable) setup into
+ *    pure functions for passing between libraries, where the rxjs library
+ *    may differ. This provides a JS native way of bridging observables.
  */
 export const Pump = {
   /**
-   * Create a network pump using the given bus as the subject.
+   * Create a pump using the given bus as the subject.
    */
   create<E extends t.Event = t.Event>(bus: t.EventBus<any>): t.EventPump<E> {
-    if (!isBus(bus)) {
-      throw new Error('Input not a valid event-bus');
-    }
+    if (!isBus(bus)) throw new Error('Not a valid event-bus');
     return {
       id: Util.asPumpId(bus),
       in: (fn) => bus.$.pipe().subscribe(fn),
@@ -31,10 +31,14 @@ export const Pump = {
    */
   connect<E extends t.Event = t.Event>(
     pump: t.EventPump<E>,
-    options: { dispose$?: Observable<any> } = {},
+    options: { dispose$?: Observable<any>; filter?: t.EventPumpFilter<E> } = {},
   ) {
     const { dispose, dispose$ } = disposable(options.dispose$);
     dispose$.subscribe(() => (connection.alive = false));
+
+    const optionFilter = (direction: t.EventPumpFilterArgs['direction'], event: E) => {
+      return typeof options.filter === 'function' ? options.filter({ direction, event }) : true;
+    };
 
     const connection = {
       alive: true,
@@ -55,6 +59,8 @@ export const Pump = {
 
         pump.in((e) => {
           if (e === ignore.out || !connection.alive) return;
+          if (!optionFilter('In', e)) return;
+
           ignore.in = e;
           bus.fire(e);
           ignore.in = undefined;
@@ -63,6 +69,7 @@ export const Pump = {
         bus.$.pipe(
           takeUntil(dispose$),
           filter((e) => e !== ignore.in),
+          filter((e) => optionFilter('Out', e)),
         ).subscribe((e) => {
           ignore.out = e;
           pump.out(e);
@@ -70,6 +77,18 @@ export const Pump = {
         });
 
         return connection;
+      },
+
+      /**
+       * Clone the connection providing a filter.
+       */
+      filter(fn: t.EventPumpFilter<E>) {
+        const filter: t.EventPumpFilter<E> = (e) => {
+          if (!fn(e)) return false;
+          if (typeof options.filter === 'function' && !options.filter(e)) return false;
+          return true;
+        };
+        return Pump.connect(pump, { dispose$, filter });
       },
     };
 

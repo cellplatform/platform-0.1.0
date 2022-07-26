@@ -34,12 +34,21 @@ export type EventPump<E extends Event = Event> = {
 };
 
 /**
- * Recieves messages/events inward from the network.
+ * Recieves messages/events inward.
  */
 export type EventPumpIn<E extends Event> = (fn: EventPumpInSubscriber<E>) => void;
 export type EventPumpInSubscriber<T extends Event> = (e: T) => void;
 
 /**
- * Pumps messages/events outward into the network.
+ * Pumps messages/events outward.
  */
 export type EventPumpOut<E extends Event> = (e: E) => void;
+
+/**
+ * Filter messages flowing through an EventPump.
+ */
+export type EventPumpFilter<E extends Event = Event> = (e: EventPumpFilterArgs<E>) => boolean;
+export type EventPumpFilterArgs<E extends Event = Event> = {
+  direction: 'In' | 'Out';
+  event: E;
+};
