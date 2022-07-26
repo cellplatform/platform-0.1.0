@@ -1,6 +1,6 @@
-import { rx, t, R } from '../common';
-import { CodeEditorEvents } from '../Events';
+import { R, rx, t } from '../common';
 import { staticPaths } from '../Configure/Configure.paths';
+import { CodeEditorEvents } from '../Events';
 
 /**
  * Singleton controller for an environment.
@@ -31,18 +31,14 @@ export function CodeEditorSingletonController(input: t.EventBus<any>) {
    */
   events.init.req$.subscribe((e) => {
     const { tx } = e;
-
     _status = {
       ..._status,
       initialized: true,
       paths: staticPaths(e.staticRoot),
     };
-
-    const info = R.clone(_status);
-
     bus.fire({
       type: 'sys.ui.code/init:res',
-      payload: { tx, info },
+      payload: { tx, info: R.clone(_status) },
     });
   });
 

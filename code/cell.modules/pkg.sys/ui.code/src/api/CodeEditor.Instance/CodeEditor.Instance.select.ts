@@ -19,7 +19,6 @@ export function select(args: {
       .map((s) => Translate.range.toMonaco(s).selection);
 
     if (selections.length === 1) {
-      console.log('selections[0]', selections[0]);
       instance.setSelection(selections[0]);
     }
 

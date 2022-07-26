@@ -37,12 +37,8 @@ export function CodeEditorInstance(args: {
    * TODO 🐷 TEMP
    */
   if (filename === 'one.ts') {
-    // console.group('🌳 one.ts');
-
     const def = 'export declare function add(a: number, b: number): number';
     singleton.libs.add('node_modules/@types/math/index.d.ts', def);
-
-    // console.groupEnd();
   }
 
   let language: t.CodeEditorLanguage = args.language ?? DEFAULT.MODEL.language;

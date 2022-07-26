@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Color, css, CssValue, ObjectView, t } from '../common';
+import { Color, css, CssValue, ObjectView, t, log } from '../common';
 
 export type JsonViewProps = {
   text?: string;
@@ -18,15 +18,12 @@ export const JsonView: React.FC<JsonViewProps> = (props) => {
     const text = props.text;
     let json: t.Json | undefined = undefined;
 
-    // const text;
-    console.log('text', text);
-
     if (typeof text === 'string' && text) {
       try {
         json = JSON.parse(text);
         setError(undefined);
       } catch (error: any) {
-        console.log('Caught error (not thrown).\nFailed to parse JSON', error);
+        log.error('Caught error (not thrown).\nFailed to parse JSON', error);
         setError(error);
       }
     }
@@ -34,7 +31,6 @@ export const JsonView: React.FC<JsonViewProps> = (props) => {
     setJson(json);
   }, [props.text]);
 
-  console.log('parsed json:', json);
   const BORDER_HR = `solid 5px ${Color.format(-0.1)}`;
 
   /**
