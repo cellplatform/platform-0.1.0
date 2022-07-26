@@ -1,43 +1,47 @@
-import { rx, t, log } from '../common';
 import { CodeEditor } from '../api';
+import { log, rx, t, ModuleUrl } from '../common';
 
 export const CommonEntry = {
   /**
    * Interpret an entry URL.
    */
   parseEntryUrl(href: string) {
-    const url = new URL(href);
-    const isLocalhost = url.hostname === 'localhost';
-
-    const up = (path: string) => path.substring(0, path.lastIndexOf('/'));
-
-    const path = url.pathname;
-    if (['.json', '.js'].some((ext) => path.endsWith(ext))) url.pathname = up(url.pathname);
-
+    const url = ModuleUrl.removeFilename(href);
     return {
       url,
-      staticRoot: isLocalhost ? undefined : `${url.origin}${url.pathname}`,
+      staticRoot: `${url.origin}${url.pathname}`,
     };
   },
 
   /**
    * Common initialization from an incoming "entry" call.
    */
-  init(bus: t.EventBus, ctx: t.ModuleDefaultEntryContext) {
-    log.group('💦 ENTRY:');
-    log.info('namespace', ctx.source.namespace);
-    log.info(rx.bus.instance(bus));
-    log.info('ctx.source', ctx.source);
-    log.groupEnd();
+  async init(pump: t.EventPump, ctx: t.ModuleDefaultEntryContext) {
+    const localbus = rx.bus();
+    rx.pump.connect(pump).to(localbus);
 
     // Interpret incoming context.
     const href = ctx.source.url;
     const { url, staticRoot } = CommonEntry.parseEntryUrl(href);
+    const events = CodeEditor.start(localbus);
 
-    // Perform environment configuration based on the "source" module location details.
-    CodeEditor.Configure.env({ staticRoot });
+    // Initialize the code-editor environment.
+    const res = await events.init.fire({ staticRoot });
+    const status = await events.status.get();
+    const paths = status?.paths;
+    const isDefault = staticRoot === undefined;
+
+    log.group('💦 ENTRY (CodeEditor)');
+    log.info('namespace:', ctx.source.namespace);
+    log.info('event:', rx.bus.instance(localbus));
+    log.info('ctx.source:', ctx.source);
+    log.info(`paths${isDefault ? ' (defaults):' : ':'}`.trim(), paths);
+    if (res.error) log.info(`error:`, res.error);
+    log.info('💦');
+    log.info('💦 (async response)');
+    log.groupEnd();
 
     // Finish up.
-    return { url, staticRoot };
+    return { bus: localbus, url, staticRoot };
   },
 };

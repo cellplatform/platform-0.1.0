@@ -1,8 +1,8 @@
 import '@platform/css/reset.css';
 
-import React from 'react';
 import ReactDOM from 'react-dom';
-import { t, rx } from '../common';
+
+import { Is, log, rx, t } from '../common';
 
 const Imports = {
   DevHarness: () => import('./Export.Dev.Harness'),
@@ -30,18 +30,38 @@ if (isDev) document.title = `${document.title} (dev)`;
  * [Render]
  */
 (async () => {
-  const root = document.getElementById('root');
   const bus = rx.bus();
+  const pump = rx.pump.create(bus);
+
+  log.info('[hint] query-string (option): source=<url>?entry=<path>');
+  const location = new URL(window.location.href);
+
+  const sourceParam = location.searchParams.get('source');
+  const url = Boolean(sourceParam) ? toUrl(sourceParam).href : location.href;
+  const namespace = isDev ? 'sys.ui.code:DEV' : 'sys.ui.code';
 
   const ctx: t.ModuleDefaultEntryContext = {
-    source: {
-      url: location.href,
-      entry: '',
-      namespace: isDev ? 'sys.ui.code:DEV' : 'sys.ui.code',
-    },
+    source: { url, entry: '', namespace },
   };
 
   const Module = await (isDev ? Imports.DevHarness() : Imports.App());
-  const el = Module.default(bus, ctx);
-  ReactDOM.render(el, root);
+  const res = Module.default(pump, ctx);
+  const el = Is.promise(res) ? await res : res;
+
+  ReactDOM.render(el, document.getElementById('root'));
 })();
+
+/**
+ * Helpers
+ */
+function toUrl(input?: string | null) {
+  const raw = !input || input === null ? '' : input;
+  const output = raw
+    .trim()
+    .replace(/^http\:/, '')
+    .replace(/^https\:/, '')
+    .replace(/^\/\//, '');
+  const protocol = output.startsWith('localhost') ? 'http' : 'https';
+  const href = `${protocol}://${output}`;
+  return new URL(href);
+}

@@ -6,6 +6,9 @@ import { ManifestSemver } from './ui/Manifest.Semver';
 import { Module } from './ui/Module';
 import { ModuleInfo } from './ui/Module.Info';
 
+const ModuleUrl = Base.Module.Url;
+
+export { ModuleUrl };
 export const WebRuntime = {
   ...Base,
 
