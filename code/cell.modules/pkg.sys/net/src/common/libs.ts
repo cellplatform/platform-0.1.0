@@ -24,6 +24,7 @@ export { rx, defaultValue, cuid, time, deleteUndefined, asArray, slug } from '@p
 export { StateObject } from '@platform/state';
 export { Hash } from '@platform/cell.schema';
 export { NetworkBus } from '@platform/cell.runtime/lib/NetworkBus';
+export { Is } from '@platform/util.is';
 
 /**
  * @system
