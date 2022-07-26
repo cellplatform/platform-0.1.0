@@ -16,12 +16,32 @@ export const Pump = {
   /**
    * Create a pump using the given bus as the subject.
    */
-  create<E extends t.Event = t.Event>(bus: t.EventBus<any>): t.EventPump<E> {
+  create<E extends t.Event = t.Event>(
+    bus: t.EventBus<any>,
+    options: { dispose$?: Observable<any>; filter?: t.EventPumpFilter<E> } = {},
+  ): t.EventPump<E> {
     if (!isBus(bus)) throw new Error('Not a valid event-bus');
+
+    let disposed = false;
+    const { dispose$ } = disposable(options.dispose$);
+    dispose$.subscribe(() => (disposed = true));
+
+    const filterOption = (direction: t.EventPumpFilterArgs['direction'], event: E) => {
+      return typeof options.filter !== 'function' ? true : options.filter({ direction, event });
+    };
+
     return {
       id: Util.asPumpId(bus),
-      in: (fn) => bus.$.pipe().subscribe(fn),
-      out: (e) => bus.fire(e),
+      in: (fn) =>
+        bus.$.pipe(
+          takeUntil(dispose$),
+          filter((e) => filterOption('In', e)),
+        ).subscribe(fn),
+      out(e) {
+        if (disposed) return;
+        if (!filterOption('Out', e)) return;
+        bus.fire(e);
+      },
     };
   },
 
@@ -36,8 +56,8 @@ export const Pump = {
     const { dispose, dispose$ } = disposable(options.dispose$);
     dispose$.subscribe(() => (connection.alive = false));
 
-    const optionFilter = (direction: t.EventPumpFilterArgs['direction'], event: E) => {
-      return typeof options.filter === 'function' ? options.filter({ direction, event }) : true;
+    const filterOption = (direction: t.EventPumpFilterArgs['direction'], event: E) => {
+      return typeof options.filter !== 'function' ? true : options.filter({ direction, event });
     };
 
     const connection = {
@@ -59,7 +79,7 @@ export const Pump = {
 
         pump.in((e) => {
           if (e === ignore.out || !connection.alive) return;
-          if (!optionFilter('In', e)) return;
+          if (!filterOption('In', e)) return;
 
           ignore.in = e;
           bus.fire(e);
@@ -69,7 +89,7 @@ export const Pump = {
         bus.$.pipe(
           takeUntil(dispose$),
           filter((e) => e !== ignore.in),
-          filter((e) => optionFilter('Out', e)),
+          filter((e) => filterOption('Out', e)),
         ).subscribe((e) => {
           ignore.out = e;
           pump.out(e);
@@ -99,7 +119,6 @@ export const Pump = {
 /**
  * Helpers
  */
-
 const Util = {
   asPumpId: (bus: t.EventBus) => `pump:${instance(bus)}`,
 };

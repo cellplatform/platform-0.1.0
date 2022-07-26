@@ -23,13 +23,13 @@ describe.only('Pump', () => {
       const pump = Pump.create<E>(bus);
 
       const fired: E[] = [];
-      const ev: E = { type: 'foo', payload: {} };
+      const event: E = { type: 'foo', payload: {} };
 
       pump.in((e) => fired.push(e));
-      pump.out(ev);
+      pump.out(event);
 
       expect(fired.length).to.eql(1);
-      expect(fired[0]).to.eql(ev);
+      expect(fired[0]).to.eql(event);
     });
 
     it('throw: input not a bus', () => {
@@ -44,8 +44,40 @@ describe.only('Pump', () => {
       test({});
     });
 
-    describe('filter (pump)', () => {
-      //
+    it('{ dispose$ } option', () => {
+      const { dispose, dispose$ } = rx.disposable();
+      const bus = rx.bus<E>();
+      const pump = Pump.create<E>(bus, { dispose$ });
+
+      const fired: E[] = [];
+      const event: E = { type: 'foo', payload: {} };
+
+      dispose();
+      pump.in((e) => fired.push(e));
+      pump.out(event);
+
+      expect(fired).to.eql([]);
+    });
+
+    it('filter (pump)', () => {
+      let allow = false;
+      const filter: t.EventPumpFilter = (e) => allow;
+
+      const bus = rx.bus<E>();
+      const pump = Pump.create<E>(bus, { filter });
+
+      const fired: E[] = [];
+      const event: E = { type: 'foo', payload: {} };
+
+      pump.in((e) => fired.push(e));
+      pump.out(event);
+      expect(fired).to.eql([]);
+
+      allow = true;
+      pump.out(event);
+
+      expect(fired.length).to.eql(1);
+      expect(fired[0]).to.eql(event);
     });
   });
 
@@ -176,8 +208,8 @@ describe.only('Pump', () => {
       });
     });
 
-    describe('filter', () => {
-      it('clone connection', () => {
+    describe('filter (connection)', () => {
+      it('clone the connection', () => {
         const bus1 = rx.bus<E>();
         const bus2 = rx.bus<E>();
         const pump = Pump.create<E>(bus2);
@@ -229,7 +261,6 @@ describe.only('Pump', () => {
         const pump = Pump.create<E>(bus2);
 
         const filter: t.EventPumpFilter = (e) => e.event.payload.msg !== 'filter-me';
-
         Pump.connect(pump, { filter }).to(bus1);
 
         const fired = {
@@ -265,8 +296,6 @@ describe.only('Pump', () => {
         const bus1 = rx.bus<E>();
         const bus2 = rx.bus<E>();
         const pump = Pump.create<E>(bus2);
-
-        // const filter: t.EventPumpFilter = (e) => e.event.payload.msg !== 'filter-root';
 
         Pump.connect(pump)
           .filter((e) => e.event.payload.msg !== 'filter-me')
