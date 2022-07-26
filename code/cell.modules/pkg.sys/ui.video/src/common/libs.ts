@@ -6,7 +6,6 @@ export const R = { clamp, mergeDeepRight };
  */
 export { log } from '@platform/log/lib/client';
 export { css, Color, CssValue, formatColor, Style } from '@platform/css';
-export { WebRuntime } from '@platform/cell.runtime.web';
 export { defaultValue, deleteUndefined, slug, cuid, rx, time, value } from '@platform/util.value';
 export { Schema } from '@platform/cell.schema';
 export { HttpClient } from '@platform/cell.client';
