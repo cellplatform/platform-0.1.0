@@ -1,16 +1,19 @@
 import React from 'react';
 import { debounceTime } from 'rxjs/operators';
-import { DevActions, ObjectView, TestFilesystem } from '../../../test';
+import { DevActions, ObjectView, TestFilesystem, t } from '../../../test';
 
 import { CodeEditor as CodeEditorView, CodeEditorProps } from '..';
 import { CodeEditor } from '../../../api';
-import { rx, t, deleteUndefined, constants } from '../common';
+import { rx, deleteUndefined, constants, Filesystem } from '../common';
 
 type Ctx = {
-  bus: t.EventBus;
   props: CodeEditorProps;
-  global: t.CodeEditorEvents;
-  fs: t.Fs;
+
+  global?: {
+    filesystem: { fs: t.Fs; instance: t.FsViewInstance };
+    events: t.CodeEditorEvents;
+  };
+
   instance?: t.CodeEditorInstanceEvents;
   debug: {
     focusedEditor?: t.CodeEditorInstance;
@@ -30,8 +33,13 @@ const SAMPLE = `
 const a:number[] = [1,2,3]
 import {add} from 'math'
 const x = add(3, 5)
-const total = a.reduce((acc, next) =>acc + next, 0)
+const total = a.reduce((acc,next) =>add(acc,next), 0)
 `;
+
+const Util = {
+  bus: (ctx: Ctx) => ctx.props.instance?.bus,
+  fs: (ctx: Ctx) => ctx.global?.filesystem.fs,
+};
 
 /**
  * Actions
@@ -41,18 +49,29 @@ export const actions = DevActions<Ctx>()
   .context((e) => {
     if (e.prev) return e.prev;
 
-    const bus = rx.bus();
-    const global = CodeEditor.events(bus);
-    const { fs } = TestFilesystem.init({ bus });
-
     const ctx: Ctx = {
-      bus,
       props: { language: 'typescript' },
-      global,
-      fs,
       debug: {},
     };
+
     return ctx;
+  })
+
+  .init(async (e) => {
+    const { ctx, bus } = e;
+
+    const events = CodeEditor.events(bus);
+    const filesystem = TestFilesystem.init({ bus });
+    const instance = filesystem.instance();
+    const { fs } = filesystem;
+
+    ctx.props.instance = { bus };
+    ctx.global = {
+      events,
+      filesystem: { instance, fs },
+    };
+
+    e.redraw();
   })
 
   .items((e) => {
@@ -77,9 +96,10 @@ export const actions = DevActions<Ctx>()
 
     const read = (filename: string) => {
       e.button(`read: ${filename}`, async (e) => {
+        const fs = Util.fs(e.ctx);
+        if (!fs) return;
         if (!e.ctx.instance) return;
 
-        const fs = e.ctx.fs;
         const exists = await fs.exists(filename);
         const data = await fs.read(filename);
         const bytes = data?.byteLength;
@@ -106,11 +126,52 @@ export const actions = DevActions<Ctx>()
     e.hr(1, 0.1);
 
     e.button('delete (all)', async (e) => {
-      const fs = e.ctx.fs;
+      const fs = Util.fs(e.ctx);
+      if (!fs) return;
+
       const filenames = Object.values(FILENAME);
       for (const path of filenames) {
         await fs.delete(path);
       }
+
+      await fs.delete('index.json');
+    });
+
+    e.component((e) => {
+      const instance = e.ctx.global?.filesystem.instance;
+      if (!instance) return null;
+      return (
+        <Filesystem.PathList.Dev
+          instance={instance}
+          margin={[20, 10, 20, 10]}
+          height={100}
+          selectable={{ ...Filesystem.PathList.SelectionConfig.default, multi: false }}
+          onStateChanged={async (change) => {
+            if (change.kind === 'Selection') {
+              const selection = change.to.selection;
+
+              const fs = change.fs;
+              console.group('🌳 ');
+              console.log('fs', fs);
+
+              const manifest = await fs.manifest({ cache: false });
+              const files = manifest.files.filter((f, i) => selection?.indexes.includes(i));
+              const file = files[0];
+
+              if (file) {
+                const path = file.path;
+                const text = new TextDecoder().decode(await fs.read(path));
+
+                console.log('path', path);
+                console.log('text', text);
+                // e.ctx.instance?.text.set(text);
+              }
+
+              console.groupEnd();
+            }
+          }}
+        />
+      );
     });
 
     e.hr();
@@ -121,8 +182,8 @@ export const actions = DevActions<Ctx>()
    */
   .items((e) => {
     e.title('Theme');
-    e.button('light', (e) => (e.ctx.props.theme = 'light'));
     e.button('dark', (e) => (e.ctx.props.theme = 'dark'));
+    e.button('light', (e) => (e.ctx.props.theme = 'light'));
     e.hr();
   })
 
@@ -131,7 +192,9 @@ export const actions = DevActions<Ctx>()
    */
   .items((e) => {
     e.title('Focus');
-    const focus = (ctx: Ctx, id: string) => ctx.global.editor(id).focus.fire();
+    const focus = (ctx: Ctx, id: string) => {
+      ctx.global?.events.editor(id).focus.fire();
+    };
     e.button('⚡️ instance: "one"', (e) => focus(e.ctx, 'one'));
     e.button('⚡️ instance: "two"', (e) => focus(e.ctx, 'two'));
     e.hr();
@@ -179,8 +242,6 @@ export const actions = DevActions<Ctx>()
       console.log('text', res);
     });
 
-    e.hr(1, 0.1);
-
     e.button('⚡️ set: short', (e) => {
       e.ctx.instance?.text.set('// hello');
     });
@@ -223,33 +284,49 @@ export const actions = DevActions<Ctx>()
     };
 
     e.title('Type Libraries');
-    e.button('clear', (e) => e.ctx.global.libs.clear.fire());
+    e.button('clear', (e) => e.ctx.global?.events.libs.clear.fire());
     e.hr(1, 0.1);
     e.button('load: lib.es', async (e) => {
       const url = resolvePath(PATH.STATIC.TYPES.ES);
-      const res = await e.ctx.global.libs.load.fire(url);
+      const res = await e.ctx.global?.events.libs.load.fire(url);
       console.log('res', res);
     });
-    e.button('load: env', async (e) => {
+    e.button('[TODO] load: env', async (e) => {
       const url = resolvePath('static/types.d/inner/env.d.txt');
       // const url = toPath('dist/web/types.d/env.d.txt');
 
       console.log('url', url);
 
-      const res = await e.ctx.global.libs.load.fire(url);
+      const res = await e.ctx.global?.events.libs.load.fire(url);
       console.log('res', res);
     });
-    e.button('load: rxjs', async (e) => {
+    e.button('[TODO] load: rxjs', async (e) => {
       const url = resolvePath('static/types.d/rxjs');
       // const url = toPath('dist/web/types.d/env.d.txt');
 
       console.log('url', url);
 
-      const res = await e.ctx.global.libs.load.fire(url);
+      const res = await e.ctx.global?.events.libs.load.fire(url);
       console.log('res', res);
     });
 
     e.hr();
+  })
+
+  .items((e) => {
+    e.component((e) => {
+      const name = 'ctx';
+      const data = e.ctx;
+      return (
+        <ObjectView
+          name={name}
+          data={data}
+          style={{ MarginX: 15 }}
+          fontSize={10}
+          expandPaths={['$']}
+        />
+      );
+    });
   })
 
   /**
@@ -257,22 +334,25 @@ export const actions = DevActions<Ctx>()
    */
   .subject((e) => {
     const { ctx } = e;
-    const bus = ctx.bus;
+    const bus = Util.bus(ctx);
+    const fs = Util.fs(e.ctx);
 
     e.settings({
       layout: {
+        background: 1,
         border: -0.1,
         cropmarks: -0.2,
-        background: 1,
         width: 800,
         height: 300,
       },
       host: { background: -0.04 },
     });
 
+    if (!bus) return;
+
     const saveOnChange = (editor: t.CodeEditorInstance, filename: string) => {
       editor.events.text.changed$.pipe(debounceTime(500)).subscribe(async (e) => {
-        const fs = ctx.fs;
+        if (!fs) return;
         const text = editor.text;
         const data = new TextEncoder().encode(text);
         const res = await fs.write(filename, data);
@@ -281,7 +361,7 @@ export const actions = DevActions<Ctx>()
     };
 
     const handleReady = (filename: string, e: t.CodeEditorReadyEvent) => {
-      console.log('⚡️ onReady', e);
+      console.log('⚡️ [CodeEditor].onReady', e);
 
       saveOnChange(e.editor, filename);
 
