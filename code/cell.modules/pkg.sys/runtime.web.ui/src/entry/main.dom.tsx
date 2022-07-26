@@ -38,8 +38,8 @@ if (isDev) document.title = `${document.title} (dev)`;
   } else {
     const Module = (await Imports.Module()).Module;
 
-    const entry = url.searchParams.get('entry') ?? 'net.sys';
-    const href = Module.Url.parseUrl('https://lib.db.team', { entry }).href;
+    const entry = url.searchParams.get('entry') ?? 'App';
+    const href = Module.Url.parseUrl('https://net.lib.db.team', { entry }).href;
 
     const bus = rx.bus();
     const instance = { bus };
