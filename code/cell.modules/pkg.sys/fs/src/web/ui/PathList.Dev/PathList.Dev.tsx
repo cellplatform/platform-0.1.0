@@ -10,6 +10,9 @@ export type PathListDevProps = {
   height?: number;
   width?: number;
   margin?: number | [number, number] | [number, number, number, number];
+  scrollable?: boolean;
+  selectable?: t.ListSelectionConfig | boolean;
+  droppable?: boolean; // Support drag-drop from host OS.
   style?: CssValue;
   onStateChanged?: t.FsPathListStateChangedHandler;
 };
@@ -82,9 +85,9 @@ export const PathListDev: React.FC<PathListDevProps> = (props) => {
         <FsPathListStateful
           style={{ flex: 1 }}
           instance={instance}
-          scrollable={true}
-          droppable={true}
-          selectable={true}
+          scrollable={props.scrollable ?? true}
+          droppable={props.droppable ?? true}
+          selectable={props.selectable ?? true}
           onStateChanged={props.onStateChanged}
         />
       </div>
