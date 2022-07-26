@@ -1,6 +1,6 @@
-import { expect, Is, Test } from '../../test';
-import { rx, t } from '../common';
 import { CodeEditor } from '..';
+import { expect, Test } from '../../test';
+import { rx } from '../common';
 import { staticPaths } from '../Configure/Configure.paths';
 
 export default Test.describe('CodeEditor.Singleton', (e) => {
