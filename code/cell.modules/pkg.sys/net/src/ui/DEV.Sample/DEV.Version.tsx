@@ -72,6 +72,6 @@ export const DevVersion: React.FC<DevVersionProps> = (props) => {
  */
 
 function toInfoText(manifest: t.ModuleManifest, isSecure: boolean) {
-  const secure = isSecure ? `Secure Context` : 'Insecure Context';
+  const secure = isSecure ? `context is secure` : 'context is insecure';
   return `${manifest.module.namespace} (${secure})`;
 }
