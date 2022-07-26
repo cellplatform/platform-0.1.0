@@ -4,7 +4,7 @@ import * as t from '../common/types';
  * Common definition of a "default" entry
  */
 export type ModuleDefaultEntry = (
-  bus: t.EventBus<any>,
+  pump: t.EventPump,
   ctx: ModuleDefaultEntryContext,
 ) => any | Promise<any>;
 
