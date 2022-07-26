@@ -1,15 +1,15 @@
 import '@platform/css/reset.css';
 
-import React from 'react';
 import ReactDOM from 'react-dom';
+import { rx, t, Is } from '../common';
 
 const Imports = {
-  DevHarness: () => import('../Dev.Harness'),
-  DevSampleApp: () => import('../ui/DEV.Sample'),
+  DevHarness: () => import('./Export.Dev.Harness'),
+  App: () => import('./Export.Sample.App'),
 };
 
+const url = new URL(location.href);
 const query = () => {
-  const url = new URL(location.href);
   const q = url.searchParams;
   if (q.has('dev')) return q;
 
@@ -29,9 +29,16 @@ if (isDev) document.title = `${document.title} (dev)`;
  * [Render]
  */
 (async () => {
-  const Component = isDev
-    ? (await Imports.DevHarness()).DevHarness
-    : (await Imports.DevSampleApp()).DevSampleApp;
+  const bus = rx.bus();
+  const pump = rx.pump.create(bus);
 
-  ReactDOM.render(<Component />, document.getElementById('root'));
+  const ctx: t.ModuleDefaultEntryContext = {
+    source: { url: url.href, entry: '', namespace: 'sys.net' },
+  };
+
+  const Module = await (isDev ? Imports.DevHarness() : Imports.App());
+  const res = Module.default(pump, ctx);
+  const el = Is.promise(res) ? await res : res;
+
+  ReactDOM.render(el, document.getElementById('root'));
 })();
