@@ -47,8 +47,9 @@ export type EventPumpOut<E extends Event> = (e: E) => void;
 /**
  * Filter messages flowing through an EventPump.
  */
+export type EventPumpDirection = 'In' | 'Out';
 export type EventPumpFilter<E extends Event = Event> = (e: EventPumpFilterArgs<E>) => boolean;
 export type EventPumpFilterArgs<E extends Event = Event> = {
-  direction: 'In' | 'Out';
+  direction: EventPumpDirection;
   event: E;
 };
