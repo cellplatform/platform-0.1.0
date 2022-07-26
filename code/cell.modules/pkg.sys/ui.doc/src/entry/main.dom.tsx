@@ -1,12 +1,11 @@
 import '@platform/css/reset.css';
 
-import React from 'react';
 import ReactDOM from 'react-dom';
-import { rx } from '../common';
+import { rx, t, Is } from '../common';
 
 const Imports = {
-  DevHarness: () => import('../Dev.Harness'),
-  App: () => import('../ui/DEV.Sample'),
+  DevHarness: () => import('./Export.Dev.Harness'),
+  App: () => import('./Export.Sample.App'),
 };
 
 const url = new URL(location.href);
@@ -32,14 +31,16 @@ if (isDev) document.title = `${document.title} (dev)`;
 (async () => {
   const root = document.getElementById('root');
 
-  if (isDev) {
-    const DevHarness = (await Imports.DevHarness()).DevHarness;
-    ReactDOM.render(<DevHarness />, root);
-  }
+  const localbus = rx.bus();
+  const pump = rx.pump.create(localbus);
 
-  if (!isDev) {
-    const App = (await Imports.App()).App;
-    const bus = rx.bus();
-    ReactDOM.render(<App bus={bus} />, root);
-  }
+  const ctx: t.ModuleDefaultEntryContext = {
+    source: { url: url.href, entry: '', namespace: 'sys.ui.doc' },
+  };
+
+  const Module = await (isDev ? Imports.DevHarness() : Imports.App());
+  const res = Module.default(pump, ctx);
+  const el = Is.promise(res) ? await res : res;
+
+  ReactDOM.render(el, root);
 })();

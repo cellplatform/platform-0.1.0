@@ -16,6 +16,6 @@ export default () =>
         .files((e) => e.access('public', '**/*.{png,jpg,svg}'))
         .shared((e) => e.add(e.dependencies).singleton(['react', 'react-dom']))
 
-        .expose('./Dev', './src/entry/Entry.Dev.Harness')
-        .expose('./App', './src/entry/Entry.Sample.App'),
+        .expose('./Dev', './src/entry/Export.Dev.Harness')
+        .expose('./App', './src/entry/Export.Sample.App'),
     );

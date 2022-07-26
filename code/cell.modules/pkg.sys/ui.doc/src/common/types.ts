@@ -11,6 +11,7 @@ export { CssPropsMap } from '@platform/css/lib/types';
 /**
  * @system
  */
+export { ModuleDefaultEntryContext } from 'sys.runtime.web/lib/types';
 export { Fs, FsViewInstance, TestFilesystem } from 'sys.fs/lib/types';
 export {
   PropListItem,
