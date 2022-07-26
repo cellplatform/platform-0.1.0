@@ -311,7 +311,8 @@ export function Controller(args: { bus: t.EventBus<any> }): t.PeerController {
     .subscribe(async (e) => {
       const self = refs.self[e.self];
       const tx = e.tx || slug();
-      const module = { name: WebRuntime.module.name, version: WebRuntime.module.version };
+
+      const module = WebRuntime.Module.info;
       const userAgent = navigator.userAgent;
       const parent = e.parent;
       const remote = UriUtil.peer.trimPrefix(e.remote);
