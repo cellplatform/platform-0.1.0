@@ -28,8 +28,7 @@ export const DevSample: React.FC<DevSampleProps> = (props) => {
 
   return (
     <div ref={resize.ref} {...css(styles.base, props.style)}>
-      <div>ResizeObserver 🐷</div>
-      <div>ready: {resize.ready.toString()}</div>
+      <div>ResizeObserver 🐷 | ready: {resize.ready.toString()}</div>
       <div {...styles.obj}>
         <ObjectView name={'size (DomRect)'} data={size} />
       </div>
