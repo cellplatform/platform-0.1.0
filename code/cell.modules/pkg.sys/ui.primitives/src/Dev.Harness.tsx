@@ -66,6 +66,7 @@ const imports = {
    */
   hookDragTarget: import('./hooks/DragTarget/dev/DEV'),
   hookUIEvents: import('./hooks/UIEvent/dev/DEV'),
+  hookResizeObserver: import('./hooks/ResizeObserver/dev/DEV'),
 
   /**
    * Tests

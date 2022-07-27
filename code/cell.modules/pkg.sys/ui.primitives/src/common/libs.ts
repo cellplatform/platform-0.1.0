@@ -2,7 +2,6 @@
  * Ramda
  */
 import { clamp, clone, equals, merge, mergeDeepRight, uniq } from 'ramda';
-
 export const R = { equals, uniq, clamp, mergeDeepRight, clone, merge };
 
 /**
