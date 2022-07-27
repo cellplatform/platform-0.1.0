@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Color, COLORS, css, CssValue, Icons, t, time, WebRuntime } from './common';
 
