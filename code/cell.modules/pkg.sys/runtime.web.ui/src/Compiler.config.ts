@@ -7,7 +7,7 @@ export default () =>
 
     .variant('web', (config) =>
       config
-        .title('sys.cell')
+        .title('sys')
         .target('web')
         .port(5051)
 
@@ -22,6 +22,7 @@ export default () =>
          * EXPORTS: Development
          */
         .expose('./Dev', './src/Dev.Harness')
+
         .expose('./DEV_SAMPLE.Foo', './src/exports.sample/Foo')
         .expose('./DEV_SAMPLE.Async.Foo', './src/exports.sample/Foo.Async')
         .expose('./DEV_SAMPLE.error (on module load)', './src/exports.sample/ERROR.OnModuleLoad')
