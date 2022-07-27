@@ -18,7 +18,7 @@ export async function deploy(team: string, project: string, alias: string) {
   await fs.copy('vercel.json', fs.join(dir, 'vercel.json'));
   await Vercel.ConfigFile.prepare({ dir });
 
-  Vercel.Log.beforeDeploy({ info, alias, project });
+  await Vercel.Log.beforeDeploy({ info, alias, project });
 
   const res = await deployment.commit(
     { target: 'production', regions: ['sfo1'], alias },
@@ -26,5 +26,5 @@ export async function deploy(team: string, project: string, alias: string) {
   );
 
   // Finish up.
-  Vercel.Log.afterDeploy(res);
+  await Vercel.Log.afterDeploy(res);
 }
