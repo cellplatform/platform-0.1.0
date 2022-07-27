@@ -21,11 +21,11 @@ export type DevVideoCardProps = {
 
 export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
   const { stream } = props;
+  const SIZE = 300;
 
   const network = props.instance.network;
   const instance = props.instance.id;
   const bus = rx.busAsType<t.NetworkCardEvent>(network.bus);
-  const resize = useResizeObserver();
 
   const [isOver, setOver] = useState(false);
   const overHandler = (isOver: boolean) => () => setOver(isOver);
@@ -37,7 +37,7 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
   const styles = {
     base: css({
       position: 'relative',
-      width: 300,
+      width: SIZE,
       borderRadius,
       display: 'flex',
       overflow: 'hidden',
@@ -131,18 +131,18 @@ export const DevVideoCard: React.FC<DevVideoCardProps> = (props) => {
     </div>
   );
 
-  const elVideo = stream && resize.ready && (
+  const elVideo = stream && (
     <VideoStream
       stream={stream}
-      width={resize.rect.width}
-      height={resize.rect.height}
+      width={SIZE}
+      height={SIZE}
       borderRadius={[0, 0, 3, 3]}
       isMuted={true}
     />
   );
 
   const elBody = (
-    <div ref={resize.ref} {...styles.body.base}>
+    <div {...styles.body.base}>
       {elVideo}
       <div {...styles.body.mouseOverMask} />
     </div>

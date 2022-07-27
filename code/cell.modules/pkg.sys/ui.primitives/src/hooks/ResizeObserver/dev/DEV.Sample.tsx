@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Color, COLORS, css, CssValue, t, rx, FC } from '../../common';
+import React, { useState } from 'react';
 import { ObjectView } from 'sys.ui.dev';
+
 import { useResizeObserver } from '..';
+import { css, CssValue, t } from '../../common';
 
 export type DevSampleProps = {
   style?: CssValue;
