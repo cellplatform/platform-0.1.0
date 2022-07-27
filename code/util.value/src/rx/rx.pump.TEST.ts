@@ -10,7 +10,7 @@ type E = {
   payload: { count?: number; msg?: string };
 };
 
-describe.only('Pump', () => {
+describe('Pump', () => {
   describe('create', () => {
     it('create with id', () => {
       const bus = rx.bus();
