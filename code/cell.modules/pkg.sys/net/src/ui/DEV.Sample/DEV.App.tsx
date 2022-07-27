@@ -106,7 +106,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     network: t.PeerNetwork;
   }) => {
     const { bus, netbus, network } = args;
-    const cmd = args.cmd.trim();
+    const cmd = (args.cmd ?? '').trim();
 
     /**
      * 🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳
