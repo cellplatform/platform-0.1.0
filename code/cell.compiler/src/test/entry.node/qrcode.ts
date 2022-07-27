@@ -1,8 +1,8 @@
-import qrcode from 'qrcode';
+import QRCode from 'qrcode';
 
 (async () => {
   const URL = 'https://news.ycombinator.com';
-  const code = await qrcode.toString(URL);
+  const code = await QRCode.toString(URL);
 
   console.log(URL);
   console.log(code);

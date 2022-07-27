@@ -1,7 +1,10 @@
-import { log, t } from './common';
+import { log, t, QRCode } from './common';
 
 export const VercelLog = {
-  beforeDeploy(args: { info: t.VercelSourceBundleInfo; alias?: string; project?: string }) {
+  /**
+   * Display output before a deployment is pushed to the cloud.
+   */
+  async beforeDeploy(args: { info: t.VercelSourceBundleInfo; alias?: string; project?: string }) {
     const { info, alias, project } = args;
 
     log.info();
@@ -15,7 +18,10 @@ export const VercelLog = {
     return { info };
   },
 
-  afterDeploy(res: t.VercelHttpDeployResponse) {
+  /**
+   * Display output after a deployment is pushed to the cloud.
+   */
+  async afterDeploy(res: t.VercelHttpDeployResponse) {
     const { ok, status } = res;
     const { name, urls } = res.deployment;
 
