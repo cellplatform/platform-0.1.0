@@ -8,3 +8,16 @@ export type ICodeEditorSingleton = {
   readonly monaco: IMonaco;
   readonly libs: t.ICodeEditorLibs;
 };
+
+/**
+ * Status information about the CodeEditor (and the environment).
+ */
+export type CodeEditorStatus = {
+  initialized: boolean;
+  paths: t.CodeEditorStaticPaths;
+};
+
+export type CodeEditorStaticPaths = {
+  vs: string;
+  types: { es: string; sys: string };
+};

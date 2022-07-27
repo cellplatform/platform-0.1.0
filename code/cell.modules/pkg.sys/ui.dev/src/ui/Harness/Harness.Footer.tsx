@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { color, COLORS, css, CssValue, log, t, WebRuntime } from '../../common';
+import { color, COLORS, css, CssValue, log, t, MODULE } from '../../common';
 import { ActionsSelector } from '../ActionsSelector';
 import { Icons } from '../Icons';
 
@@ -60,8 +60,8 @@ export const HarnessFooter: React.FC<HarnessFooterProps> = (props) => {
   const elModule = (
     <div {...styles.module.base} onClick={logRuntime}>
       <div {...styles.module.label}>
-        <div>{WebRuntime.module.name}</div>
-        <div {...styles.module.version}>{WebRuntime.module.version}</div>
+        <div>{MODULE.info.name}</div>
+        <div {...styles.module.version}>{MODULE.info.version}</div>
       </div>
       <Icons.Compose.Solid
         size={24}
@@ -87,7 +87,7 @@ export const HarnessFooter: React.FC<HarnessFooterProps> = (props) => {
  */
 
 function logRuntime() {
-  log.group('🌳 WebRuntime');
-  log.info('module:', WebRuntime.module);
+  log.group('🌳 Runtime');
+  log.info('module:', MODULE.info);
   log.groupEnd();
 }

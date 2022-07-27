@@ -7,7 +7,7 @@ import { init } from './ServiceWorker.init';
 /**
  * Helpers for working with the ServiceWorker.
  */
-export const WebServiceWorker = {
+export const ServiceWorker = {
   /**
    * Ensure the service worker is installed and started.
    */

@@ -10,5 +10,6 @@ export { ModuleInfo } from '../Module.Info';
 export const THEMES: t.ModuleTheme[] = ['Light', 'Dark'];
 export const DEFAULT = {
   THEMES,
-  THEME: THEMES[0],
+  THEME: <t.ModuleTheme>'Light',
+  DEBUG: <t.ModuleDebug>{ logLoader: true },
 };

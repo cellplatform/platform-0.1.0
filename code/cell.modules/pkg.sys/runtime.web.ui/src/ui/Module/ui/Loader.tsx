@@ -1,35 +1,39 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { t, useModule } from '../common';
+import { DEFAULT, rx, t, useModule } from '../common';
 
 export type LoaderProps = {
   instance: t.ModuleInstance;
   url?: t.ManifestUrl;
   theme: t.ModuleInfoTheme;
+  debug?: t.ModuleDebug;
   onLoading?: (e: { ok: boolean; loading: boolean }) => void;
 };
 
 export const Loader: React.FC<LoaderProps> = (props) => {
-  const { instance, url } = props;
+  const { instance, url, debug = DEFAULT.DEBUG } = props;
   const bus = instance.bus;
-  const remote = useModule({ instance, url });
+  const busid = rx.bus.instance(bus);
 
+  const remote = useModule({ instance, url, log: debug.logLoader });
+  const [element, setElement] = useState<JSX.Element | null>(null);
+
+  /**
+   * Manage loading status.
+   */
   useEffect(() => {
     const { ok } = remote;
     const loading = ok ? remote.loading : false;
     props.onLoading?.({ ok, loading });
-  }, [remote.loading, remote.ok]); // eslint-disable-line
+  }, [remote.loading, remote.ok, busid, instance.id]); // eslint-disable-line
 
-  const module = remote.module;
-  const address = remote.address;
+  /**
+   * Manage the "default" entry function execution
+   * when the remote module completes it's load
+   */
+  useEffect(() => {
+    remote.renderDefaultEntry(bus).then((el) => setElement(el));
+  }, [remote.loading, remote.ok, remote.addressKey, busid, instance.id]); // eslint-disable-line
 
-  if (address && typeof module === 'object' && typeof module.default === 'function') {
-    const { namespace, entry } = address;
-    const url = props.url ?? address.url;
-    const ctx: t.ModuleDefaultEntryContext = { source: { url, namespace, entry } };
-    const res = remote.module.default(bus, ctx);
-    if (React.isValidElement(res)) return res;
-  }
-
-  return null;
+  return element;
 };

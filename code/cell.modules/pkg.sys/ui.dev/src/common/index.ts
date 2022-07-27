@@ -6,5 +6,5 @@ export * from './libs';
 export * from './util';
 export * from './lorem';
 
-export const COLORS = constants.COLORS;
-export const DEFAULT = constants.DEFAULT;
+import { COLORS, DEFAULT, MODULE } from './constants';
+export { COLORS, DEFAULT, MODULE };

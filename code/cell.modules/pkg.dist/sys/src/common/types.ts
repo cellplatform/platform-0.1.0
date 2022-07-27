@@ -1,13 +1,13 @@
 /**
  * @platform
  */
-export { EventBus } from '@platform/types';
+export { EventBus, EventPump } from '@platform/types';
 export { ModuleManifest } from '@platform/cell.types';
 
 /**
  * @system
  */
-export { ModuleDefaultEntry } from 'sys.runtime.web/lib/types';
+export { ModuleDefaultEntry, ModuleDefaultEntryContext } from 'sys.runtime.web/lib/types';
 
 /**
  * @vendor

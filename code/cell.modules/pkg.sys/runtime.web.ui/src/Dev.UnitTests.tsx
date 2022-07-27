@@ -4,7 +4,6 @@ import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
 const Imports = {
   Module: import('./ui/Module/TEST'),
-  ModuleUrl: import('./ui/Module.Url/TEST'),
 };
 
 type Ctx = { results?: TestSuiteRunResponse };

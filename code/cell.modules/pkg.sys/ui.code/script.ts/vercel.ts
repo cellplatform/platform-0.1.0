@@ -11,26 +11,16 @@ export async function deploy(team: string, project: string, alias: string) {
   await fs.copy('vercel.json', fs.join(dir, 'vercel.json'));
   await Vercel.ConfigFile.prepare({
     dir,
-    async modifyBeforeSave(e) {
-      const rewrites = await getVsProxyRewrites(e.dir);
-
-      if (!silent) {
-        const match = `${log.white(`**/${PATH.STATIC.VS}/**`)}`;
-        const action = `add proxy rewrites "${match}" for ${rewrites.length} files.`;
-        log.info.gray(`(vercel.json) ${action}`);
-      }
-
-      return {
-        ...e.config,
-        rewrites: [...rewrites, ...(e.config.rewrites || [])],
-      };
+    modifyBeforeSave(e) {
+      const { dir, config } = e;
+      return modifyVercelFile({ dir, config, silent });
     },
   });
 
   const deployment = Vercel.Deploy({ token, dir, team, project });
   const info = await deployment.info();
 
-  Vercel.Log.beforeDeploy({ info, alias, project });
+  await Vercel.Log.beforeDeploy({ info, alias, project });
 
   const res = await deployment.commit(
     { target: 'production', regions: ['sfo1'], alias },
@@ -38,7 +28,7 @@ export async function deploy(team: string, project: string, alias: string) {
   );
 
   // Finish up.
-  Vercel.Log.afterDeploy(res);
+  await Vercel.Log.afterDeploy(res);
 }
 
 /**
@@ -57,4 +47,24 @@ async function getVsProxyRewrites(dir: string) {
         destination,
       }),
     );
+}
+
+async function modifyVercelFile(args: {
+  dir: string;
+  config: t.VercelConfigFile;
+  silent?: boolean;
+}) {
+  const { dir, config } = args;
+  const rewrites = await getVsProxyRewrites(dir);
+
+  if (!args.silent) {
+    const match = `${log.white(`**/${PATH.STATIC.VS}/**`)}`;
+    const action = `add proxy rewrites "${match}" for ${rewrites.length} files.`;
+    log.info.gray(`(vercel.json) ${action}`);
+  }
+
+  return {
+    ...config,
+    rewrites: [...rewrites, ...(config.rewrites || [])],
+  };
 }

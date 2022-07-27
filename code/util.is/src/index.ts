@@ -1,2 +1,4 @@
-export * from './is';
-export * from './types';
+import { Is } from './is';
+
+export { Is };
+export const is = Is;

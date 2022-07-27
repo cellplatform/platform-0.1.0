@@ -1,6 +1,8 @@
 import { t } from './common';
 
 type Id = string;
+type Milliseconds = number;
+
 export type CodeEditorEventBus = t.EventBus<t.CodeEditorEvent>;
 export type CodeEditorEvent = CodeEditorInstanceEvent | CodeEditorSingletonEvent;
 
@@ -9,45 +11,82 @@ export type CodeEditorEvent = CodeEditorInstanceEvent | CodeEditorSingletonEvent
  */
 
 export type CodeEditorInstanceEvent =
-  | CodeEditorChangeFocusEvent
+  | CodeEditorFocusEvent
   | CodeEditorChangeSelectionEvent
   | CodeEditorChangeTextEvent
   | CodeEditorTextReqEvent
   | CodeEditorTextResEvent
   | CodeEditorSelectionChangedEvent
-  | CodeEditorFocusChangedEvent
+  | CodeEditorFocusedEvent
   | CodeEditorTextChangedEvent
-  | CodeEditorRunActionEvent
-  | CodeEditorActionCompleteEvent
+  | CodeEditorRunActionReqEvent
+  | CodeEditorRunActionResEvent
   | CodeEditorModelReqEvent
   | CodeEditorModelResEvent;
 
 /**
  * Global (Singleton) Events.
  */
-export type CodeEditorSingletonEvent = CodeEditorLibsEvent;
+export type CodeEditorSingletonEvent =
+  | CodeEditorInitReqEvent
+  | CodeEditorInitResEvent
+  | CodeEditorStatusReqEvent
+  | CodeEditorStatusResEvent
+  | CodeEditorLibsEvent;
+
 export type CodeEditorLibsEvent =
-  | CodeEditorLibsClearEvent
-  | CodeEditorLibsLoadEvent
-  | CodeEditorLibsLoadedEvent;
+  | CodeEditorLibsClearReqEvent
+  | CodeEditorLibsClearResEvent
+  | CodeEditorLibsLoadReqEvent
+  | CodeEditorLibsLoadResEvent;
+
+/**
+ * Initialize the CodeEditor environment.
+ */
+export type CodeEditorInitReqEvent = {
+  type: 'sys.ui.code/init:req';
+  payload: CodeEditorInitReq;
+};
+export type CodeEditorInitReq = { tx: string; staticRoot?: string };
+
+export type CodeEditorInitResEvent = {
+  type: 'sys.ui.code/init:res';
+  payload: CodeEditorInitRes;
+};
+export type CodeEditorInitRes = { tx: string; info?: t.CodeEditorStatus; error?: string };
+
+/**
+ * Status information about the CodeEditor (and the environment).
+ */
+export type CodeEditorStatusReqEvent = {
+  type: 'sys.ui.code/status:req';
+  payload: CodeEditorStatusReq;
+};
+export type CodeEditorStatusReq = { tx: string };
+
+export type CodeEditorStatusResEvent = {
+  type: 'sys.ui.code/status:res';
+  payload: CodeEditorStatusRes;
+};
+export type CodeEditorStatusRes = { tx: string; info?: t.CodeEditorStatus; error?: string };
 
 /**
  * Fired to assign focus to an editor.
  */
-export type CodeEditorChangeFocusEvent = {
-  type: 'CodeEditor/change:focus';
-  payload: CodeEditorChangeFocus;
+export type CodeEditorFocusEvent = {
+  type: 'sys.ui.code/focus';
+  payload: CodeEditorFocus;
 };
-export type CodeEditorChangeFocus = { instance: Id };
+export type CodeEditorFocus = { instance: Id };
 
 /**
  * Fired when editor recieves or loses focus.
  */
-export type CodeEditorFocusChangedEvent = {
-  type: 'CodeEditor/changed:focus';
-  payload: CodeEditorFocusChanged;
+export type CodeEditorFocusedEvent = {
+  type: 'sys.ui.code/focused';
+  payload: CodeEditorFocused;
 };
-export type CodeEditorFocusChanged = {
+export type CodeEditorFocused = {
   instance: Id;
   isFocused: boolean;
 };
@@ -56,7 +95,7 @@ export type CodeEditorFocusChanged = {
  * Fired to cause a change to the editor selection.
  */
 export type CodeEditorChangeSelectionEvent = {
-  type: 'CodeEditor/change:selection';
+  type: 'sys.ui.code/change:selection';
   payload: CodeEditorChangeSelection;
 };
 export type CodeEditorChangeSelection = {
@@ -69,7 +108,7 @@ export type CodeEditorChangeSelection = {
  * Fired when editor cursor/selection changes.
  */
 export type CodeEditorSelectionChangedEvent = {
-  type: 'CodeEditor/changed:selection';
+  type: 'sys.ui.code/changed:selection';
   payload: CodeEditorSelectionChanged;
 };
 export type CodeEditorSelectionChanged = {
@@ -82,7 +121,7 @@ export type CodeEditorSelectionChanged = {
  * Fired to change the text within an editor.
  */
 export type CodeEditorChangeTextEvent = {
-  type: 'CodeEditor/change:text';
+  type: 'sys.ui.code/change:text';
   payload: CodeEditorChangeText;
 };
 export type CodeEditorChangeText = {
@@ -94,13 +133,13 @@ export type CodeEditorChangeText = {
  * Retrieve current editor text.
  */
 export type CodeEditorTextReqEvent = {
-  type: 'CodeEditor/text:req';
+  type: 'sys.ui.code/text:req';
   payload: CodeEditorTextReq;
 };
 export type CodeEditorTextReq = { tx: string; instance: Id };
 
 export type CodeEditorTextResEvent = {
-  type: 'CodeEditor/text:res';
+  type: 'sys.ui.code/text:res';
   payload: CodeEditorTextRes;
 };
 export type CodeEditorTextRes = { tx: string; instance: Id; text: string };
@@ -109,7 +148,7 @@ export type CodeEditorTextRes = { tx: string; instance: Id; text: string };
  * Fires when the editor text changes.
  */
 export type CodeEditorTextChangedEvent = {
-  type: 'CodeEditor/changed:text';
+  type: 'sys.ui.code/changed:text';
   payload: CodeEditorTextChanged;
 };
 export type CodeEditorTextChanged = {
@@ -127,55 +166,65 @@ export type CodeEditorTextChange = {
 /**
  * Fires to invoke the given action upon the editor.
  */
-export type CodeEditorRunActionEvent = {
-  type: 'CodeEditor/action:run';
-  payload: CodeEditorRunAction;
+export type CodeEditorRunActionReqEvent = {
+  type: 'sys.ui.code/action:req';
+  payload: CodeEditorRunActionReq;
 };
-export type CodeEditorRunAction = {
-  instance: Id;
-  action: t.MonacoAction;
-  tx?: string;
-};
-
-export type CodeEditorActionCompleteEvent = {
-  type: 'CodeEditor/action:complete';
-  payload: CodeEditorActionComplete;
-};
-export type CodeEditorActionComplete = {
+export type CodeEditorRunActionReq = {
   tx: string;
   instance: Id;
   action: t.MonacoAction;
+};
+
+export type CodeEditorRunActionResEvent = {
+  type: 'sys.ui.code/action:res';
+  payload: CodeEditorRunActionRes;
+};
+export type CodeEditorRunActionRes = {
+  tx: string;
+  instance: Id;
+  elapsed: Milliseconds;
+  action?: t.MonacoAction;
   error?: string;
 };
 
 /**
  * Type Definition Libraries
  */
-export type CodeEditorLibsClearEvent = {
-  type: 'CodeEditor/libs:clear';
-  payload: CodeEditorLibsClear;
+export type CodeEditorLibsClearReqEvent = {
+  type: 'sys.ui.code/libs/clear:req';
+  payload: CodeEditorLibsClearReq;
 };
-export type CodeEditorLibsClear = {
-  // todo: exclude pattern (minimatch)
+export type CodeEditorLibsClearReq = {
+  tx: string;
+  /**
+   * TODO 🐷 - exclude pattern (minimatch)
+   */
 };
 
-export type CodeEditorLibsLoadEvent = {
-  type: 'CodeEditor/libs:load';
-  payload: CodeEditorLibsLoad;
+export type CodeEditorLibsClearResEvent = {
+  type: 'sys.ui.code/libs/clear:res';
+  payload: CodeEditorLibsClearRes;
 };
-export type CodeEditorLibsLoad = { tx: string; url: string };
+export type CodeEditorLibsClearRes = { tx: string; error?: string };
 
-export type CodeEditorLibsLoadedEvent = {
-  type: 'CodeEditor/libs:loaded';
-  payload: CodeEditorLibsLoaded;
+export type CodeEditorLibsLoadReqEvent = {
+  type: 'sys.ui.code/libs/load:req';
+  payload: CodeEditorLibsLoadReq;
 };
-export type CodeEditorLibsLoaded = { tx: string; url: string; files: string[] };
+export type CodeEditorLibsLoadReq = { tx: string; url: string };
+
+export type CodeEditorLibsLoadResEvent = {
+  type: 'sys.ui.code/libs/load:res';
+  payload: CodeEditorLibsLoadRes;
+};
+export type CodeEditorLibsLoadRes = { tx: string; url: string; files: string[]; error?: string };
 
 /**
  * Code Editor Model
  */
 export type CodeEditorModelReqEvent = {
-  type: 'CodeEditor/model:req';
+  type: 'sys.ui.code/model:req';
   payload: CodeEditorModelReq;
 };
 export type CodeEditorModelReq = {
@@ -185,7 +234,7 @@ export type CodeEditorModelReq = {
 };
 
 export type CodeEditorModelResEvent = {
-  type: 'CodeEditor/model:res';
+  type: 'sys.ui.code/model:res';
   payload: CodeEditorModelRes;
 };
 export type CodeEditorModelRes = {

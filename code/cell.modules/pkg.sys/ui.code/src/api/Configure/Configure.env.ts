@@ -16,7 +16,7 @@ export async function env(args: { staticRoot?: string }) {
    */
   const isDefault = !Boolean(args.staticRoot);
   const paths = staticPaths(args.staticRoot);
-  const vs = staticPaths(args.staticRoot).vs;
+  const vs = paths.vs;
 
   loader.config({
     paths: { vs },
@@ -26,5 +26,5 @@ export async function env(args: { staticRoot?: string }) {
   if (isDefault) log.info('     using [defaults]');
   log.info(` ●   static "vs" worker-process and assets path: "${vs}"`);
   log.info(` ●          types.d path (ecmascript):           "${paths.types.es}"`);
-  log.info(` ●          types.d path (cell):                 "${paths.types.cell}"`);
+  log.info(` ●          types.d path (cell):                 "${paths.types.sys}"`);
 }

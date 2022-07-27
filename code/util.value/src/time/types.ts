@@ -27,6 +27,7 @@ export type ITime = {
   elapsed: TimeElapsed;
   day: DayFactory;
   now: IDate;
+  timezone: string;
   utc(input?: Date | number): IDate;
   timer(start?: Date, options?: { round?: number }): ITimer;
   duration(msec: number | string, options?: { round?: number }): IDuration;

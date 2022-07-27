@@ -9,6 +9,7 @@ export { useResizeObserver, FC } from '@platform/react';
 export { rx, slug, time } from '@platform/util.value';
 export { Http } from '@platform/http';
 export { value as Value } from '@platform/util.value';
+export { Is } from '@platform/util.is';
 
 /**
  * @system

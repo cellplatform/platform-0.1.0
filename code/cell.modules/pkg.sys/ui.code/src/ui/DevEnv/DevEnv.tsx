@@ -10,7 +10,6 @@ import { MarkdownView } from './ui/View.Markdown';
 
 export type DevEnvProps = {
   instance: { bus: t.EventBus<any>; id?: string };
-  staticRoot?: string;
   theme?: t.CodeEditorTheme;
   language?: t.CodeEditorLanguage;
   text?: string;
@@ -54,7 +53,6 @@ export const DevEnv: React.FC<DevEnvProps> = (props) => {
       <div {...styles.body.left}>
         <CodeEditor
           instance={props.instance}
-          staticRoot={props.staticRoot}
           theme={props.theme}
           language={props.language}
           focusOnLoad={props.focusOnLoad}

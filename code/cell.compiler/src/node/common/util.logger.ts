@@ -99,6 +99,7 @@ export const Logger = {
     log.info.gray(`  ${stripRoot(bundleDir)}`);
     table.log();
     log.info.gray(`Bundled in ${log.yellow(elapsed)}`);
+    log.info.gray(`Time:      ${time.now.format('h:mma, D MMMM YYYY')} (${time.timezone})`);
     log.info.gray(`Manifest:  ${fs.join(stripRoot(bundleDir), DEFAULT.FILE.JSON.MANIFEST)}`);
     log.info();
   },
@@ -136,7 +137,7 @@ export const Logger = {
       let url = typeof options.url === 'string' ? options.url : 'http://localhost';
       url = port === 80 ? url : `${url}:${log.white(port)}`;
       add('url', cyan(url));
-      add('', cyan(`${url}?dev`));
+      add('', `${cyan(url)}${gray('?dev')}`);
     }
 
     table.log();

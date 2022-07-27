@@ -47,10 +47,13 @@ export const actions = DevActions<Ctx>()
       props: {
         instance: filesystem.instance(),
         scrollable: true, // Virtual list.
-        selectable: List.SelectionConfig.default,
+        selectable: { ...FsPathList.SelectionConfig.default },
         theme: FsPathList.DEFAULT.THEME,
         droppable: true,
-        onStateChanged: (e) => change.ctx((ctx) => (ctx.output.state = e.to)),
+        onStateChanged(e) {
+          change.ctx((ctx) => (ctx.output.state = e.to));
+          console.log(`⚡️ onStateChanged`, e);
+        },
       },
       debug: { render: true, dir: '' },
       output: {},

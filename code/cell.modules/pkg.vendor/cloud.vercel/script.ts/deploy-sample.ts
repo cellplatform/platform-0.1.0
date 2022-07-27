@@ -19,7 +19,7 @@ async function deploy(team: string, project: string, dir: string, alias?: string
   const deployment = Vercel.Deploy({ token, dir, team, project, beforeUpload });
   const info = await deployment.info();
 
-  Vercel.Log.beforeDeploy({ info, alias });
+  await Vercel.Log.beforeDeploy({ info, alias });
 
   const res = await deployment.commit(
     {
@@ -32,7 +32,7 @@ async function deploy(team: string, project: string, dir: string, alias?: string
   );
 
   // Finish up.
-  Vercel.Log.afterDeploy(res);
+  await Vercel.Log.afterDeploy(res);
 }
 
 // DEV

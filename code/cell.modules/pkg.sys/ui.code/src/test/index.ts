@@ -1,9 +1,11 @@
+import * as t from './types';
+
 export * from '../common';
 
 /**
  * @platform
  */
-export { is } from '@platform/util.is';
+export { Is } from '@platform/util.is';
 
 /**
  * @system
@@ -19,3 +21,4 @@ export {
 } from 'sys.ui.dev';
 
 export { TestFilesystem } from 'sys.fs/lib/web/test/Test.Filesystem';
+export { t };

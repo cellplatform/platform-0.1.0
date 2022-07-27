@@ -1,13 +1,15 @@
+import { HttpCache } from './Web.HttpCache';
+import { Module } from './Web.Module';
+import { ModuleUrl } from './Web.Module.Url';
 import { WebRuntimeBus } from './Web.RuntimeBus';
-import { WebRuntime as Platform } from '@platform/cell.runtime.web';
-import { WebServiceWorker as ServiceWorker } from './Web.ServiceWorker';
+import { ServiceWorker } from './Web.ServiceWorker';
 
-export { WebRuntimeBus };
+export { WebRuntimeBus, ModuleUrl, HttpCache };
 export { NetworkBusMock, NetworkBusMocks } from './mocks';
 
 export const WebRuntime = {
-  module: Platform.module,
-  remote: Platform.remote,
   Bus: WebRuntimeBus,
+  Module,
+  HttpCache,
   ServiceWorker,
 };

@@ -31,6 +31,7 @@ export const DevLogo: React.FC<DevLogoProps> = (props) => {
       {/* <div {...styles.label}>{'SELF'}</div>
       <div {...styles.label}>{'SOVEREIGN'}</div> */}
       <div {...styles.label}>{'SYSTEM CELL'}</div>
+      {/* <div {...styles.label}>{'SYS RUNTIME'}</div> */}
     </div>
   );
 };

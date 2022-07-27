@@ -12,7 +12,7 @@ export async function GroupConnectionsStrategy(args: {
   isEnabled: () => boolean;
 }) {
   const { netbus, events } = args;
-  const module = { name: WebRuntime.module.name, version: WebRuntime.module.version };
+  const module = WebRuntime.Module.info;
   const self = netbus.self;
   const req$ = events.group.connections.req$.pipe(filter(() => args.isEnabled()));
   const res$ = events.group.connections.res$.pipe(filter(() => args.isEnabled()));

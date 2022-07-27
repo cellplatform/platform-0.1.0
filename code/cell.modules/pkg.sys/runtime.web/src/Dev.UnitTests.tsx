@@ -5,6 +5,7 @@ import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 const Imports = {
   BusEvents: import('./Web.RuntimeBus/BusEvents.TEST'),
   BusController: import('./Web.RuntimeBus/BusController.TEST'),
+  ModuleUrl: import('./Web.Module.Url/TEST'),
 };
 
 type Ctx = { results?: TestSuiteRunResponse };

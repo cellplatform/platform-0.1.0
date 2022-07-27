@@ -22,7 +22,7 @@ describe('Disposable', () => {
     expect(count).to.eql(1);
   });
 
-  it('until', () => {
+  it('until (single)', () => {
     const obj1 = Dispose.create();
 
     const $ = new Subject<void>();

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-import { ModuleUrl } from '../Module.Url';
 import { ModuleView } from '../Module/Module.View';
-import { CssValue, DEFAULT, FC, t } from './common';
+import { CssValue, DEFAULT, FC, t, ModuleUrl } from './common';
 
 export type ModuleAppProps = {
   instance: t.ModuleInstance;

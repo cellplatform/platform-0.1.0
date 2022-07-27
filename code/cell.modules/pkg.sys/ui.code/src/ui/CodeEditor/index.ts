@@ -1,6 +1,6 @@
 import { t } from '../../common';
 import * as React from 'react';
-import { InstanceEvents } from '../../api';
+import { CodeEditorInstanceEvents } from '../../api';
 // import { CodeEditor as Component, CodeEditorProps } from './CodeEditor';
 
 // export { CodeEditorProps };

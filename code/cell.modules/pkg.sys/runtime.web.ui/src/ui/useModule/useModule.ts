@@ -11,14 +11,15 @@ type Path = string;
  * Hook that handles loading remote modules via the [EventBus].
  */
 export function useModule<M = any>(args: {
-  instance: { bus: t.EventBus<any>; id?: Id };
+  instance: t.ModuleInstance;
   url?: t.ManifestUrl;
+  log?: boolean;
 }) {
   const { instance, url } = args;
   const targetRef = useRef(`module:target:${slug()}`);
   const busid = rx.bus.instance(instance.bus);
 
-  const remote = useModuleTarget<M>({ instance, target: targetRef.current });
+  const remote = useModuleTarget<M>({ instance, target: targetRef.current, log: args.log });
   const manifest = useManifest({ url });
 
   /**

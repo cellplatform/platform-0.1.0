@@ -14,6 +14,9 @@ export const time: ITime = {
   timer,
   elapsed,
   utc,
+  get timezone() {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  },
   get now() {
     return utc();
   },

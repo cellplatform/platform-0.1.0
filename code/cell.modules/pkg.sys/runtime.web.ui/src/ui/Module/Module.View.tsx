@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
 import { css, CssValue, DEFAULT, ErrorBoundary, LoadMask, t } from './common';
-import { ManifestInfo } from './ui/ManifestInfo';
 import { Loader } from './ui/Loader';
+import { ManifestInfo } from './ui/ManifestInfo';
 
 export type ModuleProps = {
   instance: t.ModuleInstance;
@@ -11,6 +11,7 @@ export type ModuleProps = {
   info?: boolean;
   theme?: t.ModuleTheme;
   style?: CssValue;
+  debug?: t.ModuleDebug;
   onExportClick?: t.ModuleInfoExportClick;
 };
 
@@ -18,7 +19,7 @@ export type ModuleProps = {
  * Component
  */
 export const ModuleView: React.FC<ModuleProps> = (props) => {
-  const { instance, loader = true, theme = DEFAULT.THEME } = props;
+  const { instance, loader = true, theme = DEFAULT.THEME, debug = DEFAULT.DEBUG } = props;
   const [loading, setLoading] = useState(false);
 
   const url = props.url ? new URL(props.url) : undefined;
@@ -45,6 +46,7 @@ export const ModuleView: React.FC<ModuleProps> = (props) => {
       instance={instance}
       url={url.href}
       theme={theme}
+      debug={debug}
       onLoading={(e) => setLoading(e.loading)}
     />
   );

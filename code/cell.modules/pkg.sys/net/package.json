@@ -1,6 +1,6 @@
 {
   "name": "sys.net",
-  "version": "0.0.322",
+  "version": "0.0.330",
   "sideEffects": false,
   "main": "lib/index",
   "scripts": {
@@ -14,7 +14,8 @@
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cell.compiler serve $@"
+    "serve": "cell.compiler serve $@",
+    "deploy": "ts-node -T script.ts/vercel.run"
   },
   "dependencies": {
     "core-js": "3.16.4",

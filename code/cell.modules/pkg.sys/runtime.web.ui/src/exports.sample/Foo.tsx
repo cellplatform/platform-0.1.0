@@ -1,33 +1,25 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Color, COLORS, css, CssValue, t, rx, FC } from '../common';
+import React from 'react';
+import { css, CssValue, t } from '../common';
 
-export type FooProps = { style?: CssValue };
+export type FooProps = { title: string; style?: CssValue };
 
 export const Foo: React.FC<FooProps> = (props) => {
-  /**
-   * [Render]
-   */
   const styles = {
     base: css({
       Absolute: 0,
+      fontSize: 30,
       backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
       Flex: 'center-center',
-      fontSize: 30,
     }),
   };
-  return <div {...css(styles.base, props.style)}>Foo 🐷</div>;
+  return <div {...css(styles.base, props.style)}>{props.title}</div>;
 };
 
 /**
  * Default entry function (sample).
  */
-const entry: t.ModuleDefaultEntry = (bus, ctx) => {
-  console.group('🌳 ModuleDefaultEntry');
-  console.log('bus', bus);
-  console.log('ctx', ctx);
-  console.groupEnd();
-
-  return <Foo />;
+const entry: t.ModuleDefaultEntry = (pump, ctx) => {
+  return <Foo title={'Foo 🐷'} />;
 };
 
 export default entry;

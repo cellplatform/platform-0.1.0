@@ -35,11 +35,6 @@ export const DevVideos: React.FC<DevVideosProps> = (props) => {
     return dispose;
   }, []); // eslint-disable-line
 
-  console.group('🌳 ');
-  console.log('self', self);
-  console.log('peers', peers);
-  console.groupEnd();
-
   /**
    * [Render]
    */

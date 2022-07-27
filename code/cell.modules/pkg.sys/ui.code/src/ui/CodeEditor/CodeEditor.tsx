@@ -14,7 +14,6 @@ import {
  */
 export type CodeEditorProps = {
   instance?: { bus: t.EventBus<any>; id?: string };
-  staticRoot?: string;
   theme?: t.CodeEditorTheme;
   language?: t.CodeEditorLanguage;
   focusOnLoad?: boolean;
@@ -27,8 +26,6 @@ export type CodeEditorProps = {
  * Component
  */
 const View: React.FC<CodeEditorProps> = (props) => {
-  const { staticRoot } = props;
-
   const language = props.language ?? DEFAULT.LANGUAGE.TS;
   const bus = rx.bus<t.CodeEditorEvent>(props.instance?.bus);
   const editorRef = useRef<t.CodeEditorInstance>();
@@ -89,13 +86,7 @@ const View: React.FC<CodeEditorProps> = (props) => {
   return (
     <div {...css(styles.base, props.style)}>
       {elLoading}
-      <MonacoEditor
-        bus={bus}
-        staticRoot={staticRoot}
-        theme={theme}
-        style={styles.editor}
-        onReady={handleReady}
-      />
+      <MonacoEditor bus={bus} theme={theme} style={styles.editor} onReady={handleReady} />
     </div>
   );
 };

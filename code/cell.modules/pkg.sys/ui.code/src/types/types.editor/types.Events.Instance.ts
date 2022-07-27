@@ -1,8 +1,7 @@
 import { t } from './common';
 
-type Milliseconds = number;
 type Id = string;
-type Observable<T> = t.Observable<T>;
+type Milliseconds = number;
 type Options = { timeout?: Milliseconds };
 
 export type CodeEditorInstanceEventsFactory = (args: {
@@ -16,21 +15,21 @@ export type CodeEditorInstanceEventsFactory = (args: {
  */
 export type CodeEditorInstanceEvents = {
   instance: { bus: Id; id: Id };
-  $: Observable<t.CodeEditorInstanceEvent>;
-  dispose$: Observable<void>;
+  $: t.Observable<t.CodeEditorInstanceEvent>;
+  dispose$: t.Observable<void>;
   dispose(): void;
 
   focus: {
-    changed$: Observable<t.CodeEditorFocusChanged>;
+    changed$: t.Observable<t.CodeEditorFocused>;
     fire(): void;
   };
 
   blur: {
-    changed$: Observable<t.CodeEditorFocusChanged>;
+    changed$: t.Observable<t.CodeEditorFocused>;
   };
 
   selection: {
-    changed$: Observable<t.CodeEditorSelectionChanged>;
+    changed$: t.Observable<t.CodeEditorSelectionChanged>;
     select(
       selection: t.CodeEditorPosition | t.CodeEditorRange | t.CodeEditorRange[] | null,
       options?: { focus?: boolean },
@@ -38,18 +37,18 @@ export type CodeEditorInstanceEvents = {
   };
 
   text: {
-    changed$: Observable<t.CodeEditorTextChanged>;
+    changed$: t.Observable<t.CodeEditorTextChanged>;
     set(text: string | null): void;
     get: {
-      req$: Observable<t.CodeEditorTextReq>;
-      res$: Observable<t.CodeEditorTextRes>;
-      fire(options?: { timeout?: Milliseconds }): Promise<string>;
+      req$: t.Observable<t.CodeEditorTextReq>;
+      res$: t.Observable<t.CodeEditorTextRes>;
+      fire(options?: Options): Promise<string>;
     };
   };
 
   model: {
-    req$: Observable<t.CodeEditorModelReq>;
-    res$: Observable<t.CodeEditorModelRes>;
+    req$: t.Observable<t.CodeEditorModelReq>;
+    res$: t.Observable<t.CodeEditorModelRes>;
     get(options?: Options): Promise<t.CodeEditorModel>;
     set: {
       language(value: t.CodeEditorLanguage, options?: Options): Promise<t.CodeEditorModel>;
@@ -58,7 +57,8 @@ export type CodeEditorInstanceEvents = {
   };
 
   action: {
-    run$: Observable<t.CodeEditorRunAction>;
-    fire(action: t.MonacoAction): Promise<t.CodeEditorActionComplete>;
+    req$: t.Observable<t.CodeEditorRunActionReq>;
+    res$: t.Observable<t.CodeEditorRunActionRes>;
+    fire(action: t.MonacoAction, options?: Options): Promise<t.CodeEditorRunActionRes>;
   };
 };

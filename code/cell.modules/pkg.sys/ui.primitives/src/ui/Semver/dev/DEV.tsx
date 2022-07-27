@@ -8,7 +8,23 @@ type Ctx = {
   debug: {
     releaseType: semver.ReleaseType;
     prerelease?: string;
+    prefix: boolean;
+    suffix: boolean;
   };
+};
+
+const Util = {
+  props(ctx: Ctx) {
+    const { props, debug } = ctx;
+
+    const elPrefix = <div style={{ backgroundColor: 'rgba(255, 0, 0, 0.1)' }}>{'my prefix'}</div>;
+
+    return {
+      ...props,
+      prefix: debug.prefix ? elPrefix : undefined,
+      suffix: debug.suffix ? 'my suffix' : undefined,
+    };
+  },
 };
 
 /**
@@ -23,7 +39,12 @@ export const actions = DevActions<Ctx>()
         version: '1.2.3',
         fontSize: 36,
       },
-      debug: { releaseType: 'patch', prerelease: 'alpha' },
+      debug: {
+        releaseType: 'patch',
+        prerelease: 'alpha',
+        prefix: false,
+        suffix: false,
+      },
     };
     return ctx;
   })
@@ -60,6 +81,18 @@ export const actions = DevActions<Ctx>()
     e.boolean('[TODO] tracelines', (e) => {
       // if (e.changing) e.ctx.props = e.changing.next;
       // e.boolean.current = e.ctx.props;
+    });
+
+    e.hr(1, 0.1);
+
+    e.boolean('prefix', (e) => {
+      if (e.changing) e.ctx.debug.prefix = e.changing.next;
+      e.boolean.current = e.ctx.debug.prefix;
+    });
+
+    e.boolean('suffix', (e) => {
+      if (e.changing) e.ctx.debug.suffix = e.changing.next;
+      e.boolean.current = e.ctx.debug.suffix;
     });
 
     e.hr();
@@ -116,11 +149,13 @@ export const actions = DevActions<Ctx>()
   })
 
   .subject((e) => {
+    const props = Util.props(e.ctx);
+
     e.settings({
       host: { background: -0.04 },
       layout: { cropmarks: -0.2 },
     });
-    e.render(<Semver {...e.ctx.props} />);
+    e.render(<Semver {...props} />);
 
     e.render(
       () => {

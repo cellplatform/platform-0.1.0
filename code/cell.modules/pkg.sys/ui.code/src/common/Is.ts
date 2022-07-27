@@ -1,9 +1,14 @@
 import * as t from './types';
+import { is } from '@platform/util.is';
+
+const { promise } = is;
 
 /**
  * Flag helpers.
  */
 export const Is = {
+  promise,
+
   position(input: any): boolean {
     if (input === null || typeof input !== 'object') return false;
     const value = input as t.CodeEditorPosition;
@@ -33,7 +38,7 @@ export const Is = {
   },
 
   editorEvent(e: t.Event) {
-    return e.type.startsWith('CodeEditor/');
+    return e.type.startsWith('sys.ui.code/');
   },
 
   instanceEvent(e: t.Event) {

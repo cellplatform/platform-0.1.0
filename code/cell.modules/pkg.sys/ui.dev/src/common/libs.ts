@@ -1,6 +1,11 @@
 import { equals, clone, clamp, uniq } from 'ramda';
 export const R = { equals, clone, clamp, uniq };
 
+/**
+ * @platform
+ */
+export { Runtime } from '@platform/cell.runtime';
+
 export { css, color, Color, CssValue, style } from '@platform/css';
 
 export {
@@ -24,8 +29,6 @@ export { HttpClient, Uri } from '@platform/cell.client';
 import { Builder } from '@platform/cell.module';
 export { Builder };
 export const format = Builder.format;
-
-export { WebRuntime } from '@platform/cell.runtime.web';
 
 export { log } from '@platform/log/lib/client';
 export { useClickOutside } from '@platform/react/lib/hooks';

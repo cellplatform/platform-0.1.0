@@ -55,7 +55,8 @@ export function useDevController(args: {
     rx.payload<t.NetworkCardPeerClickEvent>($, 'sys.net/ui.NetworkCard/PeerClick')
       .pipe(filter((e) => Boolean(e.media)))
       .subscribe((e) => {
-        setChild(<DevVideoCard instance={instance} style={styles.child} stream={e.media} />);
+        const el = <DevVideoCard instance={instance} style={styles.child} stream={e.media} />;
+        setChild(el);
       });
 
     rx.payload<t.NetworkCardCloseChildEvent>($, 'sys.net/ui.NetworkCard/CloseChild')

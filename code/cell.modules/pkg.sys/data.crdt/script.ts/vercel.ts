@@ -14,7 +14,7 @@ export async function deploy(team: string, project: string, alias: string) {
   const deployment = Vercel.Deploy({ token, dir, team, project });
   const info = await deployment.info();
 
-  Vercel.Log.beforeDeploy({ info, alias, project });
+  await Vercel.Log.beforeDeploy({ info, alias, project });
 
   const res = await deployment.commit(
     { target: 'production', regions: ['sfo1'], alias },
@@ -22,5 +22,5 @@ export async function deploy(team: string, project: string, alias: string) {
   );
 
   // Finish up.
-  Vercel.Log.afterDeploy(res);
+  await Vercel.Log.afterDeploy(res);
 }

@@ -11,7 +11,7 @@ type C = t.GroupPeerConnection;
  * Helpers for working with group (mesh) related events.
  */
 export function GroupEvents(eventbus: t.PeerNetbus<any>): t.GroupEvents {
-  const module = WebRuntime.module;
+  const module = WebRuntime.Module.info;
   const netbus = eventbus as t.PeerNetbus<t.GroupEvent>;
   const source = netbus.self;
   const dispose$ = new Subject<void>();

@@ -35,14 +35,15 @@ if (isDev) document.title = `${document.title} (dev)`;
   if (isDev) {
     const DevHarness = (await Imports.DevHarness()).DevHarness;
     ReactDOM.render(<DevHarness />, root);
-  }
-
-  if (!isDev) {
+  } else {
     const Module = (await Imports.Module()).Module;
 
-    const entry = url.searchParams.get('entry') ?? 'net.sys';
-    const href = Module.Url.parse('https://lib.db.team', { entry }).href;
-    const instance = { bus: rx.bus() };
+    const entry = url.searchParams.get('entry') ?? 'App';
+    const href = Module.Url.parseUrl('https://net.lib.db.team', { entry }).href;
+
+    const bus = rx.bus();
+    const instance = { bus };
+
     const el = <Module.App instance={instance} href={href} style={{ Absolute: 0 }} />;
 
     ReactDOM.render(el, root);

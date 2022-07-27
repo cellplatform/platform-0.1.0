@@ -46,7 +46,7 @@ export function usePathListState(args: {
      */
     listEvents.state.changed$.subscribe((e) => {
       const { kind, from, to } = e;
-      args.onStateChanged?.({ kind, from, to });
+      args.onStateChanged?.({ kind, from, to, fs });
     });
 
     /**
