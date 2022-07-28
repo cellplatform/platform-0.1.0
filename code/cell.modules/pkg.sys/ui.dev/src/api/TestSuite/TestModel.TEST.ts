@@ -119,6 +119,19 @@ describe('TestModel', () => {
       expect(res.error).to.eql(undefined);
     });
 
+    it('with context (e.ctx)', async () => {
+      const args: t.TestHandlerArgs[] = [];
+      const handler: t.TestHandler = (e) => args.push(e);
+      const test = TestModel({ parent, description, handler });
+
+      const ctx = { foo: 123 };
+      await test.run(); // NB: no context.
+      await test.run({ ctx });
+
+      expect(args[0].ctx).to.eql(undefined);
+      expect(args[1].ctx).to.eql(ctx);
+    });
+
     it('test throws error', async () => {
       const handler: t.TestHandler = () => {
         throw new Error('Derp');
