@@ -6,7 +6,7 @@ import { CodeEditorLibEvents } from './Events.Libs';
 
 export const CodeEditorEvents: t.CodeEditorEventsFactory = (input, options = {}) => {
   const bus = rx.bus<t.CodeEditorEvent>(input);
-  const { dispose$, dispose } = rx.disposable(options.dispose);
+  const { dispose$, dispose } = rx.disposable(options.dispose$);
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
@@ -25,15 +25,15 @@ export const CodeEditorEvents: t.CodeEditorEventsFactory = (input, options = {})
   );
 
   const init: t.CodeEditorEvents['init'] = {
-    req$: rx.payload<t.CodeEditorInitReqEvent>($, 'sys.ui.code/init:req'),
-    res$: rx.payload<t.CodeEditorInitResEvent>($, 'sys.ui.code/init:res'),
+    req$: rx.payload<t.CodeEditorGlobalInitReqEvent>($, 'sys.ui.code/init:req'),
+    res$: rx.payload<t.CodeEditorGlobalInitResEvent>($, 'sys.ui.code/init:res'),
     async fire(args) {
       const { timeout = 3000, staticRoot } = args;
       const tx = slug();
 
       const op = 'init';
       const res$ = init.res$.pipe(filter((e) => e.tx === tx));
-      const first = rx.asPromise.first<t.CodeEditorInitResEvent>(res$, { op, timeout });
+      const first = rx.asPromise.first<t.CodeEditorGlobalInitResEvent>(res$, { op, timeout });
 
       bus.fire({
         type: 'sys.ui.code/init:req',
@@ -49,8 +49,8 @@ export const CodeEditorEvents: t.CodeEditorEventsFactory = (input, options = {})
   };
 
   const status: t.CodeEditorEvents['status'] = {
-    req$: rx.payload<t.CodeEditorStatusReqEvent>($, 'sys.ui.code/status:req'),
-    res$: rx.payload<t.CodeEditorStatusResEvent>($, 'sys.ui.code/status:res'),
+    req$: rx.payload<t.CodeEditorGlobalStatusReqEvent>($, 'sys.ui.code/status.g:req'),
+    res$: rx.payload<t.CodeEditorGlobalStatusResEvent>($, 'sys.ui.code/status.g:res'),
     async get(options) {
       return (await status.fire(options))?.info;
     },
@@ -60,10 +60,10 @@ export const CodeEditorEvents: t.CodeEditorEventsFactory = (input, options = {})
 
       const op = 'status.get';
       const res$ = status.res$.pipe(filter((e) => e.tx === tx));
-      const first = rx.asPromise.first<t.CodeEditorStatusResEvent>(res$, { op, timeout });
+      const first = rx.asPromise.first<t.CodeEditorGlobalStatusResEvent>(res$, { op, timeout });
 
       bus.fire({
-        type: 'sys.ui.code/status:req',
+        type: 'sys.ui.code/status.g:req',
         payload: { tx },
       });
 
@@ -72,6 +72,27 @@ export const CodeEditorEvents: t.CodeEditorEventsFactory = (input, options = {})
 
       const error = res.error?.message ?? 'Failed';
       return { tx, error };
+    },
+
+    updated$: rx.payload<t.CodeEditorGlobalStatusUpdatedEvent>($, 'sys.ui.code/status.g:updated'),
+    async updated(payload) {
+      bus.fire({
+        type: 'sys.ui.code/status.g:updated',
+        payload,
+      });
+    },
+
+    /**
+     * Instance specific events.
+     */
+    instance: {
+      update$: rx.payload<t.CodeEditorStatusUpdateEvent>($, 'sys.ui.code/status:update'),
+      async fire(payload) {
+        bus.fire({
+          type: 'sys.ui.code/status:update',
+          payload,
+        });
+      },
     },
   };
 

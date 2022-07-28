@@ -6,7 +6,7 @@ type Options = { timeout?: Milliseconds };
 
 export type CodeEditorEventsFactory = (
   bus: t.EventBus<any>,
-  options?: { dispose?: t.Observable<any> },
+  options?: { dispose$?: t.Observable<any> },
 ) => t.CodeEditorEvents;
 
 /**
@@ -20,16 +20,24 @@ export type CodeEditorEvents = t.Disposable & {
   readonly libs: CodeEditorLibEvents;
 
   readonly status: {
-    req$: t.Observable<t.CodeEditorStatusReq>;
-    res$: t.Observable<t.CodeEditorStatusRes>;
-    fire(options?: Options): Promise<t.CodeEditorStatusRes>;
+    req$: t.Observable<t.CodeEditorGlobalStatusReq>;
+    res$: t.Observable<t.CodeEditorGlobalStatusRes>;
+    fire(options?: Options): Promise<t.CodeEditorGlobalStatusRes>;
     get(options?: Options): Promise<t.CodeEditorStatus | undefined>;
+
+    updated$: t.Observable<t.CodeEditorGlobalStatusUpdated>;
+    updated(payload: t.CodeEditorGlobalStatusUpdated): Promise<void>;
+
+    instance: {
+      update$: t.Observable<t.CodeEditorStatusUpdate>;
+      fire(payload: t.CodeEditorStatusUpdate): Promise<void>;
+    };
   };
 
   readonly init: {
-    req$: t.Observable<t.CodeEditorInitReq>;
-    res$: t.Observable<t.CodeEditorInitRes>;
-    fire(args: { staticRoot?: string } & Options): Promise<t.CodeEditorInitRes>;
+    req$: t.Observable<t.CodeEditorGlobalInitReq>;
+    res$: t.Observable<t.CodeEditorGlobalInitRes>;
+    fire(args: { staticRoot?: string } & Options): Promise<t.CodeEditorGlobalInitRes>;
   };
 
   editor(id: string): t.CodeEditorInstanceEvents;

@@ -7,6 +7,7 @@ import { CodeEditor } from '../../../api';
 import { rx, deleteUndefined, constants, Filesystem } from '../common';
 
 type Ctx = {
+  ready: boolean;
   props: CodeEditorProps;
 
   global?: {
@@ -24,8 +25,8 @@ type Ctx = {
 const { PATH } = constants;
 
 const FILENAME = {
-  one: 'one.ts',
-  two: 'foo/two.tsx',
+  one: 'Dev.CodeEditor/one.ts',
+  two: 'Dev.CodeEditor/two.tsx',
 };
 
 const SAMPLE = `
@@ -37,7 +38,7 @@ const total = a.reduce((acc,next) =>add(acc,next), 0)
 `;
 
 const Util = {
-  bus: (ctx: Ctx) => ctx.props.instance?.bus,
+  bus: (ctx: Ctx) => ctx.props?.instance?.bus,
   fs: (ctx: Ctx) => ctx.global?.filesystem.fs,
 };
 
@@ -50,7 +51,11 @@ export const actions = DevActions<Ctx>()
     if (e.prev) return e.prev;
 
     const ctx: Ctx = {
-      props: { language: 'typescript' },
+      ready: false,
+      props: {
+        instance: { bus: rx.bus() }, // Placeholder DUMMY.
+        language: 'typescript',
+      },
       debug: {},
     };
 
@@ -70,6 +75,7 @@ export const actions = DevActions<Ctx>()
       events,
       filesystem: { instance, fs },
     };
+    ctx.ready = true;
 
     e.redraw();
   })
@@ -149,9 +155,9 @@ export const actions = DevActions<Ctx>()
           onStateChanged={async (change) => {
             if (change.kind === 'Selection') {
               const selection = change.to.selection;
-
               const fs = change.fs;
-              console.group('🌳 ');
+
+              console.group('🌳 onStateChanged');
               console.log('fs', fs);
 
               const manifest = await fs.manifest({ cache: false });
@@ -162,9 +168,19 @@ export const actions = DevActions<Ctx>()
                 const path = file.path;
                 const text = new TextDecoder().decode(await fs.read(path));
 
-                console.log('path', path);
-                console.log('text', text);
-                // e.ctx.instance?.text.set(text);
+                console.log('path:', path);
+                console.log('text:', text);
+
+                const global = e.ctx.global?.events;
+                const status = await global?.status.get();
+
+                if (global && status) {
+                  const id = status.instances.find((ed) => ed.filename === path)?.id;
+                  if (id) {
+                    const editor = global.editor(id);
+                    editor.text.set(text);
+                  }
+                }
               }
 
               console.groupEnd();
@@ -342,13 +358,13 @@ export const actions = DevActions<Ctx>()
         background: 1,
         border: -0.1,
         cropmarks: -0.2,
-        width: 800,
-        height: 300,
+        width: 700,
+        height: 230,
       },
       host: { background: -0.04 },
     });
 
-    if (!bus) return;
+    if (!bus || !ctx.ready) return;
 
     const saveOnChange = (editor: t.CodeEditorInstance, filename: string) => {
       editor.events.text.changed$.pipe(debounceTime(500)).subscribe(async (e) => {
@@ -371,9 +387,8 @@ export const actions = DevActions<Ctx>()
       });
     };
 
-    const renderEditor = (id: string, filename: string, props: CodeEditorProps = {}) => {
+    const renderEditor = (id: string, filename: string, props: Partial<CodeEditorProps> = {}) => {
       props = { ...e.ctx.props, ...props };
-
       return (
         <CodeEditorView
           {...props}

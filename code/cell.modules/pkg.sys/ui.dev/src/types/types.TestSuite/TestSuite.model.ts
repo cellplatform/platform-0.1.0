@@ -5,6 +5,7 @@ type Anything = void | any;
 type Milliseconds = number;
 type Description = string;
 type BundleImport = TestSuiteModel | Promise<any>;
+type Ctx = Record<string, unknown>;
 
 export type TestModifier = 'skip' | 'only';
 
@@ -43,7 +44,10 @@ export type TestSuiteItDef = (description: Description, handler?: TestHandler) =
 
 export type TestSuiteHandler = (e: TestSuite) => Anything | Promise<Anything>;
 export type TestHandler = (e: TestHandlerArgs) => Anything | Promise<Anything>;
-export type TestHandlerArgs = { timeout(value: Milliseconds): TestHandlerArgs };
+export type TestHandlerArgs = {
+  timeout(value: Milliseconds): TestHandlerArgs;
+  ctx?: Ctx;
+};
 
 /**
  * Model: Test
@@ -61,7 +65,11 @@ export type TestModel = {
 };
 
 export type TestRun = (options?: TestRunOptions) => Promise<TestRunResponse>;
-export type TestRunOptions = { timeout?: Milliseconds; excluded?: TestModifier[] };
+export type TestRunOptions = {
+  timeout?: Milliseconds;
+  excluded?: TestModifier[];
+  ctx?: Ctx;
+};
 export type TestRunResponse = {
   id: Id;
   ok: boolean;
@@ -101,6 +109,7 @@ export type TestSuiteRun = (options?: TestSuiteRunOptions) => Promise<TestSuiteR
 export type TestSuiteRunOptions = {
   timeout?: number;
   deep?: boolean;
+  ctx?: Ctx;
 };
 export type TestSuiteRunResponse = {
   id: Id;

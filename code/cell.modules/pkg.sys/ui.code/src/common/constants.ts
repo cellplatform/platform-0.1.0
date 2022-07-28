@@ -30,7 +30,7 @@ export const PATH = {
 
 export const DEFAULT = {
   THEME: <t.CodeEditorTheme>'dark',
-  LANGUAGE: { TS: <t.CodeEditorLanguage>'typescript' },
+  LANGUAGE: <t.CodeEditorLanguage>'typescript',
   PATH,
   MODEL: <t.CodeEditorModel>{
     text: '',

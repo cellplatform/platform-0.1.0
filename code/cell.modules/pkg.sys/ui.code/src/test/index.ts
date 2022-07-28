@@ -16,6 +16,7 @@ export {
   DevActions,
   LOREM,
   TestSuiteRunResponse,
+  TestHandlerArgs,
   toObject,
   ObjectView,
 } from 'sys.ui.dev';

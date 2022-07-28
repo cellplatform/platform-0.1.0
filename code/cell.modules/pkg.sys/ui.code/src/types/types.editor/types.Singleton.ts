@@ -13,8 +13,9 @@ export type ICodeEditorSingleton = {
  * Status information about the CodeEditor (and the environment).
  */
 export type CodeEditorStatus = {
-  initialized: boolean;
+  ready: boolean;
   paths: t.CodeEditorStaticPaths;
+  instances: t.CodeEditorInstanceStatus[];
 };
 
 export type CodeEditorStaticPaths = {

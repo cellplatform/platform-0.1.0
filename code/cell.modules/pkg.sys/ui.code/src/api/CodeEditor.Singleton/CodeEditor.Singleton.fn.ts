@@ -21,7 +21,7 @@ export function singleton(args: { bus: t.EventBus<any> }) {
       const status = await events.status.get();
       const paths = status?.paths ?? staticPaths();
 
-      if (!status || !status.initialized) {
+      if (!status || !status.ready) {
         const busid = rx.bus.instance(bus);
         const msg = `CodeEditor controller for event-bus "${busid}" not ready. Ensure [CodeEditor.start()] has been called.`;
         throw new Error(msg);

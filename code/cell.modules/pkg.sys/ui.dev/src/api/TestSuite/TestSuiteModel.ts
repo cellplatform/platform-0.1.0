@@ -1,6 +1,5 @@
-import { DEFAULT, Is, slug, t, time } from './common';
+import { DEFAULT, slug, t, time } from './common';
 import { Constraints } from './helpers/Constraints';
-import { Tree } from './helpers/Tree';
 import { TestModel } from './TestModel';
 
 type LazyParent = () => t.TestSuiteModel;
@@ -46,7 +45,7 @@ export const TestSuiteModel = (args: {
   };
 
   const runSuite = (model: t.TestSuiteModel, options: t.TestSuiteRunOptions = {}) => {
-    const { deep = true } = options;
+    const { deep = true, ctx } = options;
 
     type R = t.TestSuiteRunResponse;
     return new Promise<R>(async (resolve) => {
@@ -69,7 +68,7 @@ export const TestSuiteModel = (args: {
       for (const test of tests) {
         const timeout = getTimeout();
         const excluded = Constraints.exclusionModifiers(test);
-        res.tests.push(await test.run({ timeout, excluded }));
+        res.tests.push(await test.run({ timeout, excluded, ctx }));
       }
 
       if (deep && childSuites.length > 0) {

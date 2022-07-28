@@ -279,6 +279,20 @@ describe('TestSuiteModel', () => {
       expect(res.elapsed).to.greaterThan(18);
     });
 
+    it('with context {ctx}', async () => {
+      const args: t.TestHandlerArgs[] = [];
+      const root = Test.describe('root', (e) => {
+        e.it('foo', (e) => args.push(e));
+      });
+
+      const ctx = { foo: 123 };
+      await root.run(); // NB: no context.
+      await root.run({ ctx });
+
+      expect(args[0].ctx).to.eql(undefined);
+      expect(args[1].ctx).to.eql(ctx);
+    });
+
     it('no tests', async () => {
       const root = Test.describe('root', (e) => null);
       const res = await root.run();
