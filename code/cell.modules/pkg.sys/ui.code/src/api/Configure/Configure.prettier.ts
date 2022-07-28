@@ -16,7 +16,7 @@ import { t, DEFAULT } from '../common';
 export async function registerPrettier(args: { api: t.ICodeEditorSingleton }) {
   const { api } = args;
 
-  api.monaco.languages.registerDocumentFormattingEditProvider(DEFAULT.LANGUAGE.TS, {
+  api.monaco.languages.registerDocumentFormattingEditProvider(DEFAULT.LANGUAGE, {
     async provideDocumentFormattingEdits(model, options, token) {
       try {
         const prettier = await import('prettier/standalone');

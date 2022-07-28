@@ -1,4 +1,4 @@
-import { R, rx, t } from '../common';
+import { R, rx, t, log } from '../common';
 import { staticPaths } from '../Configure/Configure.paths';
 import { CodeEditorEvents } from '../Events';
 
@@ -10,7 +10,7 @@ export function CodeEditorSingletonController(input: t.EventBus<any>) {
   const events = CodeEditorEvents(bus);
 
   let _status: t.CodeEditorStatus = {
-    initialized: false,
+    ready: false,
     paths: staticPaths(),
   };
 
@@ -33,7 +33,7 @@ export function CodeEditorSingletonController(input: t.EventBus<any>) {
     const { tx } = e;
     _status = {
       ..._status,
-      initialized: true,
+      ready: true,
       paths: staticPaths(e.staticRoot),
     };
     bus.fire({
@@ -41,6 +41,8 @@ export function CodeEditorSingletonController(input: t.EventBus<any>) {
       payload: { tx, info: R.clone(_status) },
     });
   });
+
+  log.info(`[CodeEditorSingletonController] started. ${events.id}`);
 
   // Finish up.
   return events;

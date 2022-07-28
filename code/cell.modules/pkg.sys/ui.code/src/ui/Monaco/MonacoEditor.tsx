@@ -6,7 +6,6 @@ import { css, CssValue, DEFAULT, t } from '../../common';
 
 type E = t.IMonacoStandaloneCodeEditor;
 type S = t.ICodeEditorSingleton;
-type PathString = string;
 
 export type MonacoEditorReady = { instance: E; singleton: S };
 export type MonacoEditorReadyHandler = (e: MonacoEditorReady) => void;
@@ -29,7 +28,7 @@ export type MonacoEditorProps = {
  *
  */
 export const MonacoEditor: React.FC<MonacoEditorProps> = (props) => {
-  const { bus, language = DEFAULT.LANGUAGE.TS, theme } = props;
+  const { bus, language = DEFAULT.LANGUAGE, theme } = props;
 
   const beforeMount: BeforeMount = (monaco) => {
     monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);

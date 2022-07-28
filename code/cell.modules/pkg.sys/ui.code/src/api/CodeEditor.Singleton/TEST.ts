@@ -23,36 +23,36 @@ export default Test.describe('CodeEditor.Singleton', (e) => {
       expect(res.error).to.include('Timed out');
     });
 
-    e.it('fire: not initialized', async () => {
+    e.it('fire: not initialized (ready: false)', async () => {
       const bus = rx.bus();
       const events = CodeEditor.start(bus);
       const defaultPaths = staticPaths();
       const res = await events.status.fire();
 
       expect(res.error).to.eql(undefined);
-      expect(res.info?.initialized).to.eql(false);
+      expect(res.info?.ready).to.eql(false);
       expect(res.info?.paths).to.eql(defaultPaths);
     });
 
-    e.it('get: not initialized', async () => {
+    e.it('get: not initialized (ready: false)', async () => {
       const bus = rx.bus();
       const events = CodeEditor.start(bus);
       const defaultPaths = staticPaths();
       const res = await events.status.get({ timeout: 10 });
-      expect(res?.initialized).to.eql(false);
+      expect(res?.ready).to.eql(false);
       expect(res?.paths).to.eql(defaultPaths);
     });
   });
 
   e.describe('init', (e) => {
-    e.it('initialize with "staticRoot" for paths', async () => {
+    e.it('initialize with "staticRoot" for paths (ready: true)', async () => {
       const bus = rx.bus();
       const events = CodeEditor.start(bus);
 
       const staticRoot = 'https://foo.com/path///';
       const res = await events.init.fire({ staticRoot });
 
-      expect(res.info?.initialized).to.eql(true);
+      expect(res.info?.ready).to.eql(true);
       expect(res.info?.paths.vs).to.eql('https://foo.com/path/static/vs');
       expect(res.info?.paths.types.es).to.eql('https://foo.com/path/static/types.d/lib.es');
       expect(res.info?.paths.types.sys).to.eql('https://foo.com/path/static/types.d/lib.sys');
@@ -68,7 +68,7 @@ export default Test.describe('CodeEditor.Singleton', (e) => {
 
       const res = await events.init.fire({});
 
-      expect(res.info?.initialized).to.eql(true);
+      expect(res.info?.ready).to.eql(true);
       expect(res.info?.paths).to.eql(defaultPaths);
 
       const info = await events.status.get();
