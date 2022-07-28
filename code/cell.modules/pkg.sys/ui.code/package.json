@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.code",
-  "version": "0.0.194",
+  "version": "0.0.195",
   "scripts": {
     "test": "echo no-op",
     "build": "ts build --no-esm $@",

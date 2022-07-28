@@ -168,8 +168,8 @@ export const actions = DevActions<Ctx>()
                 const path = file.path;
                 const text = new TextDecoder().decode(await fs.read(path));
 
-                console.log('path', path);
-                console.log('text', text);
+                console.log('path:', path);
+                console.log('text:', text);
 
                 const global = e.ctx.global?.events;
                 const status = await global?.status.get();
