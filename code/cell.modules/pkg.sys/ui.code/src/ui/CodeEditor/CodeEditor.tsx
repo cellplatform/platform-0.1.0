@@ -13,7 +13,7 @@ import {
  * Types
  */
 export type CodeEditorProps = {
-  instance?: { bus: t.EventBus<any>; id?: string };
+  instance: { bus: t.EventBus<any>; id?: string };
   theme?: t.CodeEditorTheme;
   language?: t.CodeEditorLanguage;
   focusOnLoad?: boolean;
@@ -26,7 +26,7 @@ export type CodeEditorProps = {
  * Component
  */
 const View: React.FC<CodeEditorProps> = (props) => {
-  const language = props.language ?? DEFAULT.LANGUAGE.TS;
+  const language = props.language ?? DEFAULT.LANGUAGE;
   const bus = rx.bus<t.CodeEditorEvent>(props.instance?.bus);
   const editorRef = useRef<t.CodeEditorInstance>();
 
@@ -96,13 +96,20 @@ const View: React.FC<CodeEditorProps> = (props) => {
  */
 
 type Fields = {
-  languages: t.CodeEditorLanguage[];
+  DEFAULT: typeof DEFAULT;
+  LANGUAGES: typeof LANGUAGES;
   StateController: typeof StateController;
   useState: typeof useCodeEditorStateController;
   Configure: typeof Configure;
 };
 export const CodeEditor = FC.decorate<CodeEditorProps, Fields>(
   View,
-  { languages: LANGUAGES, StateController, useState: useCodeEditorStateController, Configure },
+  {
+    DEFAULT,
+    LANGUAGES,
+    StateController,
+    useState: useCodeEditorStateController,
+    Configure,
+  },
   { displayName: 'CodeEditor' },
 );
