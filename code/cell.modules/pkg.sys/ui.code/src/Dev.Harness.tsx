@@ -7,6 +7,7 @@ const imports = {
   DevEnv: import('./ui/DevEnv/dev/DEV'),
   InternalMonaco: import('./ui/Monaco/dev/DEV'),
   ModuleInfo: import('./ui/ModuleInfo/dev/DEV'),
+  UnitTestsEditor: import('./test/Editor.UnitTests/DEV'),
   UnitTests: import('./Dev.UnitTests'),
 };
 
