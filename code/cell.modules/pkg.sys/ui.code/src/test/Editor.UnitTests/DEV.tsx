@@ -3,21 +3,36 @@ import { TestSuiteRunResponse } from 'sys.ui.dev/lib/types';
 
 import { DevActions, ObjectView, t, Test, TestFilesystem } from '..';
 import { CodeEditor } from '../../api';
-import { rx } from '../../common';
+import { rx, Filesystem } from '../../common';
 import { CodeEditor as CodeEditorView, CodeEditorProps } from '../../ui/CodeEditor';
 import Tests from './TESTS';
+import { ModuleInfo } from '../../ui/ModuleInfo';
 
 type Ctx = {
   ready: boolean;
   props: CodeEditorProps;
+  output: { status?: any };
 
   global?: {
     filesystem: { fs: t.Fs; instance: t.FsViewInstance };
     events: t.CodeEditorEvents;
   };
 
-  run(): Promise<TestSuiteRunResponse>;
   results?: TestSuiteRunResponse;
+  runTests(): Promise<TestSuiteRunResponse>;
+  updateStatus(): Promise<void>;
+};
+
+const Util = {
+  getOrThrow(ctx?: Ctx) {
+    const props = ctx?.props;
+    const global = ctx?.global;
+    if (!props || !global) throw new Error('Not ready');
+
+    const bus = props.instance.bus;
+    const { events, filesystem } = global;
+    return { bus, events, filesystem };
+  },
 };
 
 /**
@@ -30,20 +45,25 @@ export const actions = DevActions<Ctx>()
 
     const ctx: Ctx = {
       ready: false,
+      output: {},
       props: {
         instance: { bus: rx.bus() }, // Placeholder DUMMY.
         language: 'typescript',
       },
 
-      async run() {
-        const bus = e.current?.props.instance.bus;
-        if (!bus) throw new Error('Not ready');
-
+      async runTests() {
+        const { bus } = Util.getOrThrow(e.current);
         const ctx = { bus };
         const results = await Tests.run({ ctx });
 
         e.change.ctx((ctx) => (ctx.results = results));
         return results;
+      },
+
+      async updateStatus() {
+        const { events } = Util.getOrThrow(e.current);
+        const status = await events?.status.get();
+        e.change.ctx((ctx) => (ctx.output.status = status));
       },
     };
 
@@ -64,8 +84,10 @@ export const actions = DevActions<Ctx>()
       filesystem: { instance, fs },
     };
 
+    events.status.updated$.subscribe((e) => ctx.updateStatus());
+
     ctx.ready = true;
-    await ctx.run();
+    await ctx.runTests();
 
     e.redraw();
   })
@@ -73,7 +95,32 @@ export const actions = DevActions<Ctx>()
   .items((e) => {
     e.title('Dev');
 
-    e.button('run tests', async (e) => await e.ctx.run());
+    e.button('run tests', async (e) => await e.ctx.runTests());
+
+    e.button('get status (global)', async (e) => {
+      await e.ctx.updateStatus();
+    });
+
+    e.hr();
+  })
+
+  .items((e) => {
+    e.component((e) => {
+      return <ModuleInfo style={{ MarginX: 15 }} />;
+    });
+
+    e.component((e) => {
+      const instance = e.ctx.global?.filesystem.instance;
+      if (!instance) return null;
+      return (
+        <Filesystem.PathList.Dev
+          instance={instance}
+          margin={[20, 10, 20, 10]}
+          height={100}
+          selectable={{ ...Filesystem.PathList.SelectionConfig.default, multi: false }}
+        />
+      );
+    });
 
     e.hr();
 
@@ -84,10 +131,28 @@ export const actions = DevActions<Ctx>()
           data={e.ctx}
           style={{ MarginX: 15 }}
           fontSize={10}
+          expandLevel={0}
+        />
+      );
+    });
+
+    e.hr(1, 0.1);
+
+    e.component((e) => {
+      const name = 'status';
+      const data = e.ctx.output.status;
+      return (
+        <ObjectView
+          name={name}
+          data={data}
+          style={{ MarginX: 15 }}
+          fontSize={10}
           expandPaths={['$']}
         />
       );
     });
+
+    e.hr();
   })
 
   .subject((e) => {
@@ -95,7 +160,7 @@ export const actions = DevActions<Ctx>()
     const busid = bus ? rx.bus.instance(bus) : 'bus:<none>';
 
     e.settings({
-      actions: { width: 300 },
+      actions: { width: 380 },
       host: { background: -0.04 },
     });
 
@@ -114,8 +179,8 @@ export const actions = DevActions<Ctx>()
       });
     };
 
-    renderEditor('one', { filename: 'one.ts' });
-    renderEditor('two');
+    renderEditor('dev.unit-test-1', { filename: 'one.ts' });
+    renderEditor('dev.unit-test-2');
 
     e.render(
       <Test.View.Results data={e.ctx.results} style={{ flex: 1, padding: 20 }} scroll={true} />,

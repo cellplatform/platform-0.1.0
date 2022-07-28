@@ -11,14 +11,23 @@ const Util = {
 
 export default Test.describe('CodeEditor Instances', (e) => {
   e.it('global status', async (e) => {
-    console.log('e', e);
-
     const ctx = Util.ctx(e);
     expect(123).to.eql(123);
 
-    // const events = CodeEditor.events(ctx.bus);
     const res = await ctx.events.status.get();
 
-    console.log('res', res);
+    console.log('ctx.events.status.get | res:', res); // TEMP 🐷
+    expect(res?.ready).to.eql(true);
+
+    /**
+     * TODO 🐷
+     *
+     *    await rx.waitFor.first(ob$);
+     *
+     */
+
+    ctx.events.status.updated$.subscribe((e) => {
+      console.log('updated', e);
+    });
   });
 });
