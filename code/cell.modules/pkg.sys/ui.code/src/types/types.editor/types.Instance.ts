@@ -1,9 +1,12 @@
 import { t } from './common';
 
+type Instance = string;
+
 /**
  * Single instance of a monaco Editor.
  */
-export type CodeEditorInstance = {
+export type CodeEditorInstance = t.Disposable & {
+  readonly isDisposed: boolean;
   readonly id: string; // Editor instance ID.
   readonly instance: t.IMonacoStandaloneCodeEditor;
   readonly singleton: t.ICodeEditorSingleton;
@@ -12,7 +15,6 @@ export type CodeEditorInstance = {
   text: string;
   language: t.CodeEditorLanguage;
   focus(): void;
-  dispose(): void;
   select(selection: t.CodeEditorSelection | null): void;
   action(id: t.MonacoAction): t.CodeEditorAction;
 };
@@ -26,4 +28,12 @@ export type CodeEditorSelection = {
   cursor: t.CodeEditorPosition;
   primary: t.CodeEditorRange;
   secondary: t.CodeEditorRange[];
+};
+
+/**
+ * Status of a single CodeEditor instance.
+ */
+export type CodeEditorInstanceStatus = {
+  id: Instance;
+  filename: string;
 };

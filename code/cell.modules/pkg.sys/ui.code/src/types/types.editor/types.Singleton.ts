@@ -15,6 +15,7 @@ export type ICodeEditorSingleton = {
 export type CodeEditorStatus = {
   ready: boolean;
   paths: t.CodeEditorStaticPaths;
+  instances: t.CodeEditorInstanceStatus[];
 };
 
 export type CodeEditorStaticPaths = {

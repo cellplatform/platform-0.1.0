@@ -7,10 +7,27 @@ export type CodeEditorEventBus = t.EventBus<t.CodeEditorEvent>;
 export type CodeEditorEvent = CodeEditorInstanceEvent | CodeEditorSingletonEvent;
 
 /**
- * Instance events.
+ * CodeEditor: Global (Singleton) Events.
  */
+export type CodeEditorSingletonEvent =
+  | CodeEditorGlobalInitReqEvent
+  | CodeEditorGlobalInitResEvent
+  | CodeEditorGlobalStatusReqEvent
+  | CodeEditorGlobalStatusResEvent
+  | CodeEditorGlobalStatusUpdatedEvent
+  | CodeEditorLibsEvent;
 
+export type CodeEditorLibsEvent =
+  | CodeEditorLibsClearReqEvent
+  | CodeEditorLibsClearResEvent
+  | CodeEditorLibsLoadReqEvent
+  | CodeEditorLibsLoadResEvent;
+
+/**
+ * CodeEditor: Instance events.
+ */
 export type CodeEditorInstanceEvent =
+  | CodeEditorStatusUpdateEvent
   | CodeEditorFocusEvent
   | CodeEditorChangeSelectionEvent
   | CodeEditorChangeTextEvent
@@ -25,50 +42,55 @@ export type CodeEditorInstanceEvent =
   | CodeEditorModelResEvent;
 
 /**
- * Global (Singleton) Events.
- */
-export type CodeEditorSingletonEvent =
-  | CodeEditorInitReqEvent
-  | CodeEditorInitResEvent
-  | CodeEditorStatusReqEvent
-  | CodeEditorStatusResEvent
-  | CodeEditorLibsEvent;
-
-export type CodeEditorLibsEvent =
-  | CodeEditorLibsClearReqEvent
-  | CodeEditorLibsClearResEvent
-  | CodeEditorLibsLoadReqEvent
-  | CodeEditorLibsLoadResEvent;
-
-/**
  * Initialize the CodeEditor environment.
  */
-export type CodeEditorInitReqEvent = {
+export type CodeEditorGlobalInitReqEvent = {
   type: 'sys.ui.code/init:req';
-  payload: CodeEditorInitReq;
+  payload: CodeEditorGlobalInitReq;
 };
-export type CodeEditorInitReq = { tx: string; staticRoot?: string };
+export type CodeEditorGlobalInitReq = { tx: string; staticRoot?: string };
 
-export type CodeEditorInitResEvent = {
+export type CodeEditorGlobalInitResEvent = {
   type: 'sys.ui.code/init:res';
-  payload: CodeEditorInitRes;
+  payload: CodeEditorGlobalInitRes;
 };
-export type CodeEditorInitRes = { tx: string; info?: t.CodeEditorStatus; error?: string };
+export type CodeEditorGlobalInitRes = { tx: string; info?: t.CodeEditorStatus; error?: string };
 
 /**
  * Status information about the CodeEditor (and the environment).
  */
-export type CodeEditorStatusReqEvent = {
-  type: 'sys.ui.code/status:req';
-  payload: CodeEditorStatusReq;
+export type CodeEditorGlobalStatusReqEvent = {
+  type: 'sys.ui.code/status.g:req';
+  payload: CodeEditorGlobalStatusReq;
 };
-export type CodeEditorStatusReq = { tx: string };
+export type CodeEditorGlobalStatusReq = { tx: string };
 
-export type CodeEditorStatusResEvent = {
-  type: 'sys.ui.code/status:res';
-  payload: CodeEditorStatusRes;
+export type CodeEditorGlobalStatusResEvent = {
+  type: 'sys.ui.code/status.g:res';
+  payload: CodeEditorGlobalStatusRes;
 };
-export type CodeEditorStatusRes = { tx: string; info?: t.CodeEditorStatus; error?: string };
+export type CodeEditorGlobalStatusRes = { tx: string; info?: t.CodeEditorStatus; error?: string };
+
+export type CodeEditorGlobalStatusUpdatedEvent = {
+  type: 'sys.ui.code/status.g:updated';
+  payload: CodeEditorGlobalStatusUpdated;
+};
+export type CodeEditorGlobalStatusUpdated = {
+  instance?: Id;
+};
+
+/**
+ * Broadcast "instance" status updates.
+ */
+export type CodeEditorStatusUpdateEvent = {
+  type: 'sys.ui.code/status:update';
+  payload: CodeEditorStatusUpdate;
+};
+export type CodeEditorStatusUpdate = {
+  instance: Id;
+  action: 'Lifecycle:Start' | 'Lifecycle:End';
+  info: t.CodeEditorInstanceStatus;
+};
 
 /**
  * Fired to assign focus to an editor.
