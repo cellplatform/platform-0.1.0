@@ -38,10 +38,9 @@ if (isDev) document.title = `${document.title} (dev)`;
 
   const sourceParam = location.searchParams.get('source');
   const url = Boolean(sourceParam) ? toUrl(sourceParam).href : location.href;
-  const namespace = isDev ? 'sys.ui.code:DEV' : 'sys.ui.code';
 
   const ctx: t.ModuleDefaultEntryContext = {
-    source: { url, entry: '', namespace },
+    source: { url, entry: '', namespace: 'sys.ui.code' },
   };
 
   const Module = await (isDev ? Imports.DevHarness() : Imports.App());

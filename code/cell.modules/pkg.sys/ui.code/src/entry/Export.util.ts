@@ -1,5 +1,5 @@
 import { CodeEditor } from '../api';
-import { log, rx, t, ModuleUrl } from '../common';
+import { log, ModuleUrl, rx, t, WebRuntime } from '../common';
 
 export const CommonEntry = {
   /**
@@ -17,13 +17,13 @@ export const CommonEntry = {
    * Common initialization from an incoming "entry" call.
    */
   async init(pump: t.EventPump, ctx: t.ModuleDefaultEntryContext) {
-    const localbus = rx.bus();
-    rx.pump.connect(pump).to(localbus);
+    const bus = rx.bus();
+    rx.pump.connect(pump).to(bus);
 
     // Interpret incoming context.
     const href = ctx.source.url;
     const { url, staticRoot } = CommonEntry.parseEntryUrl(href);
-    const events = CodeEditor.start(localbus);
+    const events = CodeEditor.start(bus);
 
     // Initialize the code-editor environment.
     const res = await events.init.fire({ staticRoot });
@@ -32,8 +32,10 @@ export const CommonEntry = {
     const isDefault = staticRoot === undefined;
 
     log.group('💦 ENTRY (CodeEditor)');
+    log.info('WebRuntime:', WebRuntime.Module.info);
     log.info('namespace:', ctx.source.namespace);
-    log.info('event:', rx.bus.instance(localbus));
+    log.info('event-pump:', pump.id);
+    log.info('localbus:', rx.bus.instance(bus));
     log.info('ctx.source:', ctx.source);
     log.info(`paths${isDefault ? ' (defaults):' : ':'}`.trim(), paths);
     if (res.error) log.info(`error:`, res.error);
@@ -42,6 +44,6 @@ export const CommonEntry = {
     log.groupEnd();
 
     // Finish up.
-    return { bus: localbus, url, staticRoot };
+    return { bus, url, staticRoot };
   },
 };
