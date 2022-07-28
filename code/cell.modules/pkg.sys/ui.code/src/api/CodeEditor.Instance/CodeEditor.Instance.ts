@@ -14,7 +14,7 @@ import { select } from './CodeEditor.Instance.select';
  *
  */
 export function CodeEditorInstance(args: {
-  instance?: { bus: t.EventBus<any>; id?: string };
+  instance: { bus: t.EventBus<any>; id?: string };
   monaco: {
     singleton: t.ICodeEditorSingleton;
     instance: t.IMonacoStandaloneCodeEditor;
@@ -24,7 +24,7 @@ export function CodeEditorInstance(args: {
 }) {
   const { monaco } = args;
   const { instance, singleton } = args.monaco;
-  const bus = rx.bus<t.CodeEditorEvent>(args.instance?.bus);
+  const bus = rx.bus<t.CodeEditorEvent>(args.instance.bus);
   const id = args.instance?.id || `editor-${slug()}`;
 
   const listeners = MonacoListeners({ instance: { bus, id }, editor: monaco.instance });
