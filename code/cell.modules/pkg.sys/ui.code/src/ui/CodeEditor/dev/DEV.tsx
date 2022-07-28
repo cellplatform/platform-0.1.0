@@ -25,8 +25,8 @@ type Ctx = {
 const { PATH } = constants;
 
 const FILENAME = {
-  one: 'one.ts',
-  two: 'foo/two.tsx',
+  one: 'Dev.CodeEditor/one.ts',
+  two: 'Dev.CodeEditor/two.tsx',
 };
 
 const SAMPLE = `
@@ -155,9 +155,9 @@ export const actions = DevActions<Ctx>()
           onStateChanged={async (change) => {
             if (change.kind === 'Selection') {
               const selection = change.to.selection;
-
               const fs = change.fs;
-              console.group('🌳 ');
+
+              console.group('🌳 onStateChanged');
               console.log('fs', fs);
 
               const manifest = await fs.manifest({ cache: false });
@@ -170,7 +170,17 @@ export const actions = DevActions<Ctx>()
 
                 console.log('path', path);
                 console.log('text', text);
-                // e.ctx.instance?.text.set(text);
+
+                const global = e.ctx.global?.events;
+                const status = await global?.status.get();
+
+                if (global && status) {
+                  const id = status.instances.find((ed) => ed.filename === path)?.id;
+                  if (id) {
+                    const editor = global.editor(id);
+                    editor.text.set(text);
+                  }
+                }
               }
 
               console.groupEnd();
