@@ -1,22 +1,16 @@
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
-  parserOptions: {
-    jsx: true,
-    useJSXTextNode: true,
-  },
   plugins: ['@typescript-eslint'],
+  parserOptions: { jsx: true, useJSXTextNode: true },
   extends: [
+    'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
     'plugin:prettier/recommended',
   ],
-  settings: {
-    react: {
-      version: 'detect',
-    },
-  },
+  settings: { react: { version: 'detect' } },
   rules: {
     'no-console': 2,
     'arrow-parens': ['error', 'always'],
