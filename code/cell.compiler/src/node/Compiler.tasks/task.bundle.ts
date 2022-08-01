@@ -1,7 +1,7 @@
 import { Stats } from 'webpack';
 
 import { fs, log, Logger, Model, ModelPaths, ProgressSpinner, t } from '../common';
-import { ModuleManifest } from '../manifest';
+import { ModuleManifest } from '../Manifest';
 import { bundleDeclarations } from './task.bundle.declarations';
 import { afterCompile, wp } from './util';
 import { copyStatic } from './task.bundle.copyStatic';

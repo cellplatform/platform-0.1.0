@@ -1,5 +1,5 @@
 import { log, Model, t, Encoding, defaultValue, time, fs, DEFAULT, R } from '../common';
-import { stats } from '../config.webpack';
+import { stats } from '../Config.webpack';
 import { Format } from './util.format';
 
 /**

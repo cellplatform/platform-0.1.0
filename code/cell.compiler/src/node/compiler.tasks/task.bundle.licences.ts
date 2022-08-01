@@ -1,4 +1,4 @@
-import { fs, Model, t } from '../common';
+import { fs } from '../common';
 
 /**
  * Combine all LICENCE.txt files into a single file

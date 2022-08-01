@@ -1,2 +1,2 @@
 export * from './TypeManifest';
-export { formatDirs } from './util';
+export { formatDirs } from './Util';

@@ -1,6 +1,6 @@
 import { Format, fs, log, ModelPaths, ProgressSpinner, t, time, toModel } from '../common';
 import { Typescript } from '../ts';
-import { Manifest } from '../manifest';
+import { Manifest } from '../Manifest';
 
 /**
  * Bundle the typescript declarations (".d.ts") files for a project.

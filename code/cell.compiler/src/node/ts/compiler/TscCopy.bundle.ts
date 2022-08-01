@@ -1,5 +1,5 @@
 import { fs, R, t } from '../../common';
-import { TypeManifest } from '../../manifest';
+import { TypeManifest } from '../../Manifest';
 import { toDir, toRelativePath, toResponseDir } from '../util';
 
 /**

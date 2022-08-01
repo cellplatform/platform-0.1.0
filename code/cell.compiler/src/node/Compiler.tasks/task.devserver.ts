@@ -1,7 +1,7 @@
 import DevServer from 'webpack-dev-server';
 
 import { log, Model, t, toModel, Logger, Port, defaultValue, fs } from '../common';
-import { wp } from '../config.webpack';
+import { wp } from '../Config.webpack';
 import { afterCompile } from './util';
 
 const portInUse = async (value: number) => Port.isUsed(value, 'localhost');
@@ -65,7 +65,6 @@ export const devserver: t.CompilerRunDevserver = async (input, options = {}) => 
        * NOTE:    This can be removed later when the up-stream issue is fixed.
        */
       log.info.gray(`NOTE: module federation exports disabled (${log.white('--no-exports')})`);
-    } else {
     }
 
     Logger.hr();

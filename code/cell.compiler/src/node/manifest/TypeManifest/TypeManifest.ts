@@ -1,7 +1,7 @@
 import { fs, t } from '../../common';
 import { FileInfo } from './FileInfo';
 import { CreateAndSave } from './types';
-import { formatDirs, Info } from './util';
+import { formatDirs, Info } from './Util';
 import { Manifest, createAndSave as ManifestCreateAndSave } from '../Manifest';
 
 type M = t.TypelibManifest;

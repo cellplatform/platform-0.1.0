@@ -4,13 +4,11 @@ import {
   Encoding,
   fs,
   ModelPaths,
-  R,
   semver,
   t,
   value as valueUtil,
-  StateObject,
 } from '../common';
-import { wp } from '../config.webpack';
+import { wp } from '../Config.webpack';
 import { filesMethods } from './handlers.files';
 import { htmlMethods } from './handlers.html';
 import { webpackMethods } from './handlers.webpack';
@@ -183,8 +181,6 @@ export const handlers: t.BuilderHandlers<t.CompilerModel, t.CompilerModelMethods
       const map = args.params[0];
       const keys = Object.keys(map);
       args.model.change((draft) => (draft.entry = undefined)); // {} == reset.
-      if (keys.length === 0) {
-      }
       keys.forEach((key) => writeEntry(key, map[key]));
     } else {
       writeEntry(args.params[0], args.params[1]);

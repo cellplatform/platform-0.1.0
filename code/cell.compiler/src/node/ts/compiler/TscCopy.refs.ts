@@ -83,13 +83,13 @@ export const copyRefs: t.TscCopyRefs = async (args): Promise<t.TscCopyRefsResult
   );
 
   // Remove any paths that map into the default node-js types.
-  if (dirs.some((dir) => !Boolean(dir.source))) {
+  if (dirs.some((dir) => !dir.source)) {
     const node = await NodeModules.nodeJsTypes();
     dirs = dirs.filter((dir) => (dir.source ? true : !node.includes(dir.ref)));
   }
 
   // Ensure all modules have source files.
-  const emptySource = dirs.filter((path) => !Boolean(path.source));
+  const emptySource = dirs.filter((path) => !path.source);
   if (emptySource.length > 0) {
     const modules = emptySource.map((path) => `- "${path.ref}"`).join('\n');
     const err = `Cannot find source declarations (".d.ts") for modules.\nBase folder: ${sourceDir.base}\nModule:\n${modules}`;

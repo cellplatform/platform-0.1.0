@@ -1,5 +1,5 @@
 import { fs, t } from '../../common';
-import { TypeManifest } from '../../manifest';
+import { TypeManifest } from '../../Manifest';
 
 export { TypeManifest };
 

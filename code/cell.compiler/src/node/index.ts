@@ -1,5 +1,5 @@
-export { Compiler } from './compiler';
-export { Manifest, ModuleManifest, TypeManifest } from './manifest';
+export { Compiler } from './Compiler';
+export { Manifest, ModuleManifest, TypeManifest } from './Manifest';
 
 import { PKG } from './common/constants';
 export const Package = PKG.load();
