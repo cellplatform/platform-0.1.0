@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.fs.bus",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Filesystem provided through implementation agnostic event-bus.",
   "sideEffects": false,
   "main": "lib/web/index",
@@ -16,12 +16,12 @@
     "reset": "rm -rf tmp"
   },
   "dependencies": {
-    "@platform/cell.fs": "0.4.225",
-    "@platform/cell.fs.local": "0.4.225"
+    "@platform/cell.fs": "0.4.226",
+    "@platform/cell.fs.local": "0.4.226"
   },
   "devDependencies": {
-    "@platform/test": "0.2.10",
-    "@platform/ts": "4.1.23"
+    "@platform/test": "0.3.1",
+    "@platform/ts": "4.7.5"
   },
   "files": [
     "lib",

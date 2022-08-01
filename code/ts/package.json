@@ -1,6 +1,6 @@
 {
   "name": "@platform/ts",
-  "version": "4.1.23",
+  "version": "4.7.5",
   "description": "TypesScript build, prepare and publish toolchain.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -24,21 +24,20 @@
     "clean": "sh sh/clean.sh"
   },
   "dependencies": {
-    "@platform/exec": "0.3.12",
-    "@platform/fs": "0.7.5",
-    "@platform/libs": "0.2.14",
-    "@platform/ts.libs": "4.3.3",
+    "@platform/exec": "0.4.1",
+    "@platform/fs": "0.7.7",
+    "@platform/libs": "0.3.1",
+    "@platform/ts.libs": "4.7.5",
     "yargs": "17.5.1"
   },
   "devDependencies": {
-    "@platform/test": "0.2.10"
+    "@platform/test": "0.3.1"
   },
   "files": [
     "lib",
     "bin.js",
     "lint.js",
-    "tsconfig.json",
-    "tslint.json"
+    "tsconfig.json"
   ],
   "license": "MIT"
 }

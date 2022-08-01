@@ -15,6 +15,7 @@ module.exports = {
     'no-console': 2,
     'arrow-parens': ['error', 'always'],
     'react/prop-types': 0,
+    'no-async-promise-executor': 0,
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
@@ -26,10 +27,9 @@ module.exports = {
       'error',
       { vars: 'all', args: 'none', ignoreRestSiblings: true },
     ],
-    'no-async-promise-executor': 0,
 
     // https://reactjs.org/docs/hooks-rules.html#eslint-plugin
-    'react-hooks/rules-of-hooks': 'error', // Check rules of Hooks
+    'react-hooks/rules-of-hooks': 'error', // Check rules of hooks
     'react-hooks/exhaustive-deps': 'warn', // Check effect dependencies
   },
 };

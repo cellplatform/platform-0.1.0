@@ -1,6 +1,6 @@
 {
   "name": "@platform/fsdb.pg",
-  "version": "0.1.122",
+  "version": "0.1.123",
   "description": "Postgres backing store for a file-system like JSON document database.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -18,16 +18,16 @@
     "tmp": "ts-node -T scripts/tmp"
   },
   "dependencies": {
-    "@platform/fs": "0.7.5",
-    "@platform/fsdb.types": "0.6.68",
-    "@platform/libs": "0.2.14",
-    "@platform/util.value": "0.9.10",
+    "@platform/fs": "0.7.7",
+    "@platform/fsdb.types": "0.6.69",
+    "@platform/libs": "0.3.1",
+    "@platform/util.value": "0.9.11",
     "pg": "8.7.1"
   },
   "devDependencies": {
-    "@platform/fsdb.file": "^1.3.116",
-    "@platform/test": "0.2.10",
-    "@platform/ts": "4.1.23",
+    "@platform/fsdb.file": "^1.3.117",
+    "@platform/test": "0.3.1",
+    "@platform/ts": "4.7.5",
     "@types/pg": "8.6.1"
   },
   "files": [

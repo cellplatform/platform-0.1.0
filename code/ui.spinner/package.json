@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.spinner",
   "description": "Wait spinner.",
-  "version": "0.0.199",
+  "version": "0.0.200",
   "main": "lib/index",
   "scripts": {
     "start": "parcel src/test.parcel/index.html",
@@ -14,12 +14,12 @@
     "prepare": "ts prepare $@"
   },
   "dependencies": {
-    "@platform/css": "0.4.50",
-    "@platform/react": "0.4.83"
+    "@platform/css": "0.4.51",
+    "@platform/react": "0.4.84"
   },
   "devDependencies": {
-    "@platform/test": "0.2.10",
-    "@platform/ts": "4.1.23",
+    "@platform/test": "0.3.1",
+    "@platform/ts": "4.7.5",
     "@platform/ui.dev": "0.0.57"
   },
   "files": [

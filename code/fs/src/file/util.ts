@@ -113,24 +113,21 @@ function parse(path: string, text: string) {
 
 function stringify(path: string, data: Record<string, unknown>) {
   const ext = extension(path);
+
   try {
-    switch (ext) {
-      case 'json':
-        const json = JSON.stringify(data, null, '  ');
-        return `${json}\n`;
-
-      case 'yml':
-      case 'yaml':
-        return yaml.dump(data);
-
-      default:
-        throw new Error(
-          `The path '${path}' is not a supported file type to stringify. Supported types: ${SUPPORTED}`,
-        );
+    if (ext === 'json') {
+      const json = JSON.stringify(data, null, '  ');
+      return `${json}\n`;
+    }
+    if (ext === 'yml' || ext === 'yaml') {
+      return yaml.dump(data);
     }
   } catch (error: any) {
     throw new Error(`Failed while parsing file '${path}'. ${error.message}`);
   }
+
+  const err = `The path '${path}' is not a supported file type to stringify. Supported types: ${SUPPORTED}`;
+  throw new Error(err);
 }
 
 function extension(path: string) {

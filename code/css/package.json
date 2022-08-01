@@ -1,6 +1,6 @@
 {
   "name": "@platform/css",
-  "version": "0.4.50",
+  "version": "0.4.51",
   "description": "Helpers for working with inline CSS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,19 +14,19 @@
     "ts.toObject": "ts-node -T script.ts/css-to-object"
   },
   "dependencies": {
-    "@platform/libs": "0.2.14",
-    "@platform/util.is": "0.0.162",
-    "@platform/util.value": "0.9.10",
+    "@platform/libs": "0.3.1",
+    "@platform/util.is": "0.0.163",
+    "@platform/util.value": "0.9.11",
     "@types/tinycolor2": "1.4.3",
     "glamor-jss": "1.4.1",
     "jss-plugin-global": "10.7.1",
     "tinycolor2": "1.4.2"
   },
   "devDependencies": {
-    "@platform/log": "0.1.62",
-    "@platform/polyfill": "0.0.7",
-    "@platform/test": "0.2.10",
-    "@platform/ts": "4.1.23",
+    "@platform/log": "0.1.63",
+    "@platform/polyfill": "0.0.8",
+    "@platform/test": "0.3.1",
+    "@platform/ts": "4.7.5",
     "react": "17.0.2"
   },
   "files": [

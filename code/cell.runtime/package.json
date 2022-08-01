@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.runtime",
-  "version": "0.10.62",
+  "version": "0.10.63",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -10,13 +10,13 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.client": "0.3.93",
-    "@platform/cell.schema": "0.5.103",
-    "@platform/cell.types": "0.5.100"
+    "@platform/cell.client": "0.3.94",
+    "@platform/cell.schema": "0.5.104",
+    "@platform/cell.types": "0.5.101"
   },
   "devDependencies": {
-    "@platform/ts": "4.1.23",
-    "@platform/test": "0.2.10"
+    "@platform/ts": "4.7.5",
+    "@platform/test": "0.3.1"
   },
   "license": "MIT"
 }

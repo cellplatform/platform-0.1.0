@@ -1,18 +1,18 @@
 {
   "name": "@platform/types",
-  "version": "0.5.25",
+  "version": "0.5.26",
   "description": "Common types used across @platform.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "echo sh ../../node_modules/@platform/test/test.sh $@",
-    "lint": "sh ../../node_modules/@platform/ts.libs/lint.sh $@",
-    "build": "sh ../../node_modules/@platform/ts.libs/build.sh $@",
+    "lint": "sh ../../node_modules/@platform/ts.libs/sh/lint.sh $@",
+    "build": "sh ../../node_modules/@platform/ts.libs/sh/build.sh $@",
     "prepare": "yarn build && yarn lint && yarn test"
   },
   "devDependencies": {
-    "@platform/test": "0.2.10",
-    "@platform/ts.libs": "4.3.3"
+    "@platform/test": "0.3.1",
+    "@platform/ts.libs": "4.7.5"
   },
   "files": [
     "lib",

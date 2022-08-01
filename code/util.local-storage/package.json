@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.local-storage",
-  "version": "0.0.134",
+  "version": "0.0.135",
   "description": "Strongly typed wrapper for working with localStorage.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,11 +14,11 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/util.value": "0.9.10"
+    "@platform/util.value": "0.9.11"
   },
   "devDependencies": {
-    "@platform/test": "0.2.10",
-    "@platform/ts": "4.1.23"
+    "@platform/test": "0.3.1",
+    "@platform/ts": "4.7.5"
   },
   "files": [
     "lib",

@@ -74,7 +74,7 @@ export function value<T extends string | number | boolean = string>(
   options: { throw?: boolean } = {},
 ): T {
   const done = (value: any) => {
-    if (options.throw && !Boolean(value)) {
+    if (options.throw && !value) {
       throw new Error(`The process.env["${key}"] variable does not exist.`);
     }
     return value as T;
