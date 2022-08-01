@@ -85,7 +85,7 @@ export const actions = DevActions<Ctx>()
       host: { background: isWhite ? COLORS.DARK : -0.04 },
       layout: {
         cropmarks: isWhite ? 0.3 : -0.2,
-        labelColor: isWhite ? 0.5 : -0.2,
+        labelColor: isWhite ? 0.5 : -0.5,
       },
     });
 
