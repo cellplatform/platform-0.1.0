@@ -20,7 +20,7 @@
     "@platform/types": "0.5.26",
     "@platform/util.mimetype": "0.1.49",
     "@platform/util.value": "0.9.11",
-    "cross-fetch": "3.1.4"
+    "cross-fetch": "3.1.5"
   },
   "devDependencies": {
     "@platform/test": "0.3.1",

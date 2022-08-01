@@ -24,7 +24,7 @@
     "@platform/http": "0.14.30",
     "@platform/libs": "0.3.1",
     "@platform/log": "0.1.63",
-    "open": "8.2.1"
+    "open": "8.4.0"
   },
   "devDependencies": {
     "@platform/test": "0.3.1",

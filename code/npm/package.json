@@ -21,16 +21,16 @@
     "@platform/log": "0.1.63",
     "@platform/types": "0.5.26",
     "@platform/util.value": "0.9.11",
-    "@types/semver": "7.3.8",
-    "inquirer": "8.1.2",
-    "semver": "7.3.5"
+    "@types/semver": "7.3.10",
+    "inquirer": "9.0.2",
+    "semver": "7.3.7"
   },
   "devDependencies": {
     "@platform/test": "0.3.1",
     "@platform/ts": "4.7.5",
     "@types/dotenv": "8.2.0",
-    "@types/inquirer": "7.3.3",
-    "dotenv": "10.0.0"
+    "@types/inquirer": "8.2.1",
+    "dotenv": "16.0.1"
   },
   "files": [
     "lib",

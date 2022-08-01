@@ -20,12 +20,12 @@
     "@platform/fs": "0.7.7",
     "@platform/libs": "0.3.1",
     "@platform/log": "0.1.63",
-    "inquirer": "8.1.2"
+    "inquirer": "9.0.2"
   },
   "devDependencies": {
     "@platform/test": "0.3.1",
     "@platform/ts": "4.7.5",
-    "@types/inquirer": "7.3.3"
+    "@types/inquirer": "8.2.1"
   },
   "files": [
     "lib",

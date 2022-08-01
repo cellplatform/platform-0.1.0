@@ -18,13 +18,13 @@
     "serve": "cell.compiler serve $@"
   },
   "dependencies": {
-    "@platform/cell.module": "^0.0.137",
-    "@platform/state": "^0.7.52",
-    "@platform/ui.icon": "^0.0.202",
-    "@platform/ui.spinner": "^0.0.199",
-    "@platform/ui.text": "^0.3.114",
-    "@platform/util.markdown": "^0.1.0",
-    "react-select": "^4.3.1"
+    "@platform/cell.module": "0.0.137",
+    "@platform/state": "0.7.52",
+    "@platform/ui.icon": "0.0.202",
+    "@platform/ui.spinner": "0.0.199",
+    "@platform/ui.text": "0.3.114",
+    "@platform/util.markdown": "0.1.0",
+    "react-select": "5.4.0"
   },
   "devDependencies": {
     "@platform/cell.compiler": "^0.4.1",

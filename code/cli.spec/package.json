@@ -14,7 +14,7 @@
   "dependencies": {
     "@platform/util.string": "0.5.46",
     "@platform/util.value": "0.9.11",
-    "minimist": "1.2.5"
+    "minimist": "1.2.6"
   },
   "devDependencies": {
     "@platform/test": "0.3.1",

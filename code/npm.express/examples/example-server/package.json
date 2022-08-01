@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@platform/libs": "0.2.2",
-    "express": "4.16.4"
+    "express": "4.18.1"
   },
   "devDependencies": {
     "@platform/ts": "3.4.12",

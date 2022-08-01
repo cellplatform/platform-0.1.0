@@ -17,9 +17,9 @@
   "dependencies": {
     "@platform/react": "0.4.84",
     "@platform/ui.icon": "0.0.203",
-    "@svgdotjs/svg.js": "3.1.1",
+    "@svgdotjs/svg.js": "3.1.2",
     "gravatar-url": "4.0.1",
-    "react-icons": "4.3.1"
+    "react-icons": "4.4.0"
   },
   "devDependencies": {
     "@platform/ts": "4.7.5"

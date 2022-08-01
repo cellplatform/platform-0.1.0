@@ -13,7 +13,7 @@
     "@platform/cell.runtime": "0.10.63",
     "@platform/cell.types": "0.5.101",
     "@platform/fs": "0.7.7",
-    "vm2": "3.9.3"
+    "vm2": "3.9.10"
   },
   "devDependencies": {
     "@platform/test": "0.3.1",

@@ -16,8 +16,8 @@
   },
   "dependencies": {
     "@platform/libs": "0.3.1",
-    "chalk": "4.1.2",
-    "cli-table": "0.3.6"
+    "chalk": "5.0.1",
+    "cli-table": "0.3.11"
   },
   "devDependencies": {
     "@platform/test": "0.3.1",

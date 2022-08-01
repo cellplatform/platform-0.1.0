@@ -23,7 +23,7 @@
   "devDependencies": {
     "@platform/test": "0.3.1",
     "@platform/ts": "4.7.5",
-    "react-icons": "4.3.1"
+    "react-icons": "4.4.0"
   },
   "files": [
     "lib",

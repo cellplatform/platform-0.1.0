@@ -20,7 +20,7 @@
     "@platform/fs.s3.types": "0.3.28",
     "@platform/fs.types": "0.1.13",
     "@platform/log": "0.1.63",
-    "image-size": "1.0.0"
+    "image-size": "1.0.2"
   },
   "devDependencies": {
     "@platform/test": "0.3.1",

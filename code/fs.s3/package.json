@@ -22,14 +22,14 @@
     "@platform/types": "0.5.26",
     "@platform/util.mimetype": "0.1.49",
     "@platform/util.value": "0.9.11",
-    "aws-sdk": "2.979.0",
+    "aws-sdk": "2.1186.0",
     "form-data": "4.0.0"
   },
   "devDependencies": {
     "@platform/test": "0.3.1",
     "@platform/ts": "4.7.5",
     "@types/dotenv": "8.2.0",
-    "dotenv": "10.0.0"
+    "dotenv": "16.0.1"
   },
   "files": [
     "lib",

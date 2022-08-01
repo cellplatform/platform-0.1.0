@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@platform/react": "0.4.84",
-    "react-inspector": "5.1.1"
+    "react-inspector": "6.0.1"
   },
   "devDependencies": {
     "@platform/polyfill": "0.0.8",

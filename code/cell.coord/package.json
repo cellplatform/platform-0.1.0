@@ -16,7 +16,7 @@
     "@platform/types": "0.5.26",
     "@platform/util.value": "0.9.11",
     "excel-formula-ast": "1.1.1",
-    "excel-formula-tokenizer": "2.3.1",
+    "excel-formula-tokenizer": "3.0.0",
     "toposort": "2.0.2"
   },
   "devDependencies": {

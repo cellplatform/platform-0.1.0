@@ -16,7 +16,7 @@
   },
   "resolutions": {
     "rxjs": "7.5.6",
-    "core-js": "3.16.4",
+    "core-js": "3.24.1",
     "browserslist": "4.21.3",
     "parse5": "7.0.0"
   },

@@ -16,7 +16,7 @@
     "serve": "cell.compiler serve $@"
   },
   "dependencies": {
-    "immer": "9.0.12"
+    "immer": "9.0.15"
   },
   "devDependencies": {
     "@platform/cell.compiler": "~0.4.1",

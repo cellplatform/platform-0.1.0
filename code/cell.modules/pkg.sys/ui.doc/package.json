@@ -17,7 +17,7 @@
     "deploy": "ts-node -T script.ts/vercel.run"
   },
   "dependencies": {
-    "sanitize-html": "2.7.0",
+    "sanitize-html": "2.7.1",
     "path-to-regexp": "6.2.1"
   },
   "devDependencies": {

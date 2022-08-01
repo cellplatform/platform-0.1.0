@@ -16,9 +16,9 @@
     "@platform/cli": "0.5.85",
     "@platform/fs": "0.7.7",
     "@platform/npm": "0.4.19",
-    "@types/inquirer": "7.3.3",
-    "inquirer": "8.1.2",
-    "isbinaryfile": "4.0.8"
+    "@types/inquirer": "8.2.1",
+    "inquirer": "9.0.2",
+    "isbinaryfile": "5.0.0"
   },
   "devDependencies": {
     "@platform/test": "0.3.1",
