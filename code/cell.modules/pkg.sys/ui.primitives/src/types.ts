@@ -38,7 +38,6 @@ export * from './ui/Error.Boundary/types';
 
 export * from './ui/Fullscreen/types';
 
-export * from './ui/Tree/types';
 export * from './ui/StackPanel/types';
 
 export * from './ui/Text/types';

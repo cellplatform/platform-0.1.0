@@ -52,7 +52,6 @@ const imports = {
 
   Svg: import('./ui/Image.Svg/dev/DEV'),
 
-  Tree: import('./ui/Tree/dev/DEV'),
   StackPanel: import('./ui/StackPanel/dev/DEV'),
 
   Text: import('./ui/Text/dev/DEV'),

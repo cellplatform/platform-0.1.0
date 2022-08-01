@@ -189,7 +189,7 @@ export class TypedSheetRow<T, K extends keyof T> implements t.ITypedSheetRow<T, 
 
     const { props } = options;
     const cacheKey = props ? `load:${props.join(',')}` : 'load';
-    if (!options.force && this._loading[cacheKey]) {
+    if (!options.force && (await this._loading[cacheKey])) {
       return this._loading[cacheKey];
     }
 
@@ -239,7 +239,7 @@ export class TypedSheetRow<T, K extends keyof T> implements t.ITypedSheetRow<T, 
   public type(prop: keyof T[K]) {
     const typeDef = this.findColumnByProp(prop);
     if (!typeDef) {
-      const err = `The property '${prop}' is not defined by a column on [${this.uri}]`;
+      const err = `The property '${String(prop)}' is not defined by a column on [${this.uri}]`;
       throw new Error(err);
     }
     return typeDef;
@@ -260,7 +260,9 @@ export class TypedSheetRow<T, K extends keyof T> implements t.ITypedSheetRow<T, 
     const typename = columnDef.type.typename;
 
     if (!target.isValid) {
-      const err = `Property '${name}' (column ${columnDef.column}) has an invalid target '${columnDef.target}'.`;
+      const err = `Property '${String(name)}' (column ${columnDef.column}) has an invalid target '${
+        columnDef.target
+      }'.`;
       throw new Error(err);
     }
 
@@ -308,7 +310,7 @@ export class TypedSheetRow<T, K extends keyof T> implements t.ITypedSheetRow<T, 
           return done(res.ref);
         }
 
-        throw new Error(`Failed to read property '${name}' (column ${columnDef.column}).`);
+        throw new Error(`Failed to read property '${String(name)}' (column ${columnDef.column}).`);
       },
 
       /**
@@ -337,7 +339,8 @@ export class TypedSheetRow<T, K extends keyof T> implements t.ITypedSheetRow<T, 
         if (target.isRef) {
           // REF targets cannot be written to directly, rather they are
           // stored as links on the row's cell.
-          const err = `Cannot write to property '${name}' (column ${columnDef.column}) because it is a REF target.`;
+          const n = String(name);
+          const err = `Cannot write to property '${n}' (column ${columnDef.column}) because it is a REF target.`;
           throw new Error(err);
         }
 
@@ -383,7 +386,7 @@ export class TypedSheetRow<T, K extends keyof T> implements t.ITypedSheetRow<T, 
   private findColumnByProp<P extends keyof T[K]>(prop: P) {
     const res = this._columns.find((def) => def.prop === prop);
     if (!res) {
-      const err = `Column-definition for the property '${prop}' not found.`;
+      const err = `Column-definition for the property '${String(prop)}' not found.`;
       throw new Error(err);
     }
     return res;

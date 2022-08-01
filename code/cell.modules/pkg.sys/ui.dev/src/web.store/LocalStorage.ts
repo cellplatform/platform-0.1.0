@@ -14,7 +14,7 @@ export type LocalStorageClear = { kind: 'clear' };
  */
 export function LocalStorage<T extends t.JsonMap>(prefix: string) {
   prefix = prefix.replace(/\/$/, '');
-  const toKey = (name: keyof T) => `${prefix}/${name}`;
+  const toKey = (name: keyof T) => `${prefix}/${String(name)}`;
 
   const changed$ = new Subject<LocalStorageChange<T>>();
   const next = (payload: LocalStorageChange<T>) => changed$.next(payload);
