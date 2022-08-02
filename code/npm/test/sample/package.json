@@ -10,7 +10,7 @@
     "mocha": "latest"
   },
   "peerDependencies": {
-    "react": "~latest"
+    "react": "latest"
   },
   "license": "MIT"
 }

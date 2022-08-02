@@ -1,5 +1,6 @@
-import { expect } from 'chai';
-import { NpmPackage, npm } from '..';
+import { expect, Npm } from '../test';
+import { NpmPackage } from '.';
+
 import { resolve } from 'path';
 import { fs } from '../common/libs';
 
@@ -45,7 +46,7 @@ describe('NpmPackage (package.json)', () => {
     });
 
     it('creates from module method', () => {
-      const pkg = npm.pkg();
+      const pkg = Npm.pkg();
       expect(pkg).to.be.an.instanceof(NpmPackage);
       expect(pkg.name).to.eql(NAME);
       expect(pkg.exists).to.eql(true);
@@ -53,7 +54,7 @@ describe('NpmPackage (package.json)', () => {
 
     it('creates with JSON (no dir)', () => {
       const json = { name: 'my-module', version: '0.0.0' };
-      const pkg = npm.pkg({ json });
+      const pkg = Npm.pkg({ json });
       expect(pkg.exists).to.eql(true);
       expect(pkg.json).to.eql(json);
       expect(pkg.path).to.eql('package.json');
@@ -62,7 +63,7 @@ describe('NpmPackage (package.json)', () => {
 
     it('creates with JSON (dir provided, exists)', () => {
       const json = { name: 'my-module', version: '0.0.0' };
-      const pkg = npm.pkg({ json, dir: './test/sample' });
+      const pkg = Npm.pkg({ json, dir: './test/sample' });
       expect(pkg.exists).to.eql(true);
       expect(pkg.json).to.eql(json);
       expect(pkg.path.endsWith('test/sample/package.json')).to.eql(true);
@@ -71,7 +72,7 @@ describe('NpmPackage (package.json)', () => {
 
     it('creates with JSON (dir provided, does not exist)', () => {
       const json = { name: 'my-module', version: '0.0.0' };
-      const pkg = npm.pkg({ json, dir: '/foo/bar' });
+      const pkg = Npm.pkg({ json, dir: '/foo/bar' });
       expect(pkg.exists).to.eql(false);
       expect(pkg.json).to.eql(json);
       expect(pkg.path).to.eql('/foo/bar/package.json');
@@ -80,7 +81,7 @@ describe('NpmPackage (package.json)', () => {
   });
 
   it('exposes data fields', () => {
-    const pkg = NpmPackage.create();
+    const pkg = Npm.NpmPackage.create();
     expect(pkg.name).to.eql(pkg.json.name);
     expect(pkg.description).to.eql(pkg.json.description);
     expect(pkg.version).to.eql(pkg.json.version);
@@ -220,39 +221,39 @@ describe('NpmPackage (package.json)', () => {
 
   describe('save', () => {
     it('saves to given path (async)', async () => {
-      const pkg = npm.pkg('./test/sample');
+      const pkg = Npm.pkg('./test/sample');
       await pkg.save(TMP);
-      const saved = await npm.pkg(TMP);
+      const saved = await Npm.pkg(TMP);
       expect(saved.json).to.eql(pkg.json);
     });
 
     it('saves to given path (sync)', () => {
-      const pkg = npm.pkg('./test/sample');
+      const pkg = Npm.pkg('./test/sample');
       pkg.saveSync(TMP);
-      const saved = npm.pkg(TMP);
+      const saved = Npm.pkg(TMP);
       expect(saved.json).to.eql(pkg.json);
     });
 
     it('saves to default path (async)', async () => {
-      await npm.pkg('./test/sample').save(TMP);
-      const pkg = npm.pkg(TMP);
+      await Npm.pkg('./test/sample').save(TMP);
+      const pkg = Npm.pkg(TMP);
 
       pkg.json.name = 'FOO';
       await pkg.save();
 
-      const saved = npm.pkg(TMP);
+      const saved = Npm.pkg(TMP);
       expect(saved.name).to.eql('FOO');
       expect(saved.version).to.eql('1.0.0');
     });
 
     it('saves to default path (sync)', () => {
-      npm.pkg('./test/sample').saveSync(TMP);
-      const pkg = npm.pkg(TMP);
+      Npm.pkg('./test/sample').saveSync(TMP);
+      const pkg = Npm.pkg(TMP);
 
       pkg.json.name = 'FOO';
       pkg.saveSync();
 
-      const saved = npm.pkg(TMP);
+      const saved = Npm.pkg(TMP);
       expect(saved.name).to.eql('FOO');
       expect(saved.version).to.eql('1.0.0');
     });
@@ -260,7 +261,7 @@ describe('NpmPackage (package.json)', () => {
 
   describe('toJson', () => {
     it('converts to formatted JSON with ending new-line character', () => {
-      const pkg = npm.pkg('./test/sample');
+      const pkg = Npm.pkg('./test/sample');
       const res = pkg.toJson();
       const json = `${JSON.stringify(pkg.json, null, '  ')}\n`;
       expect(res).to.eql(json);

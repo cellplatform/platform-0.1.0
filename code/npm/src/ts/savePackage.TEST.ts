@@ -1,10 +1,7 @@
-import { expect, expectError, fs } from '../test';
+import { t, expect, expectError, fs } from '../test';
 import { savePackage } from './savePackage';
 
-import { NpmPackageJson } from '@platform/types';
-
-const PKG = require('../../package.json') as NpmPackageJson; // eslint-disable-line
-
+const PKG = require('../../package.json') as t.NpmPackageJson; // eslint-disable-line
 const target = 'tmp/constants.pkg.ts';
 const loadTarget = async () => (await fs.readFile(fs.resolve(target))).toString();
 

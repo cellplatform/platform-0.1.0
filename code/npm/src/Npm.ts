@@ -4,12 +4,14 @@ import { install } from './install';
 import { NpmPackage, pkg } from './pkg';
 import { prompt } from './prompt';
 import { yarn } from './yarn';
+import { node } from './node';
 
 export const Npm = {
   NpmPackage,
   pkg,
   yarn,
   prompt,
+  node,
 
   install,
   getVersion,

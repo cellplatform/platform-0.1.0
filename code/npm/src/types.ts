@@ -1,3 +1,9 @@
+export * from './install/types';
+
+/**
+ * Types
+ */
+export type Engine = 'YARN' | 'NPM';
 export type NpmPrerelease = boolean | 'alpha' | 'beta';
 
 /**
