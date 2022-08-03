@@ -1,2 +1,2 @@
-import { merge, clone } from 'ramda';
-export const R = { merge, clone };
+import { mergeDeepRight, clone } from 'ramda';
+export const R = { mergeDeepRight, clone };

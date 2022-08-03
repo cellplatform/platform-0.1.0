@@ -105,7 +105,7 @@ export class Uri {
             `The 'cell' URI does not have a coordinate address, eg. ":A1" in "cell:foo:A1"`,
           );
         } else {
-          const bang = id.replace(/\:/g, '!');
+          const bang = id.replace(/:/g, '!');
           const parts = coord.cell.toCell(bang);
           type = coord.cell.toType(bang) as UriType;
           key = parts.key;
@@ -121,7 +121,7 @@ export class Uri {
     }
 
     // Finish up.
-    const ok = !Boolean(error) && data.type !== 'UNKNOWN';
+    const ok = !error && data.type !== 'UNKNOWN';
     const res: t.IUriParts<D> = {
       ok,
       uri: text,
@@ -207,7 +207,7 @@ export class Uri {
 
     valid: {
       ns(input?: string) {
-        const value = (input || '').replace(/^ns\:/, '');
+        const value = (input || '').replace(/^ns:/, '');
 
         if (!value) {
           return false;
@@ -218,7 +218,7 @@ export class Uri {
         }
 
         // Check for any illegal characters.
-        const matchLegal = value.match(/^[A-Za-z0-9\.]*$/);
+        const matchLegal = value.match(/^[A-Za-z0-9.]*$/);
         if (!matchLegal || (matchLegal && matchLegal[0] !== value)) {
           return false;
         }
@@ -310,7 +310,7 @@ export class Uri {
 const alphaNumeric = new RegExp(/^[a-z0-9]+$/i); // NB: alpha-numeric.
 
 function trimPrefix(prefix: string, input: string) {
-  const regex = new RegExp(`^${prefix}\:+`);
+  const regex = new RegExp(`^${prefix}:+`);
   return input.trim().replace(regex, '');
 }
 
@@ -332,7 +332,7 @@ function toUri(prefix: UriPrefix, type: UriType, id: string, suffix?: string) {
   }
 
   if (typeof suffix === 'string') {
-    suffix = (suffix || '').trim().replace(/^\:*/, '');
+    suffix = (suffix || '').trim().replace(/^:*/, '');
     if (!suffix) {
       throw new Error(`The "${prefix}" URI was not supplied with a suffix key.`);
     }

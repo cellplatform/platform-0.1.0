@@ -20,7 +20,7 @@ describe('Urls', () => {
       ) => {
         const res1 = Urls.parse(input);
         const res2 = Urls.create(input);
-        const hostname = host.replace(/\:\d*$/, '');
+        const hostname = host.replace(/:\d*$/, '');
 
         expect(res1.origin.protocol).to.eql(protocol);
         expect(res1.origin.hostname).to.eql(hostname);

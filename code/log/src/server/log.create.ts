@@ -20,14 +20,11 @@ export function create(): t.IServerLog {
   // Run the log events through a formatter that converts
   // the log items into pretty colors.
   const formatter = map<t.ILogAction, t.ILogAction>((e) => {
-    switch (e.type) {
-      case 'LOG':
-      case 'GROUP':
-        const output = format(e.payload as t.ILogEvent);
-        return { ...e, payload: { ...e.payload, output } };
-
-      default:
-        return e;
+    if (e.type === 'LOG' || e.type === 'GROUP') {
+      const output = format(e.payload as t.ILogEvent);
+      return { ...e, payload: { ...e.payload, output } };
+    } else {
+      return e;
     }
   });
   log.events$ = log.events$.pipe(formatter);

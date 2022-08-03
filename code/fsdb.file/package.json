@@ -1,27 +1,26 @@
 {
   "name": "@platform/fsdb.file",
-  "version": "1.3.117",
+  "version": "1.3.119",
   "description": "File-system backing store for an IDb interface.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "ts test",
-    "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build --no-esm",
     "build-test": "ts build",
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/fs": "0.7.7",
-    "@platform/fsdb.types": "0.6.69",
-    "@platform/libs": "0.3.1",
-    "@platform/types": "0.5.26",
-    "@platform/util.value": "0.9.11"
+    "@platform/fs": "0.7.9",
+    "@platform/fsdb.types": "0.6.71",
+    "@platform/libs": "0.3.2",
+    "@platform/types": "0.5.27",
+    "@platform/util.value": "0.9.13"
   },
   "devDependencies": {
-    "@platform/test": "0.3.1",
-    "@platform/ts": "4.7.5"
+    "@platform/test": "0.3.2",
+    "@platform/ts": "4.7.7"
   },
   "files": [
     "lib",

@@ -5,7 +5,7 @@ import { ast } from '../ast';
 export const toParts = R.memoizeWith(R.identity, parse);
 
 const removeUriPrefix = (input: string, prefix?: string) => {
-  return prefix ? input.replace(new RegExp(`^${prefix}\:`), '') : input;
+  return prefix ? input.replace(new RegExp(`^${prefix}:`), '') : input;
 };
 
 function parse(input: string, options: { uriPrefix?: string } = {}) {
@@ -38,7 +38,7 @@ function parse(input: string, options: { uriPrefix?: string } = {}) {
   };
 
   // Prepare the input.
-  input = input.replace(/^[\s\=\!]*/, '').trimRight();
+  input = input.replace(/^[\s=!]*/, '').trimEnd();
   input = removeUriPrefix(input, options.uriPrefix);
   ['ns', 'cell', 'row', 'col'].forEach((prefix) => (input = removeUriPrefix(input, prefix)));
 

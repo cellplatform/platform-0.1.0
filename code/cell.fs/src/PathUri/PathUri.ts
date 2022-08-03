@@ -47,6 +47,6 @@ export const PathUri = {
    */
   trimPrefix(path: string) {
     path = Path.trim(path);
-    return path ? path.replace(/^path\:/, '').trim() : '';
+    return path ? path.replace(/^path:/, '').trim() : '';
   },
 };

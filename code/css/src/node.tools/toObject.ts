@@ -67,7 +67,7 @@ function toDeclarations(text: string) {
     const line = trimLine(item || '');
 
     if (!current && isSelector(line)) {
-      selector.push(line.replace(/\{$/, '').replace(/,$/, '').trim().replace(/\'/g, '"'));
+      selector.push(line.replace(/\{$/, '').replace(/,$/, '').trim().replace(/'/g, '"'));
     }
 
     if (!current && isStart(line)) {
@@ -101,11 +101,9 @@ function stripComments(lines: string[]) {
     if (withinComment && line.endsWith('*/')) {
       withinComment = false;
     }
-
     if (!withinComment) {
       result.push(line);
     }
-    //
   }
 
   return result;
@@ -116,13 +114,13 @@ function formatName(name: string) {
     .split('-')
     .map((part, i) => (i === 0 ? part : `${part[0].toUpperCase()}${part.substring(1)}`))
     .join('')
-    .replace(/\'/g, '"');
+    .replace(/'/g, '"');
 }
 
 function trimLine(line: string) {
   line = line.trim();
   line = line.replace(/\/\*.*\*\/$/, '').trim(); // Remove trailing comments.
-  line = line.replace(/\;$/, '');
+  line = line.replace(/;$/, '');
   return line.trim();
 }
 

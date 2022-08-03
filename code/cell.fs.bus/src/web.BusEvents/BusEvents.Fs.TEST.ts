@@ -617,31 +617,6 @@ describe('BusEvents.Fs', function () {
       await mock.dispose();
     });
 
-    it('write: ReadableStream', async () => {
-      const mock = await TestPrep();
-      const fs = mock.events.fs();
-
-      const server = await mock.server();
-      const src = await mock.readFile('static.test/child/tree.png');
-
-      const address = CellAddress.create(server.host, Uri.create.A1());
-      const http = HttpClient.create(address.domain).cell(address.uri);
-
-      const path = 'images/tree.png';
-      await http.fs.upload({ filename: path, data: src.data });
-
-      const download = await http.fs.file(path).download();
-      const res = await fs.write(path, download.body);
-      await mock.dispose();
-
-      expect(res.hash).to.eql(src.hash);
-
-      const targetPath = nodefs.join(mock.rootDir, Path.trim(path));
-      const file = await mock.readFile(targetPath);
-      expect(file.hash).to.eql(res.hash);
-      expect(file.data).to.eql(src.data);
-    });
-
     describe('simple types', () => {
       const test = async (data: t.Json, expected: string) => {
         const mock = await TestPrep();

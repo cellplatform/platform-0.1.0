@@ -1,5 +1,3 @@
-import { IRouterMock, RouterMock } from '@platform/cell.router/lib/test/RouterMock';
-
 import { Path, rx, t, TestFs } from '../test';
 import { Filesystem } from '../node';
 
@@ -15,8 +13,6 @@ export const TestPrep = async (options: { id?: string; dir?: string } = {}) => {
 
   const controller = Filesystem.Controller({ id, bus, driver: fs });
   const events = Filesystem.Events({ id, bus });
-
-  let server: IRouterMock | undefined;
 
   const api = {
     bus,
@@ -39,11 +35,6 @@ export const TestPrep = async (options: { id?: string; dir?: string } = {}) => {
       return res.files[0];
     },
 
-    async server() {
-      if (server) return server;
-      return (server = await RouterMock.create());
-    },
-
     async reset() {
       await TestFs.reset();
     },
@@ -51,7 +42,6 @@ export const TestPrep = async (options: { id?: string; dir?: string } = {}) => {
     async dispose() {
       controller.dispose();
       events.dispose();
-      await server?.dispose();
     },
   };
 

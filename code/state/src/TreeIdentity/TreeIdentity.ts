@@ -25,7 +25,7 @@ export function hasNamespace(input?: string) {
 }
 
 export function stripNamespace(input?: string) {
-  input = toString(input).replace(/^\:/, '');
+  input = toString(input).replace(/^:/, '');
   if (hasNamespace(input)) {
     const index = input.lastIndexOf(':');
     return index > -1 ? input.substring(index + 1) : input;

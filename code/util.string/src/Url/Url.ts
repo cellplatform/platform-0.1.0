@@ -16,9 +16,9 @@ export const Url = (input: string | { url: string }): t.Url => {
     host,
     hostname,
     port: Number.isNaN(port) ? 80 : port,
-    protocol: url.protocol.replace(/\:$/, '') as t.Url['protocol'],
+    protocol: url.protocol.replace(/:$/, '') as t.Url['protocol'],
     path: pathname,
-    hashstring: url.hash.replace(/^\#/, ''),
+    hashstring: url.hash.replace(/^#/, ''),
     querystring: url.search.replace(/^\?/, ''),
     isLocalhost,
 

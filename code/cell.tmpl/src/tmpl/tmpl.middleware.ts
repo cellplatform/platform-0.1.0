@@ -1,4 +1,4 @@
-import { fs, npm, t } from '../common';
+import { fs, Npm, t } from '../common';
 
 type M = t.TemplateMiddleware<t.ICellTemplateVariables>;
 type D = t.TemplateAfterMiddleware;
@@ -53,7 +53,7 @@ export function npmInstall(args: { done?: D } = {}): M {
     const message = `installing modules...🌼`;
     res.alert({ message });
 
-    await npm.install({ dir });
+    await Npm.install({ dir });
 
     res.done(args.done);
   };
@@ -72,7 +72,7 @@ export function processPackage(args: { filename: string; done?: D }): M {
     res.alert({ message: `Retrieving latest version information...` });
 
     const json = JSON.parse(req.text || '');
-    const pkg = npm.pkg({ json });
+    const pkg = Npm.pkg({ json });
     await pkg.updateVersions({ filter: (name, version) => version === 'latest' });
 
     // Update the package JSON.

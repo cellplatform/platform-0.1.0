@@ -1,6 +1,6 @@
 {
   "name": "@platform/auth",
-  "version": "0.1.104",
+  "version": "0.1.106",
   "description": "Tools for performing authorization role-based access control.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -8,18 +8,17 @@
     "start": "node .",
     "watch": "nodemon .",
     "test": "ts test",
-    "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build --no-esm",
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/libs": "0.3.1",
-    "@platform/util.is": "0.0.163"
+    "@platform/libs": "0.3.2",
+    "@platform/util.is": "0.0.165"
   },
   "devDependencies": {
-    "@platform/test": "0.3.1",
-    "@platform/ts": "4.7.5"
+    "@platform/test": "0.3.2",
+    "@platform/ts": "4.7.7"
   },
   "files": [
     "lib",

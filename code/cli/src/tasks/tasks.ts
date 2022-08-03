@@ -32,7 +32,7 @@ export class Tasks implements t.ITasks {
    */
   public task(title: string, task: t.Task, options: t.IAddTaskOptions = {}) {
     const { skip } = options;
-    if (!Boolean(skip)) {
+    if (!skip) {
       this.list = [...this.list, { title, task }];
     }
     return this;

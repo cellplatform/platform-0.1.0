@@ -1,12 +1,11 @@
 {
   "name": "@platform/util.string",
-  "version": "0.5.46",
+  "version": "0.5.48",
   "description": "String helpers.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "ts test",
-    "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build --no-esm",
     "prepare": "ts prepare"
@@ -17,8 +16,8 @@
     "underscore.string": "3.3.6"
   },
   "devDependencies": {
-    "@platform/test": "0.3.1",
-    "@platform/ts": "4.7.5"
+    "@platform/test": "0.3.2",
+    "@platform/ts": "4.7.7"
   },
   "files": [
     "lib",

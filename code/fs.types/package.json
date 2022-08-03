@@ -1,6 +1,6 @@
 {
   "name": "@platform/fs.types",
-  "version": "0.1.13",
+  "version": "0.1.15",
   "description": "Types for a general POSIX style file-system.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -11,7 +11,7 @@
     "prepare": "yarn build && yarn lint"
   },
   "devDependencies": {
-    "@platform/ts.libs": "4.7.5"
+    "@platform/ts.libs": "4.7.6"
   },
   "files": [
     "lib"

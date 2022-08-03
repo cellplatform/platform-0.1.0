@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "nuke": "sh script.sh/nuke.sh",
-    "dbuild": "cd code/cell.service && yarn dbuild"
+    "tmp": "ts-node -T script.ts/tmp"
   },
   "workspaces": {
     "packages": [
@@ -18,7 +18,9 @@
     "rxjs": "7.5.6",
     "core-js": "3.24.1",
     "browserslist": "4.21.3",
-    "parse5": "7.0.0"
+    "parse5": "7.0.0",
+    "chalk": "4.1.2",
+    "ramda": "0.28.0"
   },
   "license": "MIT",
   "private": true

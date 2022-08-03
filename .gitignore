@@ -16,6 +16,8 @@ lib.test
 .publish
 .parcel*
 
+**/msync.*.json
+
 
 .env
 .env*

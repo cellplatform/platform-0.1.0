@@ -1,6 +1,6 @@
 import { Client } from '.';
 import { HttpClient } from '../Client.http';
-import { expect, TypeSystem } from '../test';
+import { expect } from '../test';
 
 /**
  * NOTE:
@@ -14,9 +14,5 @@ import { expect, TypeSystem } from '../test';
 describe('Client', () => {
   it('Client.Http', () => {
     expect(Client.Http).to.equal(HttpClient);
-  });
-
-  it('Client.TypeSystem', () => {
-    expect(Client.TypeSystem).to.eql(TypeSystem);
   });
 });

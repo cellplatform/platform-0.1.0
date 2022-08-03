@@ -156,7 +156,7 @@ export class CellRangeUnion {
 
       // Add default edges.
       edges
-        .filter((edge) => !Boolean(map[edge]))
+        .filter((edge) => !map[edge])
         .forEach((edge) => {
           map[edge] = { within: [], without: [] };
         });

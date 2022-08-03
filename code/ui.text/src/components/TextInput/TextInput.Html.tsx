@@ -214,7 +214,8 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
         },
       } as any;
     }
-    styles.base = R.merge(styles.base, toTextInputCss(isEnabled, valueStyle));
+
+    styles.base = R.mergeDeepRight(styles.base, toTextInputCss(isEnabled, valueStyle));
     styles.base.opacity = isEnabled ? 1 : disabledOpacity;
 
     return (

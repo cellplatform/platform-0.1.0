@@ -102,8 +102,8 @@ export const Path = {
    */
   trimHttp(input: string) {
     return trim(input)
-      .replace(/^http\:\/\//, '')
-      .replace(/^https\:\/\//, '');
+      .replace(/^http:\/\//, '')
+      .replace(/^https:\/\//, '');
   },
 
   /**

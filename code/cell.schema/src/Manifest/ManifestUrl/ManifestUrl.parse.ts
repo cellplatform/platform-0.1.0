@@ -31,7 +31,7 @@ export function parse(input: string): t.ManifestUrlParts {
     if (!path) return error('no path');
 
     // Cell URI.
-    const uri = path.match(/^cell\:[\d\w]+\:[A-Z]+[1-9]+/);
+    const uri = path.match(/^cell:[\d\w]+:[A-Z]+[1-9]+/);
     api.cell = (uri ? uri[0] : '').trim();
     const isCell = Boolean(api.cell);
 
@@ -57,7 +57,7 @@ export function parse(input: string): t.ManifestUrlParts {
     return;
   })();
 
-  api.ok = !Boolean(api.error);
+  api.ok = !api.error;
   return api;
 }
 

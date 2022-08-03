@@ -1,26 +1,25 @@
 {
   "name": "@platform/util.markdown",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "description": "Strongly typed tools for working with markdown.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "ts test",
-    "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build --no-esm",
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "rehype-format": "4.0.1",
-    "rehype-stringify": "9.0.3",
-    "remark-parse": "10.0.1",
-    "remark-rehype": "10.1.0",
-    "unified": "10.1.2"
+    "rehype-format": "3.1.0",
+    "rehype-stringify": "8.0.0",
+    "remark-parse": "9.0.0",
+    "remark-rehype": "8.1.0",
+    "unified": "9.2.1"
   },
   "devDependencies": {
-    "@platform/test": "0.3.1",
-    "@platform/ts": "4.7.5"
+    "@platform/test": "0.3.2",
+    "@platform/ts": "4.7.7"
   },
   "files": [
     "lib",

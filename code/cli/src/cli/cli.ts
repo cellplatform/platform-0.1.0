@@ -85,8 +85,8 @@ export function create(name: string) {
       return tasks().skip(title, task);
     },
     run() {
-      const argv = program.argv;
-      if (!argv._[0]) {
+      const argv = program.argv as { _: string[] };
+      if (!argv._?.[0]) {
         showHelp(argv);
         exit(0);
       }

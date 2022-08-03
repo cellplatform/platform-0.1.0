@@ -27,9 +27,9 @@ export function BundleWrapper(manifestUrl: t.ManifestUrl, cachedir: string) {
 const stripHttp = (text: string) => text.replace(/^http:\/\//, '').replace(/^https:\/\//, '');
 
 const toCacheDir = (base: string, url: URL) => {
-  const host = stripHttp(url.host).replace(/\:/g, '-');
+  const host = stripHttp(url.host).replace(/:/g, '-');
   const parts = fs.dirname(url.pathname.replace(/^\/*/, '')).split('/');
-  const dir = parts.join('/').replace(/^\/*/, '').replace(/\:/g, '-');
+  const dir = parts.join('/').replace(/^\/*/, '').replace(/:/g, '-');
   return fs.join(base, host, flattenDir(dir));
 };
 

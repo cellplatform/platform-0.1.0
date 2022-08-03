@@ -94,7 +94,9 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
    */
   private _store: t.IStateObjectWritable<T>;
   private _children: t.ITreeState<any>[] = [];
-  private _kind = 'TreeState'; // NB: Used by [isInstance] helper.
+
+  // NB: Used by [isInstance] helper.
+  private _kind = 'TreeState';
 
   public readonly key: string;
   public readonly namespace: string;

@@ -63,7 +63,7 @@ export function toTokens(expr: string) {
     // Pad +/- with space.
     // NB: This fixes problem with tokenize misinterpreting logical expressions as ranges.
     .replace(/\+/g, ' + ')
-    .replace(/\-/g, ' - ');
+    .replace(/-/g, ' - ');
   return tokenize(expr) as Token[];
 }
 

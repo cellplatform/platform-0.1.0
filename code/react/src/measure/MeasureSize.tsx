@@ -63,7 +63,7 @@ class Measurer {
   }
 
   public get isDisposed() {
-    return !Boolean(this.component);
+    return !this.component;
   }
 
   public get width() {

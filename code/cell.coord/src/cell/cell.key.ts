@@ -109,7 +109,7 @@ export function toCell(input: CellInput, options: { relative?: boolean } = {}): 
 
   // Clean up namespace.
   if (ns) {
-    ns = ns.trim().replace(/\!$/, '');
+    ns = ns.trim().replace(/!$/, '');
   }
 
   // Finish up.

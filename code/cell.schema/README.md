@@ -32,12 +32,3 @@ File            file:<ns>.<id>          A binary file.
 
 <p>&nbsp;</p>
 <p>&nbsp;</p>
-
-## URI to DB Mapping (Path)
-
-See [@platform/cell.db](../cell.db) for database model implementation.
-
-![diagram](https://user-images.githubusercontent.com/185555/69764162-4402e200-11d4-11ea-9004-84898d44ea0d.png)
-
-<p>&nbsp;</p>
-<p>&nbsp;</p>

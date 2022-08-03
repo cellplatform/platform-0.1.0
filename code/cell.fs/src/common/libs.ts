@@ -1,8 +1,5 @@
-import { Mime } from '@platform/util.mimetype';
-export { Mime };
+export { Mime } from '@platform/util.mimetype';
 
 import { Schema, Uri, Urls } from '@platform/cell.schema';
 export { Schema, Uri, Urls };
-
-import { value } from '@platform/cell.value';
-export const sha256 = value.hash.sha256;
+export const sha256 = Schema.Hash.sha256;

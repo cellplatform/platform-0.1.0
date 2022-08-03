@@ -1,23 +1,22 @@
 {
   "name": "@platform/util.hash",
-  "version": "0.0.69",
+  "version": "0.0.71",
   "description": "Object and value hashing (SHA-256 / SHA-224).",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "ts test",
-    "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build --no-esm",
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/libs": "0.3.1",
+    "@platform/libs": "0.3.2",
     "js-sha256": "0.9.0"
   },
   "devDependencies": {
-    "@platform/test": "0.3.1",
-    "@platform/ts": "4.7.5"
+    "@platform/test": "0.3.2",
+    "@platform/ts": "4.7.7"
   },
   "files": [
     "lib",
