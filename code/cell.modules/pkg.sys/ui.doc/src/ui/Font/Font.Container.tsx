@@ -4,6 +4,7 @@ import { css, CssValue, t } from './common';
 import { useFont } from './Font.useFont';
 
 export type FontContainerProps = {
+  children?: React.ReactNode;
   fonts?: t.FontDefinition | t.FontDefinition[];
   loading?: JSX.Element;
   style?: CssValue;

@@ -3,7 +3,10 @@ import React from 'react';
 import { Font } from '../Font';
 import { css, FC, CssValue, FONT } from './common';
 
-export type DocFontProps = { style?: CssValue };
+export type DocFontProps = {
+  children?: React.ReactNode;
+  style?: CssValue;
+};
 
 const View: React.FC<DocFontProps> = (props) => {
   const fonts = [

@@ -11,7 +11,7 @@ type Milliseconds = number;
 type Ctx = { theme?: t.RouteViewTheme; delay: Milliseconds };
 
 export function DevRouteTable(getCtx: () => Ctx) {
-  const Center: React.FC = (props) => {
+  const Center: React.FC<{ children?: React.ReactNode }> = (props) => {
     const ctx = getCtx();
     const theme = ctx.theme ?? DEFAULT.THEME;
     const color = theme === 'Dark' ? COLORS.WHITE : COLORS.DARK;
