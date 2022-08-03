@@ -20,7 +20,7 @@ export { useDragTarget } from 'sys.ui.primitives/lib/hooks/DragTarget';
 export { Button } from 'sys.ui.primitives/lib/ui.ref/button/Button';
 export { Chip } from 'sys.ui.primitives/lib/ui/Chip';
 export { PropList } from 'sys.ui.primitives/lib/ui/PropList';
-export { Spinner } from 'sys.ui.primitives/lib/ui.ref/spinner/Spinner';
+export { Spinner } from 'sys.ui.primitives/lib/ui/Spinner';
 export { CmdCard } from 'sys.ui.primitives/lib/ui/Cmd.Card';
 export { Text } from 'sys.ui.primitives/lib/ui/Text';
 export { LoadMask } from 'sys.ui.primitives/lib/ui/LoadMask';
