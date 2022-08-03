@@ -7,7 +7,7 @@ export const R = { uniq, equals, uniqBy, groupBy };
 import filesize from 'filesize';
 export { filesize };
 
-import PeerJS from 'peerjs';
+import * as PeerJS from './libs.peerjs';
 export { PeerJS };
 
 import UAParser from 'ua-parser-js';

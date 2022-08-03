@@ -4,6 +4,7 @@ import { Card, CardStack, CardStackItem, css, CssValue, t } from '../DEV.common'
 import { DevCard } from '../DEV.layouts';
 
 export type DevConnectionsProps = {
+  children?: React.ReactNode;
   bus: t.EventBus<any>;
   connections: t.PeerConnectionStatus[];
   margin?: t.CssEdgesInput;

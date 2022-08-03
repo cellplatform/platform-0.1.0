@@ -6,6 +6,7 @@ import { DevModal } from '../DEV.layouts';
 import { DevNetworkConnections, DevNetworkConnectionsProps } from './DEV.Network.Connections';
 
 export type DevNetworkConnectionsModalProps = {
+  children?: React.ReactNode;
   self: t.PeerId;
   bus: t.EventBus<any>;
   netbus: t.PeerNetbus<any>;
@@ -50,7 +51,12 @@ export const DevNetworkConnectionsModal: React.FC<DevNetworkConnectionsModalProp
 /**
  * Modal header.
  */
-type HeaderProps = { bus: t.EventBus<any>; height: number };
+type HeaderProps = {
+  children?: React.ReactNode;
+  bus: t.EventBus<any>;
+  height: number;
+};
+
 const Header: React.FC<HeaderProps> = (props) => {
   const { height } = props;
   const bus = props.bus as t.EventBus<t.DevEvent>;

@@ -13,6 +13,7 @@ import {
 import { DevModal } from '../DEV.layouts';
 
 export type DevVideoFullscreenProps = {
+  children?: React.ReactNode;
   bus: t.EventBus<any>;
   stream?: MediaStream;
   isSelf?: boolean;
