@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 
-import { color, css, CssValue, defaultValue } from '../common';
+import { color, css, CssValue } from '../common';
 import { Button, TextInput, TextInputProps } from '../Primitives';
 
 type P = TextInputProps;
@@ -97,7 +97,7 @@ export const Textbox: React.FC<TextboxProps> = (props) => {
   };
 
   const elEnterIcon = enter?.icon && (
-    <Button isEnabled={defaultValue(enter.isEnabled, true)} onClick={enterHandler}>
+    <Button isEnabled={enter.isEnabled ?? true} onClick={enterHandler}>
       {renderIcon()}
     </Button>
   );

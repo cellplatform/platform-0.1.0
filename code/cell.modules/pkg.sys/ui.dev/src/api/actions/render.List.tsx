@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { rx, t } from '../../common';
+import { rx, t } from './common';
 import { ActionPanel } from '../../ui/ActionPanel';
 
 /**

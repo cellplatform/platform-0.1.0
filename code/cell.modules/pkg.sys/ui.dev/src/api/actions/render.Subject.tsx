@@ -1,4 +1,4 @@
-import { t, toObject } from '../../common';
+import { t, toObject } from './common';
 import { Context } from './Context';
 import { Handler } from './Handler';
 

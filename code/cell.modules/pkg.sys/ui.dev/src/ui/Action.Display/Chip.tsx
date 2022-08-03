@@ -1,7 +1,10 @@
 import React from 'react';
-import { color, css, CssValue, t, COLORS } from '../../common';
+import { color, COLORS, css, CssValue } from '../../common';
 
-export type LabelChipProps = { style?: CssValue };
+export type LabelChipProps = {
+  children?: React.ReactNode;
+  style?: CssValue;
+};
 
 export const LabelChip: React.FC<LabelChipProps> = (props) => {
   const styles = {

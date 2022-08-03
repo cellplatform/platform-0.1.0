@@ -5,8 +5,11 @@ import { css, CssValue, t, COLORS } from '../common';
 import { Button } from './Primitives';
 import { Icons } from './Icons';
 
-export type IErrorBoundaryProps = { style?: CssValue };
-export type IErrorBoundaryState = { error?: Error; errorInfo?: React.ErrorInfo };
+export type ErrorBoundaryProps = {
+  children?: React.ReactNode;
+  style?: CssValue;
+};
+export type ErrorBoundaryState = { error?: Error; errorInfo?: React.ErrorInfo };
 
 /**
  * Error boundary for hosted content
@@ -15,9 +18,9 @@ export type IErrorBoundaryState = { error?: Error; errorInfo?: React.ErrorInfo }
  * NOTE:
  *    The [ErrorBoundary] mechanism requires the use of a react class.
  */
-export class ErrorBoundary extends React.PureComponent<IErrorBoundaryProps, IErrorBoundaryState> {
-  public state: IErrorBoundaryState = {};
-  private state$ = new Subject<Partial<IErrorBoundaryState>>();
+export class ErrorBoundary extends React.PureComponent<ErrorBoundaryProps, ErrorBoundaryState> {
+  public state: ErrorBoundaryState = {};
+  private state$ = new Subject<Partial<ErrorBoundaryState>>();
   private unmounted$ = new Subject<void>();
 
   /**

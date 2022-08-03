@@ -3,7 +3,7 @@ import Dropdown from 'react-select';
 
 import { color, css, SelectUtil, t, time } from '../common';
 import { Icons } from '../Icons';
-import { Layout, LayoutTitle, LayoutLabel } from './Layout';
+import { Layout, LayoutTitle } from './Layout';
 
 export type SelectDropdownProps = {
   namespace: string;
@@ -23,8 +23,11 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = (props) => {
   const [isSelectVisible, setIsSelectVisible] = useState<boolean>();
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
-  const focus = () => time.delay(0, () => selectRef.current?.focus());
-  const blur = () => time.delay(0, () => selectRef.current?.blur());
+  const selectRef = useRef<Dropdown>();
+  const selectRefAsDiv = () => selectRef.current as HTMLDivElement | undefined;
+
+  const focus = () => time.delay(0, () => selectRefAsDiv()?.focus());
+  const blur = () => time.delay(0, () => selectRefAsDiv()?.blur());
 
   const hideDropdown = () => {
     setIsMenuOpen(false);
@@ -37,8 +40,6 @@ export const SelectDropdown: React.FC<SelectDropdownProps> = (props) => {
     setIsMenuOpen(true);
     focus();
   };
-
-  const selectRef = useRef<Dropdown>();
 
   const handleSelectBlur = () => {
     setIsSelectVisible(false);

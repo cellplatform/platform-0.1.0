@@ -4,6 +4,7 @@ import { color, css, CssValue } from '../../common';
 import { Markdown } from '../Markdown';
 
 export type LayoutTitleProps = {
+  children?: React.ReactNode;
   style?: CssValue;
 };
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { css, t, color, CssValue, defaultValue } from '../../common';
+import { css, t, color, CssValue } from '../../common';
 import { useActionsRedraw } from '../../ui.hooks';
 
 export type HarnessActionsProps = {
@@ -35,7 +35,7 @@ export const HarnessActions: React.FC<HarnessActionsProps> = (props) => {
   const env = actions.toObject().env;
   const settings = { ...env.viaSubject.actions, ...env.viaAction.actions };
 
-  const border = defaultValue(settings.border, -0.08);
+  const border = settings.border ?? -0.08;
   const borderColor = Array.isArray(border) ? border[0] : border;
   const borderWidth = Array.isArray(border) ? border[1] : 1;
   const borderStyle = `solid ${borderWidth}px ${color.format(borderColor)}`;
@@ -44,8 +44,8 @@ export const HarnessActions: React.FC<HarnessActionsProps> = (props) => {
     base: css({
       display: 'flex',
       position: 'relative',
-      width: defaultValue(settings.width, 300),
-      backgroundColor: color.format(defaultValue(settings.background, 1)),
+      width: settings.width ?? 300,
+      backgroundColor: color.format(settings.background ?? 1),
       borderLeft: edge === 'right' && borderStyle,
       borderRight: edge === 'left' && borderStyle,
     }),

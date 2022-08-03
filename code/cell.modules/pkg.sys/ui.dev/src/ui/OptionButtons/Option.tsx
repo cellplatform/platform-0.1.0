@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { color, COLORS, css, defaultValue } from '../../common';
+import { color, COLORS, css } from '../../common';
 import { OptionClickEventHandler, OptionItem, OptionRenderFactory } from './types';
 
 /**
@@ -23,8 +23,8 @@ export const OptionButton: React.FC<OptionButtonProps> = (props) => {
   const { label, value } = item;
   const { index, items } = ctx;
   const isLast = index === items.length - 1;
-  const isEnabled = defaultValue(props.isEnabled, true);
-  const canDeselect = defaultValue(props.canDeselect, true);
+  const isEnabled = props.isEnabled ?? true;
+  const canDeselect = props.canDeselect ?? true;
 
   const size = 12;
   const styles = {
