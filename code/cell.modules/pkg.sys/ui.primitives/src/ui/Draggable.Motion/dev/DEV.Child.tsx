@@ -1,13 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { MotionDraggableItem, MotionDraggableContainer } from '..';
-import { PropList } from '../../PropList';
+import { MotionDraggableContainer, MotionDraggableItem } from '..';
 import { Hr } from '../../Hr';
+import { PropList } from '../../PropList';
 import { css, CssValue } from '../common';
 
 export type DevChildProps = {
+  children?: React.ReactNode;
   state?: MotionDraggableItem;
   container?: MotionDraggableContainer;
   style?: CssValue;

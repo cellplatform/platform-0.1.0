@@ -1,7 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { color, css, CssValue, t } from '../common';
+import React, { useState } from 'react';
+import { color, css, CssValue } from '../common';
 
-export type SampleRootProps = { style?: CssValue };
+export type SampleRootProps = {
+  children?: React.ReactNode;
+  style?: CssValue;
+};
+
 export const SampleRoot: React.FC<SampleRootProps> = (props) => {
   const [clickCount, setClickCount] = useState<number>(0);
 

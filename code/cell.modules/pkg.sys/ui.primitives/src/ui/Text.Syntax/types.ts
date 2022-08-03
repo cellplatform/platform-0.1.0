@@ -8,6 +8,7 @@ type Color = string | number;
  */
 export type TextSyntaxTheme = 'Dark' | 'Light';
 export type TextSyntaxProps = {
+  children?: React.ReactNode;
   text?: string;
   inlineBlock?: boolean;
   margin?: t.CssEdgesInput;

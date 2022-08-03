@@ -1,19 +1,18 @@
 import ReactQRCode from 'qrcode.react';
 import React from 'react';
 
-import { color, css, CssValue } from '../../common';
-import { QRCode as QRCodeType } from './types';
+import { color, css, CssValue, FC, DEFAULT } from './common';
+import { QRCode as QRCodePropTypes } from './types';
 
-export type QRCodeProps = QRCodeType & { style?: CssValue };
+export type QRCodeProps = QRCodePropTypes & { style?: CssValue };
 
-export const QRCode: React.FC<QRCodeProps> = (props) => {
+const View: React.FC<QRCodeProps> = (props) => {
   const {
     value,
-    renderAs = 'canvas',
-    size = 128,
-    level = 'L',
-    includeMargin = false,
-    imageSettings,
+    renderAs = DEFAULT.renderAs,
+    size = DEFAULT.size,
+    level = DEFAULT.level,
+    includeMargin = DEFAULT.includeMargin,
   } = props;
   const bgColor = color.format(props.bgColor);
   const fgColor = color.format(props.fgColor);
@@ -38,8 +37,36 @@ export const QRCode: React.FC<QRCodeProps> = (props) => {
         fgColor={fgColor}
         level={level}
         includeMargin={includeMargin}
-        imageSettings={imageSettings}
+        imageSettings={image(props)}
       />
     </div>
   );
 };
+
+/**
+ * Helpers
+ */
+function image(props: QRCodeProps) {
+  const {
+    src = '',
+    x,
+    y,
+    width = DEFAULT.size,
+    height = DEFAULT.size,
+    excavate = false,
+  } = props.imageSettings ?? {};
+  return { src, x, y, width, height, excavate };
+}
+
+/**
+ * Export
+ */
+
+type Fields = {
+  DEFAULT: typeof DEFAULT;
+};
+export const QRCode = FC.decorate<QRCodeProps, Fields>(
+  View,
+  { DEFAULT },
+  { displayName: 'QRCode' },
+);

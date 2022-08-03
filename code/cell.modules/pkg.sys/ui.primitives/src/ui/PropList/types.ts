@@ -62,8 +62,8 @@ export type PropListDefaults = {
  * A single row within a [PropList].
  */
 export type PropListItem = {
-  label?: React.ReactNode;
-  value?: React.ReactNode | PropListValue;
+  label?: string | number | JSX.Element;
+  value?: string | number | boolean | JSX.Element | PropListValue;
   tooltip?: string;
   visible?: boolean;
   indent?: number;
@@ -73,18 +73,25 @@ export type PropListItem = {
  * The value portion of a [PropList] item.
  */
 export type PropListValue = PropListValueGeneric | PropListValueKinds;
-export type PropListValueGeneric = ValueBase & { data?: React.ReactNode };
-
-export type PropListValueKinds = PropListValueSwitch;
-export type PropListValueSwitch = ValueBase & { data?: boolean; kind: 'Switch'; enabled?: boolean };
 
 type ValueBase = {
   monospace?: boolean;
-  clipboard?: string | boolean | (() => string);
+  clipboard?: string | boolean | (() => string | undefined);
   color?: string | number;
   fontSize?: number;
   bold?: boolean;
   onClick?: (e: PropListValueEventArgs) => void;
+};
+
+export type PropListValueGeneric = ValueBase & {
+  data?: string | number | boolean | JSX.Element;
+};
+
+export type PropListValueKinds = PropListValueSwitch;
+export type PropListValueSwitch = ValueBase & {
+  kind: 'Switch';
+  data?: boolean;
+  enabled?: boolean;
 };
 
 /**
