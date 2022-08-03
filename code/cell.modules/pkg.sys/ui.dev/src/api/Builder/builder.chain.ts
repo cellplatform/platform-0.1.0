@@ -2,7 +2,7 @@ import { IMemoryCache, MemoryCache } from '@platform/cache';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { dispose, jpath, t, StateObject } from './common';
+import { Dispose, jpath, StateObject, t } from './common';
 
 type O = Record<string, unknown>;
 type B = t.BuilderChain<any>;
@@ -30,7 +30,7 @@ export function create<M extends O, F extends O>(args: {
   const index = args.index === undefined || args.index < 0 ? -1 : args.index;
   const cache = args.cache || MemoryCache.create();
 
-  const builder = dispose.create();
+  const builder = Dispose.create();
   const dispose$ = builder.dispose$;
 
   (builder as any).__KIND__ = 'BUILDER'; // NB: See [Builder.isBuilder(...)] method.
