@@ -20,4 +20,4 @@ export { PropList } from 'sys.ui.primitives/lib/ui/PropList';
 export { Text } from 'sys.ui.primitives/lib/ui/Text';
 export { Chip } from 'sys.ui.primitives/lib/ui/Chip';
 export { Button } from 'sys.ui.primitives/lib/ui.ref/button/Button';
-export { Spinner } from 'sys.ui.primitives/lib/ui.ref/spinner/Spinner';
+export { Spinner } from 'sys.ui.primitives/lib/ui/Spinner';
