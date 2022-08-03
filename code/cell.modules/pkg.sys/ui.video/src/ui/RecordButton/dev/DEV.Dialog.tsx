@@ -1,7 +1,10 @@
 import React from 'react';
 import { COLORS, Color, css, CssValue } from './common';
 
-export type DevDialogProps = { style?: CssValue };
+export type DevDialogProps = {
+  children?: React.ReactNode;
+  style?: CssValue;
+};
 
 export const DevDialog: React.FC<DevDialogProps> = (props) => {
   const border = `solid 1px ${Color.format(-0.15)}`;
