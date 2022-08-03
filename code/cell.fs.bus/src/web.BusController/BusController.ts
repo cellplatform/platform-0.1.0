@@ -1,4 +1,3 @@
-import { BusControllerCell } from './BusController.Cell';
 import { BusControllerIndexer } from './BusController.Indexer';
 import { BusControllerIo } from './BusController.Io';
 import { BusEvents, HttpClient, rx, t, DEFAULT } from './common';
@@ -27,15 +26,11 @@ export function BusController(args: {
   const events = BusEvents({ id, bus, timeout, filter: args.filter });
   const { dispose, dispose$ } = events;
 
-  const httpFactory = (host: string | number) =>
-    args.httpFactory?.(host) ?? HttpClient.create(host);
-
   /**
    * Sub-controllers.
    */
   BusControllerIo({ id, fs, bus, events });
   BusControllerIndexer({ id, fs, bus, events, index });
-  BusControllerCell({ id, fs, bus, events, index, httpFactory });
   BusControllerChange({ id, fs, bus, events });
 
   /**

@@ -8,12 +8,12 @@ export function toPort(input: string): number | undefined {
 export function stripHttp(input: string) {
   return (input || '')
     .trim()
-    .replace(/^http\:\/\//, '')
-    .replace(/^https\:\/\//, '');
+    .replace(/^http:\/\//, '')
+    .replace(/^https:\/\//, '');
 }
 
 export function stripPort(input: string) {
-  return (input || '').replace(/\:\d*$/, '');
+  return (input || '').replace(/:\d*$/, '');
 }
 
 export function stripSlash(input: string) {

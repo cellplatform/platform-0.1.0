@@ -1,6 +1,5 @@
-import { expect } from 'chai';
+import { expect, log } from '../test';
 import { yarn } from '.';
-import { log } from '../common';
 
 describe('yarn (integration)', () => {
   it.skip('getVersion', async () => {

@@ -85,7 +85,7 @@ describe('env', () => {
     it('value (throws if not found)', () => {
       env.load({ dir, file });
       const fn = () => env.value('NO_EXIST', { throw: true });
-      expect(fn).to.throw(/The process\.env\[\"NO_EXIST\"\] variable does not exist/);
+      expect(fn).to.throw(/The process\.env\["NO_EXIST"\] variable does not exist/);
     });
   });
 

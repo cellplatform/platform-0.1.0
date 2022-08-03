@@ -1,7 +1,7 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { Compiler } from '..';
 import { fs, expect, ModuleFederationPlugin, t, Encoding } from '../../test';
-import { ConfigBuilder } from '../config';
+import { ConfigBuilder } from '../Config';
 import { wp } from '.';
 
 const create = (name = 'foo') => {
@@ -64,7 +64,7 @@ describe('Compiler (Webpack)', () => {
     expect(builder.toObject().namespace).to.eql(undefined);
 
     const fn = () => wp.toWebpackConfig(builder);
-    expect(fn).to.throw(/requires a \"namespace\" \(scope\)/);
+    expect(fn).to.throw(/requires a "namespace" \(scope\)/);
   });
 
   it('target', () => {

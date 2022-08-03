@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { constants, css, defaultValue, t } from '../../common';
+import { constants, css, t } from '../../common';
 import { useActionsRedraw } from '../../ui.hooks';
 import { useActionsPanelController } from '../../ui.hooks';
 
@@ -11,7 +11,7 @@ export type ActionPanelProps = t.ActionPanelProps & {
 
 export const ActionPanel: React.FC<ActionPanelProps> = (props) => {
   const { actions, bus } = props;
-  const scrollable = defaultValue(props.scrollable, true);
+  const scrollable = props.scrollable ?? true;
   const model = actions.toObject();
   const defs = actions.toDefs();
   const { namespace, items } = model;

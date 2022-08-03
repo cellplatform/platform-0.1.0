@@ -2,6 +2,7 @@ import React from 'react';
 import { Color, css, CssValue, DEFAULT, Style, t } from './common';
 
 export type LoadMaskTileProps = {
+  children?: React.ReactNode;
   theme: t.LoadMaskTheme;
   tile: t.LoadMaskTileProp;
   style?: CssValue;

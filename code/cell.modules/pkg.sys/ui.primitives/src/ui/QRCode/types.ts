@@ -1,6 +1,8 @@
+export type QRCodeRenderAs = 'canvas' | 'svg';
+
 export type QRCode = {
   value: string;
-  renderAs?: 'canvas' | 'svg';
+  renderAs?: QRCodeRenderAs;
   size?: number;
   bgColor?: string | number;
   fgColor?: string | number;

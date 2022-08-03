@@ -1,5 +1,5 @@
-import { npm } from '..';
-import { log } from '../common';
+import { log, Npm } from '../test';
+
 import { NpmPackage } from '.';
 
 describe('NpmPackage (integration)', function () {
@@ -18,8 +18,8 @@ describe('NpmPackage (integration)', function () {
     log.info(res);
   });
 
-  it.only('updateVersions: "~latest" (instance)', async () => {
-    const pkg = npm.pkg('./test/sample');
+  it.skip('updateVersions: "~latest" (instance)', async () => {
+    const pkg = Npm.pkg('./test/sample');
     const res = await pkg.updateVersions({
       // types: ['dependencies', 'devDependencies'],
       // updateState: false,

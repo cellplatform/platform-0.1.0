@@ -4,7 +4,7 @@
   "dependencies": {
     "@platform/cell.schema": "^0.5.103",
     "@platform/cell.types": "^0.5.100",
-    "@platform/libs": "^0.2.14",
+    "@platform/libs": "^0.3.1",
     "@platform/types": "^0.5.25",
     "@platform/util.value": "^0.9.10"
   },

@@ -97,7 +97,7 @@ export class CellRange {
    */
   private constructor(options: { key: string }) {
     // Prepare key.
-    let key = options.key.replace(/^[\s\=\!]*/, '').trim();
+    let key = options.key.replace(/^[\s=!]*/, '').trim();
     key = key.includes(':') ? key : `${key}:${key}`;
 
     // Store state.
@@ -237,8 +237,7 @@ export class CellRange {
         return done([]); // NB: Only CELL ranges can be calculated, otherwise infinity.
 
       case 'CELL':
-        const range = this.square;
-        return done(toKeys(range.left, range.right));
+        return done(toKeys(this.square.left, this.square.right));
 
       default:
         throw new Error(`Type '${this.type}' not supported.`);
@@ -573,23 +572,27 @@ export class CellRange {
       return cell.toCell({ column, row });
     };
 
-    switch (edge) {
-      case 'TOP':
-        const topRow = square.left.row + amount;
-        return CellRange.fromCells(cellFromIndex(square.left.column, topRow), square.right);
-      case 'BOTTOM':
-        const bottomRow = square.right.row + amount;
-        return CellRange.fromCells(square.left, cellFromIndex(square.right.column, bottomRow));
-      case 'LEFT':
-        const leftColumn = square.left.column + amount;
-        return CellRange.fromCells(cellFromIndex(leftColumn, square.left.row), square.right);
-
-      case 'RIGHT':
-        const rightColumn = square.right.column + amount;
-        return CellRange.fromCells(square.left, cellFromIndex(rightColumn, square.right.row));
-      default:
-        throw new Error(`Edge '${edge}' not supported.`);
+    if (edge === 'TOP') {
+      const topRow = square.left.row + amount;
+      return CellRange.fromCells(cellFromIndex(square.left.column, topRow), square.right);
     }
+
+    if (edge === 'BOTTOM') {
+      const bottomRow = square.right.row + amount;
+      return CellRange.fromCells(square.left, cellFromIndex(square.right.column, bottomRow));
+    }
+
+    if (edge === 'LEFT') {
+      const leftColumn = square.left.column + amount;
+      return CellRange.fromCells(cellFromIndex(leftColumn, square.left.row), square.right);
+    }
+
+    if (edge === 'RIGHT') {
+      const rightColumn = square.right.column + amount;
+      return CellRange.fromCells(square.left, cellFromIndex(rightColumn, square.right.row));
+    }
+
+    throw new Error(`Edge '${edge}' not supported.`);
   }
 
   /**

@@ -29,6 +29,7 @@ const imports = {
   PositioningLayout: import('./ui/PositioningLayout/dev/DEV'),
   Photo: import('./ui/Photo/dev/DEV'),
   Font: import('./ui/Font/dev/DEV'),
+  Spinner: import('./ui/Spinner/dev/DEV'),
 
   DraggableSort: import('./ui/Draggable.Sort/dev/DEV'),
   DraggableMotion: import('./ui/Draggable.Motion/dev/DEV'),
@@ -52,7 +53,6 @@ const imports = {
 
   Svg: import('./ui/Image.Svg/dev/DEV'),
 
-  Tree: import('./ui/Tree/dev/DEV'),
   StackPanel: import('./ui/StackPanel/dev/DEV'),
 
   Text: import('./ui/Text/dev/DEV'),

@@ -2,6 +2,7 @@ import React from 'react';
 import { css, CssValue, defaultValue } from '../../common';
 
 export type ZoomProps = {
+  children?: React.ReactNode;
   zoom?: number;
   offset?: { x: number; y: number };
   style?: CssValue;

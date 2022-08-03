@@ -16,7 +16,7 @@ export function init(args: t.IArgs) {
     /**
      * https://github.com/TypeStrong/fork-ts-checker-webpack-plugin#eslint
      */
-    eslint: lintEnabled ? { files: 'src/**/*.ts{,x}' } : undefined,
+    // eslint: lintEnabled ? { files: 'src/**/*.ts{,x}' } : undefined,
 
     /**
      * https://github.com/TypeStrong/fork-ts-checker-webpack-plugin#typescript-options

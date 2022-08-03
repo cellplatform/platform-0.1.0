@@ -1,6 +1,6 @@
 import { t } from './common';
-import { Tasks } from '../compiler.tasks';
-import { ConfigBuilder } from '../config';
+import { Tasks } from '../Compiler.tasks';
+import { ConfigBuilder } from '../Config';
 
 export const Compiler: t.Compiler = {
   config: ConfigBuilder.builder,

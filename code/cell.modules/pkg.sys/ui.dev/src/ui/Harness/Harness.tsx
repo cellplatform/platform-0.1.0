@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { css, CssValue, defaultValue, rx, t } from '../../common';
+import { css, CssValue, rx, t } from '../../common';
 import { useActionsPropertyInput, useActionsRedraw, useSelectionManager } from '../../ui.hooks';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { Host } from '../Host';
@@ -54,7 +54,7 @@ export const Harness: React.FC<HarnessProps> = (props) => {
 
   const env: t.ActionsModelEnv = selected?.toObject().env || { viaSubject: {}, viaAction: {} };
   const envActions = { ...env?.viaSubject.actions, ...env?.viaAction.actions };
-  const actionsEdge = defaultValue(envActions.edge, 'right');
+  const actionsEdge = envActions.edge ?? 'right';
 
   /**
    * [Render]

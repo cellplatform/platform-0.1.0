@@ -21,7 +21,7 @@ describe('Url', () => {
         origin: string,
       ) => {
         const res = Url.parse(input);
-        const hostname = host.replace(/\:\d*$/, '');
+        const hostname = host.replace(/:\d*$/, '');
 
         expect(res.origin.protocol).to.eql(protocol);
         expect(res.origin.hostname).to.eql(hostname);

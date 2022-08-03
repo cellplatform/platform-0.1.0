@@ -79,20 +79,21 @@ export function Controller(args: { bus: t.EventBus<any> }): t.PeerController {
       },
     });
 
-    conn.on('close', async () => {
-      /**
-       * NOTE:
-       * The close event is not being fired for [Media] connections.
-       * Issue: https://github.com/peers/peerjs/issues/780
-       *
-       * See work-around that uses the [netbus] "connection.ensureClosed" strategy.
-       */
-      const peer = connRef.peer;
-      events.connection(peer.self, peer.remote.id).close(connRef.id);
-    });
-
     if (kind === 'data') {
       const data = conn as PeerJS.DataConnection;
+
+      data.on('close', async () => {
+        /**
+         * NOTE:
+         * The close event is not being fired for [Media] connections.
+         * Issue: https://github.com/peers/peerjs/issues/780
+         *
+         * See work-around that uses the [netbus] "connection.ensureClosed" strategy.
+         */
+        const peer = connRef.peer;
+        events.connection(peer.self, peer.remote.id).close(connRef.id);
+      });
+
       data.on('data', (data: any) => {
         if (typeof data === 'object') {
           const source = { peer: connRef.peer.remote.id, connection: connRef.id };
@@ -115,7 +116,7 @@ export function Controller(args: { bus: t.EventBus<any> }): t.PeerController {
         key: DEFAULT.PEERJS_KEY,
       });
       const { host, path, port, secure, key } = signal;
-      const peer = new PeerJS(e.self, { host, path, port, secure, key });
+      const peer = new PeerJS.PeerJS(e.self, { host, path, port, secure, key });
       const self: SelfRef = { id: e.self, peer, createdAt, signal, connections: [], media: {} };
 
       let complete = false;

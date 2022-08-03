@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil, throttleTime, debounceTime } from 'rxjs/operators';
 
-import { t, defaultValue } from '../common';
+import { t, rx } from '../common';
 
 type Path = 'initialized' | 'ctx/current' | 'env/viaAction' | 'env/viaSubject' | 'items';
 type PathMatch = (path: string) => boolean;
@@ -22,7 +22,7 @@ export function useActionsRedraw(args: {
   const bus = args.bus as t.EventBus<t.ActionEvent>;
 
   useEffect(() => {
-    const dispose$ = new Subject<void>();
+    const { dispose$, dispose } = rx.disposable();
 
     if (actions) {
       const model = actions.toModel();
@@ -33,7 +33,7 @@ export function useActionsRedraw(args: {
 
       // Redraw when explicitly invoked.
       model.state.redraw$
-        .pipe(takeUntil(dispose$), throttleTime(defaultValue(args.throttle, 0)), debounceTime(10))
+        .pipe(takeUntil(dispose$), throttleTime(args.throttle ?? 0), debounceTime(10))
         .subscribe(redraw);
 
       // Redraw when specific model path has changed.
@@ -42,13 +42,13 @@ export function useActionsRedraw(args: {
           takeUntil(dispose$),
           filter((e) => e.to.namespace === ns),
           filter((e) => isChangedPath(args.paths, e.patches)),
-          throttleTime(defaultValue(args.throttle, 0)),
+          throttleTime(args.throttle ?? 0),
           debounceTime(0),
         )
         .subscribe(redraw);
     }
 
-    return () => dispose$.next();
+    return dispose;
   }, [bus, actions]); // eslint-disable-line
 }
 

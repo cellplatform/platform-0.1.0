@@ -2,7 +2,10 @@ import './css.global';
 import React, { useMemo } from 'react';
 import { constants, css, CssValue, Markdown as M } from '../../common';
 
-export type MarkdownProps = { style?: CssValue };
+export type MarkdownProps = {
+  children?: React.ReactNode;
+  style?: CssValue;
+};
 
 export const Markdown: React.FC<MarkdownProps> = (props) => {
   const children = useMemo(() => {

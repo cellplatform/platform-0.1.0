@@ -285,7 +285,7 @@ describe('TreeState', () => {
 
       const children = tree.state.children || [];
       expect(children.length).to.eql(2);
-      expect(children[0].id).to.match(/\:mary$/);
+      expect(children[0].id).to.match(/:mary$/);
       expect(children[1].id).to.eql(child1.id);
 
       expect(fired.length).to.eql(1);

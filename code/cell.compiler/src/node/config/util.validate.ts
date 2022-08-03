@@ -15,11 +15,11 @@ export const validate = {
       return done('Namespace ("scope") is empty.');
     }
 
-    if (text.match(/[^a-zA-Z0-9_\.]/)) {
+    if (text.match(/[^a-zA-Z0-9_.]/)) {
       return done('Namespace ("scope") contains invalid character.');
     }
 
-    if (!text.match(/^[a-zA-Z_\.]/)) {
+    if (!text.match(/^[a-zA-Z_.]/)) {
       return done('Namespace ("scope") starts with an invalid character.');
     }
 

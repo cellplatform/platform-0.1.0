@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.fs.local",
-  "version": "0.4.225",
+  "version": "0.4.228",
   "description": "Local filesystem support for CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,18 +13,18 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.fs": "0.4.225",
-    "@platform/cell.schema": "0.5.103",
-    "@platform/cell.types": "0.5.100",
-    "@platform/fs": "0.7.5",
-    "@platform/fs.s3.types": "0.3.27",
-    "@platform/fs.types": "0.1.12",
-    "@platform/log": "0.1.62",
-    "image-size": "1.0.0"
+    "@platform/cell.fs": "0.4.228",
+    "@platform/cell.schema": "0.5.106",
+    "@platform/cell.types": "0.5.103",
+    "@platform/fs": "0.7.9",
+    "@platform/fs.s3.types": "0.3.30",
+    "@platform/fs.types": "0.1.15",
+    "@platform/log": "0.1.65",
+    "image-size": "1.0.2"
   },
   "devDependencies": {
-    "@platform/test": "0.2.10",
-    "@platform/ts": "4.1.23"
+    "@platform/test": "0.3.2",
+    "@platform/ts": "4.7.7"
   },
   "files": [
     "lib",

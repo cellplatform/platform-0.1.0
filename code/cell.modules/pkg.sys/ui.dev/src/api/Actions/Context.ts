@@ -1,4 +1,4 @@
-import { t } from '../../common';
+import { t } from './common';
 import { Handler } from './Handler';
 
 type O = Record<string, unknown>;

@@ -1,4 +1,4 @@
-import { Builder, DEFAULT, StateObject, t } from '../../common';
+import { Builder, DEFAULT, StateObject, t } from './common';
 import { Handlers } from './Handlers';
 
 type O = Record<string, unknown>;

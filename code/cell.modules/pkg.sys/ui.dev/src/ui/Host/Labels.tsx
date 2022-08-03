@@ -4,6 +4,7 @@ import { constants, css, Color, t } from '../../common';
 const KEYS: (keyof t.HostedLabel)[] = ['topLeft', 'topRight', 'bottomLeft', 'bottomRight'];
 
 export type ILabelsProps = {
+  children?: React.ReactNode;
   label?: t.HostedLayout['label'];
   color?: t.HostedLayout['labelColor'];
   fontSize?: number;
@@ -41,7 +42,7 @@ export const Labels: React.FC<ILabelsProps> = (props: ILabelsProps = {}) => {
 
   const render = (edge: keyof t.HostedLabel) => {
     const children = values[edge];
-    return children && <div {...css(styles.text, styles[edge])}>{children}</div>;
+    return children && <div {...css(styles.text, styles[edge])}>{children as any}</div>;
   };
 
   return (

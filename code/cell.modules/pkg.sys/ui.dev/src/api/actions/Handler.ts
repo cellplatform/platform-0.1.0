@@ -1,4 +1,4 @@
-import { R, t } from '../../common';
+import { R, t } from './common';
 
 type O = Record<string, unknown>;
 type SettingsArgs = t.ActionHandlerSettingsArgs;

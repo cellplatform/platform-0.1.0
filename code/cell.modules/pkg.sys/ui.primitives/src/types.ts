@@ -2,7 +2,6 @@
  * @platform
  */
 export * from '@platform/ui.button/lib/types';
-export * from '@platform/ui.image/lib/types';
 
 /**
  * @local
@@ -22,6 +21,7 @@ export * from './ui/DotTabstrip/types';
 export * from './ui/PropList/types';
 export * from './ui/MinSize/types';
 export * from './ui/QRCode/types';
+export * from './ui/Spinner/types';
 
 export * from './ui/Cmd.Card/types';
 export * from './ui/Cmd.Bar/types';
@@ -38,7 +38,6 @@ export * from './ui/Error.Boundary/types';
 
 export * from './ui/Fullscreen/types';
 
-export * from './ui/Tree/types';
 export * from './ui/StackPanel/types';
 
 export * from './ui/Text/types';

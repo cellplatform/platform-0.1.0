@@ -1,6 +1,5 @@
-import { expect } from 'chai';
+import { expect, log } from '../test';
 import { node } from '.';
-import { log } from '../common';
 
 describe('node (integration)', () => {
   it.skip('getVersion', async () => {

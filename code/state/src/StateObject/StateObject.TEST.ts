@@ -543,7 +543,7 @@ describe('StateObject', () => {
       const combined = StateObject.combine<T>(initial).add('bar', bar).add('foo', foo);
 
       foo.change((draft) => draft.count++);
-      bar.change((draft) => (draft.isEnabled = !Boolean(draft.isEnabled)));
+      bar.change((draft) => (draft.isEnabled = !draft.isEnabled));
 
       expect(combined.state.foo.count).to.eql(2);
       expect(combined.state.bar.isEnabled).to.eql(true);

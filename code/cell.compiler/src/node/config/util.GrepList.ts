@@ -12,7 +12,7 @@ export function GrepList<T extends GrepObject>(list: T[] = []) {
     negations,
     isNegated(path?: string) {
       return path
-        ? negations.some((item) => fs.match((item.grep || '').replace(/^\!/, '')).path(path))
+        ? negations.some((item) => fs.match((item.grep || '').replace(/^!/, '')).path(path))
         : false;
     },
   };

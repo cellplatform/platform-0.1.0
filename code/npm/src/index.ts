@@ -1,9 +1,4 @@
-import * as npm from './npm';
-
-export { npm };
 export { fs, semver, exec } from './common';
+
+export { Npm } from './Npm';
 export { NpmPackage } from './pkg';
-export { yarn } from './yarn';
-export { node } from './node';
-export { prompt } from './prompt';
-export * from './types';

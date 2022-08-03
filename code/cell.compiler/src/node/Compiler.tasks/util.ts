@@ -1,2 +1,2 @@
-export { wp } from '../config.webpack';
-export { beforeCompile, afterCompile } from '../config.webpack/hooks';
+export { wp } from '../Config.webpack';
+export { beforeCompile, afterCompile } from '../Config.webpack/hooks';

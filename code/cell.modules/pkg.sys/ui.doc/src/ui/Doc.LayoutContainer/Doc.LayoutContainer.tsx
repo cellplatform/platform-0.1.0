@@ -9,6 +9,7 @@ import { Guides } from './ui/Guides';
 export type DocLayoutScrollTop = { top: number };
 
 export type DocLayoutContainerProps = {
+  children?: React.ReactNode;
   debug?: boolean | t.DocLayoutContainerDebug;
   min?: { width?: number; height?: number };
   scrollable?: boolean;

@@ -5,7 +5,7 @@ import { PeerJS } from '../../common';
  * Monitors errors on a PeerJS instance.
  */
 export const PeerJsUtil = {
-  error(peer: PeerJS) {
+  error(peer: PeerJS.PeerJS) {
     const $ = new Subject<{ type: string; message: string }>();
 
     const handler = (error: any) => {

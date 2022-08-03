@@ -1,37 +1,18 @@
 import { resolve } from 'path';
 import { Subject } from 'rxjs';
 
-import { exec, time, ITimer, value } from '../common';
+import { exec, time, ITimer, value, t } from '../common';
 import { yarn } from '../yarn';
-
-export type Engine = 'YARN' | 'NPM';
-
-export type INpmInstallResult = {
-  elapsed: number;
-  success: boolean;
-  code: number;
-  dir: string;
-  engine: Engine;
-  info: string[];
-  errors: string[];
-};
-
-export type INpmInstallEvent = {
-  type: 'INFO' | 'ERROR' | 'COMPLETE';
-  result: INpmInstallResult;
-  info?: string;
-  error?: string;
-};
 
 /**
  * Runs an NPM or YARN install command.
  */
 export async function install(
   args: {
-    use?: Engine;
+    use?: t.Engine;
     dir?: string;
     silent?: boolean;
-    events$?: Subject<INpmInstallEvent>;
+    events$?: Subject<t.INpmInstallEvent>;
     NPM_TOKEN?: string;
   } = {},
 ) {
@@ -42,7 +23,7 @@ export async function install(
   const cmd = await installCommand({ use });
   const silent = value.defaultValue(args.silent, true);
 
-  let result: INpmInstallResult = {
+  let result: t.INpmInstallResult = {
     code: 0,
     success: true,
     elapsed: 0,
@@ -52,7 +33,7 @@ export async function install(
     errors: [],
   };
 
-  const next = (type: INpmInstallEvent['type']) => {
+  const next = (type: t.INpmInstallEvent['type']) => {
     if (!events$) {
       return;
     }
@@ -111,7 +92,7 @@ function formatInfoLine(text: string) {
 function formatErrorLine(text: string) {
   return text
     .replace(/^error/, '')
-    .replace(/^ERROR\:/, '')
+    .replace(/^ERROR:/, '')
     .replace(/\n$/, '')
     .trim();
 }
@@ -120,14 +101,14 @@ function isErrorText(text: string) {
   return text.startsWith('ERROR:');
 }
 
-async function toEngine(use?: Engine) {
+async function toEngine(use?: t.Engine) {
   if (use) {
     return use;
   }
   return (await yarn.isInstalled()) ? 'YARN' : 'NPM';
 }
 
-async function installCommand(args: { use: Engine }) {
+async function installCommand(args: { use: t.Engine }) {
   const use = await toEngine(args.use);
   switch (use) {
     case 'NPM':
@@ -151,10 +132,10 @@ function getExitCode(errors: string[]) {
 }
 
 function formatResult(args: {
-  result: INpmInstallResult;
+  result: t.INpmInstallResult;
   timer: ITimer;
-  use?: Engine;
-}): INpmInstallResult {
+  use?: t.Engine;
+}): t.INpmInstallResult {
   const { timer, result } = args;
   const code = getExitCode(result.errors);
   const success = code === 0;

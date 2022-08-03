@@ -83,9 +83,11 @@ export const Layout: React.FC<LayoutProps> = (props) => {
 
   const elIconRight = (
     <div {...styles.icon.right} onClick={() => onClick('Icon:Right')}>
-      {props.renderIconRight === true && elDefaultRight}
-      {typeof props.renderIconRight === 'number' && elDefaultRight}
-      {typeof props.renderIconRight === 'function' && props.renderIconRight?.({ text })}
+      <>
+        {props.renderIconRight === true && elDefaultRight}
+        {typeof props.renderIconRight === 'number' && elDefaultRight}
+        {typeof props.renderIconRight === 'function' && props.renderIconRight?.({ text })}
+      </>
     </div>
   );
 

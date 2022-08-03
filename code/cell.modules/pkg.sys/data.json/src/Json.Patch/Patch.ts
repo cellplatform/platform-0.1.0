@@ -60,7 +60,7 @@ export const Patch: t.Patch = {
       const op: t.PatchOperationKind = 'update';
       return { op, to: to as T, patches };
     } else {
-      const [to, forward, backward] = produceWithPatches<T>(from, () => fn);
+      const [to, forward, backward] = produceWithPatches<T>(from, () => fn as any);
       const patches = Patch.toPatchSet(forward, backward);
       const op: t.PatchOperationKind = 'replace';
       return { op, to: to as T, patches };

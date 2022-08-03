@@ -20,8 +20,8 @@
   "dependencies": {},
   "devDependencies": {
     "@platform/cell.compiler": "~0.4.1",
-    "react": "~17.0.2",
-    "react-dom": "~17.0.2"
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
   },
   "license": "MIT",
   "private": true

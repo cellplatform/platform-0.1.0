@@ -36,7 +36,7 @@ export const FilePath = {
     }
 
     return {
-      ok: !Boolean(error),
+      ok: !error,
       path,
       dir,
       filename,
@@ -94,9 +94,9 @@ const Clean = {
   path(path: string, root: string) {
     return (path ?? '')
       .trim()
-      .replace(/^file\:\/\//, '')
+      .replace(/^file:\/\//, '')
       .replace(new RegExp(`^${root}`), '')
-      .replace(/^\~\//, '')
+      .replace(/^~\//, '')
       .replace(/^\/*/, '');
   },
 };

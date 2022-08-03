@@ -89,6 +89,7 @@ async function getJson(
     } catch (error: any) {
       log.error('Raw JSON text:');
       log.info.yellow(text);
+      // console.log('error', error);
       throw error;
     }
   };

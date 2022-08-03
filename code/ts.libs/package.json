@@ -1,34 +1,34 @@
 {
   "name": "@platform/ts.libs",
-  "version": "4.3.3",
+  "version": "4.7.6",
   "description": "Common TypesScript and linter configuration.",
   "scripts": {
     "test": "echo no-op",
-    "lint": "sh lint.sh $@",
-    "build": "sh build.sh $@",
-    "prepare": "yarn build && yarn lint"
+    "lint": "sh sh/lint.sh $@",
+    "build": "sh sh/build.sh $@",
+    "prepare": "yarn build && yarn lint",
+    "tmp": "tsc"
   },
   "dependencies": {
-    "@types/node": "16.7.8",
-    "@typescript-eslint/eslint-plugin": "4.30.0",
-    "@typescript-eslint/eslint-plugin-tslint": "4.30.0",
-    "@typescript-eslint/parser": "4.30.0",
-    "eslint": "7.32.0",
-    "eslint-config-prettier": "8.3.0",
-    "eslint-plugin-import": "2.24.2",
-    "eslint-plugin-jsdoc": "36.0.8",
+    "@types/node": "18.6.3",
+    "@typescript-eslint/eslint-plugin": "5.32.0",
+    "@typescript-eslint/parser": "5.32.0",
+    "eslint": "8.21.0",
+    "eslint-config-prettier": "8.5.0",
+    "eslint-plugin-import": "2.26.0",
+    "eslint-plugin-jsdoc": "39.3.4",
     "eslint-plugin-prefer-arrow": "1.2.3",
-    "eslint-plugin-prettier": "4.0.0",
-    "eslint-plugin-react": "7.25.1",
-    "eslint-plugin-react-hooks": "4.2.0",
-    "prettier": "2.3.2",
-    "ts-node": "10.2.1",
-    "tslib": "2.3.1",
-    "typescript": "4.4.2"
+    "eslint-plugin-prettier": "4.2.1",
+    "eslint-plugin-react": "7.30.1",
+    "eslint-plugin-react-hooks": "4.6.0",
+    "prettier": "2.7.1",
+    "ts-node": "10.9.1",
+    "tslib": "2.4.0",
+    "typescript": "4.7.4"
   },
   "files": [
     "lint.js",
-    "*.sh",
+    "sh/*.sh",
     "*.json"
   ],
   "license": "MIT"

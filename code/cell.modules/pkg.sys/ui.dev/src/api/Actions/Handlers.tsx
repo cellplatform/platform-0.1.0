@@ -1,4 +1,4 @@
-import { DEFAULT, defaultValue, t } from '../../common';
+import { DEFAULT, t } from './common';
 import { Context } from './Context';
 import { renderList } from './render.List';
 import { renderSubject } from './render.Subject';
@@ -109,7 +109,7 @@ export const Handlers = {
       merge(args) {
         const mergeBuilder = args.params[0] as t.Actions;
         const options = (args.params[1] || {}) as t.ActionAddOptions;
-        const insertAt = defaultValue(options.insertAt, 'end');
+        const insertAt = options.insertAt ?? 'end';
 
         args.model.change((draft) => {
           const obj = mergeBuilder.toObject();

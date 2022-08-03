@@ -1,17 +1,17 @@
 {
   "name": "@platform/fs.types",
-  "version": "0.1.12",
+  "version": "0.1.15",
   "description": "Types for a general POSIX style file-system.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "echo sh ../../node_modules/@platform/test/test.sh $@",
-    "lint": "sh ../../node_modules/@platform/ts.libs/lint.sh $@",
-    "build": "sh ../../node_modules/@platform/ts.libs/build.sh $@",
+    "lint": "sh ../../node_modules/@platform/ts.libs/sh/lint.sh $@",
+    "build": "sh ../../node_modules/@platform/ts.libs/sh/build.sh $@",
     "prepare": "yarn build && yarn lint"
   },
   "devDependencies": {
-    "@platform/ts.libs": "4.3.3"
+    "@platform/ts.libs": "4.7.6"
   },
   "files": [
     "lib"

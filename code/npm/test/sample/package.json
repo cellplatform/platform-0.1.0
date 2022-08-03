@@ -4,13 +4,13 @@
   "main": "index.js",
   "dependencies": {
     "semver": "4.3.5",
-    "express": "4.16.4"
+    "express": "4.18.1"
   },
   "devDependencies": {
     "mocha": "latest"
   },
   "peerDependencies": {
-    "react": "~latest"
+    "react": "latest"
   },
   "license": "MIT"
 }

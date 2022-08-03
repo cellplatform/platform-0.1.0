@@ -6,6 +6,7 @@ import { t, rx } from '../common';
 import { ErrorViewDefault } from './ErrorView.Default';
 
 export type ErrorBoundaryProps = {
+  children?: React.ReactNode;
   renderError?: t.RenderBoundaryError;
   style?: t.CssValue;
 };

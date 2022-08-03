@@ -4,7 +4,7 @@ type ConnectionKind = t.PeerConnectRes['kind'];
 
 export type SelfRef = {
   id: t.PeerId;
-  peer: PeerJS;
+  peer: PeerJS.PeerJS;
   createdAt: number;
   signal: t.PeerSignallingEndpoint;
   connections: ConnectionRef[];

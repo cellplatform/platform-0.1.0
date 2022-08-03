@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { css, CssValue, defaultValue, Color, t, constants } from '../../common';
+import { css, CssValue, Color, t, constants } from '../../common';
 import { Subject, SubjectCropmark } from './Subject';
 import { Icons } from '../Icons';
 import { Button } from '../Primitives';
@@ -22,7 +22,7 @@ export type HostLayoutProps = {
 export const HostLayout: React.FC<HostLayoutProps> = (props) => {
   const { subject, host, actionsVisible, actionsOnEdge } = props;
   const items = subject?.items || [];
-  const orientation = defaultValue(host?.orientation, 'y');
+  const orientation = host?.orientation ?? 'y';
   const spacing = Math.max(0, host?.spacing ?? 60);
 
   const envLayout = { ...props.env.viaSubject.layout, ...props.env.viaAction.layout };
@@ -127,7 +127,7 @@ const toAbsolute = (input: t.HostedLayout['position']): t.EdgePosition | undefin
 };
 
 const toBorderColor = (input: t.HostedLayout['border']) => {
-  const border = defaultValue(input, true);
+  const border = input ?? true;
   const value = border === true ? 0.3 : border === false ? 0 : border;
   return Color.format(value);
 };

@@ -2,10 +2,8 @@ import unified from 'unified';
 import markdown from 'remark-parse';
 import html from 'rehype-stringify';
 
-/* eslint-disable  @typescript-eslint/no-var-requires */
-const remark2rehype = require('remark-rehype');
-const format = require('rehype-format');
-/* eslint-enable */
+const remark2rehype = require('remark-rehype'); // eslint-disable-line
+const format = require('rehype-format'); // eslint-disable-line
 
 /**
  * See:

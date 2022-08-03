@@ -16,10 +16,10 @@
     "serve": "cell.compiler serve $@"
   },
   "dependencies": {
-    "immer": "9.0.12"
+    "immer": "9.0.15"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "~0.4.1",
+    "@platform/cell.compiler": "~0.4.4",
     "react": "17.0.2",
     "react-dom": "17.0.2"
   },

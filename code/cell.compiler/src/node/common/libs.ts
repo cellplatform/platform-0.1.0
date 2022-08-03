@@ -19,15 +19,19 @@ import { id } from '@platform/util.value';
 export { id, rx, defaultValue, value, time, deleteUndefined } from '@platform/util.value';
 export const slug = id.shortid;
 
-export { Builder } from '@platform/cell.module';
 export { StateObject } from '@platform/state';
 
 export { fs } from '@platform/fs';
 export { log } from '@platform/log/lib/server';
-export { Client, HttpClient } from '@platform/cell.client';
+// export { Client, HttpClient } from '@platform/cell.client';
 export { Schema, Uri, Encoding, ManifestHash } from '@platform/cell.schema';
 
 export { exec } from '@platform/exec';
 export { Port } from '@platform/http/lib/node';
 export { Path, Format } from '@platform/cell.runtime.node/lib/common';
 export { ManifestFile } from '@platform/cell.fs.local';
+
+/**
+ * @system
+ */
+export { Builder } from 'sys.ui.dev/lib/api/Builder';

@@ -15,6 +15,7 @@ import {
 } from '../DEV.common';
 
 export type DevModalProps = {
+  children?: React.ReactNode;
   bus: t.EventBus<any>;
   closeOnEscape?: boolean;
   background?: string | number;

@@ -1,11 +1,12 @@
 import * as React from 'react';
 
-import { css, defaultValue, Color, t } from '../../common';
+import { css, Color, t } from '../../common';
 import { Cropmarks } from './Cropmarks';
 import { Labels } from './Labels';
 
 export type SubjectCropmark = { size: number; margin: number };
 export type SubjectProps = {
+  children?: React.ReactNode;
   cropmark: SubjectCropmark;
   layout: t.HostedLayout;
 };
@@ -45,7 +46,7 @@ export const Subject: React.FC<SubjectProps> = (props) => {
  */
 const SubjectCropmarks: React.FC<SubjectProps> = (props) => {
   const { layout } = props;
-  const cropmarks = defaultValue(layout.cropmarks, true);
+  const cropmarks = layout.cropmarks ?? true;
 
   if (!cropmarks) return null;
 

@@ -1,5 +1,5 @@
 import { deleteUndefined, fs, t, DEFAULT, ManifestFile, ManifestHash } from '../../common';
-import { FileAccess } from '../../config';
+import { FileAccess } from '../../Config';
 
 type M = t.Manifest;
 

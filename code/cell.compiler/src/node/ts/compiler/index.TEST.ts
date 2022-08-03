@@ -1,6 +1,6 @@
 import { TscCompiler } from '.';
 import { expect, fs, expectError, SampleBundles, t } from '../../../test';
-import { TypeManifest } from '../../manifest';
+import { TypeManifest } from '../../Manifest';
 
 const join = (dir: t.TscDir) => fs.join(dir.base, dir.dirname);
 

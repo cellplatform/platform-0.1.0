@@ -274,7 +274,7 @@ export const HtmlInput: React.FC<HtmlInputProps> = (props) => {
     } as any;
   }
 
-  styles.base = R.merge(styles.base, Util.css.toTextInput(isEnabled, valueStyle));
+  styles.base = R.mergeDeepRight(styles.base, Util.css.toTextInput(isEnabled, valueStyle));
   styles.base.opacity = isEnabled ? 1 : disabledOpacity;
 
   return (

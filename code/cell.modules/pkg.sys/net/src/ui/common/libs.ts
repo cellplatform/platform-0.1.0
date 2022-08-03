@@ -10,7 +10,7 @@ export { Card } from 'sys.ui.primitives/lib/ui/Card';
 export { List } from 'sys.ui.primitives/lib/ui/List';
 export { Text } from 'sys.ui.primitives/lib/ui/Text';
 export { ObjectView } from 'sys.ui.primitives/lib/ui/ObjectView';
-export { Spinner } from 'sys.ui.primitives/lib/ui.ref/spinner/Spinner';
+export { Spinner } from 'sys.ui.primitives/lib/ui/Spinner';
 export { EventStack } from 'sys.ui.primitives/lib/ui/Event.Stack';
 export { EventPipe } from 'sys.ui.primitives/lib/ui/Event.Pipe';
 export { EventList } from 'sys.ui.primitives/lib/ui/Event.List';

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { color, COLORS, constants, css, CssValue, t, defaultValue } from '../common';
+import { color, COLORS, constants, css, CssValue, t } from '../common';
 import { Icons } from '../Icons';
 import { Markdown } from '../Markdown';
 import { Spinner } from '../Primitives';
@@ -40,8 +40,8 @@ export type LayoutProps = {
 export const Layout: React.FC<LayoutProps> = (props) => {
   const { label = {}, placeholder, isSpinning, indent } = props;
 
-  const labelPressOffset = defaultValue(label.pressOffset, 0);
-  const labelEllipsis = defaultValue(label.ellipsis, true);
+  const labelPressOffset = label.pressOffset ?? 0;
+  const labelEllipsis = label.ellipsis ?? true;
 
   const [isOver, setIsOver] = useState<boolean>(false);
   const [isDown, setIsDown] = useState<boolean>(false);
@@ -147,8 +147,8 @@ export const Layout: React.FC<LayoutProps> = (props) => {
   const Icon = props.icon?.Component || Icons.Variable;
   const elIcon = !isSpinning && (
     <Icon
-      color={defaultValue(props.icon?.color, isOver ? COLORS.BLUE : COLORS.DARK)}
-      size={defaultValue(props.icon?.size, 20)}
+      color={props.icon?.color ?? isOver ? COLORS.BLUE : COLORS.DARK}
+      size={props.icon?.size ?? 20}
       style={styles.main.icon}
     />
   );

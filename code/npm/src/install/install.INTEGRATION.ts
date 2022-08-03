@@ -1,15 +1,11 @@
-import { resolve } from 'path';
-import { Subject } from 'rxjs';
-
-import { npm } from '..';
-import { fs, log } from '../common';
+import { Npm, log, Subject, t } from '../test';
 
 describe.skip('install (integration)', function () {
   this.timeout(100000);
 
   it('npm.install', async () => {
-    await fs.remove(resolve('./test/install/node_modules'));
-    const events$ = new Subject<npm.INpmInstallEvent>();
+    await Npm.fs.remove(Npm.fs.resolve('./test/install/node_modules'));
+    const events$ = new Subject<t.INpmInstallEvent>();
 
     events$.subscribe({
       next: (e) => log.info(e, '\n'),
@@ -17,13 +13,13 @@ describe.skip('install (integration)', function () {
       complete: () => log.info.cyan('COMPLETE'),
     });
 
-    const res = await npm.install({
+    const res = await Npm.install({
       //  use: 'NPM'
       dir: './test/install',
       events$,
     });
-    // installing.events$.subscribe(e => log.info(e));
 
+    //   // installing.events$.subscribe(e => log.info(e));
     // const res = await installing.promise;
     log.info.cyan('----------------------------------------------------------');
     log.info(res);

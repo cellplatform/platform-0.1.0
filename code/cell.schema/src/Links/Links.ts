@@ -87,7 +87,7 @@ export class Links {
   }
   public static parseKey(prefix: string, linkKey: string): t.ILinkKey {
     const key = (linkKey || '').trim();
-    let path = key.replace(new RegExp(`^${prefix}\:`), '');
+    let path = key.replace(new RegExp(`^${prefix}:`), '');
     path = shouldDecode(path) ? Links.decodeKey(path) : path;
     const lastSlash = path.lastIndexOf('/');
     const name = lastSlash < 0 ? path : path.substring(lastSlash + 1);

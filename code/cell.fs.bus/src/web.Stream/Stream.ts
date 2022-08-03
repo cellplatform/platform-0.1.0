@@ -53,6 +53,7 @@ export const Stream = {
     const reader = stream.getReader() as ReadableStreamDefaultReader<Uint8Array>;
     const chunks: Uint8Array[] = [];
 
+    // eslint-disable-next-line no-constant-condition
     while (true) {
       const { value, done } = await reader.read();
       if (value) chunks.push(value);

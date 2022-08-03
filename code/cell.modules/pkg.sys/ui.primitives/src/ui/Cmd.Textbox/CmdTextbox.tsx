@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Button } from '../../ui.ref/button/Button';
-import { Spinner } from '../../ui.ref/spinner/Spinner';
+import { Spinner } from '../Spinner';
 import { color, COLORS, css, CssValue, t } from '../common';
 import { Icons } from '../Icons';
 import { TextInput } from '../Text.Input';

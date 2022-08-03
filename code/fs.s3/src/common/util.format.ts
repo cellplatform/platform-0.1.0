@@ -5,7 +5,7 @@ export function isOK(status: number) {
 }
 
 export function formatETag(value?: string) {
-  return value ? value.replace(/^\"/, '').replace(/\"$/, '') : '';
+  return value ? value.replace(/^"/, '').replace(/"$/, '') : '';
 }
 
 export function formatTimestamp(input?: string) {

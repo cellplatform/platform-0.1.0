@@ -1,7 +1,7 @@
 import { fs } from '../../common';
 import { Dirs } from './types';
 
-export { Info } from './util.Info';
+export { Info } from './Util.Info';
 
 /**
  * Helper for working with clean directory paths.

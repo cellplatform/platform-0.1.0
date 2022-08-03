@@ -318,7 +318,7 @@ export class NeDb implements t.INeDb {
           }
           return;
         } else {
-          const expr = suffix === '**' ? `^${dir}\/*` : `^${dir}\/([^/]*)$`;
+          const expr = suffix === '**' ? `^${dir}/*` : `^${dir}/([^/]*)$`;
           return { _id: { $regex: new RegExp(expr) } };
         }
       };

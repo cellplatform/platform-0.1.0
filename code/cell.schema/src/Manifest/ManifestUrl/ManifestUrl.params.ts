@@ -17,6 +17,6 @@ export function params(url: t.ManifestUrlParts, options: { entry?: string }) {
   Object.keys(params).forEach((key) => (next = withQuery(key, params[key])));
 
   // Finish up.
-  next = next.replace(/\?$/, '').replace(/\&$/, '');
+  next = next.replace(/\?$/, '').replace(/&$/, '');
   return parse(next);
 }

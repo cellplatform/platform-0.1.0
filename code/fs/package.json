@@ -1,37 +1,37 @@
 {
   "name": "@platform/fs",
-  "version": "0.7.5",
+  "version": "0.7.9",
   "description": "POSIX style file-system tools.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "sh ../../node_modules/@platform/test/test.sh $@",
-    "lint": "sh ../../node_modules/@platform/ts.libs/lint.sh $@",
-    "build": "sh ../../node_modules/@platform/ts.libs/build.sh $@",
+    "lint": "sh ../../node_modules/@platform/ts.libs/sh/lint.sh $@",
+    "build": "sh ../../node_modules/@platform/ts.libs/sh/build.sh $@",
     "prepare": "yarn build && yarn lint && yarn test"
   },
   "dependencies": {
-    "@platform/fs.types": "0.1.12",
-    "@platform/types": "0.5.25",
-    "@types/fs-extra": "9.0.12",
-    "@types/js-yaml": "4.0.3",
-    "archiver": "5.3.0",
-    "dotenv": "10.0.0",
+    "@platform/fs.types": "0.1.15",
+    "@platform/types": "0.5.27",
+    "@types/fs-extra": "9.0.13",
+    "@types/js-yaml": "4.0.5",
+    "archiver": "5.3.1",
+    "dotenv": "16.0.1",
     "extract-zip": "2.0.1",
-    "filesize": "8.0.0",
-    "fs-extra": "10.0.0",
-    "glob": "7.1.7",
+    "filesize": "9.0.11",
+    "fs-extra": "10.1.0",
+    "glob": "8.0.3",
     "js-yaml": "4.1.0",
-    "minimatch": "3.0.4"
+    "minimatch": "5.1.0"
   },
   "devDependencies": {
-    "@platform/test": "0.2.10",
-    "@platform/ts.libs": "4.3.3",
-    "@types/archiver": "5.1.1",
+    "@platform/test": "0.3.2",
+    "@platform/ts.libs": "4.7.6",
+    "@types/archiver": "5.3.1",
     "@types/dotenv": "8.2.0",
     "@types/extract-zip": "2.0.1",
     "@types/filesize": "5.0.0",
-    "@types/glob": "7.1.4"
+    "@types/glob": "7.2.0"
   },
   "files": [
     "lib",

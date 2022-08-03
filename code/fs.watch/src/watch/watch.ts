@@ -7,7 +7,7 @@ import { chokidar, t } from '../common';
 export * from '../types';
 
 export const IGNORE = {
-  DOT_FILES: /(^|[\/\\])\../,
+  DOT_FILES: /(^|[/\\])\../,
 };
 
 /**

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { DEFAULT, format, SelectUtil, t } from '../../../common';
+import { DEFAULT, format, SelectUtil, t } from '../common';
 
 type O = Record<string, unknown>;
 

@@ -1,3 +1,5 @@
+/* eslint-disable no-useless-escape */
+
 const ID = {
   NS: `([A-Za-z0-9\.]*)`,
   CELL: `([A-Z]+[0-9]+)`,

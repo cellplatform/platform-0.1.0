@@ -32,7 +32,7 @@ export const sampleItems: t.PropListItem[] = [
   { label: 'boolean', value: true },
   { label: 'boolean (switch)', value: { data: true, kind: 'Switch' } },
   { label: 'boolean (switch) - disabled', value: { data: undefined, kind: 'Switch' } },
-  { label: 'clipboard function', value: { data: 'hello', clipboard: () => Math.random() } },
+  { label: 'clipboard function', value: { data: 'hello', clipboard: () => String(Math.random()) } },
   { label: '<Text.Syntax>', value: { data: '{object}, [1,2,3]', monospace: true } },
   {
     label: 'monospace (fontSize: 9)',

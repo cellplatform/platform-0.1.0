@@ -1,4 +1,4 @@
-import { fs, Logger, R, t } from '../common';
+import { fs, R, t } from '../common';
 
 const filesize = fs.size.toString;
 

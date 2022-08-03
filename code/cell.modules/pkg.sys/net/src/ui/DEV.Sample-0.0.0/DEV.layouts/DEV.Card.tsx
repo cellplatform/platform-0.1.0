@@ -12,6 +12,7 @@ import {
 } from '../DEV.common';
 
 export type DevCardProps = {
+  children?: React.ReactNode;
   width?: number;
   margin?: t.CssEdgesInput;
   padding?: t.CssEdgesInput;

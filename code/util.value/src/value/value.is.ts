@@ -24,7 +24,8 @@ export function isPlainObject(value: any): boolean {
   }
 
   // If the constructor does not have an object-specific method.
-  if (prot.hasOwnProperty('isPrototypeOf') === false) {
+  const hasOwnPropery = prot.hasOwnProperty('isPrototypeOf'); // eslint-disable-line
+  if (hasOwnPropery === false) {
     return false;
   }
 
@@ -183,5 +184,5 @@ export function isEmail(value?: string) {
   return value ? emailRegEx.test(value) : false;
 }
 const emailRegEx = new RegExp(
-  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
 );

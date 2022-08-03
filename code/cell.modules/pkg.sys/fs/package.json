@@ -22,13 +22,13 @@
     "reset": "rm -rf tmp"
   },
   "dependencies": {
-    "@platform/cell.fs.bus": "0.0.9",
-    "image-js": "0.33.1"
+    "@platform/cell.fs.bus": "0.0.12",
+    "image-js": "0.35.0"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "~0.4.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "@platform/cell.compiler": "~0.4.4",
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
   },
   "license": "MIT",
   "private": true

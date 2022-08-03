@@ -1,16 +1,6 @@
 /**
- * @platform
- */
-export { copyToClipboard, useResizeObserver } from '@platform/react';
-export { Button, ButtonProps } from '@platform/ui.button';
-export { QueryString } from '@platform/util.string/lib/QueryString';
-export { Spinner } from '@platform/ui.spinner';
-export { StateObject } from '@platform/state';
-
-/**
  * @system
  */
-export { ObjectView, Textbox, LocalStorage } from 'sys.ui.dev';
 export { Card, CardProps } from 'sys.ui.primitives/lib/ui/Card';
 export { useDragTarget } from 'sys.ui.primitives/lib/hooks/DragTarget';
 export { PropList } from 'sys.ui.primitives/lib/ui/PropList';

@@ -1,8 +1,0 @@
-node_modules
-examples
-sh
-*.log
-Dockerfile
-.dockerignore
-.git
-.gitignore

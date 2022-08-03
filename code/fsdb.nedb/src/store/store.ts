@@ -19,7 +19,7 @@ export class NedbStore<G = any> implements t.INedbStore<G> {
   }
 
   public static formatFilename(filename?: string) {
-    return filename ? filename.replace(/^nedb\:/, '') : filename;
+    return filename ? filename.replace(/^nedb:/, '') : filename;
   }
 
   /**
@@ -32,7 +32,7 @@ export class NedbStore<G = any> implements t.INedbStore<G> {
 
     // Construct the underlying data-store.
     const config = typeof args === 'object' ? args : {};
-    const autoload = Boolean(filename) ? config.autoload : false;
+    const autoload = filename ? config.autoload : false;
     this.store = new Nedb({
       filename,
       autoload,

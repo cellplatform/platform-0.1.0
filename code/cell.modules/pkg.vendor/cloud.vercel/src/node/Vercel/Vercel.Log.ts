@@ -1,4 +1,4 @@
-import { log, t, QRCode } from './common';
+import { log, t } from './common';
 
 export const VercelLog = {
   /**
