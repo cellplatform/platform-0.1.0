@@ -13,7 +13,8 @@
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cell.compiler serve $@"
+    "serve": "cell.compiler serve $@",
+    "deploy": "ts-node -T script.ts/vercel.run"
   },
   "dependencies": {
     "@types/vimeo__player": "^2.10.0",
