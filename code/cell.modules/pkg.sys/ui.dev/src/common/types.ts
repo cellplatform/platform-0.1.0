@@ -11,6 +11,7 @@ export { IIcon } from '@platform/ui.icon/lib/types';
 
 export { IHttpClient, ICellData } from '@platform/cell.types';
 
-export * from '../types';
-
 export type Namespace = string; // An actions "namespace" string.
+
+export * from '../types';
+export * from '../ui/Spinner/types';

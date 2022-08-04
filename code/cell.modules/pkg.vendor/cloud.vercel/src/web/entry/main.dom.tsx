@@ -1,9 +1,17 @@
 import '@platform/css/reset.css';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { DevHarness } from '../../Dev.Harness';
+import { createRoot } from 'react-dom/client';
 
-const el = <DevHarness />;
-const root = <React.StrictMode>{el}</React.StrictMode>;
-ReactDOM.render(root, document.getElementById('root'));
+const Imports = {
+  DevHarness: () => import('../../Dev.Harness'),
+};
+
+/**
+ * [Render]
+ */
+(async () => {
+  const root = createRoot(document.getElementById('root')!); // eslint-disable-line
+  const DevHarness = (await Imports.DevHarness()).DevHarness;
+  root.render(<DevHarness />);
+})();

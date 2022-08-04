@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { color, COLORS, constants, css, CssValue, t } from '../common';
 import { Icons } from '../Icons';
 import { Markdown } from '../Markdown';
-import { Spinner } from '../Primitives';
+import { Spinner } from '../Spinner';
 import { LayoutLabel } from './Layout.Label';
 
 export * from './Layout.Title';

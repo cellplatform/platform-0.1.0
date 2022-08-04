@@ -1,7 +1,7 @@
 import '@platform/css/reset.css';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 const Imports = {
   DevHarness: () => import('../Dev.Harness'),
@@ -11,6 +11,7 @@ const Imports = {
  * [Render]
  */
 (async () => {
+  const root = createRoot(document.getElementById('root')!); // eslint-disable-line
   const DevHarness = (await Imports.DevHarness()).DevHarness;
-  ReactDOM.render(<DevHarness />, document.getElementById('root'));
+  root.render(<DevHarness />);
 })();
