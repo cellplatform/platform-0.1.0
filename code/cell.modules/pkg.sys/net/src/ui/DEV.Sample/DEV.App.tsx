@@ -108,6 +108,8 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     const { bus, netbus, network } = args;
     const cmd = (args.cmd ?? '').trim();
 
+    console.log('cmd', cmd);
+
     /**
      * 🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳
      * TODO 🐷
@@ -128,7 +130,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     };
 
     if (cmd.startsWith('fire ')) {
-      const type = cmd.substring(cmd.indexOf(' '));
+      const type = cmd.substring(cmd.indexOf(' ')).trim();
       if (type) {
         netbus.fire({ type, payload: { msg: 'hello' } });
       }
@@ -172,6 +174,9 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
       const self = network.self;
       const isReliable = true;
       const autoStartVideo = true;
+
+      console.log('connect', remote);
+
       await LocalPeerCard.connect({ bus, remote, self, isReliable, autoStartVideo });
     }
 
@@ -215,6 +220,8 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
    *    formal "language command pack" (aka. a "grammar")).
    */
   const executeCommand__TEMP: t.CmdCardExecuteCommandHandler = async (e) => {
+    console.log('executeCommand__TEMP');
+
     if (!netbus) return;
     if (!bus) return;
     if (!network) return;
@@ -341,7 +348,10 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
           style={styles.base}
           minimized={minimized}
           tray={elTray}
-          onExecuteCommand={executeCommand__TEMP}
+          onExecuteCommand={(e) => {
+            console.log('onExecuteCommand', e);
+            executeCommand__TEMP(e);
+          }}
         />
       );
     },
@@ -371,15 +381,27 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
     },
   };
 
-  const LogLayer: t.PositioningLayer = {
+  const EventLogLayer: t.PositioningLayer = {
     id: 'layer.Card.Log',
     position: { x: 'stretch', y: 'stretch' },
     render(e) {
       if (minimized) return;
       if (moduleUrl) return null;
 
+      /**
+       * TODO 🐷
+       * NOTE:
+       *  - this is not being fired because the: <Cmd.Card> (marked for deprecated)
+       *    state has been changed.
+       *
+       *    - RESOLUTION (not fix)
+       *    - This all gets caught in the <Cmd.Bar> implementation in the
+       *      hosting `sys.runtime.web` module (already in place, full implementation WIP...).
+       */
+
       const card = e.find.first(CardLayer.id);
       if (!network || !card) return null;
+
       return <DevEventLog network={network} sizes={{ root: e.size, card: card.size }} />;
     },
   };
@@ -440,7 +462,7 @@ export const DevSampleApp: React.FC<DevSampleAppProps> = (props) => {
         <PositioningLayout
           layers={[
             BackgroundLayer,
-            LogLayer,
+            EventLogLayer,
             VersionLayer,
             FullscreenButtonLayer,
             ImportedModuleLayer,

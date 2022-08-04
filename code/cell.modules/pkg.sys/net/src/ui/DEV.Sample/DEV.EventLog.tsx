@@ -52,5 +52,5 @@ export const DevEventLog: React.FC<DevEventLogProps> = (props) => {
     </div>
   );
 
-  return <DevLayoutVertical sizes={sizes} below={elBody} style={props.style} />;
+  return <DevLayoutVertical sizes={sizes} below={elBody} style={css(styles.base, props.style)} />;
 };
