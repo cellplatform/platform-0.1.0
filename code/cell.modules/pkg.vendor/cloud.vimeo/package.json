@@ -20,7 +20,7 @@
     "serve": "cell.compiler serve $@"
   },
   "dependencies": {
-    "tus-js-client": "3.0.0-0"
+    "tus-js-client": "3.0.0"
   },
   "devDependencies": {
     "@platform/cell.compiler": "~0.4.1",

@@ -11285,10 +11285,10 @@ tunnel-agent@^0.6.0:
   dependencies:
     safe-buffer "^5.0.1"
 
-tus-js-client@3.0.0-0:
-  version "3.0.0-0"
-  resolved "https://registry.yarnpkg.com/tus-js-client/-/tus-js-client-3.0.0-0.tgz#73e39744147f2f25e93fab75951be12510c74d07"
-  integrity sha512-t/lO6cdtj/gpUpvoJPFta+lARdhEEGIAl9peW6bOBwPzWmvIwOI9rW67kVEeN056ZptiCS3tYbe1/lh6fwjQIw==
+tus-js-client@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/tus-js-client/-/tus-js-client-3.0.0.tgz#19d42457bde3bbd2199059672ab86115966b4061"
+  integrity sha512-PHWI/K8YrCzpc83MqkLhqm89EGG+pPrkBaJ/0NQH0xQoqxfs7HKqAqfXrjmcw2CHZeGYaqxI6oVcolXThzYOSA==
   dependencies:
     buffer-from "^1.1.2"
     combine-errors "^3.0.3"
