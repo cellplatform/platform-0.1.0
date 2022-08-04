@@ -1,9 +1,9 @@
 import '@platform/css/reset.css';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { DevHarness } from '../Dev.Harness';
 
 const el = <DevHarness />;
-const root = <React.StrictMode>{el}</React.StrictMode>;
-ReactDOM.render(root, document.getElementById('root'));
+const root = createRoot(document.getElementById('root')!); // eslint-disable-line
+root.render(el);
