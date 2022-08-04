@@ -8,7 +8,7 @@
 
 
 
-## Philosophy
+# Philosophy
 
 As quoted on [@isaacs](https://www.npmjs.com/~isaacs) post ["Unix Philosophy and Node.js"](https://blog.izs.me/2013/04/unix-philosophy-and-nodejs), [Doug McIlroy's](https://en.wikipedia.org/wiki/Douglas_McIlroy) 4-point formulation of the [Unix Philosophy](http://www.catb.org/esr/writings/taoup/html/ch01s06.html):
 
@@ -42,7 +42,19 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 <p>&nbsp;</p>
 
 
-## License
+# Development Setup
+
+### Extracting Secrets
+
+To extract secrets (eg. `.env` and other `.gitignore`-ed files) run [msync](https://github.com/philcockfield/msync) command:
+
+
+      msync hidden
+
+...and transmit to the next developer (after appropriate editing) within a secure "shared password/secret" transmission channel.
+
+
+# License
 It's [MIT](LICENSE) all the way!  
 
 Plus...for a scintillating break down of this open-source classic, treat yourself to **Kyle E. Mitchell's**  
@@ -52,7 +64,13 @@ Plus...for a scintillating break down of this open-source classic, treat yoursel
 
 
 
+
 ## Be Forewarned
 ![pre-release](https://img.shields.io/badge/Status-pre--release-orange.svg)  
-API's will change (probably radically 🐷) prior to `1.0` release.
+API's and other strcutures will change (probably radically 🐷) prior to `1.x` release.
 
+
+
+## TODO (COMING)
+
+[ ] [npm deprecations](https://docs.npmjs.com/cli/v7/commands/npm-deprecate) on archived (obsolete/cleaned out) code modules.
