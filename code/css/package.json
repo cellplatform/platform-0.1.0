@@ -5,7 +5,6 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "start": "parcel src/test.parcel/index.html",
     "test": "ts test",
     "lint": "ts lint",
     "build": "ts build --no-esm",
