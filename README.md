@@ -86,6 +86,6 @@ API's and other structures will change (probably radically 🐷) prior to `1.x` 
 
 
 
-## TODO (COMING)
+## TODO ( WIP )
 
 - [ ] [npm deprecations](https://docs.npmjs.com/cli/v7/commands/npm-deprecate) on archived (obsolete/cleaned out) published code modules.
