@@ -60,7 +60,16 @@ export function toWebpackConfig(
         },
         chunkFilename: `cell-${version}-[contenthash].js`,
         publicPath: 'auto',
-        crossOriginLoading: 'anonymous', // NB: Prevents cross-origin loading problems of code-split JS when doing "federated function" imports.
+
+        /**
+         * NB: Prevents cross-origin loading problems of code-split JS when
+         *     doing "federated function" imports.
+         *
+         * Also needed by the "subresource-integrity (SRI)" plugin
+         *     https://github.com/waysact/webpack-subresource-integrity/tree/main/webpack-subresource-integrity#recommended-webpack-configuration
+         *
+         */
+        crossOriginLoading: 'anonymous',
       },
       entry,
       target,
