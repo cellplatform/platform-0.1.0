@@ -4,7 +4,6 @@
   "version": "0.3.117",
   "main": "lib/index",
   "scripts": {
-    "start": "parcel src/test.parcel/index.html",
     "test": "ts test",
     "lint": "ts lint",
     "build": "ts build --no-esm",
@@ -28,7 +27,6 @@
   "files": [
     "lib",
     "!lib/test",
-    "!lib/test.parcel",
     "!*.TEST.{js, mjs, d.ts}"
   ],
   "license": "MIT"

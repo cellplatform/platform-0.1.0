@@ -1,6 +1,6 @@
 import '@platform/css/reset.css';
 
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { rx, t, Is } from '../common';
 
 const Imports = {
@@ -29,8 +29,6 @@ if (isDev) document.title = `${document.title} (dev)`;
  * [Render]
  */
 (async () => {
-  const root = document.getElementById('root');
-
   const localbus = rx.bus();
   const pump = rx.pump.create(localbus);
 
@@ -42,5 +40,6 @@ if (isDev) document.title = `${document.title} (dev)`;
   const res = Module.default(pump, ctx);
   const el = Is.promise(res) ? await res : res;
 
-  ReactDOM.render(el, root);
+  const root = createRoot(document.getElementById('root')!); // eslint-disable-line
+  root.render(el);
 })();

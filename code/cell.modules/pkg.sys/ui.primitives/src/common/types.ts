@@ -27,5 +27,9 @@ export { IIcon } from '@platform/ui.icon/lib/types';
 /**
  * @system
  */
-export { WebRuntimeEvents } from 'sys.runtime.web/lib/types';
+export {
+  WebRuntimeEvents,
+  ModuleDefaultEntry,
+  ModuleDefaultEntryContext,
+} from 'sys.runtime.web/lib/types';
 export { JsonState, JsonLens, JsonMutation } from 'sys.data.json/lib/types';

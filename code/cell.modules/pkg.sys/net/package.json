@@ -1,6 +1,6 @@
 {
   "name": "sys.net",
-  "version": "0.0.330",
+  "version": "0.0.331",
   "sideEffects": false,
   "main": "lib/index",
   "scripts": {
@@ -27,8 +27,8 @@
     "@types/filesize": "5.0.0",
     "@types/ua-parser-js": "0.7.36",
     "@platform/cell.compiler": "~0.4.4",
-    "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
   },
   "license": "MIT",
   "private": true

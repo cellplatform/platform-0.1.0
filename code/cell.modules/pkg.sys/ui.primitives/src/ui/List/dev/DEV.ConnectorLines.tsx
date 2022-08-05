@@ -2,7 +2,7 @@ import React from 'react';
 import { DevActions, ObjectView } from 'sys.ui.dev';
 
 import { BulletConnectorLinesProps, List } from '..';
-import { Is, t } from '../common';
+import { ListIs, t } from '../common';
 
 type Ctx = {
   ready: boolean;
@@ -17,7 +17,7 @@ const Util = {
   update(ctx: Ctx) {
     const { index, total, orientation, bullet } = ctx.props;
     const args = { index, total, orientation, bullet };
-    ctx.props.is = Is.toItemFlags(args);
+    ctx.props.is = ListIs.toItemFlags(args);
     return ctx;
   },
 };
@@ -45,7 +45,7 @@ export const actions = DevActions<Ctx>()
       },
     };
 
-    ctx.props.is = Is.toItemFlags(ctx.props);
+    ctx.props.is = ListIs.toItemFlags(ctx.props);
     return ctx;
   })
 

@@ -1,17 +1,12 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-// import { is } from '../../common';
+import React from 'react';
+import { createPortal } from 'react-dom';
 
-import { is } from '@platform/util.is';
+import { Is } from './common';
 
-const ID = 'platform.spinner';
+const ID = 'sys.ui.primitives.spinner';
 
 export const RenderStyleOnce = (): React.ReactPortal | null => {
-  return is.browser
-    ? document.head
-      ? ReactDOM.createPortal(<SpinnerStyle />, document.head)
-      : null
-    : null;
+  return Is.browser ? (document.head ? createPortal(<SpinnerStyle />, document.head) : null) : null;
 };
 
 /**

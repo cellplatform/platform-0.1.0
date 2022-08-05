@@ -1,3 +1,5 @@
+export type SpinnerSizes = 12 | 18 | 22 | 32;
+
 export type SpinnerConfig = {
   /**
    * The number of lines to draw

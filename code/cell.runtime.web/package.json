@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@platform/cell.runtime": "0.10.65",
-    "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
     "@platform/test": "0.3.2",

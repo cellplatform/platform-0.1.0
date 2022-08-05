@@ -67,6 +67,7 @@ const defaults = {
   shadow: '0 0 1px transparent',
   position: 'absolute',
 };
+
 const Spinner = /** @class */ (function () {
   function Spinner(opts: any) {
     if (opts === void 0) {

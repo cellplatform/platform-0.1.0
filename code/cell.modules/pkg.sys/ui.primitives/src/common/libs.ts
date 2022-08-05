@@ -20,7 +20,7 @@ export {
   copyToClipboard,
   FC,
 } from '@platform/react';
-export { defaultValue, time, slug, deleteUndefined, value } from '@platform/util.value';
+export { defaultValue, time, slug, deleteUndefined, value, Is } from '@platform/util.value';
 export { HttpClient } from '@platform/cell.client';
 export { ObjectView } from '@platform/ui.object';
 

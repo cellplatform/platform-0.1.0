@@ -1,7 +1,7 @@
 import '@platform/css/reset.css';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { rx } from '@platform/util.value/lib/rx';
 
 const Imports = {
@@ -30,11 +30,11 @@ if (isDev) document.title = `${document.title} (dev)`;
  * [Render]
  */
 (async () => {
-  const root = document.getElementById('root');
+  const root = createRoot(document.getElementById('root')!); // eslint-disable-line
 
   if (isDev) {
     const DevHarness = (await Imports.DevHarness()).DevHarness;
-    ReactDOM.render(<DevHarness />, root);
+    root.render(<DevHarness />);
   } else {
     const Module = (await Imports.Module()).Module;
 
@@ -45,7 +45,6 @@ if (isDev) document.title = `${document.title} (dev)`;
     const instance = { bus };
 
     const el = <Module.App instance={instance} href={href} style={{ Absolute: 0 }} />;
-
-    ReactDOM.render(el, root);
+    root.render(el);
   }
 })();

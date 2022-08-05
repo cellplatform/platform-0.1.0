@@ -14,7 +14,7 @@ export { rx, time, is, asArray, slug, value, deleteUndefined, Dispose } from '@p
 export { Markdown } from '@platform/util.markdown';
 export { HttpClient, Uri } from '@platform/cell.client';
 export { log } from '@platform/log/lib/client';
-export { useClickOutside } from '@platform/react/lib/hooks';
+export { useClickOutside, FC } from '@platform/react';
 
 import { StateObject } from '@platform/state';
 export { StateObject };

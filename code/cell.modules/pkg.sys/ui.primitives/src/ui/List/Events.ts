@@ -1,6 +1,6 @@
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { Is, rx, t } from './common';
+import { ListIs, rx, t } from './common';
 
 /**
  * Types
@@ -18,7 +18,7 @@ export const ListEvents: t.ListEventsFactory = (args) => {
 
   const $ = bus.$.pipe(
     takeUntil(dispose$),
-    filter((e) => Is.listEvent(e)),
+    filter((e) => ListIs.listEvent(e)),
     filter((e) => e.payload.instance === instance),
   );
 
