@@ -74,7 +74,7 @@ Plus...for a scintillating break down of this open-source classic, treat yoursel
 
 ## Be Forewarned
 ![pre-release](https://img.shields.io/badge/Status-pre--release-orange.svg)  
-API's and other strcutures will change (probably radically 🐷) prior to `1.x` release.
+API's and other structures will change (probably radically 🐷) prior to `1.x` release.
 
 
 <p>&nbsp;</p>
