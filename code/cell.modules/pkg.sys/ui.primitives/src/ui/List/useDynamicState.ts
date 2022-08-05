@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
 
 import { ListState } from '../List.State';
-import { Is, rx, t } from './common';
+import { ListIs, rx, t } from './common';
 import { Wrangle } from './Wrangle';
 
 type Index = number;
@@ -127,7 +127,7 @@ export function useDynamicItemState(args: {
     index,
     state,
     get is() {
-      return Is.toItemFlags({
+      return ListIs.toItemFlags({
         index,
         total,
         orientation,

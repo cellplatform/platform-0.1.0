@@ -4,7 +4,7 @@ import { ListState } from '../../List.State';
 /**
  * Boolean flags.
  */
-export const Is = {
+export const ListIs = {
   listEvent(e: t.Event) {
     return e.type.startsWith('sys.ui.List/');
   },
@@ -24,7 +24,7 @@ export const Is = {
 
     let _previous: t.ListItemRenderFlags | undefined;
     let _next: t.ListItemRenderFlags | undefined;
-    const sibling = (index: number) => Is.toItemFlags({ ...args, index });
+    const sibling = (index: number) => ListIs.toItemFlags({ ...args, index });
 
     const is = {
       empty: total === 0,
