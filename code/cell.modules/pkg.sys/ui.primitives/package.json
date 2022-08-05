@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.primitives",
-  "version": "0.0.124",
+  "version": "0.0.126",
   "sideEffects": false,
   "scripts": {
     "start": "cell.compiler dev $@",
