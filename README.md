@@ -42,6 +42,10 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 <p>&nbsp;</p>
 
 
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+
 # Development Setup
 
 ### Extracting Secrets
@@ -54,6 +58,10 @@ To extract secrets (eg. `.env` and other `.gitignore`-ed files) run [msync](http
 ...and transmit to the next developer (after appropriate editing) within a secure "shared password/secret" transmission channel.
 
 
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+
 # License
 It's [MIT](LICENSE) all the way!  
 
@@ -62,12 +70,18 @@ Plus...for a scintillating break down of this open-source classic, treat yoursel
 
 <a href="https://app.fossa.io/projects/git%2Bgithub.com%2Fuiharness%2Fplatform?ref=badge_large" alt="FOSSA Status"><img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2Fuiharness%2Fplatform.svg?type=large"/></a>
 
+<p>&nbsp;</p>
+<p>&nbsp;</p>
 
 
 
 ## Be Forewarned
 ![pre-release](https://img.shields.io/badge/Status-pre--release-orange.svg)  
 API's and other strcutures will change (probably radically 🐷) prior to `1.x` release.
+
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
 
 
 
