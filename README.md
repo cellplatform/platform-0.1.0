@@ -1,4 +1,5 @@
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fuiharness%2Fplatform.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fuiharness%2Fplatform?ref=badge_shield)
 ![banner](https://user-images.githubusercontent.com/185555/88729229-76ac1280-d187-11ea-81c6-14146ec64848.png)
 
 [Monorepo](https://en.wikipedia.org/wiki/Monorepo) for [@platform](https://www.npmjs.com/org/platform) modules.
@@ -47,12 +48,15 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 
 ### Extracting Secrets
 
-When setting a new developer up, to extract all secrets configuration files (eg. `.env` and other `.gitignore`-ed configuration files that must never be commited) run the [msync](https://github.com/philcockfield/msync) command:
+When setting a new developer (or your next machine). Extract all "secrets" configuration files (eg. the `.env` and other `.gitignore`-ed configuration files that must never be commited) by running the [msync](https://github.com/philcockfield/msync) command:
 
 
       msync hidden
 
-...this will produce folder that you can easily copy the files with.  Is is not (and must never) be commited into the repo.  Once the temporary folder is assembled, transmit it to the next developer, or your next development (after appropriately editing out any keys that are your own) within some sensibly secure "shared password/secret" transmission channel.
+
+...this will produce a folder that you can use to easily copy into your new code working folder.  
+
+This temporarily generated folder must never be commited into the repo.  Once you have your temporary folder assembled, transmit it to the next developer (or yourself on your next development machine) after appropriately editing out any API keys/tokens that are personally assigned to you.  Do this on some sensibly secure "password/secret" transmission channel.
 
 
 <p>&nbsp;</p>
@@ -63,7 +67,7 @@ When setting a new developer up, to extract all secrets configuration files (eg.
 It's [MIT](LICENSE) all the way!  
 
 Plus...for a scintillating break down of this open-source classic, treat yourself to **Kyle E. Mitchell's**  
-"[The MIT License, line-by-line. 171 words every programmer should understand.](https://writing.kemitchell.com/2016/09/21/MIT-License-Line-by-Line.html)"
+"[The MIT License line-by-line.](https://writing.kemitchell.com/2016/09/21/MIT-License-Line-by-Line.html) 171 words every programmer should understand."
 
 <a href="https://app.fossa.io/projects/git%2Bgithub.com%2Fuiharness%2Fplatform?ref=badge_large" alt="FOSSA Status"><img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2Fuiharness%2Fplatform.svg?type=large"/></a>
 
