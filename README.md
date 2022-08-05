@@ -47,12 +47,15 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 
 ### Extracting Secrets
 
-When setting a new developer up, to extract all secrets configuration files (eg. `.env` and other `.gitignore`-ed configuration files that must never be commited) run the [msync](https://github.com/philcockfield/msync) command:
+When setting a new developer (or your next machine). Extract all "secrets" configuration files (eg. the `.env` and other `.gitignore`-ed configuration files that must never be commited) by running the [msync](https://github.com/philcockfield/msync) command:
 
 
       msync hidden
 
-...this will produce folder that you can easily copy the files with.  Is is not (and must never) be commited into the repo.  Once the temporary folder is assembled, transmit it to the next developer, or your next development (after appropriately editing out any keys that are your own) within some sensibly secure "shared password/secret" transmission channel.
+
+...this will produce a folder that you can use to easily copy into your new code working folder.  
+
+This temporarily generated folder must never be commited into the repo.  Once you have your temporary folder assembled, transmit it to the next developer (or yourself on your next development machine) after appropriately editing out any API keys/tokens that are personally assigned to you.  Do this on some sensibly secure "password/secret" transmission channel.
 
 
 <p>&nbsp;</p>
