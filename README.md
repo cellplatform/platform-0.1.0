@@ -47,7 +47,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 
 ### Extracting Secrets
 
-When setting a new developer up, to extract all secrets configuration files (eg. `.env` and other `.gitignore`-ed files that are never commited) run [msync](https://github.com/philcockfield/msync) command:
+When setting a new developer up, to extract all secrets configuration files (eg. `.env` and other `.gitignore`-ed configuration files that must never be commited) run the [msync](https://github.com/philcockfield/msync) command:
 
 
       msync hidden
