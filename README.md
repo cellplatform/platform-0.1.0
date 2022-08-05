@@ -38,9 +38,6 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - **Compatibility** is better than purity.
 - **Simplicity** is better than anything.
 
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-
 
 <p>&nbsp;</p>
 <p>&nbsp;</p>
@@ -50,12 +47,12 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 
 ### Extracting Secrets
 
-To extract secrets (eg. `.env` and other `.gitignore`-ed files) run [msync](https://github.com/philcockfield/msync) command:
+When setting a new developer up, to extract all secrets configuration files (eg. `.env` and other `.gitignore`-ed files that are never commited) run [msync](https://github.com/philcockfield/msync) command:
 
 
       msync hidden
 
-...and transmit to the next developer (after appropriate editing) within a secure "shared password/secret" transmission channel.
+...this will produce folder that you can easily copy the files with.  Is is not (and must never) be commited into the repo.  Once the temporary folder is assembled, transmit it to the next developer, or your next development (after appropriately editing out any keys that are your own) within some sensibly secure "shared password/secret" transmission channel.
 
 
 <p>&nbsp;</p>
