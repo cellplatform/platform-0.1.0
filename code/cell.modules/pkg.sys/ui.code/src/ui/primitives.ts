@@ -1,1 +1,1 @@
-export { Spinner } from '@platform/ui.spinner';
+export { Spinner } from 'sys.ui.primitives/lib/ui/Spinner';
