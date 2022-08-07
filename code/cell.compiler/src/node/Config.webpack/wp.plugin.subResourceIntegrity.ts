@@ -18,6 +18,10 @@ import * as t from './types';
 export function init(args: t.PluginArgs) {
   /**
    * TODO 🐷
+   *
+   * - Return plugin configuration, ensuring no errors
+   *   are emitted during "bundle" operation.
+   *
    */
   console.log('webpack-subresource-integrity');
 
