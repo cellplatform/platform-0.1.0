@@ -9,7 +9,6 @@ export * from '@platform/cell.types';
 export * from '@platform/http/lib/types';
 export * from '@platform/http.types';
 
-export * from '../MemoryQueue/types';
 export * from '../types';
 
 /**
