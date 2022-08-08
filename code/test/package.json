@@ -1,7 +1,7 @@
 {
   "name": "@platform/test",
   "version": "0.3.2",
-  "description": "Configuration module containing test related modules.",
+  "description": "Configuration of test related modules.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
