@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { css, CssValue } from '@platform/css';
 
-import { Hr, ImageSprite } from './common';
+import { ImageSprite } from './common';
 import { IconGrid } from './IconGrid';
 import { Icons } from './Icons';
 
@@ -39,9 +39,9 @@ export class Test extends React.PureComponent<ITestProps> {
             {this.sprite(3, 2)}
           </div>
         </div>
-        <Hr />
+        <hr />
         <IconGrid icons={icons} />
-        <Hr />
+        <hr />
       </div>
     );
   }
