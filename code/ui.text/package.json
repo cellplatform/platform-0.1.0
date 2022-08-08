@@ -21,8 +21,7 @@
   "devDependencies": {
     "@platform/test": "0.3.2",
     "@platform/ts": "4.7.7",
-    "@platform/ui.button": "0.3.121",
-    "@platform/ui.dev": "0.0.57"
+    "@platform/ui.button": "0.3.121"
   },
   "files": [
     "lib",

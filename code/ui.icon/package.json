@@ -22,7 +22,6 @@
   "devDependencies": {
     "@platform/polyfill": "0.0.9",
     "@platform/ts": "4.7.7",
-    "@platform/ui.dev": "0.0.57",
     "react-icons": "4.4.0"
   },
   "files": [
