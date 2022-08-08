@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-import { WebRuntime } from '@platform/cell.runtime.web';
 import Award from './assets/award.svg';
 
 type Css = React.CSSProperties;

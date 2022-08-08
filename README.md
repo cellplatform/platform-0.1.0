@@ -48,15 +48,15 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 
 ### Extracting Secrets
 
-When setting a new developer (or your next machine). Extract all "secrets" configuration files (eg. the `.env` and other `.gitignore`-ed configuration files that must never be commited) by running the [msync](https://github.com/philcockfield/msync) command:
+When setting up a new developer (or your next machine). Extract all your "secret key" configuration files (eg. the `.env` and other `.gitignore`-ed configuration files that must never be commited) by running the [msync](https://github.com/philcockfield/msync) command:
 
 
       msync hidden
 
 
-...this will produce a folder that you can use to easily copy into your new code working folder.  
+...this will produce a folder that you can use to easily copy into your new working folder.  
 
-This temporarily generated folder must never be commited into the repo.  Once you have your temporary folder assembled, transmit it to the next developer (or yourself on your next development machine) after appropriately editing out any API keys/tokens that are personally assigned to you.  Do this on some sensibly secure "password/secret" transmission channel.
+**This temporarily generated folder must never be commited into the repo.**  Once you have your temporary folder assembled, transmit it to the next developer (or yourself on your next development machine) after appropriately editing out any API keys/tokens that are personally assigned to you. Send this over some sensibly secure "password/secret" transmission channel.
 
 
 <p>&nbsp;</p>
@@ -86,6 +86,6 @@ API's and other structures will change (probably radically 🐷) prior to `1.x` 
 
 
 
-## TODO (COMING)
+## TODO ( WIP )
 
 - [ ] [npm deprecations](https://docs.npmjs.com/cli/v7/commands/npm-deprecate) on archived (obsolete/cleaned out) published code modules.

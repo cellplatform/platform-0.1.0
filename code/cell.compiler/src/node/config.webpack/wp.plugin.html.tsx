@@ -2,7 +2,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 
-import { Model, defaultValue } from '../common';
+import { Model } from '../common';
 import * as t from './types';
 
 /**
@@ -20,17 +20,19 @@ export type HtmlPlugin = {
  * Plugin: HTML
  *         https://webpack.js.org/plugins/html-webpack-plugin
  */
-export function init(args: t.IArgs) {
+export function init(args: t.PluginArgs) {
   const model = Model(args.model);
   if (model.isNode) {
     return undefined;
   } else {
     const obj = model.toObject();
     const html = obj.html;
+    const title = obj.title || obj.namespace || 'Untitled';
+    const inject = html?.inject ?? true;
 
     return new HtmlWebpackPlugin({
-      title: obj.title || obj.namespace || 'Untitled',
-      inject: defaultValue(html?.inject, true),
+      title,
+      inject,
       templateContent: renderer(args),
     });
   }
@@ -40,7 +42,7 @@ export function init(args: t.IArgs) {
  * Generate HTML.
  * https://github.com/jantimon/html-webpack-plugin#writing-your-own-templates
  */
-export function renderer(args: t.IArgs) {
+export function renderer(args: t.PluginArgs) {
   const model = Model(args.model).toObject();
   return (args: { [option: string]: any }) => {
     const plugin = args.htmlWebpackPlugin as HtmlPlugin;

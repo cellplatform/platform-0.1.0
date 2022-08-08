@@ -27,7 +27,6 @@
     "@platform/test": "0.3.2",
     "@platform/ts": "4.7.7",
     "@types/dotenv": "8.2.0",
-    "@types/inquirer": "8.2.1",
     "dotenv": "16.0.1"
   },
   "files": [

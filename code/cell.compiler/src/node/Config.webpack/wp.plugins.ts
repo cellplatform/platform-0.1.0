@@ -1,14 +1,16 @@
 import * as t from './types';
-import * as env from './wp.plugin.env';
-import * as federation from './wp.plugin.federation';
-import * as html from './wp.plugin.html';
-import * as typeChecker from './wp.plugin.typeChecker';
+import { init as env } from './wp.plugin.env';
+import { init as federation } from './wp.plugin.federation';
+import { init as html } from './wp.plugin.html';
+import { init as subResourceIntegrity } from './wp.plugin.subResourceIntegrity';
+import { init as typeChecker } from './wp.plugin.typeChecker';
 
 type P = NonNullable<t.WpConfig['plugins']>;
 
 export const Plugins = {
-  init(args: t.IArgs): P {
+  init(args: t.PluginArgs): P {
     return [
+      Plugins.subResourceIntegrity(args),
       Plugins.federation(args),
       Plugins.typeChecker(args),
       Plugins.html(args),
@@ -16,8 +18,9 @@ export const Plugins = {
     ].filter(Boolean);
   },
 
-  html: html.init,
-  federation: federation.init,
-  typeChecker: typeChecker.init,
-  env: env.init,
+  env,
+  html,
+  federation,
+  typeChecker,
+  subResourceIntegrity,
 };

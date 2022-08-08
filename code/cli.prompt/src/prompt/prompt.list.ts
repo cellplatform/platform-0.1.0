@@ -12,7 +12,8 @@ export async function list<V = string>(args: {
   type?: 'list' | 'checkbox';
 }) {
   const { message, pageSize, type = 'list' } = args;
-  const choices: inquirer.DistinctChoice<any>[] = args.items.map((item) => {
+
+  const choices: t.DistinctChoice<any>[] = args.items.map((item) => {
     return typeof item === 'string'
       ? item.startsWith('---')
         ? new inquirer.Separator()
@@ -20,7 +21,9 @@ export async function list<V = string>(args: {
       : item;
   });
 
-  const question: inquirer.DistinctQuestion = {
+  // inquirer
+
+  const question: t.DistinctQuestion = {
     type,
     name: 'result',
     message,

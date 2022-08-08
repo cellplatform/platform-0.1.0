@@ -701,11 +701,11 @@ describe('Compiler (Config)', () => {
         requiredVersion: deps['@platform/libs'],
       });
 
-      builder.shared((args) => args.singleton(['@platform/cell.types', 'babel-loader']));
+      builder.shared((args) => args.singleton(['core-js', 'babel-loader']));
 
-      expect((model.state.shared || {})['@platform\\cell.types']).to.eql({
+      expect((model.state.shared || {})['core-js']).to.eql({
         singleton: true,
-        requiredVersion: deps['@platform/cell.types'],
+        requiredVersion: deps['core-js'],
       });
 
       expect((model.state.shared || {})['babel-loader']).to.eql({
