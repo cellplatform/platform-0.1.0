@@ -15,8 +15,7 @@
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cell.compiler serve $@",
-    "tmp": "ts-node -T script.ts/tmp"
+    "serve": "cell.compiler serve $@"
   },
   "dependencies": {
     "@platform/state": "0.7.55",
@@ -26,8 +25,7 @@
   "devDependencies": {
     "@platform/cell.compiler": "^0.4.4",
     "@types/jsonpath": "0.2.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "sys.ui.react": "0.0.1"
   },
   "license": "MIT",
   "private": true
