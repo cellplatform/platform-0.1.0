@@ -29,8 +29,3 @@ export {
   Manifest,
   ManifestFileImage,
 } from '@platform/cell.types';
-
-/**
- * @system
- */
-export { S3SignedPostOptions } from '@platform/fs.s3.types';
