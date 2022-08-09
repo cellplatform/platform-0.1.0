@@ -1,1 +1,1 @@
-export { CssPropsMap } from '@platform/css/lib/types';
+export { CssPropsMap } from 'sys.ui.react/lib/types';

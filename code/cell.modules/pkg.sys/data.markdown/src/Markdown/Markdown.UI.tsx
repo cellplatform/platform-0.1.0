@@ -6,12 +6,20 @@ import { MarkdownProcessor } from './Markdown.Processor';
 
 const globalStyles: { [className: string]: boolean } = {};
 
+type HtmlString = string;
+type MarkdownString = string;
+
 export const MarkdownUI = {
   /**
    * Transform markdown into a sanitized (safe) DOM element.
    */
-  toElement(markdown: string | undefined, options: { style?: CssValue; className?: string } = {}) {
-    const html = MarkdownProcessor.toHtmlSync(markdown ?? '');
+  toElement(
+    markdown: MarkdownString | HtmlString | undefined,
+    options: { style?: CssValue; className?: string } = {},
+  ) {
+    const text = (markdown ?? '').trim();
+    const isHtml = text.startsWith('<') && text.endsWith('>');
+    const html = isHtml ? text : MarkdownProcessor.toHtmlSync(markdown ?? '');
     return <SanitizeHtml html={html} style={options.style} className={options.className} />;
   },
 
