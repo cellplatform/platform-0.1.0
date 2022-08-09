@@ -2,7 +2,7 @@ import format from 'rehype-format';
 import html from 'rehype-stringify';
 import markdown from 'remark-parse';
 import remark2rehype from 'remark-rehype';
-import { Processor, unified } from 'unified';
+import unified, { Processor } from 'unified';
 
 /**
  * See:
