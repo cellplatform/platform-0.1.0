@@ -409,6 +409,16 @@ describe('TscCompiler', function () {
     const original = fs.join(TMP, 'TscCopyRefs.original');
     const dir = fs.join(TMP, 'TscCopyRefs.result/main');
 
+    beforeEach(async () => {
+      if (!(await fs.pathExists(original))) {
+        const outdir = original;
+        await compiler.transpile({ source, outdir, silent: true });
+      }
+
+      await fs.remove(fs.dirname(dir));
+      await fs.copy(original, dir);
+    });
+
     const expectPathExists = async (expected: boolean, path: string) => {
       path = fs.join(fs.dirname(dir), path);
       const exists = await fs.pathExists(path);
@@ -421,15 +431,6 @@ describe('TscCompiler', function () {
       await expectPathExists(true, fs.join(path, 'index.json'));
     };
 
-    beforeEach(async () => {
-      if (!(await fs.pathExists(original))) {
-        const outdir = original;
-        await compiler.transpile({ source, outdir, silent: true });
-      }
-      await fs.remove(fs.dirname(dir));
-      await fs.copy(original, dir);
-    });
-
     it('copy refs - not recursive', async () => {
       await expectPathExists(true, 'main');
       await expectPathExists(false, '@platform');
@@ -441,7 +442,7 @@ describe('TscCompiler', function () {
       expect(res.source).to.eql(dir);
       expect(res.target).to.eql(fs.dirname(dir));
 
-      await expectRefCopied('@platform/cell.types');
+      await expectRefCopied('@platform/types');
       await expectRefCopied('@platform/log');
       await expectPathExists(false, 'rxjs');
     });
@@ -457,8 +458,6 @@ describe('TscCompiler', function () {
       expect(res.source).to.eql(dir);
       expect(res.target).to.eql(fs.dirname(dir));
 
-      await expectRefCopied('@platform/cell.types');
-      await expectRefCopied('@platform/cache');
       await expectRefCopied('@platform/types');
       await expectRefCopied('@platform/log');
       await expectRefCopied('rxjs');
