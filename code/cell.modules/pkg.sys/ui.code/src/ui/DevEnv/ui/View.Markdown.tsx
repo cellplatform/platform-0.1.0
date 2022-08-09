@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { css, CssValue, Markdown } from '../common';
-import { SanitizeHtml } from './SanitizeHtml';
 
 export type MarkdownViewProps = {
   text?: string;
@@ -30,14 +29,12 @@ const View: React.FC<MarkdownViewProps> = (props) => {
       boxSizing: 'border-box',
       Padding: [20, 30],
       Scroll: true,
+      backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
     }),
   };
 
-  return (
-    <div {...css(styles.base, props.style)}>
-      <SanitizeHtml html={html} />
-    </div>
-  );
+  const style = css(styles.base, props.style);
+  return Markdown.UI.toElement(html, { style });
 };
 
 /**
