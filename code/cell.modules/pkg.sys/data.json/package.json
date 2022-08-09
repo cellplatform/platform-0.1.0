@@ -19,7 +19,7 @@
     "immer": "9.0.15"
   },
   "devDependencies": {
-    "@platform/cell.compiler": "~0.4.4",
+    "@platform/cell.compiler": "0.4.4",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
