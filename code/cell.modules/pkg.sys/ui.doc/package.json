@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.doc",
-  "version": "0.0.100",
+  "version": "0.0.104",
   "main": "lib/index",
   "sideEffects": false,
   "scripts": {
@@ -18,12 +18,7 @@
   },
   "dependencies": {
     "sanitize-html": "2.7.1",
-    "path-to-regexp": "6.2.1",
-    "rehype-format": "4.0.1",
-    "rehype-stringify": "9.0.3",
-    "remark-parse": "10.0.1",
-    "remark-rehype": "10.1.0",
-    "unified": "10.1.2"
+    "path-to-regexp": "6.2.1"
   },
   "devDependencies": {
     "@platform/cell.compiler": "^0.4.4",
