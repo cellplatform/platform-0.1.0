@@ -1,12 +1,12 @@
-import ora from 'ora';
-
+import { Spinner } from 'cli-spinner';
 import { log, value } from './libs';
 
 /**
  * A CLI spinner that reports progress.
  */
 export function ProgressSpinner(args: { label?: string; total?: number; silent?: boolean }) {
-  const instance = ora();
+  const instance = new Spinner();
+  instance.setSpinnerString('|/-\\');
 
   const state = {
     completed: -1,
@@ -23,19 +23,17 @@ export function ProgressSpinner(args: { label?: string; total?: number; silent?:
       label = `${label} (${percent}%)`;
     }
 
-    instance.text = log.gray(label);
+    instance.setSpinnerTitle(log.gray(label));
   };
 
   const spinner = {
     start() {
       updateText();
-      if (!args.silent) {
-        instance.start();
-      }
+      if (!args.silent) instance.start();
       return spinner;
     },
     stop() {
-      instance.text = '';
+      instance.setSpinnerTitle('');
       instance.stop();
       return spinner;
     },

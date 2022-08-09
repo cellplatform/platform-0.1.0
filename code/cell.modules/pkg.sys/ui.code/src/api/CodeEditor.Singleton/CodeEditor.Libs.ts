@@ -26,7 +26,7 @@ export function CodeEditorLibs(monaco: t.IMonaco): t.ICodeEditorLibs {
    */
   const add: M['add'] = (filename: string, content: string) => {
     filename = (filename || '').trim() || 'unnamed.ts';
-    filename = filename.replace(/^file\:/, '').replace(/^\/*/, '');
+    filename = filename.replace(/^file:/, '').replace(/^\/*/, '');
     filename = `file:///${filename}`;
 
     const ts = monaco.languages.typescript.typescriptDefaults;

@@ -13,7 +13,6 @@
     "test": "node bin test",
     "tdd": "node bin test --watch",
     "test:integration": "node bin test --suffix INTEGRATION",
-    "tddi": "ts test --suffix INTEGRATION --watch",
     "lint": "node bin lint",
     "build": "sh sh/build.sh $@",
     "prepare": "yarn clean && yarn copy-config && yarn build && yarn lint && yarn test",

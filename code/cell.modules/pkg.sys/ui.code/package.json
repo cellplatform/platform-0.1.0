@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.code",
-  "version": "0.0.195",
+  "version": "0.0.197",
   "scripts": {
     "test": "echo no-op",
     "build": "ts build --no-esm $@",
@@ -21,13 +21,11 @@
     "@platform/state": "0.7.55",
     "monaco-editor": "0.34.0",
     "monaco-themes": "0.4.2",
-    "safer-eval": "1.3.6",
-    "sanitize-html": "2.7.1"
+    "safer-eval": "1.3.6"
   },
   "devDependencies": {
     "@platform/cell.compiler": "0.4.4",
     "@types/prettier": "2.7.0",
-    "@types/sanitize-html": "2.6.2",
     "prettier": "2.7.1",
     "react": "18.2.0",
     "react-dom": "18.2.0"

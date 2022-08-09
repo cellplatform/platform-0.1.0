@@ -1,6 +1,6 @@
 {
   "name": "sys.ui.primitives",
-  "version": "0.0.126",
+  "version": "0.0.127",
   "sideEffects": false,
   "scripts": {
     "start": "cell.compiler dev $@",
@@ -20,7 +20,7 @@
     "@dnd-kit/sortable": "7.0.1",
     "@dnd-kit/utilities": "3.2.0",
     "core-js": "3.24.1",
-    "framer-motion": "6.5.1",
+    "framer-motion": "7.0.0",
     "qrcode.react": "3.1.0",
     "@svgdotjs/svg.js": "3.1.2",
     "react-window": "1.8.7"

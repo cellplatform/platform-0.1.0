@@ -21,7 +21,7 @@
     "@platform/types": "0.5.27",
     "@platform/util.mimetype": "0.1.51",
     "@platform/util.value": "0.9.13",
-    "aws-sdk": "2.1189.0",
+    "aws-sdk": "2.1191.0",
     "form-data": "4.0.0"
   },
   "devDependencies": {

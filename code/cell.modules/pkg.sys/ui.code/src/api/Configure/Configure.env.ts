@@ -14,7 +14,7 @@ export async function env(args: { staticRoot?: string }) {
    *    https://microsoft.github.io/monaco-editor/api
    *
    */
-  const isDefault = !Boolean(args.staticRoot);
+  const isDefault = !args.staticRoot;
   const paths = staticPaths(args.staticRoot);
   const vs = paths.vs;
 

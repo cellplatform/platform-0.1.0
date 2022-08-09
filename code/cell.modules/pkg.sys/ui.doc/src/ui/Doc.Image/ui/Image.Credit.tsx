@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 
-import { css, CssValue, DEFAULT, FC, Markdown, t } from '../common';
+import { css, CssValue, DEFAULT, Markdown, t } from '../common';
 import { className } from '../styles';
 
 export type ImageCreditProps = {
@@ -22,7 +22,7 @@ export const ImageCredit: React.FC<ImageCreditProps> = (props) => {
 
   const html = useMemo(() => {
     const style = css({});
-    return Markdown.toElement(markdown, { style, className });
+    return Markdown.UI.toElement(markdown, { style, className });
   }, [markdown]); // eslint-disable-line
 
   return <div {...css(styles.base, props.style)}>{html}</div>;

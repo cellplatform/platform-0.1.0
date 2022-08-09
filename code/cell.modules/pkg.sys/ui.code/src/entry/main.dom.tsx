@@ -57,8 +57,8 @@ function toUrl(input?: string | null) {
   const raw = !input || input === null ? '' : input;
   const output = raw
     .trim()
-    .replace(/^http\:/, '')
-    .replace(/^https\:/, '')
+    .replace(/^http:/, '')
+    .replace(/^https:/, '')
     .replace(/^\/\//, '');
   const protocol = output.startsWith('localhost') ? 'http' : 'https';
   const href = `${protocol}://${output}`;

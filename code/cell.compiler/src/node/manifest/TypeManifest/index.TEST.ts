@@ -81,10 +81,7 @@ describe('TypeManifest', function () {
     const foo = 'types.d.txt';
     const file = manifest.files.find((file) => file.path === foo);
 
-    expect(file?.declaration.exports).to.eql([
-      '@platform/cell.types',
-      '@platform/cell.types/lib/types.Cell',
-    ]);
+    expect(file?.declaration.exports).to.eql(['@platform/types']);
 
     const files = manifest.files.filter((file) => file.path !== foo);
     expect(files.every((file) => file.declaration.exports.length === 0)).to.eql(true);

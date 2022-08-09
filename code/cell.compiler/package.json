@@ -45,11 +45,11 @@
     "browserslist": "4.21.3",
     "core-js": "3.24.1",
     "css-loader": "6.7.1",
+    "cli-spinner": "0.2.10",
     "file-loader": "6.2.0",
     "fork-ts-checker-webpack-plugin": "7.2.13",
     "html-webpack-plugin": "5.5.0",
     "minimist": "1.2.6",
-    "ora": "5.4.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "semver": "7.3.7",
@@ -66,6 +66,7 @@
     "@platform/ts": "4.7.7",
     "@types/minimist": "1.2.2",
     "@types/qrcode": "1.4.2",
+    "@types/cli-spinner": "0.2.1",
     "qrcode": "1.5.1"
   },
   "files": [

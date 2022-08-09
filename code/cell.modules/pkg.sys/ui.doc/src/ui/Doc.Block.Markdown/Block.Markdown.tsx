@@ -37,7 +37,7 @@ const View: React.FC<DocMarkdownBlockProps> = (props) => {
       fontKerning: 'auto',
       cursor: 'default',
     });
-    return Markdown.toElement(markdown, { style, className });
+    return Markdown.UI.toElement(markdown, { style, className });
   }, [markdown]); // eslint-disable-line
 
   return <div {...css(styles.base, props.style)}>{html}</div>;
@@ -47,7 +47,7 @@ const View: React.FC<DocMarkdownBlockProps> = (props) => {
  * Helpers
  */
 function ensureStyles() {
-  return Markdown.ensureStyles(className, markdownStyles);
+  return Markdown.UI.ensureStyles(className, markdownStyles);
 }
 
 /**

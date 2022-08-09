@@ -1,0 +1,26 @@
+{
+  "name": "sys.data.markdown",
+  "version": "0.0.1",
+  "main": "lib/index",
+  "sideEffects": false,
+  "scripts": {
+    "test": "ts test $@",
+    "lint": "ts lint $@",
+    "build": "ts build --no-esm $@"
+  },
+  "dependencies": {
+    "sanitize-html": "2.7.1",
+    "rehype-format": "4.0.1",
+    "rehype-stringify": "9.0.3",
+    "remark-parse": "10.0.1",
+    "remark-rehype": "10.1.0",
+    "unified": "10.1.2",
+    "sys.ui.react": "0.0.1"
+  },
+  "devDependencies": {
+    "@platform/cell.compiler": "0.4.4",
+    "@types/sanitize-html": "2.6.2"
+  },
+  "license": "MIT",
+  "private": true
+}

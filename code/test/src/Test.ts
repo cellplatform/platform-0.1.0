@@ -1,4 +1,4 @@
-import * as Mocha from 'mocha';
+import Mocha from 'mocha';
 import { fs } from '@platform/fs';
 
 /**
@@ -10,8 +10,8 @@ export const Test = {
    * Find test files.
    */
   files(options: { dir?: string; pattern?: string } = {}) {
-    const dir = fs.resolve(options.dir || fs.path.resolve('src'));
-    const pattern = options.pattern || '**/*.TEST.ts{,x}';
+    const dir = fs.resolve(options.dir ?? fs.path.resolve('src'));
+    const pattern = options.pattern ?? '**/*.TEST.ts{,x}';
     return fs.glob.find(fs.path.join(dir, pattern));
   },
 

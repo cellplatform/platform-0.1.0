@@ -1,1 +1,1 @@
-export { Observable } from 'rxjs';
+export { JsonMap } from '@platform/types';

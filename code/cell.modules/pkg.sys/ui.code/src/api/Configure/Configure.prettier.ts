@@ -18,25 +18,21 @@ export async function registerPrettier(args: { api: t.ICodeEditorSingleton }) {
 
   api.monaco.languages.registerDocumentFormattingEditProvider(DEFAULT.LANGUAGE, {
     async provideDocumentFormattingEdits(model, options, token) {
-      try {
-        const prettier = await import('prettier/standalone');
-        const typescript = await import('prettier/parser-typescript');
+      const prettier = await import('prettier/standalone');
+      const typescript = await import('prettier/parser-typescript');
 
-        const text = prettier.format(model.getValue(), {
-          parser: 'typescript',
-          plugins: [typescript],
-          singleQuote: true,
-        });
+      const text = prettier.format(model.getValue(), {
+        parser: 'typescript',
+        plugins: [typescript],
+        singleQuote: true,
+      });
 
-        return [
-          {
-            range: model.getFullModelRange(),
-            text,
-          },
-        ];
-      } catch (error: any) {
-        throw error;
-      }
+      return [
+        {
+          range: model.getFullModelRange(),
+          text,
+        },
+      ];
     },
   });
 }

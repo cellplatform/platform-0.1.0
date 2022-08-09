@@ -19,7 +19,6 @@
  *        https://github.com/sindresorhus/matcher/blob/master/license
  *
  */
-// import escapeStringRegexp from 'escape-string-regexp';
 const cache = new Map();
 import { escapeStringRegex } from './escapeStringRegex';
 
