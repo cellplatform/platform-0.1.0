@@ -125,7 +125,7 @@ const View: React.FC<DocImageProps> = (props) => {
  * Helpers
  */
 function ensureStyles() {
-  return Markdown.ensureStyles(className, markdownStyles);
+  return Markdown.UI.ensureStyles(className, markdownStyles);
 }
 
 /**

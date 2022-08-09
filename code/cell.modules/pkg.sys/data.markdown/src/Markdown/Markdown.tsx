@@ -10,5 +10,6 @@ const { toHtml, toHtmlSync } = MarkdownProcessor;
 export const Markdown = {
   toHtml,
   toHtmlSync,
+
   UI,
 };

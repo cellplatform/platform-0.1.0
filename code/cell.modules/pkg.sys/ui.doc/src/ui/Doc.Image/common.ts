@@ -2,7 +2,6 @@ import * as t from '../../common/types';
 
 export * from '../common';
 export { Icons } from '../Icons';
-export { Markdown } from '../Markdown';
 
 export const ALL = {
   align: <t.DocImageCreditAlign[]>['Left', 'Center', 'Right'],

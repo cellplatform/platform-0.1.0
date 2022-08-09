@@ -25,3 +25,4 @@ export { List } from 'sys.ui.primitives/lib/ui/List';
 export { Card } from 'sys.ui.primitives/lib/ui/Card';
 export { Text } from 'sys.ui.primitives/lib/ui/Text';
 export { LoadMask } from 'sys.ui.primitives/lib/ui/LoadMask';
+export { Markdown } from 'sys.data.markdown';
