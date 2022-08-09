@@ -6,5 +6,5 @@ import { createRoot } from 'react-dom/client';
 import { App } from './components/App';
 import './workers.init';
 
-const root = createRoot(document.getElementById('root')!); // eslint-disable-line
+const root = createRoot(document.getElementById('root') as as HTMLElement); 
 root.render(<App />);

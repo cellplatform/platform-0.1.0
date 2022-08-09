@@ -40,6 +40,6 @@ if (isDev) document.title = `${document.title} (dev)`;
   const res = Module.default(pump, ctx);
   const el = Is.promise(res) ? await res : res;
 
-  const root = createRoot(document.getElementById('root')!); // eslint-disable-line
+  const root = createRoot(document.getElementById('root') as as HTMLElement); 
   root.render(el);
 })();
