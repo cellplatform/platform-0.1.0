@@ -1,7 +1,7 @@
 import { equals, clone, clamp, uniq } from 'ramda';
 export const R = { equals, clone, clamp, uniq };
 
-import * as jpath from 'jsonpath';
+import jpath from 'jsonpath';
 export { jpath };
 
 /**
