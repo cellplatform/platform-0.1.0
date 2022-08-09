@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Markdown as MD } from '@platform/util.markdown';
+import { Markdown as MD } from '../../Markdown';
 import { SanitizeHtml } from '../SanitizeHtml';
 import { CssValue, t, Style } from '../common';
 

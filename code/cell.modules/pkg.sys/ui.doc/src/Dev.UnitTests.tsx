@@ -7,6 +7,7 @@ const Imports = {
   RouteBus: import('./ui/Route.Bus/TEST'),
   RouteTable: import('./ui/Route.Table/TEST'),
   Image: import('./ui/Doc.Image/TEST'),
+  Markdown: import('./Markdown/TEST'),
 };
 
 type Ctx = { results?: TestSuiteRunResponse };

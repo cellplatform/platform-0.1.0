@@ -15,7 +15,8 @@
     "upload": "cell.compiler upload $@",
     "clean": "cell.compiler clean $@",
     "info": "cell.compiler info $@",
-    "serve": "cell.compiler serve $@"
+    "serve": "cell.compiler serve $@",
+    "tmp": "ts-node -T script.ts/tmp"
   },
   "dependencies": {
     "@platform/state": "0.7.55",
