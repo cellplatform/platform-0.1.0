@@ -4,8 +4,6 @@
   "compilerOptions": {
     "outDir": "lib",
     "noUnusedLocals": false,
-
-    "module": "ESNext",
-    "target": "ESNext"
+    "esModuleInterop": true
   }
 }
