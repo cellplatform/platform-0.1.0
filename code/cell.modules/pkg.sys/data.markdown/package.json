@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "sanitize-html": "2.7.1",
-    "sys.ui.react": "0.0.1",
+    "sys.ui.common": "0.0.1",
     "rehype-format": "3.1.0",
     "rehype-stringify": "8.0.0",
     "remark-parse": "9.0.0",
