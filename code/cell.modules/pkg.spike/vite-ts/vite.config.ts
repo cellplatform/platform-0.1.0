@@ -1,10 +1,10 @@
 import { resolve } from 'path';
-import { defineConfig } from 'vite';
+import { defineConfig, UserConfig } from 'vite';
 
-export default defineConfig({
+const config: UserConfig = {
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/foo.ts'),
+      entry: resolve(__dirname, 'src/Rx.ts'),
       name: 'Lib.Foo',
       // the proper extensions will be added
       fileName: 'lib.foo',
@@ -12,14 +12,19 @@ export default defineConfig({
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      // external: ['vue'],
+      // external: ['rxjs'],
       output: {
         // Provide global variables to use in the UMD build
         // for externalized deps
         globals: {
-          // vue: 'Vue',
+          // rxjs: 'rxjs',
         },
       },
     },
   },
+};
+
+export default defineConfig(async (e) => {
+  console.log('define', e);
+  return config;
 });
