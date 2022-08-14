@@ -11,7 +11,7 @@ const Imports = {
  * [Render]
  */
 (async () => {
-  const root = createRoot(document.getElementById('root') as as HTMLElement); 
+  const root = createRoot(document.getElementById('root') as HTMLElement);
   const DevHarness = (await Imports.DevHarness()).DevHarness;
   root.render(<DevHarness />);
 })();

@@ -6,5 +6,5 @@ import { createRoot } from 'react-dom/client';
 import { App } from './components/App';
 import './workers.init';
 
-const root = createRoot(document.getElementById('root') as as HTMLElement); 
+const root = createRoot(document.getElementById('root') as HTMLElement);
 root.render(<App />);
