@@ -3,6 +3,9 @@
   "include": ["src"],
   "compilerOptions": {
     "outDir": "lib",
-    "noUnusedLocals": false
+    "noUnusedLocals": false,
+
+    "module": "ESNext",
+    "target": "ESNext"
   }
 }

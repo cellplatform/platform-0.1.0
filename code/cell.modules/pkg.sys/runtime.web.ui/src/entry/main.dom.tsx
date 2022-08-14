@@ -30,7 +30,7 @@ if (isDev) document.title = `${document.title} (dev)`;
  * [Render]
  */
 (async () => {
-  const root = createRoot(document.getElementById('root')!); // eslint-disable-line
+  const root = createRoot(document.getElementById('root') as HTMLElement);
 
   if (isDev) {
     const DevHarness = (await Imports.DevHarness()).DevHarness;

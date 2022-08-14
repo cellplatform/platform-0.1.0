@@ -26,6 +26,6 @@ const Imports = {
   const res = Module.default(pump, ctx);
   const el = Is.promise(res) ? await res : res;
 
-  const root = createRoot(document.getElementById('root')!); // eslint-disable-line
+  const root = createRoot(document.getElementById('root') as HTMLElement);
   root.render(el);
 })();

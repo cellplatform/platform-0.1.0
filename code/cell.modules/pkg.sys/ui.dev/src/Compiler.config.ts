@@ -9,6 +9,6 @@ export default () =>
       config
         .port(3032)
         .entry('main', './src/entry/dom')
-        .shared((e) => e.add(e.dependencies).singleton(['sys.ui.react']))
+        .shared((e) => e.add(e.dependencies).singleton(['sys.ui.common']))
         .expose('./Foo', './src/test/Foo'),
     );

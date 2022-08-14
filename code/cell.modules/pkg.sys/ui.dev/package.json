@@ -25,7 +25,7 @@
   "devDependencies": {
     "@platform/cell.compiler": "^0.4.4",
     "@types/jsonpath": "0.2.0",
-    "sys.ui.react": "0.0.1"
+    "sys.ui.common": "0.0.1"
   },
   "license": "MIT",
   "private": true

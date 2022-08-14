@@ -13,8 +13,8 @@ lib.test
 /code/*/.dev
 .uiharness
 
-.publish
-.parcel*
+**/script.ts/vercel.run.ts
+
 
 **/msync.*.json
 .msync.hidden

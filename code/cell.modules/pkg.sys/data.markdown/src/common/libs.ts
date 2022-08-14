@@ -1,1 +1,1 @@
-export { css, CssValue, Style } from 'sys.ui.react';
+export { css, CssValue, Style } from 'sys.ui.common';
