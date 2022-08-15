@@ -30,3 +30,5 @@ sync.yaml
 tmp/
 .tmp.*
 /vscode
+
+pkg.spike/
