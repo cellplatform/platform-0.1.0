@@ -4,9 +4,19 @@
 
 [Monorepo](https://en.wikipedia.org/wiki/Monorepo) for [@platform](https://www.npmjs.com/org/platform) modules.
 
-<p>&nbsp;</p>
+---
+
 <p>&nbsp;</p>
 
+![pre-release](https://img.shields.io/badge/Status-pre--release-orange.svg)  
+API's and other structures will change (probably radically 🐷) prior to `1.x` release.
+
+- Current: [platform-0.0.1](https://github.com/uiharness/platform-0.0.1) (deprecated)
+- Next: [platform-0.0.2](https://github.com/philcockfield/platform-0.0.2)
+
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
 
 
 # Philosophy
