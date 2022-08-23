@@ -63,6 +63,8 @@ export async function symlink(path: string, options: { ancestor?: boolean } = {}
   return options.ancestor ? await Symlink.isWithinLinkedDir(path) : false;
 }
 
+
+
 /**
  * [Helpers]
  */
@@ -71,6 +73,7 @@ const Symlink = {
   async isLink(path: string) {
     return (await fs.lstat(path)).isSymbolicLink();
   },
+
   async isWithinLinkedDir(path: string) {
     let result = false;
     await ancestor(dirname(path)).walk(async (visitor) => {
