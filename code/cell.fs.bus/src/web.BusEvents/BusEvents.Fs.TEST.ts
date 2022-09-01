@@ -636,7 +636,9 @@ describe('BusEvents.Fs', function () {
         const hash = Hash.sha256(file.data);
         expect(file.hash).to.eql(hash);
         expect(res.hash).to.eql(hash);
-        expect(new TextDecoder().decode(file.data)).to.eql(expected);
+
+        const decoded = new TextDecoder().decode(file.data);
+        expect(decoded).to.eql(expected);
       };
 
       it('write: string', async () => {
